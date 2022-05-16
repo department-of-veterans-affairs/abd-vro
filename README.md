@@ -7,6 +7,8 @@ The overall goal for this project is to build automation to enrich Veteran claim
 * Reduce the number of unnecessary medical exams ordered for disability compensation applications (aka “unnecessary exams”)
 * Reduce the amount of manual effort required to make a decision on each claim (aka“touch time”)
 
+# LHDI's Java Starter Kit
+
 <div align="center">
   <h1>abd_vro</h1>
   <a href="https://circleci.com/gh/department-of-veterans-affairs/lighthouse-di-starterkit-java/tree/main"><img src="https://circleci.com/gh/department-of-veterans-affairs/lighthouse-di-starterkit-java/tree/main.svg?style=shield&circle-token=84350dd7d3eec157c24c0e8745097f1a4eccdfb4"></a>
