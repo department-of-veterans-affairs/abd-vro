@@ -1,0 +1,21 @@
+plugins {
+    id "org.springframework.boot" apply true
+}
+
+// starter.java.build-javatarget-conventions
+
+tasks.named('distZip'){
+    enabled = false
+}
+
+tasks.named('distTar'){
+    enabled = false
+}
+
+tasks.named('bootDistZip'){
+    enabled = false
+}
+
+tasks.named('bootDistTar'){
+    enabled = false
+}

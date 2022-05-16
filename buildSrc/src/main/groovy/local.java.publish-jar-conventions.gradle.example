@@ -1,0 +1,15 @@
+/**
+ * Configurations for publishing jar files
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        libJarArtifact(MavenPublication) {
+            from components.java
+        }
+    }
+}

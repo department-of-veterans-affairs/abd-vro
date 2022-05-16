@@ -1,0 +1,20 @@
+/**
+ * Definition of publishing repository for any packages
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "githubPackages"
+            // change to point to your repo, e.g. http://my.org/repo
+            def releasesRepoUrl = "${mavenRepository}"
+            def snapshotsRepoUrl = "${mavenSnapshotRepository}"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
+        }
+    }
+}

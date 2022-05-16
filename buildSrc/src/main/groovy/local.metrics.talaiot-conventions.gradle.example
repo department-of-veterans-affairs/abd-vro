@@ -1,0 +1,69 @@
+/**
+ * Configuration for tracking how long a build takes, using talaiot.
+ * NOTE: No configuration set for shipping metrics to an aggregator, but the capability exists.
+ */
+
+plugins {
+    id "com.cdsap.talaiot"
+    id "com.cdsap.talaiot.plugin.base"
+}
+
+talaiot {
+    metrics {
+        // You can add your own custom Metric objects:
+        customMetrics(
+//                MyCustomMetric(),
+        // Including some of the provided metrics, individually.
+                HostnameMetric()
+        )
+
+        // Or define build or task metrics directly:
+        customBuildMetrics(
+                kotlinVersion: $kotlinVersion,
+                javaVersion: $javaVersion
+        )
+//        customTaskMetrics(
+//                customProperty: $value
+//        )
+    }
+
+    filter {
+        tasks {
+//        excludes = arrayOf("preDebugBuild", "processDebugResources")
+        }
+        modules {
+//        excludes = arrayOf(":app")
+        }
+        threshold {
+//        minExecutionTime = 10
+        }
+        build {
+            success = true
+//          requestedTasks {
+//            includes = arrayOf(":app:assemble.*")
+//            excludes = arrayOf(":app:generate.*")
+//          }
+        }
+    }
+
+    ignoreWhen {
+//        envName = "CI"
+//        envValue = "true"
+    }
+
+    publishers {
+//        influxDbPublisher {
+//            dbName = "tracking"
+//            url = "http://localhost:8086"
+//            taskMetricName = "task"
+//            buildMetricName = "build"
+//        },
+        jsonPublisher = true
+        timelinePublisher = true
+        taskDependencyPublisher {
+            html = true
+        }
+
+    }
+
+}

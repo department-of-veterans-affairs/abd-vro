@@ -1,0 +1,13 @@
+/**
+ * Provides a set of common dependencies for typical gradle plugin integration test .
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    integrationTestImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+    integrationTestImplementation gradleTestKit()
+}
+

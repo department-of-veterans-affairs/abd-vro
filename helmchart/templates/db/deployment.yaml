@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-postgres
+  labels: {{- toYaml .Values.labels.db.global | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- toYaml .Values.labels.db.global | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels.db.pod | nindent 8 }}
+    spec:
+      containers:
+        - name: postgres-db
+          image: {{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.dbName }}
+          ports:
+            - containerPort: {{ .Values.service.db.sourcePort }}
+              protocol: TCP
+          resources: {{- toYaml .Values.resources.db | nindent 12 }}

@@ -1,0 +1,98 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels: {{- toYaml .Values.labels.api | nindent 4 }}
+  annotations:
+    app.kubernetes.io/name: {{ .Values.name }}
+    app.kubernetes.io/version: {{ .Values.version | quote }}
+    app.kubernetes.io/owner: {{ .Values.owner }}
+    app.kubernetes.io/env: {{ .Values.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels.api | nindent 8 }}
+      annotations:
+        app.kubernetes.io/podname: {{ .Values.name }}
+        app.kubernetes.io/podversion: {{ .Values.version | quote }}
+        app.kubernetes.io/podowner: {{ .Values.owner }}
+        app.kubernetes.io/podenv: {{ .Values.environment }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.name }}-ghcr
+      initContainers:
+        - name: pg-isready
+          image: postgres
+          env:
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /bin/sh -c "
+                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                  echo 'Waiting for Postgres DB to be available'
+                  sleep 5
+                done
+              "
+          resources: {{- toYaml .Values.resources.db | nindent 12 }}
+        - name: db-init
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
+          imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
+          env:
+            - name: FLYWAY_PLACEHOLDERS_DBNAME
+              value: {{ .Values.postgres.dbName }}
+            - name: FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
+            - name: FLYWAY_URL
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
+          resources: {{- toYaml .Values.resources.api | nindent 12 }}
+      containers:
+        - name: {{ .Values.name }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
+          imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
+          ports: {{- toYaml .Values.ports | nindent 10 }}
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx512m
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
+            - name: SPRING_DATASOURCE_HIKARI_JDBCURL
+              value: $(SPRING_DATASOURCE_URL)
+            - name: SPRING_DATASOURCE_HIKARI_USERNAME
+              value: $(SPRING_DATASOURCE_USERNAME)
+            - name: SPRING_DATASOURCE_HIKARI_PASSWORD
+              value: $(SPRING_DATASOURCE_PASSWORD)
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: /{{ .Values.name }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.name }}
+          resources: {{- toYaml .Values.resources.api | nindent 12 }}

@@ -1,0 +1,35 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a Spring Boot application package.
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id "org.ajoberstar.grgit"
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+    id 'starter.java.build-springboot-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.container-conventions'
+    id 'starter.java.container-spring-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
+    id 'starter.java.doc-springdoc-conventions'
+    id 'starter.java.test-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-integration-conventions'
+    id 'starter.java.test-gatling-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.deps-integration-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-bootjar-conventions'
+    id 'starter.java.versions-conventions'
+}
+
+dependencies {
+    testImplementation 'org.mock-server:mockserver-netty'
+    // open tracing testing/mock support
+    testImplementation 'io.opentracing:opentracing-mock'
+    testImplementation 'com.tngtech.archunit:archunit'
+}

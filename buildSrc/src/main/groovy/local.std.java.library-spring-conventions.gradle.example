@@ -1,0 +1,10 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ */
+
+plugins {
+    id 'starter.std.java.library-conventions'
+    id 'starter.java.config-conventions'
+    id 'starter.java.build-utils-conventions'
+}
+

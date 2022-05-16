@@ -1,0 +1,19 @@
+/**
+ * Provides configurations for platform (BOM) dependencies, to ensure non-api/runtime configurations are set properly.
+ */
+
+configurations {
+    springBom
+    compileOnly.extendsFrom(springBom)
+    annotationProcessor.extendsFrom(springBom)
+    implementation.extendsFrom(springBom)
+    testAnnotationProcessor.extendsFrom(springBom)
+
+    annotationBom
+    implementation.extendsFrom(annotationBom)
+    annotationProcessor.extendsFrom(annotationBom)
+    testAnnotationProcessor.extendsFrom(annotationBom)
+
+    checkstyleRules
+}
+

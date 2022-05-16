@@ -1,0 +1,19 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace }}
+  labels: {{- toYaml .Values.labels.api | nindent 4 }}
+spec:
+  hosts: [{{ .Values.environment }}.devportal.name]
+  gateways: [istio-system/{{ .Values.environment }}-devportal-name-gateway]
+  http:
+  - match:
+    - uri:
+        prefix: /{{ .Values.name }}
+    route:
+    - destination:
+        host: {{ .Chart.Name }}
+        port:
+          number: 8080

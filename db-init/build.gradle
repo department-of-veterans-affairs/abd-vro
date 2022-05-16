@@ -1,0 +1,56 @@
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+    id 'org.flywaydb.flyway'
+    id 'starter.java.container-conventions'
+    id 'starter.java.build-utils-conventions'
+}
+
+docker {
+    copySpec.from("src/main/resources").into(".")
+}
+
+dockerRun {
+    image "${dockerRegistry}/${rootProject.name}-db-init"
+    env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'example'),
+            'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'example')}?user=${getEnvOrDefault('DB_ROOT_USER', 'example_flyway')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
+            'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'example_flyway'),
+            'FLYWAY_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_USER', 'example_user'),
+            'FLYWAY_PLACEHOLDERS_SERVICENAME': getEnvOrDefault('DB_SERVICE', 'example_service'),
+            'FLYWAY_PLACEHOLDERS_ADMINNAME': getEnvOrDefault('DB_ADMIN', 'example_admin'),
+            'FLYWAY_PLACEHOLDERS_DBNAME': getEnvOrDefault('DB_NAME', 'example'),
+            'FLYWAY_PLACEHOLDERS_SCHEMANAME': getEnvOrDefault('DB_SCHEMA', 'example'),
+            'FLYWAY_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password'),
+            'FLYWAY_PLACEHOLDERS_SERVICEPASSWORD': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
+            'FLYWAY_PLACEHOLDERS_ADMINPASSWORD': getEnvOrDefault('DB_ADMIN_PASSWORD', 'also-not-the-admin-password')
+}
+
+
+configurations {
+    flywayMigration
+}
+
+dependencies {
+    flywayMigration platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    flywayMigration "org.postgresql:postgresql"
+}
+
+flyway {
+    url = 'jdbc:postgresql://example_flyway:not-the-password@localhost:5432/example'
+    user = 'example_flyway'
+    password = 'not-the-password'
+    locations = ["filesystem:${project.buildDir}/docker/database/migrations"]
+    placeholders = [
+            'username': 'example_user',
+            'servicename': 'example_service',
+            'adminname': 'example_admin',
+            'dbname': 'example',
+            'schemaname': 'example',
+            'userpassword': 'also-not-the-user-password',
+            'servicepassword': 'also-not-the-service-password',
+            'adminpassword': 'also-not-the-admin-password'
+    ]
+    configurations = [ 'flywayMigration' ]
+}

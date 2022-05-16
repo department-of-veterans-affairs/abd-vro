@@ -1,0 +1,16 @@
+plugins {
+    id 'starter.std.java.library-spring-conventions'
+}
+
+
+dependencies {
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+    implementation project(':test-data-factory')
+
+    // include jdbc tracing here since we are assuming for this version we are using JDBC SQL
+    implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation "com.h2database:h2"
+    implementation 'gov.va.starter:test-data'
+}

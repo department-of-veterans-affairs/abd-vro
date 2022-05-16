@@ -1,0 +1,48 @@
+exclude: >
+  (?x)^(
+      template/* |
+      helm/templates/*
+  )
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+        stages: [commit]
+        exclude: ^.*helmchart.*$
+      - id: check-merge-conflict
+        stages: [commit]
+      - id: check-xml
+        stages: [commit]
+
+  - repo: https://github.com/jguttman94/pre-commit-gradle
+    rev: v0.2.1
+    hooks:
+      - id: gradle-spotless
+        args: ['-w', '-o']
+        stages: [commit, push]
+      - id: gradle-task
+        args: ['test','-w','-o']
+        stages: [push]
+
+  - repo: https://github.com/zahorniak/pre-commit-circleci.git
+    rev: v0.2
+    hooks:
+      - id: circleci_validate
+        stages: [commit]
+
+  - repo: local
+    hooks:
+      - id: commit-message
+        name: commit-message
+        entry: scripts/commit-message.sh
+        language: script
+        stages: [commit-msg]
+      # - id: verify-generated-proj
+      #   name: verify generated project
+      #   entry: scripts/verify-generated-proj.sh
+      #   language: script
+      #   verbose: true
+      #   always_run: true
+      #   pass_filenames: false
+      #   stages: [commit]

@@ -1,0 +1,48 @@
+/**
+ * Configurations for testing
+ */
+
+plugins {
+    id 'java'
+}
+// Requires
+// id 'starter.java.build-utils-property-conventions'
+
+def integrationTestSets = sourceSets.create('integrationTest') {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+}
+
+configurations[integrationTestSets.implementationConfigurationName].extendsFrom(configurations.implementation)
+configurations[integrationTestSets.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly)
+
+def integrationTest = tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = integrationTestSets.output.classesDirs
+    classpath = integrationTestSets.runtimeClasspath
+
+    // should find integration test output summary and use that as the timestamp comparison
+    // if there should be any updates that would affect the integration test
+    outputs.upToDateWhen { false }
+    shouldRunAfter tasks.named('test')
+    useJUnitPlatform {
+        // excludeEngines 'junit-vintage'
+    }
+    testLogging {
+        showStandardStreams = false // true
+        // events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        minGranularity 2
+        minGranularity 4
+        displayGranularity 0
+    }
+}
+
+tasks.named('check') {
+    dependsOn integrationTest
+}
+
+

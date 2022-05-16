@@ -1,0 +1,75 @@
+/**
+ * Configuration for ben-manes/gradle-versions-plugin and patrikerdes/gradle-use-latest-versions-plugin.
+ *
+ * These plugins will display a list of all the (direct) dependencies in your project, along with the version.
+ * It will also determine if a newer version of the package is available, depending on the rules you set up.
+ * For example, the default configuration specifies that if the current package is stable, then it will not suggest non-stable version updates.
+ *
+ * The gradle-use-latest-versions-plugin will use the information provided by the versions plugin to make changes to`build.gradle` and `gradle.properties` files to update dependency versions.
+ */
+
+plugins {
+    id("com.github.ben-manes.versions")
+    id("se.patrikerdes.use-latest-versions")
+}
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+def isSnapshot = { String version ->
+    return ['SNAPSHOT'].any { it -> version.toUpperCase().contains(it) }
+}
+
+def isReleaseCandidate = { String version ->
+    return ['RC', 'rc'].any { it -> version.toUpperCase().contains(it) }
+}
+
+dependencyUpdates {
+    checkForGradleUpdate = true
+    checkConstraints = true
+
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(project.version)) {
+                    reject('Release candidate')
+                }
+            }
+        }
+    }
+}
+
+useLatestVersions {
+    // A whitelist of dependencies to update, in the format of group:name
+    // Equal to command line: --update-dependency=[values]
+    updateWhitelist = []
+    // A blacklist of dependencies to update, in the format of group:name
+    // Equal to command line: --ignore-dependency=[values]
+    //
+    // NOTE: This is the list of spring-defined dependencies currently used in
+    // starter.java.build-conventions
+    updateBlacklist = [
+            'com.fasterxml.jackson.datatype:jackson-datatype-jsr310',
+            'org.assertj:assertj-core',
+            'org.junit.jupiter:junit-jupiter-api',
+            'org.junit.jupiter:junit-jupiter-engine',
+            'org.mapstruct:mapstruct',
+            'org.mapstruct:mapstruct-processor',
+            'org.mockito:mockito-core',
+            'org.projectlombok:lombok',
+            'org.springframework.boot:spring-boot-starter-test'
+    ]
+    // When enabled, root project gradle.properties will also be populated with
+    // versions from subprojects in multi-project build
+    // Equal to command line: --update-root-properties
+    updateRootProperties = false
+    // List of root project files to update when updateRootProperties is enabled.
+    // `build.gradle` is not an acceptable entry here as it breaks other expected
+    // functionality. Version variables in `build.gradle` need to be moved into
+    // a separate file which can be listed here.
+    // Equal to command line: --root-version-files=[values]
+    rootVersionFiles = ['gradle.properties']
+}

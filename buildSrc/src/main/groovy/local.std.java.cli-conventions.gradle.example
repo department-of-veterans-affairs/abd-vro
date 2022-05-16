@@ -1,0 +1,24 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a java cli (untested)
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id "org.ajoberstar.grgit"
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.container-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
+    id 'starter.java.test-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-jar-conventions'
+    id 'starter.java.versions-conventions'
+}
+

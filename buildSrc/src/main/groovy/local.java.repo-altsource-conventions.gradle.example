@@ -1,0 +1,13 @@
+/**
+ * Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
+ */
+
+repositories {
+    maven {
+        url findProperty('mavenRepository')
+        credentials {
+            username = System.getenv('MAVEN_REPO_USERNAME')
+            password = System.getenv('MAVEN_REPO_PASSWORD')
+        }
+    }
+}

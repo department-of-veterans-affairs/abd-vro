@@ -1,0 +1,17 @@
+/**
+ * Swaggerhub configurations
+ */
+
+tasks.register('deployDocToGithubPages', Exec) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "use mkdocs to generate static site and commit to gh-pages branch"
+    executable('mkdocs')
+    args('gh-deploy', "--clean")
+}
+
+tasks.register('serveDocs', Exec) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "use mkdocs to serve documents locally"
+    executable('mkdocs')
+    args('serve', "-f", "../mkdocs.yml")
+}

@@ -1,0 +1,4 @@
+plugins {
+    id 'starter.std.java.shell-conventions'
+}
+
