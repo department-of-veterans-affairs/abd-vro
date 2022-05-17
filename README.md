@@ -11,6 +11,15 @@ The overall goal for this project is to build automation to enrich Veteran claim
 
 [LHDI's Java Starter Kit](#lhdis-java-starter-kit) was used to populate this codebase (see PR #8) using Java (AdoptOpenJDK) 17 and Gradle 7.4.
 
+## Packages (in Github Container Registry)
+
+Initially, there are 2 packages (container images):
+- abd-vro/abd_vro-db-init
+- abd-vro/abd_vro-app
+
+If more are created, go to the [VA Organization's Packages page](https://github.com/orgs/department-of-veterans-affairs/packages?tab=packages&q=abd-vro), search for the package, and  manually connect them to the repo.
+[LHDI info](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility)
+
 # LHDI's Java Starter Kit
 
 <div align="center">
