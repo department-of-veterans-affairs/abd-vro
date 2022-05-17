@@ -7,11 +7,15 @@ The overall goal for this project is to build automation to enrich Veteran claim
 * Reduce the number of unnecessary medical exams ordered for disability compensation applications (aka “unnecessary exams”)
 * Reduce the amount of manual effort required to make a decision on each claim (aka“touch time”)
 
+## Building
+
+[LHDI's Java Starter Kit](#lhdis-java-starter-kit) was used to populate this codebase (see PR #8) using Java (AdoptOpenJDK) 17 and Gradle 7.4.
+
 # LHDI's Java Starter Kit
 
 <div align="center">
-  <h1>abd_vro</h1>
-  <a href="https://circleci.com/gh/department-of-veterans-affairs/lighthouse-di-starterkit-java/tree/main"><img src="https://circleci.com/gh/department-of-veterans-affairs/lighthouse-di-starterkit-java/tree/main.svg?style=shield&circle-token=84350dd7d3eec157c24c0e8745097f1a4eccdfb4"></a>
+  <h1>ABD VRO</h1>
+  <a href="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main"><img src="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=...TBD..."></a>
 </div>
 <br />
 
@@ -43,16 +47,13 @@ If no other changes have been made, this application will have [these features][
 
 Before you run this application locally, you will need to make sure you have all the following required dependencies available in your local environment:
 
-- Java 11
-    - This must be the version selected by your machine to run Gradle 6.9. [Mac Guide][6]|[Other OS Guide][5]
-- Java 16
-    - This version must be available to Gradle to compile the application. [Mac Guide][6]|[Other OS Guide][5]
+- Java 17 ([Mac Guide][6] | [Other OS Guide][5])
+- Gradle 7.2 (used by Github Actions)
 - [docker][7]
 - [hadolint][8]
 - [spectral][12]
 - [shellcheck][9]
 
-> This application currently supports Mac OS for local development environments.
 > Use the [Mac OS Guide][4] to make sure you have all the above dependencies available in your local environment.
 > Otherwise, refer to the [Other Operating Systems Guide][5].
 
@@ -90,9 +91,9 @@ This should bring up a docker container with the app running at http://localhost
 There are shortcut tasks defined in the root `build.gradle` file to make life a bit easier:
 
 ```bash
-./gradlew devloop  # will rebuild what is out of date, recreate and restart individual docker images
-./gradlew restartloop # will stop containers, then proceed with `devloop`
-./gradlew resetloop # will stop containers, clean volumes, then proceed with `devloop`
+./gradlew devloop     # rebuild what is out of date, recreate and restart individual docker images
+./gradlew restartloop # stop containers, then proceed with `devloop`
+./gradlew resetloop   # stop containers, clean volumes, then proceed with `devloop`
 ```
 
 The `devloop` is most convenient and quickest feedback cycle if one needs to do manual testing with the system services.
