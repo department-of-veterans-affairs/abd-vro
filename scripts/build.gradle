@@ -3,5 +3,6 @@ plugins {
 }
 
 shellcheck {
-    shellcheckBinary = '/usr/bin/shellcheck'
+    // don't specify the absolute path so that it can work in GH Actions and locally
+    shellcheckBinary = 'shellcheck'
 }
