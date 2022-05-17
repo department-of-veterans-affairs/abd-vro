@@ -1,0 +1,17 @@
+/**
+ * Provides a set of common dependencies for typical integration test.
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+
+    integrationTestImplementation 'org.assertj:assertj-core'
+    integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api'
+    integrationTestImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    integrationTestRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+

@@ -1,0 +1,100 @@
+name: abd_vro
+owner: Example
+environment: # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
+cluster: nonprod
+version: 0.1
+replicaCount: 1
+
+labels:
+  api:
+    app: abd_vro
+  db:
+    global: &labels-db-global
+      app: postgres-db
+    pod: 
+      <<: *labels-db-global
+      sidecar.istio.io/inject: "false"
+
+images:
+  registry: ghcr.io
+  org: department-of-veterans-affairs
+  repo: abd_vro
+  app:
+    imageName: abd_vro-app
+    tag: latest
+    imagePullPolicy: Always
+  dbInit:
+    imageName: abd_vro-db-init
+    tag: latest
+    imagePullPolicy: Always
+  db:
+    imageName: postgres
+    tag: latest
+
+resources:
+  api:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  db:
+    limits:
+      cpu: 10m
+      memory: 256Mi
+
+service:
+  api:
+    type: ClusterIP
+    sourcePort: 8080
+    targetPort: 8080
+  db:
+    type: ClusterIP
+    sourcePort: 5432
+    targetPort: 5432
+
+ports:
+  - name: http
+    containerPort: 8080
+    protocol: TCP
+  - name: liveness
+    containerPort: 8081
+    protocol: TCP
+  - name: debug
+    containerPort: 5005
+    protocol: TCP
+
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: 8081
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readiness
+    port: 8081
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+
+postgres:
+  dbName: abd_vro
+  secretName: postgres
+  usernameKey: username
+  passwordKey: password
+  rootUsernameKey: root-username
+  rootPasswordKey: root-password
+  usernameValue: someuser
+  passwordValue: somepass

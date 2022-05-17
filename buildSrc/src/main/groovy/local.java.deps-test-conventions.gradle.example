@@ -1,0 +1,26 @@
+/**
+ * Provides a set of common dependencies for typical unit testing.
+ */
+plugins {
+    id 'java'
+}
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    testImplementation 'org.mockito:mockito-core'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'com.tngtech.archunit:archunit'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    //since this is a spring boot starter, assume spring at all levels
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+}
+

@@ -1,0 +1,19 @@
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+    id 'starter.java.container-conventions'
+    id 'starter.java.build-utils-conventions'
+}
+
+docker {
+    copySpec.from("src/main/resources").into(".")
+}
+
+dockerRun {
+    image "${dockerRegistry}/${rootProject.name}-opa-init"
+    env 'FOO': getEnvOrDefault('FOO', 'foo')
+}
+
+

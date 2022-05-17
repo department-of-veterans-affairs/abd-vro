@@ -1,0 +1,30 @@
+version: '3.9'
+
+networks:
+  internal:
+  external:
+
+
+services:
+  opa:
+    image: openpolicyagent/opa
+    expose:
+      - "8181"
+    ports:
+      - "8181:8181"
+    command:
+      - run
+      - --server
+      - --log-level
+      - debug
+    networks:
+      - internal
+      - external
+
+
+  opa-init:
+    image: va/abd_vro-opa-init:latest
+    depends_on:
+      - opa
+    networks:
+      - internal

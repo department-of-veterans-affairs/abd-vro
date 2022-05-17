@@ -1,0 +1,17 @@
+brew "adr-tools"
+brew "circleci"
+brew "pre-commit"
+brew "kubectl"
+brew "helm"
+brew "istioctl"
+brew "minikube"
+brew "docker"
+brew "codeclimate/formulae/codeclimate"
+brew "shellcheck"
+brew "mkdocs"
+brew "hadolint"
+brew "cookiecutter"
+
+tap "adoptopenjdk/openjdk" || true
+cask "adoptopenjdk11"
+brew "scala"

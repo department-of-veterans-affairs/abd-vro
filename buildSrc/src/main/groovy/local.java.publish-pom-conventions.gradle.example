@@ -1,0 +1,16 @@
+/**
+ * Configurations for publishing BOM packages (java-platform).
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        platformJarArtifact(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}
+

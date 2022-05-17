@@ -1,0 +1,10 @@
+version: "2"
+plugins:
+  pmd:
+    enabled: true
+    config:
+      file: /config/java-rulesets.xml
+  sonar-java:
+    enabled: true
+    config:
+      sonar.java.source: "11"

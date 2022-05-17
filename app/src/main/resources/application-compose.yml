@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres1:5432/example
+    username: example_service
+    password: also-not-the-service-password
+    hikari:
+      jdbc-url: jdbc:postgresql://postgres1:5432/example
+      username: example_service
+      password: also-not-the-service-password
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: "kafka:9092"
+
+opentracing:
+  zipkin:
+    enabled: true
+    http-sender.baseUrl: http://jaeger:9411
+
+logging:
+  level:
+    org.springframework.jdbc.core: INFO # DEBUG
+    org.springframework.jdbc.core.JdbcTemplate: INFO # DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO # TRACE
+    org.hibernate.SQL: INFO # DEBUG
+    org.type.descriptor.sql.BasicBinder: INFO # TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO # TRACE

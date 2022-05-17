@@ -1,0 +1,27 @@
+
+sourceCompatibility = '11'
+
+dependencies {
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.mapstruct:mapstruct'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testCompile 'org.mockito:mockito-core'
+    testImplementation 'org.assertj:assertj-core'
+    //since this is a spring boot starter, assume spring at all levels
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+

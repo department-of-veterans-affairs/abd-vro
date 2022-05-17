@@ -1,0 +1,12 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a Bill of Materials package
+ */
+
+plugins {
+    id 'java-platform'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-pom-conventions'
+    id 'starter.java.versions-conventions'
+}
+
+

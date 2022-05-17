@@ -1,0 +1,12 @@
+plugins {
+    id 'starter.std.java.library-spring-conventions'
+}
+
+dependencies {
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+    implementation 'org.springframework:spring-webmvc'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'gov.va.starter:exceptions'
+}
+

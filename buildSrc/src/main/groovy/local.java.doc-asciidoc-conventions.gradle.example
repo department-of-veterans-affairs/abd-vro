@@ -1,0 +1,94 @@
+/**
+ * Swaggerhub configurations
+ */
+
+plugins {
+    id 'org.asciidoctor.jvm.pdf'
+    id 'org.asciidoctor.jvm.gems'
+    id 'org.asciidoctor.jvm.convert'
+}
+
+configurations {
+    docs
+}
+
+dependencies {
+    docs "io.spring.docresources:spring-doc-resources:${doc_resources_version}@zip"
+}
+
+
+tasks.register('prepareAsciidocBuild', type: Sync) {
+    dependsOn configurations.docs
+    from {
+        configurations.docs.collect { zipTree(it) }
+    }
+    from 'docs/src/main/asciidoc/','docs/src/main/java','docs/src/main/kotlin'
+    into "$buildDir/asciidoc"
+}
+
+asciidoctorPdf {
+    dependsOn prepareAsciidocBuild
+    baseDirFollowsSourceFile()
+    configurations 'asciidoctorExt'
+
+    asciidoctorj {
+        sourceDir "$buildDir/asciidoc"
+        inputs.dir(sourceDir)
+        sources {
+            include 'index.adoc'
+        }
+        options doctype: 'book'
+        attributes 'icons': 'font',
+                'sectanchors': '',
+                'sectnums': '',
+                'toc': '',
+                'source-highlighter' : 'coderay',
+                revnumber: project.version,
+                'project-version': project.version
+    }
+}
+
+asciidoctorj {
+    version = '2.4.1'
+    // fatalWarnings ".*"
+    options doctype: 'book', eruby: 'erubis'
+    attributes([
+            icons: 'font',
+            idprefix: '',
+            idseparator: '-',
+            docinfo: 'shared',
+            revnumber: project.version,
+            sectanchors: '',
+            sectnums: '',
+            'source-highlighter': 'highlight.js',
+            highlightjsdir: 'js/highlight',
+            'highlightjs-theme': 'googlecode',
+            stylesdir: 'css/',
+            stylesheet: 'stylesheet.css',
+            'spring-version': project.version,
+            'project-version': project.version,
+            'java-examples': 'gov/va/starter/boot/jdocs',
+            'kotlin-examples': 'gov/va/starter/boot/kdocs'
+    ])
+}
+
+asciidoctor {
+    dependsOn asciidoctorPdf
+    baseDirFollowsSourceFile()
+    configurations 'asciidoctorExt'
+    sourceDir = file("$buildDir/asciidoc")
+    sources {
+        include '*.adoc'
+    }
+    resources {
+        from(sourceDir) {
+            include 'images/*', 'css/**', 'js/**'
+        }
+    }
+
+}
+
+tasks.register('reference', dependsOn: asciidoctor) {
+    group = 'Documentation'
+    description = 'Generate the reference documentation'
+}

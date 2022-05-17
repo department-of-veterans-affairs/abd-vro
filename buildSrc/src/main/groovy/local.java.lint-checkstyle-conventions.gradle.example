@@ -1,0 +1,37 @@
+/**
+ * Setting for running checkstyle, pulls configuration from the checkstyle jar.
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'checkstyle'
+}
+
+configurations {
+    checkstyleRules
+}
+
+dependencies {
+    checkstyleRules platform('gov.va.starter:checkstyle-bom')
+    checkstyleRules 'gov.va.starter:checkstyle'
+}
+
+checkstyle {
+    toolVersion "${checkstyle_version}"
+//    configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
+    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'settings/checkstyle/checkstyle.xml')
+    configProperties = [
+            'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
+    ]
+    ignoreFailures = true
+    showViolations = true
+
+}
+
+checkstyleMain {
+    source = "src/main/java"
+}
+checkstyleTest {
+    source = "src/test/java"
+}
+

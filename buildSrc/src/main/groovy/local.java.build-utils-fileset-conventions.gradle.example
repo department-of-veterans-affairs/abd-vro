@@ -1,0 +1,19 @@
+/**
+ * Tasks for maintaining copyright dates
+ * - updateCopyrights  scans modified files for copyright string and updates to current year
+ */
+
+ext {
+    /**
+     * Filter files based on an array of allowable extensions.
+     */
+    filterFiles = { FileCollection fileSet, extensions ->
+        return fileSet.filter { f -> extensions.any { e -> f.name.endsWith(e) } }
+    }
+    /**
+     * Filter files based on an array of allowable extensions that also are in the local sub-module.
+     */
+    filterProjectFiles = { FileCollection fileSet, extensions ->
+        return filterFiles(fileSet.filter { f -> f.path.contains(project.name) }, extensions)
+    }
+}

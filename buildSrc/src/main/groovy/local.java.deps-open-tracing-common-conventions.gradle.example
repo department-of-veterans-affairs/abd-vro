@@ -1,0 +1,11 @@
+/**
+ * Typical dependencies to implement open tracing.
+ */
+
+dependencies {
+    // Tracing support ==========================================================
+    api 'io.opentracing.brave:brave-opentracing'
+    api 'io.opentracing:opentracing-api'
+    api 'io.zipkin.reporter2:zipkin-reporter'
+    api 'io.zipkin.reporter2:zipkin-sender-okhttp3'
+}

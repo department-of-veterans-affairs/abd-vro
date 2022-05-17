@@ -1,0 +1,20 @@
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+}
+// Requires
+// id 'starter.java.container-conventions'
+
+
+docker {
+    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
+}
+
+dockerRun {
+    env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me'),
+            'JAVA_PROFILE': '-Dspring.profiles.include=docker'
+}
+

@@ -1,0 +1,24 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id 'java-library'
+    id "org.ajoberstar.grgit"
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+    id 'starter.java.deps-open-tracing-common-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
+//    id 'starter.java.doc-swagger-conventions'
+    id 'starter.java.test-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-jar-conventions'
+    id 'starter.java.versions-conventions'
+}
+

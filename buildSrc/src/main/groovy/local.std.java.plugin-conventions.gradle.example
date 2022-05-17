@@ -1,0 +1,23 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'groovy'
+    id 'java'
+    id 'java-library'
+    id 'java-gradle-plugin'
+    id "org.ajoberstar.grgit"
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-plugintarget-conventions'
+    id 'starter.java.config-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.deps-plugin-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.versions-conventions'
+}
+
