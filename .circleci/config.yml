@@ -25,7 +25,7 @@ jobs:
           name: Run tests in parallel # See: https://circleci.com/docs/2.0/parallelism-faster-jobs/
           # Use "./gradlew test" instead if tests are not run in parallel
           command: |
-            cd controller/src/test/java
+            cd app/src/test/java
             # Get list of classnames of tests that should run on this node
             CLASSNAMES=$(circleci tests glob "**/*.java" \
               | cut -c 1- | sed 's@/@.@g' \
@@ -35,7 +35,7 @@ jobs:
             # Format the arguments to "./gradlew test"
             GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
             echo "Prepared arguments for Gradle: $GRADLE_ARGS"
-            ./gradlew test $GRADLE_ARGS
+            ./gradlew app:test $GRADLE_ARGS
       # - run: ./gradlew check
       - save_cache:
           paths:
