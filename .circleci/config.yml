@@ -1,0 +1,25 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: docker.pkg.github.com/department-of-veterans-affairs/lighthouse-di-circleci-java17-image/lighthouse-di-circleci-java17-image:0.0.5
+        auth:
+          username: $GITHUB_USERNAME
+          password: $GITHUB_ACCESS_TOKEN
+    steps:
+      - checkout
+      - run: java --version
+      - run: ./gradlew build check
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: ./gradlew docker
+      - store_artifacts:
+          path: build
+      - run:
+          name: Run cis-benchmark tests
+          command: |
+            cd ..
+            git clone https://github.com/docker/docker-bench-security.git
+            cd docker-bench-security
+            sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5

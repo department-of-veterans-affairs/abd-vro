@@ -1,4 +1,8 @@
-# Automated Benefits Delivery - Virtual Regional Office
+[![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=adbf14b0367e25d8a01014669c255af742498dd3)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
+
+# ABD VRO
+
+ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
 
 Guided by the vision to get Veterans benefits *in minutes, not months*, the VA Automated Benefits Delivery team (within the Office of the CTO) seeks to use available data and automated processes to reduce the time that Veterans must wait for a claim decision. The Virtual Regional Office software uses existing health evidence data to help ratings adjudicators make decisions about disability claims.
 
@@ -20,13 +24,13 @@ Initially, there are 2 packages (container images):
 If more are created, go to the [VA Organization's Packages page](https://github.com/orgs/department-of-veterans-affairs/packages?tab=packages&q=abd-vro), search for the package, and  manually connect them to the repo.
 [LHDI info](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility)
 
-# LHDI's Java Starter Kit
+## CircleCI
 
-<div align="center">
-  <h1>ABD VRO</h1>
-  <a href="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main"><img src="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=...TBD..."></a>
-</div>
-<br />
+Followed [LHDI instructions](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#setting-up-a-ci-pipeline) and used [lighthouse-di-circleci-java17-image](https://github.com/department-of-veterans-affairs/lighthouse-di-circleci-java17-image).
+
+It runs similar operations as the `main.yml` Github Action.
+
+# LHDI's Java Starter Kit
 
 **In this README:**
 
