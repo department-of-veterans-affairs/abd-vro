@@ -49,10 +49,12 @@ jobs:
           version: 20.10.14
           docker_layer_caching: true
       - run: ./gradlew docker
+      - run:
+          name: Copy subproject build artifacts
+          command: |
+            for B in */build; do SUBDIR="build/`dirname "$B"`"; mkdir "$SUBDIR"; cp -r "$B" "$SUBDIR" ; done
       - store_artifacts:
           path: build
-      - store_artifacts:
-          path: */build
       - run:
           name: Run cis-benchmark tests
           command: |
