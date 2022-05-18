@@ -1,4 +1,6 @@
-# Automated Benefits Delivery - Virtual Regional Office
+[![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=adbf14b0367e25d8a01014669c255af742498dd3)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
+
+# ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
 
 Guided by the vision to get Veterans benefits *in minutes, not months*, the VA Automated Benefits Delivery team (within the Office of the CTO) seeks to use available data and automated processes to reduce the time that Veterans must wait for a claim decision. The Virtual Regional Office software uses existing health evidence data to help ratings adjudicators make decisions about disability claims.
 
@@ -21,12 +23,6 @@ If more are created, go to the [VA Organization's Packages page](https://github.
 [LHDI info](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility)
 
 # LHDI's Java Starter Kit
-
-<div align="center">
-  <h1>ABD VRO</h1>
-  <a href="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main"><img src="https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=...TBD..."></a>
-</div>
-<br />
 
 **In this README:**
 
