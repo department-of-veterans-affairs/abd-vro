@@ -28,6 +28,8 @@ If more are created, go to the [VA Organization's Packages page](https://github.
 
 Followed [LHDI instructions](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#setting-up-a-ci-pipeline) and used [lighthouse-di-circleci-java17-image](https://github.com/department-of-veterans-affairs/lighthouse-di-circleci-java17-image).
 
+Github Actions runs on the `main` branch.
+
 # LHDI's Java Starter Kit
 
 **In this README:**

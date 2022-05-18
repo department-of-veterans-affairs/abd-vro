@@ -8,3 +8,4 @@ jobs:
     steps:
       - checkout
       - run: java --version
+      - run: ./gradlew build check docker
