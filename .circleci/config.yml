@@ -1,3 +1,4 @@
+version: 2.1
 jobs:
   build:
     docker:
@@ -14,5 +15,10 @@ jobs:
           docker_layer_caching: true
       - run: ./gradlew docker
       - store_artifacts:
-          path: build/
-          destination: build
+          path: build
+      - name: Run cis-benchmark tests
+        run: |
+          cd ..
+          git clone https://github.com/docker/docker-bench-security.git
+          cd docker-bench-security
+          sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
