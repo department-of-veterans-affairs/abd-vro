@@ -3,8 +3,8 @@ jobs:
     docker:
       - image: docker.pkg.github.com/department-of-veterans-affairs/lighthouse-di-circleci-java17-image/lighthouse-di-circleci-java17-image:0.0.5
         auth:
-          username: va-abd-rrd
-          password: $GITHUB_PASSWORD
+          username: $GITHUB_USERNAME
+          password: $GITHUB_ACCESS_TOKEN
     steps:
       - checkout
       - run: java --version
