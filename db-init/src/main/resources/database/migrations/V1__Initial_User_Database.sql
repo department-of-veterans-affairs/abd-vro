@@ -39,6 +39,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA #[schemaname] GRANT ALL PRIVILEGES ON SEQUENC
 ALTER DEFAULT PRIVILEGES IN SCHEMA #[schemaname] GRANT ALL PRIVILEGES ON FUNCTIONS TO #[servicename];
 
 -- not sure if this is necessary
-GRANT ALL PRIVILEGES ON DATABASE #[adminname] TO #[flywayname];
-GRANT CONNECT ON DATABASE #[adminname] TO #[flywayname];
+-- GRANT ALL PRIVILEGES ON DATABASE #[adminname] TO #[flywayname];
+-- GRANT CONNECT ON DATABASE #[adminname] TO #[flywayname];
 

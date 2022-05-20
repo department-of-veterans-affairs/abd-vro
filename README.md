@@ -13,13 +13,15 @@ The overall goal for this project is to build automation to enrich Veteran claim
 
 ## Building
 
-[LHDI's Java Starter Kit](#lhdis-java-starter-kit) was used to populate this codebase (see PR #8) using Java (AdoptOpenJDK) 17 and Gradle 7.4.
+[LHDI's Java Starter Kit](#lhdis-java-starter-kit) was used to populate this codebase (see [PR #8](https://github.com/department-of-veterans-affairs/abd-vro/pull/8)) using Java (AdoptOpenJDK) 17 and Gradle 7.4.
+
+LHDI's [tools](https://animated-carnival-57b3e7f5.pages.github.io/ROADMAP/), [services](https://animated-carnival-57b3e7f5.pages.github.io/RELEASES/), and [support team](https://animated-carnival-57b3e7f5.pages.github.io/SUPPORT/).
 
 ## Packages (in Github Container Registry)
 
 Initially, there are 2 packages (container images):
-- abd-vro/abd_vro-db-init
-- abd-vro/abd_vro-app
+- `abd-vro/abd_vro-db-init`
+- `abd-vro/abd_vro-app`
 
 If more are created, go to the [VA Organization's Packages page](https://github.com/orgs/department-of-veterans-affairs/packages?tab=packages&q=abd-vro), search for the package, and  manually connect them to the repo.
 [LHDI info](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility)
@@ -29,6 +31,76 @@ If more are created, go to the [VA Organization's Packages page](https://github.
 Followed [LHDI instructions](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#setting-up-a-ci-pipeline) and used [lighthouse-di-circleci-java17-image](https://github.com/department-of-veterans-affairs/lighthouse-di-circleci-java17-image).
 
 It runs similar operations as the `main.yml` Github Action.
+
+## Lightkeeper
+
+Followed [Getting Started instructions](https://animated-carnival-57b3e7f5.pages.github.io/#getting-started) and [LHDI LightKeeper docs](https://animated-carnival-57b3e7f5.pages.github.io/installing-lightkeeper/).
+
+Next, `lightkeeper create clusterconfig nonprod > kube_config` (Step 4). Since `kubectl` is not installed on the GFE, transferred `kube_config` from GFE to development laptop (where `kubectl` is installed) and saved it as `~/.kube/config`. Note this config is for `nonprod`.
+
+Remember to specify the namespace (e.g., `--namespace va-abd-rrd-dev`) for all `kubectl` commands, e.g.:
+`kubectl get pods --namespace va-abd-rrd-dev` and `helm list --namespace va-abd-rrd-dev`
+
+## EKS/Kubernetes clusters
+From [LHDI kubernetes docs](https://animated-carnival-57b3e7f5.pages.github.io/kubernetes/), clusters:
+- ldx-nonprod-1
+- ldx-prod-1
+- ldx-preview-1
+
+Output from `lightkeeper list team va-abd-rrd`:
+
+```json
+{
+  "name": "va-abd-rrd",
+  "id": "...",
+  "description": "va-abd-rrd description",
+  "namespaces": [
+    {
+      "name": "va-abd-rrd-prod",
+      "cluster": "ldx-prod-1",
+      "cpu": 128,
+      "ram": "256G",
+      "provided": true,
+      "imageSigningEnabled": true
+    },
+    {
+      "name": "va-abd-rrd-qa",
+      "cluster": "ldx-nonprod-1",
+      "cpu": 128,
+      "ram": "256G",
+      "provided": true,
+      "imageSigningEnabled": false
+    },
+    {
+      "name": "va-abd-rrd-sandbox",
+      "cluster": "ldx-nonprod-1",
+      "cpu": 128,
+      "ram": "256G",
+      "provided": true,
+      "imageSigningEnabled": true
+    },
+    {
+      "name": "va-abd-rrd-dev",
+      "cluster": "ldx-nonprod-1",
+      "cpu": 128,
+      "ram": "256G",
+      "provided": true,
+      "imageSigningEnabled": false
+    }
+  ],
+  "scm": null,
+  "artifact_store": null,
+  "pipeline": null,
+  "registry": null,
+  "reporting": null,
+  "observer": null
+}
+```
+
+## DataDog
+
+* [LHDI dashboards](https://app.datadoghq.com/dashboard/lists?q=LHDI)
+* [lasershark's dashboard](https://app.datadoghq.com/dashboard/u8q-bbj-xs8/lasershark) - one of the [Alpha customers](https://animated-carnival-57b3e7f5.pages.github.io/#alpha-customers)
 
 # LHDI's Java Starter Kit
 
