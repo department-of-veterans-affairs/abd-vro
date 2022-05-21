@@ -91,7 +91,7 @@ readinessProbe:
 #   targetCPUUtilizationPercentage: 80
 
 postgres:
-  dbName: abd_vro
+  dbName: example
   secretName: postgres
   usernameKey: username
   passwordKey: password
