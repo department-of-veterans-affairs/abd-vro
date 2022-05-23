@@ -19,7 +19,7 @@ labels:
 images:
   registry: ghcr.io
   org: department-of-veterans-affairs
-  repo: abd_vro
+  repo: abd-vro
   app:
     imageName: abd_vro-app
     tag: latest
