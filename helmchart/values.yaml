@@ -19,7 +19,8 @@ labels:
 images:
   registry: ghcr.io
   org: department-of-veterans-affairs
-  repo: abd_vro
+  # Note the repo name uses a hypen, not underscore
+  repo: abd-vro
   app:
     imageName: abd_vro-app
     tag: latest

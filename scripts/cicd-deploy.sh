@@ -13,7 +13,10 @@ then
   IMAGE_TAG=$2
   VERSION=$2
 else
-  IMAGE_TAG=$GIT_SHA
+  # IMAGE_TAG should match the tags on the packages:
+  # - https://github.com/department-of-veterans-affairs/abd-vro/pkgs/container/abd-vro%2Fabd_vro-app
+  # - https://github.com/department-of-veterans-affairs/abd-vro/pkgs/container/abd-vro%2Fabd_vro-db-init
+  IMAGE_TAG=${GIT_SHA:0:7}
 fi
 
 : ${TEAMNAME:=va-abd-rrd}
