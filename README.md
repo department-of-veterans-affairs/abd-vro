@@ -42,10 +42,24 @@ Remember to specify the namespace (e.g., `--namespace va-abd-rrd-dev`) for all `
 `kubectl get pods --namespace va-abd-rrd-dev` and `helm list --namespace va-abd-rrd-dev`
 
 ## EKS/Kubernetes clusters
-From [LHDI kubernetes docs](https://animated-carnival-57b3e7f5.pages.github.io/kubernetes/), clusters:
-- ldx-nonprod-1
-- ldx-prod-1
-- ldx-preview-1
+From [LHDI kubernetes docs](https://animated-carnival-57b3e7f5.pages.github.io/kubernetes/), clusters are:
+- ldx-nonprod-1 (DEV, SANDBOX, QA)
+- ldx-prod-1 (PROD)
+- ldx-preview-1 (PREVIEW)
+
+[Associated gateways](https://animated-carnival-57b3e7f5.pages.github.io/service-mesh/routing-traffic/#environment-gateways)
+- ldx-nonprod (NONPROD)
+- ldx-nonprod-1 (NONPROD1)
+- ldx-dev (DEV)
+- ldx-prod-1 (PROD1)
+- ldx-preview-1 (PREVIEW1) (no gateway)
+- ldx-mapi-1 (MAPI-1)
+
+DNS:
+- dev.lighthouse.va.gov
+- sandbox.lighthouse.va.gov
+- qa.lighthouse.va.gov
+- (PROD) api.lighthouse.va.gov
 
 Output from `lightkeeper list team va-abd-rrd`:
 
@@ -236,7 +250,7 @@ curl localhost:8081/health
 ```
 
 ```bash
-curl localhost:8081/info
+curl localhost:8081/actuator/info
 
 {
     "app": {
