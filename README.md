@@ -36,7 +36,7 @@ It runs similar operations as the `main.yml` Github Action.
 
 Followed [Getting Started instructions](https://animated-carnival-57b3e7f5.pages.github.io/#getting-started) and [LHDI LightKeeper docs](https://animated-carnival-57b3e7f5.pages.github.io/installing-lightkeeper/).
 
-Next, `lightkeeper create clusterconfig nonprod > kube_config` (Step 4). Since `kubectl` is not installed on the GFE, transferred `kube_config` from GFE to development laptop (where `kubectl` is installed) and saved it as `~/.kube/config`. Note this config is for `nonprod`.
+Next, run `lightkeeper create clusterconfig nonprod > kube_config` (Step 4). Since `kubectl` is not installed on the GFE, transfer `kube_config` from GFE to development laptop (where `kubectl` is installed) and save it as `~/.kube/config`. Note this config is for `nonprod`.
 
 Remember to specify the namespace (e.g., `--namespace va-abd-rrd-dev`) for all `kubectl` commands, e.g.:
 `kubectl get pods --namespace va-abd-rrd-dev` and `helm list --namespace va-abd-rrd-dev`
@@ -115,6 +115,42 @@ Output from `lightkeeper list team va-abd-rrd`:
 
 * [LHDI dashboards](https://app.datadoghq.com/dashboard/lists?q=LHDI)
 * [lasershark's dashboard](https://app.datadoghq.com/dashboard/u8q-bbj-xs8/lasershark) - one of the [Alpha customers](https://animated-carnival-57b3e7f5.pages.github.io/#alpha-customers)
+
+## Application Developers
+
+Open project in an IDE (like IntelliJ).
+
+Initial things to review:
+* `settings.gradle`: includes subdirectories as Gradle subprojects
+* `build.gradle` in the project root, `api`, and `app` subdirectories
+* `buildSrc` subdirectory: LHDI Starter Kit provides [Gradle plugins](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#buildsrc-plugins)
+* http://localhost:8080/swagger [OpenAPI spec](https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/explore-features/#openapi-spec)
+
+### Gradle Subproject Dependencies
+
+* `app` - main `@SpringBootApplication`
+  * `api` - annotated API, used to populate OpenAPI doc; defines request and response POJOs
+  * `controller` - defines `@RestController` classes (which implement api classes) and `@Mapper` classes (which convert `service.model` objects from/to request/response POJOs)
+    * `api` -
+    * `service:provider,spi` -
+  * `persistence:model` - defines DB `@Entity` classes and DB query methods (the implementation of which is in `persistence:impl`)
+  * `persistence:impl` - implements DB `Repository` interfaces
+    * `persistence:model` -
+  * `service:provider` - implements `service:spi`; persists `service.model` objects to/from DB using `@Entity` classes
+    * `persistence:model` -
+    * `service:spi` - used by controllers
+    * `tests-data-factory` - provides factories used in tests
+  * `service:spi` -
+
+### Docker containers
+
+The `app` docker (see `dockerComposeUp` task in `app/build.gradle`) depends on [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which run and exit:
+- `container-init`: `init_pg.sql`
+- `db-init`: flyway DB migrations
+- `opa-init`: rego policies and permissions
+
+
+
 
 # LHDI's Java Starter Kit
 
