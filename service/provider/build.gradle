@@ -18,12 +18,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // Apache Camel
-    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
-    implementation "org.apache.camel.springboot:camel-jms-starter:${camelVersion}"
-    implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camelVersion}"
-    implementation "org.apache.camel.springboot:camel-servlet-starter:${camelVersion}"
-    implementation "org.apache.camel.springboot:camel-jackson-starter:${camelVersion}"
-    implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
     // Needed to send POST to external API
-    implementation "org.apache.camel.springboot:camel-http-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-http-starter:${camel_version}"
 }
