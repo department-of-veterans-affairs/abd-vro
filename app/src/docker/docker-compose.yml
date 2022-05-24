@@ -24,6 +24,18 @@ services:
   #     - internal
   #     - external
 
+  rabbitmq1:
+    image: rabbitmq:3
+    hostname: rabbitmq1
+    expose:
+      - "5672"
+#    volumes:
+#      - mqdata:/var/lib/??/data
+    networks:
+      - internal
+    ports:
+      - "5672:5672"
+
   postgres1:
     image: postgres
     hostname: postgres1
@@ -81,6 +93,7 @@ services:
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
     depends_on:
       - postgres1
+      - rabbitmq1
       - db-init
     networks:
       - internal
