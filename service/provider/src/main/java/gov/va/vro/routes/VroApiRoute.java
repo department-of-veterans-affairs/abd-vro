@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.core.MediaType;
 
 @Component
-public class RrdApiRoute extends RouteBuilder {
+public class VroApiRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     System.out.println(getClass() + ": " + restConfiguration());
@@ -85,7 +85,7 @@ public class RrdApiRoute extends RouteBuilder {
         .setBody(simple("${header.id}"))
         // subscribe on queue, waiting for specified claim to complete
         .pollEnrich(
-            simple("seda:claim-rrd-processed-${header.id}?multipleConsumers=true"),
+            simple("seda:claim-vro-processed-${header.id}?multipleConsumers=true"),
             -1,
             new ChooseSecondExchangeStrategy(),
             false)
@@ -94,7 +94,7 @@ public class RrdApiRoute extends RouteBuilder {
         //                        String headerId=exchange.getMessage().getHeader("id",
         // String.class);
         //                        Endpoint endpoint =
-        // exchange.getContext().getEndpoint("seda:claim-rrd-processed?multipleConsumers=true");
+        // exchange.getContext().getEndpoint("seda:claim-vro-processed?multipleConsumers=true");
         //                        PollingConsumer consumer = endpoint.createPollingConsumer();
         //                        Payload body=null;
         //                        do {
@@ -109,8 +109,8 @@ public class RrdApiRoute extends RouteBuilder {
         .convertBodyTo(Payload.class)
         .endRest();
 
-    from("seda:claim-rrd-processed?multipleConsumers=true")
-        .log(">>>>>>>>> RRD processed! claim: ${body.toString()}");
+    from("seda:claim-vro-processed?multipleConsumers=true")
+        .log(">>>>>>>>> VRO processed! claim: ${body.toString()}");
 
     rest("/claim")
         // Declares API expectations in results of /api-doc endpoint

@@ -23,7 +23,7 @@ public class ClaimProcessorA {
     results.put("bp_diastolic", 80);
     results.put("vro_pdf_path", "gov/va/vro/hypertension/" + claim.getSubmission_id() + ".pdf");
 
-    claimService.updateStatus(claim.getUuid(), ClaimStatus.DONE_RRD);
+    claimService.updateStatus(claim.getUuid(), ClaimStatus.DONE_VRO);
     return new Payload(claim.getSubmission_id(), "Success", results);
   }
 }

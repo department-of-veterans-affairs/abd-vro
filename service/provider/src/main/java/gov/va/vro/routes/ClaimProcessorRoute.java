@@ -85,7 +85,7 @@ public class ClaimProcessorRoute extends RouteBuilder {
       else if (body instanceof byte[])
         submission_id = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmission_id();
       else throw new IllegalArgumentException("body " + body.getClass());
-      return "seda:claim-rrd-processed-" + submission_id + "?" + SEDA_ASYNC_OPTION;
+      return "seda:claim-vro-processed-" + submission_id + "?" + SEDA_ASYNC_OPTION;
     }
 
     // no more so return null
