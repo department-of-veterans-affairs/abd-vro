@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j // lombok creates our logger as 'log' for us
 @SpringBootApplication(
-    scanBasePackages = {"gov.va.starter.example", "gov.va.starter.boot", "gov.va.vro"})
+    scanBasePackages = {"gov.va.vro", "gov.va.starter.example", "gov.va.starter.boot"})
 public class ExampleApplication {
 
   /**
