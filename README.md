@@ -149,8 +149,10 @@ The `app` docker (see `dockerComposeUp` task in `app/build.gradle`) depends on [
 - `db-init`: flyway DB migrations
 - `opa-init`: rego policies and permissions
 
+### Apache Camel
 
-
+Using [Apache Camel 3.11.0](https://camel.apache.org/releases/release-3.11.0/), which uses Spring Boot 2.5.3.
+Apache Camel 3.13 through 3.15 are not compatible with `gov.va.starter`'s current Spring Boot version (2.5.2).
 
 # LHDI's Java Starter Kit
 

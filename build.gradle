@@ -48,7 +48,8 @@ plugins {
 }
 
 ext {
-    jacoco_enforce_violations = true
+    // temporarily disable test code coverage enforcement
+    jacoco_enforce_violations = false
     jacoco_minimum_coverage = 0.8
     codeModules = [':app',
                    ':api',
