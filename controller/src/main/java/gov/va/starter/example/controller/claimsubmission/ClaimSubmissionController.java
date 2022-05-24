@@ -43,6 +43,7 @@ public class ClaimSubmissionController implements ClaimSubmissionResource {
       ClaimSubmissionService manager,
       ClaimSubmissionRequestMapper mapper,
       EntityLifecycleNotifier notifier) {
+    log.info("ClaimSubmissionController: " + manager);
     this.manager = manager;
     this.mapper = mapper;
     this.notifier = notifier;
