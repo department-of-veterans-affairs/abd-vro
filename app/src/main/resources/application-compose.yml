@@ -8,7 +8,9 @@ spring:
       username: example_service
       password: also-not-the-service-password
   jpa:
-    generate-ddl: false
+    # temporarily true so that tables are created if they don't exist
+    # Prefer to create table in as a flyway migration
+    generate-ddl: true
     hibernate:
       ddl-auto: none
   kafka:

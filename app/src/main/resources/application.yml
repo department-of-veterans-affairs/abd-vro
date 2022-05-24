@@ -74,7 +74,9 @@ spring:
       password: localT3st!
   jpa:
     show-sql: false
-    generate-ddl: false
+    # temporarily true so that tables are created if they don't exist
+    # Prefer to create table in as a flyway migration
+    generate-ddl: true
     hibernate:
       ddl-auto: create
       naming:
@@ -172,3 +174,8 @@ starter:
 #     document-path: authz
 #     instance: http://opa:8181
 #     endpoints-whitelist: /swagger*/**,/v3/api-docs/**,/liveness,/readiness,/health/**
+
+spring.config.import: >
+  conf-camel.yml,
+  conf-camel-rabbitmq.yml,
+#  conf-postgres.yml
