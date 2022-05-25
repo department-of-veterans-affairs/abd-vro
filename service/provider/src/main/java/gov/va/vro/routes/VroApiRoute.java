@@ -1,7 +1,5 @@
 package gov.va.vro.routes;
 
-import static gov.va.vro.AppConfig.SEDA_ASYNC_OPTION;
-
 import gov.va.vro.model.Claim;
 import gov.va.vro.model.Payload;
 import gov.va.vro.services.ClaimProcessorA;
@@ -9,18 +7,20 @@ import gov.va.vro.services.ClaimService;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
 
 @Component
+/** Not for production use */
 public class VroApiRoute extends RouteBuilder {
+  @Autowired
+  private CamelUtils camelUtils;
+
   @Override
   public void configure() throws Exception {
     System.out.println(getClass() + ": " + restConfiguration());
-
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
-    from("seda:addClaim").log(">>3> ${body.getClass()}").bean(ClaimService.class, "addClaim");
 
     // Could be replaced with
     // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-AddingREST
@@ -37,13 +37,8 @@ public class VroApiRoute extends RouteBuilder {
         .route()
         .routeId("rest-POST-claim")
         .tracing()
-        .log(">>1> ${body.getClass()}")
-        .to("seda:addClaim") // save Claim to DB and assign UUID before anything else
-        .recipientList(
-            constant(
-                "seda:logToFile?" + SEDA_ASYNC_OPTION + ",seda:claim-router?" + SEDA_ASYNC_OPTION))
-        .parallelProcessing()
-        .log(">>5> ${body.toString()}")
+        //        .to("seda:postClaim")
+        .bean(CamelEntrance.class, "postClaim")
         .endRest()
 
         // GET
@@ -89,66 +84,23 @@ public class VroApiRoute extends RouteBuilder {
             -1,
             new ChooseSecondExchangeStrategy(),
             false)
-        // This works too:
-        //                    .process(exchange -> {
-        //                        String headerId=exchange.getMessage().getHeader("id",
-        // String.class);
-        //                        Endpoint endpoint =
-        // exchange.getContext().getEndpoint("seda:claim-vro-processed?multipleConsumers=true");
-        //                        PollingConsumer consumer = endpoint.createPollingConsumer();
-        //                        Payload body=null;
-        //                        do {
-        //                            Exchange existingExchange = consumer.receive();
-        //                            body = existingExchange.getMessage().getBody(Payload.class);
-        //                            System.out.println("submission_id is
-        // "+body.getSubmission_id());
-        //                        } while(!headerId.equals(body.getSubmission_id()));
-        //                        exchange.getMessage().setBody(body);
-        //                    })
         .log(">>5> diff status?: ${body}")
         .convertBodyTo(Payload.class)
         .endRest();
 
-    from("seda:claim-vro-processed?multipleConsumers=true")
+    camelUtils.multiConsumerSedaEndpoint("seda:claim-vro-processed");
+    from("seda:claim-vro-processed")
         .log(">>>>>>>>> VRO processed! claim: ${body.toString()}");
-
-    rest("/claim")
-        // Declares API expectations in results of /api-doc endpoint
-        .consumes("application/json")
-        .produces("application/json")
-
-        // POST
-        .post("processA/")
-        .description("Process claim type A")
-        .type(Claim.class)
-        .outType(Payload.class)
-        .to("direct:claimTypeA")
-
-        // testing with GET
-        .get("processA/")
-        .description("Trigger claim type A")
-        .outType(Payload.class)
-        //                .to("direct:claimTypeA")
-        .route()
-        .routeId("inject-claim")
-        .bean(ClaimProcessorA.class, "claimFactory")
-        .to("direct:claimTypeA")
-        .endRest();
   }
 
   public class ChooseSecondExchangeStrategy implements AggregationStrategy {
 
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-      System.out.println("------------- ChooseSecondExchangeStrategy");
-      if (newExchange == null) {
-        return oldExchange;
-      } else {
-        return newExchange;
-      }
-      //            Object oldBody = oldExchange.getIn().getBody();
-      //            Object newBody = newExchange.getIn().getBody();
-      //            oldExchange.getIn().setBody(oldBody + ":" + newBody);
-      //            return oldExchange;
+      Object newBody = newExchange.getIn().getBody();
+      System.out.println("------------- ChooseSecondExchangeStrategy: "+newBody);
+      if (newExchange == null) return oldExchange;
+
+      return newExchange;
     }
   }
 }

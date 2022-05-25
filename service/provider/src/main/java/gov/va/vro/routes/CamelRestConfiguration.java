@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+/** Not for production use */
 @Component
 class CamelRestConfiguration extends RouteBuilder {
 

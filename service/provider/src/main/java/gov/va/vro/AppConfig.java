@@ -25,8 +25,6 @@ import java.util.Set;
 @EnableJpaRepositories({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
 @EntityScan({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
 public class AppConfig {
-  public static final String SEDA_ASYNC_OPTION = "waitForTaskToComplete=Never";
-
   @Value("${vro.context_path}")
   public String contextPath;
 

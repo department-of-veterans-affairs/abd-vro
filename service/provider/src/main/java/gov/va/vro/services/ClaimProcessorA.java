@@ -13,10 +13,6 @@ public class ClaimProcessorA {
 
   @Autowired ClaimService claimService;
 
-  public Claim claimFactory() {
-    return Claim.builder().submission_id("subm1").claimant_id("vet2").build();
-  }
-
   public Payload process(Claim claim) {
     HashMap<String, Object> results = new HashMap<String, Object>();
     results.put("bp_systolic", 120);

@@ -1,12 +1,12 @@
 package gov.va.vro.routes;
 
-import static gov.va.vro.AppConfig.SEDA_ASYNC_OPTION;
-
 import gov.va.vro.DtoConverter;
+import gov.va.vro.model.Claim;
 import gov.va.vro.model.Payload;
 import gov.va.vro.services.ClaimProcessorA;
 import org.apache.camel.ExchangeProperties;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Component
 public class ClaimProcessorRoute extends RouteBuilder {
+  @Autowired private CamelUtils camelUtils;
 
   @Override
   public void configure() throws Exception {
@@ -42,6 +43,8 @@ public class ClaimProcessorRoute extends RouteBuilder {
     //        .end();
   }
 
+  private static final String SEDA_ASYNC_OPTION = "?waitForTaskToComplete=Never";
+
   /**
    * Use this method to compute dynamic where we should route next.
    *
@@ -69,7 +72,7 @@ public class ClaimProcessorRoute extends RouteBuilder {
       String claimType = (String) props.get("contention_type");
       switch (claimType) {
         case "A":
-          return "seda:claimType" + claimType; // wait for result // + "?" + SEDA_ASYNC_OPTION;
+          return "seda:claimType" + claimType; // wait for result // + SEDA_ASYNC_OPTION;
         case "B": // Groovy
         case "C": // Ruby in separate process
         case "D": // JRuby
@@ -84,8 +87,9 @@ public class ClaimProcessorRoute extends RouteBuilder {
       if (body instanceof Payload) submission_id = ((Payload) body).getSubmission_id();
       else if (body instanceof byte[])
         submission_id = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmission_id();
+      else if (body instanceof Claim) submission_id = ((Claim) body).getSubmission_id();
       else throw new IllegalArgumentException("body " + body.getClass());
-      return "seda:claim-vro-processed-" + submission_id + "?" + SEDA_ASYNC_OPTION;
+      return "seda:claim-vro-processed-" + submission_id + SEDA_ASYNC_OPTION;
     }
 
     // no more so return null
