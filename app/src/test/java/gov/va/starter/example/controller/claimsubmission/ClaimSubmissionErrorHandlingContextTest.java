@@ -77,13 +77,19 @@ class ClaimSubmissionErrorHandlingContextTest {
           defaultClaimSubmission.getUserName(),
           defaultClaimSubmission.getPii(),
           defaultClaimSubmission.getFirstName(),
-          defaultClaimSubmission.getLastName());
+          defaultClaimSubmission.getLastName(),
+          defaultClaimSubmission.getSubmissionId(),
+          defaultClaimSubmission.getClaimantId(),
+          defaultClaimSubmission.getContentionType());
   private ClaimSubmission model =
       new ClaimSubmission(
           defaultClaimSubmission.getUserName(),
           defaultClaimSubmission.getPii(),
           defaultClaimSubmission.getFirstName(),
-          defaultClaimSubmission.getLastName());
+          defaultClaimSubmission.getLastName(),
+          defaultClaimSubmission.getSubmissionId(),
+          defaultClaimSubmission.getClaimantId(),
+          defaultClaimSubmission.getContentionType());
 
   @Test
   void whenResourceNotRetrieved_thenReturns404() throws Exception {

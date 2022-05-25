@@ -11,6 +11,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,9 +24,17 @@ import lombok.Setter;
 public class ClaimSubmission {
 
   private String id;
+  @NonNull private final Instant createdAt = Instant.now();
 
   @NonNull private String userName;
   @NonNull private String pii;
   @NonNull private String firstName;
   @NonNull private String lastName;
+
+  @NonNull private String submissionId;
+  @NonNull private String claimantId;
+
+  @NonNull private String contentionType;
+
+  @Builder.Default private ClaimStatus status = ClaimStatus.CREATED;
 }

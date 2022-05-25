@@ -28,4 +28,9 @@ public class ClaimSubmissionData {
   @NonNull private String firstName;
   @NonNull private String lastName;
   private String fullName;
+
+  @NonNull private String submissionId;
+  @NonNull private String claimantId;
+
+  @NonNull private String contentionType;
 }

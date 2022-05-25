@@ -1,19 +1,11 @@
 package gov.va.starter.example.persistence.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import gov.va.vro.model.ClaimStatus;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.Instant;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 
 @Entity
@@ -36,8 +28,18 @@ public class ClaimSubmissionEntity {
   @XmlAttribute
   private String id;
 
+  @NonNull private final Instant createdAt = Instant.now();
+
   @NonNull private String userName;
   @NonNull private String pii;
   @NonNull private String firstName;
   @NonNull private String lastName;
+
+  @NonNull private String submissionId;
+  @NonNull private String claimantId;
+
+  @NonNull private String contentionType;
+
+  @Enumerated(EnumType.STRING)
+  private ClaimStatus status = ClaimStatus.CREATED;
 }

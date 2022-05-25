@@ -39,7 +39,10 @@ public class ClaimSubmissionEntityRepositoryTest {
             defaultClaimSubmissionDataCollection.get(0).getUserName(),
             defaultClaimSubmissionDataCollection.get(0).getPii(),
             defaultClaimSubmissionDataCollection.get(0).getFirstName(),
-            defaultClaimSubmissionDataCollection.get(0).getLastName());
+            defaultClaimSubmissionDataCollection.get(0).getLastName(),
+            defaultClaimSubmissionDataCollection.get(0).getSubmissionId(),
+            defaultClaimSubmissionDataCollection.get(0).getClaimantId(),
+            defaultClaimSubmissionDataCollection.get(0).getContentionType());
   }
 
   /**
@@ -54,14 +57,20 @@ public class ClaimSubmissionEntityRepositoryTest {
             defaultClaimSubmissionDataCollection.get(1).getUserName(),
             defaultClaimSubmissionDataCollection.get(1).getPii(),
             defaultClaimSubmissionDataCollection.get(1).getFirstName(),
-            defaultClaimSubmissionDataCollection.get(1).getLastName());
+            defaultClaimSubmissionDataCollection.get(1).getLastName(),
+            defaultClaimSubmissionDataCollection.get(0).getSubmissionId(),
+            defaultClaimSubmissionDataCollection.get(0).getClaimantId(),
+            defaultClaimSubmissionDataCollection.get(0).getContentionType());
     modelEntityRepository.save(agentSmith);
     ClaimSubmissionEntity maryQuiteContrary =
         new ClaimSubmissionEntity(
             defaultClaimSubmissionDataCollection.get(2).getUserName(),
             defaultClaimSubmissionDataCollection.get(2).getPii(),
             defaultClaimSubmissionDataCollection.get(2).getFirstName(),
-            defaultClaimSubmissionDataCollection.get(2).getLastName());
+            defaultClaimSubmissionDataCollection.get(2).getLastName(),
+            defaultClaimSubmissionDataCollection.get(0).getSubmissionId(),
+            defaultClaimSubmissionDataCollection.get(0).getClaimantId(),
+            defaultClaimSubmissionDataCollection.get(0).getContentionType());
     modelEntityRepository.save(maryQuiteContrary);
 
     return result;

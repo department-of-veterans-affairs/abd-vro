@@ -1,7 +1,7 @@
 package gov.va.vro.routes;
 
+import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.DtoConverter;
-import gov.va.vro.model.Claim;
 import gov.va.vro.model.Payload;
 import gov.va.vro.services.ClaimProcessorA;
 import org.apache.camel.ExchangeProperties;
@@ -83,13 +83,14 @@ public class ClaimProcessorRoute extends RouteBuilder {
           return null;
       }
     } else if (invoked == 2) {
-      String submission_id;
-      if (body instanceof Payload) submission_id = ((Payload) body).getSubmission_id();
+      String submissionId;
+      if (body instanceof Payload) submissionId = ((Payload) body).getSubmissionId();
       else if (body instanceof byte[])
-        submission_id = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmission_id();
-      else if (body instanceof Claim) submission_id = ((Claim) body).getSubmission_id();
+        submissionId = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmissionId();
+      else if (body instanceof ClaimSubmissionEntity)
+        submissionId = ((ClaimSubmissionEntity) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());
-      return "seda:claim-vro-processed-" + submission_id + SEDA_ASYNC_OPTION;
+      return "seda:claim-vro-processed-" + submissionId + SEDA_ASYNC_OPTION;
     }
 
     // no more so return null

@@ -18,6 +18,7 @@ import java.util.Optional;
 public interface ClaimSubmissionRequestMapper {
 
   @Mapping(constant = "UNKNOWN_ID", target = "id")
+  @Mapping(target = "status", ignore = true)
   ClaimSubmission toModel(ClaimSubmissionRequest request);
 
   @Mapping(constant = "UNKNOWN_ID", target = "id")

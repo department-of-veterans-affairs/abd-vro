@@ -21,6 +21,7 @@ import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import gov.va.starter.example.subclaimsubmission.factory.SubClaimSubmissionFactory;
 import gov.va.starter.example.subclaimsubmission.model.SubClaimSubmissionData;
+import gov.va.vro.service.provider.CamelEntrance;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,7 @@ public class ClaimSubmissionControllerTest {
 
   private ClaimSubmissionController controller;
 
+  @Mock private CamelEntrance camelEntrance;
   @Mock private ClaimSubmissionService manager;
   @Mock private ClaimSubmissionRequestMapper mapper;
   private EntityLifecycleNotifier notifier =
@@ -95,7 +97,7 @@ public class ClaimSubmissionControllerTest {
   @BeforeEach
   public void setup() {
 
-    controller = new ClaimSubmissionController(manager, mapper, notifier);
+    controller = new ClaimSubmissionController(camelEntrance, manager, mapper, notifier);
 
     defaultResourceData = resourceFactory.createBySpec(DEFAULT_SPEC);
     bogusResourceData = resourceFactory.createBySpec("bogus");
@@ -110,7 +112,10 @@ public class ClaimSubmissionControllerTest {
             defaultResourceData.getUserName(),
             defaultResourceData.getPii(),
             defaultResourceData.getFirstName(),
-            defaultResourceData.getLastName());
+            defaultResourceData.getLastName(),
+            defaultResourceData.getSubmissionId(),
+            defaultResourceData.getClaimantId(),
+            defaultResourceData.getContentionType());
     resource = real.toModel(request);
     output =
         new ClaimSubmission(
@@ -118,7 +123,11 @@ public class ClaimSubmissionControllerTest {
             resource.getUserName(),
             resource.getPii(),
             resource.getFirstName(),
-            resource.getLastName());
+            resource.getLastName(),
+            resource.getSubmissionId(),
+            resource.getClaimantId(),
+            resource.getContentionType(),
+            resource.getStatus());
     response = real.toClaimSubmissionResponse(output);
     optionalResponse = Optional.of(response);
     optionalOutput = Optional.of(output);

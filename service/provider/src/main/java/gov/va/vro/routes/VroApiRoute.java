@@ -1,8 +1,8 @@
 package gov.va.vro.routes;
 
-import gov.va.vro.model.Claim;
+import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.model.Payload;
-import gov.va.vro.services.ClaimProcessorA;
+import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.services.ClaimService;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
@@ -15,8 +15,7 @@ import javax.ws.rs.core.MediaType;
 @Component
 /** Not for production use */
 public class VroApiRoute extends RouteBuilder {
-  @Autowired
-  private CamelUtils camelUtils;
+  @Autowired private CamelUtils camelUtils;
 
   @Override
   public void configure() throws Exception {
@@ -32,8 +31,8 @@ public class VroApiRoute extends RouteBuilder {
         // POST
         .post("/")
         .description("Add claim")
-        .type(Claim.class)
-        .outType(Claim.class)
+        .type(ClaimSubmissionEntity.class)
+        .outType(ClaimSubmissionEntity.class)
         .route()
         .routeId("rest-POST-claim")
         .tracing()
@@ -44,7 +43,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/")
         .description("Get all claims")
-        .outType(Claim[].class)
+        .outType(ClaimSubmissionEntity[].class)
         .route()
         .routeId("claims-getAll")
         .bean(ClaimService.class, "getAllClaims")
@@ -53,7 +52,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/{id}")
         .description("Get claim")
-        .outType(Claim.class)
+        .outType(ClaimSubmissionEntity.class)
         .route()
         .routeId("claims-getById")
         // https://camel.apache.org/components/3.14.x/languages/simple-language.html#_variables
@@ -65,7 +64,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET details
         .get("/details/{id}")
         .description("Get claim")
-        .outType(Claim.class)
+        .outType(ClaimSubmissionEntity.class)
         .route()
         .routeId("claimDetails-getById")
         .bean(ClaimService.class, "claimDetail")
@@ -74,7 +73,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/{id}/status-diff-from/{status}")
         .description("Returns the claim when it changes from specified 'status'")
-        .outType(Claim.class)
+        .outType(ClaimSubmissionEntity.class)
         .route()
         .routeId("claim-status-change")
         .setBody(simple("${header.id}"))
@@ -89,15 +88,14 @@ public class VroApiRoute extends RouteBuilder {
         .endRest();
 
     camelUtils.multiConsumerSedaEndpoint("seda:claim-vro-processed");
-    from("seda:claim-vro-processed")
-        .log(">>>>>>>>> VRO processed! claim: ${body.toString()}");
+    from("seda:claim-vro-processed").log(">>>>>>>>> VRO processed! claim: ${body.toString()}");
   }
 
   public class ChooseSecondExchangeStrategy implements AggregationStrategy {
 
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
       Object newBody = newExchange.getIn().getBody();
-      System.out.println("------------- ChooseSecondExchangeStrategy: "+newBody);
+      System.out.println("------------- ChooseSecondExchangeStrategy: " + newBody);
       if (newExchange == null) return oldExchange;
 
       return newExchange;
