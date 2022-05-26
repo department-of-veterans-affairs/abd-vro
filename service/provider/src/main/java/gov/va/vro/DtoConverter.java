@@ -48,10 +48,8 @@ public class DtoConverter extends TypeConverterSupport {
       //            System.err.println("targetClass: " + targetClass + " value: " +
       // value.getClass());
       if (dtoClasses.contains(value.getClass())) {
-        if(targetClass == byte[].class)
-          return (T) toByteArray(value);
-        if(targetClass == InputStream.class)
-          return (T) toInputStream(value);
+        if (targetClass == byte[].class) return (T) toByteArray(value);
+        if (targetClass == InputStream.class) return (T) toInputStream(value);
       } else if (value.getClass() == byte[].class) {
         return toPojo(targetClass, (byte[]) value);
       }
