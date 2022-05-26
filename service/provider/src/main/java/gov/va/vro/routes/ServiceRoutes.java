@@ -14,7 +14,12 @@ public class ServiceRoutes extends RouteBuilder {
     camelUtils.asyncSedaEndpoint("seda:logToFile");
     camelUtils.asyncSedaEndpoint("seda:claim-router");
 
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
+    from("seda:logToFile")
+        .marshal()
+        .json()
+        .log(">>2> ${body.getClass()}")
+        //        .setBody(simple(">>2> ${body.getClass()}"))
+        .to("file://target/post");
 
     from("direct:postClaim")
         .log(">>1> ${body.getClass()}")

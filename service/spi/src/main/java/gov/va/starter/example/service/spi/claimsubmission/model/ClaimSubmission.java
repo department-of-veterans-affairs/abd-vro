@@ -1,26 +1,21 @@
 package gov.va.starter.example.service.spi.claimsubmission.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
-@AllArgsConstructor
+// https://stackoverflow.com/questions/58171839/using-lombok-requiredargsconstructor-as-jsoncreator
+@RequiredArgsConstructor(onConstructor_ = {@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)})
+@AllArgsConstructor(onConstructor_ = {@JsonIgnore})
 @EqualsAndHashCode
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@ToString(includeFieldNames = true)
+// @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ClaimSubmission {
 
   private String id;

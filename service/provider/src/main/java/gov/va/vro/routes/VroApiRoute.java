@@ -1,6 +1,6 @@
 package gov.va.vro.routes;
 
-import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.services.ClaimService;
@@ -31,8 +31,8 @@ public class VroApiRoute extends RouteBuilder {
         // POST
         .post("/")
         .description("Add claim")
-        .type(ClaimSubmissionEntity.class)
-        .outType(ClaimSubmissionEntity.class)
+        .type(ClaimSubmission.class)
+        .outType(ClaimSubmission.class)
         .route()
         .routeId("rest-POST-claim")
         .tracing()
@@ -43,7 +43,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/")
         .description("Get all claims")
-        .outType(ClaimSubmissionEntity[].class)
+        .outType(ClaimSubmission[].class)
         .route()
         .routeId("claims-getAll")
         .bean(ClaimService.class, "getAllClaims")
@@ -52,7 +52,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/{id}")
         .description("Get claim")
-        .outType(ClaimSubmissionEntity.class)
+        .outType(ClaimSubmission.class)
         .route()
         .routeId("claims-getById")
         // https://camel.apache.org/components/3.14.x/languages/simple-language.html#_variables
@@ -64,7 +64,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET details
         .get("/details/{id}")
         .description("Get claim")
-        .outType(ClaimSubmissionEntity.class)
+        .outType(ClaimSubmission.class)
         .route()
         .routeId("claimDetails-getById")
         .bean(ClaimService.class, "claimDetail")
@@ -73,7 +73,7 @@ public class VroApiRoute extends RouteBuilder {
         // GET
         .get("/{id}/status-diff-from/{status}")
         .description("Returns the claim when it changes from specified 'status'")
-        .outType(ClaimSubmissionEntity.class)
+        .outType(ClaimSubmission.class)
         .route()
         .routeId("claim-status-change")
         .setBody(simple("${header.id}"))

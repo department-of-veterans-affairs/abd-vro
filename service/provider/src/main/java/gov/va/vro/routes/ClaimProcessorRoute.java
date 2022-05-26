@@ -1,6 +1,6 @@
 package gov.va.vro.routes;
 
-import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.DtoConverter;
 import gov.va.vro.model.Payload;
 import gov.va.vro.services.ClaimProcessorA;
@@ -22,7 +22,7 @@ public class ClaimProcessorRoute extends RouteBuilder {
         .routeId("routing-claim")
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
-        .setProperty("contention_type", simple("${body.contention_type}"))
+        .setProperty("contentionType", simple("${body.contentionType}"))
         //                .tracing()
         .dynamicRouter(method(ClaimProcessorRoute.class, "route"));
 
@@ -69,7 +69,11 @@ public class ClaimProcessorRoute extends RouteBuilder {
     props.put("invoked", invoked);
 
     if (invoked == 1) {
-      String claimType = (String) props.get("contention_type");
+      String claimType = (String) props.get("contentionType");
+      if (claimType == null) {
+        System.err.println("ERROR: null contentionType");
+        return null;
+      }
       switch (claimType) {
         case "A":
           return "seda:claimType" + claimType; // wait for result // + SEDA_ASYNC_OPTION;
@@ -79,16 +83,17 @@ public class ClaimProcessorRoute extends RouteBuilder {
           System.err.println("sending to rabbitmq:claimType" + claimType);
           return "rabbitmq:claimType" + claimType;
         default:
-          System.err.println("ERROR: unknown contention_type: " + claimType);
+          System.err.println("ERROR: unknown contentionType: " + claimType);
           return null;
       }
     } else if (invoked == 2) {
       String submissionId;
       if (body instanceof Payload) submissionId = ((Payload) body).getSubmissionId();
       else if (body instanceof byte[])
-        submissionId = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmissionId();
-      else if (body instanceof ClaimSubmissionEntity)
-        submissionId = ((ClaimSubmissionEntity) body).getSubmissionId();
+        submissionId =
+            new DtoConverter(null).toPojo(Payload.class, (byte[]) body).getSubmissionId();
+      else if (body instanceof ClaimSubmission)
+        submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());
       return "seda:claim-vro-processed-" + submissionId + SEDA_ASYNC_OPTION;
     }

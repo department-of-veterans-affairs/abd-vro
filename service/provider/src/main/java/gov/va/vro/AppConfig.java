@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.io.InputStream;
 import java.util.Set;
 
 @Configuration
@@ -55,18 +56,19 @@ public class AppConfig {
   // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter
   private void registerTypeConverter(CamelContext camelContext) {
     // Define the behaviour if the TypeConverter already exists
-    new DtoConverter(DTO_CLASSES).registerWith(camelContext);
+    DtoConverter.registerWith(camelContext, DTO_CLASSES);
 
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
     ((CoreTypeConverterRegistry) registry)
         .getTypeMappings()
         .forEach(
             (fromClass, toClass, converter) -> {
-              //            System.err.println(fromClass.getName()+" -> "+toClass.getName()+" :
-              // "+converter.getClass());
+              System.err.println(
+                  fromClass.getName() + " -> " + toClass.getName() + " : " + converter.getClass());
             });
-    //        System.err.println("\n+++++++ " + registry.lookup(Claim.class, byte[].class));
-    //        System.err.println("\n+++++++ " + registry.lookup(byte[].class, Claim.class));
+    System.err.println("\n+++++++ " + registry.lookup(ClaimSubmission.class, byte[].class));
+    System.err.println("\n+++++++ " + registry.lookup(byte[].class, ClaimSubmission.class));
+    System.err.println("\n+++++++ " + registry.lookup(ClaimSubmission.class, InputStream.class));
   }
 
   @Autowired public MessageQueueProperties messageQueueProps;
@@ -111,4 +113,19 @@ public class AppConfig {
   //   return camelContext.createConsumerTemplate();
   // }
 
+  //  @Bean
+  //  ObjectMapper objectMapper() {
+  //    System.out.println("+++++ ObjectMapper");
+  //    ObjectMapper objectMapper = new ObjectMapper();
+  //    objectMapper.registerModule(new JavaTimeModule());
+  //    return objectMapper;
+  //  }
+
+  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+  //  @Bean(name = "json-jackson")
+  //  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  //  public JacksonDataFormat jacksonDataFormat(ObjectMapper objectMapper) {
+  //    System.out.println("+++++ JacksonDataFormat");
+  //    return new JacksonDataFormat(objectMapper, HashMap.class);
+  //  }
 }

@@ -1,42 +1,34 @@
 package gov.va.vro.services;
 
-import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
-import gov.va.starter.example.persistence.model.ClaimSubmissionEntityRepository;
-import gov.va.vro.model.ClaimStatus;
+import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClaimService {
-  @Autowired private ClaimSubmissionEntityRepository claimRepository;
+  //  @Autowired private ClaimSubmissionEntityRepository claimRepository;
+  @Autowired private ClaimSubmissionService claimSubmissionService;
 
-  public List<ClaimSubmissionEntity> getAllClaims() {
-    List<ClaimSubmissionEntity> claimEntityRecords = new ArrayList<>();
-    claimRepository.findAll().forEach(claimEntityRecords::add);
-    return claimEntityRecords;
+  public List<ClaimSubmission> getAllClaims() {
+    return claimSubmissionService.findAll(Pageable.unpaged()).stream().collect(Collectors.toList());
   }
 
-  public ClaimSubmissionEntity addClaim(ClaimSubmissionEntity claimEntityRecord) {
-    return claimRepository.save(claimEntityRecord);
+  public ClaimSubmission addClaim(ClaimSubmission claimSubmission) {
+    return claimSubmissionService.add(claimSubmission);
   }
 
-  public ClaimSubmissionEntity getClaim(String id) {
-    return claimRepository.findById(id).get();
+  public ClaimSubmission getClaim(String id) {
+    return claimSubmissionService.findById(id).get();
   }
 
-  public ClaimSubmissionEntity claimDetail(Exchange exchange) {
+  public ClaimSubmission claimDetail(Exchange exchange) {
     String id = exchange.getIn().getHeader("id").toString();
-    return getClaim(id);
-  }
-
-  public ClaimSubmissionEntity updateStatus(String id, ClaimStatus status) {
-    ClaimSubmissionEntity claim = getClaim(id);
-    claim.setStatus(status);
-    claimRepository.save(claim);
-    return claim;
+    return claimSubmissionService.findById(id).get();
   }
 }

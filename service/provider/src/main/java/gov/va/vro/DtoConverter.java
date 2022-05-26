@@ -10,24 +10,33 @@ import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.support.TypeConverterSupport;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.io.InputStream;
+import java.util.Collection;
 
 // Data Transfer Object Converter
 // needed for sending POJOs through activemq, rabbitmq, etc.
 @RequiredArgsConstructor
 public class DtoConverter extends TypeConverterSupport {
 
-  public final Set<Class> dtoClasses;
+  public final Collection<Class> dtoClasses;
 
-  public TypeConverterRegistry registerWith(CamelContext camelContext) {
+  public static TypeConverterRegistry registerWith(
+      CamelContext camelContext, Collection<Class> dtoClasses) {
+    DtoConverter dtoConverter = new DtoConverter(dtoClasses);
+
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
     // registry.setTypeConverterExists(TypeConverterExists.Override);
     dtoClasses.forEach(
         clazz -> {
-          registry.addTypeConverter(clazz, byte[].class, this);
-          registry.addTypeConverter(byte[].class, clazz, this);
+          registry.addTypeConverter(clazz, byte[].class, dtoConverter);
+          registry.addTypeConverter(byte[].class, clazz, dtoConverter);
+
+          registry.addTypeConverter(clazz, InputStream.class, dtoConverter);
+          //          registry.addTypeConverter(InputStream.class, clazz, dtoConverter);
         });
     return registry;
   }
@@ -38,8 +47,11 @@ public class DtoConverter extends TypeConverterSupport {
     try {
       //            System.err.println("targetClass: " + targetClass + " value: " +
       // value.getClass());
-      if (dtoClasses.contains(value.getClass()) && targetClass == byte[].class) {
-        return (T) toByteArray(value);
+      if (dtoClasses.contains(value.getClass())) {
+        if(targetClass == byte[].class)
+          return (T) toByteArray(value);
+        if(targetClass == InputStream.class)
+          return (T) toInputStream(value);
       } else if (value.getClass() == byte[].class) {
         return toPojo(targetClass, (byte[]) value);
       }
@@ -49,17 +61,24 @@ public class DtoConverter extends TypeConverterSupport {
     return null;
   }
 
-  static final ObjectMapper mapper = new ObjectMapper();
-  static final ObjectWriter writer = mapper.writer();
-  static final ObjectReader reader = mapper.reader();
+  @Autowired ObjectMapper mapper;
 
-  public static byte[] toByteArray(Object obj) throws JsonProcessingException {
+  public byte[] toByteArray(Object obj) throws JsonProcessingException {
+    ObjectWriter writer = mapper.writer();
     System.err.println("convert toByteArray: " + writer.writeValueAsString(obj));
     return writer.writeValueAsBytes(obj);
   }
 
-  public static <T> T toPojo(Class<T> targetClass, byte[] bytes) throws IOException {
+  public <T> T toPojo(Class<T> targetClass, byte[] bytes) throws IOException {
+    ObjectReader reader = mapper.reader();
     System.err.println("convert toPojo: " + targetClass);
     return reader.readValue(new String(bytes), targetClass);
+  }
+
+  public InputStream toInputStream(Object obj) throws JsonProcessingException {
+    ObjectWriter writer = mapper.writer();
+    System.err.println("convert toInputStream: " + writer.writeValueAsString(obj));
+    byte[] bytes = writer.writeValueAsBytes(obj);
+    return new ByteArrayInputStream(bytes);
   }
 }
