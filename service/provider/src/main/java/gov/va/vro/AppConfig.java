@@ -5,10 +5,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
 import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.seda.SedaComponent;
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
-import org.apache.camel.impl.converter.CoreTypeConverterRegistry;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,13 +57,14 @@ public class AppConfig {
     DtoConverter.registerWith(camelContext, DTO_CLASSES);
 
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
-    ((CoreTypeConverterRegistry) registry)
-        .getTypeMappings()
-        .forEach(
-            (fromClass, toClass, converter) -> {
-              System.err.println(
-                  fromClass.getName() + " -> " + toClass.getName() + " : " + converter.getClass());
-            });
+    //    ((CoreTypeConverterRegistry) registry)
+    //        .getTypeMappings()
+    //        .forEach(
+    //            (fromClass, toClass, converter) -> {
+    //              System.err.println(
+    //                  fromClass.getName() + " -> " + toClass.getName() + " : " +
+    // converter.getClass());
+    //            });
     System.err.println("\n+++++++ " + registry.lookup(ClaimSubmission.class, byte[].class));
     System.err.println("\n+++++++ " + registry.lookup(byte[].class, ClaimSubmission.class));
     System.err.println("\n+++++++ " + registry.lookup(ClaimSubmission.class, InputStream.class));
@@ -98,34 +97,4 @@ public class AppConfig {
     System.out.println(servlet);
     return servlet;
   }
-
-  // See
-  // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredconsumerandproducertemplates
-  @Autowired private ProducerTemplate producerTemplate;
-
-  //  @Bean
-  //  ProducerTemplate producerTemplate() {
-  //    return camelContext.createProducerTemplate();
-  //  }
-
-  // @Bean
-  // ConsumerTemplate consumerTemplate() {
-  //   return camelContext.createConsumerTemplate();
-  // }
-
-  //  @Bean
-  //  ObjectMapper objectMapper() {
-  //    System.out.println("+++++ ObjectMapper");
-  //    ObjectMapper objectMapper = new ObjectMapper();
-  //    objectMapper.registerModule(new JavaTimeModule());
-  //    return objectMapper;
-  //  }
-
-  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-  //  @Bean(name = "json-jackson")
-  //  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  //  public JacksonDataFormat jacksonDataFormat(ObjectMapper objectMapper) {
-  //    System.out.println("+++++ JacksonDataFormat");
-  //    return new JacksonDataFormat(objectMapper, HashMap.class);
-  //  }
 }

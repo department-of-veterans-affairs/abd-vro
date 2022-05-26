@@ -11,6 +11,8 @@ import java.time.Instant;
 @NoArgsConstructor
 // https://stackoverflow.com/questions/58171839/using-lombok-requiredargsconstructor-as-jsoncreator
 @RequiredArgsConstructor(onConstructor_ = {@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)})
+// Setting @JsonCreator above wasn't enough, need to use @JsonIgnore on other constructors
+// https://github.com/FasterXML/jackson-databind/issues/3062
 @AllArgsConstructor(onConstructor_ = {@JsonIgnore})
 @EqualsAndHashCode
 @Builder

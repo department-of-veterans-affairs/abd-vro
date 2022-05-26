@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CamelEntrance {
+  // Provided by Camel https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
   @Autowired private ProducerTemplate producerTemplate;
 
   public ClaimSubmission postClaim(ClaimSubmission claim) {

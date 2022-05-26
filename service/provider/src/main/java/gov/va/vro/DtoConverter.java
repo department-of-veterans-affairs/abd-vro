@@ -36,7 +36,7 @@ public class DtoConverter extends TypeConverterSupport {
           registry.addTypeConverter(byte[].class, clazz, dtoConverter);
 
           registry.addTypeConverter(clazz, InputStream.class, dtoConverter);
-          //          registry.addTypeConverter(InputStream.class, clazz, dtoConverter);
+          // registry.addTypeConverter(InputStream.class, clazz, dtoConverter);
         });
     return registry;
   }
@@ -63,19 +63,19 @@ public class DtoConverter extends TypeConverterSupport {
 
   public byte[] toByteArray(Object obj) throws JsonProcessingException {
     ObjectWriter writer = mapper.writer();
-    System.err.println("convert toByteArray: " + writer.writeValueAsString(obj));
+    System.err.println("+++++ convert toByteArray: " + writer.writeValueAsString(obj));
     return writer.writeValueAsBytes(obj);
   }
 
   public <T> T toPojo(Class<T> targetClass, byte[] bytes) throws IOException {
     ObjectReader reader = mapper.reader();
-    System.err.println("convert toPojo: " + targetClass);
+    System.err.println("+++++ convert toPojo: " + targetClass);
     return reader.readValue(new String(bytes), targetClass);
   }
 
   public InputStream toInputStream(Object obj) throws JsonProcessingException {
     ObjectWriter writer = mapper.writer();
-    System.err.println("convert toInputStream: " + writer.writeValueAsString(obj));
+    System.err.println("+++++ convert toInputStream: " + writer.writeValueAsString(obj));
     byte[] bytes = writer.writeValueAsBytes(obj);
     return new ByteArrayInputStream(bytes);
   }
