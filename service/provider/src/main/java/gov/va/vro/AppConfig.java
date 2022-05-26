@@ -2,7 +2,7 @@ package gov.va.vro;
 
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
-import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
@@ -49,10 +49,9 @@ public class AppConfig {
     };
   }
 
-  public static Set<Class> DTO_CLASSES =
-      Sets.newHashSet(ClaimSubmissionEntity.class, Payload.class);
+  public static Set<Class> DTO_CLASSES = Sets.newHashSet(ClaimSubmission.class, Payload.class);
 
-  // TODO: replace with
+  // TODO: replace with Auto-configured TypeConverter
   // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter
   private void registerTypeConverter(CamelContext camelContext) {
     // Define the behaviour if the TypeConverter already exists

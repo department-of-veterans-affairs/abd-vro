@@ -3,7 +3,7 @@
 namespace=$1
 kubeconfig=$2
 
-if [ -z $kubeconfig ] || [ ! -f $kubeconfig ]; then
+if [ -z "$kubeconfig" ] || [ ! -f "$kubeconfig" ]; then
   kubeconfig=~/.kube/config
 fi
 
@@ -12,9 +12,9 @@ cluster=$(kubectl --kubeconfig ${kubeconfig} config view -o json --raw \
   | jq '.clusters[] | select(.name == env.context_name)')
 cluster_name=$(echo "${cluster}" | jq .name | tr -d '"')
 service_account_name=default
-token_name=$(kubectl --kubeconfig ${kubeconfig} -n $namespace -o json get sa $service_account_name \
+token_name=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get sa $service_account_name \
   | jq '.secrets[0].name' | tr -d '"')
-token=$(kubectl --kubeconfig ${kubeconfig} -n $namespace -o json get secret $token_name \
+token=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get secret $token_name \
   | jq '.data.token' | tr -d '"' | base64 -d)
 
 cat <<EOF | base64

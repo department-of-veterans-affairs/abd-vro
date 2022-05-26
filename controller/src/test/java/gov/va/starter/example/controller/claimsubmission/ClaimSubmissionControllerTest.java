@@ -222,7 +222,7 @@ public class ClaimSubmissionControllerTest {
 
     createMapperStubs();
     createResponseMapperStubs();
-    Mockito.when(manager.add(resource)).thenReturn(output);
+    Mockito.when(controller.handlePost(resource)).thenReturn(output);
 
     ResponseEntity<ClaimSubmissionResponse> response = controller.addEntity(request);
 

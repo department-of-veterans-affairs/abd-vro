@@ -21,7 +21,7 @@ public class ServiceRoutes extends RouteBuilder {
         // save Claim to DB and assign UUID before anything else
         .bean(ClaimService.class, "addClaim")
         // https://camel.apache.org/components/3.16.x/eips/recipientList-eip.html#_using_parallel_processing
-        .recipientList( // TODO: convert to constant
+        .recipientList( // TODO: convert String to constant
             constant("seda:logToFile,seda:claim-router"))
         .parallelProcessing()
         .log(">>5> ${body.toString()}");

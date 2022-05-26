@@ -28,6 +28,7 @@ import java.util.Optional;
 @RestController
 public class ClaimSubmissionController implements ClaimSubmissionResource {
 
+  // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
   private final ClaimSubmissionService manager;
   private final ClaimSubmissionRequestMapper mapper;
@@ -52,15 +53,19 @@ public class ClaimSubmissionController implements ClaimSubmissionResource {
     this.notifier = notifier;
   }
 
+  private boolean useCamel = true;
+
+  ClaimSubmission handlePost(ClaimSubmission resource) {
+    return useCamel ? camelEntrance.postClaim(resource) : manager.add(resource);
+  }
+
   @Override
   public ResponseEntity<ClaimSubmissionResponse> addEntity(ClaimSubmissionRequest addEntityRequest)
       throws RequestValidationException {
 
     log.info("username->{}", addEntityRequest.getUserName());
     ClaimSubmission resource = mapper.toModel(addEntityRequest);
-    ClaimSubmission saved = manager.add(resource);
-
-    camelEntrance.postClaim(saved);
+    ClaimSubmission saved = handlePost(resource);
 
     ClaimSubmissionResponse response = mapper.toClaimSubmissionResponse(saved);
     notifier.created(saved, entityVersion, URI.create("user:anonymous"));

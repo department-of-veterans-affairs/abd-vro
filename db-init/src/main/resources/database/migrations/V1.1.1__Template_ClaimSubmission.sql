@@ -8,5 +8,5 @@ CREATE TABLE example.claimsubmission (
     submissionId VARCHAR(128) NOT NULL,
     claimantId VARCHAR(128) NOT NULL,
     contentionType VARCHAR(50) NOT NULL,
-    status VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL
 );
