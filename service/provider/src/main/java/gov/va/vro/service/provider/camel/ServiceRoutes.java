@@ -1,4 +1,4 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

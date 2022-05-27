@@ -1,4 +1,4 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

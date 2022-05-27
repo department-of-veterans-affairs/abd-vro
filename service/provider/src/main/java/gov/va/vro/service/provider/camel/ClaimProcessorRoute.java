@@ -1,8 +1,8 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
-import gov.va.vro.service.processors.ClaimProcessorA;
+import gov.va.vro.service.provider.processors.ClaimProcessorA;
 import org.apache.camel.ExchangeProperties;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

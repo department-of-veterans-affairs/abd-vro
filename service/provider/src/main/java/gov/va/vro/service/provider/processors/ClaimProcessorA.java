@@ -1,4 +1,4 @@
-package gov.va.vro.service.processors;
+package gov.va.vro.service.provider.processors;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;

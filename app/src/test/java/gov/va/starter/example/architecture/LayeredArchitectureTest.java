@@ -1,14 +1,14 @@
 package gov.va.starter.example.architecture;
 
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
-
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import org.junit.jupiter.api.Test;
 
+import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+
 public class LayeredArchitectureTest {
-  private final String packageName = "gov.va.starter.example";
+  private final String packageName = "gov.va";
   private final JavaClasses classes =
       new ClassFileImporter()
           .withImportOption(Predefined.DO_NOT_INCLUDE_TESTS)
@@ -28,7 +28,7 @@ public class LayeredArchitectureTest {
         .layer("SPI")
         .definedBy(packageName + "..service.spi..")
         .layer("Services")
-        .definedBy(packageName + "..service.provider..", "gov.va.vro.service.provider..")
+        .definedBy(packageName + "..service.provider..")
         .layer("Persistence")
         .definedBy(packageName + "..persistence..")
         .whereLayer("API")

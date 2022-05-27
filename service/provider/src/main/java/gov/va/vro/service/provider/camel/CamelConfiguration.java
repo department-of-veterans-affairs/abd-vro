@@ -1,4 +1,4 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;

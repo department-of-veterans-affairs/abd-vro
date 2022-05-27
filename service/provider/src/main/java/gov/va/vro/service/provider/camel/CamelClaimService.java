@@ -1,4 +1,4 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
