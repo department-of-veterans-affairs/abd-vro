@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.processors;
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.model.Payload;
+import gov.va.vro.persistence.model.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

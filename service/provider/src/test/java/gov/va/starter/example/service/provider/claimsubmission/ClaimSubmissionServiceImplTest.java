@@ -13,7 +13,7 @@ import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import gov.va.starter.example.subclaimsubmission.factory.SubClaimSubmissionFactory;
 import gov.va.starter.example.subclaimsubmission.model.SubClaimSubmissionData;
-import gov.va.vro.model.ClaimStatus;
+import gov.va.vro.persistence.model.ClaimStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package gov.va.vro.model;
+package gov.va.vro.persistence.model;
 
 public enum ClaimStatus {
   CREATED,

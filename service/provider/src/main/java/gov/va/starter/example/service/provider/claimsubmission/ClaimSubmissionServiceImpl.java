@@ -109,8 +109,8 @@ public class ClaimSubmissionServiceImpl implements ClaimSubmissionService {
                 .map(
                     (obj) -> {
                       // TODO: fix multiple `ClaimStatus` class
-                      gov.va.vro.model.ClaimStatus status =
-                          gov.va.vro.model.ClaimStatus.valueOf(claimStatus.name());
+                      gov.va.vro.persistence.model.ClaimStatus status =
+                          gov.va.vro.persistence.model.ClaimStatus.valueOf(claimStatus.name());
                       obj.setStatus(status);
                       return repository.save(obj);
                     }));

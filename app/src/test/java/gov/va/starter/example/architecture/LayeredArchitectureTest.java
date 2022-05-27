@@ -1,11 +1,11 @@
 package gov.va.starter.example.architecture;
 
+import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import org.junit.jupiter.api.Test;
-
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 public class LayeredArchitectureTest {
   private final String packageName = "gov.va";

@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.model.Payload;
+import gov.va.vro.persistence.model.Payload;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;

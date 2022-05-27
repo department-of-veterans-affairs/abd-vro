@@ -1,6 +1,6 @@
 package gov.va.starter.example.persistence.model;
 
-import gov.va.vro.model.ClaimStatus;
+import gov.va.vro.persistence.model.ClaimStatus;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
