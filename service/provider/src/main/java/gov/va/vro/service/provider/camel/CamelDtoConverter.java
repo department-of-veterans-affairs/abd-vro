@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
 import org.apache.camel.support.TypeConverterSupport;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.Collection;
  * to text files, etc. When registered, Camel uses this class to automatically convert message body
  * objects of a specified class into the target class, depending on the endpoint.
  */
-@Component
 @Slf4j
 public class CamelDtoConverter extends TypeConverterSupport {
 
