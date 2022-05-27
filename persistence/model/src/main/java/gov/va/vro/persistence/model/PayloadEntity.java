@@ -1,4 +1,4 @@
-package gov.va.vro.model;
+package gov.va.vro.persistence.model;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(includeFieldNames = true)
-public class Payload implements Serializable {
+public class PayloadEntity implements Serializable {
   private final Date createdAt = new Date();
   @NonNull private String submissionId;
   @NonNull private String resultStatus;

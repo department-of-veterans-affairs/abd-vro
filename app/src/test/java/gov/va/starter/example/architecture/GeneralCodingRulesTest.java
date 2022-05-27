@@ -9,11 +9,11 @@ import com.tngtech.archunit.library.GeneralCodingRules;
 import org.junit.jupiter.api.Test;
 
 public class GeneralCodingRulesTest {
-  private final String packageName = "gov.va.starter.example";
+  private final String packageName = "gov.va.vro";
   private final JavaClasses classes =
       new ClassFileImporter()
           .withImportOption(Predefined.DO_NOT_INCLUDE_TESTS)
-          .importPackages(packageName);
+          .importPackages(packageName, "gov.va.starter.example");
 
   @Test
   public void noGenericExceptions() {

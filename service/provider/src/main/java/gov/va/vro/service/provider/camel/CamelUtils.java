@@ -1,19 +1,20 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.WaitForTaskToComplete;
 import org.apache.camel.component.seda.SedaEndpoint;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CamelUtils {
-  @Autowired private CamelContext camelContext;
+  private final CamelContext camelContext;
 
   public String endpointsToString(String delimiter) {
     return camelContext.getEndpoints().stream()

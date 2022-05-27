@@ -1,9 +1,9 @@
-package gov.va.vro.service.camel;
+package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CamelClaimService {
-  @Autowired private ClaimSubmissionService claimSubmissionService;
+  private final ClaimSubmissionService claimSubmissionService;
 
   public List<ClaimSubmission> getAllClaims() {
     return claimSubmissionService.findAll(Pageable.unpaged()).stream().collect(Collectors.toList());

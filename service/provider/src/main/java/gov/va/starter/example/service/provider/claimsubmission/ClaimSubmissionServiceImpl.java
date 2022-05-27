@@ -1,12 +1,12 @@
 package gov.va.starter.example.service.provider.claimsubmission;
 
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
 import gov.va.starter.example.persistence.model.ClaimSubmissionEntityRepository;
 import gov.va.starter.example.persistence.model.SubClaimSubmissionEntity;
 import gov.va.starter.example.persistence.model.SubClaimSubmissionEntityRepository;
 import gov.va.starter.example.service.provider.claimsubmission.mapper.ClaimSubmissionEntityMapper;
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
-import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +101,8 @@ public class ClaimSubmissionServiceImpl implements ClaimSubmissionService {
   }
 
   // TODO: use updateById instead?
-  public Optional<ClaimSubmission> updateStatusById(String id, ClaimStatus claimStatus) {
+  public Optional<ClaimSubmission> updateStatusById(
+      String id, ClaimSubmission.ClaimStatus claimStatus) {
     Optional<ClaimSubmission> resource =
         mapper.toModel(
             repository
@@ -109,8 +110,8 @@ public class ClaimSubmissionServiceImpl implements ClaimSubmissionService {
                 .map(
                     (obj) -> {
                       // TODO: fix multiple `ClaimStatus` class
-                      gov.va.vro.model.ClaimStatus status =
-                          gov.va.vro.model.ClaimStatus.valueOf(claimStatus.name());
+                      ClaimSubmissionEntity.ClaimStatus status =
+                          ClaimSubmissionEntity.ClaimStatus.valueOf(claimStatus.name());
                       obj.setStatus(status);
                       return repository.save(obj);
                     }));

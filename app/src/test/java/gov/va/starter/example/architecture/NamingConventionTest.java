@@ -11,7 +11,7 @@ public class NamingConventionTest {
   private final JavaClasses classes =
       new ClassFileImporter()
           .withImportOption(Predefined.DO_NOT_INCLUDE_TESTS)
-          .importPackages("gov.va.starter.example");
+          .importPackages("gov.va");
 
   @Test
   public void controllerShouldBeSuffixed() {
@@ -56,6 +56,8 @@ public class NamingConventionTest {
         .haveSimpleNameEndingWith("Repository")
         .orShould()
         .haveSimpleNameEndingWith("Entity")
+        .orShould()
+        .beEnums()
         .check(classes);
   }
 

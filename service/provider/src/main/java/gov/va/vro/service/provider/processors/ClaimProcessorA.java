@@ -1,26 +1,26 @@
-package gov.va.vro.service.processors;
+package gov.va.vro.service.provider.processors;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
-import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.model.Payload;
-import org.springframework.beans.factory.annotation.Autowired;
+import gov.va.vro.persistence.model.PayloadEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
 @Service
+@RequiredArgsConstructor
 public class ClaimProcessorA {
 
-  @Autowired ClaimSubmissionService claimSubmissionService;
+  private final ClaimSubmissionService claimSubmissionService;
 
-  public Payload process(ClaimSubmission claim) {
+  public PayloadEntity process(ClaimSubmission claim) {
     HashMap<String, Object> results = new HashMap<String, Object>();
     results.put("bp_systolic", 120);
     results.put("bp_diastolic", 80);
     results.put("vro_pdf_path", "gov/va/vro/hypertension/" + claim.getSubmissionId() + ".pdf");
 
-    claimSubmissionService.updateStatusById(claim.getId(), ClaimStatus.DONE_VRO);
-    return new Payload(claim.getSubmissionId(), "Success", results);
+    claimSubmissionService.updateStatusById(claim.getId(), ClaimSubmission.ClaimStatus.DONE_VRO);
+    return new PayloadEntity(claim.getSubmissionId(), "Success", results);
   }
 }

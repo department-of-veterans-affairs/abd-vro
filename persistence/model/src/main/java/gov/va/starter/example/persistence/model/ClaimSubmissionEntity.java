@@ -1,6 +1,5 @@
 package gov.va.starter.example.persistence.model;
 
-import gov.va.vro.model.ClaimStatus;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -42,4 +41,10 @@ public class ClaimSubmissionEntity {
 
   @Enumerated(EnumType.STRING)
   private ClaimStatus status = ClaimStatus.CREATED;
+
+  public enum ClaimStatus {
+    CREATED,
+    DONE_VRO,
+    COMPLETED
+  }
 }

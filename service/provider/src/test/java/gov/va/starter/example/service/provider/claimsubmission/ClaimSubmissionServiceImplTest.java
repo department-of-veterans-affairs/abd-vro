@@ -13,7 +13,6 @@ import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import gov.va.starter.example.subclaimsubmission.factory.SubClaimSubmissionFactory;
 import gov.va.starter.example.subclaimsubmission.model.SubClaimSubmissionData;
-import gov.va.vro.model.ClaimStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +116,7 @@ public class ClaimSubmissionServiceImplTest {
             entity.getSubmissionId(),
             entity.getClaimantId(),
             entity.getContentionType(),
-            ClaimStatus.CREATED);
+            ClaimSubmissionEntity.ClaimStatus.CREATED);
     output = real.toModel(added);
     optionalEntity = Optional.of(entity);
     optionalAdded = Optional.of(added);
