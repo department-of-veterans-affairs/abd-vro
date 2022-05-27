@@ -3,17 +3,18 @@ package gov.va.vro.service.provider.camel;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
 import gov.va.vro.service.provider.processors.ClaimProcessorA;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.ExchangeProperties;
 import org.apache.camel.builder.RouteBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class ClaimProcessorRoute extends RouteBuilder {
-  @Autowired private CamelUtils camelUtils;
+  private final CamelDtoConverter dtoConverter;
 
   @Override
   public void configure() throws Exception {
@@ -56,14 +57,13 @@ public class ClaimProcessorRoute extends RouteBuilder {
       invoked = Integer.parseInt(current.toString());
     }
     invoked++;
-    //        System.err.println("props: " + props);
     // and store the state back on the props
     props.put("invoked", invoked);
 
     if (invoked == 1) {
       String claimType = (String) props.get("contentionType");
       if (claimType == null) {
-        System.err.println("ERROR: null contentionType");
+        log.error("null contentionType");
         return null;
       }
       log.info("+++ invoked=1 " + claimType + " " + body.getClass() + " " + props);
@@ -73,17 +73,14 @@ public class ClaimProcessorRoute extends RouteBuilder {
         case "B": // Groovy
         case "C": // Ruby in separate process
         default:
-          System.err.println("ERROR: unknown contentionType: " + claimType);
+          log.error("unknown contentionType: {}", claimType);
           return null;
       }
     } else if (invoked == 2) {
       String submissionId;
       if (body instanceof PayloadEntity) submissionId = ((PayloadEntity) body).getSubmissionId();
       else if (body instanceof byte[])
-        submissionId =
-            new CamelDtoConverter(null)
-                .toPojo(PayloadEntity.class, (byte[]) body)
-                .getSubmissionId();
+        submissionId = dtoConverter.toPojo(PayloadEntity.class, (byte[]) body).getSubmissionId();
       else if (body instanceof ClaimSubmission)
         submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());

@@ -1,19 +1,19 @@
 package gov.va.starter.example.architecture;
 
-import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
-
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import com.tngtech.archunit.library.GeneralCodingRules;
 import org.junit.jupiter.api.Test;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
+
 public class GeneralCodingRulesTest {
-  private final String packageName = "gov.va.starter.example";
+  private final String packageName = "gov.va.vro";
   private final JavaClasses classes =
       new ClassFileImporter()
           .withImportOption(Predefined.DO_NOT_INCLUDE_TESTS)
-          .importPackages(packageName);
+          .importPackages(packageName, "gov.va.starter.example");
 
   @Test
   public void noGenericExceptions() {

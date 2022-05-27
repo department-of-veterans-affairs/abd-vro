@@ -6,7 +6,6 @@ import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
@@ -24,11 +23,13 @@ import javax.ws.rs.core.MediaType;
     havingValue = "true",
     matchIfMissing = false)
 class CamelRestConfiguration extends RouteBuilder {
+  private final String contextPath;
+  private final Environment env;
 
-  @Value("${vro.context_path}")
-  public String contextPath;
-
-  @Autowired private Environment env;
+  CamelRestConfiguration(@Value("${vro.context_path}") String contextPath, Environment env) {
+    this.contextPath = contextPath;
+    this.env = env;
+  }
 
   @Override
   public void configure() throws Exception {

@@ -3,15 +3,16 @@ package gov.va.vro.service.provider.processors;
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
 @Service
+@RequiredArgsConstructor
 public class ClaimProcessorA {
 
-  @Autowired ClaimSubmissionService claimSubmissionService;
+  private final ClaimSubmissionService claimSubmissionService;
 
   public PayloadEntity process(ClaimSubmission claim) {
     HashMap<String, Object> results = new HashMap<String, Object>();

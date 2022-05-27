@@ -1,12 +1,13 @@
 package gov.va.vro.service.provider.camel;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ServiceRoutes extends RouteBuilder {
-  @Autowired private CamelUtils camelUtils;
+  private CamelUtils camelUtils;
 
   @Override
   public void configure() {
