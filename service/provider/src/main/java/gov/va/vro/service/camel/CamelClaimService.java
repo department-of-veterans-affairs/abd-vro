@@ -1,4 +1,4 @@
-package gov.va.vro.routes;
+package gov.va.vro.service.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;

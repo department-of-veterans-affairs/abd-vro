@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Used to programmatically inject messages into a Camel endpoint.
- * AKA an entrance ramp onto a Camel route.
- * Typically called by Controller classes.
+ * Used to programmatically inject messages into a Camel endpoint. AKA an entrance ramp onto a Camel
+ * route. Typically called by Controller classes.
  */
 @Service
 public class CamelEntrance {

@@ -1,4 +1,4 @@
-package gov.va.vro.routes;
+package gov.va.vro.service.camel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;

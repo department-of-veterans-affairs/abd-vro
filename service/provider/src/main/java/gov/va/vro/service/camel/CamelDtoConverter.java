@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.service.camel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,10 +19,9 @@ import java.io.InputStream;
 import java.util.Collection;
 
 /**
- * Data Transfer Object (DTO) Converter for Camel.
- * Needed for sending POJOs through rabbitmq, saving to text files, etc.
- * When registered, Camel uses this class to automatically convert message body objects
- * of a specified class into the target class, depending on the endpoint.
+ * Data Transfer Object (DTO) Converter for Camel. Needed for sending POJOs through rabbitmq, saving
+ * to text files, etc. When registered, Camel uses this class to automatically convert message body
+ * objects of a specified class into the target class, depending on the endpoint.
  */
 @Slf4j
 @RequiredArgsConstructor

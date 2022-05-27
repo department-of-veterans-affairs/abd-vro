@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.service.camel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

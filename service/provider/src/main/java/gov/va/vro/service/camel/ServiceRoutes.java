@@ -1,4 +1,4 @@
-package gov.va.vro.routes;
+package gov.va.vro.service.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ServiceRoutes extends RouteBuilder {
         .marshal()
         .json()
         .log(">>2> ${body.getClass()}")
-        //        .setBody(simple(">>2> ${body.getClass()}"))
+        // .setBody(simple(">>2> ${body.getClass()}"))
         .to("file://target/post");
 
     from("direct:postClaim")

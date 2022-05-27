@@ -1,10 +1,9 @@
-package gov.va.vro;
+package gov.va.vro.service.camel;
 
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
-import gov.va.vro.routes.CamelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.seda.SedaComponent;
@@ -28,7 +27,7 @@ import java.util.Set;
 @Configuration
 @EnableJpaRepositories({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
 @EntityScan({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
-public class ServicesConfiguration {
+public class CamelConfiguration {
   @Autowired private CamelContext camelContext;
   @Autowired private CamelUtils camelUtils;
 

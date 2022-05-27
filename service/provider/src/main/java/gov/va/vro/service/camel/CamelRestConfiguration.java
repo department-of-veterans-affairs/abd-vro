@@ -1,7 +1,6 @@
-package gov.va.vro.routes;
+package gov.va.vro.service.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.ServicesConfiguration;
 import gov.va.vro.model.Payload;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
@@ -16,9 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Not for production.
- * For quick development and testing of an API in dev.
- * Don't have to implement API, controller, and request-response mapper classes.
+ * Not for production. For quick development and testing of an API in dev. Don't have to implement
+ * API, controller, and request-response mapper classes.
  */
 @Component
 @ConditionalOnProperty(
@@ -39,7 +37,7 @@ class CamelRestConfiguration extends RouteBuilder {
     // https://camel.apache.org/components/3.14.x/servlet-component.html#_putting_camel_jars_in_the_app_server_boot_classpath
     restConfiguration()
         .component("servlet")
-        .endpointProperty("servletName", ServicesConfiguration.servletName)
+        .endpointProperty("servletName", CamelConfiguration.servletName)
         .contextPath(contextPath)
         .bindingMode(RestBindingMode.json)
         .dataFormatProperty("prettyPrint", "true") // useful for debugging
