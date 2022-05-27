@@ -81,7 +81,9 @@ public class ClaimProcessorRoute extends RouteBuilder {
       if (body instanceof PayloadEntity) submissionId = ((PayloadEntity) body).getSubmissionId();
       else if (body instanceof byte[])
         submissionId =
-            new CamelDtoConverter(null).toPojo(PayloadEntity.class, (byte[]) body).getSubmissionId();
+            new CamelDtoConverter(null)
+                .toPojo(PayloadEntity.class, (byte[]) body)
+                .getSubmissionId();
       else if (body instanceof ClaimSubmission)
         submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());

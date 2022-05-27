@@ -53,7 +53,8 @@ public class CamelConfiguration {
     };
   }
 
-  public static Set<Class> DTO_CLASSES = Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class);
+  public static Set<Class> DTO_CLASSES =
+      Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class);
 
   // TODO: replace with Auto-configured TypeConverter
   // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter

@@ -44,14 +44,14 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'gov.va.starter.example.ExampleApplication'
+    mainClass = 'gov.va.vro.VroApplication'
 }
 
 bootJar {
     manifest {
         attributes(
                 'Application-Version': "${project.version}",
-                'Start-Class': 'gov.va.starter.example.ExampleApplication',
+                'Start-Class': 'gov.va.vro.VroApplication',
 //                "Application-Git-Commit": "${gitRevision}",
 //                "Application-Git-Branch-Name": "${gitBranchName}",
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
