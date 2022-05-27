@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ServiceRoutes extends RouteBuilder {
-  private CamelUtils camelUtils;
+  private final CamelUtils camelUtils;
 
   @Override
   public void configure() {

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class CamelUtils {
-  private CamelContext camelContext;
+  private final CamelContext camelContext;
 
   public String endpointsToString(String delimiter) {
     return camelContext.getEndpoints().stream()

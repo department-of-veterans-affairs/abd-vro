@@ -1,12 +1,12 @@
 package gov.va.starter.example.architecture;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
+
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import com.tngtech.archunit.library.GeneralCodingRules;
 import org.junit.jupiter.api.Test;
-
-import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
 
 public class GeneralCodingRulesTest {
   private final String packageName = "gov.va.vro";
