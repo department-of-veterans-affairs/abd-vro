@@ -1,12 +1,11 @@
-package gov.va.vro.routes;
+package gov.va.vro.service.camel;
 
-import static gov.va.vro.AppConfig.SEDA_ASYNC_OPTION;
-
-import gov.va.vro.DtoConverter;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.model.Payload;
-import gov.va.vro.services.ClaimProcessorA;
+import gov.va.vro.service.processors.ClaimProcessorA;
 import org.apache.camel.ExchangeProperties;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 @Component
 public class ClaimProcessorRoute extends RouteBuilder {
+  @Autowired private CamelUtils camelUtils;
 
   @Override
   public void configure() throws Exception {
@@ -21,7 +21,7 @@ public class ClaimProcessorRoute extends RouteBuilder {
         .routeId("routing-claim")
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
-        .setProperty("contention_type", simple("${body.contention_type}"))
+        .setProperty("contentionType", simple("${body.contentionType}"))
         //                .tracing()
         .dynamicRouter(method(ClaimProcessorRoute.class, "route"));
 
@@ -32,18 +32,13 @@ public class ClaimProcessorRoute extends RouteBuilder {
         .delayer(5000)
         .bean(ClaimProcessorA.class, "process")
         .end();
-
-    //    from("rabbitmq:claimTypeD")
-    //        .routeId("claimTypeD")
-    //        //                .tracing()
-    //        .log(">>> ${body}")
-    //        .delayer(5000)
-    //        .bean(ClaimProcessorD.class, "process")
-    //        .end();
   }
+
+  private static final String SEDA_ASYNC_OPTION = "?waitForTaskToComplete=Never";
 
   /**
    * Use this method to compute dynamic where we should route next.
+   * https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html
    *
    * @param body the message body
    * @param props the exchange properties where we can store state between invocations
@@ -66,28 +61,37 @@ public class ClaimProcessorRoute extends RouteBuilder {
     props.put("invoked", invoked);
 
     if (invoked == 1) {
-      String claimType = (String) props.get("contention_type");
+      String claimType = (String) props.get("contentionType");
+      if (claimType == null) {
+        System.err.println("ERROR: null contentionType");
+        return null;
+      }
+      log.info("+++ invoked=1 " + claimType + " " + body.getClass() + " " + props);
       switch (claimType) {
         case "A":
-          return "seda:claimType" + claimType; // wait for result // + "?" + SEDA_ASYNC_OPTION;
+          return "seda:claimType" + claimType; // non-async endpoint; wait for result
         case "B": // Groovy
         case "C": // Ruby in separate process
-        case "D": // JRuby
-          System.err.println("sending to rabbitmq:claimType" + claimType);
-          return "rabbitmq:claimType" + claimType;
         default:
-          System.err.println("ERROR: unknown contention_type: " + claimType);
+          System.err.println("ERROR: unknown contentionType: " + claimType);
           return null;
       }
     } else if (invoked == 2) {
-      String submission_id;
-      if (body instanceof Payload) submission_id = ((Payload) body).getSubmission_id();
+      String submissionId;
+      if (body instanceof Payload) submissionId = ((Payload) body).getSubmissionId();
       else if (body instanceof byte[])
-        submission_id = DtoConverter.toPojo(Payload.class, (byte[]) body).getSubmission_id();
+        submissionId =
+            new CamelDtoConverter(null).toPojo(Payload.class, (byte[]) body).getSubmissionId();
+      else if (body instanceof ClaimSubmission)
+        submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());
-      return "seda:claim-rrd-processed-" + submission_id + "?" + SEDA_ASYNC_OPTION;
+      log.info("+++ invoked=2 " + submissionId + " " + body.getClass() + " " + props);
+      String generalSeda = "seda:claim-vro-processed";
+      String specificSeda = "seda:claim-vro-processed-" + submissionId + SEDA_ASYNC_OPTION;
+      return specificSeda + "," + generalSeda;
     }
 
+    log.info("+++ invoked=" + invoked + " " + body.getClass() + " " + props);
     // no more so return null
     return null;
   }

@@ -13,6 +13,7 @@ import gov.va.starter.example.controller.claimsubmission.mapper.ClaimSubmissionR
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
+import gov.va.vro.service.provider.CamelEntrance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,8 @@ import java.util.Optional;
 @RestController
 public class ClaimSubmissionController implements ClaimSubmissionResource {
 
+  // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
+  private final CamelEntrance camelEntrance;
   private final ClaimSubmissionService manager;
   private final ClaimSubmissionRequestMapper mapper;
   private final EntityLifecycleNotifier notifier;
@@ -40,12 +43,20 @@ public class ClaimSubmissionController implements ClaimSubmissionResource {
    * @param mapper instance of ClaimSubmission request mappper
    */
   public ClaimSubmissionController(
+      CamelEntrance camelEntrance,
       ClaimSubmissionService manager,
       ClaimSubmissionRequestMapper mapper,
       EntityLifecycleNotifier notifier) {
+    this.camelEntrance = camelEntrance;
     this.manager = manager;
     this.mapper = mapper;
     this.notifier = notifier;
+  }
+
+  private boolean useCamel = true;
+
+  ClaimSubmission handlePost(ClaimSubmission resource) {
+    return useCamel ? camelEntrance.postClaim(resource) : manager.add(resource);
   }
 
   @Override
@@ -54,7 +65,8 @@ public class ClaimSubmissionController implements ClaimSubmissionResource {
 
     log.info("username->{}", addEntityRequest.getUserName());
     ClaimSubmission resource = mapper.toModel(addEntityRequest);
-    ClaimSubmission saved = manager.add(resource);
+    ClaimSubmission saved = handlePost(resource);
+
     ClaimSubmissionResponse response = mapper.toClaimSubmissionResponse(saved);
     notifier.created(saved, entityVersion, URI.create("user:anonymous"));
     return new ResponseEntity<>(response, HttpStatus.CREATED);

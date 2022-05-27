@@ -10,6 +10,7 @@ import gov.va.starter.example.api.claimsubmission.responses.SubClaimSubmissionRe
 import gov.va.starter.example.api.responses.PagedResponse;
 import gov.va.starter.example.claimsubmission.factory.ClaimSubmissionFactory;
 import gov.va.starter.example.claimsubmission.model.ClaimSubmissionData;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import gov.va.starter.example.subclaimsubmission.factory.SubClaimSubmissionFactory;
@@ -189,7 +190,11 @@ public class ClaimSubmissionRequestMapperTest {
         defaultResourceData.getUserName(),
         defaultResourceData.getPii(),
         defaultResourceData.getFirstName(),
-        defaultResourceData.getLastName());
+        defaultResourceData.getLastName(),
+        defaultResourceData.getSubmissionId(),
+        defaultResourceData.getClaimantId(),
+        defaultResourceData.getContentionType(),
+        ClaimStatus.CREATED);
   }
 
   /**
@@ -216,7 +221,10 @@ public class ClaimSubmissionRequestMapperTest {
         defaultResourceData.getUserName(),
         defaultResourceData.getPii(),
         defaultResourceData.getFirstName(),
-        defaultResourceData.getLastName());
+        defaultResourceData.getLastName(),
+        defaultResourceData.getSubmissionId(),
+        defaultResourceData.getClaimantId(),
+        defaultResourceData.getContentionType());
   }
 
   /**

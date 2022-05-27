@@ -16,6 +16,6 @@ public class ExampleApplication {
    */
   public static void main(String[] args) {
     new SpringApplication(ExampleApplication.class).run(args);
-    log.info("\n\n\n\n\n---------------Example API Started.----------------\n\n\n\n\n");
+    log.info("\n-------- Example API Started ---------");
   }
 }

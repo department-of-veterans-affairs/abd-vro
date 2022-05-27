@@ -12,7 +12,7 @@ import java.util.Map;
 @ToString(includeFieldNames = true)
 public class Payload implements Serializable {
   private final Date createdAt = new Date();
-  @NonNull private String submission_id;
+  @NonNull private String submissionId;
   @NonNull private String resultStatus;
   private Map<String, Object> results;
 }

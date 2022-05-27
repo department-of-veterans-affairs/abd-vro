@@ -128,19 +128,40 @@ Initial things to review:
 
 ### Gradle Subproject Dependencies
 
+Based on `build.gradle` files in each directory, here's the rough subproject dependencies:
+
 * `app` - main `@SpringBootApplication`
   * `api` - annotated API, used to populate OpenAPI doc; defines request and response POJOs
   * `controller` - defines `@RestController` classes (which implement api classes) and `@Mapper` classes (which convert `service.model` objects from/to request/response POJOs)
-    * `api` -
-    * `service:provider,spi` -
+    * `api`
+    * `service:provider`
+    * `service:spi`
   * `persistence:model` - defines DB `@Entity` classes and DB query methods (the implementation of which is in `persistence:impl`)
   * `persistence:impl` - implements DB `Repository` interfaces
-    * `persistence:model` -
+    * `persistence:model`
   * `service:provider` - implements `service:spi`; persists `service.model` objects to/from DB using `@Entity` classes
-    * `persistence:model` -
+    * `persistence:model`
     * `service:spi` - used by controllers
     * `tests-data-factory` - provides factories used in tests
-  * `service:spi` -
+  * `service:spi`
+
+There are tests in `LayeredArchitectureTest` to check for undesirable dependencies:
+```
+Rule 'Layered architecture consisting of
+layer 'API' ('gov.va.starter.example..api..')
+layer 'API-Requests' ('gov.va.starter.example..api..requests..')
+layer 'API-Responses' ('gov.va.starter.example..api..responses..')
+layer 'Controllers' ('gov.va.starter.example..controller..')
+layer 'SPI' ('gov.va.starter.example..service.spi..')
+layer 'Services' ('gov.va.starter.example..service.provider..')
+layer 'Persistence' ('gov.va.starter.example..persistence..')
+where layer 'API' may only be accessed by layers ['Controllers']
+where layer 'API-Requests' may only be accessed by layers ['Controllers', 'API']
+where layer 'API-Responses' may only be accessed by layers ['Controllers', 'API']
+where layer 'Controllers' may not be accessed by any layer
+where layer 'SPI' may only be accessed by layers ['Controllers', 'Services']
+where layer 'Persistence' may only be accessed by layers ['Services']'
+```
 
 ### Docker containers
 

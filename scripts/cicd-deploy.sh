@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV="$(tr '[A-Z]' '[a-z]' <<< $1)"
+ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
 
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ]
 then
@@ -19,7 +19,7 @@ else
   IMAGE_TAG=${GIT_SHA:0:7}
 fi
 
-: ${TEAMNAME:=va-abd-rrd}
+: "${TEAMNAME:=va-abd-rrd}"
 
 # Name must match `{{ .Values.name }}-ghcr` used in api/deployment.yaml
 kubectl create secret docker-registry abd-vro-ghcr -n ${TEAMNAME}-"${ENV}" \
@@ -34,8 +34,8 @@ kubectl create secret generic github-access-token \
               -n ${TEAMNAME}-"${ENV}" \
               --save-config --dry-run=client -o yaml | kubectl apply -f -
 
-: ${HELM_APP_NAME:=abd-vro}
-: ${VERSION:=0.0.1}
+: "${HELM_APP_NAME:=abd-vro}"
+: "${VERSION:=0.0.1}"
 # --set-string overrides settings in helmchart/values.yaml
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\

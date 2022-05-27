@@ -2,6 +2,6 @@ package gov.va.vro.model;
 
 public enum ClaimStatus {
   CREATED,
-  DONE_RRD,
+  DONE_VRO,
   COMPLETED
 }

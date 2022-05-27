@@ -140,7 +140,11 @@ public class ClaimSubmissionEntityMapperTest {
         resourceData.getUserName(),
         resourceData.getPii(),
         resourceData.getFirstName(),
-        resourceData.getLastName());
+        resourceData.getLastName(),
+        resourceData.getSubmissionId(),
+        resourceData.getClaimantId(),
+        resourceData.getContentionType(),
+        gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus.CREATED);
   }
 
   /**
@@ -154,7 +158,11 @@ public class ClaimSubmissionEntityMapperTest {
         resourceData.getUserName(),
         resourceData.getPii(),
         resourceData.getFirstName(),
-        resourceData.getLastName());
+        resourceData.getLastName(),
+        resourceData.getSubmissionId(),
+        resourceData.getClaimantId(),
+        resourceData.getContentionType(),
+        gov.va.vro.model.ClaimStatus.CREATED);
   }
 
   /**

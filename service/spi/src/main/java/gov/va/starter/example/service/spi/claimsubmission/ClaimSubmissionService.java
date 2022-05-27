@@ -1,6 +1,7 @@
 package gov.va.starter.example.service.spi.claimsubmission;
 
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.starter.example.service.spi.claimsubmission.model.SubClaimSubmission;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,8 @@ public interface ClaimSubmissionService {
 
   Optional<ClaimSubmission> updateById(String id, ClaimSubmission record)
       throws RequestValidationException;
+
+  Optional<ClaimSubmission> updateStatusById(String id, ClaimStatus status);
 
   Optional<ClaimSubmission> deleteById(String id);
 

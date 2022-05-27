@@ -48,7 +48,7 @@ plugins {
 }
 
 ext {
-    // temporarily disable test code coverage enforcement
+    // TODO: set back to true; temporarily disable test code coverage enforcement
     jacoco_enforce_violations = false
     jacoco_minimum_coverage = 0.8
     codeModules = [':app',
