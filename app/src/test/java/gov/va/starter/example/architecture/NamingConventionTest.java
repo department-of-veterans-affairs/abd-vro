@@ -1,17 +1,17 @@
 package gov.va.starter.example.architecture;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import org.junit.jupiter.api.Test;
 
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+
 public class NamingConventionTest {
   private final JavaClasses classes =
       new ClassFileImporter()
           .withImportOption(Predefined.DO_NOT_INCLUDE_TESTS)
-          .importPackages("gov.va.starter.example");
+          .importPackages("gov.va");
 
   @Test
   public void controllerShouldBeSuffixed() {

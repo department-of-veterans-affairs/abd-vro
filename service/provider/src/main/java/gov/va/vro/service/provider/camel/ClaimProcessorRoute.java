@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.persistence.model.Payload;
+import gov.va.vro.persistence.model.PayloadEntity;
 import gov.va.vro.service.provider.processors.ClaimProcessorA;
 import org.apache.camel.ExchangeProperties;
 import org.apache.camel.builder.RouteBuilder;
@@ -78,10 +78,10 @@ public class ClaimProcessorRoute extends RouteBuilder {
       }
     } else if (invoked == 2) {
       String submissionId;
-      if (body instanceof Payload) submissionId = ((Payload) body).getSubmissionId();
+      if (body instanceof PayloadEntity) submissionId = ((PayloadEntity) body).getSubmissionId();
       else if (body instanceof byte[])
         submissionId =
-            new CamelDtoConverter(null).toPojo(Payload.class, (byte[]) body).getSubmissionId();
+            new CamelDtoConverter(null).toPojo(PayloadEntity.class, (byte[]) body).getSubmissionId();
       else if (body instanceof ClaimSubmission)
         submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());

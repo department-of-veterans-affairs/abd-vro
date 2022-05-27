@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.persistence.model.Payload;
+import gov.va.vro.persistence.model.PayloadEntity;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
@@ -124,7 +124,7 @@ class CamelRestConfiguration extends RouteBuilder {
             new ChooseSecondExchangeStrategy(),
             false)
         .log(">>5> ${body}")
-        .convertBodyTo(Payload.class)
+        .convertBodyTo(PayloadEntity.class)
         .endRest();
   }
 

@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.camel;
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.persistence.model.Payload;
+import gov.va.vro.persistence.model.PayloadEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.seda.SedaComponent;
@@ -53,7 +53,7 @@ public class CamelConfiguration {
     };
   }
 
-  public static Set<Class> DTO_CLASSES = Sets.newHashSet(ClaimSubmission.class, Payload.class);
+  public static Set<Class> DTO_CLASSES = Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class);
 
   // TODO: replace with Auto-configured TypeConverter
   // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter
