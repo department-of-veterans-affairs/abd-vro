@@ -3,9 +3,9 @@ package gov.va.starter.example.persistence.model;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.Instant;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
-import java.time.Instant;
 
 @Entity
 @Table(name = "claimsubmission", schema = "example")

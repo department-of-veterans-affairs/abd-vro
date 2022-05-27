@@ -101,7 +101,8 @@ public class ClaimSubmissionServiceImpl implements ClaimSubmissionService {
   }
 
   // TODO: use updateById instead?
-  public Optional<ClaimSubmission> updateStatusById(String id, ClaimSubmission.ClaimStatus claimStatus) {
+  public Optional<ClaimSubmission> updateStatusById(
+      String id, ClaimSubmission.ClaimStatus claimStatus) {
     Optional<ClaimSubmission> resource =
         mapper.toModel(
             repository

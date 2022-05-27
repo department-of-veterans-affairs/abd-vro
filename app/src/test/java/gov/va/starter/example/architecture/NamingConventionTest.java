@@ -56,6 +56,8 @@ public class NamingConventionTest {
         .haveSimpleNameEndingWith("Repository")
         .orShould()
         .haveSimpleNameEndingWith("Entity")
+        .orShould()
+        .beEnums()
         .check(classes);
   }
 
