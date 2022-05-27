@@ -7,7 +7,6 @@ import gov.va.starter.example.claimsubmission.factory.ClaimSubmissionFactory;
 import gov.va.starter.example.claimsubmission.model.ClaimSubmissionData;
 import gov.va.starter.example.persistence.model.ClaimSubmissionEntity;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.persistence.model.ClaimStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -145,7 +144,7 @@ public class ClaimSubmissionEntityMapperTest {
         resourceData.getSubmissionId(),
         resourceData.getClaimantId(),
         resourceData.getContentionType(),
-        gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus.CREATED);
+        ClaimSubmission.ClaimStatus.CREATED);
   }
 
   /**
@@ -163,7 +162,7 @@ public class ClaimSubmissionEntityMapperTest {
         resourceData.getSubmissionId(),
         resourceData.getClaimantId(),
         resourceData.getContentionType(),
-        ClaimStatus.CREATED);
+        ClaimSubmissionEntity.ClaimStatus.CREATED);
   }
 
   /**

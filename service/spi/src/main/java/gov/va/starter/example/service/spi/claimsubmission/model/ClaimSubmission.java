@@ -34,4 +34,10 @@ public class ClaimSubmission {
   @NonNull private String contentionType;
 
   @Builder.Default private ClaimStatus status = ClaimStatus.CREATED;
+
+  public enum ClaimStatus {
+    CREATED,
+    DONE_VRO,
+    COMPLETED
+  }
 }

@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider.processors;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
-import gov.va.starter.example.service.spi.claimsubmission.model.ClaimStatus;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class ClaimProcessorA {
     results.put("bp_diastolic", 80);
     results.put("vro_pdf_path", "gov/va/vro/hypertension/" + claim.getSubmissionId() + ".pdf");
 
-    claimSubmissionService.updateStatusById(claim.getId(), ClaimStatus.DONE_VRO);
+    claimSubmissionService.updateStatusById(claim.getId(), ClaimSubmission.ClaimStatus.DONE_VRO);
     return new Payload(claim.getSubmissionId(), "Success", results);
   }
 }
