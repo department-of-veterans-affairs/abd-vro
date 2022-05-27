@@ -1,4 +1,4 @@
-package gov.va.vro.services;
+package gov.va.vro.routes;
 
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ClaimService {
-  //  @Autowired private ClaimSubmissionEntityRepository claimRepository;
+public class CamelClaimService {
   @Autowired private ClaimSubmissionService claimSubmissionService;
 
   public List<ClaimSubmission> getAllClaims() {

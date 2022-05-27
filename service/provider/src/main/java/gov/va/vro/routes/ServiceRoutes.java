@@ -1,6 +1,5 @@
 package gov.va.vro.routes;
 
-import gov.va.vro.services.ClaimService;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,10 @@ public class ServiceRoutes extends RouteBuilder {
     camelUtils.asyncSedaEndpoint("seda:logToFile");
     camelUtils.asyncSedaEndpoint("seda:claim-router");
 
+    camelUtils.asyncSedaEndpoint("seda:claim-vro-processed");
+    camelUtils.multiConsumerSedaEndpoint("seda:claim-vro-processed");
+    from("seda:claim-vro-processed").log(">>>>>>>>> VRO processed! claim: ${body.toString()}");
+
     from("seda:logToFile")
         .marshal()
         .json()
@@ -24,7 +27,7 @@ public class ServiceRoutes extends RouteBuilder {
     from("direct:postClaim")
         .log(">>1> ${body.getClass()}")
         // save Claim to DB and assign UUID before anything else
-        .bean(ClaimService.class, "addClaim")
+        .bean(CamelClaimService.class, "addClaim")
         // https://camel.apache.org/components/3.16.x/eips/recipientList-eip.html#_using_parallel_processing
         .recipientList( // TODO: convert String to constant
             constant("seda:logToFile,seda:claim-router"))

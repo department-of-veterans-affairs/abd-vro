@@ -100,7 +100,7 @@ public class ClaimSubmissionServiceImpl implements ClaimSubmissionService {
     return resource;
   }
 
-  // TODO: move this to ClaimService and call updateById instead?
+  // TODO: use updateById instead?
   public Optional<ClaimSubmission> updateStatusById(String id, ClaimStatus claimStatus) {
     Optional<ClaimSubmission> resource =
         mapper.toModel(

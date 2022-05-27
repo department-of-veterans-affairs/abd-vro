@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Service
 public class ClaimProcessorA {
 
-  @Autowired ClaimSubmissionService claimService;
+  @Autowired ClaimSubmissionService claimSubmissionService;
 
   public Payload process(ClaimSubmission claim) {
     HashMap<String, Object> results = new HashMap<String, Object>();
@@ -20,7 +20,7 @@ public class ClaimProcessorA {
     results.put("bp_diastolic", 80);
     results.put("vro_pdf_path", "gov/va/vro/hypertension/" + claim.getSubmissionId() + ".pdf");
 
-    claimService.updateStatusById(claim.getId(), ClaimStatus.DONE_VRO);
+    claimSubmissionService.updateStatusById(claim.getId(), ClaimStatus.DONE_VRO);
     return new Payload(claim.getSubmissionId(), "Success", results);
   }
 }

@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "message-queue")
-public class MessageQueueProperties {
-  //      private Map<String, String> props;
+class MessageQueueProperties {
   private String host;
   private int port;
   private String user;
