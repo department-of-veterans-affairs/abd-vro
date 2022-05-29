@@ -1,0 +1,19 @@
+plugins {
+    id 'starter.java.container-conventions'
+    id 'starter.java.build-utils-conventions'
+}
+
+docker {
+    copySpec.into(".").from("src"){
+        exclude('spec')
+        exclude('build.gradle')
+    }
+    noCache false // for testing
+}
+
+dockerRun {
+    image "${dockerRegistry}/${rootProject.name}-service-ruby"
+    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
+        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
+
+}

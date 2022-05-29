@@ -1,0 +1,43 @@
+version: '3.9'
+
+networks:
+  internal:
+
+#volumes:
+#  pgdata:
+
+services:
+  rabbitmq1:
+    image: rabbitmq:3
+    hostname: rabbitmq1
+    expose:
+      - "5672"
+#    volumes:
+#      - mqdata:/var/lib/??/data
+    networks:
+      - internal
+    ports:
+      - "5672:5672"
+
+  service-ruby:
+    image: va/abd_vro-service-ruby:latest
+# NOTE: These are the defaults from the flyway.conf   uncomment to override, esp for <secret-service-name> passwords
+    environment:
+      DOCKER_LOGS: true
+#      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+#      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+#    build:
+#      context: ../
+#      dockerfile: ./docker/Dockerfile
+#      args:
+#        RUBY_VERSION: '2.7.6'
+#        PG_MAJOR: '14'
+#        NODE_MAJOR: '16'
+#        YARN_VERSION: '1.22.17'
+#    tmpfs:
+#      - /tmp
+#      - /app/tmp/pids
+    depends_on:
+      - rabbitmq1
+    networks:
+      - internal
