@@ -99,7 +99,7 @@ class CamelRestConfiguration extends RouteBuilder {
         // https://camel.apache.org/components/3.14.x/languages/simple-language.html#_variables
         .setBody(simple("${header.id}"))
         .bean(CamelClaimService.class, "getClaim")
-        .log(">>3> ${body.toString()}")
+        .log(">>10> ${body.toString()}")
         .endRest()
 
         // GET details
@@ -124,7 +124,7 @@ class CamelRestConfiguration extends RouteBuilder {
             -1,
             new ChooseSecondExchangeStrategy(),
             false)
-        .log(">>5> ${body}")
+        .log(">>20> ${body}")
         .convertBodyTo(PayloadEntity.class)
         .endRest();
   }
