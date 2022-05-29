@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-rabbitmq
+  labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- toYaml .Values.labels.mq.global | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
+    spec:
+      containers:
+        - name: rabbit-mq
+          image: {{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+          ports:
+            - containerPort: {{ .Values.service.mq.sourcePort }}
+              protocol: TCP
+          resources: {{- toYaml .Values.resources.mq | nindent 12 }}

@@ -15,6 +15,12 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+  mq:
+    global: &labels-mq-global
+      app: rabbit-mq
+    pod:
+      <<: *labels-mq-global
+      sidecar.istio.io/inject: "false"
 
 images:
   registry: ghcr.io
@@ -32,6 +38,9 @@ images:
   db:
     imageName: postgres
     tag: latest
+  mq:
+    imageName: rabbitmq
+    tag: 3
 
 resources:
   api:
@@ -45,6 +54,10 @@ resources:
     limits:
       cpu: 10m
       memory: 256Mi
+  mq:
+    limits:
+      cpu: 10m
+      memory: 256Mi
 
 service:
   api:
@@ -55,6 +68,10 @@ service:
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
+  mq:
+    type: ClusterIP
+    sourcePort: 5672
+    targetPort: 5672
 
 ports:
   - name: http
@@ -100,3 +117,10 @@ postgres:
   rootPasswordKey: root-password
   usernameValue: someuser
   passwordValue: somepass
+
+rabbitmq:
+  secretName: rabbitmq
+  usernameKey: username
+  passwordKey: password
+  usernameValue: guest
+  passwordValue: guest
