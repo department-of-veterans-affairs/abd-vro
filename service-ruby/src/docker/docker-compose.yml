@@ -31,9 +31,6 @@ services:
 #      dockerfile: ./docker/Dockerfile
 #      args:
 #        RUBY_VERSION: '2.7.6'
-#        PG_MAJOR: '14'
-#        NODE_MAJOR: '16'
-#        YARN_VERSION: '1.22.17'
 #    tmpfs:
 #      - /tmp
 #      - /app/tmp/pids

@@ -11,7 +11,7 @@ bunny_args = {
 subscriber = RabbitSubscriber.new(bunny_args)
 subscriber.subscribe
 
-puts "Waiting for messages..."
-sleep 5.minutes
-puts "Time's up! Exiting."
-subscriber.close
+# puts "Waiting for messages..."
+# sleep 5.minutes
+# puts "Time's up! Exiting."
+# subscriber.close
