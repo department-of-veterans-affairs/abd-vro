@@ -22,17 +22,6 @@ RUN apt-get update -qq \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && truncate -s 0 /var/log/*log
 
-# Application dependencies
-# We use an external Aptfile for this, stay tuned
-# COPY Aptfile /tmp/Aptfile
-# RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
-#   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-#     $(grep -Ev '^\s*#' /tmp/Aptfile | xargs) \
-#     && apt-get clean \
-#     && rm -rf /var/cache/apt/archives/* \
-#     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-#     && truncate -s 0 /var/log/*log
-
 # Configure bundler
 ENV LANG=C.UTF-8 \
   BUNDLE_JOBS=4 \
@@ -51,8 +40,8 @@ RUN gem update --system && \
 # Create a directory for the app code
 RUN mkdir -p /app
 WORKDIR /app
+# build.gradle copies src/ files into build/docker, where this Dockerfile will be built
 COPY . /app/
 RUN bundle install
 
-# CMD ["/bin/sh", "-c", "chmod a+x bin/*.*"]
 CMD ["./entrypoint.sh"]

@@ -3,12 +3,15 @@ plugins {
     id 'starter.java.build-utils-conventions'
 }
 
-docker {
+docker { // expects src/docker/Dockerfile to exist
+    // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
+        exclude('docker')
         exclude('spec')
-        exclude('build.gradle')
     }
-    noCache false // for testing
+
+    // Use container image cache
+    noCache false
 }
 
 dockerRun {
