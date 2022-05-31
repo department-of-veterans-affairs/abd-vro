@@ -4,9 +4,9 @@ require 'rabbit_subscriber'
 require 'logger'
 
 bunny_args = {
-  host: "rabbitmq1",
-  user: "guest",
-  password: "guest"
+  host: ENV['RABBITMQ_PLACEHOLDERS_HOST'] ||"rabbitmq1",
+  user: ENV['RABBITMQ_PLACEHOLDERS_USERNAME'] || "guest",
+  password: ENV['RABBITMQ_PLACEHOLDERS_USERPASSWORD'] || "guest"
 }
 subscriber = RabbitSubscriber.new(bunny_args)
 subscriber.subscribe
