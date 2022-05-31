@@ -15,11 +15,8 @@ ARG DISTRO_NAME
 # Common dependencies
 RUN apt-get update -qq \
   && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-    build-essential \
-#     gnupg2 \
-#     curl \
-#     less \
-    git \
+    build-essential=12.6 \
+    git=1:2.20.1-2+deb10u3 \
   && apt-get clean \
   && rm -rf /var/cache/apt/archives/* \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -49,7 +46,7 @@ ENV BUNDLE_APP_CONFIG=.bundle
 
 # Upgrade RubyGems and install the latest Bundler version
 RUN gem update --system && \
-    gem install bundler
+    gem install bundler:2.1.4
 
 # Create a directory for the app code
 RUN mkdir -p /app
