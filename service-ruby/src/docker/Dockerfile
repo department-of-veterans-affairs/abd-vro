@@ -8,7 +8,7 @@ ARG RUBY_VERSION=2.7.6
 ARG DISTRO_NAME=buster
 
 FROM ruby:$RUBY_VERSION-slim-$DISTRO_NAME
-LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd_vro
+LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 ARG DISTRO_NAME
 
