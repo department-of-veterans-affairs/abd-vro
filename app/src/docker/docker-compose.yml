@@ -81,6 +81,10 @@ services:
 
   service-ruby:
     image: va/abd_vro-service-ruby:latest
+    environment:
+      DOCKER_LOGS: true
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     depends_on:
       - rabbitmq1
     networks:
