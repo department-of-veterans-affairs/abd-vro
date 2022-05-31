@@ -28,9 +28,8 @@ public class ClaimProcessorRoute extends RouteBuilder {
 
     from("seda:claimTypeA")
         .routeId("seda-claimTypeA")
-        //                .tracing()
-        .log(">>> ${body}")
-        .delayer(5000)
+        .log(">>4> ${body}")
+        .delayer(5000) // artificial delay to simulate processing
         .bean(ClaimProcessorA.class, "process")
         .end();
   }
@@ -47,8 +46,6 @@ public class ClaimProcessorRoute extends RouteBuilder {
    */
   public String route(Object body, @ExchangeProperties Map<String, Object> props)
       throws IOException {
-    //        bodies.add(claim);
-
     // get the state from the exchange props and keep track how many times
     // we have been invoked
     int invoked = 0;
@@ -84,14 +81,16 @@ public class ClaimProcessorRoute extends RouteBuilder {
       else if (body instanceof ClaimSubmission)
         submissionId = ((ClaimSubmission) body).getSubmissionId();
       else throw new IllegalArgumentException("body " + body.getClass());
-      log.info("+++ invoked=2 " + submissionId + " " + body.getClass() + " " + props);
-      String generalSeda = "seda:claim-vro-processed";
       String specificSeda = "seda:claim-vro-processed-" + submissionId + SEDA_ASYNC_OPTION;
+      log.info("+++ invoked=2 " + submissionId + " " + body.getClass() + " " + props);
+
+      // send to general and specific queues
+      String generalSeda = "seda:claim-vro-processed";
       return specificSeda + "," + generalSeda;
     }
 
     log.info("+++ invoked=" + invoked + " " + body.getClass() + " " + props);
-    // no more so return null
+    // end dynamic routing
     return null;
   }
 }

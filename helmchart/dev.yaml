@@ -1,7 +1,4 @@
 environment: dev
-  # stage: dev
-  # name: dev
-  # host: dev.lighthouse.va.gov
 
 rbac:
   create: true
