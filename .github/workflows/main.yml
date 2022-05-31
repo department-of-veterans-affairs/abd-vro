@@ -75,8 +75,11 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-service-ruby \
+            "ghcr.io/${{ github.repository }}/abd_vro-service-ruby:${COMMIT_SHA:0:7}"
 
       - name: Push images
         run: |
           docker push "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/abd_vro-service-ruby:${COMMIT_SHA:0:7}"

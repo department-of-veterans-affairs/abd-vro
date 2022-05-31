@@ -79,6 +79,17 @@ services:
   #   networks:
   #     - internal
 
+  service-ruby:
+    image: va/abd_vro-service-ruby:latest
+    environment:
+      DOCKER_LOGS: true
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+    depends_on:
+      - rabbitmq1
+    networks:
+      - internal
+
   abd_vro:
     image: va/abd_vro-app:latest
     hostname: abd_vro
@@ -95,6 +106,7 @@ services:
       - postgres1
       - rabbitmq1
       - db-init
+      - service-ruby
     networks:
       - internal
       - external
