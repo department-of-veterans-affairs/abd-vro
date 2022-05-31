@@ -151,7 +151,7 @@ starter:
     title: Example service
     description: Example service providing ClaimSubmission info
     version: v1
-    licenseUrl: https://github.com/department-of-veterans-affairs/abd_vro/blob/master/LICENSE
+    licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE
     contactEmail: starter-java@example.com
     contactUrl: https://example.va.gov/
     contactName: Example
