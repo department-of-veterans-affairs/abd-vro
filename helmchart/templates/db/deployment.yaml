@@ -11,9 +11,11 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels.db.pod | nindent 8 }}
     spec:
+      imagePullSecrets:
+        - name: {{ .Values.name }}-ghcr
       containers:
         - name: postgres-db
-          image: {{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
           env:
             - name: POSTGRES_USER
               valueFrom:

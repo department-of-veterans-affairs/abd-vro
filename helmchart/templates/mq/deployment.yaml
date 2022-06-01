@@ -11,9 +11,11 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
     spec:
+      imagePullSecrets:
+        - name: {{ .Values.name }}-ghcr
       containers:
         - name: rabbit-mq
-          image: {{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
           env:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
