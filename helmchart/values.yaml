@@ -31,19 +31,30 @@ images:
     imageName: abd_vro-app
     tag: latest
     imagePullPolicy: Always
+  serviceRuby:
+    imageName: abd_vro-service-ruby
+    tag: latest
+    imagePullPolicy: Always
   dbInit:
     imageName: abd_vro-db-init
     tag: latest
     imagePullPolicy: Always
   db:
-    imageName: postgres
+    imageName: abd_vro-postgres
     tag: latest
   mq:
-    imageName: rabbitmq
+    imageName: abd_vro-rabbitmq
     tag: 3
 
 resources:
   api:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  serviceRuby:
     requests:
       cpu: 150m
       memory: 512Mi

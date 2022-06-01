@@ -35,11 +35,12 @@ kubectl create secret generic github-access-token \
               --save-config --dry-run=client -o yaml | kubectl apply -f -
 
 : "${HELM_APP_NAME:=abd-vro}"
-: "${VERSION:=0.0.1}"
+: "${VERSION:=0.0.2}"
 # --set-string overrides settings in helmchart/values.yaml
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
+              --set-string images.serviceRuby.tag="${IMAGE_TAG}"\
               --set-string images.dbInit.tag="${IMAGE_TAG}"\
               --set-string info.version="${VERSION}"\
               --set-string info.git_hash="${GIT_SHA}" \
