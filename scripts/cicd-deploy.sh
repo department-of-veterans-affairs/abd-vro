@@ -21,7 +21,7 @@ fi
 
 : "${TEAMNAME:=va-abd-rrd}"
 
-# Name must match `{{ .Values.name }}-ghcr` used in api/deployment.yaml
+# Name must match `{{ .Values.name }}-ghcr` used for imagePullSecrets in */deployment.yaml
 kubectl create secret docker-registry abd-vro-ghcr -n ${TEAMNAME}-"${ENV}" \
     --docker-username="${GITHUB_USERNAME}" \
     --docker-password="${GITHUB_ACCESS_TOKEN}" \
