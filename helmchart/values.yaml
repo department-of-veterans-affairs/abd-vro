@@ -15,6 +15,12 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+  mq:
+    global: &labels-mq-global
+      app: rabbit-mq
+    pod:
+      <<: *labels-mq-global
+      sidecar.istio.io/inject: "false"
 
 images:
   registry: ghcr.io
@@ -25,13 +31,20 @@ images:
     imageName: abd_vro-app
     tag: latest
     imagePullPolicy: Always
+  serviceRuby:
+    imageName: abd_vro-service-ruby
+    tag: latest
+    imagePullPolicy: Always
   dbInit:
     imageName: abd_vro-db-init
     tag: latest
     imagePullPolicy: Always
   db:
-    imageName: postgres
+    imageName: abd_vro-postgres
     tag: latest
+  mq:
+    imageName: abd_vro-rabbitmq
+    tag: 3
 
 resources:
   api:
@@ -41,7 +54,18 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
+  serviceRuby:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
   db:
+    limits:
+      cpu: 10m
+      memory: 256Mi
+  mq:
     limits:
       cpu: 10m
       memory: 256Mi
@@ -55,6 +79,10 @@ service:
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
+  mq:
+    type: ClusterIP
+    sourcePort: 5672
+    targetPort: 5672
 
 ports:
   - name: http
@@ -100,3 +128,10 @@ postgres:
   rootPasswordKey: root-password
   usernameValue: someuser
   passwordValue: somepass
+
+rabbitmq:
+  secretName: rabbitmq
+  usernameKey: username
+  passwordKey: password
+  usernameValue: guest
+  passwordValue: guest
