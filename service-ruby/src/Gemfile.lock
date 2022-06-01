@@ -75,6 +75,7 @@ DEPENDENCIES
   activesupport (~> 6.0)
   bunny (>= 2.13.0)
   erb (>= 2.2.3)
+  mini_portile2 (~> 2.8.0)
   prawn
   prawn-markup!
   prawn-table
