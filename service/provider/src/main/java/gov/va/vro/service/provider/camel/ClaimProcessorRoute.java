@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-/**
- * Routes claims to processors, depending on claim attributes (e.g., contentionType)
- */
+/** Routes claims to processors, depending on claim attributes (e.g., contentionType) */
 @Component
 @RequiredArgsConstructor
 public class ClaimProcessorRoute extends RouteBuilder {
@@ -30,7 +28,7 @@ public class ClaimProcessorRoute extends RouteBuilder {
         .dynamicRouter(method(DynamicClaimRouter.class, "routeClaim"));
   }
 
-  private void configureRouteClaimTypeA(){
+  private void configureRouteClaimTypeA() {
     from("seda:claimTypeA")
         .routeId("seda-claimTypeA")
         .log(">>4> ${body}")

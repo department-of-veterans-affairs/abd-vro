@@ -3,7 +3,6 @@ package gov.va.starter.example.controller.claimsubmission;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.starter.boot.exception.ResourceNotFoundException;
 import gov.va.starter.boot.notifier.lifecycle.entity.spi.EntityLifecycleNotifier;
-import gov.va.starter.example.api.claimsubmission.requests.AssessHealthDataRequest;
 import gov.va.starter.example.api.claimsubmission.requests.ClaimSubmissionRequest;
 import gov.va.starter.example.api.claimsubmission.requests.SubClaimSubmissionRequest;
 import gov.va.starter.example.api.claimsubmission.resources.ClaimSubmissionResource;
@@ -58,13 +57,6 @@ public class ClaimSubmissionController implements ClaimSubmissionResource {
 
   ClaimSubmission handlePost(ClaimSubmission resource) {
     return useCamel ? camelEntrance.postClaim(resource) : manager.add(resource);
-  }
-
-  @Override
-  public ResponseEntity<String> assess_health_data(AssessHealthDataRequest request) throws RequestValidationException {
-    String response = camelEntrance.assess_health_data_demo(null);
-    log.info("RESPONSE: {}", response);
-    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   @Override

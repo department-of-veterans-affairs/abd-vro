@@ -2,7 +2,6 @@ package gov.va.starter.example.api.claimsubmission.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.starter.boot.exception.ResourceNotFoundException;
-import gov.va.starter.example.api.claimsubmission.requests.AssessHealthDataRequest;
 import gov.va.starter.example.api.claimsubmission.requests.ClaimSubmissionRequest;
 import gov.va.starter.example.api.claimsubmission.requests.SubClaimSubmissionRequest;
 import gov.va.starter.example.api.claimsubmission.responses.ClaimSubmissionResponse;
@@ -22,7 +21,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.zalando.problem.Problem;
 
 import javax.validation.Valid;
@@ -35,22 +41,6 @@ import javax.validation.constraints.NotNull;
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface ClaimSubmissionResource {
-  @Operation(
-      summary = "Demo assess_health_data",
-      description = "")
-  @PostMapping("/assess_health_data")
-  @ResponseStatus(HttpStatus.CREATED)
-  @Timed(value = "example.assess_health_data")
-  ResponseEntity<String> assess_health_data(
-      @Parameter(
-              description = "metadata for assess_health_data",
-              required = true,
-              schema = @Schema(implementation = AssessHealthDataRequest.class))
-          @Valid
-          @RequestBody
-          AssessHealthDataRequest request)
-      throws RequestValidationException;
-
   @Operation(
       summary = "Create ClaimSubmission",
       description = "Create a new ClaimSubmission from the demographic information provided")

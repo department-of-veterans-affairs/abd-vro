@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-/**
- * Defines primary routes
- */
+/** Defines primary routes */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -29,12 +27,12 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteHealthDataAssessor();
   }
 
-  private void configureRouteFileLogger(){
+  private void configureRouteFileLogger() {
     camelUtils.asyncSedaEndpoint("seda:logToFile");
     from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
   }
 
-  private void configureRoutePostClaim(){
+  private void configureRoutePostClaim() {
     from("direct:postClaim")
         .log(">>1> ${body.getClass()}")
         // save Claim to DB and assign UUID before anything else
@@ -61,7 +59,7 @@ public class PrimaryRoutes extends RouteBuilder {
         // .log(">>> To assess_health_data: ${body}")
         // .to("log:INFO?showBody=true&showHeaders=true")
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
-        .to("rabbitmq:assess_health_data?routingKey="+queue_name);
+        .to("rabbitmq:assess_health_data?routingKey=" + queue_name);
   }
 
   private JSONObject samplePayload() {
@@ -74,13 +72,14 @@ public class PrimaryRoutes extends RouteBuilder {
   private JSONObject sampleLighthouseObservationResponse() {
     JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
     try {
-      InputStream filestream = getClass().getResourceAsStream("/examples/lighthouse_observations_resp.json");
-      if(filestream==null) return null;
+      InputStream filestream =
+          getClass().getResourceAsStream("/examples/lighthouse_observations_resp.json");
+      if (filestream == null) return null;
       return (JSONObject) parser.parse(filestream);
     } catch (ParseException e) {
-      e.printStackTrace();
+      log.warn("", e);
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      log.warn("", e);
     }
     return null;
   }

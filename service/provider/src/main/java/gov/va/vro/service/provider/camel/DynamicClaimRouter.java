@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Used by ClaimProcessorRoute to dynamically route claim to endpoints depending on claim attributes.
- * https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html
+ * Used by ClaimProcessorRoute to dynamically route claim to endpoints depending on claim
+ * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html
  */
 @Slf4j
 @Component
