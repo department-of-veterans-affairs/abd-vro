@@ -1,7 +1,7 @@
-package gov.va.starter.example.api.demo.resources;
+package gov.va.vro.api.demo.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.starter.example.api.demo.requests.AssessHealthDataRequest;
+import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

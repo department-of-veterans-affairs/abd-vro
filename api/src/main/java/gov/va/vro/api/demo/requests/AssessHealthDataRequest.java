@@ -1,4 +1,4 @@
-package gov.va.starter.example.api.demo.requests;
+package gov.va.vro.api.demo.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +21,6 @@ public class AssessHealthDataRequest {
   @Schema(description = "Type of contention", example = "hypertension")
   private final String contention;
 
-  @NonNull
   @Schema(
       description = "JSON string response from Lighthouse Observations API",
       example = "{\"entry\":[{\"search\":{\"mode\":\"match\"},\"resource\": ...")
@@ -30,7 +29,7 @@ public class AssessHealthDataRequest {
   @JsonCreator
   public AssessHealthDataRequest(
       @NonNull @JsonProperty("contention") String contention,
-      @NonNull @JsonProperty("bp_observations") String bpObservations) {
+      @JsonProperty("bp_observations") String bpObservations) {
     this.contention = contention;
     this.bpObservations = bpObservations;
   }

@@ -1,8 +1,8 @@
 package gov.va.vro.controller.demo;
 
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.starter.example.api.demo.requests.AssessHealthDataRequest;
-import gov.va.starter.example.api.demo.resources.DemoResource;
+import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
+import gov.va.vro.api.demo.resources.DemoResource;
 import gov.va.vro.service.provider.CamelEntrance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
