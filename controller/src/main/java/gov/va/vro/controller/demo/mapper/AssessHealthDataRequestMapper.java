@@ -3,7 +3,7 @@ package gov.va.vro.controller.demo.mapper;
 import gov.va.starter.example.api.responses.PagedResponse;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
-import gov.va.vro.service.spi.demo.AssessHealthData;
+import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
