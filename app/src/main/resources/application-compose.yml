@@ -19,6 +19,8 @@ spring:
 
 opentracing:
   zipkin:
+    # TODO: re-enable later if desired
+    # Disabling to run locally without errors
     enabled: false
     http-sender.baseUrl: http://jaeger:9411
 

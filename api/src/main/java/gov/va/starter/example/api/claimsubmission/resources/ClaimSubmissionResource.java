@@ -41,6 +41,7 @@ import javax.validation.constraints.NotNull;
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface ClaimSubmissionResource {
+
   @Operation(
       summary = "Create ClaimSubmission",
       description = "Create a new ClaimSubmission from the demographic information provided")

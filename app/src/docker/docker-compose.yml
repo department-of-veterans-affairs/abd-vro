@@ -104,6 +104,7 @@ services:
       POSTGRES_USER: example_service
       POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
+      # TODO: move these RabbitMQ configurations into a reusable yaml block
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
