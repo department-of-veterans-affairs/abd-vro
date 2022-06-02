@@ -1,3 +1,5 @@
+# This file is used when app/src/docker/docker-compose.yml is used due to: spring.profiles.include=compose
+
 spring:
   datasource:
     url: jdbc:postgresql://postgres1:5432/example
@@ -17,7 +19,7 @@ spring:
 
 opentracing:
   zipkin:
-    enabled: true
+    enabled: false
     http-sender.baseUrl: http://jaeger:9411
 
 logging:
