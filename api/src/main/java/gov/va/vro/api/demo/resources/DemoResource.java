@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface DemoResource {
-  @Operation(summary = "Demo assess_health_data", description = "")
+  @Operation(summary = "Demo assess_health_data", description = "Submit health data for assessment")
   @PostMapping("/assess_health_data")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "example.assess_health_data")

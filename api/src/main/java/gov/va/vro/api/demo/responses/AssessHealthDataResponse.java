@@ -14,6 +14,6 @@ import lombok.NonNull;
 public class AssessHealthDataResponse {
 
   @NonNull
-  @Schema(description = "JSON results", example = "")
+  @Schema(description = "JSON results", example = "{\"bp_readings\": [ ... ]}")
   private final String bpReadingsJson;
 }
