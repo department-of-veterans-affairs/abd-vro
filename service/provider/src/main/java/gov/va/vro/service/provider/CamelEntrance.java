@@ -24,4 +24,8 @@ public class CamelEntrance {
     // TODO if needed
     return null;
   }
+
+  public String assess_health_data_demo(Object body) {
+    return producerTemplate.requestBody("direct:assess_health_data_demo", body, String.class);
+  }
 }

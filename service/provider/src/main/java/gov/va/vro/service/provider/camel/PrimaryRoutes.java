@@ -52,9 +52,16 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteHealthDataAssessor() {
+    String queue_name = "health_data_assessor";
+
     // send JSON-string payload to RabbitMQ
-    JSONObject payload = samplePayload();
-    log.debug("PAYLOAD: {}", payload.toJSONString());
+    from("direct:assess_health_data_demo")
+        .routeId("assess_health_data")
+        .setBody(exchange -> samplePayload().toJSONString())
+        // .log(">>> To assess_health_data: ${body}")
+        // .to("log:INFO?showBody=true&showHeaders=true")
+        // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
+        .to("rabbitmq:assess_health_data?routingKey="+queue_name);
   }
 
   private JSONObject samplePayload() {
