@@ -2,6 +2,7 @@ package gov.va.vro.api.demo.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
+import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +27,7 @@ public interface DemoResource {
   @PostMapping("/assess_health_data")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "example.assess_health_data")
-  ResponseEntity<String> assess_health_data(
+  ResponseEntity<AssessHealthDataResponse> assess_health_data(
       @Parameter(
               description = "metadata for assess_health_data",
               required = true,

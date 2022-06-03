@@ -25,6 +25,8 @@ public class CamelDtoConverter extends TypeConverterSupport {
   public CamelDtoConverter(Collection<Class> dtoClasses, ObjectMapper mapper) {
     this.dtoClasses = dtoClasses;
     this.mapper = mapper;
+    this.writer = mapper.writer();
+    this.reader = mapper.reader();
   }
 
   public final Collection<Class> dtoClasses;
@@ -48,22 +50,19 @@ public class CamelDtoConverter extends TypeConverterSupport {
 
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
   private final ObjectMapper mapper;
+  private final ObjectWriter writer;
+  private final ObjectReader reader;
 
   public byte[] toByteArray(Object obj) throws JsonProcessingException {
-    ObjectWriter writer = mapper.writer();
-    log.warn(writer.toString());
     // log.trace("convert toByteArray: {}", writer.writeValueAsString(obj));
     return writer.writeValueAsBytes(obj);
   }
 
   public <T> T toPojo(Class<T> targetClass, byte[] bytes) throws IOException {
-    ObjectReader reader = mapper.reader();
-    log.warn(reader.toString());
     return reader.readValue(new String(bytes), targetClass);
   }
 
   public InputStream toInputStream(Object obj) throws JsonProcessingException {
-    ObjectWriter writer = mapper.writer();
     byte[] bytes = writer.writeValueAsBytes(obj);
     return new ByteArrayInputStream(bytes);
   }

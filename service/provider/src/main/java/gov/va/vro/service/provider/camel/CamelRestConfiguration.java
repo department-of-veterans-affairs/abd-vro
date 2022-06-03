@@ -77,7 +77,7 @@ class CamelRestConfiguration extends RouteBuilder {
         .outType(ClaimSubmission.class)
         .route()
         .routeId("rest-POST-claim")
-        .tracing()
+        // .tracing()
         .to("direct:postClaim")
         .endRest()
 

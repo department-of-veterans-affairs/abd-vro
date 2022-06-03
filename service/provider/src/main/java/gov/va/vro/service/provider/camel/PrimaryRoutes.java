@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
+import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -58,17 +59,30 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from("direct:assess_health_data_demo")
         .routeId("assess_health_data")
-        .setBody(exchange -> samplePayload().toJSONString())
+        // .tracing()
+
+        // if bpObservations is empty, load a samplePayload for it
+        .choice()
+        .when(simple("${body.bpObservations()} == null"))
+        .setBody(exchange -> samplePayload())
+        .end()
+
         // .log(">>> To assess_health_data: ${body}")
         // .to("log:INFO?showBody=true&showHeaders=true")
+
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
+        // Subscribers of this RabbitMQ queue expect a JSON string
+        // so marshal AssessHealthData into a JSON string
+        .marshal()
+        .json()
         .to("rabbitmq:assess_health_data?routingKey=" + queue_name);
   }
 
-  private JSONObject samplePayload() {
-    JSONObject payload = new JSONObject();
-    payload.put("contention", "hypertension");
-    payload.put("bp_observations", sampleLighthouseObservationResponse());
+  private AssessHealthData samplePayload() {
+    log.info("Using sample Lighthouse Observation Response string");
+    AssessHealthData payload = new AssessHealthData();
+    payload.setContention("hypertension");
+    payload.setBpObservations(sampleLighthouseObservationResponse().toJSONString());
     return payload;
   }
 

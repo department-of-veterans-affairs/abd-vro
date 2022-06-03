@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
+import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
@@ -21,8 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.io.InputStream;
-import java.util.Collection;
 import java.util.Set;
 
 @Slf4j
@@ -45,8 +44,7 @@ public class CamelConfiguration {
 
       @Override
       public void afterApplicationStart(CamelContext camelContext) {
-        Set<Class> dtoClasses = Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class);
-        registerTypeConverter(dtoClasses);
+        registerTypeConverters();
 
         log.info(
             camelContext.getEndpoints().size()
@@ -57,16 +55,14 @@ public class CamelConfiguration {
     };
   }
 
+  private static final Set<Class> dtoClasses =
+      Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class, AssessHealthData.class);
   private final ObjectMapper mapper;
 
   // TODO: replace with Auto-configured TypeConverter
   // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter
-  private void registerTypeConverter(Collection<Class> dtoClasses) {
-    registerWith(dtoClasses);
-  }
-
   @Bean
-  public CamelDtoConverter registerWith(Collection<Class> dtoClasses) {
+  CamelDtoConverter registerTypeConverters() {
     CamelDtoConverter converter = new CamelDtoConverter(dtoClasses, mapper);
 
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
@@ -76,11 +72,11 @@ public class CamelConfiguration {
           registry.addTypeConverter(clazz, byte[].class, converter);
           registry.addTypeConverter(byte[].class, clazz, converter);
 
-          registry.addTypeConverter(clazz, InputStream.class, converter);
+          // registry.addTypeConverter(clazz, InputStream.class, converter);
           // registry.addTypeConverter(InputStream.class, clazz, dtoConverter);
         });
 
-    // printTypeConverters();
+    printTypeConverters();
     return converter;
   }
 
@@ -95,13 +91,10 @@ public class CamelConfiguration {
                     fromClass.getName(),
                     toClass.getName(),
                     converter.getClass().getSimpleName()));
-    log.debug(
-        "ClaimSubmission -> byte[] : " + registry.lookup(ClaimSubmission.class, byte[].class));
-    log.debug(
-        "byte[] -> ClaimSubmission : " + registry.lookup(byte[].class, ClaimSubmission.class));
-    log.debug(
-        "ClaimSubmission -> InputStream : "
-            + registry.lookup(ClaimSubmission.class, InputStream.class));
+    // log.info( "AssessHealthData -> byte[] : " +
+    //   registry.lookup(AssessHealthData.class, byte[].class));
+    // log.info( "byte[] -> AssessHealthData : " +
+    //   registry.lookup(byte[].class, AssessHealthData.class));
   }
 
   private final MessageQueueProperties messageQueueProps;

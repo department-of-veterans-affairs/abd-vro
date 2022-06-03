@@ -9,7 +9,7 @@ $logger = Logger.new(STDOUT)
 $logger.level = Logger::DEBUG
 
 bunny_args = {
-  host: ENV['RABBITMQ_PLACEHOLDERS_HOST'] || "rabbitmq1",
+  host: ENV['RABBITMQ_PLACEHOLDERS_HOST'] || "localhost",
   user: ENV['RABBITMQ_PLACEHOLDERS_USERNAME'] || "guest",
   password: ENV['RABBITMQ_PLACEHOLDERS_USERPASSWORD'] || "guest"
 }

@@ -5,7 +5,11 @@ class HealthDataAssessor
     case contention
     when 'hypertension'
       bp_observations = json['bp_observations']
-      return {} if bp_observations.blank?
+      return { result: "No BP bp_observations" } if bp_observations.blank?
+
+      # bp_observations is a String when json is provided from app
+      # bp_observations is a Hash when json is provided from examples/*.rb
+      bp_observations = JSON.parse(bp_observations) if(bp_observations.is_a? String)
 
       relevant_readings = LighthouseObservationData.new(bp_observations).transform
       return { bp_readings: relevant_readings }
@@ -13,6 +17,8 @@ class HealthDataAssessor
       bp_observations = json['bp_observations']
       medications = json['medications']
       return {} if medications.blank?
+
+      medications = JSON.parse(medications) if(medications.is_a? String)
 
       transformed_medications = LighthouseMedicationRequestData.new(medications).transform
       flagged_medications = transformed_medications.map do |medication|
