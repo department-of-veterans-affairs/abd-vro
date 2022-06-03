@@ -18,6 +18,7 @@ import java.util.Collection;
  * Data Transfer Object (DTO) Converter for Camel. Needed for sending POJOs through rabbitmq, saving
  * to text files, etc. When registered, Camel uses this class to automatically convert message body
  * objects of a specified class into the target class, depending on the endpoint.
+ * https://camel.apache.org/manual/type-converter.html
  */
 @Slf4j
 public class CamelDtoConverter extends TypeConverterSupport {

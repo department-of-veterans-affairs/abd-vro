@@ -53,7 +53,6 @@ public class DynamicClaimRouter {
       switch (claimType) {
         case "A":
           return "seda:claimType" + claimType; // non-async endpoint; wait for result
-        case "B": // Groovy
         case "C": // Ruby in separate process
         default:
           log.error("unknown contentionType: {}", claimType);
