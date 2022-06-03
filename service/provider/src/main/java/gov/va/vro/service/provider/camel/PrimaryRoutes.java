@@ -63,8 +63,9 @@ public class PrimaryRoutes extends RouteBuilder {
 
         // if bpObservations is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.bpObservations()} == null"))
-        .setBody(exchange -> samplePayload())
+        // https://camel.apache.org/components/3.11.x/languages/simple-language.html
+        .when(simple("${body.bpObservations} == null"))
+        .setBody(exchange -> samplePayload(exchange.getMessage(AssessHealthData.class)))
         .end()
 
         // .log(">>> To assess_health_data: ${body}")
@@ -78,10 +79,8 @@ public class PrimaryRoutes extends RouteBuilder {
         .to("rabbitmq:assess_health_data?routingKey=" + queue_name);
   }
 
-  private AssessHealthData samplePayload() {
+  private AssessHealthData samplePayload(AssessHealthData payload) {
     log.info("Using sample Lighthouse Observation Response string");
-    AssessHealthData payload = new AssessHealthData();
-    payload.setContention("hypertension");
     payload.setBpObservations(sampleLighthouseObservationResponse().toJSONString());
     return payload;
   }
