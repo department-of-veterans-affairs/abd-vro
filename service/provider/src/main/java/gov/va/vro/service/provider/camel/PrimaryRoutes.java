@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -8,8 +10,9 @@ import net.minidev.json.parser.ParseException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
 
 /** Defines primary routes */
 @Slf4j
@@ -69,18 +72,29 @@ public class PrimaryRoutes extends RouteBuilder {
     return payload;
   }
 
+  // memoize so we don't hit the URL too often
+  private static String sampleLhObservationResponseString;
+
+  private String sampleLhObservationResponseString() throws IOException {
+    if (sampleLhObservationResponseString == null) {
+      String sampleResponseUrl =
+          "https://gist.githubusercontent.com/yoomlam/"
+              + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/9c45a1372f364b54a8e531aaf7d7f0d83c86e961/"
+              + "lighthouse_observations_resp.json";
+      log.info("Retrieving sample Lighthouse Observation response");
+      BufferedInputStream in = new BufferedInputStream(new URL(sampleResponseUrl).openStream());
+      sampleLhObservationResponseString = new String(ByteStreams.toByteArray(in), Charsets.UTF_8);
+    }
+    return sampleLhObservationResponseString;
+  }
+
   private JSONObject sampleLighthouseObservationResponse() {
     JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
     try {
-      InputStream filestream =
-          getClass().getResourceAsStream("/examples/lighthouse_observations_resp.json");
-      if (filestream == null) return null;
-      return (JSONObject) parser.parse(filestream);
-    } catch (ParseException e) {
+      return (JSONObject) parser.parse(sampleLhObservationResponseString());
+    } catch (ParseException | IOException e) {
       log.warn("", e);
-    } catch (UnsupportedEncodingException e) {
-      log.warn("", e);
+      return null;
     }
-    return null;
   }
 }
