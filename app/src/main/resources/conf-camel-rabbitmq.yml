@@ -1,5 +1,5 @@
 message-queue:
-  host: localhost
+  host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
   port: 5672
-  user: guest
-  password: guest
+  user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+  password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"

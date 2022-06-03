@@ -30,8 +30,8 @@ def reply_listener(channel, exchange_name:, queue_name:)
   queue.bind(exchange_name, routing_key: queue_name)
 
   queue.subscribe(block: false) do |delivery_info, properties, body|
-    puts " Received reply: #{JSON.pretty_generate(JSON.parse(body))}"
-    puts "correlation_id: #{properties.correlation_id}"
+    puts "Received reply: #{JSON.pretty_generate(JSON.parse(body))}"
+    puts " correlation_id: #{properties.correlation_id}"
   end
   queue
 end

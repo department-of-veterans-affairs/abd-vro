@@ -37,15 +37,15 @@ public class ClaimSubmissionRequest {
   @Schema(
       description = "Identifier for the original claim submission",
       example = "89d6a168-2780-456e-a836-fda6419fedbc")
-  private String submissionId;
+  private final String submissionId;
 
   @NonNull
   @Schema(description = "Identifier for the claimant", example = "123456789")
-  private String claimantId;
+  private final String claimantId;
 
   @NonNull
   @Schema(description = "Type of contention", example = "hypertension")
-  private String contentionType;
+  private final String contentionType;
 
   /**
    * Create object from json.

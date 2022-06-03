@@ -83,6 +83,8 @@ services:
     image: va/abd_vro-service-ruby:latest
     environment:
       DOCKER_LOGS: true
+      # TODO: move these RabbitMQ configurations into a reusable yaml block
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     depends_on:
@@ -102,6 +104,10 @@ services:
       POSTGRES_USER: example_service
       POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
+      # TODO: move these RabbitMQ configurations into a reusable yaml block
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     depends_on:
       - postgres1
       - rabbitmq1
