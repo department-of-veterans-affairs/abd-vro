@@ -76,7 +76,7 @@ public class CamelConfiguration {
           // registry.addTypeConverter(InputStream.class, clazz, dtoConverter);
         });
 
-    printTypeConverters();
+    // printTypeConverters();
     return converter;
   }
 
@@ -86,15 +86,15 @@ public class CamelConfiguration {
         .getTypeMappings()
         .forEach(
             (fromClass, toClass, converter) ->
-                log.debug(
+                log.info(
                     "{} -> {} : {}",
                     fromClass.getName(),
                     toClass.getName(),
                     converter.getClass().getSimpleName()));
-    // log.info( "AssessHealthData -> byte[] : " +
-    //   registry.lookup(AssessHealthData.class, byte[].class));
-    // log.info( "byte[] -> AssessHealthData : " +
-    //   registry.lookup(byte[].class, AssessHealthData.class));
+    log.info(
+        "AssessHealthData -> byte[] : " + registry.lookup(AssessHealthData.class, byte[].class));
+    log.info(
+        "byte[] -> AssessHealthData : " + registry.lookup(byte[].class, AssessHealthData.class));
   }
 
   private final MessageQueueProperties messageQueueProps;
