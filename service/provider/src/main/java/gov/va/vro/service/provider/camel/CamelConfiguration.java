@@ -91,10 +91,10 @@ public class CamelConfiguration {
                     fromClass.getName(),
                     toClass.getName(),
                     converter.getClass().getSimpleName()));
-     log.info( "AssessHealthData -> byte[] : " +
-       registry.lookup(AssessHealthData.class, byte[].class));
-     log.info( "byte[] -> AssessHealthData : " +
-       registry.lookup(byte[].class, AssessHealthData.class));
+    log.info(
+        "AssessHealthData -> byte[] : " + registry.lookup(AssessHealthData.class, byte[].class));
+    log.info(
+        "byte[] -> AssessHealthData : " + registry.lookup(byte[].class, AssessHealthData.class));
   }
 
   private final MessageQueueProperties messageQueueProps;

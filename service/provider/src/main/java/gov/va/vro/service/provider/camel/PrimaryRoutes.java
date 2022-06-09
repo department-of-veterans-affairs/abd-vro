@@ -74,13 +74,14 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
         // Subscribers of this RabbitMQ queue expect a JSON string
         // Since the RabbitMQ endpoint accepts a byte[] for the message,
-        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded as a byte[]
+        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
+        // as a byte[]
         .to("rabbitmq:assess_health_data?routingKey=" + queue_name);
   }
 
   private AssessHealthData samplePayload(AssessHealthData payload) {
     log.info("Using sample Lighthouse Observation Response string");
-    if(payload==null) {
+    if (payload == null) {
       payload = new AssessHealthData();
       payload.setContention("hypertension");
     }
