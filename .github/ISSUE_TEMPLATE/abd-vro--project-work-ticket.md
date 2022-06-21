@@ -7,17 +7,20 @@ assignees: ''
 
 ---
 
-_template items below are optional but encouraged_
+<!-- Template items below are optional but encouraged -->
 
 **User Story**
+
 As a (persona), I want (behavior), so that (goal).
 
 **Acceptance Criteria**
+
 1. _Acceptance criteria 1_
 2. _Acceptance criteria 2_
 3. _Acceptance criteria 3_
 
 **Not included in this work**
+
 A note about things that should not be considered necessary.
 
 **Notes about work**
