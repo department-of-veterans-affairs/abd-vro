@@ -82,7 +82,7 @@ services:
   service-ruby:
     image: va/abd_vro-service-ruby:latest
     environment:
-      DOCKER_LOGS: true
+      DOCKER_LOGS: 1
       # TODO: move these RabbitMQ configurations into a reusable yaml block
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
