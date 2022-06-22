@@ -2,7 +2,7 @@
 
 ## Description
 
-<!-- you don't need to write anything here -->
+<!-- you don't need to write anything here. See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Pull-Requests -->
 
 ### What was the problem?
 
