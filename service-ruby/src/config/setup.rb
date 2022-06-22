@@ -15,11 +15,12 @@ def redirect_output(prefix = nil)
   $fdio
 end
 
-if(ENV['DOCKER_LOGS'] && File.exist?('/proc/1/fd/1'))
+if(ENV['DOCKER_LOGS'] == '1' && File.exist?('/proc/1/fd/1'))
   redirect_output("| ")
 end
 
 puts "Running setup.rb"
+
 
 # so we can henceforth require gems by name
 require 'bundler/setup'
