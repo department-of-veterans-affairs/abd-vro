@@ -5,12 +5,12 @@ FROM surnet/alpine-python-wkhtmltopdf:${WKHTML_VERSION}
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Create a directory for the app code
+RUN mkdir -p /app
 WORKDIR /app
-
-COPY requirements.txt requirements.txt
+# build.gradle copies src/ files into build/docker, where this Dockerfile will be built
+COPY . /app/
 
 RUN pip install --no-cache -r requirements.txt
 
-COPY . .
-
-CMD ["flask", "run", "--host", "0.0.0.0"]
+CMD ["python", "app.py"]

@@ -1,4 +1,4 @@
-options = {
+pdf_options = {
     "dpi": 300,
     "page-size": "Letter",
     "margin-top": "0.25in",
@@ -17,7 +17,8 @@ available_templates = {
 consumer_config = {
     "host": "localhost",
     "port": 5672,
-    "queue_name": "test",
+    "exchange": "generate_pdf",
+    "queue_name": "pdf_generator",
     "binding_key": "test",
-    "exchange": "test"
+    "retry_limit": 3
 }

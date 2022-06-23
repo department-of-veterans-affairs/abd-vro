@@ -1,8 +1,17 @@
 from lib.consumer import RabbitMQConsumer
-from config.pdf import consumer_config
+from lib.pdf_generator import PDFGenerator
+from config.pdf import consumer_config, pdf_options
 
 consumer = RabbitMQConsumer(consumer_config)
-consumer.setup()
+pdf_generator = PDFGenerator(pdf_options)
+
+consumer.setup_queue("generate_pdf", "pdf_generator")
+
+try:
+  consumer.channel.start_consuming()
+except KeyboardInterrupt:
+  consumer.channel.stop_consuming()
+
 # import base64
 
 # from flask import Flask, request
