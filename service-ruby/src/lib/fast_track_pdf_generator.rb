@@ -40,8 +40,13 @@ class FastTrackPdfGenerator
     Time.zone = 'Pacific Time (US & Canada)'
 
     @pdf = Prawn::Document.new
-    @patient_info = patient_info
-    @assessed_data = assessed_data
+
+    # patient_info is a String when json is provided from app
+    # patient_info is a Hash when json is provided from examples/*.rb
+    @patient_info = (patient_info.is_a? String) ? JSON.parse(patient_info) : patient_info
+    # same for assessed_data
+    @assessed_data = (assessed_data.is_a? String) ? JSON.parse(assessed_data) : assessed_data
+
     @date = Time.now.getlocal
     @disability_metadata = RrdConstants::DISABILITIES[disability_type]
     @disability_type = @disability_metadata[:label]
