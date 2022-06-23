@@ -20,13 +20,14 @@ import lombok.ToString;
 public class GeneratePdfPayload {
   @NonNull private String contention;
 
-  // input
+  // input JSON string
   @JsonProperty("patient_info")
   private String patientInfo;
 
+  // input JSON string
   @JsonProperty("assessed_data")
   private String assessedData;
 
-  // output
+  // output JSON string
   private String pdfDocumentJson;
 }
