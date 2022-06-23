@@ -21,6 +21,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteClaimProcessed();
 
     configureRouteHealthDataAssessor();
+    configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
@@ -83,9 +84,9 @@ public class PrimaryRoutes extends RouteBuilder {
     from("direct:generate_pdf_demo")
         .routeId("generate_pdf_demo")
 
-        // if bpObservations is empty, load a samplePayload for it
+        // if patientInfo is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.bpObservations} == null"))
+        .when(simple("${body.patientInfo} == null"))
         .setBody(
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))

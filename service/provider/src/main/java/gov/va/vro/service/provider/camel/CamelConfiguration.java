@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
+import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
@@ -56,7 +57,7 @@ public class CamelConfiguration {
   }
 
   private static final Set<Class> dtoClasses =
-      Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class, AssessHealthData.class);
+      Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class, AssessHealthData.class, GeneratePdfPayload.class);
   private final ObjectMapper mapper;
 
   // TODO: replace with Auto-configured TypeConverter

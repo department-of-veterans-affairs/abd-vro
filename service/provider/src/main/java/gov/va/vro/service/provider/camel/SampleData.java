@@ -29,7 +29,7 @@ public class SampleData {
     return payload;
   }
 
-  JSONObject sampleGeneratePdfPayload(GeneratePdfPayload body) {
+  GeneratePdfPayload sampleGeneratePdfPayload(GeneratePdfPayload body) {
     JSONObject patientInfo = new JSONObject();
     patientInfo.put("first", "Cat");
     patientInfo.put("middle", "Marie");
@@ -37,10 +37,10 @@ public class SampleData {
     patientInfo.put("suffix", "Jr.");
     patientInfo.put("birthdate", "10-10-1968");
 
-    JSONObject payload = new JSONObject();
-    payload.put("contention", "asthma");
-    payload.put("patient_info", patientInfo);
-    payload.put("assessed_data", toJsonObject(retrieveGist("assessed_data_asthma.json")));
+    GeneratePdfPayload payload = new GeneratePdfPayload();
+    payload.setContention("asthma");
+    payload.setPatientInfo(patientInfo.toJSONString());
+    payload.setAssessedData(retrieveGist("assessed_data_asthma.json"));
     return payload;
   }
 
