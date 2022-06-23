@@ -18,12 +18,12 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class GeneratePdfPayload {
-  @NonNull
-  private String contention;
+  @NonNull private String contention;
 
   // input
   @JsonProperty("patient_info")
   private String patientInfo;
+
   @JsonProperty("assessed_data")
   private String assessedData;
 

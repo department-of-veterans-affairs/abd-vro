@@ -57,7 +57,11 @@ public class CamelConfiguration {
   }
 
   private static final Set<Class> dtoClasses =
-      Sets.newHashSet(ClaimSubmission.class, PayloadEntity.class, AssessHealthData.class, GeneratePdfPayload.class);
+      Sets.newHashSet(
+          ClaimSubmission.class,
+          PayloadEntity.class,
+          AssessHealthData.class,
+          GeneratePdfPayload.class);
   private final ObjectMapper mapper;
 
   // TODO: replace with Auto-configured TypeConverter

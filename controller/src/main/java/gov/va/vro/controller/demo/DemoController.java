@@ -25,9 +25,10 @@ public class DemoController implements DemoResource {
   private final AssessHealthDataRequestMapper assess_health_mapper;
   private final GenerateDataRequestMapper generate_pdf_mapper;
 
-  public DemoController(CamelEntrance camelEntrance,
-                        AssessHealthDataRequestMapper assess_health_mapper,
-                        GenerateDataRequestMapper generate_pdf_mapper) {
+  public DemoController(
+      CamelEntrance camelEntrance,
+      AssessHealthDataRequestMapper assess_health_mapper,
+      GenerateDataRequestMapper generate_pdf_mapper) {
     this.camelEntrance = camelEntrance;
     this.assess_health_mapper = assess_health_mapper;
     this.generate_pdf_mapper = generate_pdf_mapper;
@@ -45,8 +46,8 @@ public class DemoController implements DemoResource {
   }
 
   @Override
-  public ResponseEntity<GeneratePdfResponse> generate_pdf(
-      GeneratePdfRequest request) throws RequestValidationException {
+  public ResponseEntity<GeneratePdfResponse> generate_pdf(GeneratePdfRequest request)
+      throws RequestValidationException {
     GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
     String response = camelEntrance.generate_pdf_demo(model);
     log.info("RESPONSE from generate_pdf_demo: {}", response);
