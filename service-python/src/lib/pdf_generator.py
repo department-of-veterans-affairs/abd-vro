@@ -3,15 +3,12 @@ import os
 
 import pdfkit
 from jinja2 import Environment, PackageLoader, select_autoescape
+from config.pdf import options, available_templates
 
 lib_dir = os.path.dirname(__file__)
 
 
 def get_template(template_name: str) -> str:
-    available_templates = {
-        "hypertension": "hypertension",
-        "cancer": "pact_data_sheet"
-    }
 
     selected_template = available_templates[template_name]
 
@@ -35,16 +32,5 @@ def generate_template_file(template_name: str, pdf_data) -> str:
 
 def generate_pdf_from_string(html: str) -> bytes:
     # config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
-
-    options = {
-        "dpi": 300,
-        "page-size": "Letter",
-        "margin-top": "0.25in",
-        "margin-right": "0.25in",
-        "margin-bottom": "0.25in",
-        "margin-left": "0.25in",
-        "encoding": "UTF-8",
-        "zoom": "0.8"
-    }
 
     return pdfkit.from_string(html, False, options=options)
