@@ -1,0 +1,48 @@
+{
+  "name": "test",
+  "ssn": "000-00-0000",
+  "dob": "0/0/00",
+  "claim_number": "000",
+  "claim_date": "0/0/00",
+  "systolic_pressure_summary_min": "0",
+  "systolic_pressure_summary_max": "0",
+  "systolic_pressure_summary_avg": "0",
+  "systolic_pressure_summary_predominant_range": ["0", "0"],
+  "diastolic_pressure_summary_min": "0",
+  "diastolic_pressure_summary_max": "0",
+  "diastolic_pressure_summary_avg": "0",
+  "diastolic_pressure_summary_predominant_range": ["0", "0"],
+  "medicine_name": "Placeholder",
+  "systolic_bp_measurements": [
+    {
+      "facility": "Placeholder",
+      "date": "0/0/00",
+      "diastolic": "0",
+      "systolic": "0"
+    }
+  ],
+  "diastolic_bp_measurements_under_100": [
+    {
+      "facility": "Placeholder",
+      "date": "0/0/00",
+      "diastolic": "0",
+      "systolic": "0"
+    }
+  ],
+  "diastolic_bp_measurements_over_100": [
+    {
+      "facility": "Placeholder",
+      "date": "0/0/00",
+      "diastolic": "0",
+      "systolic": "0"
+    }
+  ],
+  "diastolic_bp_measurements_over_120": [
+    {
+      "facility": "Placeholder",
+      "date": "0/0/00",
+      "diastolic": "0",
+      "systolic": "0"
+    }
+  ]
+}

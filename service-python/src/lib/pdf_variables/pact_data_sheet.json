@@ -1,0 +1,48 @@
+{
+  "pdf_title": "PACT Data Sheet",
+  "pdf_header": "Integrated Patient Profile",
+  "name": "Placeholder",
+  "dob": "0/0/00",
+  "ethnicity": "Placeholder",
+  "address": "Placeholder",
+  "team_assignments": [
+    {
+      "team_type": "Placeholder",
+      "location": "Placeholder",
+      "team": "Placeholder",
+      "status": "Placeholder",
+      "provider_role": "Placeholder",
+      "provider_name": "Placeholder"
+    }
+  ],
+  "blood_pressure": "0",
+  "body_mass_index": "0",
+  "risk_scores": "Placeholder",
+  "immunizations": "Placeholder",
+  "candidate": "Placeholder",
+  "treatment_note": "Placeholder",
+  "condition": [
+    {
+      "code": "0000",
+      "text": "Placeholder",
+      "onset_date": "00/00/00",
+      "abatement_date": "00/00/00"
+    }
+  ],
+  "procedure": [
+    {
+      "code": "0000",
+      "text": "Placeholder",
+      "performed_date": "00/00/00",
+      "last_update_date": "00/00/00",
+      "status": "Placeholder"
+    }
+  ],
+  "medication": [
+    {
+      "code": "0000",
+      "text": "Placeholder",
+      "date": "00/00/00"
+    }
+  ]
+}

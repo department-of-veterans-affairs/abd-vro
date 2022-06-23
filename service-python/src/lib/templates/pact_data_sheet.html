@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<title>{{pdf_title}}</title>
+
+	<style>
+		.highlight {
+			background-color: rgb(100, 149, 237) !important;
+			height: 5px;
+		}
+
+		.col-header {
+			background-color: rgb(100, 149, 237) !important;
+			text-transform: initial;
+		}
+
+		table {
+			border-color: rgb(31, 31, 143) !important;
+			margin-bottom: 5px !important;
+		}
+
+		th {
+			background-color: rgb(7, 0, 128) !important;
+			color: white;
+			text-transform: uppercase;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row mt-5 pb-5">
+			<div class="col-6 offset-3">
+				<h1 class="text-center">{{pdf_header}}</h1>
+			</div>
+		</div>
+		<div class="row mt-5">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="4">Demographics</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{name}}</td>
+							<td>{{dob}}</td>
+							<td>{{ethnicity}}</td>
+							<td>{{address}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="6">Team Assignments</th>
+						</tr>
+						<tr>
+							<th class="col-header">Team Type</th>
+							<th class="col-header">Location</th>
+							<th class="col-header">Team</th>
+							<th class="col-header">Status</th>
+							<th class="col-header">Provider Role</th>
+							<th class="col-header">Provider Name</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for assignment in team_assignments %}
+						<tr>
+							<td>{{assignment.team_type}}</td>
+							<td>{{assignment.location}}</td>
+							<td>{{assignment.team}}</td>
+							<td>{{assignment.status}}</td>
+							<td>{{assignment.provider_role}}</td>
+							<td>{{assignment.provider_name}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="6">Vital Data</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>BP:({{blood_pressure}})</td>
+							<td></td>
+							<td></td>
+							<td>BMI: {{body_mass_index}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center">Risk Scores</th>
+							<th class="text-center">Immunizations</th>
+							<th class="text-center">Candidate for remote patient monitoring</th>
+							<th class="text-center">Life-sustaining treatment note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{risk_scores}}</td>
+							<td>{{immunizations}}</td>
+							<td>{{candidate}}</td>
+							<td>{{treatment_note}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="4">Conditions and Diseases</th>
+						</tr>
+						<tr>
+							<th class="col-header">Code</th>
+							<th class="col-header">Description</th>
+							<th class="col-header">Onset Date</th>
+							<th class="col-header">Abatement Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for cond in condition %}
+						<tr>
+							<td>{{cond.code}}</td>
+							<td>{{cond.text}}</td>
+							<td>{{cond.onset_date}}</td>
+							<td>{{cond.abatement_date}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="4">Medication</th>
+						</tr>
+						<tr>
+							<th class="col-header">Code</th>
+							<th class="col-header">Description</th>
+							<th class="col-header">Start Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for med in medication %}
+						<tr>
+							<td>{{med.code}}</td>
+							<td>{{med.text}}</td>
+							<td>{{med.date}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="5">Procedure</th>
+						</tr>
+						<tr>
+							<th class="col-header">Code</th>
+							<th class="col-header">Description</th>
+							<th class="col-header">Performed Date</th>
+							<th class="col-header">Last Update Date</th>
+							<th class="col-header">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for proc in procedure %}
+						<tr>
+							<td>{{proc.code}}</td>
+							<td>{{proc.text}}</td>
+							<td>{{proc.performed_date}}</td>
+							<td>{{proc.last_update_date}}</td>
+							<td>{{proc.status}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="3">Pending Lab Orders</th>
+						</tr>
+						<tr>
+							<th class="col-header">Sta3n</th>
+							<th class="col-header">Orderable Item Name</th>
+							<th class="col-header">Order Start Date Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="6">Pending Appointments</th>
+						</tr>
+						<tr>
+							<th class="col-header">Clinic Name</th>
+							<th class="col-header">Appt Date</th>
+							<th class="col-header">Len. Of Appt.</th>
+							<th class="col-header">Comments</th>
+							<th class="col-header">Distance to Clinic</th>
+							<th class="col-header">Minutes to Clinic</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="3">ED Visits and Discharges in Past 24 Months</th>
+						</tr>
+						<tr>
+							<th class="col-header">Visit/Discharge Date</th>
+							<th class="col-header">Type</th>
+							<th class="col-header">Primary Diagnosis</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="5">Open Consults</th>
+						</tr>
+						<tr>
+							<th class="col-header">Date</th>
+							<th class="col-header">Status</th>
+							<th class="col-header">Service</th>
+							<th class="col-header">Appointment</th>
+							<th class="col-header">Open > 30 days from PID?</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="highlight"></div>
+				<table class="table table-bordered table-sm">
+					<thead>
+						<tr>
+							<th class="text-center" colspan="5">Open Orders</th>
+						</tr>
+						<tr>
+							<th class="col-header">Date</th>
+							<th class="col-header">Status</th>
+							<th class="col-header">Service</th>
+							<th class="col-header">Ordered Item</th>
+							<th class="col-header">Entry Date/Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
