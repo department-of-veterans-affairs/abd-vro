@@ -23,7 +23,7 @@ services:
     image: va/abd_vro-service-ruby:latest
 # NOTE: These are the defaults from the flyway.conf   uncomment to override, esp for <secret-service-name> passwords
     environment:
-      DOCKER_LOGS: true
+      DOCKER_LOGS: 1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
 #    build:
