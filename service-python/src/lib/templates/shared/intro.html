@@ -12,13 +12,28 @@
 
   <title>{{pdf_title}}</title>
 
+  <style>
+    table {
+      width: 150;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 5px;
+      border-width: 0;
+      border-style: hidden !important;
+      background-color: #fff1d2;
+      vertical-align: top;
+    }
+  </style>
+
 </head>
 
 <body>
   <h3>{{document_type}} Rapid Ready for Decision | Claim for Increase</h3>
   <h1>VHA {{document_type}} Data Summary</h1>
   <i>Generated automatically on {{timestamp.strftime('%m/%d/%Y')}} at {{timestamp.strftime('%l:%M %p %Z')}}</i>
-  <br /><br /><br />
+  <br /><br />
   
   <p>{{name}}</p>
 
