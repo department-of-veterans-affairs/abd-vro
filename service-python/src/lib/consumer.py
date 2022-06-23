@@ -1,6 +1,6 @@
 from time import sleep
 from lib.pdf_generator import PDFGenerator
-from config.pdf import pdf_options
+from config.settings import pdf_options
 
 import pika
 import sys
@@ -39,10 +39,10 @@ class RabbitMQConsumer:
 		# print(f"Headers: {properties.headers}")
 		pdf_type = message["pdf_type"]
 
-		template = self.pdf_generator.generate_template_file(f"{pdf_type}", message)
+		template = self.pdf_generator.generate_template_file(pdf_type, message)
 		pdf = self.pdf_generator.generate_pdf_from_string(template)
-		print("PDF Base 64:", base64.b64encode(pdf))
-		# return {"pdf": base64.b64encode(pdf).decode("utf-8")}
+		print(f"PDF Base 64: {base64.b64encode(pdf)}")
+		# {"pdf": base64.b64encode(pdf).decode("utf-8")}
 
 
 	def on_return_callback(self, channel, method, properties, body):
