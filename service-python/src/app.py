@@ -1,9 +1,7 @@
 from lib.consumer import RabbitMQConsumer
-from lib.pdf_generator import PDFGenerator
-from config.pdf import consumer_config, pdf_options
+from config.pdf import consumer_config
 
 consumer = RabbitMQConsumer(consumer_config)
-pdf_generator = PDFGenerator(pdf_options)
 
 consumer.setup_queue("generate_pdf", "pdf_generator")
 

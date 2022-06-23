@@ -21,7 +21,7 @@ class PDFGenerator:
 
 	def generate_template_file(self, template_name: str, pdf_data) -> str:
 		jinja_env = Environment(
-			loader=PackageLoader("app"),
+			loader=PackageLoader("lib"),
 			autoescape=select_autoescape()
 		)
 
