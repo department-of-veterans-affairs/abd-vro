@@ -13,3 +13,11 @@ available_templates = {
     "hypertension": "hypertension",
     "cancer": "pact_data_sheet"
 }
+
+consumer_config = {
+    "host": "localhost",
+    "port": 5672,
+    "queue_name": "test",
+    "binding_key": "test",
+    "exchange": "test"
+}
