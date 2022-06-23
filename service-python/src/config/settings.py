@@ -20,5 +20,6 @@ consumer_config = {
     "exchange": "generate_pdf",
     "queue_name": "pdf_generator",
     "binding_key": "test",
-    "retry_limit": 3
+    "retry_limit": 3,
+    "save_pdf": True
 }

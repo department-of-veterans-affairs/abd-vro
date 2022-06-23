@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 
@@ -28,13 +29,16 @@ class PDFGenerator:
 		template_file = self.get_template_name(template_name)
 		placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_file}.json")))
 		filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
+		filled_variables["timestamp"] = datetime.now()
 		template = jinja_env.get_template(f"{template_file}.html")
 		generated_html = template.render(**filled_variables)
 
 		return generated_html
 
 
-	def generate_pdf_from_string(self, html: str) -> bytes:
+	def generate_pdf_from_string(self, html: str, save_locally: bool) -> bytes or bool:
 		# config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
-
+		if save_locally:
+			examples_path = os.path.abspath("../examples/test.pdf")
+			return pdfkit.from_string(html, examples_path, options=self.options)
 		return pdfkit.from_string(html, False, options=self.options)

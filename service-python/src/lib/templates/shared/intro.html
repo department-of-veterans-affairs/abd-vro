@@ -15,6 +15,14 @@
 </head>
 
 <body>
+  <h3>{{document_type}} Rapid Ready for Decision | Claim for Increase</h3>
+  <h1>VHA {{document_type}} Data Summary</h1>
+  <i>Generated automatically on {{timestamp.strftime('%m/%d/%Y')}} at {{timestamp.strftime('%l:%M %p %Z')}}</i>
+  <br /><br /><br />
+  
+  <p>{{name}}</p>
+
+  <p>DOB: {{dob}}</p>
   {% block body %}{% endblock %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -23,22 +31,3 @@
 </body>
 
 </html>
-
-<%# Note: This templating language is HTML-inspired. It does not always behave like true HTML. To see limitations, check
-  out the documentation: https://github.com/puzzle/prawn-markup. %>
-
-  <%= @disability_type.capitalize %> Rapid Ready for Decision | Claim for Increase <br />
-    <h1>
-      VHA <%= @disability_type.capitalize %> Data Summary<br />
-    </h1>
-    <i>Generated automatically on <%= @date.strftime('%m/%d/%Y') %> at <%= @date.strftime('%l:%M %p %Z') %></i>
-
-    <p> <br /> </p>
-
-    <%= FastTrackPdfGenerator.extract_patient_name(@patient_info) %><br />
-
-      <% if @patient_info[:birthdate] %>
-        DOB: <%= @patient_info[:birthdate].to_date.strftime('%m-%d-%Y') %>
-          <% end %>
-
-            <p> <br /> </p>

@@ -1,7 +1,8 @@
 {
+  "document_type": "Hypertension",
   "name": "test",
   "ssn": "000-00-0000",
-  "dob": "0/0/00",
+  "dob": "0-0-00",
   "claim_number": "000",
   "claim_date": "0/0/00",
   "systolic_pressure_summary_min": "0",

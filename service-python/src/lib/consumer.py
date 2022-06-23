@@ -3,7 +3,6 @@ from lib.pdf_generator import PDFGenerator
 from config.settings import pdf_options
 
 import pika
-import sys
 import json
 import base64
 
@@ -38,10 +37,14 @@ class RabbitMQConsumer:
 		# print(f"correlation_id: {properties.correlation_id}")
 		# print(f"Headers: {properties.headers}")
 		pdf_type = message["pdf_type"]
+		save_pdf = self.config["save_pdf"]
 
 		template = self.pdf_generator.generate_template_file(pdf_type, message)
-		pdf = self.pdf_generator.generate_pdf_from_string(template)
-		print(f"PDF Base 64: {base64.b64encode(pdf)}")
+		pdf = self.pdf_generator.generate_pdf_from_string(template, save_pdf)
+		if type(pdf) == bool:
+			print(f"PDF Saved to examples folder")
+		else:
+			print(f"PDF Base 64: {base64.b64encode(pdf)}")
 		# {"pdf": base64.b64encode(pdf).decode("utf-8")}
 
 
@@ -60,4 +63,4 @@ class RabbitMQConsumer:
 		channel.queue_bind(queue=queue_name, exchange=exchange_name)
 		channel.basic_consume(queue=queue_name, on_message_callback=self.on_message_callback, auto_ack=True)
 		self.channel = channel
-		print(f" [*] Waiting for data for {queue_name}. To exit press CTRL+C")
+		print(f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C")
