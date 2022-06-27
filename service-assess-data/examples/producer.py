@@ -2,7 +2,6 @@
 import json
 import pika
 import uuid
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
