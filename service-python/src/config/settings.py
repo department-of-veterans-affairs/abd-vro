@@ -1,17 +1,17 @@
 pdf_options = {
-    "dpi": 300,
+    # "dpi": 300,
     "page-size": "Letter",
-    "margin-top": "0.25in",
-    "margin-right": "0.25in",
-    "margin-bottom": "0.25in",
-    "margin-left": "0.25in",
+    "margin-top": "0.5in",
+    "margin-right": "0.5in",
+    "margin-bottom": "0.5in",
+    "margin-left": "0.5in",
     "encoding": "UTF-8",
-    "zoom": "0.8"
+    "zoom": "1.1",
 }
 
 available_templates = {
     "hypertension": "hypertension",
-    "cancer": "pact_data_sheet"
+    "asthma": "asthma"
 }
 
 consumer_config = {
