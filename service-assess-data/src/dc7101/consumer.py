@@ -29,7 +29,7 @@ class RabbitMQConsumer:
 
     def rpc(self, body, route):
 
-        logging.debug(f'CALL DRS :{route}')
+        logging.debug(f'CALL :{route}')
 
         decision_response = main.assess_hypertension(json.loads(body.decode('utf-8')))
 
@@ -46,17 +46,17 @@ class RabbitMQConsumer:
                          properties=pika.BasicProperties(correlation_id= \
                                                              props.correlation_id),
                          body=str(response))
+
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def setup_queue(self, exchange_name, queue_name):
         channel = self.connection.channel()
-        print(self.config["props"])
         channel.exchange_declare(exchange=exchange_name, exchange_type="direct", durable=True, auto_delete=True)
         # This method creates or checks a queue
         channel.queue_declare(queue=queue_name)
         channel.queue_bind(queue=queue_name, exchange=exchange_name)
         channel.basic_qos(prefetch_count=1)
 
-        channel.basic_consume(queue=queue_name, on_message_callback=self.on_request, auto_ack=True)
+        channel.basic_consume(queue=queue_name, on_message_callback=self.on_request)
         self.channel = channel
         print(f" [*] Waiting for data for {queue_name}. To exit press CTRL+C")

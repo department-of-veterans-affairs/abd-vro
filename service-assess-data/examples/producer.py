@@ -72,7 +72,7 @@ class BaseClient(object):
         self.connection = pika.BlockingConnection(parameters)
 
         self.channel = self.connection.channel()
-
+        print(self.channel.channel_number)
         result = self.channel.queue_declare(queue=REPLY_QUEUE_NAME, exclusive=True)
         self.callback_queue = result.method.queue
 
