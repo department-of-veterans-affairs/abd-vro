@@ -2,7 +2,7 @@
 
 ## Description
 
-<!-- you don't need to write anything here. See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Pull-Requests -->
+<!-- you don't need to write anything here -->
 
 ### What was the problem?
 
@@ -22,3 +22,10 @@
 
 - Step 1
 - Step 2 
+
+## Reminders
+
+- Review [Pull-Requests](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Pull-Requests) guidelines
+- [ ] If PR is significant, update [Current Software State](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Current-Software-State) and
+[Roadmap](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Roadmap) wiki pages
+- [ ] If changing software behavior, post a link to the PR in Slack channel #benefits-virtual-regional-office
