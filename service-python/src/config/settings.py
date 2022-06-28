@@ -1,3 +1,5 @@
+import os
+
 pdf_options = {
     # "dpi": 300,
     "page-size": "Letter",
@@ -15,7 +17,7 @@ available_templates = {
 }
 
 consumer_config = {
-    "host": "localhost",
+    "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
     "exchange": "generate_pdf",
     "queue_name": "pdf_generator",
