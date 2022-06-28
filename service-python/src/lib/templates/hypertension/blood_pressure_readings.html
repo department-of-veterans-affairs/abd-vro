@@ -13,14 +13,10 @@
   <p>Blood pressure is shown as systolic/diastolic.</p>
 {% endif %}
 
-<% @assessed_data[:bp_readings].each do |bp| %>
-  <% systolic = bp[:systolic]['value'].round rescue "(not-provided)" %>
-  <% diastolic = bp[:diastolic]['value'].round rescue "(not-provided)" %>
-
+{% for measurement in bp_measurements %}
   <p>
-    <b>Blood pressure: <%= systolic %>/<%= diastolic %></b> <br />
-    Taken on: <%= bp[:effectiveDateTime].to_date.strftime('%m/%d/%Y') %>
-      at <%= Time.iso8601(bp[:effectiveDateTime]).strftime('%H:%M %Z') %> <br />
-    Location: <%= bp[:organization] || 'Unknown' %>
+    <b>Blood pressure: {{measurement.systolic|round}}/{{measurement.diastolic|round}}</b> <br />
+    Taken on: {{measurement.date}} at {{measurement.time}} <br />
+    Location: {{measurement.facility or "Unknown"}}
   </p>
-<% end %>
+{% endfor %}
