@@ -3,7 +3,7 @@ name: App CI
 on:
   push:
     branches:
-      - '*'
+      - "*"
 
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -53,7 +53,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -77,6 +77,8 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-ruby \
             "ghcr.io/${{ github.repository }}/abd_vro-service-ruby:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-service-python \
+            "ghcr.io/${{ github.repository }}/abd_vro-service-python:${COMMIT_SHA:0:7}"
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
           docker pull postgres:latest
           docker tag postgres:latest \

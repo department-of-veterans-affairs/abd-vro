@@ -11,6 +11,6 @@ WORKDIR /app
 # build.gradle copies src/ files into build/docker, where this Dockerfile will be built
 COPY . /app/
 
-RUN pip install --no-cache -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "app.py"]
