@@ -3,6 +3,7 @@ package gov.va.vro.service.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
+import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -28,5 +29,9 @@ public class CamelEntrance {
 
   public String assess_health_data_demo(AssessHealthData resource) {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
+  }
+
+  public String generate_pdf_demo(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate_pdf_demo", resource, String.class);
   }
 }
