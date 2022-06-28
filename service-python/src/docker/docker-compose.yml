@@ -16,7 +16,6 @@ services:
 
   service-python:
     environment:
-      DOCKER_LOGS: 1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     build:
