@@ -42,6 +42,6 @@ class PDFGenerator:
 	def generate_pdf_from_string(self, html: str, save_locally: bool) -> bytes or bool:
 		# config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
 		if save_locally:
-			examples_path = os.path.abspath("../examples/test.pdf")
+			examples_path = os.path.abspath("./test.pdf")
 			return pdfkit.from_string(html, examples_path, options=self.options)
 		return pdfkit.from_string(html, False, options=self.options)

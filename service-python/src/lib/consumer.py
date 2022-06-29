@@ -36,7 +36,7 @@ class RabbitMQConsumer:
 		# print(f"reply_to: {properties.reply_to}")
 		# print(f"correlation_id: {properties.correlation_id}")
 		# print(f"Headers: {properties.headers}")
-		pdf_type = message["pdf_type"]
+		pdf_type = message["contention"]
 		save_pdf = self.config["save_pdf"]
 
 		template = self.pdf_generator.generate_template_file(pdf_type, message)
@@ -55,7 +55,7 @@ class RabbitMQConsumer:
 
 	def setup_queue(self, exchange_name, queue_name):
 		channel = self.connection.channel()
-		channel.exchange_declare(exchange=exchange_name, exchange_type="topic")
+		channel.exchange_declare(exchange=exchange_name, exchange_type="direct", durable=True)
 		# This method creates or checks a queue
 		channel.queue_declare(queue=queue_name)
 		channel.queue_bind(queue=queue_name, exchange=exchange_name)
