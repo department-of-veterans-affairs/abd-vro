@@ -1,68 +1,75 @@
 import pytest
-from lib import utils
+from dc7101.lib import utils
 
 
 @pytest.mark.parametrize(
     "request_body, result_is_valid, errors",
     [
         (
-            {
-                "bp": [
-                    {
-                        "diastolic": 115,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    }
-                ],
-                "medication": ["Capoten"],
+            {   
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 115,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": 110,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        }
+                    ]
+            },
+                "medication": [{"text":"Capoten"}],
                 "date_of_claim": "2021-11-09",
+                "vasrd": "7101"
             },
             True,
             {}
         ),
         (
             {
-                "bp": [
-                    {
-                        "systolic": "180",
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": "110",
-                        "systolic": 200,
-                        "date": 20210901
-                    }
-                ],
-                "medication": [123],
+                "observation": {
+                    "bp": [
+                        {
+                            "systolic": "180",
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": "110",
+                            "systolic": 200,
+                            "date": 20210901
+                        }
+                    ]
+                },
+                "medication": [{"text":123}],
                 "date_of_claim": 20211109,
+                "vasrd": "7101"
             },
             False,
             {
-                "bp": [
-                    {
-                        0: [
-                            {
-                                "systolic": ["must be of integer type"],
-                                "diastolic": ["required field"]
-                            }
-                        ],
-                        1: [
-                            {
-                                "date": ["must be of string type"],
-                                "diastolic": ["must be of integer type"]
-                            }
-                        ]
-                    }
-                ],
+                "observation":
+                [{
+                    "bp": [
+                        {
+                            0: [
+                                {
+                                    "systolic": ["must be of integer type"],
+                                    "diastolic": ["required field"]
+                                }
+                            ],
+                            1: [
+                                {
+                                    "date": ["must be of string type"],
+                                    "diastolic": ["must be of integer type"]
+                                }
+                            ]
+                        }
+                    ]
+                }],
                 "medication": [
-                    {
-                        0: ["must be of string type"]
-                    }
+                    {0: [{'text': ['must be of string type']}]}
                 ],
                 "date_of_claim": ["must be of string type"],
             }

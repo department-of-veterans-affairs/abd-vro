@@ -1,5 +1,5 @@
 import pytest
-from lib import bp_history
+from dc7101.lib import bp_history
 
 
 @pytest.mark.parametrize(
@@ -8,7 +8,7 @@ from lib import bp_history
         # 0 readings
         (
             {
-                "bp": []
+                "observation": {"bp": []}
             },
             {
                 "success": False
@@ -17,13 +17,15 @@ from lib import bp_history
         # 1 reading test case that passes
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 100,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                ]
+                "observation": {
+                        "bp": [
+                        {
+                            "diastolic": 100,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": True,
@@ -33,13 +35,15 @@ from lib import bp_history
         # 1 reading test case that fails
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 90,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                ]
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 90,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": False,
@@ -49,18 +53,20 @@ from lib import bp_history
         # 2 reading test case that passes
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 100,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 90,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    }
-                ]
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 100,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": 90,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        }
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": True,
@@ -70,18 +76,20 @@ from lib import bp_history
         # 2 reading test case that fails
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 90,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 90,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    }
-                ]
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 90,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": 90,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        }
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": False,
@@ -91,23 +99,25 @@ from lib import bp_history
         # 3 reading test case that passes
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 101,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 90,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    },
-                    {
-                        "diastolic": 115,
-                        "systolic": 200,
-                        "date": "2021-09-02"
-                    }
-                ]
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 101,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": 90,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        },
+                        {
+                            "diastolic": 115,
+                            "systolic": 200,
+                            "date": "2021-09-02"
+                        }
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": True,
@@ -117,23 +127,25 @@ from lib import bp_history
         # 3 reading test case that fails
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 101,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 90,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    },
-                    {
-                        "diastolic": 95,
-                        "systolic": 200,
-                        "date": "2021-09-02"
-                    }
-                ]
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 101,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": 90,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        },
+                        {
+                            "diastolic": 95,
+                            "systolic": 200,
+                            "date": "2021-09-02"
+                        }
+                    ]
+                }
             },
             {
                 "diastolic_bp_predominantly_100_or_more": False,
