@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 @Entity
 public class VeteranEntity extends BaseEntity {
 
-    //(unique): Internal Control Number; needed for queries to Lighthouse Health API
-    private String icn;
-    //ommon identifier used by BGS
-    private String participantId;
+  // (unique): Internal Control Number; needed for queries to Lighthouse Health API
+  private String icn;
+  // ommon identifier used by BGS
+  private String participantId;
 }

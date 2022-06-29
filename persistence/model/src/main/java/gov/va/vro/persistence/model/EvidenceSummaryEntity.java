@@ -11,12 +11,10 @@ import javax.persistence.ManyToOne;
 @Entity
 public class EvidenceSummaryEntity extends BaseEntity {
 
-    @ManyToOne
-    private ContentionEntity contention;
+  @ManyToOne private ContentionEntity contention;
 
-    //number of evidence data points found to support fast tracking the claim
-    private int evidenceInt;
+  // number of evidence data points found to support fast tracking the claim
+  private int evidenceInt;
 
-    private String documentName;
+  private String documentName;
 }
-

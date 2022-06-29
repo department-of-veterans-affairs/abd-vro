@@ -13,12 +13,11 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class ContentionEntity extends BaseEntity {
 
-    @ManyToOne
-    private ClaimEntity claim;
+  @ManyToOne private ClaimEntity claim;
 
-    private String diagnosticCode;
+  private String diagnosticCode;
 
-    public ContentionEntity(String diagnosticCode) {
-        this.diagnosticCode = diagnosticCode;
-    }
+  public ContentionEntity(String diagnosticCode) {
+    this.diagnosticCode = diagnosticCode;
+  }
 }

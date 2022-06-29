@@ -11,9 +11,8 @@ import javax.persistence.ManyToOne;
 @Setter
 public class AssessmentResultEntity extends BaseEntity {
 
-    @ManyToOne
-    private ContentionEntity contention;
+  @ManyToOne private ContentionEntity contention;
 
-    //number of evidence data points found to support fast tracking the claim
-    private int evidenceInt;
+  // number of evidence data points found to support fast tracking the claim
+  private int evidenceInt;
 }
