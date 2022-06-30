@@ -20,6 +20,7 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-internal.git'
           token: ${{ secrets.YOOMS_TOKEN }}
           path: 'internal'
+          ref: 'main'
           submodules: false
       - uses: yesolutions/mirror-action@master
         with:
