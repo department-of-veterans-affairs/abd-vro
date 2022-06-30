@@ -1,0 +1,16 @@
+name: Mirroring
+
+on: [push, delete]
+
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+jobs:
+  to_internal_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Push to internal repo
+        run: git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
