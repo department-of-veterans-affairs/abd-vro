@@ -64,7 +64,8 @@ ext {
                      ':service-ruby',
                      ':container-init',
                      ':db-init',
-                     ':opa-init']
+                     ':opa-init',
+                     ':service-assess-data']
 }
 
 

@@ -45,6 +45,10 @@ images:
   mq:
     imageName: abd_vro-rabbitmq
     tag: 3
+  serviceAssessData:
+    imageName: abd_vro-service-assess-data
+    tag: latest
+    imagePullPolicy: Always
 
 resources:
   api:

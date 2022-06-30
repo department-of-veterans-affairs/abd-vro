@@ -13,15 +13,6 @@ EXCHANGE_NAME = 'assess_health_data'
 SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
-  "condition": [
-    {
-      "code": "363419009",
-      "status": "Active",
-      "text": "Malignant tumor of head of pancreas (disorder)",
-      "onset_date": "2021-11-01",
-      "abatement_date": "2022-04-01"
-    }
-  ],
   "observation": 
     {"bp":
         [
@@ -37,15 +28,6 @@ example_decision_data = {
             }
         ]
     },
-  "procedure": [
-    {
-      "code": "174710004",
-      "text": "(Surgery - distal subtotal pancreatectomy)",
-      "performed_date": "2021-12-01",
-      "code_system": "http://snomed.info/sct",
-      "status": "completed"
-    }
-  ],
   "medication": [
     {"text": "Benazepril",
     "code": "4492",
@@ -57,7 +39,7 @@ example_decision_data = {
     "status": "active"}
   ],
   "date_of_claim": "2022-7-09",
-  "vasrd": "7101"
+  "vasrd": "7101",
 }
 
 
