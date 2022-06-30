@@ -13,6 +13,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Checkout internal repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
+          token: ${{ secrets.ACCESS_TOKEN }}
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
