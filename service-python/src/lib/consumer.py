@@ -55,7 +55,7 @@ class RabbitMQConsumer:
 
 	def setup_queue(self, exchange_name, queue_name):
 		channel = self.connection.channel()
-		channel.exchange_declare(exchange=exchange_name, exchange_type="direct", durable=True)
+		channel.exchange_declare(exchange=exchange_name, exchange_type="direct", durable=True, auto_delete=True)
 		# This method creates or checks a queue
 		channel.queue_declare(queue=queue_name)
 		channel.queue_bind(queue=queue_name, exchange=exchange_name)
