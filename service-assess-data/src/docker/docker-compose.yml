@@ -19,7 +19,14 @@ services:
       RABBITMQ_HOST: "rabbitmq1"
     networks:
       - central
-
+  dc6602:
+    build:
+      context: ../dc6602/.
+    image: "dc6602"
+    environment:
+      RABBITMQ_HOST: "rabbitmq1"
+    networks:
+      - central
 
 networks:
   central:
