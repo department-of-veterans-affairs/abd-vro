@@ -24,7 +24,7 @@ public class ClaimEntity extends BaseEntity {
 
   @OneToMany(
       mappedBy = "claim",
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   private List<ContentionEntity> contentions = new ArrayList<>();

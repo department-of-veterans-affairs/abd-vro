@@ -31,6 +31,7 @@ class SaveToDbServiceImplTest {
     claimRequest.setVeteran(veteran);
     Contention contention = new Contention();
     contention.setDiagnosticCode("1234");
+    // TODO add more entities
     claimRequest.getContentions().add(contention);
     saveToDbService.persistClaim(claimRequest);
 

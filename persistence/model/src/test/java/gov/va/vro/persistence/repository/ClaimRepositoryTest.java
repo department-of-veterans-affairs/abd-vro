@@ -1,14 +1,14 @@
 package gov.va.vro.persistence.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.model.VeteranEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 @DataJpaTest
 class ClaimRepositoryTest {
@@ -19,28 +19,39 @@ class ClaimRepositoryTest {
 
   @Test
   void test() {
-    VeteranEntity veteran = new VeteranEntity();
-    veteran.setIcn("X");
-    veteran.setParticipantId("Y");
+    var veteran = TestDataSupplier.createVeteran("X", "Y");
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
 
-    ClaimEntity claim = new ClaimEntity();
-    claim.setClaimId("123");
-    claim.setIdType("type");
-    claim.setVeteran(veteran);
+    var claim = TestDataSupplier.createClaim("123", "type", veteran);
 
     ContentionEntity contention1 = new ContentionEntity("c1");
+    contention1.addAssessmentResult(2);
+    contention1.addEvidenceSummaryDocument("doc1", 1);
+    contention1.addEvidenceSummaryDocument("doc2", 2);
     ContentionEntity contention2 = new ContentionEntity("c2");
+    contention2.addAssessmentResult(1);
+    contention2.addAssessmentResult(2);
     claim.addContention(contention1);
     claim.addContention(contention2);
 
     claim = claimRepository.save(claim);
     assertNotNull(claim.getId());
     assertNotNull(claim.getCreatedAt());
-    assertEquals(2, claim.getContentions().size());
-    claim.getContentions().forEach(contention -> assertNotNull(contention.getId()));
+    List<ContentionEntity> contentions = claim.getContentions();
+    assertEquals(2, contentions.size());
+    contentions.forEach(contention -> assertNotNull(contention.getId()));
+    contentions.stream()
+        .filter(contention -> "c1".equals(contention.getDiagnosticCode()))
+        .findAny()
+        .ifPresentOrElse(
+            contention -> assertEquals(2, contention1.getEvidenceSummaries().size()), Assertions::fail);
+    contentions.stream()
+        .filter(contention -> "c2".equals(contention.getDiagnosticCode()))
+        .findAny()
+        .ifPresentOrElse(
+            contention -> assertEquals(2, contention2.getAssessmentResults().size()), Assertions::fail);
   }
 }

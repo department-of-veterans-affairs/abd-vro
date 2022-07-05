@@ -14,7 +14,7 @@ public class EvidenceSummaryEntity extends BaseEntity {
   @ManyToOne private ContentionEntity contention;
 
   // number of evidence data points found to support fast tracking the claim
-  private int evidenceInt;
+  private int evidenceCount;
 
   private String documentName;
 }
