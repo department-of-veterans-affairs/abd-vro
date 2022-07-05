@@ -27,7 +27,6 @@ jobs:
           ls internal
           env
           cd abd-vro
-          git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
