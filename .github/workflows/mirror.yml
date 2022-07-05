@@ -4,6 +4,8 @@ on: [push, delete]
 
 env:
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  INPUT_GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
+  MY_USERNAME: ${{ secrets.USERNAME }}
 
 jobs:
   to_internal_repo:
@@ -16,6 +18,11 @@ jobs:
       - name: Check dirs
         run: |
           env
+          git config --global --add safe.directory /github/workspace
+          git config --global credential.username "${MY_USERNAME}"
+          git config --global core.askPass .github/workflows/cred-helper.sh
+          git config --global credential.helper cache
+          git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
