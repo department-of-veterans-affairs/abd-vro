@@ -22,4 +22,5 @@ jobs:
           GIT_USERNAME: ${{ secrets.USERNAME }}
           GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
           GIT_PUSH_ARGS: "--mirror"
+          PUSH_ALL_REFS: "true"
           DEBUG: "true"
