@@ -10,18 +10,23 @@ import gov.va.vro.service.db.model.Veteran;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SaveToDbServiceImpl {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
-
   private final ClaimRequestMapper mapper;
 
   public void persistClaim(ClaimRequest claimRequest) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claimRequest.getVeteran());
-    // TODO: for now, assume there cannot be an existing claim
+    Optional<ClaimEntity> existingClaim =
+        claimRepository.findByClaimIdAndIdType(claimRequest.getClaimId(), claimRequest.getIdType());
+    if (existingClaim.isPresent()) {
+      return;
+    }
     createClaim(claimRequest, veteranEntity);
   }
 
