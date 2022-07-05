@@ -21,5 +21,5 @@ jobs:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
           GIT_USERNAME: ${{ secrets.USERNAME }}
           GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
-          INPUT_GIT_PUSH_ARGS: "--mirror"
+          GIT_PUSH_ARGS: "--mirror"
           DEBUG: "true"
