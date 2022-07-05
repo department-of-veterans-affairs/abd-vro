@@ -15,11 +15,11 @@ jobs:
           fetch-depth: 0
       - name: Check dirs
         run: |
-          ls internal
           env
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
           GIT_USERNAME: ${{ secrets.USERNAME }}
           GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
+          INPUT_GIT_PUSH_ARGS: "--mirror"
           DEBUG: "true"
