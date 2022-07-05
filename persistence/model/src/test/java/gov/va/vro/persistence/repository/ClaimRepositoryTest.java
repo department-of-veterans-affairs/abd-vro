@@ -47,11 +47,13 @@ class ClaimRepositoryTest {
         .filter(contention -> "c1".equals(contention.getDiagnosticCode()))
         .findAny()
         .ifPresentOrElse(
-            contention -> assertEquals(2, contention1.getEvidenceSummaries().size()), Assertions::fail);
+            contention -> assertEquals(2, contention1.getEvidenceSummaries().size()),
+            Assertions::fail);
     contentions.stream()
         .filter(contention -> "c2".equals(contention.getDiagnosticCode()))
         .findAny()
         .ifPresentOrElse(
-            contention -> assertEquals(2, contention2.getAssessmentResults().size()), Assertions::fail);
+            contention -> assertEquals(2, contention2.getAssessmentResults().size()),
+            Assertions::fail);
   }
 }
