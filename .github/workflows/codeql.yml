@@ -9,6 +9,9 @@ on:
   schedule:
     - cron: '27 2 * * 1'
 
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
 jobs:
   analyze:
     name: Analyze
