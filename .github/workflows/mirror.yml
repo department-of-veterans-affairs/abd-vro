@@ -13,22 +13,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          path: 'abd-vro'
-      - name: Checkout internal repo
-        uses: actions/checkout@v3
-        with:
-          repository: 'department-of-veterans-affairs/abd-vro-internal.git'
-          token: ${{ secrets.ACCESS_TOKEN }}
-          path: 'internal'
-          ref: 'main'
-          submodules: false
       - name: Check dirs
         run: |
           ls internal
           env
-          cd abd-vro
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
           GIT_USERNAME: ${{ secrets.USERNAME }}
-          GIT_PASSWORD: ${{ secrets.YOOMS_TOKEN }}
+          GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
+          DEBUG: "true"
