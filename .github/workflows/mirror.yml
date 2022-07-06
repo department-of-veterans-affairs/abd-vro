@@ -22,10 +22,10 @@ jobs:
       - name: Check dirs
         run: |
           env
-          echo "config"
+          echo "======= config"
           git config --list
-          echo "credentials"
+          echo "======= credentials"
           cat $XDG_CONFIG_HOME/git/credentials
-          echo "push"
+          echo "======= push"
           git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
 
