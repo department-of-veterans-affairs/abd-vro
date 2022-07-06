@@ -2,6 +2,10 @@ name: Mirroring
 
 on: [push, delete]
 
+# Ensures that only one mirror task will run at a time.
+concurrency:
+  group: git-mirror
+
 env:
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   INPUT_GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
@@ -29,5 +33,9 @@ jobs:
           set -v
           cat $XDG_CONFIG_HOME/git/credentials
           echo "======= push"
-          git push -v --mirror https://$YOOMS_CRED@github.com/department-of-veterans-affairs/abd-vro-internal.git
-
+          # git push -v --mirror https://${YOOMS_CRED}@github.com/department-of-veterans-affairs/abd-vro-internal.git
+      - uses: yesolutions/mirror-action@master
+        with:
+          REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          GIT_SSH_NO_VERIFY_HOST: "true"
