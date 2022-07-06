@@ -9,6 +9,7 @@ env:
 
 jobs:
   to_internal_repo:
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
