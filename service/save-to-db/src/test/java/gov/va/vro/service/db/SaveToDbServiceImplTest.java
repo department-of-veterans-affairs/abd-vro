@@ -26,6 +26,7 @@ class SaveToDbServiceImplTest {
   void persistClaim() {
     Claim claim = new Claim();
     claim.setClaimId("claim1");
+    claim.setIdType("type");
     Veteran veteran = new Veteran();
     veteran.setIcn("v1");
     claim.setVeteran(veteran);

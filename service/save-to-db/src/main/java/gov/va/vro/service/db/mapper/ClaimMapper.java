@@ -12,4 +12,6 @@ public interface ClaimMapper {
   VeteranEntity toVeteranEntity(Veteran veteran);
 
   ClaimEntity toClaimEntity(Claim request);
+
+  Claim toClaim(ClaimEntity claimEntity);
 }

@@ -22,14 +22,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ClaimMapper mapper;
 
   @Override
-  public void persistClaim(Claim claim) {
+  public Claim persistClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteran());
     Optional<ClaimEntity> existingClaim =
         claimRepository.findByClaimIdAndIdType(claim.getClaimId(), claim.getIdType());
     if (existingClaim.isPresent()) {
-      return;
+      return mapper.toClaim(existingClaim.get());
     }
     createClaim(claim, veteranEntity);
+    return claim;
   }
 
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
