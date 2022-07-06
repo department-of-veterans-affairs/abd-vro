@@ -2,11 +2,11 @@ package gov.va.vro.service.db;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import gov.va.starter.example.service.spi.db.model.Claim;
+import gov.va.starter.example.service.spi.db.model.Contention;
+import gov.va.starter.example.service.spi.db.model.Veteran;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
-import gov.va.vro.service.db.model.ClaimRequest;
-import gov.va.vro.service.db.model.Contention;
-import gov.va.vro.service.db.model.Veteran;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,16 +24,16 @@ class SaveToDbServiceImplTest {
 
   @Test
   void persistClaim() {
-    ClaimRequest claimRequest = new ClaimRequest();
-    claimRequest.setClaimId("claim1");
+    Claim claim = new Claim();
+    claim.setClaimId("claim1");
     Veteran veteran = new Veteran();
     veteran.setIcn("v1");
-    claimRequest.setVeteran(veteran);
+    claim.setVeteran(veteran);
     Contention contention = new Contention();
     contention.setDiagnosticCode("1234");
     // TODO add more entities
-    claimRequest.getContentions().add(contention);
-    saveToDbService.persistClaim(claimRequest);
+    claim.getContentions().add(contention);
+    saveToDbService.persistClaim(claim);
 
     assertEquals(1, veteranRepository.findAll().size());
     assertEquals(1, claimRepository.findAll().size());

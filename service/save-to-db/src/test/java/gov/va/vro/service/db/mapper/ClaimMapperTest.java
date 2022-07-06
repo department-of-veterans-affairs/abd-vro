@@ -1,14 +1,14 @@
 package gov.va.vro.service.db.mapper;
 
+import gov.va.starter.example.service.spi.db.model.Claim;
+import gov.va.starter.example.service.spi.db.model.Contention;
+import gov.va.starter.example.service.spi.db.model.Veteran;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.service.db.model.ClaimRequest;
-import gov.va.vro.service.db.model.Contention;
-import gov.va.vro.service.db.model.Veteran;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-class ClaimRequestMapperTest {
+class ClaimMapperTest {
 
   private ClaimRequestMapper mapper;
 
@@ -19,8 +19,8 @@ class ClaimRequestMapperTest {
 
   @Test
   void toEntity() {
-    ClaimRequest claimRequest = new ClaimRequest();
-    claimRequest.setClaimId("claim1");
+    Claim claim = new Claim();
+    claim.setClaimId("claim1");
     Veteran veteran = new Veteran();
     veteran.setIcn("v1");
     veteran.setParticipantId("p");
@@ -30,9 +30,9 @@ class ClaimRequestMapperTest {
     contention1.addEvidenceSummaryDocument("doc1", 1);
     contention1.addEvidenceSummaryDocument("doc2", 2);
 
-    claimRequest.getContentions().add(contention1);
-    claimRequest.setVeteran(veteran);
-    ClaimEntity entity = mapper.toClaimEntity(claimRequest);
+    claim.getContentions().add(contention1);
+    claim.setVeteran(veteran);
+    ClaimEntity entity = mapper.toClaimEntity(claim);
     // TODO: verify
     System.out.println(entity);
   }

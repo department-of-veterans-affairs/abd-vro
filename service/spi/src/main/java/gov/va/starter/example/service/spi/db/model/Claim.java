@@ -1,4 +1,4 @@
-package gov.va.vro.service.db.model;
+package gov.va.starter.example.service.spi.db.model;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class ClaimRequest {
+public class Claim {
 
   @NotNull private String claimId;
 

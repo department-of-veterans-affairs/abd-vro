@@ -1,4 +1,4 @@
-package gov.va.vro.service.db.model;
+package gov.va.starter.example.service.spi.db.model;
 
 import lombok.Data;
 
