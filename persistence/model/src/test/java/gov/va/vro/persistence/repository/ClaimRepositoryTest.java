@@ -47,7 +47,7 @@ class ClaimRepositoryTest {
         .filter(contention -> "c1".equals(contention.getDiagnosticCode()))
         .findAny()
         .ifPresentOrElse(
-            contention -> assertEquals(2, contention1.getEvidenceSummaries().size()),
+            contention -> assertEquals(2, contention1.getEvidenceSummaryDocuments().size()),
             Assertions::fail);
     contentions.stream()
         .filter(contention -> "c2".equals(contention.getDiagnosticCode()))

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,7 +12,7 @@ import javax.persistence.Entity;
 public class VeteranEntity extends BaseEntity {
 
   // (unique): Internal Control Number; needed for queries to Lighthouse Health API
-  private String icn;
+  @NotNull private String icn;
   // common identifier used by BGS
   private String participantId;
 }

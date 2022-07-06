@@ -7,7 +7,7 @@ import gov.va.vro.persistence.model.VeteranEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ClaimRequestMapper {
+public interface ClaimMapper {
 
   VeteranEntity toVeteranEntity(Veteran veteran);
 

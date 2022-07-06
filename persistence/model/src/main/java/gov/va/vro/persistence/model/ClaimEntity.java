@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -13,10 +14,10 @@ import javax.persistence.*;
 public class ClaimEntity extends BaseEntity {
 
   // claim identifier used by client
-  private String claimId;
+  @NotNull private String claimId;
 
-  // omain of the id, e.g. "va.gov-Form526Submission"
-  private String idType;
+  // domain of the id, e.g. "va.gov-Form526Submission"
+  @NotNull private String idType;
 
   private String incomingStatus = "submission";
 

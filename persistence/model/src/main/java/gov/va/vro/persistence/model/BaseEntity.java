@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/** Base class for entities that maintain created/updated time */
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

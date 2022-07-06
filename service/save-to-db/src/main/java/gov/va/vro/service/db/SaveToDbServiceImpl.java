@@ -7,7 +7,7 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
-import gov.va.vro.service.db.mapper.ClaimRequestMapper;
+import gov.va.vro.service.db.mapper.ClaimMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
-  private final ClaimRequestMapper mapper;
+  private final ClaimMapper mapper;
 
   @Override
   public void persistClaim(Claim claim) {

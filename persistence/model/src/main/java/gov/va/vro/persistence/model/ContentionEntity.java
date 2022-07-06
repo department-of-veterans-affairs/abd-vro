@@ -30,7 +30,7 @@ public class ContentionEntity extends BaseEntity {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  private List<EvidenceSummaryEntity> evidenceSummaries = new ArrayList<>();
+  private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
   public ContentionEntity(String diagnosticCode) {
     this.diagnosticCode = diagnosticCode;
@@ -44,12 +44,13 @@ public class ContentionEntity extends BaseEntity {
     return assessmentResult;
   }
 
-  public EvidenceSummaryEntity addEvidenceSummaryDocument(String documentName, int evidenceCount) {
-    EvidenceSummaryEntity document = new EvidenceSummaryEntity();
+  public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
+      String documentName, int evidenceCount) {
+    EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
     document.setDocumentName(documentName);
     document.setEvidenceCount(evidenceCount);
     document.setContention(this);
-    evidenceSummaries.add(document);
+    evidenceSummaryDocuments.add(document);
     return document;
   }
 }
