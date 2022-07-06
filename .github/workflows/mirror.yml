@@ -21,9 +21,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: de-vri-es/setup-git-credentials@v2
-        with:
-          credentials: ${{secrets.YOOMS_GITHUB_CREDENTIALS}}
       - name: Check dirs
         run: |
           env
@@ -32,10 +29,8 @@ jobs:
           echo "======= credentials"
           set -v
           cat $XDG_CONFIG_HOME/git/credentials
-          echo "======= push"
-          # git push -v --mirror https://${YOOMS_CRED}@github.com/department-of-veterans-affairs/abd-vro-internal.git
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
           GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          GIT_SSH_NO_VERIFY_HOST: "true"
+          GIT_SSH_KNOWN_HOSTS: github.com
