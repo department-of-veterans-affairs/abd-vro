@@ -15,19 +15,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: de-vri-es/setup-git-credentials@v2
+        with:
+          credentials: ${{secrets.YOOMS_GITHUB_CREDENTIALS}}
       - name: Check dirs
         run: |
           env
-          git config --global --add safe.directory /github/workspace
-          git config --global credential.username "${MY_USERNAME}"
-          git config --global core.askPass .github/workflows/cred-helper.sh
-          git config --global credential.helper cache
+          echo "config"
+          git config --list
+          echo "credentials"
+          cat $XDG_CONFIG_HOME/git/credentials
+          echo "push"
           git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
-      - uses: yesolutions/mirror-action@master
-        with:
-          REMOTE: 'https://github.com/department-of-veterans-affairs/abd-vro-internal.git'
-          GIT_USERNAME: ${{ secrets.USERNAME }}
-          GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
-          GIT_PUSH_ARGS: "--mirror"
-          PUSH_ALL_REFS: "false"
-          DEBUG: "true"
+
