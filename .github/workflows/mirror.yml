@@ -27,5 +27,5 @@ jobs:
           echo "======= credentials"
           cat $XDG_CONFIG_HOME/git/credentials
           echo "======= push"
-          git push --mirror https://github.com/department-of-veterans-affairs/abd-vro-internal.git
+          git push -v --mirror https://${{secrets.YOOMS_CREDENTIALS}}@github.com/department-of-veterans-affairs/abd-vro-internal.git
 
