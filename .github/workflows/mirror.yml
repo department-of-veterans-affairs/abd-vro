@@ -6,14 +6,9 @@ on: [push, delete]
 concurrency:
   group: git-mirror
 
-env:
-  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  INPUT_GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
-  MY_USERNAME: ${{ secrets.USERNAME }}
-  YOOMS_CRED: ${{secrets.YOOMS_CREDENTIALS}}
-
 jobs:
   to_internal_repo:
+    # only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
@@ -21,14 +16,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Check dirs
-        run: |
-          env
-          echo "======= config"
-          git config --list
-          echo "======= credentials"
-          set -v
-          cat $XDG_CONFIG_HOME/git/credentials
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
