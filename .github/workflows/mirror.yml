@@ -20,4 +20,6 @@ jobs:
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
           GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          GIT_SSH_KNOWN_HOSTS: github.com
+          # https://serverfault.com/questions/856194/securely-add-a-host-e-g-github-to-the-ssh-known-hosts-file
+          # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+          GIT_SSH_KNOWN_HOSTS: '2048 SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8 github.com (RSA)'
