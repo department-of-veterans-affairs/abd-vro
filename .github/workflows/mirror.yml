@@ -6,6 +6,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   INPUT_GIT_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
   MY_USERNAME: ${{ secrets.USERNAME }}
+  YOOMS_CRED: ${{secrets.YOOMS_CREDENTIALS}}
 
 jobs:
   to_internal_repo:
@@ -25,7 +26,8 @@ jobs:
           echo "======= config"
           git config --list
           echo "======= credentials"
+          set -v
           cat $XDG_CONFIG_HOME/git/credentials
           echo "======= push"
-          git push -v --mirror https://${{secrets.YOOMS_CREDENTIALS}}@github.com/department-of-veterans-affairs/abd-vro-internal.git
+          git push -v --mirror https://$YOOMS_CRED@github.com/department-of-veterans-affairs/abd-vro-internal.git
 
