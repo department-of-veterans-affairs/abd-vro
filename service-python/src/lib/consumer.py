@@ -1,6 +1,9 @@
+from datetime import datetime
+from io import BytesIO
 from time import sleep
 from lib.pdf_generator import PDFGenerator
-from config.settings import pdf_options
+from lib.s3_uploader import upload_file
+from config.settings import pdf_options, codes
 
 import pika
 import json
@@ -12,6 +15,7 @@ class RabbitMQConsumer:
 		self.config = config
 		self.connection = self._create_connection()
 		self.pdf_generator = PDFGenerator(pdf_options)
+		self.code_list = codes
 
 
 	def __del__(self):
@@ -36,16 +40,21 @@ class RabbitMQConsumer:
 		# print(f"reply_to: {properties.reply_to}")
 		# print(f"correlation_id: {properties.correlation_id}")
 		# print(f"Headers: {properties.headers}")
-		pdf_type = message["contention"]
-		save_pdf = self.config["save_pdf"]
+		code = message["diagnosticCode"]
+		diagnosis_type = self.code_list[code]
 
-		template = self.pdf_generator.generate_template_file(pdf_type, message)
-		pdf = self.pdf_generator.generate_pdf_from_string(template, save_pdf)
-		if type(pdf) == bool:
-			print(f"PDF Saved to examples folder")
-		else:
-			print(f"PDF Base 64: {base64.b64encode(pdf)}")
+		template = self.pdf_generator.generate_template_file(diagnosis_type, message)
+		pdf = self.pdf_generator.generate_pdf_from_string(template)
+		pdf_obj = BytesIO(pdf)
+		file_name = f"VAMC_{diagnosis_type.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
+		upload_file(file_name, "vro-efolder", pdf_obj)
 		# {"pdf": base64.b64encode(pdf).decode("utf-8")}
+		response = {
+			"claimSubmissionId": message["claimSubmissionId"],
+			"diagnosticCode": message["diagnosticCode"],
+			"evidenceSummaryLink": f"https://vro-efolder.s3.amazonaws.com/{file_name}"
+		}
+		print(f"Resonse: {response}")
 
 
 	def on_return_callback(self, channel, method, properties, body):

@@ -10,10 +10,13 @@ channel = connection.channel()
 
 channel.queue_declare(queue=QUEUE_NAME)
 
+code = 7701
+
 payload = {
-  "contention": "asthma",
-  "patient_info": json.load(open("./patient_info.json")),
-  "assessed_data": json.load(open("./assessed_data_asthma.json"))
+  "claimSubmissionId": 1,
+  "diagnosticCode": code,
+  "veteran_info": json.load(open("./veteran_info.json")),
+  "evidence": json.load(open(f"./evidence_{code}.json"))
 }
 
 channel.basic_publish(exchange=EXCHANGE_NAME,

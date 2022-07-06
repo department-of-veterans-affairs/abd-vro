@@ -25,3 +25,5 @@ services:
       - "5000:5000"
     networks:
       - internal
+    volumes:
+      - ~/.aws:/root/.aws

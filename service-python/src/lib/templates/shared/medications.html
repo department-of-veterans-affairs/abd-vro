@@ -16,8 +16,8 @@
   </table>
 {% endif %}
 
-{% if medications|length > 0 %}
-  {% for medicine in medications %}
+{% if evidence.medications and evidence.medications|length > 0 %}
+  {% for medicine in evidence.medications %}
     <br />
     <p>
       {% if medicine.flagged %}
@@ -27,9 +27,9 @@
       {% else %}
         <b>{{medicine.description}}</b>
       {% endif %}
-      {% if medicine.dosageInstructions %}
-        {{medicine.dosage}}
-      {% endif %}<br />
+      {% for dosage in medicine.dosageInstructions %}
+        {{dosage}}
+      {% endfor %}<br />
 
       Prescribed on:
       {% if medicine.authoredOn %}

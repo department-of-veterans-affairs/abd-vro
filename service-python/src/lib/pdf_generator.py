@@ -5,7 +5,6 @@ import os
 
 import pdfkit
 from jinja2 import Environment, PackageLoader, select_autoescape
-from config.settings import available_templates
 
 lib_dir = os.path.dirname(__file__)
 
@@ -16,18 +15,13 @@ class PDFGenerator:
 		self.options = options
 
 
-	def get_template_name(self, template_type: str) -> str:
-		selected_template = available_templates[template_type]
-		return selected_template
-
-
 	def generate_template_file(self, template_name: str, pdf_data) -> str:
 		jinja_env = Environment(
 			loader=PackageLoader("lib"),
 			autoescape=select_autoescape()
 		)
 
-		template_file = self.get_template_name(template_name)
+		template_file = template_name
 		placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_file}.json")))
 		filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
 		filled_variables["timestamp"] = datetime.now()
@@ -39,9 +33,6 @@ class PDFGenerator:
 		return generated_html
 
 
-	def generate_pdf_from_string(self, html: str, save_locally: bool) -> bytes or bool:
+	def generate_pdf_from_string(self, html: str) -> bytes or bool:
 		# config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
-		if save_locally:
-			examples_path = os.path.abspath("./test.pdf")
-			return pdfkit.from_string(html, examples_path, options=self.options)
 		return pdfkit.from_string(html, False, options=self.options)

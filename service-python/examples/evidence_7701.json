@@ -1,0 +1,22 @@
+{
+  "bp_readings": [
+    {
+      "effectiveDateTime": "2022-04-19T15:48:04-05:00",
+      "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+      "organization": "LYONS VA MEDICAL CENTER",
+      "systolic": {
+        "code": "8480-6",
+        "display": "Systolic blood pressure",
+        "unit": "mm[Hg]",
+        "value": 115.0
+      },
+      "diastolic": {
+        "code": "8462-4",
+        "display": "Diastolic blood pressure",
+        "unit": "mm[Hg]",
+        "value": 87.0
+      }
+    }
+  ],
+  "medications": []
+}
