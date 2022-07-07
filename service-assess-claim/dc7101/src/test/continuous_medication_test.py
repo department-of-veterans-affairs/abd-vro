@@ -8,8 +8,8 @@ from dc7101.src.lib import continuous_medication
         # Service connected and medication used to treat hypertension
         (
             {
-                "bp": [],
-                "medication": ["Benazepril"],
+                "observation": {"bp": []},
+                "medication": [{"text": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
             },
             {
@@ -20,8 +20,8 @@ from dc7101.src.lib import continuous_medication
         # Not service connected but uses medication used to treat hypertension
         (
             {
-                "bp": [],
-                "medication": ["Benazepril"],
+                "observation": {"bp": []},
+                "medication": [{"text": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
             },
             {
@@ -32,8 +32,8 @@ from dc7101.src.lib import continuous_medication
         # Service connected but doesn't use medication used to treat hypertension
         (
             {
-                "bp": [],
-                "medication": ["Advil"],
+                "observation": {"bp": []},
+                "medication": [{"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
             {
@@ -44,8 +44,8 @@ from dc7101.src.lib import continuous_medication
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
             {
-                "bp": [],
-                "medication": ["Benazepril", "Advil"],
+                "observation": {"bp": []},
+                "medication": [{"text": "Benazepril"}, {"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
             {
@@ -56,7 +56,7 @@ from dc7101.src.lib import continuous_medication
         # Service connected but no medication
         (
             {
-                "bp": [],
+                "observation": {"bp": []},
                 "medication": [],
                 'date_of_claim': '2021-11-09',
             },

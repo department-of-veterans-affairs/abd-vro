@@ -1,4 +1,4 @@
-import os
+import atexit
 from consumer import RabbitMQConsumer
 from dotenv import load_dotenv
 
@@ -27,7 +27,9 @@ consumer = RabbitMQConsumer(consumer_config)
 
 consumer.setup_queue(EXCHANGE_NAME, SERVICE_QUEUE_NAME)
 
-try:
-    consumer.channel.start_consuming()
-except KeyboardInterrupt:
-    consumer.channel.stop_consuming()
+def exit_handler():
+  consumer.channel.stop_consuming()
+
+atexit.register(exit_handler)
+
+consumer.channel.start_consuming()

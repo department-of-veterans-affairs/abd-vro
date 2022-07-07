@@ -50,7 +50,6 @@ def validate_request_body(request_body):
                     },
                     "status": {
                         "type": "string",
-                        "required": True
                     },
                     "text": {
                         "type": "string",
@@ -58,7 +57,6 @@ def validate_request_body(request_body):
                     },
                     "code": {
                         "type": "string",
-                        "required": True
                     }
                     }
                 }

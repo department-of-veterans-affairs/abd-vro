@@ -170,7 +170,7 @@ def test_calculate_predominant_readings(bp_readings, result):
     [
         # Two readings. No out of range dates.
         (
-            {
+            {"observation": {
                 "bp": [
                     {
                         "diastolic": 115,
@@ -182,7 +182,8 @@ def test_calculate_predominant_readings(bp_readings, result):
                         "systolic": 200,
                         "date": "2021-09-01"
                     }
-                ],
+                ]
+            },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -193,7 +194,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         ),
         # 2 reading test case with one out of range date
         (
-            {
+            {"observation": {
                 "bp": [
                     {
                         "diastolic": 115,
@@ -210,7 +211,8 @@ def test_calculate_predominant_readings(bp_readings, result):
                         "systolic": 210,
                         "date": "2020-11-08"
                     }
-                ],
+                ]
+            },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -223,43 +225,45 @@ def test_calculate_predominant_readings(bp_readings, result):
         # Total number of readings is odd
         (
             {
-                "bp": [
-                    {
-                        "systolic": 181,
-                        "diastolic": 112,
-                        "date": "2021-10-09"
-                    },
-                    {
-                        "systolic": 181,
-                        "diastolic": 109,
-                        "date": "2021-10-10"
-                    },
-                    {
-                        "systolic": 131,
-                        "diastolic": 113,
-                        "date": "2021-05-13"
-                    },
-                    {
-                        "systolic": 160,
-                        "diastolic": 101,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 120,
-                        "diastolic": 104,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 180,
-                        "diastolic": 116,
-                        "date": "2021-10-13"
-                    },
-                    {
-                        "systolic": 155,
-                        "diastolic": 111,
-                        "date": "2021-10-14"
-                    },
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "systolic": 181,
+                            "diastolic": 112,
+                            "date": "2021-10-09"
+                        },
+                        {
+                            "systolic": 181,
+                            "diastolic": 109,
+                            "date": "2021-10-10"
+                        },
+                        {
+                            "systolic": 131,
+                            "diastolic": 113,
+                            "date": "2021-05-13"
+                        },
+                        {
+                            "systolic": 160,
+                            "diastolic": 101,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 120,
+                            "diastolic": 104,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 180,
+                            "diastolic": 116,
+                            "date": "2021-10-13"
+                        },
+                        {
+                            "systolic": 155,
+                            "diastolic": 111,
+                            "date": "2021-10-14"
+                        },
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -273,38 +277,40 @@ def test_calculate_predominant_readings(bp_readings, result):
         # the algorithm chooses the higher rating for both categories
         (
             {
-                "bp": [
-                    {
-                        "systolic": 181,
-                        "diastolic": 109,
-                        "date": "2021-10-10"
-                    },
-                    {
-                        "systolic": 131,
-                        "diastolic": 113,
-                        "date": "2021-05-13"
-                    },
-                    {
-                        "systolic": 160,
-                        "diastolic": 101,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 120,
-                        "diastolic": 104,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 180,
-                        "diastolic": 116,
-                        "date": "2021-10-13"
-                    },
-                    {
-                        "systolic": 155,
-                        "diastolic": 111,
-                        "date": "2021-10-14"
-                    }
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "systolic": 181,
+                            "diastolic": 109,
+                            "date": "2021-10-10"
+                        },
+                        {
+                            "systolic": 131,
+                            "diastolic": 113,
+                            "date": "2021-05-13"
+                        },
+                        {
+                            "systolic": 160,
+                            "diastolic": 101,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 120,
+                            "diastolic": 104,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 180,
+                            "diastolic": 116,
+                            "date": "2021-10-13"
+                        },
+                        {
+                            "systolic": 155,
+                            "diastolic": 111,
+                            "date": "2021-10-14"
+                        }
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -316,43 +322,45 @@ def test_calculate_predominant_readings(bp_readings, result):
         # +2 reading test case with 1 out of range date (which would change the results if included)
         (
             {
-                "bp": [
-                    {
-                        "systolic": 181,
-                        "diastolic": 109,
-                        "date": "2021-10-10"
-                    },
-                    {
-                        "systolic": 131,
-                        "diastolic": 113,
-                        "date": "2021-05-13"
-                    },
-                    {
-                        "systolic": 160,
-                        "diastolic": 101,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 120,
-                        "diastolic": 104,
-                        "date": "2021-09-13"
-                    },
-                    {
-                        "systolic": 180,
-                        "diastolic": 116,
-                        "date": "2021-10-13"
-                    },
-                    {
-                        "systolic": 155,
-                        "diastolic": 111,
-                        "date": "2021-10-14"
-                    },
-                    {
-                        "systolic": 154,
-                        "diastolic": 105,
-                        "date": "2020-11-08"
-                    }
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "systolic": 181,
+                            "diastolic": 109,
+                            "date": "2021-10-10"
+                        },
+                        {
+                            "systolic": 131,
+                            "diastolic": 113,
+                            "date": "2021-05-13"
+                        },
+                        {
+                            "systolic": 160,
+                            "diastolic": 101,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 120,
+                            "diastolic": 104,
+                            "date": "2021-09-13"
+                        },
+                        {
+                            "systolic": 180,
+                            "diastolic": 116,
+                            "date": "2021-10-13"
+                        },
+                        {
+                            "systolic": 155,
+                            "diastolic": 111,
+                            "date": "2021-10-14"
+                        },
+                        {
+                            "systolic": 154,
+                            "diastolic": 105,
+                            "date": "2020-11-08"
+                        }
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -364,18 +372,20 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no reading within 30 days
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 115,
-                        "systolic": 180,
-                        "date": "2021-10-01"
-                    },
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    }
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 115,
+                            "systolic": 180,
+                            "date": "2021-10-01"
+                        },
+                        {
+                            "diastolic": 110,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        }
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -385,18 +395,20 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no second reading within 180 days
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 115,
-                        "systolic": 180,
-                        "date": "2021-04-01"
-                    },
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-10-10"
-                    }
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 115,
+                            "systolic": 180,
+                            "date": "2021-04-01"
+                        },
+                        {
+                            "diastolic": 110,
+                            "systolic": 200,
+                            "date": "2021-10-10"
+                        }
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -406,13 +418,15 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 1 reading
         (
             {
-                "bp": [
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-10-10"
-                    }
-                ],
+                "observation": {
+                    "bp": [
+                        {
+                            "diastolic": 110,
+                            "systolic": 200,
+                            "date": "2021-10-10"
+                        }
+                    ]
+                },
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -422,7 +436,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 0 readings
         (
             {
-                "bp": [],
+                "observation": {"bp": []},
                 "date_of_claim": "2021-11-09",
             },
             {

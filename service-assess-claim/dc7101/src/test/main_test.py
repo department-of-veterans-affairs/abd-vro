@@ -10,7 +10,7 @@ from dc7101.src.lib import main
         # All three calculator functions return valid results readings
         (
             {
-                "body": json.dumps({
+                "observation": {
                     "bp": [
                         {
                             "diastolic": 115,
@@ -22,11 +22,13 @@ from dc7101.src.lib import main
                             "systolic": 200,
                             "date": "2021-09-01"
                         }
-                    ],
-                    "medication": ["Capoten"],
-                    "date_of_claim": "2021-11-09",
-                })
-            },
+                    ]
+                },
+                "medication": [{"text": "Capoten"}],
+                "date_of_claim": "2021-11-09",
+                "vasrd": "7101"
+            }
+            ,
             {
                 "statusCode": 200,
                 "headers": {
@@ -57,7 +59,7 @@ from dc7101.src.lib import main
         # sufficient_to_autopopulate to fail as well 
         (
             {
-                "body": json.dumps({
+                "observation" : {
                     "bp": [
                         {
                             "diastolic": 115,
@@ -69,11 +71,13 @@ from dc7101.src.lib import main
                             "systolic": 200,
                             "date": "2020-09-01"
                         }
-                    ],
-                    "medication": [],
-                    "date_of_claim": "2021-11-09",
-                })
-            },
+                    ]
+                },
+                "medication": [],
+                "date_of_claim": "2021-11-09",
+                "vasrd": "7101"
+            }
+            ,
             {
                 "statusCode": 209,
                 "headers": {
@@ -98,13 +102,15 @@ from dc7101.src.lib import main
         ),
         # Sufficiency and history algos fail
         (
+            
             {
-                "body": json.dumps({
-                    "bp": [],
-                    "medication": [],
-                    "date_of_claim": "2021-11-09",
-                })
-            },
+                "observation":
+                {"bp": []},
+                "medication": [],
+                "date_of_claim": "2021-11-09",
+                "vasrd": "7101"
+            }
+            ,
             {
                 "statusCode": 400,
                 "headers": {
@@ -129,7 +135,7 @@ from dc7101.src.lib import main
         # Bad data: "diastolic" key is missing in second reading
         (
             {
-                "body": json.dumps({
+                "observation" : {
                     "bp": [
                         {
                             "diastolic": 111,
@@ -140,10 +146,12 @@ from dc7101.src.lib import main
                             "systolic": 180,
                             "date": "2021-11-01"
                         }
-                    ],
-                    "date_of_claim": "2021-11-09",
-                })
-            },
+                    ]
+                },
+                "date_of_claim": "2021-11-09",
+                "vasrd": "7101"
+            }
+            ,
             {
                 "statusCode": 400,
                 "headers": {
@@ -161,7 +169,7 @@ from dc7101.src.lib import main
                     "requires_continuous_medication": {
                         "success": False
                     },
-                    "errors": {"bp": [{"1": [{"diastolic": ["required field"]}]}]}
+                    "errors": {"observation":[{"bp": [{"1": [{"diastolic": ["required field"]}]}]}]}
                 })
             }
         ),
@@ -171,7 +179,7 @@ from dc7101.src.lib import main
         # - "veteran_is_service_connected_for_dc7101" is a string
         (
             {
-                "body": json.dumps({
+                "observation" : {
                     "bp": [
                         {
                             "diastolic": "180",
@@ -183,11 +191,13 @@ from dc7101.src.lib import main
                             "systolic": 180,
                             "date": "2021-11-01"
                         }
-                    ],
-                    "date_of_claim": "2021-11-09",
-                    "medication": [11],
-                })
-            },
+                    ]
+                },
+                "date_of_claim": "2021-11-09",
+                "medication": [{"text": 11}],
+                "vasrd": "7101"
+            }
+            ,
             {
                 "statusCode": 400,
                 "headers": {
@@ -206,8 +216,10 @@ from dc7101.src.lib import main
                         "success": False
                     },
                     "errors": {
-                        "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}],
-                        "medication": [{"0": ["must be of string type"]}],
+                        "observation": [{
+                            "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}]
+                            }],
+                        "medication": [{0: [{'text': ['must be of string type']}]}],
                     }
                 })
             }

@@ -50,7 +50,10 @@ def validate_request_body(request_body):
                     },
                     "status": {
                         "type": "string",
+<<<<<<< HEAD
                         "required": True
+=======
+>>>>>>> service-assess-data
                     },
                     "text": {
                         "type": "string",
@@ -58,7 +61,10 @@ def validate_request_body(request_body):
                     },
                     "code": {
                         "type": "string",
+<<<<<<< HEAD
                         "required": True
+=======
+>>>>>>> service-assess-data
                     }
                     }
                 }
