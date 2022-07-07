@@ -17,8 +17,7 @@ public class ClaimEntity extends BaseEntity {
   @NotNull private String claimId;
 
   // domain of the id, e.g. "va.gov-Form526Submission"
-  // TODO: hardcode at endpoint
-  @NotNull private String idType = "va.gov-Form526Submission";
+  @NotNull private String idType;
 
   private String incomingStatus = "submission";
 

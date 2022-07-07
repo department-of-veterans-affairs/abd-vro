@@ -1,16 +1,14 @@
 package gov.va.vro.service.db.mapper;
 
 import gov.va.starter.example.service.spi.db.model.Claim;
-import gov.va.starter.example.service.spi.db.model.Veteran;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.persistence.model.VeteranEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ClaimMapper {
 
-  VeteranEntity toVeteranEntity(Veteran veteran);
-
+  @Mapping(target = "claimId", source = "claimSubmissionId")
   ClaimEntity toClaimEntity(Claim request);
 
   Claim toClaim(ClaimEntity claimEntity);

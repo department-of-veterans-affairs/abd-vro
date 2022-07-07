@@ -2,20 +2,19 @@ package gov.va.starter.example.service.spi.db.model;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.NotNull;
 
 @Data
 public class Claim {
 
-  @NotNull private String claimId;
+  @NotNull private String claimSubmissionId;
 
-  @NotNull private String idType;
+  // At the moment, this is the only id type
+  @NotNull private String idType = "va.gov-Form526Submission";
 
   @NotNull private String incomingStatus = "submission";
 
-  @NotNull private Veteran veteran;
+  @NotNull private String veteranIcn;
 
-  private List<Contention> contentions = new ArrayList<>();
+  @NotNull private String diagnosticCode;
 }

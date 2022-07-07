@@ -2,8 +2,8 @@ package gov.va.vro.service.db;
 
 import gov.va.starter.example.service.spi.db.SaveToDbService;
 import gov.va.starter.example.service.spi.db.model.Claim;
-import gov.va.starter.example.service.spi.db.model.Veteran;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
@@ -22,10 +22,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ClaimMapper mapper;
 
   @Override
-  public Claim persistClaim(Claim claim) {
-    VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteran());
+  public Claim insertClaim(Claim claim) {
+    VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
     Optional<ClaimEntity> existingClaim =
-        claimRepository.findByClaimIdAndIdType(claim.getClaimId(), claim.getIdType());
+        claimRepository.findByClaimIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType());
     if (existingClaim.isPresent()) {
       return mapper.toClaim(existingClaim.get());
     }
@@ -36,15 +36,19 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
     ClaimEntity claimEntity = mapper.toClaimEntity(claim);
     claimEntity.setVeteran(veteranEntity);
+    ContentionEntity contentionEntity = new ContentionEntity();
+    contentionEntity.setDiagnosticCode(claim.getDiagnosticCode());
+    claimEntity.addContention(contentionEntity);
     return claimRepository.save(claimEntity);
   }
 
-  private VeteranEntity findOrCreateVeteran(Veteran veteran) {
-    return veteranRepository.findByIcn(veteran.getIcn()).orElseGet(() -> createVeteran(veteran));
+  private VeteranEntity findOrCreateVeteran(String veteranIcn) {
+    return veteranRepository.findByIcn(veteranIcn).orElseGet(() -> createVeteran(veteranIcn));
   }
 
-  private VeteranEntity createVeteran(Veteran veteran) {
-    VeteranEntity veteranEntity = mapper.toVeteranEntity(veteran);
+  private VeteranEntity createVeteran(String veteranIcn) {
+    VeteranEntity veteranEntity = new VeteranEntity();
+    veteranEntity.setIcn(veteranIcn);
     return veteranRepository.save(veteranEntity);
   }
 }

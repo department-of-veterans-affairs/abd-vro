@@ -25,31 +25,23 @@ class SaveToDbServiceImplTest {
   @Test
   void persistClaim() {
     Claim claim = new Claim();
-    claim.setClaimId("claim1");
-    claim.setIdType("type");
-    Veteran veteran = new Veteran();
-    veteran.setIcn("v1");
-    claim.setVeteran(veteran);
-    Contention contention = new Contention();
-    contention.setDiagnosticCode("1234");
-    AssessmentResult assessmentResult = new AssessmentResult();
-    assessmentResult.setEvidenceCount(2);
-    contention.getAssessmentResults().add(assessmentResult);
-    EvidenceSummaryDocument evidenceSummaryDocument = new EvidenceSummaryDocument();
-    evidenceSummaryDocument.setDocumentName("doc");
-    evidenceSummaryDocument.setEvidenceCount(4);
-    contention.getEvidenceSummaryDocuments().add(evidenceSummaryDocument);
-    claim.getContentions().add(contention);
-    saveToDbService.persistClaim(claim);
+    claim.setClaimSubmissionId("claim1");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("1234");
+    saveToDbService.insertClaim(claim);
 
     assertEquals(1, veteranRepository.findAll().size());
     assertEquals(1, claimRepository.findAll().size());
     ClaimEntity claimEntity =
-        claimRepository.findByClaimIdAndIdType(claim.getClaimId(), claim.getIdType()).orElseThrow();
+        claimRepository
+            .findByClaimIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .orElseThrow();
+    assertEquals(claim.getClaimSubmissionId(), claimEntity.getClaimId());
+    assertEquals("va.gov-Form526Submission", claimEntity.getIdType());
+    assertEquals("submission", claimEntity.getIncomingStatus());
+    assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
-    assertEquals(contention.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
-    assertEquals(1, contentionEntity.getEvidenceSummaryDocuments().size());
-    assertEquals(1, contentionEntity.getAssessmentResults().size());
+    assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
   }
 }

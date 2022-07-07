@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -16,7 +17,7 @@ public class ContentionEntity extends BaseEntity {
 
   @ManyToOne private ClaimEntity claim;
 
-  private String diagnosticCode;
+  @NotNull private String diagnosticCode;
 
   @OneToMany(
       mappedBy = "contention",
