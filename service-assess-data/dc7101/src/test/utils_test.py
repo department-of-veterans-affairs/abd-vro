@@ -1,5 +1,5 @@
 import pytest
-from dc7101.lib import utils
+from dc7101.src.lib import utils
 
 
 @pytest.mark.parametrize(

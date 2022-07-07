@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from dc7101.lib import main
+from dc7101.src.lib import main
 
 
 @pytest.mark.parametrize(

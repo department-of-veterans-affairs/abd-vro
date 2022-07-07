@@ -1,5 +1,5 @@
 import pytest
-from dc7101.lib import continuous_medication
+from dc7101.src.lib import continuous_medication
 
 
 @pytest.mark.parametrize(
