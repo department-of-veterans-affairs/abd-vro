@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from src.lib import main
+from dc6602.src.lib import main
 
 
 @pytest.mark.parametrize(
