@@ -124,6 +124,9 @@ services:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_SESSION_TOKEN: test
     depends_on:
       - rabbitmq1
     networks:
