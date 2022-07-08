@@ -1,0 +1,14 @@
+{
+  "document_type": "hypertension",
+  "veteran_info": {
+    "first": "",
+    "middle": "",
+    "last": "",
+    "suffix": "",
+    "birthdate": ""
+  },
+  "evidence": {
+    "bp_readings": [],
+    "medications": []
+  }
+}
