@@ -1,9 +1,9 @@
 ---
 swagger: "3.0"
 info:
-  description: API for DC7343 logical processing
+  description: API for Diagnosable Condition logical processing
   version: 1.0.2
-  title: DCC7343 algorithms
+  title: 
 host: virtserver.swaggerhub.com
 basePath: /jbregstone/dc7343/1.0.0
 schemes:
@@ -12,8 +12,7 @@ paths:
   /calculate:
     post:
       summary: processes patient data
-      description: Determines if patient has active pancreatic cancer and/or is being treated with procedures/medicines for pancreatic cancer
-      operationId: DC7343
+      description: Determines if patient has active condition and/or is being treated with procedures/medicines for a condition
       consumes:
       - application/json
       produces:
