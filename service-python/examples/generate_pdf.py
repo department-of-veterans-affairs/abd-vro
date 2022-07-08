@@ -2,6 +2,8 @@ import pika
 import json
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 EXCHANGE_NAME = "generate_pdf"
 QUEUE_NAME = "pdf_generator"
 

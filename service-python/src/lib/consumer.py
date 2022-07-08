@@ -6,6 +6,8 @@ import pika
 import json
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 class RabbitMQConsumer:
 
 	def __init__(self, config):
@@ -25,7 +27,7 @@ class RabbitMQConsumer:
 				port = self.config["port"])
 				return pika.BlockingConnection(parameters)
 			except:
-				logging.error(f"RabbitMQ Connection Failed. Retrying in 15s")
+				logging.warn(f"RabbitMQ Connection Failed. Retrying in 15s")
 				sleep(15)
 
 
