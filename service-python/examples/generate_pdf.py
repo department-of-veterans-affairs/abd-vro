@@ -1,5 +1,6 @@
 import pika
 import json
+import logging
 
 EXCHANGE_NAME = "generate_pdf"
 QUEUE_NAME = "pdf_generator"
@@ -22,6 +23,6 @@ payload = {
 channel.basic_publish(exchange=EXCHANGE_NAME,
                       routing_key=QUEUE_NAME,
                       body=json.dumps(payload))
-print(" [x] Sent PDF Payload: ", payload)
+logging.info(" [x] Sent PDF Payload: ", payload)
 
 connection.close()

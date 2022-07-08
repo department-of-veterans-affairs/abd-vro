@@ -5,6 +5,7 @@ from config.settings import pdf_options, codes
 
 import pika
 import json
+import logging
 
 class RabbitMQConsumer:
 
@@ -26,14 +27,14 @@ class RabbitMQConsumer:
 				port = self.config["port"])
 				return pika.BlockingConnection(parameters)
 			except:
-				print(f"RabbitMQ Connection Failed. Retrying in 15s")
+				logging.error(f"RabbitMQ Connection Failed. Retrying in 15s")
 				sleep(15)
 
 
 	def on_message_callback(self, channel, method, properties, body):
 		binding_key = method.routing_key
 		message = json.loads(body)
-		print(f" [x] {binding_key}: Received message: {message}")
+		logging.info(f" [x] {binding_key}: Received message: {message}")
 		code = message["diagnosticCode"]
 		diagnosis_type = self.code_list[code]
 
@@ -45,11 +46,11 @@ class RabbitMQConsumer:
 			"diagnosticCode": message["diagnosticCode"],
 			"evidenceSummaryLink": f"https://vro-efolder.s3.amazonaws.com/{file_name}"
 		}
-		print(f"Resonse: {response}")
+		logging.info(f"Resonse: {response}")
 
 
 	def on_return_callback(self, channel, method, properties, body):
-		print(f"Returned message for - {channel}")
+		logging.info(f"Returned message for - {channel}")
 
 
 	def setup_queue(self, exchange_name, queue_name):
@@ -61,4 +62,4 @@ class RabbitMQConsumer:
 		channel.queue_bind(queue=queue_name, exchange=exchange_name)
 		channel.basic_consume(queue=queue_name, on_message_callback=self.on_message_callback, auto_ack=True)
 		self.channel = channel
-		print(f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C")
+		logging.info(f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C")
