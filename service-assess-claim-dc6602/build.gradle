@@ -5,7 +5,7 @@ plugins {
 
 docker { // expects src/docker/Dockerfile to exist
     // Copy files into build/docker/ folder, where the container image will be built
-    copySpec.into(".").from("src")
+    copySpec.into(".").from("src"){exclude('docker')}
     // Use container image cache
     noCache false
 }

@@ -86,14 +86,6 @@ class BaseClient(object):
 
 rpc = BaseClient()
 
-print(" [x] Requesting 7101")
-response = rpc.call(example_decision_data)
-print(" [.] Got %r" % response)
-
-example_decision_data_6602 = example_decision_data
-example_decision_data_6602["vasrd"] = "6602" #Change vasrd to test routing 
-
-
-print(" [x] Requesting 6602")
+print(" [x] Requesting")
 response = rpc.call(example_decision_data)
 print(" [.] Got %r" % response)
