@@ -45,8 +45,8 @@ images:
   mq:
     imageName: abd_vro-rabbitmq
     tag: 3
-  serviceAssessData:
-    imageName: abd_vro-service-assess-data
+  serviceAssessClaimDC7101:
+    imageName: abd_vro-service-assess-claim-dc7101
     tag: latest
     imagePullPolicy: Always
 

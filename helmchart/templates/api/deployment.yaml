@@ -113,9 +113,9 @@ spec:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
           resources: {{- toYaml .Values.resources.serviceRuby | nindent 12 }}
-        - name: {{ .Values.name }}-service-assess-data
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessData.imageName }}:{{ .Values.images.serviceAssessData.tag }}
-          imagePullPolicy: {{ .Values.images.serviceAssessData.imagePullPolicy }}
+        - name: {{ .Values.name }}-service-assess-claim-dc7101
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbitmq
@@ -129,4 +129,4 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.serviceAssessData | nindent 12 }}
+          resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
