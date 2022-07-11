@@ -65,7 +65,8 @@ ext {
                      ':container-init',
                      ':db-init',
                      ':opa-init',
-                     ':service-assess-claim-dc7101']
+                     ':service-assess-claim-dc7101',
+                     ':service-assess-claim-dc6602']
 }
 
 
