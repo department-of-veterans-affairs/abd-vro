@@ -113,13 +113,13 @@ services:
       - rabbitmq1
       - db-init
       - service-ruby
-      - service-assess-data
+      - service-assess-claim-dc7101
     networks:
       - internal
       - external
 
-  service-assess-data:
-    image: va/abd_vro-service-assess-data:latest
+  service-assess-claim-dc7101:
+    image: va/abd_vro-service-assess-claim-dc7101:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
