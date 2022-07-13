@@ -3,7 +3,7 @@ import json, os
 
 lib_dir = os.path.dirname(__file__)
 
-def test_asthma_default_template_variables():
+def test_default_template_variables():
     pdf_generator = PDFGenerator({})
     template = "asthma"
     default_variables = json.load(open(os.path.join(lib_dir, f"../lib/template_variables/{template}.json")))
@@ -17,7 +17,7 @@ def test_asthma_default_template_variables():
     assert default_variables == generated_variables
 
 
-def test_asthma_replaced_template_variables():
+def test_replaced_template_variables():
     pdf_generator = PDFGenerator({})
     template = "asthma"
 
