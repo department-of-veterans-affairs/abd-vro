@@ -22,3 +22,10 @@ codes = {
   6602: "asthma",
   7701: "hypertension"
 }
+
+s3_config = {
+    "access_key": os.environ.get("AWS_ACCESS_KEY_ID", "test"),
+    "secret_access_key": os.environ.get("AWS_SECRET_ACCESS_KEY", "test"),
+    "session_token": os.environ.get("AWS_SESSION_TOKEN", "test")
+}
+

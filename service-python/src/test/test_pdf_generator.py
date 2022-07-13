@@ -57,3 +57,4 @@ def test_hypertension_generate_html_file():
 
     document_title = "<h3>Hypertension Rapid Ready for Decision | Claim for Increase</h3>"
     assert document_title in html_file
+
