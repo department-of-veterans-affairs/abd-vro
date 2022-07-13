@@ -1,5 +1,5 @@
 import pytest
-from dc7101.src.lib import predominant_bp
+from src.lib import predominant_bp
 
 @pytest.mark.parametrize(
     "date_of_claim, bp_readings, result",

@@ -1,5 +1,5 @@
 import pytest
-from dc7101.src.lib import bp_history
+from src.lib import bp_history
 
 
 @pytest.mark.parametrize(
