@@ -25,8 +25,7 @@ class RabbitMQConsumer:
 	def _create_connection(self):
 		for i in range(self.config["retry_limit"]):
 			try:
-				parameters = pika.ConnectionParameters(host=self.config["host"],    
-				port = self.config["port"])
+				parameters = pika.ConnectionParameters(host=self.config["host"], port = self.config["port"])
 				return pika.BlockingConnection(parameters)
 			except:
 				logging.warn(f"RabbitMQ Connection Failed. Retrying in 15s")
@@ -38,11 +37,12 @@ class RabbitMQConsumer:
 		message = json.loads(body)
 		logging.info(f" [x] {binding_key}: Received message: {message}")
 		code = message["diagnosticCode"]
-		diagnosis_type = self.code_list[code]
-		template = self.pdf_generator.generate_template_file(diagnosis_type, message)
+		diagnosis_name = self.code_list[code]
+		variables = self.pdf_generator.generate_template_variables(diagnosis_name, message)
+		template = self.pdf_generator.generate_template_file(diagnosis_name, variables)
 		pdf = self.pdf_generator.generate_pdf_from_string(template)
 		logging.info(f"Generated PDF: {pdf}")
-		file_name = f"VAMC_{diagnosis_type.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
+		file_name = f"VAMC_{diagnosis_name.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
 		response = {
 			"claimSubmissionId": message["claimSubmissionId"],
 			"diagnosticCode": message["diagnosticCode"],
