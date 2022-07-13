@@ -1,6 +1,7 @@
 from datetime import datetime
 from time import sleep
-from config.settings import codes
+from lib.pdf_generator import PDFGenerator
+from config.settings import pdf_options, codes
 
 import pika
 import json
@@ -13,6 +14,7 @@ class RabbitMQConsumer:
 	def __init__(self, config):
 		self.config = config
 		self.connection = self._create_connection()
+		self.pdf_generator = PDFGenerator(pdf_options)
 		self.code_list = codes
 
 
@@ -35,9 +37,12 @@ class RabbitMQConsumer:
 		message = json.loads(body)
 		logging.info(f" [x] {binding_key}: Received message: {message}")
 		code = message["diagnosticCode"]
-		diagnosis_type = self.code_list[code]
-
-		file_name = f"VAMC_{diagnosis_type.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
+		diagnosis_name = self.code_list[code]
+		variables = self.pdf_generator.generate_template_variables(diagnosis_name, message)
+		template = self.pdf_generator.generate_template_file(diagnosis_name, variables)
+		pdf = self.pdf_generator.generate_pdf_from_string(template)
+		logging.info(f"Generated PDF: {pdf}")
+		file_name = f"VAMC_{diagnosis_name.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
 		response = {
 			"claimSubmissionId": message["claimSubmissionId"],
 			"diagnosticCode": message["diagnosticCode"],
