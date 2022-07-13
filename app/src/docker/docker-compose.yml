@@ -25,16 +25,18 @@ services:
   #     - external
 
   rabbitmq1:
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     hostname: rabbitmq1
     expose:
       - "5672"
+      - "15672"
 #    volumes:
 #      - mqdata:/var/lib/??/data
     networks:
       - internal
     ports:
       - "5672:5672"
+      - "15672:15672"
 
   postgres1:
     image: postgres

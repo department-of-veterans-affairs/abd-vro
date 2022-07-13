@@ -28,3 +28,4 @@ s3_config = {
     "secret_access_key": os.environ.get("AWS_SECRET_ACCESS_KEY", "test"),
     "session_token": os.environ.get("AWS_SESSION_TOKEN", "test")
 }
+

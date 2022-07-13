@@ -22,6 +22,7 @@ services:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_SESSION_TOKEN: test
+
     build:
       dockerfile: ./Dockerfile
     ports: 
