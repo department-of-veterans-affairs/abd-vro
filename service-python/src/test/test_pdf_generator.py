@@ -47,3 +47,13 @@ def test_asthma_valid_variables_in_html_file():
     html_file = pdf_generator.generate_template_file(template, generated_variables)
 
     assert first_name in html_file
+
+def test_hypertension_generate_html_file():
+    pdf_generator = PDFGenerator({})
+    template = "hypertension"
+
+    generated_variables = pdf_generator.generate_template_variables(template, {})
+    html_file = pdf_generator.generate_template_file(template, generated_variables)
+
+    document_title = "<h3>Hypertension Rapid Ready for Decision | Claim for Increase</h3>"
+    assert document_title in html_file
