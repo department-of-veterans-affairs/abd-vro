@@ -6,11 +6,10 @@ import lombok.Getter;
 import lombok.NonNull;
 
 @AllArgsConstructor
-// @RequiredArgsConstructor
 @Getter
 @Schema(
-    name = "ClaimSubmissionResponse",
-    description = "Metadata describing an ClaimSubmission resource and unique identifier")
+    name = "AssessHealthDataResponse",
+    description = "Metadata describing an AssessHealthDataResponse resource")
 public class AssessHealthDataResponse {
 
   @NonNull

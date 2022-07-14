@@ -85,4 +85,8 @@ include ':service:provider'
 include ':service:spi'
 include ':service-ruby'
 include ':service-assess-claim-dc7101'
+include ':service-python'
 include ':test-data-factory'
+include 'service:save-to-db'
+
+

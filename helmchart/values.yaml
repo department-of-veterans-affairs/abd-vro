@@ -35,6 +35,10 @@ images:
     imageName: abd_vro-service-ruby
     tag: latest
     imagePullPolicy: Always
+  servicePython:
+    imageName: abd_vro-service-python
+    tag: latest
+    imagePullPolicy: Always
   dbInit:
     imageName: abd_vro-db-init
     tag: latest

@@ -2,7 +2,9 @@ package gov.va.vro.api.demo.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
+import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
+import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,5 +37,19 @@ public interface DemoResource {
           @Valid
           @RequestBody
           AssessHealthDataRequest request)
+      throws RequestValidationException;
+
+  @Operation(summary = "Demo generate_pdf", description = "Submit data for pdf generation")
+  @PostMapping("/generate_pdf")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Timed(value = "example.generate_pdf")
+  ResponseEntity<GeneratePdfResponse> generate_pdf(
+      @Parameter(
+              description = "metadata for generate_pdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
       throws RequestValidationException;
 }
