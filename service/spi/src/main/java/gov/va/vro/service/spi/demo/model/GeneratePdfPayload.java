@@ -10,7 +10,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
-@Deprecated //demo data
+@Deprecated // demo data
 @Getter
 @Setter
 @NoArgsConstructor

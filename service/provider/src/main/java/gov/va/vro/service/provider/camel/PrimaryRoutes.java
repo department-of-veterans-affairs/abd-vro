@@ -22,8 +22,8 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRoutePostClaim();
     configureRouteClaimProcessed();
 
-    //configureRouteHealthDataAssessor();
-    //configureRoutePdfGenerator();
+    // configureRouteHealthDataAssessor();
+    // configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {

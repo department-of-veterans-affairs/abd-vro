@@ -25,9 +25,9 @@ public class CamelEntrance {
 
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
-    return producerTemplate.requestBody(PrimaryRoutes.CHANNEL_DIRECT_POST_CLAIM, claim, ClaimSubmission.class);
+    return producerTemplate.requestBody(
+        PrimaryRoutes.CHANNEL_DIRECT_POST_CLAIM, claim, ClaimSubmission.class);
   }
-
 
   @Deprecated // demo route
   public String assess_health_data_demo(AssessHealthData resource) {
