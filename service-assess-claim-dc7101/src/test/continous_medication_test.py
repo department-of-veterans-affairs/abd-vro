@@ -1,5 +1,5 @@
 import pytest
-from dc7101.src.lib import continuous_medication
+from src.lib import continuous_medication
 
 
 @pytest.mark.parametrize(
@@ -13,8 +13,7 @@ from dc7101.src.lib import continuous_medication
                 'date_of_claim': '2021-11-09',
             },
             {
-                "success": True,
-                "continuous_medication_required": True
+                "relevant_medications": [{"text": "Benazepril"}]
             },
         ),
         # Not service connected but uses medication used to treat hypertension
@@ -25,8 +24,7 @@ from dc7101.src.lib import continuous_medication
                 'date_of_claim': '2021-11-09',
             },
             {
-                "success": True,
-                "continuous_medication_required": True
+                "relevant_medications": [{"text": "Benazepril"}]
             },
         ),
         # Service connected but doesn't use medication used to treat hypertension
@@ -37,8 +35,7 @@ from dc7101.src.lib import continuous_medication
                 'date_of_claim': '2021-11-09',
             },
             {
-                "success": True,
-                "continuous_medication_required": False
+                "relevant_medications": []
             },
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
@@ -49,8 +46,8 @@ from dc7101.src.lib import continuous_medication
                 'date_of_claim': '2021-11-09',
             },
             {
-                "success": True,
-                "continuous_medication_required": True
+                "relevant_medications": [{"text": "Benazepril"}]
+
             },
         ),
         # Service connected but no medication
@@ -61,8 +58,7 @@ from dc7101.src.lib import continuous_medication
                 'date_of_claim': '2021-11-09',
             },
             {
-                "success": True,
-                "continuous_medication_required": False
+                "relevant_medications": []
             },
         ),
     ],

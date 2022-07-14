@@ -21,22 +21,15 @@ def continuous_medication_required(request_body):
   :return: response body indicating success or failure with additional attributes 
   :rtype: dict
   """
-  medications_meta = []
-  continuous_medication_required_calculation = {
-        "success": True
-  }
+  relevant_medications = []
+  response = {}
+
   veterans_medication = request_body["medication"]
-  print(veterans_medication)
-  print([x.lower() for x in hypertension_medications])
-  medication_list = [med["text"] for med in veterans_medication]
-  vet_is_taking_htn_medication = False
-  for medication in medication_list:
-    print(medication)
+  for medication in veterans_medication:
+    medication_display = medication["text"]
     for keyword in [x.lower() for x in hypertension_medications]:
-      if (keyword in medication.lower()):
-        vet_is_taking_htn_medication = True
-        medications_meta.append(medication)
-
-  continuous_medication_required_calculation["continuous_medication_required"] = vet_is_taking_htn_medication
-
-  return continuous_medication_required_calculation
+      if (keyword in medication_display.lower()):
+        relevant_medications.append(medication)
+  response["relevant_medications"] = relevant_medications
+  
+  return response

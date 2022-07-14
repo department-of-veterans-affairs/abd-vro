@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from dc7101.src.lib import main
+from src.lib import main
 
 
 @pytest.mark.parametrize(
@@ -30,27 +30,23 @@ from dc7101.src.lib import main
             }
             ,
             {
-                "statusCode": 200,
-                "headers": {
-                    "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST"
-                },
                 "body": json.dumps({
-                    "predominance_calculation": {
-                        "success": True,
-                        "predominant_diastolic_reading": 115,
-                        "predominant_systolic_reading": 200
-                    },
-                    "diastolic_history_calculation": {
-                        "diastolic_bp_predominantly_100_or_more": True,
-                        "success": True
-                    },
-                    "requires_continuous_medication": {
-                        "continuous_medication_required": True,
-                        "success": True
+                        "evidence":{
+                            "relevant_medications": [{"text": "Capoten"}],
+                        },
+                        "calculated": {
+                            "predominance_calculation": {
+                                "success": True,
+                                "predominant_diastolic_reading": 115,
+                                "predominant_systolic_reading": 200
+                            },
+                            "diastolic_history_calculation": {
+                                "diastolic_bp_predominantly_100_or_more": True,
+                                "success": True
+                            }
+                        }
                     }
-                })
+                )
             }
         ),
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn't
@@ -79,23 +75,18 @@ from dc7101.src.lib import main
             }
             ,
             {
-                "statusCode": 209,
-                "headers": {
-                    "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST"
-                },
                 "body": json.dumps({
-                    "predominance_calculation": {
-                        "success": False,
+                    "evidence":{
+                        "relevant_medications": []
                     },
-                    "diastolic_history_calculation": {
-                        "diastolic_bp_predominantly_100_or_more": True,
-                        "success": True
-                    },
-                    "requires_continuous_medication": {
-                        "continuous_medication_required": False,
-                        "success": True
+                    "calculated":{
+                        "predominance_calculation": {
+                            "success": False,
+                        },
+                        "diastolic_history_calculation": {
+                            "diastolic_bp_predominantly_100_or_more": True,
+                            "success": True
+                        }
                     }
                 })
             }
@@ -112,23 +103,14 @@ from dc7101.src.lib import main
             }
             ,
             {
-                "statusCode": 400,
-                "headers": {
-                    "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST"
-                },
                 "body": json.dumps({
-                    "predominance_calculation": {
+                    "evidence":{'relevant_medications': []},
+                    "calculated":{"predominance_calculation": {
                         "success": False,
                     },
                     "diastolic_history_calculation": {
                         "success": False
-                    },
-                    "requires_continuous_medication": {
-                        "continuous_medication_required": False,
-                        "success": True
-                    }
+                    }}
                 })
             }
         ),
@@ -153,22 +135,16 @@ from dc7101.src.lib import main
             }
             ,
             {
-                "statusCode": 400,
-                "headers": {
-                    "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST"
-                },
                 "body": json.dumps({
+                    "evidence":{'relevant_medications': []},
+                    "calculated":{
                     "predominance_calculation": {
                         "success": False,
                     },
                     "diastolic_history_calculation": {
                         "success": False
-                    },
-                    "requires_continuous_medication": {
-                        "success": False
-                    },
+                    }}
+                    ,
                     "errors": {"observation":[{"bp": [{"1": [{"diastolic": ["required field"]}]}]}]}
                 })
             }
@@ -199,22 +175,11 @@ from dc7101.src.lib import main
             }
             ,
             {
-                "statusCode": 400,
-                "headers": {
-                    "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST"
-                },
                 "body": json.dumps({
-                    "predominance_calculation": {
-                        "success": False,
-                    },
-                    "diastolic_history_calculation": {
-                        "success": False
-                    },
-                    "requires_continuous_medication": {
-                        "success": False
-                    },
+                    "calculated": {
+                        "diastolic_history_calculation": {"success": False},
+                        "predominance_calculation": {'success': False}},
+                    "evidence": {},
                     "errors": {
                         "observation": [{
                             "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}]

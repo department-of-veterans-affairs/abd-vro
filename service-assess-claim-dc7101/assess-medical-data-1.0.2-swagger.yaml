@@ -1,18 +1,16 @@
----
-swagger: "3.0"
+swagger: '3.0'
 info:
-  description: API for Diagnosable Condition logical processing
+  description: API for DC7343 logical processing
   version: 1.0.2
-  title: 
-host: virtserver.swaggerhub.com
-basePath: /jbregstone/dc7343/1.0.0
-schemes:
-- https
+  title: DCC7343 algorithms
+
 paths:
   /calculate:
     post:
       summary: processes patient data
-      description: Determines if patient has active condition and/or is being treated with procedures/medicines for a condition
+      operationId: DC7343
+      description:
+        Determines if patient has active pancreatic cancer and/or is being treated with procedures/medicines for pancreatic cancer
       consumes:
       - application/json
       produces:
@@ -21,24 +19,30 @@ paths:
       - in: body
         name: medical_data_fhir
         description: Processed FHIR data
-        required: false
         schema:
           $ref: '#/definitions/MedicalData'
       responses:
-        "200":
-          description: processing successful
-        "400":
+        200:
+          description: processing successful 
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/response'
+        209:
+          description: VASRD diagnostic code not implemented
+        400:
           description: processing failed
+
 definitions:
   MedicalData:
     type: object
     required:
-    - condition
-    - date_of_claim
     - icn
+    - vasrd
+    - date_of_claim
+    - condition
     - medication
     - procedure
-    - vasrd
     properties:
       icn:
         type: integer
@@ -46,10 +50,10 @@ definitions:
       date_of_claim:
         type: string
         format: date-time
-        example: 2016-10-29T09:12:33.001Z
+        example: '2016-10-29T09:12:33.001Z'
       vasrd:
         type: string
-        example: "7343"
+        example: '7343'
       condition:
         $ref: '#/definitions/condition'
       observation:
@@ -61,56 +65,74 @@ definitions:
   condition:
     required:
     - code
-    - onset_date
     - status
+    - onset_date
     properties:
       code:
         type: string
         example: "363419009"
-      status:
+      status: 
         type: string
-        example: active
+        example: "active"
       text:
         type: string
-        example: Malignant tumor of head of pancreas (disorder)
+        example: "Malignant tumor of head of pancreas (disorder)"
       onset_date:
         format: date-time
-        example: 2016-08-29T09:12:33.001Z
+        example: '2016-08-29T09:12:33.001Z'
       abatement_date:
         format: date-time
-        example: 2016-09-29T09:12:33.001Z
+        example: '2016-09-29T09:12:33.001Z'
   observation:
     properties:
-      code:
-        type: string
-        example: 8462-4
-      text:
-        type: string
-        example: Diastolic Blood Pressure
-      value:
-        type: number
-        example: 74.06721091966372
-      unit:
-        type: string
-        example: mm[Hg]
+      bp: 
+        type: list
+        properties:
+          type: object
+          properties:
+            diastolic: 
+              type: number
+            systolic:
+              type: number
+            date:
+              type: string
+              format: date-time
+              example: '2016-10-29T09:12:33.001Z'
+      common_obj:
+        type: list
+        properties:
+          type: object
+          properties:
+            code:
+              type: string
+              example: '8462-4'
+            text: 
+              type: string
+              example: 'Diastolic Blood Pressure'
+            value:
+              type: number
+              example: 74.06721091966372
+            unit:
+              type: string
+              example: "mm[Hg]"
   medication:
     required:
-    - code
-    - status
     - text
+    - status
+    - code
     properties:
       text:
         type: string
-        example: 5-fluorouracil
+        example: "5-fluorouracil"
       status:
         type: string
-        example: active
+        example: "active"
       code:
         type: string
         example: "4492"
       authored_on:
         format: date-time
-        example: 2013-05-21T23:19:33Z
+        example: "2013-05-21T23:19:33Z"
   procedure:
     required:
     - code
@@ -122,47 +144,45 @@ definitions:
         example: "174710004"
       text:
         type: string
-        example: (Surgery - distal subtotal pancreatectomy)
+        example: "(Surgery - distal subtotal pancreatectomy)"
       performed_date:
         format: date-time
-        example: 2013-08-17T23:19:33Z
-      status:
+        example: "2013-08-17T23:19:33Z"
+      status: 
         type: string
-        example: completed
+        example: "completed"
   response:
     properties:
       rrd_eligible:
         type: boolean
-        example: true
+        example: True
       evidence:
-        $ref: '#/definitions/response_evidence'
-  response_evidence_active_cancer_result:
-    type: object
-    properties:
-      active_cancer_present:
-        type: boolean
-      success:
-        type: boolean
-  response_evidence_medication_match_result:
-    type: object
-    properties:
-      continuous_medication_required:
-        type: boolean
-      success:
-        type: boolean
-  response_evidence_procedures_in_last_six_months:
-    type: object
-    properties:
-      procedure_within_six_months:
-        type: boolean
-      success:
-        type: boolean
-  response_evidence:
-    type: object
-    properties:
-      active_cancer_result:
-        $ref: '#/definitions/response_evidence_active_cancer_result'
-      medication_match_result:
-        $ref: '#/definitions/response_evidence_medication_match_result'
-      procedures_in_last_six_months:
-        $ref: '#/definitions/response_evidence_procedures_in_last_six_months'
+        type: object
+        properties:
+          active_cancer_result:
+            type: object
+            properties:
+              active_cancer_present: 
+                type: boolean
+              success: 
+                type: boolean
+          medication_match_result:
+            type: object
+            properties:
+              continuous_medication_required: 
+                type: boolean
+              success: 
+                type: boolean
+          procedures_in_last_six_months:
+            type: object
+            properties:
+              procedure_within_six_months: 
+                type: boolean
+              success: 
+                type: boolean
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /jbregstone/dc7343/1.0.0
+schemes:
+ - https
