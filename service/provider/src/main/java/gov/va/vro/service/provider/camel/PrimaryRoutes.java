@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
+  public static final String CHANNEL_SEDA_LOG_TO_FILE = "seda:logToFile";
+  public static final String CHANNEL_DIRECT_POST_CLAIM = "direct:postClaim";
   private final CamelUtils camelUtils;
 
   @Override
@@ -20,17 +22,21 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRoutePostClaim();
     configureRouteClaimProcessed();
 
-    configureRouteHealthDataAssessor();
-    configureRoutePdfGenerator();
+    //configureRouteHealthDataAssessor();
+    //configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint("seda:logToFile");
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
+    camelUtils.asyncSedaEndpoint(CHANNEL_SEDA_LOG_TO_FILE);
+    from(CHANNEL_SEDA_LOG_TO_FILE)
+        .marshal()
+        .json()
+        .log(">>2> ${body.getClass()}")
+        .to("file://target/post");
   }
 
   private void configureRoutePostClaim() {
-    from("direct:postClaim")
+    from(CHANNEL_DIRECT_POST_CLAIM)
         .log(">>1> ${body.getClass()}")
         // save Claim to DB and assign UUID before anything else
         .bean(CamelClaimService.class, "addClaim")

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.Instant;
 
+@Deprecated
 @Getter
 @Setter
 @NoArgsConstructor
