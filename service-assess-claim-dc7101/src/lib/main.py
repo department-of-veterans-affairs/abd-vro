@@ -16,7 +16,6 @@ def assess_hypertension(event: Dict):
     :return: response body
     :rtype: dict
     """
-    print(event)
 
     validation_results = utils.validate_request_body(event)
     response_body = {}
@@ -29,11 +28,12 @@ def assess_hypertension(event: Dict):
     else:
         predominance_calculation = {"success": False}
         diastolic_history_calculation = {"success": False}
-        relevant_medication = {}
+        relevant_medication = []
         response_body["errors"] = validation_results["errors"]
 
     response_body.update(
-        {"evidence": relevant_medication
+        {"evidence": {"medication": relevant_medication,
+        "bp": event["observation"]["bp"]}
         ,
         "calculated": {
             "predominance_calculation": predominance_calculation,

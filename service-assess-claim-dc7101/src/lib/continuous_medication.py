@@ -30,6 +30,5 @@ def continuous_medication_required(request_body):
     for keyword in [x.lower() for x in hypertension_medications]:
       if (keyword in medication_display.lower()):
         relevant_medications.append(medication)
-  response["relevant_medications"] = relevant_medications
   
-  return response
+  return relevant_medications
