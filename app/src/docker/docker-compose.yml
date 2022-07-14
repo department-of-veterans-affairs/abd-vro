@@ -50,9 +50,9 @@ services:
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
-#      - external
-#    ports:
-#      - "5432:5432"
+      - external
+    ports:
+      - "5432:5432"
 
   db-init:
     image: va/abd_vro-db-init:latest
