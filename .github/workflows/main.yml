@@ -75,8 +75,6 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-service-ruby \
-            "ghcr.io/${{ github.repository }}/abd_vro-service-ruby:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-python \
             "ghcr.io/${{ github.repository }}/abd_vro-service-python:${COMMIT_SHA:0:7}"
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
@@ -91,7 +89,6 @@ jobs:
         run: |
           docker push "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-service-ruby:${COMMIT_SHA:0:7}"
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/abd_vro-postgres:latest"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"

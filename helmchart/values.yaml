@@ -31,10 +31,6 @@ images:
     imageName: abd_vro-app
     tag: latest
     imagePullPolicy: Always
-  serviceRuby:
-    imageName: abd_vro-service-ruby
-    tag: latest
-    imagePullPolicy: Always
   servicePython:
     imageName: abd_vro-service-python
     tag: latest
