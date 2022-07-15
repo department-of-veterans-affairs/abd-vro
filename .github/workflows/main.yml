@@ -64,7 +64,7 @@ jobs:
         run: python -m pytest
 
   publish-image:
-    needs: build-and-test
+    needs: [build-and-test-java, build-and-test-python]
     runs-on: ubuntu-latest
     steps:
       - name: Install Java
