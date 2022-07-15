@@ -39,12 +39,6 @@ jobs:
             ./gradlew app:test $GRADLE_ARGS
       # TODO: parallelize this since `./gradlew check` runs the subprojects' tests as well
       - run: ./gradlew check
-      - run:
-          name: "PDF Generator: Pytest"
-          command: |
-            cd service-python/src
-            pip install -r requirements.txt
-            python -m pytest
       - save_cache:
           paths:
             - ~/.gradle/wrapper
