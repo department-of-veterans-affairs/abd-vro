@@ -44,9 +44,9 @@ class RabbitMQConsumer:
 		template = self.pdf_generator.generate_template_file(diagnosis_name, variables)
 		pdf = self.pdf_generator.generate_pdf_from_string(template)
 		logging.info(f"Generated PDF: {pdf}")
-    pdf_obj = BytesIO(pdf)
+		pdf_obj = BytesIO(pdf)
 		file_name = f"VAMC_{diagnosis_name.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
-    upload_file(file_name, "vro-efolder", pdf_obj)
+		upload_file(file_name, "vro-efolder", pdf_obj)
 
 		response = {
 			"claimSubmissionId": message["claimSubmissionId"],
