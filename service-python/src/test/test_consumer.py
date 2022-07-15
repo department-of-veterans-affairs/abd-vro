@@ -2,7 +2,7 @@ from lib.consumer import RabbitMQConsumer
 import pika
 
 consumer_settings = {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": 5672,
     "exchange": "generate_pdf",
     "queue_name": "pdf_generator",
