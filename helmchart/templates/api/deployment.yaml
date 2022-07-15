@@ -112,4 +112,5 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
+          resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
           resources: {{- toYaml .Values.resources.servicePython | nindent 12 }}

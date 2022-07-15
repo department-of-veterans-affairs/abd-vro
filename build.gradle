@@ -64,7 +64,8 @@ ext {
                      ':service-python',
                      ':container-init',
                      ':db-init',
-                     ':opa-init']
+                     ':opa-init',
+                     ':service-assess-claim-dc7101']
 }
 
 
