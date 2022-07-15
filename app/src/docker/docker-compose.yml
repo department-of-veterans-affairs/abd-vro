@@ -115,11 +115,15 @@ services:
       - rabbitmq1
       - db-init
       - service-ruby
+      - service-assess-claim-dc7101
       - service-python
     networks:
       - internal
       - external
 
+
+  service-assess-claim-dc7101:
+    image: va/abd_vro-service-assess-claim-dc7101:latest
   service-python:
     image: va/abd_vro-service-python:latest
     environment:
@@ -130,6 +134,7 @@ services:
       - rabbitmq1
     networks:
       - internal
+
 
 #   jaeger:
 #     image: jaegertracing/all-in-one:1.20
