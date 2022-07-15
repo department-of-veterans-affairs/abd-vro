@@ -61,7 +61,7 @@ jobs:
         run: pip install -r service-python/src/requirements.txt
 
       - name: "PDF Generator: Pytest"
-        run: python -m pytest
+        run: pytest
 
   publish-image:
     needs: [build-and-test-java, build-and-test-python]
