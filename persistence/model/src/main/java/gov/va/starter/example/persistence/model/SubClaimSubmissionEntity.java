@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAttribute;
 
+@Deprecated //demo code
 @Entity
 @Table(name = "subclaimsubmission", schema = "example")
 @Getter
