@@ -7,16 +7,13 @@ from src.lib import main
 @pytest.mark.parametrize(
     "request_body, response",
     [
-        # All three calculator functions return valid results readings
         (
             {
-                "body": json.dumps({
-                    "bp": [],
-                    "medication": [{"text": "Prednisone"}],
-                    "date_of_claim": "2021-11-09",
-                })
+                "medication": [{"text": "Prednisone"}],
+                "date_of_claim": "2021-11-09",
+                "vasrd": "6602"  
             },
-            {"evidence": {"medication": [{"text": "Prednisone"}]}}
+            {"body": json.dumps({"evidence": {"medication": [{"text": "Prednisone"}]}})}
         ),
         
     ],

@@ -14,7 +14,6 @@ def assess_asthma(event: Dict):
     :return: response body
     :rtype: dict
     """
-
     validation_results = utils.validate_request_body(event)
     response_body = {}
 
@@ -22,6 +21,7 @@ def assess_asthma(event: Dict):
         active_medication = medication.medication_required(event)
 
     else:
+        active_medication = []
         response_body["errors"] = validation_results["errors"]
 
     response_body.update({
