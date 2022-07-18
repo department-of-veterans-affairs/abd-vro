@@ -1,5 +1,5 @@
 import pytest
-from dc6602.src.lib import medication
+from src.lib import medication
 
 
 @pytest.mark.parametrize(
