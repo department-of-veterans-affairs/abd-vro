@@ -71,6 +71,13 @@ jobs:
       - name: "PDF Generator: Pytest"
         run: cd service-python/src && python -m pytest
 
+      - name: "Asthma processor service: PIP Install"
+        run: pip install -r service-assess-claim-dc6602/src/requirements.txt
+
+      - name: "Asthma processor service: Pytest"
+        run: cd service-assess-claim-dc6602/src && python -m pytest
+
+
   publish-image:
     needs: [build-and-test-java, build-and-test-python]
     runs-on: ubuntu-latest
