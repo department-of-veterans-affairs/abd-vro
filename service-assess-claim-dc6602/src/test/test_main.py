@@ -12,11 +12,11 @@ from src.lib import main
             {
                 "body": json.dumps({
                     "bp": [],
-                    "medication": ["Prednisone"],
+                    "medication": [{"text": "Prednisone"}],
                     "date_of_claim": "2021-11-09",
                 })
             },
-            ("this")
+            {"evidence": {"medication": [{"text": "Prednisone"}]}}
         ),
         
     ],

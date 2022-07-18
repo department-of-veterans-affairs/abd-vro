@@ -14,7 +14,6 @@ def assess_asthma(event: Dict):
     :return: response body
     :rtype: dict
     """
-    statusCode = 200
 
     validation_results = utils.validate_request_body(event)
     response_body = {}
@@ -23,19 +22,12 @@ def assess_asthma(event: Dict):
         active_medication = medication.medication_required(event)
 
     else:
-        statusCode = 400
         response_body["errors"] = validation_results["errors"]
 
     response_body.update({
-        "medication": active_medication 
+        "evidence": {"medication": active_medication}
     })
 
     return {
-        "statusCode": statusCode,
-        "headers": {
-            "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,POST"
-        },
         "body": json.dumps(response_body)
     }
