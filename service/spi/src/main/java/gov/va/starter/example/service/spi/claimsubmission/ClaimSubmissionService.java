@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
+@Deprecated // part of prototype
 public interface ClaimSubmissionService {
 
   ClaimSubmission add(ClaimSubmission resource) throws RequestValidationException;

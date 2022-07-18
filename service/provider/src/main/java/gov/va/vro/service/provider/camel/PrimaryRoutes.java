@@ -20,8 +20,9 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRoutePostClaim();
     configureRouteClaimProcessed();
 
-    configureRouteHealthDataAssessor();
-    configureRoutePdfGenerator();
+    //TODO: delete these routes. They are part of demo
+    //configureRouteHealthDataAssessor();
+    //configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {

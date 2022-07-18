@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@Deprecated // part of prototype
 @Getter
 @Setter
 @NoArgsConstructor

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
+@Deprecated // part of prototype
 public interface SubClaimSubmissionService {
 
   SubClaimSubmission add(SubClaimSubmission resource) throws RequestValidationException;
