@@ -1,19 +1,11 @@
 package gov.va.vro.service.provider.camel;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.ByteStreams;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
+import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.URL;
 
 /** Defines primary routes */
 @Slf4j
@@ -29,6 +21,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteClaimProcessed();
 
     configureRouteHealthDataAssessor();
+    configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
@@ -53,8 +46,10 @@ public class PrimaryRoutes extends RouteBuilder {
     from("seda:claim-vro-processed").log(">>>> VRO processed! claim: ${body.toString()}");
   }
 
+  SampleData sampleData = new SampleData();
+
   private void configureRouteHealthDataAssessor() {
-    String queue_name = "health_data_assessor";
+    String queueName = "health_data_assessor";
 
     // send JSON-string payload to RabbitMQ
     from("direct:assess_health_data_demo")
@@ -65,7 +60,9 @@ public class PrimaryRoutes extends RouteBuilder {
         .choice()
         // https://camel.apache.org/components/3.11.x/languages/simple-language.html
         .when(simple("${body.bpObservations} == null"))
-        .setBody(exchange -> samplePayload(exchange.getMessage(AssessHealthData.class)))
+        .setBody(
+            exchange ->
+                sampleData.sampleAssessHealthPayload(exchange.getMessage(AssessHealthData.class)))
         .end()
 
         // .log(">>> To assess_health_data: ${body}")
@@ -76,42 +73,24 @@ public class PrimaryRoutes extends RouteBuilder {
         // Since the RabbitMQ endpoint accepts a byte[] for the message,
         // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
         // as a byte[]
-        .to("rabbitmq:assess_health_data?routingKey=" + queue_name);
+        .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
 
-  private AssessHealthData samplePayload(AssessHealthData payload) {
-    log.info("Using sample Lighthouse Observation Response string");
-    if (payload == null) {
-      payload = new AssessHealthData();
-      payload.setContention("hypertension");
-    }
-    payload.setBpObservations(sampleLighthouseObservationResponse().toJSONString());
-    return payload;
-  }
+  private void configureRoutePdfGenerator() {
+    String exchangeName = "generate_pdf";
+    String queueName = "pdf_generator";
 
-  // memoize so we don't hit the URL too often
-  private static String sampleLhObservationResponseString;
+    // send JSON-string payload to RabbitMQ
+    from("direct:generate_pdf_demo")
+        .routeId("generate_pdf_demo")
 
-  private String sampleLhObservationResponseString() throws IOException {
-    if (sampleLhObservationResponseString == null) {
-      String sampleResponseUrl =
-          "https://gist.githubusercontent.com/yoomlam/"
-              + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/9c45a1372f364b54a8e531aaf7d7f0d83c86e961/"
-              + "lighthouse_observations_resp.json";
-      log.info("Retrieving sample Lighthouse Observation response");
-      BufferedInputStream in = new BufferedInputStream(new URL(sampleResponseUrl).openStream());
-      sampleLhObservationResponseString = new String(ByteStreams.toByteArray(in), Charsets.UTF_8);
-    }
-    return sampleLhObservationResponseString;
-  }
-
-  private JSONObject sampleLighthouseObservationResponse() {
-    JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
-    try {
-      return (JSONObject) parser.parse(sampleLhObservationResponseString());
-    } catch (ParseException | IOException e) {
-      log.warn("", e);
-      return null;
-    }
+        // if patientInfo is empty, load a samplePayload for it
+        .choice()
+        .when(simple("${body.patientInfo} == null"))
+        .setBody(
+            exchange ->
+                sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
+        .end()
+        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }

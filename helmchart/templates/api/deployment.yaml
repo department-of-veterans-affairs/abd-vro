@@ -96,26 +96,9 @@ spec:
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
-        - name: {{ .Values.name }}-service-ruby
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceRuby.imageName }}:{{ .Values.images.serviceRuby.tag }}
-          imagePullPolicy: {{ .Values.images.serviceRuby.imagePullPolicy }}
-          env:
-            - name: RABBITMQ_PLACEHOLDERS_HOST
-              value: {{ .Chart.Name }}-rabbitmq
-            - name: RABBITMQ_PLACEHOLDERS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.rabbitmq.secretName }}
-                  key: {{ .Values.rabbitmq.usernameKey }}
-            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.rabbitmq.secretName }}
-                  key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.serviceRuby | nindent 12 }}
-        - name: {{ .Values.name }}-service-assess-claim-dc7101
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
-          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
+        - name: {{ .Values.name }}-service-python
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePython.imageName }}:{{ .Values.images.servicePython.tag }}
+          imagePullPolicy: {{ .Values.images.servicePython.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbitmq
@@ -130,3 +113,5 @@ spec:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
           resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
+          resources: {{- toYaml .Values.resources.serviceAssessClaimDC6602 | nindent 12 }}
+          resources: {{- toYaml .Values.resources.servicePython | nindent 12 }}

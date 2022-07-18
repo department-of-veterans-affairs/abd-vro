@@ -68,5 +68,7 @@ out/
 *DS_Store
 .\!*
 
+### Python
 __pycache__
-*.pyc 
+*.pyc
+>>>>>>> develop

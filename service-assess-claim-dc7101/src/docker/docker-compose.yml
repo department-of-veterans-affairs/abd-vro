@@ -13,7 +13,7 @@ services:
       - "5672:5672"
   dc7101:
     build:
-      context: ../dc7101/src/.
+      context: ../dc7101/.
     image: "dc7101"
     environment:
       RABBITMQ_HOST: "rabbitmq1"
@@ -21,7 +21,7 @@ services:
       - central
   dc6602:
     build:
-      context: ../dc6602/src/.
+      context: ../dc6602/.
     image: "dc6602"
     environment:
       RABBITMQ_HOST: "rabbitmq1"

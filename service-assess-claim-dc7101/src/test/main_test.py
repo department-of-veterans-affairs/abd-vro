@@ -32,7 +32,19 @@ from src.lib import main
             {
                 "body": json.dumps({
                         "evidence":{
-                            "relevant_medications": [{"text": "Capoten"}],
+                            "medication": [{"text": "Capoten"}],
+                            "bp":  [                      
+                            {
+                                "diastolic": 115,
+                                "systolic": 180,
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": 110,
+                                "systolic": 200,
+                                "date": "2021-09-01"
+                            }
+                            ]
                         },
                         "calculated": {
                             "predominance_calculation": {
@@ -77,7 +89,17 @@ from src.lib import main
             {
                 "body": json.dumps({
                     "evidence":{
-                        "relevant_medications": []
+                        "medication": [],
+                        "bp": [                        {
+                            "diastolic": 115,
+                            "systolic": 180,
+                            "date": "2020-11-01"
+                        },
+                        {
+                            "diastolic": 110,
+                            "systolic": 200,
+                            "date": "2020-09-01"
+                        }]
                     },
                     "calculated":{
                         "predominance_calculation": {
@@ -104,7 +126,8 @@ from src.lib import main
             ,
             {
                 "body": json.dumps({
-                    "evidence":{'relevant_medications': []},
+                    "evidence":{'medication': [],
+                    "bp": []},
                     "calculated":{"predominance_calculation": {
                         "success": False,
                     },
@@ -136,7 +159,19 @@ from src.lib import main
             ,
             {
                 "body": json.dumps({
-                    "evidence":{'relevant_medications': []},
+                    "evidence":{'medication': [],
+                    
+                    "bp": [
+                        {
+                            "diastolic": 111,
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        },
+                        {
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        }
+                    ]},
                     "calculated":{
                     "predominance_calculation": {
                         "success": False,
@@ -179,7 +214,22 @@ from src.lib import main
                     "calculated": {
                         "diastolic_history_calculation": {"success": False},
                         "predominance_calculation": {'success': False}},
-                    "evidence": {},
+                    "evidence": {
+                        "bp": [
+                        {
+                            "diastolic": "180",
+                            "systolic": 200,
+                            "date": "2021-09-01"
+                        },
+                        {
+                            "diastolic": 120,
+                            "systolic": 180,
+                            "date": "2021-11-01"
+                        }
+                        
+                    ],
+                    "medication": []
+                    },
                     "errors": {
                         "observation": [{
                             "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}]

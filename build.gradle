@@ -61,7 +61,7 @@ ext {
                    ':service:spi',
                    ':test-data-factory']
     dockerModules = [':app',
-                     ':service-ruby',
+                     ':service-python',
                      ':container-init',
                      ':db-init',
                      ':opa-init',

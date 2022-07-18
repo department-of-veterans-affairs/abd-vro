@@ -25,16 +25,18 @@ services:
   #     - external
 
   rabbitmq1:
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     hostname: rabbitmq1
     expose:
       - "5672"
+      - "15672"
 #    volumes:
 #      - mqdata:/var/lib/??/data
     networks:
       - internal
     ports:
       - "5672:5672"
+      - "15672:15672"
 
   postgres1:
     image: postgres
@@ -79,19 +81,6 @@ services:
   #   networks:
   #     - internal
 
-  service-ruby:
-    image: va/abd_vro-service-ruby:latest
-    environment:
-      DOCKER_LOGS: 1
-      # TODO: move these RabbitMQ configurations into a reusable yaml block
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-    depends_on:
-      - rabbitmq1
-    networks:
-      - internal
-
   abd_vro:
     image: va/abd_vro-app:latest
     hostname: abd_vro
@@ -112,14 +101,17 @@ services:
       - postgres1
       - rabbitmq1
       - db-init
-      - service-ruby
       - service-assess-claim-dc7101
+      - service-python
     networks:
       - internal
       - external
 
+
   service-assess-claim-dc7101:
     image: va/abd_vro-service-assess-claim-dc7101:latest
+  service-python:
+    image: va/abd_vro-service-python:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
@@ -128,7 +120,6 @@ services:
       - rabbitmq1
     networks:
       - internal
-
 
 
 #   jaeger:
