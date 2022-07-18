@@ -1,0 +1,24 @@
+
+plugins {
+    id 'starter.std.java.library-spring-conventions'
+}
+
+dependencies {
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
+    implementation project(':api')
+    implementation project(':service:provider')
+    implementation project(':service:spi')
+    implementation project(':test-data-factory')
+
+    implementation "gov.va.starter:exceptions"
+    implementation "gov.va.starter:entity-lifecycle-notifier"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
+    implementation 'gov.va.starter:test-data'
+//    implementation('org.postgresql:postgresql')
+
+}
