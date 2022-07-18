@@ -12,9 +12,7 @@ from src.lib import continuous_medication
                 "medication": [{"text": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "relevant_medications": [{"text": "Benazepril"}]
-            },
+            [{"text": "Benazepril"}],
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -23,9 +21,7 @@ from src.lib import continuous_medication
                 "medication": [{"text": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "relevant_medications": [{"text": "Benazepril"}]
-            },
+            [{"text": "Benazepril"}],
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
@@ -34,9 +30,7 @@ from src.lib import continuous_medication
                 "medication": [{"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "relevant_medications": []
-            },
+            [],
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
@@ -45,10 +39,7 @@ from src.lib import continuous_medication
                 "medication": [{"text": "Benazepril"}, {"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "relevant_medications": [{"text": "Benazepril"}]
-
-            },
+            [{"text": "Benazepril"}],
         ),
         # Service connected but no medication
         (
@@ -57,9 +48,7 @@ from src.lib import continuous_medication
                 "medication": [],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "relevant_medications": []
-            },
+            [],
         ),
     ],
 )

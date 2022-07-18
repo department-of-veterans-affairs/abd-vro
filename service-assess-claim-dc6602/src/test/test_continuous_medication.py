@@ -9,61 +9,37 @@ from src.lib import medication
         (
             {
                 "bp": [],
-                "medication": ["Benazepril"],
+                "medication": [{"text": "Albuterol"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "success": True,
-                "continuous_medication_required": True
-            },
+            [{"text": "Albuterol"}],
         ),
         # Not service connected but uses medication used to treat hypertension
         (
             {
                 "bp": [],
-                "medication": ["Benazepril"],
+                "medication": [{"text": "Albuterol"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "success": True,
-                "continuous_medication_required": True
-            },
+            [{"text": "Albuterol"}],
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
             {
                 "bp": [],
-                "medication": ["Advil"],
+                "medication": [{"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "success": True,
-                "continuous_medication_required": False
-            },
+            [],
         ),
-        # Service connected, multiple medications, some to treat and others not to treat hypertension
+        # multiple medications, some to treat and others not to treat asthma
         (
             {
                 "bp": [],
-                "medication": ["Benazepril", "Advil"],
+                "medication": [{"text": "Albuterol"}, {"text": "Advil"}],
                 'date_of_claim': '2021-11-09',
             },
-            {
-                "success": True,
-                "continuous_medication_required": True
-            },
-        ),
-        # Service connected but no medication
-        (
-            {
-                "bp": [],
-                "medication": [],
-                'date_of_claim': '2021-11-09',
-            },
-            {
-                "success": True,
-                "continuous_medication_required": False
-            },
+            [{"text": "Albuterol"}],
         ),
     ],
 )

@@ -22,7 +22,6 @@ def continuous_medication_required(request_body):
   :rtype: dict
   """
   relevant_medications = []
-  response = {}
 
   veterans_medication = request_body["medication"]
   for medication in veterans_medication:

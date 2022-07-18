@@ -14,22 +14,20 @@ def assess_asthma(event: Dict):
     :return: response body
     :rtype: dict
     """
-    print(event)
     statusCode = 200
 
     validation_results = utils.validate_request_body(event)
     response_body = {}
 
     if validation_results["is_valid"]:
-        requires_continuous_medication = medication.medication_required(event)
+        active_medication = medication.medication_required(event)
 
     else:
         statusCode = 400
-        requires_continuous_medication = {"success": False}
         response_body["errors"] = validation_results["errors"]
 
     response_body.update({
-        "requires_continuous_medication": requires_continuous_medication 
+        "medication": active_medication 
     })
 
     return {
