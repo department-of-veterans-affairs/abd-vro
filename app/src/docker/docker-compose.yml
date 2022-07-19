@@ -38,6 +38,16 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  redis1:
+    image: redis
+    hostname: redis1
+    expose:
+      - "6379"
+    networks:
+      - internal
+    ports:
+      - "6379:6379"
+
   postgres1:
     image: postgres
     hostname: postgres1
@@ -100,6 +110,7 @@ services:
     depends_on:
       - postgres1
       - rabbitmq1
+      - redis1
       - db-init
       - service-assess-claim-dc7101
       - service-python
@@ -116,8 +127,10 @@ services:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      REDIS_PLACEHOLDERS_HOST: redis1
     depends_on:
       - rabbitmq1
+      - redis1
     networks:
       - internal
 
