@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.starter.example.service.spi.db.model.Claim;
+import gov.va.vro.service.spi.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -7,12 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 /** Defines primary routes */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
   private final CamelUtils camelUtils;
+  private final SaveToDbService saveToDbService;
 
   @Override
   public void configure() {
@@ -34,7 +39,7 @@ public class PrimaryRoutes extends RouteBuilder {
     from("direct:postClaim")
         .log(">>1> ${body.getClass()}")
         // save Claim to DB and assign UUID before anything else
-        .bean(CamelClaimService.class, "addClaim")
+        .process(FunctionProcessor.fromFunction((Function<Claim, Claim>) claim -> saveToDbService.insertClaim(claim)))
         // https://camel.apache.org/components/3.16.x/eips/recipientList-eip.html#_using_parallel_processing
         .recipientList(constant("seda:logToFile,seda:claim-router"))
         .parallelProcessing()

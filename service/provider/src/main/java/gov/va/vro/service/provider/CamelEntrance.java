@@ -2,6 +2,7 @@ package gov.va.vro.service.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import gov.va.starter.example.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,11 @@ public class CamelEntrance {
   // Provided by Camel https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
   private final ProducerTemplate producerTemplate;
 
+  public Claim saveClaim(Claim claim) {
+    return producerTemplate.requestBody("direct:postClaim", claim, Claim.class);
+  }
+
+  @Deprecated
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
     return producerTemplate.requestBody("direct:postClaim", claim, ClaimSubmission.class);
