@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.processors.FunctionProcessor;
+import gov.va.vro.service.provider.processors.MockAssessService;
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Function;
-
 /** Defines primary routes */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
+
+  public static final String ROUTE_PROCESS_CLAIM = "direct:processClaim";
+  public static final String ROUTE_LOG_TO_FILE = "seda:logToFile";
+  public static final String ROUTE_ASSESS_CLAIM = "direct:assess";
   private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
 
@@ -32,16 +34,22 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint("seda:logToFile");
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
+    camelUtils.asyncSedaEndpoint(ROUTE_LOG_TO_FILE);
+    from(ROUTE_LOG_TO_FILE)
+        .marshal()
+        .json()
+        .log(">>2> ${body.getClass()}")
+        .to("file://target/post");
   }
 
   private void configureProcessClaimRoute() {
-    from(CamelEntrance.ROUTE_PROCESS_CLAIM)
-        .process(
-            FunctionProcessor.fromFunction((Function<Claim, Claim>) saveToDbService::insertClaim))
-        .recipientList(constant("seda:logToFile,seda:claim-router"))
+    from(ROUTE_PROCESS_CLAIM)
+        .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
+        .to(ROUTE_LOG_TO_FILE)
+        .to(ROUTE_ASSESS_CLAIM)
         .log(">>5> ${body.toString()}");
+
+    from(ROUTE_ASSESS_CLAIM).bean(MockAssessService.class, "processClaim");
   }
 
   private void configureRoutePostClaim() {

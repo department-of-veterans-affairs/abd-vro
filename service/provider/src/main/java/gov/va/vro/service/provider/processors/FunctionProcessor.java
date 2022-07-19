@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.camel;
+package gov.va.vro.service.provider.processors;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;

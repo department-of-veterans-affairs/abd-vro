@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider;
 
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
@@ -17,12 +18,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class CamelEntrance {
-  public static final String ROUTE_PROCESS_CLAIM = "direct:processClaim";
 
   private final ProducerTemplate producerTemplate;
 
-  public Claim processClaim(Claim claim) {
-    return producerTemplate.requestBody(ROUTE_PROCESS_CLAIM, claim, Claim.class);
+  public String processClaim(Claim claim) {
+    return producerTemplate.requestBody(PrimaryRoutes.ROUTE_PROCESS_CLAIM, claim, String.class);
   }
 
   @Deprecated // part of the demo code
