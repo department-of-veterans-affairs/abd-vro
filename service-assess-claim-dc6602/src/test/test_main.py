@@ -15,7 +15,14 @@ from src.lib import main
             },
             {"body": json.dumps({"evidence": {"medication": [{"text": "Prednisone"}]}})}
         ),
-        
+        (
+            {
+                "medication": [{"text" : "Advil"}],
+                "date_of_claim": "2021-11-09",
+                "vasrd": "6602"  
+            },
+            {"body": json.dumps({"evidence": {"medication": []}})}
+        ),
     ],
 )
 def test_main(request_body, response):
