@@ -57,7 +57,15 @@ def validate_request_body(request_body):
                     },
                     "code": {
                         "type": "string",
-                    }
+                    },
+                    "dosageInstructions": {
+                        "type": "list",
+                        "schema": {"type": "string"}
+                    },
+                    "route": {"type": "string"},
+                    "refills": {"type": "integer"},
+                    "duration": {"type": "string"}
+
                     }
                 }
             },
@@ -72,7 +80,9 @@ def validate_request_body(request_body):
                         "schema": {
                             "diastolic": {"type": "integer"},
                             "systolic": {"type": "integer"},
-                            "date": {"type": "string"}
+                            "date": {"type": "string"},
+                            "practitioner": {"type": "string"},
+                            "organization" : {"type": "string"}
                         }
                     }
                 },
