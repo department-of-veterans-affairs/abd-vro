@@ -2,11 +2,11 @@ package gov.va.vro.service.db;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import gov.va.starter.example.service.spi.db.model.*;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
+import gov.va.vro.service.spi.db.model.Claim;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
