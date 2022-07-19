@@ -38,7 +38,7 @@ public class SampleData {
     patientInfo.put("birthdate", "10-10-1968");
 
     GeneratePdfPayload payload = new GeneratePdfPayload();
-    payload.setDiagnosticCode("asthma");
+    payload.setDiagnosticCode("6602");
     payload.setVeteranInfo(patientInfo.toJSONString());
     payload.setEvidence(retrieveGist("assessed_data_asthma.json"));
     return payload;

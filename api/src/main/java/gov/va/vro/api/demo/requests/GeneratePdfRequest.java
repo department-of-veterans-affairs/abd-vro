@@ -16,6 +16,9 @@ import lombok.NonNull;
     name = "GeneratePdfRequest",
     description = "Metadata describing an GeneratePdfRequest resource")
 public class GeneratePdfRequest {
+  @NonNull
+  @Schema(description = "Claim submission ID", example = "0")
+  private final String claimSubmissionId;
 
   @NonNull
   @Schema(description = "Diagnostic code", example = "6602")
@@ -23,19 +26,22 @@ public class GeneratePdfRequest {
 
   @Schema(
       description = "JSON string providing data for pdf",
-      example = "{\"first\":\"Cat\",\"last\": ...")
+      example =
+          "{'first': 'test','middle': 'test', 'last': 'test', 'suffix': 'test', 'birthdate': '2000-10-20")
   private final String veteranInfo;
 
   @Schema(
       description = "JSON string providing data for pdf",
-      example = "{\"bp_readings\":[ ... ], \"medications\":[ ... ]")
+      example = "{'bp_readings':[], 'medications':[]")
   private final String evidence;
 
   @JsonCreator
   public GeneratePdfRequest(
+      @NonNull @JsonProperty("claimSubmissionId") String claimSubmissionId,
       @NonNull @JsonProperty("diagnosticCode") String diagnosticCode,
-      @JsonProperty("veteran_info") String veteranInfo,
+      @JsonProperty("veteranInfo") String veteranInfo,
       @JsonProperty("evidence") String evidence) {
+    this.claimSubmissionId = claimSubmissionId;
     this.diagnosticCode = diagnosticCode;
     this.veteranInfo = veteranInfo;
     this.evidence = evidence;

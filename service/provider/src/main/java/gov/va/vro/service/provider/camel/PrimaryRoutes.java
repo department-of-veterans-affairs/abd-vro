@@ -85,9 +85,9 @@ public class PrimaryRoutes extends RouteBuilder {
     from("direct:generate_pdf_demo")
         .routeId("generate_pdf_demo")
 
-        // if veteran_info is empty, load a samplePayload for it
+        // if veteranInfo is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.veteran_info} == null"))
+        .when(simple("${body.veteranInfo} == null"))
         .setBody(
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
