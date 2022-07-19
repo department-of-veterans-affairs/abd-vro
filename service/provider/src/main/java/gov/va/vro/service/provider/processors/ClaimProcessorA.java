@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
+@Deprecated // part of demo code
 @Service
 @RequiredArgsConstructor
 public class ClaimProcessorA {
