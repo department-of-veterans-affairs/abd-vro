@@ -72,11 +72,11 @@ def validate_request_body(request_body):
         "observation": {
             "type": "dict",
             "schema": {
-                "bp": {
+                "bp_readings": {
                     "type": "list",
                     "schema": {
                         "type": "dict",
-                        "require_all": True,
+                        #"require_all": True,
                         "schema": {
                             "diastolic": {"type": "integer"},
                             "systolic": {"type": "integer"},

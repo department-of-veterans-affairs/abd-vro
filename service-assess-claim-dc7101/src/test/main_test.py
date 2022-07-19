@@ -11,7 +11,7 @@ from src.lib import main
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 115,
                             "systolic": 180,
@@ -33,7 +33,7 @@ from src.lib import main
                 "body": json.dumps({
                         "evidence":{
                             "medication": [{"text": "Capoten"}],
-                            "bp":  [                      
+                            "bp_readings":  [                      
                             {
                                 "diastolic": 115,
                                 "systolic": 180,
@@ -68,7 +68,7 @@ from src.lib import main
         (
             {
                 "observation" : {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 115,
                             "systolic": 180,
@@ -90,7 +90,7 @@ from src.lib import main
                 "body": json.dumps({
                     "evidence":{
                         "medication": [],
-                        "bp": [                        {
+                        "bp_readings": [                        {
                             "diastolic": 115,
                             "systolic": 180,
                             "date": "2020-11-01"
@@ -118,7 +118,7 @@ from src.lib import main
             
             {
                 "observation":
-                {"bp": []},
+                {"bp_readings": []},
                 "medication": [],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
@@ -127,7 +127,7 @@ from src.lib import main
             {
                 "body": json.dumps({
                     "evidence":{'medication': [],
-                    "bp": []},
+                    "bp_readings": []},
                     "calculated":{"predominance_calculation": {
                         "success": False,
                     },
@@ -141,7 +141,7 @@ from src.lib import main
         (
             {
                 "observation" : {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 111,
                             "systolic": 200,
@@ -161,7 +161,7 @@ from src.lib import main
                 "body": json.dumps({
                     "evidence":{'medication': [],
                     
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 111,
                             "systolic": 200,
@@ -180,7 +180,7 @@ from src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"observation":[{"bp": [{"1": [{"diastolic": ["required field"]}]}]}]}
+                    "errors": {"observation":[{"bp_readings": [{"1": [{"diastolic": ["required field"]}]}]}]}
                 })
             }
         ),
@@ -191,7 +191,7 @@ from src.lib import main
         (
             {
                 "observation" : {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": "180",
                             "systolic": 200,
@@ -215,7 +215,7 @@ from src.lib import main
                         "diastolic_history_calculation": {"success": False},
                         "predominance_calculation": {'success': False}},
                     "evidence": {
-                        "bp": [
+                        "bp_readings": [
                         {
                             "diastolic": "180",
                             "systolic": 200,
@@ -232,7 +232,7 @@ from src.lib import main
                     },
                     "errors": {
                         "observation": [{
-                            "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}]
+                            "bp_readings": [{"0": [{"diastolic": ["must be of integer type"]}]}]
                             }],
                         "medication": [{0: [{'text': ['must be of string type']}]}],
                     }

@@ -136,7 +136,7 @@ def sufficient_to_autopopulate (request_body):
     valid_bp_readings = []
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
-    for reading in request_body["observation"]["bp"]:
+    for reading in request_body["observation"]["bp_readings"]:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             valid_bp_readings.append(reading)

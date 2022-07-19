@@ -14,7 +14,7 @@ SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
   "observation": 
-    {"bp":
+    {"bp_readings":
         [
             {
                 "diastolic": 115,

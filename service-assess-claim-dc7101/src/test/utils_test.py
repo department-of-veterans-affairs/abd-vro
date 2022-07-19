@@ -8,7 +8,7 @@ from src.lib import utils
         (
             {   
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 115,
                             "systolic": 180,
@@ -31,7 +31,7 @@ from src.lib import utils
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "systolic": "180",
                             "date": "2021-11-01"
@@ -51,7 +51,7 @@ from src.lib import utils
             {
                 "observation":
                 [{
-                    "bp": [
+                    "bp_readings": [
                         {
                             0: [
                                 {

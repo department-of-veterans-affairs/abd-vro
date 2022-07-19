@@ -11,7 +11,7 @@ def history_of_diastolic_bp(request_body):
     diastolic_history_calculation = {
         "success": True
     }
-    bp_readings = request_body["observation"]["bp"]
+    bp_readings = request_body["observation"]["bp_readings"]
     bp_readings_length = len(bp_readings)
     readings_greater_or_equal_to_one_hundred = 0
 

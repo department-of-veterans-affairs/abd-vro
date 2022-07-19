@@ -171,7 +171,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # Two readings. No out of range dates.
         (
             {"observation": {
-                "bp": [
+                "bp_readings": [
                     {
                         "diastolic": 115,
                         "systolic": 180,
@@ -195,7 +195,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 reading test case with one out of range date
         (
             {"observation": {
-                "bp": [
+                "bp_readings": [
                     {
                         "diastolic": 115,
                         "systolic": 180,
@@ -226,7 +226,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "systolic": 181,
                             "diastolic": 112,
@@ -278,7 +278,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "systolic": 181,
                             "diastolic": 109,
@@ -323,7 +323,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "systolic": 181,
                             "diastolic": 109,
@@ -373,7 +373,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 115,
                             "systolic": 180,
@@ -396,7 +396,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 115,
                             "systolic": 180,
@@ -419,7 +419,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 110,
                             "systolic": 200,
@@ -436,7 +436,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 0 readings
         (
             {
-                "observation": {"bp": []},
+                "observation": {"bp_readings": []},
                 "date_of_claim": "2021-11-09",
             },
             {

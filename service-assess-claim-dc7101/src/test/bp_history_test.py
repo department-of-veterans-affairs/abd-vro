@@ -8,7 +8,7 @@ from src.lib import bp_history
         # 0 readings
         (
             {
-                "observation": {"bp": []}
+                "observation": {"bp_readings": []}
             },
             {
                 "success": False
@@ -18,7 +18,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                        "bp": [
+                        "bp_readings": [
                         {
                             "diastolic": 100,
                             "systolic": 180,
@@ -36,7 +36,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 90,
                             "systolic": 180,
@@ -54,7 +54,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 100,
                             "systolic": 180,
@@ -77,7 +77,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 90,
                             "systolic": 180,
@@ -100,7 +100,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 101,
                             "systolic": 180,
@@ -128,7 +128,7 @@ from src.lib import bp_history
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
                             "diastolic": 101,
                             "systolic": 180,
