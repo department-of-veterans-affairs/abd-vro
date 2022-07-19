@@ -10,6 +10,12 @@ pdf_options = {
     "zoom": "1.1",
 }
 
+redis_config = {
+    "host": os.environ.get("REDIS_PLACEHOLDERS_HOST", "localhost"),
+    "port": 5672,
+    "retry_limit": 3,
+}
+
 consumer_config = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,

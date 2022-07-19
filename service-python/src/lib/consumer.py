@@ -2,12 +2,15 @@ from datetime import datetime
 from io import BytesIO
 from time import sleep
 from lib.pdf_generator import PDFGenerator
+from lib.redis_client import RedisClient
 from lib.s3_uploader import upload_file
-from config.settings import pdf_options, codes
+from config.settings import codes, pdf_options, redis_config
 
 import pika
 import json
 import logging
+import redis
+import base64
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,6 +20,7 @@ class RabbitMQConsumer:
 		self.config = config
 		self.connection = self._create_connection()
 		self.pdf_generator = PDFGenerator(pdf_options)
+		self.redis_client = RedisClient(redis_config)
 		self.code_list = codes
 
 
@@ -44,16 +48,9 @@ class RabbitMQConsumer:
 		template = self.pdf_generator.generate_template_file(diagnosis_name, variables)
 		pdf = self.pdf_generator.generate_pdf_from_string(template)
 		logging.info(f"Generated PDF: {pdf}")
-		pdf_obj = BytesIO(pdf)
-		file_name = f"VAMC_{diagnosis_name.upper()}_Rapid_Decision_Evidence--{datetime.now().strftime('%Y%m%d')}.pdf"
-		upload_file(file_name, "vro-efolder", pdf_obj)
 
-		response = {
-			"claimSubmissionId": message["claimSubmissionId"],
-			"diagnosticCode": message["diagnosticCode"],
-			"evidenceSummaryLink": f"https://vro-efolder.s3.amazonaws.com/{file_name}"
-		}
-		logging.info(f"Resonse: {response}")
+		claim_id = message["claimSubmissionId"]
+		self.redis_client.save_data(claim_id, base64.b64encode(pdf))
 
 
 	def on_return_callback(self, channel, method, properties, body):
