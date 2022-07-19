@@ -13,6 +13,8 @@ import lombok.NonNull;
 public class GeneratePdfResponse {
 
   @NonNull
-  @Schema(description = "JSON results", example = "{\"filename\": \"rrd-pdf-1656020390.pdf\"}")
+  @Schema(
+      description = "JSON results",
+      example = "{\"claimSubmissionId\": 0, \"status\": \"COMPLETE\", \"pdf\": \"...\"}")
   private final String pdfDocumentJson;
 }

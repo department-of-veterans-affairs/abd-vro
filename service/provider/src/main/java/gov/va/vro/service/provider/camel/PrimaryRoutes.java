@@ -71,7 +71,8 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
         // Subscribers of this RabbitMQ queue expect a JSON string
         // Since the RabbitMQ endpoint accepts a byte[] for the message,
-        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
+        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON
+        // string encoded
         // as a byte[]
         .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
@@ -84,9 +85,9 @@ public class PrimaryRoutes extends RouteBuilder {
     from("direct:generate_pdf_demo")
         .routeId("generate_pdf_demo")
 
-        // if patientInfo is empty, load a samplePayload for it
+        // if veteran_info is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.patientInfo} == null"))
+        .when(simple("${body.veteran_info} == null"))
         .setBody(
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))

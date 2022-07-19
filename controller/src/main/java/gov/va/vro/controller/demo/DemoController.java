@@ -53,6 +53,6 @@ public class DemoController implements DemoResource {
     log.info("RESPONSE from generate_pdf_demo: {}", response);
     model.setPdfDocumentJson(response);
     GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
-    return new ResponseEntity<>(responseObj, HttpStatus.CREATED);
+    return new ResponseEntity<>(responseObj, HttpStatus.OK);
   }
 }

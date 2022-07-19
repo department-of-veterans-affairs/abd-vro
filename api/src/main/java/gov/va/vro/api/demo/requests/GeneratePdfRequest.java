@@ -18,26 +18,26 @@ import lombok.NonNull;
 public class GeneratePdfRequest {
 
   @NonNull
-  @Schema(description = "Type of contention", example = "hypertension")
-  private final String contention;
+  @Schema(description = "Diagnostic code", example = "6602")
+  private final String diagnosticCode;
 
   @Schema(
       description = "JSON string providing data for pdf",
       example = "{\"first\":\"Cat\",\"last\": ...")
-  private final String patientInfo;
+  private final String veteranInfo;
 
   @Schema(
       description = "JSON string providing data for pdf",
       example = "{\"bp_readings\":[ ... ], \"medications\":[ ... ]")
-  private final String assessedData;
+  private final String evidence;
 
   @JsonCreator
   public GeneratePdfRequest(
-      @NonNull @JsonProperty("contention") String contention,
-      @JsonProperty("patient_info") String patientInfo,
-      @JsonProperty("assessed_data") String assessedData) {
-    this.contention = contention;
-    this.patientInfo = patientInfo;
-    this.assessedData = assessedData;
+      @NonNull @JsonProperty("diagnosticCode") String diagnosticCode,
+      @JsonProperty("veteran_info") String veteranInfo,
+      @JsonProperty("evidence") String evidence) {
+    this.diagnosticCode = diagnosticCode;
+    this.veteranInfo = veteranInfo;
+    this.evidence = evidence;
   }
 }
