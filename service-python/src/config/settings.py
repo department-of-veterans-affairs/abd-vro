@@ -19,8 +19,8 @@ redis_config = {
 consumer_config = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
-    "exchange": "generate_pdf",
-    "queue_name": "pdf_generator",
+    "exchange_name": "pdf_generator",
+    "queue_name": "generate_pdf",
     "retry_limit": 3,
 }
 

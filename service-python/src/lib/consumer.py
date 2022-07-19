@@ -54,6 +54,8 @@ class RabbitMQConsumer:
 			pdf = self.pdf_generator.generate_pdf_from_string(template)
 			self.redis_client.save_data(claim_id, base64.b64encode(pdf))
 			logging.info("Saved PDF")
+			response = {"file": None}
+			channel.basic_publish(exchange=self.config["exchange_name"], routing_key=properties.reply_to, body=json.dumps(response))
 
 
 	def on_return_callback(self, channel, method, properties, body):

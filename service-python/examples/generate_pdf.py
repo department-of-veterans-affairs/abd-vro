@@ -4,8 +4,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-EXCHANGE_NAME = "generate_pdf"
-QUEUE_NAME = "pdf_generator"
+EXCHANGE_NAME = "pdf_generator"
+QUEUE_NAME = "generate_pdf"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
                "localhost"))
