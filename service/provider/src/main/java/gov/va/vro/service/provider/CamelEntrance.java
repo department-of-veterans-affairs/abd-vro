@@ -21,8 +21,8 @@ public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
 
-  public String processClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ROUTE_PROCESS_CLAIM, claim, String.class);
+  public Claim processClaim(Claim claim) {
+    return producerTemplate.requestBody(PrimaryRoutes.ROUTE_PROCESS_CLAIM, claim, Claim.class);
   }
 
   @Deprecated // part of the demo code
