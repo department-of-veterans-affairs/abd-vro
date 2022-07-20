@@ -67,10 +67,10 @@ class RabbitMQConsumer:
 		if self.redis_client.exists(claim_id):
 			pdf = self.redis_client.get_data(claim_id)
 			logging.info(f"Fetched PDF")
-			response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "pdf": str(pdf.decode("ascii"))}
+			response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "pdfData": str(pdf.decode("ascii"))}
 		else:
 			logging.info(f"PDF still generating")
-			response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdf": None}
+			response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdfData": ""}
 		channel.basic_publish(exchange=self.config["exchange_name"], routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 

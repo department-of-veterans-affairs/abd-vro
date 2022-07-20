@@ -1,20 +1,18 @@
-package gov.va.vro.controller.demo;
+package gov.va.vro.api.demo.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString(includeFieldNames = true)
-public class PdfResponse {
+public class FetchPdfResponse {
   String claimSubmissionId;
   String status;
-  String pdf;
+  public String pdfData;
 }

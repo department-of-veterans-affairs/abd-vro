@@ -6,6 +6,7 @@ import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.resources.DemoResource;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
+import gov.va.vro.api.demo.responses.FetchPdfResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import gov.va.vro.controller.demo.mapper.AssessHealthDataRequestMapper;
 import gov.va.vro.controller.demo.mapper.GenerateDataRequestMapper;
@@ -70,25 +71,30 @@ public class DemoController implements DemoResource {
       throws RequestValidationException {
     GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
     String response = camelEntrance.fetch_pdf(model);
-    model.setPdfDocumentJson(response);
-    PdfResponse pdf = new PdfResponse();
+    FetchPdfResponse pdfResponse = null;
     try {
-      pdf = new ObjectMapper().readValue(response, PdfResponse.class);
-      log.info("RESPONSE from fetch_pdf: {}", pdf.toString());
+      pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.info(e.getMessage());
     }
-    byte[] decoder = Base64.getDecoder().decode(pdf.pdf);
-    InputStream is = new ByteArrayInputStream(decoder);
-    InputStreamResource resource = new InputStreamResource(is);
+    log.info("RESPONSE from fetch_pdf: {}", pdfResponse.toString());
+    if (pdfResponse.pdfData.length() > 0) {
+      byte[] decoder = Base64.getDecoder().decode(pdfResponse.pdfData);
+      InputStream is = new ByteArrayInputStream(decoder);
+      InputStreamResource resource = new InputStreamResource(is);
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_PDF);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_PDF);
 
-    ContentDisposition disposition =
-        ContentDisposition.attachment().filename("textdown.pdf").build();
-    headers.setContentDisposition(disposition);
+      ContentDisposition disposition =
+          ContentDisposition.attachment().filename("textdown.pdf").build();
+      headers.setContentDisposition(disposition);
 
-    return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
+      return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
+    } else {
+      model.setPdfDocumentJson(response);
+      GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
+      return new ResponseEntity<>(responseObj, HttpStatus.OK);
+    }
   }
 }
