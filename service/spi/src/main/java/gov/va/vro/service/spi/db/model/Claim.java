@@ -3,6 +3,7 @@ package gov.va.vro.service.spi.db.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -13,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @ToString
 public class Claim {
+
+  private UUID claimId;
 
   @NotNull private String claimSubmissionId;
 

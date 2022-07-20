@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.service.provider.processors.FunctionProcessor;
-import gov.va.vro.service.provider.processors.MockAssessService;
+import gov.va.vro.service.provider.processors.MockRemoteService;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
@@ -19,6 +19,7 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ROUTE_PROCESS_CLAIM = "direct:processClaim";
   public static final String ROUTE_LOG_TO_FILE = "seda:logToFile";
   public static final String ROUTE_ASSESS_CLAIM = "direct:assess";
+  public static final String ROUTE_GENERATE_PDF = "direct:pdf";
   private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
 
@@ -47,9 +48,12 @@ public class PrimaryRoutes extends RouteBuilder {
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         .to(ROUTE_LOG_TO_FILE)
         .to(ROUTE_ASSESS_CLAIM)
+        .to(ROUTE_GENERATE_PDF)
         .log(">>5> ${body.toString()}");
 
-    from(ROUTE_ASSESS_CLAIM).bean(MockAssessService.class, "processClaim");
+    // Rabbit calls to processing services go here
+    from(ROUTE_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
+    from(ROUTE_GENERATE_PDF).bean(new MockRemoteService("PDF generator"), "processClaim");
   }
 
   private void configureRoutePostClaim() {

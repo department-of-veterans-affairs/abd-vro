@@ -29,7 +29,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     if (existingClaim.isPresent()) {
       return mapper.toClaim(existingClaim.get());
     }
-    createClaim(claim, veteranEntity);
+    var entity = createClaim(claim, veteranEntity);
+    claim.setClaimId(entity.getId());
     return claim;
   }
 

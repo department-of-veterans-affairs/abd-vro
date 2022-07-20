@@ -11,5 +11,6 @@ public interface ClaimMapper {
   @Mapping(target = "claimId", source = "claimSubmissionId")
   ClaimEntity toClaimEntity(Claim request);
 
+  @Mapping(target = "claimId", source = "id")
   Claim toClaim(ClaimEntity claimEntity);
 }
