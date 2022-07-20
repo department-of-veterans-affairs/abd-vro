@@ -20,7 +20,8 @@ consumer_config = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
     "exchange_name": "pdf_generator",
-    "queue_name": "generate_pdf",
+    "generate_queue_name": "generate_pdf",
+    "fetch_queue_name": "fetch_pdf",
     "retry_limit": 3,
 }
 

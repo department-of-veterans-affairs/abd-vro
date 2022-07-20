@@ -50,4 +50,18 @@ public interface DemoResource {
           @RequestBody
           GeneratePdfRequest request)
       throws RequestValidationException;
+
+  @Operation(summary = "Demo fetch_pdf", description = "Submit data for pdf fetching")
+  @PostMapping("/fetch_pdf")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "example.fetch_pdf")
+  ResponseEntity<GeneratePdfResponse> fetch_pdf(
+      @Parameter(
+              description = "metadata for fetch_pdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
+      throws RequestValidationException;
 }

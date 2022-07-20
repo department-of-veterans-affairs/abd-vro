@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class CamelEntrance {
-  // Provided by Camel https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
+  // Provided by Camel
+  // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
   private final ProducerTemplate producerTemplate;
 
   public ClaimSubmission postClaim(ClaimSubmission claim) {
@@ -31,7 +32,11 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
 
-  public String generate_pdf_demo(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf_demo", resource, String.class);
+  public String generate_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  }
+
+  public String fetch_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
   }
 }

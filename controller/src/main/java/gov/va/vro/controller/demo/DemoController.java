@@ -49,8 +49,19 @@ public class DemoController implements DemoResource {
   public ResponseEntity<GeneratePdfResponse> generate_pdf(GeneratePdfRequest request)
       throws RequestValidationException {
     GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
-    String response = camelEntrance.generate_pdf_demo(model);
-    log.info("RESPONSE from generate_pdf_demo: {}", response);
+    String response = camelEntrance.generate_pdf(model);
+    log.info("RESPONSE from generate_pdf: {}", response);
+    model.setPdfDocumentJson(response);
+    GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
+    return new ResponseEntity<>(responseObj, HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<GeneratePdfResponse> fetch_pdf(GeneratePdfRequest request)
+      throws RequestValidationException {
+    GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
+    String response = camelEntrance.fetch_pdf(model);
+    log.info("RESPONSE from fetch_pdf: {}", response);
     model.setPdfDocumentJson(response);
     GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
     return new ResponseEntity<>(responseObj, HttpStatus.OK);

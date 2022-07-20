@@ -21,7 +21,9 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteClaimProcessed();
 
     configureRouteHealthDataAssessor();
-    configureRoutePdfGenerator();
+
+    configureRouteGeneratePdf();
+    configureRouteFetchPdf();
   }
 
   private void configureRouteFileLogger() {
@@ -77,13 +79,13 @@ public class PrimaryRoutes extends RouteBuilder {
         .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
 
-  private void configureRoutePdfGenerator() {
+  private void configureRouteGeneratePdf() {
     String exchangeName = "pdf_generator";
     String queueName = "generate_pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:generate_pdf_demo")
-        .routeId("generate_pdf_demo")
+    from("direct:generate_pdf")
+        .routeId("generate_pdf")
 
         // if veteranInfo is empty, load a samplePayload for it
         .choice()
@@ -92,6 +94,16 @@ public class PrimaryRoutes extends RouteBuilder {
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
         .end()
+        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+  }
+
+  private void configureRouteFetchPdf() {
+    String exchangeName = "pdf_generator";
+    String queueName = "fetch_pdf";
+
+    // send JSON-string payload to RabbitMQ
+    from("direct:fetch_pdf")
+        .routeId("fetch_pdf")
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }
