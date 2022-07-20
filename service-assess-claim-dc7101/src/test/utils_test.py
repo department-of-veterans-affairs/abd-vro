@@ -82,14 +82,14 @@ from src.lib import utils
                         {
                             0: [
                                 {
-                                    "systolic": [{"value": ["must be of integer type"]}],
+                                    "systolic": [{"value": ["must be of number type"]}],
                                     "diastolic": ["required field"]
                                 }
                             ],
                             1: [
                                 {
                                     "date": ["must be of string type"],
-                                    "diastolic": [{"value": ["must be of integer type"]}]
+                                    "diastolic": [{"value": ["must be of number type"]}]
                                 }
                             ]
                         }

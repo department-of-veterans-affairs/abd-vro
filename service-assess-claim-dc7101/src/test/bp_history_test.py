@@ -20,8 +20,8 @@ from src.lib import bp_history
                 "observation": {
                         "bp_readings": [
                         {
-                            "diastolic": 100,
-                            "systolic": 180,
+                            "diastolic": {"value": 100},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                     ]
@@ -38,8 +38,8 @@ from src.lib import bp_history
                 "observation": {
                     "bp_readings": [
                         {
-                            "diastolic": 90,
-                            "systolic": 180,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                     ]
@@ -56,13 +56,13 @@ from src.lib import bp_history
                 "observation": {
                     "bp_readings": [
                         {
-                            "diastolic": 100,
-                            "systolic": 180,
+                            "diastolic": {"value": 100},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                         {
-                            "diastolic": 90,
-                            "systolic": 200,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 200},
                             "date": "2021-09-01"
                         }
                     ]
@@ -79,13 +79,13 @@ from src.lib import bp_history
                 "observation": {
                     "bp_readings": [
                         {
-                            "diastolic": 90,
-                            "systolic": 180,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                         {
-                            "diastolic": 90,
-                            "systolic": 200,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 200},
                             "date": "2021-09-01"
                         }
                     ]
@@ -102,18 +102,18 @@ from src.lib import bp_history
                 "observation": {
                     "bp_readings": [
                         {
-                            "diastolic": 101,
-                            "systolic": 180,
+                            "diastolic": {"value": 101},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                         {
-                            "diastolic": 90,
-                            "systolic": 200,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 200},
                             "date": "2021-09-01"
                         },
                         {
-                            "diastolic": 115,
-                            "systolic": 200,
+                            "diastolic": {"value": 115},
+                            "systolic": {"value": 200},
                             "date": "2021-09-02"
                         }
                     ]
@@ -130,18 +130,18 @@ from src.lib import bp_history
                 "observation": {
                     "bp_readings": [
                         {
-                            "diastolic": 101,
-                            "systolic": 180,
+                            "diastolic": {"value": 101},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                         {
-                            "diastolic": 90,
-                            "systolic": 200,
+                            "diastolic": {"value": 90},
+                            "systolic": {"value": 200},
                             "date": "2021-09-01"
                         },
                         {
-                            "diastolic": 95,
-                            "systolic": 200,
+                            "diastolic": {"value": 95},
+                            "systolic":{"value": 200},
                             "date": "2021-09-02"
                         }
                     ]
