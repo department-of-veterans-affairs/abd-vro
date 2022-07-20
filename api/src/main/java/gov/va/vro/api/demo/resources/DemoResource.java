@@ -55,7 +55,7 @@ public interface DemoResource {
   @PostMapping("/fetch_pdf")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "example.fetch_pdf")
-  ResponseEntity<GeneratePdfResponse> fetch_pdf(
+  ResponseEntity<Object> fetch_pdf(
       @Parameter(
               description = "metadata for fetch_pdf",
               required = true,

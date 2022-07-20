@@ -31,5 +31,5 @@ public class GeneratePdfPayload {
   private String evidence;
 
   // output JSON string
-  private String pdfDocumentJson;
+  public String pdfDocumentJson;
 }
