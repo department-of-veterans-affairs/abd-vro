@@ -82,7 +82,7 @@ def validate_request_body(request_body):
                             "diastolic": {
                                 "type": "dict",
                                 "schema": {
-                                    "value": {"type": "integer"},
+                                    "value": {"type": "number"},
                                     "code": {"type": "string"},
                                     "display":{"type": "string"},
                                     "unit": {"type": "string"}
@@ -91,7 +91,7 @@ def validate_request_body(request_body):
                             "systolic": {
                                 "type": "dict",
                                 "schema": {
-                                    "value": {"type": "integer"},
+                                    "value": {"type": "number"},
                                     "code": {"type": "string"},
                                     "display":{"type": "string"},
                                     "unit": {"type": "string"}

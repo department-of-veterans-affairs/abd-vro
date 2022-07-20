@@ -131,7 +131,7 @@ from src.lib import main
                             "unit": "mm[Hg]",
                             "value": 180
                         },
-                            "date": "2021-11-01",
+                            "date": "2020-11-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -148,7 +148,7 @@ from src.lib import main
                             "unit": "mm[Hg]",
                             "value": 200
                         },
-                            "date": "2021-09-01",
+                            "date": "2020-09-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
@@ -177,7 +177,7 @@ from src.lib import main
                                 "unit": "mm[Hg]",
                                 "value": 180
                             },
-                                "date": "2021-11-01",
+                                "date": "2020-11-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             },
@@ -194,7 +194,7 @@ from src.lib import main
                                 "unit": "mm[Hg]",
                                 "value": 200
                             },
-                                "date": "2021-09-01",
+                                "date": "2020-09-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
@@ -317,7 +317,7 @@ from src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"observation":[{"bp_readings": [{"1": [{"diastolic": ["required field"]}]}]}]}
+                    "errors": {"observation":[{"bp_readings": [{"1": [{"systolic": ["required field"]}]}]}]}
                 })
             }
         ),
@@ -382,7 +382,7 @@ from src.lib import main
                                 "code": "8462-4",
                                 "display": "Diastolic blood pressure",
                                 "unit": "mm[Hg]",
-                                "value": 115
+                                "value": "115"
                             },
                             "systolic": {                
                                 "code": "8480-6",
@@ -405,7 +405,7 @@ from src.lib import main
                                 "code": "8480-6",
                                 "display": "Systolic blood pressure",
                                 "unit": "mm[Hg]",
-                                "value": "200"
+                                "value": 200
                             },
                                 "date": "2021-09-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
@@ -416,7 +416,7 @@ from src.lib import main
                     },
                     "errors": {
                         "observation": [{
-                            "bp_readings": [{"0": [{"systolic": ["must be of integer type"]}]}]
+                            "bp_readings": [{"0": [{"diastolic": [{"value": ["must be of number type"]}]}]}]
                             }],
                         "medication": [{0: [{'text': ['must be of string type']}]}],
                     }

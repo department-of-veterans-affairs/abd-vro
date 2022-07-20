@@ -180,60 +180,62 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
 @pytest.mark.parametrize(
     "bp_readings, result",
     [
-        {
-            "diastolic": {
-                "value": 115
+        (
+            [
+            {
+                "diastolic": {
+                    "value": 115
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-10"
             },
-            "systolic": {
-                "value": 180
+            {
+                "diastolic": {
+                    "value": 110
+                },
+                "systolic": {
+                    "value": 210
+                },
+                "date": "2021-09-01"
             },
-            "date": "2021-10-10"
-        },
-        {
-            "diastolic": {
-                "value": 110
+            {
+                "diastolic": {
+                    "value": 105
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-10"
             },
-            "systolic": {
-                "value": 210
+            {
+                "diastolic": {
+                    "value": 121
+                },
+                "systolic": {
+                    "value": 200
+                },
+                "date": "2021-09-01"
             },
-            "date": "2021-09-01"
-        },
-        {
-            "diastolic": {
-                "value": 105
+            {
+                "diastolic": {
+                    "value": 91
+                },
+                "systolic": {
+                    "value": 200
+                },
+                "date": "2021-09-01"
             },
-            "systolic": {
-                "value": 180
+            {
+                "diastolic": {
+                    "value": 95
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-01"
             },
-            "date": "2021-10-10"
-        },
-        {
-            "diastolic": {
-                "value": 121
-            },
-            "systolic": {
-                "value": 200
-            },
-            "date": "2021-09-01"
-        },
-        {
-            "diastolic": {
-                "value": 91
-            },
-            "systolic": {
-                "value": 200
-            },
-            "date": "2021-09-01"
-        },
-        {
-            "diastolic": {
-                "value": 95
-            },
-            "systolic": {
-                "value": 180
-            },
-            "date": "2021-10-01"
-        },
             # Per the algorithm, when the total number of BP readings is 3 or greater, if there
             # are multiple values within the Predominant Percent Range of Diastolic Readings
             # (PPRDR) (see algorithm document for definition) then *most recent* reading in the
@@ -241,25 +243,31 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
             # reading within the PPRDR).
             # The following two readings are ordered specifically this way in this Python list
             # to exercise and test the date sorting portion of the algorithm.
+            {
+                "diastolic": {
+                    "value": 135
+                },
+                "systolic": {
+                    "value": 155
+                },
+                "date": "2021-09-05"
+            },
+            {
+                "diastolic": {
+                    "value": 140
+                },
+                "systolic": {
+                    "value": 150
+                },
+                "date": "2021-09-01"
+            },
+        ],
         {
-            "diastolic": {
-                "value": 135
-            },
-            "systolic": {
-                "value": 155
-            },
-            "date": "2021-09-05"
-        },
-        {
-            "diastolic": {
-                "value": 140
-            },
-            "systolic": {
-                "value": 150
-            },
-            "date": "2021-09-01"
+            "diastolic_value": 135,
+            "systolic_value": 200
         }
-    ],
+        )
+    ]
 )
 def test_calculate_predominant_readings(bp_readings, result):
     """
@@ -280,7 +288,6 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {"observation": {
                 "bp_readings": [
-                    [
                         {
                             "diastolic": {
                                 "value": 115
@@ -299,7 +306,6 @@ def test_calculate_predominant_readings(bp_readings, result):
                             },
                             "date": "2021-09-01"
                         }
-                    ]
                 ]
             },
                 "date_of_claim": "2021-11-09",
@@ -314,7 +320,6 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {"observation": {
                 "bp_readings": [
-                        [
                             {
                                 "diastolic": {
                                     "value": 115
@@ -343,7 +348,6 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2020-11-08"
                             }
                         ]
-                ]
             },
                 "date_of_claim": "2021-11-09",
             },
@@ -359,7 +363,6 @@ def test_calculate_predominant_readings(bp_readings, result):
             {
                 "observation": {
                     "bp_readings": [
-                       [
                             {
                                 "diastolic": {
                                     "value": 112
@@ -423,7 +426,6 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 },
                                 "date": "2021-10-14"
                             }
-                        ]
                     ]
                 },
                 "date_of_claim": "2021-11-09",
@@ -441,7 +443,6 @@ def test_calculate_predominant_readings(bp_readings, result):
             {
                 "observation": {
                     "bp_readings": [
-                        [
                             {
                                 "diastolic": {
                                     "value": 109
@@ -496,7 +497,6 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 },
                                 "date": "2021-10-14"
                             }
-                        ]
                     ]
                 },
                 "date_of_claim": "2021-11-09",
@@ -512,7 +512,6 @@ def test_calculate_predominant_readings(bp_readings, result):
             {
                 "observation": {
                     "bp_readings": [
-                        [
                         {
                             "diastolic": {
                                 "value": 109
@@ -576,7 +575,6 @@ def test_calculate_predominant_readings(bp_readings, result):
                             },
                             "date": "2020-11-08"
                         }
-                    ]
                     ]
                 },
                 "date_of_claim": "2021-11-09",
