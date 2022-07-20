@@ -45,14 +45,15 @@ class RabbitMQConsumer:
 		message = json.loads(body)
 		logging.info(f" [x] {binding_key}: Received message: {message}")
 		claim_id = message["claimSubmissionId"]
-		message["veteran_info"] = message["veteranInfo"]
+		message["veteran_info"] = json.loads(message["veteranInfo"])
+		message["evidence"] = json.loads(message["evidence"])
 		code = message["diagnosticCode"]
 		diagnosis_name = self.code_list[code]
 		variables = self.pdf_generator.generate_template_variables(diagnosis_name, message)
 		logging.info(f"Variables: {variables}")
 		template = self.pdf_generator.generate_template_file(diagnosis_name, variables)
 		pdf = self.pdf_generator.generate_pdf_from_string(template)
-		self.redis_client.save_data(claim_id, base64.b64encode(pdf))
+		self.redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
 		logging.info("Saved PDF")
 		response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdf": None}
 		channel.basic_publish(exchange=self.config["exchange_name"], routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
@@ -66,12 +67,11 @@ class RabbitMQConsumer:
 		if self.redis_client.exists(claim_id):
 			pdf = self.redis_client.get_data(claim_id)
 			logging.info(f"Fetched PDF")
-			response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "pdf": str(pdf)}
-			response = str(pdf.decode("ascii"))
+			response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "pdf": str(pdf.decode("ascii"))}
 		else:
 			logging.info(f"PDF still generating")
 			response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdf": None}
-		channel.basic_publish(exchange=self.config["exchange_name"], routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=response)
+		channel.basic_publish(exchange=self.config["exchange_name"], routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
 	def setup_queues(self):

@@ -1,5 +1,6 @@
 package gov.va.vro.controller.demo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
@@ -69,9 +70,15 @@ public class DemoController implements DemoResource {
       throws RequestValidationException {
     GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
     String response = camelEntrance.fetch_pdf(model);
-    log.info("RESPONSE from fetch_pdf: {}", response);
     model.setPdfDocumentJson(response);
-    byte[] decoder = Base64.getDecoder().decode(response);
+    PdfResponse pdf = new PdfResponse();
+    try {
+      pdf = new ObjectMapper().readValue(response, PdfResponse.class);
+      log.info("RESPONSE from fetch_pdf: {}", pdf.toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    byte[] decoder = Base64.getDecoder().decode(pdf.pdf);
     InputStream is = new ByteArrayInputStream(decoder);
     InputStreamResource resource = new InputStreamResource(is);
 
