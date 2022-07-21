@@ -28,7 +28,13 @@ class SaveToDbServiceImplTest {
     claim.setClaimSubmissionId("claim1");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
-    saveToDbService.insertClaim(claim);
+    var result = saveToDbService.insertClaim(claim);
+    assertNotNull(result.getClaimId());
+    assertEquals(claim.getClaimSubmissionId(), result.getClaimSubmissionId());
+    assertEquals(claim.getIdType(), result.getIdType());
+    assertEquals(claim.getDiagnosticCode(), result.getDiagnosticCode());
+    assertEquals(claim.getVeteranIcn(), result.getVeteranIcn());
+    assertEquals(claim.getIncomingStatus(), result.getIncomingStatus());
 
     assertEquals(1, veteranRepository.findAll().size());
     assertEquals(1, claimRepository.findAll().size());
