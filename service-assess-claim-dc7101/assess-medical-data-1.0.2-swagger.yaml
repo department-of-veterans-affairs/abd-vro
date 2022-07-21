@@ -1,11 +1,10 @@
 ---
 swagger: "3.0"
 info:
-  description: API for DC7343 logical processing
+  description: API for DC7101 logical processing
   version: 1.0.2
-  title: DCC7343 algorithms
-host: virtserver.swaggerhub.com
-basePath: /jbregstone/dc7343/1.0.0
+  title: DCC7101 algorithms
+basePath: /dc7101
 schemes:
 - https
 paths:
@@ -13,7 +12,7 @@ paths:
     post:
       summary: processes patient data
       description: Determines if patient has active is being treated with medicines for hypertension
-      operationId: DC7343
+      operationId: DC7101
       consumes:
       - application/json
       produces:
