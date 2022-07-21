@@ -68,14 +68,14 @@ jobs:
       - name: "PDF Generator: PIP Install"
         run: pip install -r service-python/src/requirements.txt
 
-      - name: "PDF Generator: Pytest"
-        run: cd service-python/src && python -m pytest
-
       - name: "DC7101: PIP Install"
         run: pip install -r service-assess-claim-dc7101/src/requirements.txt
 
-      - name: "PDF Generator: Pytest"
-        run: cd service-assess-claim-dc7101/src && python -m pytest
+      - name: "Installl python coverage tool"
+        run: pip install pytest-cov
+
+      - name: "Run python code coverage"
+        run: export PYTHONPATH=./ && pytest --cov-report term-missing --cov
 
 
   publish-image:
