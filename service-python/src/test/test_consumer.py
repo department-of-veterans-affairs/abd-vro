@@ -1,4 +1,4 @@
-from lib.consumer import RabbitMQConsumer
+from src.lib.consumer import RabbitMQConsumer
 import pika
 
 consumer_settings = {
