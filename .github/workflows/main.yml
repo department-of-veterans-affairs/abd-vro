@@ -75,7 +75,7 @@ jobs:
         run: pip install pytest-cov
 
       - name: "Run python code coverage"
-        run: export PYTHONPATH=./ && pytest --cov-report term-missing --cov
+        run: export PYTHONPATH=./ && python -m pytest --cov-report term-missing --cov
 
 
   publish-image:
