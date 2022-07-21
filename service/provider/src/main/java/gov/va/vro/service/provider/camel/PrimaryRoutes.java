@@ -49,6 +49,7 @@ public class PrimaryRoutes extends RouteBuilder {
         .to(ENDPOINT_LOG_TO_FILE)
         .to(ENDPOINT_ASSESS_CLAIM)
         .log(">>5> ${body.toString()}");
+        // TODO: insert a post processing step here to update the DB with results from services
 
     // Rabbit calls to processing services go here
     from(ENDPOINT_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
