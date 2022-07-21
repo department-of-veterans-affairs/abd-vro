@@ -5,7 +5,6 @@ import logging
 
 from lib import main
 from time import sleep
-from . import generate_pdf
 
 
 class RabbitMQConsumer:
