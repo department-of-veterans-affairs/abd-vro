@@ -14,7 +14,7 @@ dependencies {
     implementation project(':persistence:impl')
     implementation project(':service:provider')
     implementation project(':service:spi')
-    implementation project(':service:save-to-db')
+    implementation project(':service:db')
     implementation project(':test-data-factory')
 
     implementation 'gov.va.starter:health'
