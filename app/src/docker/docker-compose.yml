@@ -110,6 +110,7 @@ services:
 
   service-assess-claim-dc7101:
     image: va/abd_vro-service-assess-claim-dc7101:latest
+
   service-python:
     image: va/abd_vro-service-python:latest
     environment:
@@ -121,6 +122,16 @@ services:
     networks:
       - internal
 
+  service-data-access:
+    image: va/abd_vro-service-data-access:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+    depends_on:
+      - rabbitmq1
+    networks:
+      - internal
 
 #   jaeger:
 #     image: jaegertracing/all-in-one:1.20
