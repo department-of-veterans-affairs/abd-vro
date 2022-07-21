@@ -4,6 +4,10 @@ import gov.va.vro.service.spi.db.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This service is a placeholder for remote services to be connected to the camel routes. It should
+ * be deleted once the mock routes are replaced with rabbitmq routes
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class MockRemoteService {

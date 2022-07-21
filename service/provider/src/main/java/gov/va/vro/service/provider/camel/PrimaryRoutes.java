@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.service.provider.processors.FunctionProcessor;
 import gov.va.vro.service.provider.processors.MockRemoteService;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
@@ -16,10 +15,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
 
-  public static final String ROUTE_PROCESS_CLAIM = "direct:processClaim";
-  public static final String ROUTE_LOG_TO_FILE = "seda:logToFile";
-  public static final String ROUTE_ASSESS_CLAIM = "direct:assess";
-  public static final String ROUTE_GENERATE_PDF = "direct:pdf";
+  public static final String ENDPOINT_PROCESS_CLAIM = "direct:processClaim";
+  public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
+  public static final String ENDPOINT_ASSESS_CLAIM = "direct:assess";
+
   private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
 
@@ -27,33 +26,32 @@ public class PrimaryRoutes extends RouteBuilder {
   public void configure() {
     configureRouteFileLogger();
     configureRoutePostClaim();
-    configureProcessClaimRoute();
+    configureRouteProcessClaim();
     configureRouteClaimProcessed();
 
+    // TODO: leaving them as examples, but they should be removed in a subsequent PR
     //    configureRouteHealthDataAssessor();
     //    configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint(ROUTE_LOG_TO_FILE);
-    from(ROUTE_LOG_TO_FILE)
+    camelUtils.asyncSedaEndpoint(ENDPOINT_LOG_TO_FILE);
+    from(ENDPOINT_LOG_TO_FILE)
         .marshal()
         .json()
         .log(">>2> ${body.getClass()}")
         .to("file://target/post");
   }
 
-  private void configureProcessClaimRoute() {
-    from(ROUTE_PROCESS_CLAIM)
+  private void configureRouteProcessClaim() {
+    from(ENDPOINT_PROCESS_CLAIM)
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
-        .to(ROUTE_LOG_TO_FILE)
-        .to(ROUTE_ASSESS_CLAIM)
-        .to(ROUTE_GENERATE_PDF)
+        .to(ENDPOINT_LOG_TO_FILE)
+        .to(ENDPOINT_ASSESS_CLAIM)
         .log(">>5> ${body.toString()}");
 
     // Rabbit calls to processing services go here
-    from(ROUTE_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
-    from(ROUTE_GENERATE_PDF).bean(new MockRemoteService("PDF generator"), "processClaim");
+    from(ENDPOINT_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
   }
 
   private void configureRoutePostClaim() {

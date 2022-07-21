@@ -15,9 +15,9 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class Claim {
 
-  private UUID claimId;
+  private UUID recordId;
 
-  @NotNull private String claimSubmissionId;
+  @NotNull private String claimId;
 
   // At the moment, this is the only id type
   @Builder.Default @NotNull private String idType = "va.gov-Form526Submission";

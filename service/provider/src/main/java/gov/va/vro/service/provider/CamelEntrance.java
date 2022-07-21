@@ -22,7 +22,7 @@ public class CamelEntrance {
   private final ProducerTemplate producerTemplate;
 
   public Claim processClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ROUTE_PROCESS_CLAIM, claim, Claim.class);
+    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_PROCESS_CLAIM, claim, Claim.class);
   }
 
   @Deprecated // part of the demo code

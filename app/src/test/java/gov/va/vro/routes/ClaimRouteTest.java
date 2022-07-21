@@ -13,8 +13,7 @@ class ClaimRouteTest {
 
   @Test
   void camelEntrance() {
-    var claim =
-        Claim.builder().claimSubmissionId("id").diagnosticCode("1234").veteranIcn("icn").build();
+    var claim = Claim.builder().claimId("id").diagnosticCode("1234").veteranIcn("icn").build();
     camelEntrance.processClaim(claim);
   }
 }

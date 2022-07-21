@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.processors;
+package gov.va.vro.service.provider.camel;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
@@ -7,7 +7,13 @@ import org.apache.camel.Processor;
 import java.util.function.Function;
 
 /**
- * An alternative to "bean", which is stable under refactoring
+ * An alternative to "bean", which is stable under refactoring.
+ *
+ * <p>For example, bean(ClaimService.class, "process") will break at runtime if we refactor the
+ * method name to "processClaim".
+ *
+ * <p>With FunctionProcessor you can use the real method calls, so it will be refactored along with
+ * everything else.
  *
  * @param <I>
  * @param <O>
