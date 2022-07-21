@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Deprecated // part of demo code
 @Service
 @Slf4j
 public class SubClaimSubmissionServiceImpl implements SubClaimSubmissionService {
