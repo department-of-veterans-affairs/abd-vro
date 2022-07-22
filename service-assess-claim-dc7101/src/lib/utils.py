@@ -11,6 +11,7 @@ def validate_request_body(request_body):
     :rtype: dict
     """
     schema = {
+        "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
         "vasrd": {"type": "string",
                   "required": True},
@@ -57,35 +58,48 @@ def validate_request_body(request_body):
                     },
                     "code": {
                         "type": "string",
-                    }
+                    },
+                    "dosageInstructions": {
+                        "type": "list",
+                        "schema": {"type": "string"}
+                    },
+                    "route": {"type": "string"},
+                    "refills": {"type": "integer"},
+                    "duration": {"type": "string"}
+
                     }
                 }
             },
         "observation": {
             "type": "dict",
             "schema": {
-                "bp": {
+                "bp_readings": {
                     "type": "list",
                     "schema": {
                         "type": "dict",
                         "require_all": True,
                         "schema": {
-                            "diastolic": {"type": "integer"},
-                            "systolic": {"type": "integer"},
-                            "date": {"type": "string"}
-                        }
-                    }
-                },
-
-                "common_obj": {
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {"type": "string"},
-                            "text": {"type": "string"},
-                            "value": {"type": "number"},
-                            "unit": {"type": "string"}
+                            "diastolic": {
+                                "type": "dict",
+                                "schema": {
+                                    "value": {"type": "number"},
+                                    "code": {"type": "string"},
+                                    "display":{"type": "string"},
+                                    "unit": {"type": "string"}
+                                }
+                            },
+                            "systolic": {
+                                "type": "dict",
+                                "schema": {
+                                    "value": {"type": "number"},
+                                    "code": {"type": "string"},
+                                    "display":{"type": "string"},
+                                    "unit": {"type": "string"}
+                                }
+                            },
+                            "date": {"type": "string"},
+                            "practitioner": {"type": "string"},
+                            "organization" : {"type": "string"}
                         }
                     }
                 }

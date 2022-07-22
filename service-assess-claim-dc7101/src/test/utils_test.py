@@ -8,22 +8,30 @@ from src.lib import utils
         (
             {   
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2021-11-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 115
                         },
-                        {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        }
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 180
+                        },
+                            "date": "2021-11-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
+                        },
                     ]
             },
                 "medication": [{"text":"Capoten"}],
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                "vasrd": "7101",
+                "veteranIcn": "1234567890V123456",
             },
             True,
             {}
@@ -31,16 +39,35 @@ from src.lib import utils
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
-                            "systolic": "180",
-                            "date": "2021-11-01"
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": "180"
+                        },
+                            "date": "2021-11-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         },
                         {
-                            "diastolic": "110",
-                            "systolic": 200,
-                            "date": 20210901
-                        }
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": "115"
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 180
+                        },
+                            "date": 20211101,
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
+                        },
                     ]
                 },
                 "medication": [{"text":123}],
@@ -51,18 +78,18 @@ from src.lib import utils
             {
                 "observation":
                 [{
-                    "bp": [
+                    "bp_readings": [
                         {
                             0: [
                                 {
-                                    "systolic": ["must be of integer type"],
+                                    "systolic": [{"value": ["must be of number type"]}],
                                     "diastolic": ["required field"]
                                 }
                             ],
                             1: [
                                 {
                                     "date": ["must be of string type"],
-                                    "diastolic": ["must be of integer type"]
+                                    "diastolic": [{"value": ["must be of number type"]}]
                                 }
                             ]
                         }

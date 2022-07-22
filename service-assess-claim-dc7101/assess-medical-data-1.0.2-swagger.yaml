@@ -83,7 +83,7 @@ definitions:
         example: 2016-09-29T09:12:33.001Z
   observation:
     properties:
-      bp:
+      bp_readings:
         $ref: '#/definitions/observation_bp'
       common_obj:
         $ref: '#/definitions/observation_bp'

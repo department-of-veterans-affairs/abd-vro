@@ -1,11 +1,8 @@
 import pika
 import json
-
 import logging
-
 from lib import main
 from time import sleep
-
 
 class RabbitMQConsumer:
 

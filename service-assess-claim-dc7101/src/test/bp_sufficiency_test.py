@@ -9,16 +9,40 @@ from src.lib import predominant_bp
         # and 5/13 is exactly 180 days before 11/9
         (
             "2021-11-09",
-            [
+            [                      
                 {
-                    "diastolic": 115,
-                    "systolic": 180,
-                    "date": "2021-10-10"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 115
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 180
+                },
+                    "date": "2021-10-10",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 },
                 {
-                    "diastolic": 110,
-                    "systolic": 200,
-                    "date": "2021-05-13"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 110
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 200
+                },
+                    "date": "2021-05-13",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 }
             ],
             True
@@ -27,16 +51,40 @@ from src.lib import predominant_bp
         # This also tests the edge case in that 5/12 is *181* days before 11/9
         (
             "2021-11-09",
-            [
+            [                      
                 {
-                    "diastolic": 115,
-                    "systolic": 180,
-                    "date": "2021-10-10"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 115
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 180
+                },
+                    "date": "2021-10-10",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 },
                 {
-                    "diastolic": 110,
-                    "systolic": 200,
-                    "date": "2021-05-12"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 110
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 200
+                },
+                    "date": "2021-05-12",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 }
             ],
             False
@@ -47,14 +95,38 @@ from src.lib import predominant_bp
             "2021-11-09",
             [
                 {
-                    "diastolic": 115,
-                    "systolic": 180,
-                    "date": "2021-10-09"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 115
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 180
+                },
+                    "date": "2021-10-10",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 },
                 {
-                    "diastolic": 110,
-                    "systolic": 200,
-                    "date": "2021-09-01"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 110
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 200
+                },
+                    "date": "2021-05-12",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 }
             ],
             False
@@ -64,9 +136,21 @@ from src.lib import predominant_bp
             "2021-11-09",
             [
                 {
-                    "diastolic": 115,
-                    "systolic": 180,
-                    "date": "2021-10-10"
+                "diastolic": {
+                    "code": "8462-4",
+                    "display": "Diastolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 115
+                },
+                "systolic": {                
+                    "code": "8480-6",
+                    "display": "Systolic blood pressure",
+                    "unit": "mm[Hg]",
+                    "value": 180
+                },
+                    "date": "2021-10-10",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
                 }
             ],
             False
@@ -98,60 +182,92 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
     [
         (
             [
-                {
-                    "diastolic": 115,
-                    "systolic": 180,
-                    "date": "2021-10-10",
-                },
-                {
-                    "diastolic": 110,
-                    "systolic": 210,
-                    "date": "2021-09-01",
-                },
-                {
-                    "diastolic": 105,
-                    "systolic": 180,
-                    "date": "2021-10-10",
-                },
-                {
-                    "diastolic": 121,
-                    "systolic": 200,
-                    "date": "2021-09-01",
-                },
-                {
-                    "diastolic": 91,
-                    "systolic": 200,
-                    "date": "2021-09-01",
-                },
-                {
-                    "diastolic": 95,
-                    "systolic": 180,
-                    "date": "2021-10-01",
-                },
-                # Per the algorithm, when the total number of BP readings is 3 or greater, if there
-                # are multiple values within the Predominant Percent Range of Diastolic Readings
-                # (PPRDR) (see algorithm document for definition) then *most recent* reading in the
-                # PPRDR is the predominant reading (i.e. not neccessarily the *highest* reading
-                # reading within the PPRDR).
-                # The following two readings are ordered specifically this way in this Python list
-                # to exercise and test the date sorting portion of the algorithm.
-                {
-                    "diastolic": 135,
-                    "systolic": 155,
-                    "date": "2021-09-05",
-                },
-                {
-                    "diastolic": 140,
-                    "systolic": 150,
-                    "date": "2021-09-01",
-                },
-            ],
             {
-                "diastolic_value": 135,
-                "systolic_value": 200
-            }
+                "diastolic": {
+                    "value": 115
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-10"
+            },
+            {
+                "diastolic": {
+                    "value": 110
+                },
+                "systolic": {
+                    "value": 210
+                },
+                "date": "2021-09-01"
+            },
+            {
+                "diastolic": {
+                    "value": 105
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-10"
+            },
+            {
+                "diastolic": {
+                    "value": 121
+                },
+                "systolic": {
+                    "value": 200
+                },
+                "date": "2021-09-01"
+            },
+            {
+                "diastolic": {
+                    "value": 91
+                },
+                "systolic": {
+                    "value": 200
+                },
+                "date": "2021-09-01"
+            },
+            {
+                "diastolic": {
+                    "value": 95
+                },
+                "systolic": {
+                    "value": 180
+                },
+                "date": "2021-10-01"
+            },
+            # Per the algorithm, when the total number of BP readings is 3 or greater, if there
+            # are multiple values within the Predominant Percent Range of Diastolic Readings
+            # (PPRDR) (see algorithm document for definition) then *most recent* reading in the
+            # PPRDR is the predominant reading (i.e. not neccessarily the *highest* reading
+            # reading within the PPRDR).
+            # The following two readings are ordered specifically this way in this Python list
+            # to exercise and test the date sorting portion of the algorithm.
+            {
+                "diastolic": {
+                    "value": 135
+                },
+                "systolic": {
+                    "value": 155
+                },
+                "date": "2021-09-05"
+            },
+            {
+                "diastolic": {
+                    "value": 140
+                },
+                "systolic": {
+                    "value": 150
+                },
+                "date": "2021-09-01"
+            },
+        ],
+        {
+            "diastolic_value": 135,
+            "systolic_value": 200
+        }
         )
-    ],
+    ]
 )
 def test_calculate_predominant_readings(bp_readings, result):
     """
@@ -171,17 +287,25 @@ def test_calculate_predominant_readings(bp_readings, result):
         # Two readings. No out of range dates.
         (
             {"observation": {
-                "bp": [
-                    {
-                        "diastolic": 115,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    }
+                "bp_readings": [
+                        {
+                            "diastolic": {
+                                "value": 115
+                            },
+                            "systolic": {
+                                "value": 180
+                            },
+                            "date": "2021-11-01"
+                        },
+                        {
+                            "diastolic": {
+                                "value": 110
+                            },
+                            "systolic": {
+                                "value": 200
+                            },
+                            "date": "2021-09-01"
+                        }
                 ]
             },
                 "date_of_claim": "2021-11-09",
@@ -195,23 +319,35 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 reading test case with one out of range date
         (
             {"observation": {
-                "bp": [
-                    {
-                        "diastolic": 115,
-                        "systolic": 180,
-                        "date": "2021-11-01"
-                    },
-                    {
-                        "diastolic": 110,
-                        "systolic": 200,
-                        "date": "2021-09-01"
-                    },
-                    {
-                        "diastolic": 120,
-                        "systolic": 210,
-                        "date": "2020-11-08"
-                    }
-                ]
+                "bp_readings": [
+                            {
+                                "diastolic": {
+                                    "value": 115
+                                },
+                                "systolic": {
+                                    "value": 180
+                                },
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 110
+                                },
+                                "systolic": {
+                                    "value": 200
+                                },
+                                "date": "2021-09-01"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 120
+                                },
+                                "systolic": {
+                                    "value": 210
+                                },
+                                "date": "2020-11-08"
+                            }
+                        ]
             },
                 "date_of_claim": "2021-11-09",
             },
@@ -226,42 +362,70 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
-                        {
-                            "systolic": 181,
-                            "diastolic": 112,
-                            "date": "2021-10-09"
-                        },
-                        {
-                            "systolic": 181,
-                            "diastolic": 109,
-                            "date": "2021-10-10"
-                        },
-                        {
-                            "systolic": 131,
-                            "diastolic": 113,
-                            "date": "2021-05-13"
-                        },
-                        {
-                            "systolic": 160,
-                            "diastolic": 101,
-                            "date": "2021-09-13"
-                        },
-                        {
-                            "systolic": 120,
-                            "diastolic": 104,
-                            "date": "2021-09-13"
-                        },
-                        {
-                            "systolic": 180,
-                            "diastolic": 116,
-                            "date": "2021-10-13"
-                        },
-                        {
-                            "systolic": 155,
-                            "diastolic": 111,
-                            "date": "2021-10-14"
-                        },
+                    "bp_readings": [
+                            {
+                                "diastolic": {
+                                    "value": 112
+                                },
+                                "systolic": {
+                                    "value": 181
+                                },
+                                "date": "2021-10-09"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 109
+                                },
+                                "systolic": {
+                                    "value": 181
+                                },
+                                "date": "2021-10-10"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 113
+                                },
+                                "systolic": {
+                                    "value": 131
+                                },
+                                "date": "2021-05-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 101
+                                },
+                                "systolic": {
+                                    "value": 160
+                                },
+                                "date": "2021-09-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 104
+                                },
+                                "systolic": {
+                                    "value": 120
+                                },
+                                "date": "2021-09-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 116
+                                },
+                                "systolic": {
+                                    "value": 180
+                                },
+                                "date": "2021-10-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 111
+                                },
+                                "systolic": {
+                                    "value": 155
+                                },
+                                "date": "2021-10-14"
+                            }
                     ]
                 },
                 "date_of_claim": "2021-11-09",
@@ -278,37 +442,61 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
-                        {
-                            "systolic": 181,
-                            "diastolic": 109,
-                            "date": "2021-10-10"
-                        },
-                        {
-                            "systolic": 131,
-                            "diastolic": 113,
-                            "date": "2021-05-13"
-                        },
-                        {
-                            "systolic": 160,
-                            "diastolic": 101,
-                            "date": "2021-09-13"
-                        },
-                        {
-                            "systolic": 120,
-                            "diastolic": 104,
-                            "date": "2021-09-13"
-                        },
-                        {
-                            "systolic": 180,
-                            "diastolic": 116,
-                            "date": "2021-10-13"
-                        },
-                        {
-                            "systolic": 155,
-                            "diastolic": 111,
-                            "date": "2021-10-14"
-                        }
+                    "bp_readings": [
+                            {
+                                "diastolic": {
+                                    "value": 109
+                                },
+                                "systolic": {
+                                    "value": 181
+                                },
+                                "date": "2021-10-10"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 113
+                                },
+                                "systolic": {
+                                    "value": 131
+                                },
+                                "date": "2021-05-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 101
+                                },
+                                "systolic": {
+                                    "value": 160
+                                },
+                                "date": "2021-09-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 104
+                                },
+                                "systolic": {
+                                    "value": 120
+                                },
+                                "date": "2021-09-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 116
+                                },
+                                "systolic": {
+                                    "value": 180
+                                },
+                                "date": "2021-10-13"
+                            },
+                            {
+                                "diastolic": {
+                                    "value": 111
+                                },
+                                "systolic": {
+                                    "value": 155
+                                },
+                                "date": "2021-10-14"
+                            }
                     ]
                 },
                 "date_of_claim": "2021-11-09",
@@ -323,40 +511,68 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
-                            "systolic": 181,
-                            "diastolic": 109,
+                            "diastolic": {
+                                "value": 109
+                            },
+                            "systolic": {
+                                "value": 181
+                            },
                             "date": "2021-10-10"
                         },
                         {
-                            "systolic": 131,
-                            "diastolic": 113,
+                            "diastolic": {
+                                "value": 113
+                            },
+                            "systolic": {
+                                "value": 131
+                            },
                             "date": "2021-05-13"
                         },
                         {
-                            "systolic": 160,
-                            "diastolic": 101,
+                            "diastolic": {
+                                "value": 101
+                            },
+                            "systolic": {
+                                "value": 160
+                            },
                             "date": "2021-09-13"
                         },
                         {
-                            "systolic": 120,
-                            "diastolic": 104,
+                            "diastolic": {
+                                "value": 104
+                            },
+                            "systolic": {
+                                "value": 120
+                            },
                             "date": "2021-09-13"
                         },
                         {
-                            "systolic": 180,
-                            "diastolic": 116,
+                            "diastolic": {
+                                "value": 116
+                            },
+                            "systolic": {
+                                "value": 180
+                            },
                             "date": "2021-10-13"
                         },
                         {
-                            "systolic": 155,
-                            "diastolic": 111,
+                            "diastolic": {
+                                "value": 111
+                            },
+                            "systolic": {
+                                "value": 155
+                            },
                             "date": "2021-10-14"
                         },
                         {
-                            "systolic": 154,
-                            "diastolic": 105,
+                            "diastolic": {
+                                "value": 105
+                            },
+                            "systolic": {
+                                "value": 154
+                            },
                             "date": "2020-11-08"
                         }
                     ]
@@ -373,16 +589,40 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2021-10-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 115
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 180
+                        },
+                            "date": "2021-10-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         },
                         {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2021-09-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 110
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 200
+                        },
+                            "date": "2021-09-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
                 },
@@ -396,16 +636,40 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
+                    "bp_readings": [
                         {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2021-04-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 115
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 180
+                        },
+                            "date": "2021-04-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         },
                         {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2021-10-10"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 110
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 200
+                        },
+                            "date": "2021-10-10",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
                 },
@@ -419,13 +683,25 @@ def test_calculate_predominant_readings(bp_readings, result):
         (
             {
                 "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2021-10-10"
-                        }
-                    ]
+                    "bp_readings": [                      
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                                "date": "2021-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            }
+                            ]
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -436,7 +712,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 0 readings
         (
             {
-                "observation": {"bp": []},
+                "observation": {"bp_readings": []},
                 "date_of_claim": "2021-11-09",
             },
             {

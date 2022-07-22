@@ -9,12 +9,12 @@ load_dotenv()
 REPLY_QUEUE_NAME = 'example_assess'
 # HOST = os.environ['RABBITMQ_HOST']
 HOST = "localhost"
-EXCHANGE_NAME = 'assess_health_data'
+EXCHANGE_NAME = 'health-assess-exchange'
 SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
   "observation": 
-    {"bp":
+    {"bp_readings":
         [
             {
                 "diastolic": 115,

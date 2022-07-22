@@ -1,14 +1,14 @@
 import atexit
 from consumer import RabbitMQConsumer
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 
-#HOST = os.environ['RABBITMQ_HOST']
-HOST = "rabbitmq1"
+HOST = os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost")
 CAMEL_MQ_PROPERTIES = { "durable": "true", "auto_delete": "true" }
-EXCHANGE_NAME = 'assess_health_data'
+EXCHANGE_NAME = 'health-assess-exchange'
 SERVICE_QUEUE_NAME = '7101'
 REPLY_QUEUE_NAME = 'example_assess'
 
