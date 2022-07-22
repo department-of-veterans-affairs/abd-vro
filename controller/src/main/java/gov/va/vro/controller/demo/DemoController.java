@@ -3,13 +3,12 @@ package gov.va.vro.controller.demo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.model.AbdClaim;
+import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.resources.DemoResource;
-import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import gov.va.vro.controller.demo.mapper.GenerateDataRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
-import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,21 +23,22 @@ public class DemoController implements DemoResource {
   private final CamelEntrance camelEntrance;
   private final GenerateDataRequestMapper generate_pdf_mapper;
 
-  public DemoController (
-      CamelEntrance camelEntrance,
-      GenerateDataRequestMapper generate_pdf_mapper) {
+  public DemoController(
+      CamelEntrance camelEntrance, GenerateDataRequestMapper generate_pdf_mapper) {
     this.camelEntrance = camelEntrance;
     this.generate_pdf_mapper = generate_pdf_mapper;
   }
 
   @Override
-  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(AbdClaim claim) throws RequestValidationException {
+  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(AbdClaim claim)
+      throws RequestValidationException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       ObjectMapper mapper = new ObjectMapper();
       String claimAsString = mapper.writeValueAsString(claim);
       String responseAsString = camelEntrance.assessHealthData(claimAsString);
-      HealthDataAssessmentResponse response = mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+      HealthDataAssessmentResponse response =
+          mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", response.getVeteranIcn());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {

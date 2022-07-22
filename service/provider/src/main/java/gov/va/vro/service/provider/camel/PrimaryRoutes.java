@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,17 +48,13 @@ public class PrimaryRoutes extends RouteBuilder {
   SampleData sampleData = new SampleData();
 
   private void configureRouteHealthDataAssessor() {
-    String claimSubmitUri = "rabbitmq:claim-submit-exchange"
-      + "?queue=claim-submit"
-      + "&routingKey=input.q";
-      // + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
-      // + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
+    String claimSubmitUri =
+        "rabbitmq:claim-submit-exchange" + "?queue=claim-submit" + "&routingKey=input.q";
+    // + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
+    // + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
 
     // send JSON-string payload to RabbitMQ
-    from("direct:assess_health_data")
-        .routeId("assess_health_data")
-        .to(claimSubmitUri);
-
+    from("direct:assess_health_data").routeId("assess_health_data").to(claimSubmitUri);
   }
 
   private void configureRoutePdfGenerator() {

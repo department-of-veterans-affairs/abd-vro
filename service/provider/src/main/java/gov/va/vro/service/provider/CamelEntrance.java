@@ -27,7 +27,8 @@ public class CamelEntrance {
   private final ObjectMapper mapper = new ObjectMapper();
 
   public String assessHealthData(String claim) {
-    // String tmpRequest = "{\"veteranIcn\":\"9000682\",\"diagnosticCode\":7101,\"claimSubmissionId\":\"1234\"}";
+    // String tmpRequest =
+    // "{\"veteranIcn\":\"9000682\",\"diagnosticCode\":7101,\"claimSubmissionId\":\"1234\"}";
     return producerTemplate.requestBody("direct:assess_health_data", claim, String.class);
   }
 
