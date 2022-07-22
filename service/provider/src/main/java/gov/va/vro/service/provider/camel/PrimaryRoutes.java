@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.processors.MockRemoteService;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -12,21 +14,45 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
+
+  public static final String ENDPOINT_PROCESS_CLAIM = "direct:processClaim";
+  public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
+  public static final String ENDPOINT_ASSESS_CLAIM = "direct:assess";
+
   private final CamelUtils camelUtils;
+  private final SaveToDbService saveToDbService;
 
   @Override
   public void configure() {
     configureRouteFileLogger();
     configureRoutePostClaim();
+    configureRouteProcessClaim();
     configureRouteClaimProcessed();
 
-    configureRouteHealthDataAssessor();
-    configureRoutePdfGenerator();
+    // TODO: leaving them as examples, but they should be removed in a subsequent PR
+    //    configureRouteHealthDataAssessor();
+    //    configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint("seda:logToFile");
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
+    camelUtils.asyncSedaEndpoint(ENDPOINT_LOG_TO_FILE);
+    from(ENDPOINT_LOG_TO_FILE)
+        .marshal()
+        .json()
+        .log(">>2> ${body.getClass()}")
+        .to("file://target/post");
+  }
+
+  private void configureRouteProcessClaim() {
+    from(ENDPOINT_PROCESS_CLAIM)
+        .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
+        .to(ENDPOINT_LOG_TO_FILE)
+        .to(ENDPOINT_ASSESS_CLAIM)
+        .log(">>5> ${body.toString()}");
+    // TODO: insert a post processing step here to update the DB with results from services
+
+    // Rabbit calls to processing services go here
+    from(ENDPOINT_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
   }
 
   private void configureRoutePostClaim() {

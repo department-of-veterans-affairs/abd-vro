@@ -31,13 +31,13 @@ repos:
       - id: circleci_validate
         stages: [commit]
 
-  - repo: local
-    hooks:
-      - id: commit-message
-        name: commit-message
-        entry: scripts/commit-message.sh
-        language: script
-        stages: [commit-msg]
+  # - repo: local
+  #   hooks:
+  #     - id: commit-message
+  #       name: commit-message
+  #       entry: scripts/commit-message.sh
+  #       language: script
+  #       stages: [commit-msg]
       # - id: verify-generated-proj
       #   name: verify generated project
       #   entry: scripts/verify-generated-proj.sh
