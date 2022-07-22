@@ -1,7 +1,8 @@
 package gov.va.vro.service.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class CamelEntrance {
-  // Provided by Camel
-  // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
+
   private final ProducerTemplate producerTemplate;
 
+  public Claim processClaim(Claim claim) {
+    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_PROCESS_CLAIM, claim, Claim.class);
+  }
+
+  @Deprecated // part of the demo code
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
     return producerTemplate.requestBody("direct:postClaim", claim, ClaimSubmission.class);
   }
 
-  private final ObjectMapper mapper = new ObjectMapper();
-
+  @Deprecated // part of the demo code
   public String assess_health_data_demo(AssessHealthData resource) {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
