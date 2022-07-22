@@ -1,4 +1,4 @@
-package gov.va.vro.abd_data_access.model;
+package gov.va.vro.api.demo.model;
 
 import lombok.Getter;
 import lombok.Setter;

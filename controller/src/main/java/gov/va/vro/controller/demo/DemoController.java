@@ -1,12 +1,12 @@
 package gov.va.vro.controller.demo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
+import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.resources.DemoResource;
-import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
+import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
-import gov.va.vro.controller.demo.mapper.AssessHealthDataRequestMapper;
 import gov.va.vro.controller.demo.mapper.GenerateDataRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
@@ -22,27 +22,31 @@ public class DemoController implements DemoResource {
 
   // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
-  private final AssessHealthDataRequestMapper assess_health_mapper;
   private final GenerateDataRequestMapper generate_pdf_mapper;
 
-  public DemoController(
+  public DemoController (
       CamelEntrance camelEntrance,
-      AssessHealthDataRequestMapper assess_health_mapper,
       GenerateDataRequestMapper generate_pdf_mapper) {
     this.camelEntrance = camelEntrance;
-    this.assess_health_mapper = assess_health_mapper;
     this.generate_pdf_mapper = generate_pdf_mapper;
   }
 
   @Override
-  public ResponseEntity<AssessHealthDataResponse> assess_health_data(
-      AssessHealthDataRequest request) throws RequestValidationException {
-    AssessHealthData model = assess_health_mapper.toModel(request);
-    String response = camelEntrance.assess_health_data_demo(model);
-    log.info("RESPONSE from assess_health_data_demo: {}", response);
-    model.setBpReadingsJson(response);
-    AssessHealthDataResponse responseObj = assess_health_mapper.toAssessHealthDataResponse(model);
-    return new ResponseEntity<>(responseObj, HttpStatus.CREATED);
+  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(AbdClaim claim) throws RequestValidationException {
+    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      String claimAsString = mapper.writeValueAsString(claim);
+      String responseAsString = camelEntrance.assessHealthData(claimAsString);
+      HealthDataAssessmentResponse response = mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+      log.info("Returning health assessment for: {}", response.getVeteranIcn());
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (Exception ex) {
+      String msg = ex.getMessage();
+      log.error(ex.getStackTrace().toString());
+      HealthDataAssessmentResponse response = new HealthDataAssessmentResponse(claim, msg);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Override

@@ -49,31 +49,17 @@ public class PrimaryRoutes extends RouteBuilder {
   SampleData sampleData = new SampleData();
 
   private void configureRouteHealthDataAssessor() {
-    String queueName = "health_data_assessor";
+    String claimSubmitUri = "rabbitmq:claim-submit-exchange"
+      + "?queue=claim-submit"
+      + "&routingKey=input.q";
+      // + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
+      // + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
 
     // send JSON-string payload to RabbitMQ
-    from("direct:assess_health_data_demo")
-        .routeId("assess_health_data_demo")
-        // .tracing()
+    from("direct:assess_health_data")
+        .routeId("assess_health_data")
+        .to(claimSubmitUri);
 
-        // if bpObservations is empty, load a samplePayload for it
-        .choice()
-        // https://camel.apache.org/components/3.11.x/languages/simple-language.html
-        .when(simple("${body.bpObservations} == null"))
-        .setBody(
-            exchange ->
-                sampleData.sampleAssessHealthPayload(exchange.getMessage(AssessHealthData.class)))
-        .end()
-
-        // .log(">>> To assess_health_data: ${body}")
-        // .to("log:INFO?showBody=true&showHeaders=true")
-
-        // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
-        // Subscribers of this RabbitMQ queue expect a JSON string
-        // Since the RabbitMQ endpoint accepts a byte[] for the message,
-        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
-        // as a byte[]
-        .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
 
   private void configureRoutePdfGenerator() {

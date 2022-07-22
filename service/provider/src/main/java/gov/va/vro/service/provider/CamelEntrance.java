@@ -2,7 +2,6 @@ package gov.va.vro.service.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +26,12 @@ public class CamelEntrance {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public String assess_health_data_demo(AssessHealthData resource) {
-    return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
+  public String assessHealthData(String claim) {
+    // String tmpRequest = "{\"veteranIcn\":\"9000682\",\"diagnosticCode\":7101,\"claimSubmissionId\":\"1234\"}";
+    return producerTemplate.requestBody("direct:assess_health_data", claim, String.class);
   }
 
   public String generate_pdf_demo(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf_demo", resource, String.class);
+    return producerTemplate.requestBody("direct:access_medical_data", resource, String.class);
   }
 }
