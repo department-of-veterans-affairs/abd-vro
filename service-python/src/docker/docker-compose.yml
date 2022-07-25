@@ -14,15 +14,25 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis
+    hostname: redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    networks:
+      - internal
+
   service-python:
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      REDIS_PLACEHOLDERS_HOST: rabbitmq1
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_SESSION_TOKEN: test
-
     build:
       dockerfile: ./Dockerfile
     ports: 

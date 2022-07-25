@@ -36,8 +36,11 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
 
-  @Deprecated // part of the demo code
-  public String generate_pdf_demo(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf_demo", resource, String.class);
+  public String generate_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  }
+
+  public String fetch_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
   }
 }
