@@ -100,8 +100,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
         - name: {{ .Values.name }}-service-python-pdf_generator
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePython.imageName }}:{{ .Values.images.servicePython.tag }}
-          imagePullPolicy: {{ .Values.images.servicePython.imagePullPolicy }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePythonPdfGenerator.imageName }}:{{ .Values.images.servicePythonPdfGenerator.tag }}
+          imagePullPolicy: {{ .Values.images.servicePythonPdfGenerator.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbitmq
@@ -116,4 +116,4 @@ spec:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
           resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.servicePython | nindent 12 }}
+          resources: {{- toYaml .Values.resources.servicePythonPdfGenerator | nindent 12 }}
