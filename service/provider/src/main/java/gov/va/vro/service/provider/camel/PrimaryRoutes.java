@@ -49,7 +49,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private void configureRouteHealthDataAssessor() {
     String claimSubmitUri =
-        "rabbitmq:claim-submit-exchange" + "?queue=claim-submit" + "&routingKey=input.q";
+        "rabbitmq:claim-submit-exchange" + "?queue=claim-submit" + "&routingKey=code.7101";
     // + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
     // + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
 

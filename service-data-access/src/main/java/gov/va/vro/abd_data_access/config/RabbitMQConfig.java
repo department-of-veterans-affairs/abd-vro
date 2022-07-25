@@ -15,12 +15,15 @@ public class RabbitMQConfig {
 	@Value("${abd-data-access.rabbitmq.claim-submit-exchange}")
     private String claimSubmitExchangeName;
 
-	@Value("${abd-data-access.rabbitmq.claim-submit}") 	
-	private String claimSubmitName;
+	@Value("${abd-data-access.rabbitmq.claim-submit-queue}") 	
+	private String claimSubmitQueueName;
+
+	@Value("${abd-data-access.rabbitmq.claim-submit-routing-key}") 	
+	private String claimSubmitRoutingKey;
 
 	@Bean
 	Queue claimSubmitQueue() {
-		return new Queue(claimSubmitName, true, false, true);
+		return new Queue(claimSubmitQueueName, true, false, true);
 	}
 
 	@Bean
@@ -30,7 +33,7 @@ public class RabbitMQConfig {
 
 	@Bean
 	Binding claimSubmitBinding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("input.q");
+		return BindingBuilder.bind(queue).to(exchange).with(claimSubmitRoutingKey);
 	}
 
 	@Bean

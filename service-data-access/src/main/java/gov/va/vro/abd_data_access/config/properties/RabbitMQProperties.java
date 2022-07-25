@@ -12,5 +12,5 @@ public class RabbitMQProperties {
     private String claimSubmitExchange;
 
     @NotBlank
-    private String claimSubmit;
+    private String claimSubmitQueue;
 }

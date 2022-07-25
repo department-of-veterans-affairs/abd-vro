@@ -21,6 +21,6 @@ public class AppPropertiesTests {
        RabbitMQProperties rmqp = properties.rabbitmq();
 
        assertEquals("claim-submit-exchange", rmqp.getClaimSubmitExchange());
-       assertEquals("claim-submit", rmqp.getClaimSubmit());
+       assertEquals("claim-submit", rmqp.getClaimSubmitQueue());
     }
 }

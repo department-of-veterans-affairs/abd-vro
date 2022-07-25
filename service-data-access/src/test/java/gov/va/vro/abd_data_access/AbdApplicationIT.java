@@ -62,7 +62,7 @@ public class AbdApplicationIT {
                 public void configure() {
                     String claimSubmitUri = "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=input.q"
+                        + "&routingKey=code.7101"
                         + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
                         + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
         

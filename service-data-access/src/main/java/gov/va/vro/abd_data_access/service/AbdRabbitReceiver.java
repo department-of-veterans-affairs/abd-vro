@@ -15,7 +15,7 @@ public class AbdRabbitReceiver {
 	@Autowired
 	private FhirClient client;
 
-	@RabbitListener(queues = "${abd-data-access.rabbitmq.claim-submit}")
+	@RabbitListener(queues = "${abd-data-access.rabbitmq.claim-submit-queue}")
 	AbdResponse receiveMessage(AbdClaim claim) {
 		log.info("Claim submission for icn={}", claim.getVeteranIcn());
 		try {
