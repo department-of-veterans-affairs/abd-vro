@@ -68,6 +68,4 @@ build/
 
 ### Build result
 
-bin/
-
 src/main/resources/private.pem

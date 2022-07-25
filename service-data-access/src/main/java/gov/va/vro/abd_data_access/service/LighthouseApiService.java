@@ -8,7 +8,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,16 +25,18 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
-import com.auth0.jwt.pem.PemReader;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Lighthouse FHIR API access service.
@@ -43,6 +50,12 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LighthouseApiService {
+
+    static {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
 
     public enum SCOPE  {
             OBSERVATION("launch patient/Observation.read"),
@@ -76,13 +89,15 @@ public class LighthouseApiService {
     }
 
     private static final String PATIENT_CODING = "{\"patient\":\"%s\"}";
-    private static final String PRIVATE_KEY = "private.pem";
 
     @Autowired
     private LighthouseSetup setup;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("classpath:private.pem")
+    private Resource privatePem;
 
     /**
      * Creates a bear token to access the Lighthouse FHIR API endpoint for the
@@ -113,9 +128,17 @@ public class LighthouseApiService {
     private String getCCGAssertion(String assertionUrl, String clientId)
             throws AbdException {
         try {
-            String keyfilepath = Objects.requireNonNull(getClass().getClassLoader()
-                    .getResource(PRIVATE_KEY)).getFile();
-            PrivateKey key = PemReader.readPrivateKey(keyfilepath);
+            final PemReader pemReader = new PemReader(new InputStreamReader(privatePem.getInputStream()));
+            PemObject pemObject;
+            try {
+                pemObject = pemReader.readPemObject();
+            } finally {
+                pemReader.close();
+            }
+            final byte[] content = pemObject.getContent();
+            final PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(content);
+            final KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
+            PrivateKey key = factory.generatePrivate(privKeySpec);
 
             Date issuedAt = new Date();
             Date expiredOn = new Date(issuedAt.getTime() + 60 * 3 * 1000);
@@ -125,8 +148,10 @@ public class LighthouseApiService {
                     .signWith(SignatureAlgorithm.RS256, key)
                     .compact();
         } catch (IOException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+            log.error(e.getMessage());
             throw new AbdException("Failed to create signing key for VA Lighthouse API.", e);
         } catch (NullPointerException e) {
+            log.error(e.getMessage());
             throw new AbdException("Cannot find key file for Lighthouse access.");
         }
     }
