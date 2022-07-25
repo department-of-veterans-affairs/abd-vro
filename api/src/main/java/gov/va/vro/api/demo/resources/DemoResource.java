@@ -43,11 +43,25 @@ public interface DemoResource {
 
   @Operation(summary = "Demo generate_pdf", description = "Submit data for pdf generation")
   @PostMapping("/generate_pdf")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   @Timed(value = "example.generate_pdf")
   ResponseEntity<GeneratePdfResponse> generate_pdf(
       @Parameter(
               description = "metadata for generate_pdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
+      throws RequestValidationException;
+
+  @Operation(summary = "Demo fetch_pdf", description = "Submit data for pdf fetching")
+  @PostMapping("/fetch_pdf")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "example.fetch_pdf")
+  ResponseEntity<Object> fetch_pdf(
+      @Parameter(
+              description = "metadata for fetch_pdf",
               required = true,
               schema = @Schema(implementation = GeneratePdfRequest.class))
           @Valid

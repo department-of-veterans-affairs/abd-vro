@@ -87,6 +87,6 @@ include ':service-assess-claim-dc7101'
 include ':service-python'
 include ':service-data-access'
 include ':test-data-factory'
-include 'service:save-to-db'
+include 'service:db'
 
 

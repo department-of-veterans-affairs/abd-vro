@@ -2,6 +2,8 @@ package gov.va.vro.service.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class CamelEntrance {
-  // Provided by Camel https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
+
   private final ProducerTemplate producerTemplate;
 
+  public Claim processClaim(Claim claim) {
+    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_PROCESS_CLAIM, claim, Claim.class);
+  }
+
+  @Deprecated // part of the demo code
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
     return producerTemplate.requestBody("direct:postClaim", claim, ClaimSubmission.class);
@@ -32,7 +39,11 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:assess_health_data", claim, String.class);
   }
 
-  public String generate_pdf_demo(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:access_medical_data", resource, String.class);
+  public String generate_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  }
+
+  public String fetch_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
   }
 }
