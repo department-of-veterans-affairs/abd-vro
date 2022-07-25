@@ -1,5 +1,5 @@
 from time import sleep
-from pdf_generator.src.lib.queues import pdf_queue_setup
+from lib.queues import queue_setup
 
 import pika
 import logging
@@ -40,7 +40,7 @@ class RabbitMQConsumer:
 	def setup_queues(self):
 		channel = self.connection.channel()
 		# PDF Generator Exchange/Queue Setup
-		pdf_queue_setup(channel)
+		queue_setup(channel)
 		self.channel = channel
 
 

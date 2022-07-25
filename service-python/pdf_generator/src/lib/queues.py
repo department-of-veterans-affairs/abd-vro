@@ -51,7 +51,7 @@ def on_fetch_callback(channel, method, properties, body):
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
-def pdf_queue_setup(channel):
+def queue_setup(channel):
 	channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
 	# Generate PDF Queue
 	channel.queue_declare(queue=GENERATE_QUEUE)
