@@ -65,18 +65,17 @@ jobs:
           python-version: "3.9"
           cache: "pip"
 
-      - name: "PDF Generator: PIP Install"
-        run: pip install -r service-python/src/requirements.txt
+      # - name: "PDF Generator: PIP Install"
+      #   run: pip install -r service-python/src/requirements.txt
 
-      - name: "PDF Generator: Pytest"
-        run: cd service-python/src && python -m pytest
+      # - name: "PDF Generator: Pytest"
+      #   run: cd service-python/src && python -m pytest
 
-      - name: "DC7101: PIP Install"
-        run: pip install -r service-assess-claim-dc7101/src/requirements.txt
+      # - name: "DC7101: PIP Install"
+      #   run: pip install -r service-assess-claim-dc7101/src/requirements.txt
 
-      - name: "PDF Generator: Pytest"
-        run: cd service-assess-claim-dc7101/src && python -m pytest
-
+      # - name: "PDF Generator: Pytest"
+      #   run: cd service-assess-claim-dc7101/src && python -m pytest
 
   publish-image:
     needs: [build-and-test-java, build-and-test-python]
