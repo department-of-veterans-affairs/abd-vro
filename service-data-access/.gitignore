@@ -69,3 +69,5 @@ build/
 ### Build result
 
 src/main/resources/private.pem
+bin/
+!bin/entryppoint.sh
