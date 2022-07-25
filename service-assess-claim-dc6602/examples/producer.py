@@ -13,21 +13,6 @@ EXCHANGE_NAME = 'assess_health_data'
 SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
-  "observation": 
-    {"bp":
-        [
-            {
-                "diastolic": 115,
-                "systolic": 180,
-                "date": "2021-10-10"
-            },
-            {
-                "diastolic": 110,
-                "systolic": 200,
-                "date": "2021-05-13"
-            }
-        ]
-    },
   "medication": [
     {"text": "Benazepril",
     "code": "4492",
