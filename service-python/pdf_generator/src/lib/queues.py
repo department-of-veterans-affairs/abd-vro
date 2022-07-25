@@ -61,5 +61,5 @@ def queue_setup(channel):
 	channel.queue_declare(queue=FETCH_QUEUE)
 	channel.queue_bind(queue=FETCH_QUEUE, exchange=EXCHANGE)
 	channel.basic_consume(queue=FETCH_QUEUE, on_message_callback=on_fetch_callback, auto_ack=True)
-	logging.info(f" [*] Waiting for data for queue: {queue_config['generate_queue_name']}. To exit press CTRL+C")
-	logging.info(f" [*] Waiting for data for queue: {queue_config['fetch_queue_name']}. To exit press CTRL+C")
+	logging.info(f" [*] Waiting for data for queue: {GENERATE_QUEUE}. To exit press CTRL+C")
+	logging.info(f" [*] Waiting for data for queue: {FETCH_QUEUE}. To exit press CTRL+C")

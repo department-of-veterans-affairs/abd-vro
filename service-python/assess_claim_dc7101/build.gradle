@@ -8,6 +8,9 @@ docker { // expects src/docker/Dockerfile to exist
     copySpec.from("src").into("."){ 
         exclude('docker')
     }
+    copySpec.into(".").from("../"){
+        include("*.py")
+    }
     // Use container image cache
     noCache false
 }

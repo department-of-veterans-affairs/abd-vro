@@ -39,7 +39,6 @@ class RabbitMQConsumer:
 
 	def setup_queues(self):
 		channel = self.connection.channel()
-		# PDF Generator Exchange/Queue Setup
 		queue_setup(channel)
 		self.channel = channel
 
