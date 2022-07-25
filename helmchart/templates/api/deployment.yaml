@@ -99,7 +99,7 @@ spec:
         - name: {{ .Values.name }}-service-assess-claim-dc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
-        - name: {{ .Values.name }}-service-python
+        - name: {{ .Values.name }}-service-python-pdf_generator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePython.imageName }}:{{ .Values.images.servicePython.tag }}
           imagePullPolicy: {{ .Values.images.servicePython.imagePullPolicy }}
           env:

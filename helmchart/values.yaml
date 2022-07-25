@@ -32,7 +32,7 @@ images:
     tag: latest
     imagePullPolicy: Always
   servicePython:
-    imageName: abd_vro-service-python
+    imageName: abd_vro-service-python-pdf_generator
     tag: latest
     imagePullPolicy: Always
   dbInit:

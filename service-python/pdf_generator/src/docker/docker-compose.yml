@@ -24,7 +24,7 @@ services:
     networks:
       - internal
 
-  service-python:
+  service-python-pdf_generator:
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
