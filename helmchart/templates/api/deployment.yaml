@@ -99,9 +99,9 @@ spec:
         - name: {{ .Values.name }}-service-assess-claim-dc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
-        - name: {{ .Values.name }}-service-python-pdf_generator
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePythonPdfGenerator.imageName }}:{{ .Values.images.servicePythonPdfGenerator.tag }}
-          imagePullPolicy: {{ .Values.images.servicePythonPdfGenerator.imagePullPolicy }}
+        - name: {{ .Values.name }}-pdf_generator
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
+          imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbitmq

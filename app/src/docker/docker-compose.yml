@@ -113,7 +113,7 @@ services:
       - redis1
       - db-init
       - service-assess-claim-dc7101
-      - service-python-pdf_generator
+      - pdf_generator
     networks:
       - internal
       - external
@@ -121,8 +121,8 @@ services:
 
   service-assess-claim-dc7101:
     image: va/abd_vro-service-assess-claim-dc7101:latest
-  service-python-pdf_generator:
-    image: va/abd_vro-service-python-pdf_generator:latest
+  pdf_generator:
+    image: va/abd_vro-pdf_generator:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest

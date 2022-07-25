@@ -31,8 +31,8 @@ images:
     imageName: abd_vro-app
     tag: latest
     imagePullPolicy: Always
-  servicePythonPdfGenerator:
-    imageName: abd_vro-service-python-pdf_generator
+  pdfGenerator:
+    imageName: abd_vro-pdf_generator
     tag: latest
     imagePullPolicy: Always
   dbInit:
