@@ -15,6 +15,10 @@ version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar.name)
+}
+
 // repositories {
 //    mavenCentral()
 // }
