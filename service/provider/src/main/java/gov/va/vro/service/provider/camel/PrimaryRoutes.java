@@ -26,9 +26,9 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteFileLogger();
     configureRoutePostClaim();
     configureRouteProcessClaim();
+    configureRouteClaimSubmit(); // ToDo remove in favor of RouteProcessClaim
     configureRouteClaimProcessed();
 
-    configureRouteHealthDataAssessor(); // ToDo remove in favor of RouteProcessClaim
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     // TODO: leaving them as examples, but they should be removed in a subsequent PR
@@ -75,14 +75,14 @@ public class PrimaryRoutes extends RouteBuilder {
 
   SampleData sampleData = new SampleData();
 
-  private void configureRouteHealthDataAssessor() {
+  private void configureRouteClaimSubmit() {
     // send JSON-string payload to RabbitMQ
-    from("direct:assess_health_data")
-        .routeId("assess_health_data")
+    from("direct:claim-submit")
+        .routeId("claim-submit")
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(SlipPostClaimRouter.class, "routePostClaim"));
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
   private void configureRouteGeneratePdf() {

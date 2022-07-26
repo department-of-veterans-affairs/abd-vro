@@ -34,10 +34,8 @@ public class CamelEntrance {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public String assessHealthData(ClaimPayload claim) {
-    // String tmpRequest =
-    // "{\"veteranIcn\":\"9000682\",\"diagnosticCode\":7101,\"claimSubmissionId\":\"1234\"}";
-    return producerTemplate.requestBody("direct:assess_health_data", claim, String.class);
+  public String submitClaim(ClaimPayload claim) {
+    return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
   }
 
   public String generate_pdf(GeneratePdfPayload resource) {

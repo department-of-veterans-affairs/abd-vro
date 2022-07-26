@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class DynamicPostClaimRouter {
+public class SlipClaimSubmitRouter {
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -21,7 +21,7 @@ public class DynamicPostClaimRouter {
    * @param props the exchange properties where we can store state between invocations
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
-  public String routePostClaim(Object body, @ExchangeProperties Map<String, Object> props)
+  public String routeClaimSubmit(Object body, @ExchangeProperties Map<String, Object> props)
       throws IOException {
     Object diagnosticCodeObj = props.get("diagnosticCode");
     if (diagnosticCodeObj == null) {

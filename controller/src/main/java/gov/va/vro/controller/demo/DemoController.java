@@ -50,7 +50,7 @@ public class DemoController implements DemoResource {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       ClaimPayload model = postClaimRequestMapper.toModel(claim);
-      String responseAsString = camelEntrance.assessHealthData(model);
+      String responseAsString = camelEntrance.submitClaim(model);
       ObjectMapper mapper = new ObjectMapper();
       HealthDataAssessmentResponse response =
           mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
