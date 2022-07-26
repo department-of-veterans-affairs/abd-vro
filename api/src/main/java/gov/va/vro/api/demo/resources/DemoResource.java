@@ -1,9 +1,9 @@
 package gov.va.vro.api.demo.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
+import gov.va.vro.api.demo.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import gov.va.vro.api.demo.responses.HealthDataAssessmentResponse;
@@ -51,10 +51,10 @@ public interface DemoResource {
       @Parameter(
               description = "Claim for which health data assessment requested",
               required = true,
-              schema = @Schema(implementation = AbdClaim.class))
+              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
           @Valid
           @RequestBody
-          AbdClaim claim)
+          HealthDataAssessmentRequest claim)
       throws RequestValidationException;
 
   @Operation(summary = "Demo generate_pdf", description = "Submit data for pdf generation")

@@ -2,9 +2,9 @@ package gov.va.vro.controller.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
+import gov.va.vro.api.demo.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.demo.resources.DemoResource;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.FetchPdfResponse;
@@ -63,8 +63,8 @@ public class DemoController implements DemoResource {
   }
 
   @Override
-  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(AbdClaim claim)
-      throws RequestValidationException {
+  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
+      HealthDataAssessmentRequest claim) throws RequestValidationException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       ClaimPayload model = postClaimRequestMapper.toModel(claim);

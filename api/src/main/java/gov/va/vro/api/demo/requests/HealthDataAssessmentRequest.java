@@ -1,4 +1,4 @@
-package gov.va.vro.api.demo.model;
+package gov.va.vro.api.demo.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Schema(name = "AbdClaim", description = "Claim details for the health data assessment")
-public class AbdClaim {
+@Schema(
+    name = "HealthDataAssessmentRequest",
+    description = "Claim details for the health data assessment")
+public class HealthDataAssessmentRequest {
   @NonNull
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "9000682")
   private String veteranIcn;
