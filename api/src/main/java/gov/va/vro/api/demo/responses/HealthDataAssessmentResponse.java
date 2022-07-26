@@ -1,5 +1,7 @@
-package gov.va.vro.api.demo.model;
+package gov.va.vro.api.demo.responses;
 
+import gov.va.vro.api.demo.model.AbdClaim;
+import gov.va.vro.api.demo.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NonNull;

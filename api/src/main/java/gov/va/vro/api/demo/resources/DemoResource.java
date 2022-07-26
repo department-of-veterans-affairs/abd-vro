@@ -2,11 +2,11 @@ package gov.va.vro.api.demo.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.model.AbdClaim;
-import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
+import gov.va.vro.api.demo.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
