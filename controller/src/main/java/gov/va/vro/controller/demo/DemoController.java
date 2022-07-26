@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
+import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
 import gov.va.vro.api.demo.resources.DemoResource;
+import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.FetchPdfResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
+import gov.va.vro.controller.demo.mapper.AssessHealthDataRequestMapper;
 import gov.va.vro.controller.demo.mapper.GenerateDataRequestMapper;
 import gov.va.vro.controller.demo.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.ClaimPayload;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +36,30 @@ public class DemoController implements DemoResource {
 
   // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
+  private final AssessHealthDataRequestMapper assess_health_mapper;
   private final GenerateDataRequestMapper generate_pdf_mapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   public DemoController(
       CamelEntrance camelEntrance,
+      AssessHealthDataRequestMapper assess_health_mapper,
       GenerateDataRequestMapper generate_pdf_mapper,
       PostClaimRequestMapper postClaimRequestMapper) {
     this.camelEntrance = camelEntrance;
+    this.assess_health_mapper = assess_health_mapper;
     this.generate_pdf_mapper = generate_pdf_mapper;
     this.postClaimRequestMapper = postClaimRequestMapper;
+  }
+
+  @Override
+  public ResponseEntity<AssessHealthDataResponse> assess_health_data(
+      AssessHealthDataRequest request) throws RequestValidationException {
+    AssessHealthData model = assess_health_mapper.toModel(request);
+    String response = camelEntrance.assess_health_data_demo(model);
+    log.info("RESPONSE from assess_health_data_demo: {}", response);
+    model.setBpReadingsJson(response);
+    AssessHealthDataResponse responseObj = assess_health_mapper.toAssessHealthDataResponse(model);
+    return new ResponseEntity<>(responseObj, HttpStatus.CREATED);
   }
 
   @Override

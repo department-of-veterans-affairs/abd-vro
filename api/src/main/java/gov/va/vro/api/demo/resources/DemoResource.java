@@ -3,7 +3,9 @@ package gov.va.vro.api.demo.resources;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.model.HealthDataAssessmentResponse;
+import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
+import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +27,20 @@ import javax.validation.Valid;
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface DemoResource {
+  @Operation(summary = "Demo assess_health_data", description = "Submit health data for assessment")
+  @PostMapping("/assess_health_data")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Timed(value = "example.assess_health_data")
+  ResponseEntity<AssessHealthDataResponse> assess_health_data(
+      @Parameter(
+              description = "metadata for assess_health_data",
+              required = true,
+              schema = @Schema(implementation = AssessHealthDataRequest.class))
+          @Valid
+          @RequestBody
+          AssessHealthDataRequest request)
+      throws RequestValidationException;
+
   @Operation(
       summary = "Health data assesment",
       description = "Provides health data assesment for the claim")

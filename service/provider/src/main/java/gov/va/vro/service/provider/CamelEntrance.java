@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.db.model.Claim;
+import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.demo.model.ClaimPayload;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class CamelEntrance {
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
     return producerTemplate.requestBody("direct:postClaim", claim, ClaimSubmission.class);
+  }
+
+  @Deprecated // part of the demo code
+  public String assess_health_data_demo(AssessHealthData resource) {
+    return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
 
   private final ObjectMapper mapper = new ObjectMapper();
