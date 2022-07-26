@@ -1,6 +1,9 @@
-# Automated Benefit Delivery (ABD)
+# Automated Benefit Delivery (ABD) Data Access Service
 
-ABD Claim Handler
+This service
+- Listens RabbitMQ queue where claims are submitted
+- Gets health data from Lighthouse Health API for the patient and diagnostic code specied in claim
+- Returns health to Camel route
 
 # Technologies
 
@@ -9,18 +12,18 @@ ABD Claim Handler
 - [Gradle](https://gradle.org)
 - [Testcontainers](https://www.testcontainers.org/)
 - [RabbitMQ](https://www.rabbitmq.com)
-- [HAPI FHIR](https://hapifhir.io/)
 
 # Local Deployment
 
-To run the server
+See the parent project for deployment information.
+
+A `buildgradle.local` is provided if you need to run this independently from the parent project. Replace `build.gradle` with `buildgradle.local` and run the server
+
 ```sh
 ./gradlew bootRun
 ```
+you can also run the tests
 
-# Testing
-
-To run the tests
 ```sh
 ./gradlew test
 ```
