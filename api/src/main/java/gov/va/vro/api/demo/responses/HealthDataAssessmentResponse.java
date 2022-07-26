@@ -1,12 +1,13 @@
 package gov.va.vro.api.demo.responses;
 
-import gov.va.vro.api.demo.model.AbdClaim;
 import gov.va.vro.api.demo.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class HealthDataAssessmentResponse {
@@ -23,22 +24,9 @@ public class HealthDataAssessmentResponse {
   @Schema(description = "Error message in the case of an error")
   private String errorMessage;
 
-  public HealthDataAssessmentResponse() {}
-
-  public HealthDataAssessmentResponse(AbdClaim claim) {
-    veteranIcn = claim.getVeteranIcn();
-    diagnosticCode = claim.getDiagnosticCode();
-  }
-
-  public HealthDataAssessmentResponse(AbdClaim claim, AbdEvidence evidence) {
-    veteranIcn = claim.getVeteranIcn();
-    diagnosticCode = claim.getDiagnosticCode();
-    this.evidence = evidence;
-  }
-
-  public HealthDataAssessmentResponse(AbdClaim claim, String errorMessage) {
-    veteranIcn = claim.getVeteranIcn();
-    diagnosticCode = claim.getDiagnosticCode();
+  public HealthDataAssessmentResponse(String veteranIcn, int diagnosticCode, String errorMessage) {
+    this.veteranIcn = veteranIcn;
+    this.diagnosticCode = diagnosticCode;
     this.errorMessage = errorMessage;
   }
 }

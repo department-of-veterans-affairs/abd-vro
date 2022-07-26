@@ -77,7 +77,8 @@ public class DemoController implements DemoResource {
     } catch (Exception ex) {
       String msg = ex.getMessage();
       log.error(ex.getStackTrace().toString());
-      HealthDataAssessmentResponse response = new HealthDataAssessmentResponse(claim, msg);
+      HealthDataAssessmentResponse response =
+          new HealthDataAssessmentResponse(claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
       return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
