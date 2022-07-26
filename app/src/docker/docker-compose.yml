@@ -26,6 +26,11 @@ services:
 
   rabbitmq1:
     image: rabbitmq:3-management
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 3s
+      retries: 30
     hostname: rabbitmq1
     expose:
       - "5672"
@@ -146,7 +151,8 @@ services:
       LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
       LH_FHIR_URL: https://sandbox-api.va.gov/services/fhir/v0/r4
     depends_on:
-      - rabbitmq1
+      rabbitmq1:
+        condition: service_healthy
     networks:
       - internal
 
