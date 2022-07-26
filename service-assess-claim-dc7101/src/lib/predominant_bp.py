@@ -111,9 +111,9 @@ def calculate_predominant_readings(bp_readings):
         if len(systolic_list) > len(longest_systolic_list):
             longest_systolic_list = systolic_list
 
-    longest_diastolic_list.sort(key=operator.itemgetter("effectiveDateTime"))
+    longest_diastolic_list.sort(key=operator.itemgetter("date"))
 
-    longest_systolic_list.sort(key=operator.itemgetter("effectiveDateTime"))
+    longest_systolic_list.sort(key=operator.itemgetter("date"))
 
     return {
         "systolic_value": longest_systolic_list[-1]["systolic"]["value"],
@@ -137,7 +137,7 @@ def sufficient_to_autopopulate (request_body):
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
     for reading in request_body["observation"]["bp_readings"]:
-        bp_reading_date = datetime.strptime(reading["effectiveDateTime"], "%Y-%m-%d").date()
+        bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             valid_bp_readings.append(reading)
 

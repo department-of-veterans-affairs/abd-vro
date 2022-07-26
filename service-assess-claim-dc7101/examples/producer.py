@@ -15,10 +15,11 @@ SERVICE_QUEUE_NAME = '7101'
 example_decision_data = {
     "veteranIcn": "1234567890V123456",
     "vasrd": "7101",
+    "date_of_claim": "2022-7-09",
     "observation": {
         "bp_readings": [
             {
-            "effectiveDateTime": "2022-04-19T15:48:04-05:00",
+            "date": "2022-04-19",
             "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
             "organization": "LYONS VA MEDICAL CENTER",
             "systolic": {

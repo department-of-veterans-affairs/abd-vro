@@ -99,7 +99,7 @@ def validate_request_body(request_body):
                                     "unit": {"type": "string"}
                                 }
                             },
-                            "effectiveDateTime": {"type": "string"},
+                            "date": {"type": "string"},
                             "practitioner": {"type": "string"},
                             "organization" : {"type": "string"}
                         }

@@ -22,7 +22,7 @@ from src.lib import utils
                             "unit": "mm[Hg]",
                             "value": 180
                         },
-                            "effectiveDateTime": "2021-11-01",
+                            "date": "2021-11-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -47,7 +47,7 @@ from src.lib import utils
                             "unit": "mm[Hg]",
                             "value": "180"
                         },
-                            "effectiveDateTime": "2021-11-01",
+                            "date": "2021-11-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -64,7 +64,7 @@ from src.lib import utils
                             "unit": "mm[Hg]",
                             "value": 180
                         },
-                            "effectiveDateTime": 20211101,
+                            "date": 20211101,
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -88,7 +88,7 @@ from src.lib import utils
                             ],
                             1: [
                                 {
-                                    "effectiveDateTime": ["must be of string type"],
+                                    "date": ["must be of string type"],
                                     "diastolic": [{"value": ["must be of number type"]}]
                                 }
                             ]
