@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.db.model.Claim;
+import gov.va.vro.service.spi.demo.model.ClaimPayload;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class CamelEntrance {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public String assessHealthData(String claim) {
+  public String assessHealthData(ClaimPayload claim) {
     // String tmpRequest =
     // "{\"veteranIcn\":\"9000682\",\"diagnosticCode\":7101,\"claimSubmissionId\":\"1234\"}";
     return producerTemplate.requestBody("direct:assess_health_data", claim, String.class);

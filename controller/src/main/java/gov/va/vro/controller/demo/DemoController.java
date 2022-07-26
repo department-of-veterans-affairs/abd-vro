@@ -9,7 +9,9 @@ import gov.va.vro.api.demo.resources.DemoResource;
 import gov.va.vro.api.demo.responses.FetchPdfResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
 import gov.va.vro.controller.demo.mapper.GenerateDataRequestMapper;
+import gov.va.vro.controller.demo.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.spi.demo.model.ClaimPayload;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -31,11 +33,15 @@ public class DemoController implements DemoResource {
   // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
   private final GenerateDataRequestMapper generate_pdf_mapper;
+  private final PostClaimRequestMapper postClaimRequestMapper;
 
   public DemoController(
-      CamelEntrance camelEntrance, GenerateDataRequestMapper generate_pdf_mapper) {
+      CamelEntrance camelEntrance,
+      GenerateDataRequestMapper generate_pdf_mapper,
+      PostClaimRequestMapper postClaimRequestMapper) {
     this.camelEntrance = camelEntrance;
     this.generate_pdf_mapper = generate_pdf_mapper;
+    this.postClaimRequestMapper = postClaimRequestMapper;
   }
 
   @Override
@@ -43,9 +49,9 @@ public class DemoController implements DemoResource {
       throws RequestValidationException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
+      ClaimPayload model = postClaimRequestMapper.toModel(claim);
+      String responseAsString = camelEntrance.assessHealthData(model);
       ObjectMapper mapper = new ObjectMapper();
-      String claimAsString = mapper.writeValueAsString(claim);
-      String responseAsString = camelEntrance.assessHealthData(claimAsString);
       HealthDataAssessmentResponse response =
           mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", response.getVeteranIcn());
