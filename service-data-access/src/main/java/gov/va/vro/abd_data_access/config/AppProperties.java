@@ -1,6 +1,6 @@
 package gov.va.vro.abd_data_access.config;
 
-import gov.va.vro.abd_data_access.config.properties.LighthouseSetup;
+import gov.va.vro.abd_data_access.config.properties.LighthouseProperties;
 import gov.va.vro.abd_data_access.config.properties.RabbitMQProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ public class AppProperties {
 
   @Bean
   @ConfigurationProperties(prefix = "lh")
-  public LighthouseSetup lighthouseSetup() {
-    return new LighthouseSetup();
+  public LighthouseProperties lighthouseProperties() {
+    return new LighthouseProperties();
   }
 }

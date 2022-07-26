@@ -2,7 +2,7 @@ package gov.va.vro.abd_data_access.config;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import gov.va.vro.abd_data_access.config.properties.LighthouseSetup;
+import gov.va.vro.abd_data_access.config.properties.LighthouseProperties;
 import gov.va.vro.abd_data_access.service.FhirClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ public class AppConfig {
 
   @Bean
   public IGenericClient lighthouseClient() {
-    LighthouseSetup setup = properties.lighthouseSetup();
+    LighthouseProperties setup = properties.lighthouseProperties();
     return fhirContext.newRestfulGenericClient(setup.getFhirurl());
   }
 

@@ -1,7 +1,7 @@
 package gov.va.vro.abd_data_access.service;
 
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.abd_data_access.config.properties.LighthouseSetup;
+import gov.va.vro.abd_data_access.config.properties.LighthouseProperties;
 import gov.va.vro.abd_data_access.exception.AbdException;
 import gov.va.vro.abd_data_access.model.LighthouseTokenMessage;
 import io.jsonwebtoken.Jwts;
@@ -87,7 +87,7 @@ public class LighthouseApiService {
 
   private static final String PATIENT_CODING = "{\"patient\":\"%s\"}";
 
-  @Autowired private LighthouseSetup setup;
+  @Autowired private LighthouseProperties lhProps;
 
   @Autowired private RestTemplate restTemplate;
 
@@ -156,7 +156,7 @@ public class LighthouseApiService {
   }
 
   private LighthouseTokenMessage getToken(String patientIcn, String scope) throws AbdException {
-    String assertion = getCCGAssertion(setup.getAssertionurl(), setup.getClientId());
+    String assertion = getCCGAssertion(lhProps.getAssertionurl(), lhProps.getClientId());
     String result = getToken(assertion, patientIcn, scope);
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -167,7 +167,7 @@ public class LighthouseApiService {
   }
 
   private String getToken(String assertion, String patientIcn, String scope) throws AbdException {
-    return getToken(setup.getTokenurl(), assertion, patientIcn, scope);
+    return getToken(lhProps.getTokenurl(), assertion, patientIcn, scope);
   }
 
   private String getToken(String tokenUtl, String assertion, String patientIcn, String scope)

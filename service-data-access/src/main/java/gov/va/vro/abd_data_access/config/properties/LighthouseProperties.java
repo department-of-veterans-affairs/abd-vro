@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LighthouseSetup {
+public class LighthouseProperties {
   private String clientId;
   private String assertionurl;
   private String tokenurl;
