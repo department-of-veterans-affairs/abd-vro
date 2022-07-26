@@ -76,13 +76,13 @@ public class PrimaryRoutes extends RouteBuilder {
   SampleData sampleData = new SampleData();
 
   private void configureRouteHealthDataAssessor() {
-    String claimSubmitUri =
-        "rabbitmq:claim-submit-exchange" + "?queue=claim-submit" + "&routingKey=code.7101";
-    // + "&hostname=" + rabbitMqContainer.getContainerIpAddress()
-    // + "&portNumber=" +rabbitMqContainer.getMappedPort(5672);
-
     // send JSON-string payload to RabbitMQ
-    from("direct:assess_health_data").routeId("assess_health_data").to(claimSubmitUri);
+    from("direct:assess_health_data")
+        .routeId("assess_health_data")
+        // Use Properties not Headers
+        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .routingSlip(method(SlipPostClaimRouter.class, "routePostClaim"));
   }
 
   private void configureRouteGeneratePdf() {
