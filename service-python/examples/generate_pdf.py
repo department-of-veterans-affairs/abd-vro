@@ -4,8 +4,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-EXCHANGE_NAME = "generate_pdf"
-QUEUE_NAME = "pdf_generator"
+EXCHANGE_NAME = "pdf_generator"
+QUEUE_NAME = "generate_pdf"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
                "localhost"))
@@ -13,12 +13,12 @@ channel = connection.channel()
 
 channel.queue_declare(queue=QUEUE_NAME)
 
-code = 7701
+code = "7701"
 
 payload = {
-  "claimSubmissionId": 1,
+  "claimSubmissionId": "1",
   "diagnosticCode": code,
-  "veteran_info": json.load(open("./veteran_info.json")),
+  "veteranInfo": json.load(open("./veteran_info.json")),
   "evidence": json.load(open(f"./evidence_{code}.json"))
 }
 

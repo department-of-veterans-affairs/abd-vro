@@ -1,9 +1,11 @@
 package gov.va.vro.service.provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
+import gov.va.vro.service.spi.demo.model.ClaimPayload;
 import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +38,17 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
 
-  @Deprecated // part of the demo code
-  public String generate_pdf_demo(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf_demo", resource, String.class);
+  private final ObjectMapper mapper = new ObjectMapper();
+
+  public String submitClaim(ClaimPayload claim) {
+    return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
+  }
+
+  public String generate_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  }
+
+  public String fetch_pdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
   }
 }

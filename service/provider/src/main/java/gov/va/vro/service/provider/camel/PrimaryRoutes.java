@@ -27,11 +27,13 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteFileLogger();
     configureRoutePostClaim();
     configureRouteProcessClaim();
+    configureRouteClaimSubmit(); // ToDo remove in favor of RouteProcessClaim
     configureRouteClaimProcessed();
 
+    configureRouteGeneratePdf();
+    configureRouteFetchPdf();
     // TODO: leaving them as examples, but they should be removed in a subsequent PR
     //    configureRouteHealthDataAssessor();
-    //    configureRoutePdfGenerator();
   }
 
   private void configureRouteFileLogger() {
@@ -97,26 +99,47 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
         // Subscribers of this RabbitMQ queue expect a JSON string
         // Since the RabbitMQ endpoint accepts a byte[] for the message,
-        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
+        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON
+        // string encoded
         // as a byte[]
         .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
 
-  private void configureRoutePdfGenerator() {
-    String exchangeName = "generate_pdf";
-    String queueName = "pdf_generator";
+  private void configureRouteClaimSubmit() {
+    // send JSON-string payload to RabbitMQ
+    from("direct:claim-submit")
+        .routeId("claim-submit")
+        // Use Properties not Headers
+        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
+  }
+
+  private void configureRouteGeneratePdf() {
+    String exchangeName = "pdf_generator";
+    String queueName = "generate_pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:generate_pdf_demo")
-        .routeId("generate_pdf_demo")
+    from("direct:generate_pdf")
+        .routeId("generate_pdf")
 
-        // if patientInfo is empty, load a samplePayload for it
+        // if veteranInfo is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.patientInfo} == null"))
+        .when(simple("${body.veteranInfo} == null"))
         .setBody(
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
         .end()
+        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+  }
+
+  private void configureRouteFetchPdf() {
+    String exchangeName = "pdf_generator";
+    String queueName = "fetch_pdf";
+
+    // send JSON-string payload to RabbitMQ
+    from("direct:fetch_pdf")
+        .routeId("fetch_pdf")
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }
