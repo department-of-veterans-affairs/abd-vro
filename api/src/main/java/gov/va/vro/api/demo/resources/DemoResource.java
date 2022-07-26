@@ -3,8 +3,10 @@ package gov.va.vro.api.demo.resources;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.demo.requests.AssessHealthDataRequest;
 import gov.va.vro.api.demo.requests.GeneratePdfRequest;
+import gov.va.vro.api.demo.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.demo.responses.AssessHealthDataResponse;
 import gov.va.vro.api.demo.responses.GeneratePdfResponse;
+import gov.va.vro.api.demo.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v1/demo", produces = "application/json")
-@Tag(name = "Demo API", description = "demonstrates some initial services")
+@Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementation")
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface DemoResource {
@@ -37,6 +39,22 @@ public interface DemoResource {
           @Valid
           @RequestBody
           AssessHealthDataRequest request)
+      throws RequestValidationException;
+
+  @Operation(
+      summary = "Health data assesment",
+      description = "Provides health data assesment for the claim")
+  @PostMapping("/health-data-assessment")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Timed(value = "health-data-assessment")
+  ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
+      @Parameter(
+              description = "Claim for which health data assessment requested",
+              required = true,
+              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
+          @Valid
+          @RequestBody
+          HealthDataAssessmentRequest claim)
       throws RequestValidationException;
 
   @Operation(summary = "Demo generate_pdf", description = "Submit data for pdf generation")
