@@ -67,8 +67,6 @@ def validate_request_body(request_body):
                         "type": "list",
                         "schema": {"type": "string"}
                     }
-
-
                     }
                 }
             },
