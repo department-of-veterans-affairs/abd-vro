@@ -13,7 +13,7 @@ EXCHANGE_NAME = 'health-assess-exchange'
 SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
-    "icn": "1234567890V123456",
+    "veteranIcn": "1234567890V123456",
     "vasrd": "7101",
     "observation": {
         "bp_readings": [

@@ -110,6 +110,15 @@ services:
 
   service-assess-claim-dc7101:
     image: va/abd_vro-service-assess-claim-dc7101:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+    depends_on:
+      - rabbitmq1
+    networks:
+      - internal
+      
   service-python:
     image: va/abd_vro-service-python:latest
     environment:

@@ -22,7 +22,7 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 100},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                     ]
                 }
@@ -40,7 +40,7 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                     ]
                 }
@@ -58,12 +58,12 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 100},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 200},
-                            "date": "2021-09-01"
+                            "effectiveDateTime": "2021-09-01"
                         }
                     ]
                 }
@@ -81,12 +81,12 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 200},
-                            "date": "2021-09-01"
+                            "effectiveDateTime": "2021-09-01"
                         }
                     ]
                 }
@@ -104,17 +104,17 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 101},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 200},
-                            "date": "2021-09-01"
+                            "effectiveDateTime": "2021-09-01"
                         },
                         {
                             "diastolic": {"value": 115},
                             "systolic": {"value": 200},
-                            "date": "2021-09-02"
+                            "effectiveDateTime": "2021-09-02"
                         }
                     ]
                 }
@@ -132,17 +132,17 @@ from src.lib import bp_history
                         {
                             "diastolic": {"value": 101},
                             "systolic": {"value": 180},
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                         {
                             "diastolic": {"value": 90},
                             "systolic": {"value": 200},
-                            "date": "2021-09-01"
+                            "effectiveDateTime": "2021-09-01"
                         },
                         {
                             "diastolic": {"value": 95},
                             "systolic":{"value": 200},
-                            "date": "2021-09-02"
+                            "effectiveDateTime": "2021-09-02"
                         }
                     ]
                 }

@@ -23,7 +23,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 180
                 },
-                    "date": "2021-10-10",
+                    "effectiveDateTime": "2021-10-10",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 },
@@ -40,7 +40,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 200
                 },
-                    "date": "2021-05-13",
+                    "effectiveDateTime": "2021-05-13",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 }
@@ -65,7 +65,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 180
                 },
-                    "date": "2021-10-10",
+                    "effectiveDateTime": "2021-10-10",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 },
@@ -82,7 +82,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 200
                 },
-                    "date": "2021-05-12",
+                    "effectiveDateTime": "2021-05-12",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 }
@@ -107,7 +107,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 180
                 },
-                    "date": "2021-10-10",
+                    "effectiveDateTime": "2021-10-10",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 },
@@ -124,7 +124,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 200
                 },
-                    "date": "2021-05-12",
+                    "effectiveDateTime": "2021-05-12",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 }
@@ -148,7 +148,7 @@ from src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 180
                 },
-                    "date": "2021-10-10",
+                    "effectiveDateTime": "2021-10-10",
                     "practitioner": "DR. JANE460 DOE922 MD",
                     "organization": "LYONS VA MEDICAL CENTER"
                 }
@@ -189,7 +189,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 180
                 },
-                "date": "2021-10-10"
+                "effectiveDateTime": "2021-10-10"
             },
             {
                 "diastolic": {
@@ -198,7 +198,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 210
                 },
-                "date": "2021-09-01"
+                "effectiveDateTime": "2021-09-01"
             },
             {
                 "diastolic": {
@@ -207,7 +207,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 180
                 },
-                "date": "2021-10-10"
+                "effectiveDateTime": "2021-10-10"
             },
             {
                 "diastolic": {
@@ -216,7 +216,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 200
                 },
-                "date": "2021-09-01"
+                "effectiveDateTime": "2021-09-01"
             },
             {
                 "diastolic": {
@@ -225,7 +225,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 200
                 },
-                "date": "2021-09-01"
+                "effectiveDateTime": "2021-09-01"
             },
             {
                 "diastolic": {
@@ -234,7 +234,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 180
                 },
-                "date": "2021-10-01"
+                "effectiveDateTime": "2021-10-01"
             },
             # Per the algorithm, when the total number of BP readings is 3 or greater, if there
             # are multiple values within the Predominant Percent Range of Diastolic Readings
@@ -250,7 +250,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 155
                 },
-                "date": "2021-09-05"
+                "effectiveDateTime": "2021-09-05"
             },
             {
                 "diastolic": {
@@ -259,7 +259,7 @@ def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
                 "systolic": {
                     "value": 150
                 },
-                "date": "2021-09-01"
+                "effectiveDateTime": "2021-09-01"
             },
         ],
         {
@@ -295,7 +295,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 180
                             },
-                            "date": "2021-11-01"
+                            "effectiveDateTime": "2021-11-01"
                         },
                         {
                             "diastolic": {
@@ -304,7 +304,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 200
                             },
-                            "date": "2021-09-01"
+                            "effectiveDateTime": "2021-09-01"
                         }
                 ]
             },
@@ -327,7 +327,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 180
                                 },
-                                "date": "2021-11-01"
+                                "effectiveDateTime": "2021-11-01"
                             },
                             {
                                 "diastolic": {
@@ -336,7 +336,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 200
                                 },
-                                "date": "2021-09-01"
+                                "effectiveDateTime": "2021-09-01"
                             },
                             {
                                 "diastolic": {
@@ -345,7 +345,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 210
                                 },
-                                "date": "2020-11-08"
+                                "effectiveDateTime": "2020-11-08"
                             }
                         ]
             },
@@ -370,7 +370,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 181
                                 },
-                                "date": "2021-10-09"
+                                "effectiveDateTime": "2021-10-09"
                             },
                             {
                                 "diastolic": {
@@ -379,7 +379,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 181
                                 },
-                                "date": "2021-10-10"
+                                "effectiveDateTime": "2021-10-10"
                             },
                             {
                                 "diastolic": {
@@ -388,7 +388,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 131
                                 },
-                                "date": "2021-05-13"
+                                "effectiveDateTime": "2021-05-13"
                             },
                             {
                                 "diastolic": {
@@ -397,7 +397,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 160
                                 },
-                                "date": "2021-09-13"
+                                "effectiveDateTime": "2021-09-13"
                             },
                             {
                                 "diastolic": {
@@ -406,7 +406,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 120
                                 },
-                                "date": "2021-09-13"
+                                "effectiveDateTime": "2021-09-13"
                             },
                             {
                                 "diastolic": {
@@ -415,7 +415,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 180
                                 },
-                                "date": "2021-10-13"
+                                "effectiveDateTime": "2021-10-13"
                             },
                             {
                                 "diastolic": {
@@ -424,7 +424,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 155
                                 },
-                                "date": "2021-10-14"
+                                "effectiveDateTime": "2021-10-14"
                             }
                     ]
                 },
@@ -450,7 +450,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 181
                                 },
-                                "date": "2021-10-10"
+                                "effectiveDateTime": "2021-10-10"
                             },
                             {
                                 "diastolic": {
@@ -459,7 +459,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 131
                                 },
-                                "date": "2021-05-13"
+                                "effectiveDateTime": "2021-05-13"
                             },
                             {
                                 "diastolic": {
@@ -468,7 +468,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 160
                                 },
-                                "date": "2021-09-13"
+                                "effectiveDateTime": "2021-09-13"
                             },
                             {
                                 "diastolic": {
@@ -477,7 +477,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 120
                                 },
-                                "date": "2021-09-13"
+                                "effectiveDateTime": "2021-09-13"
                             },
                             {
                                 "diastolic": {
@@ -486,7 +486,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 180
                                 },
-                                "date": "2021-10-13"
+                                "effectiveDateTime": "2021-10-13"
                             },
                             {
                                 "diastolic": {
@@ -495,7 +495,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "systolic": {
                                     "value": 155
                                 },
-                                "date": "2021-10-14"
+                                "effectiveDateTime": "2021-10-14"
                             }
                     ]
                 },
@@ -519,7 +519,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 181
                             },
-                            "date": "2021-10-10"
+                            "effectiveDateTime": "2021-10-10"
                         },
                         {
                             "diastolic": {
@@ -528,7 +528,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 131
                             },
-                            "date": "2021-05-13"
+                            "effectiveDateTime": "2021-05-13"
                         },
                         {
                             "diastolic": {
@@ -537,7 +537,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 160
                             },
-                            "date": "2021-09-13"
+                            "effectiveDateTime": "2021-09-13"
                         },
                         {
                             "diastolic": {
@@ -546,7 +546,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 120
                             },
-                            "date": "2021-09-13"
+                            "effectiveDateTime": "2021-09-13"
                         },
                         {
                             "diastolic": {
@@ -555,7 +555,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 180
                             },
-                            "date": "2021-10-13"
+                            "effectiveDateTime": "2021-10-13"
                         },
                         {
                             "diastolic": {
@@ -564,7 +564,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 155
                             },
-                            "date": "2021-10-14"
+                            "effectiveDateTime": "2021-10-14"
                         },
                         {
                             "diastolic": {
@@ -573,7 +573,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "systolic": {
                                 "value": 154
                             },
-                            "date": "2020-11-08"
+                            "effectiveDateTime": "2020-11-08"
                         }
                     ]
                 },
@@ -603,7 +603,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "unit": "mm[Hg]",
                             "value": 180
                         },
-                            "date": "2021-10-01",
+                            "effectiveDateTime": "2021-10-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -620,7 +620,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "unit": "mm[Hg]",
                             "value": 200
                         },
-                            "date": "2021-09-01",
+                            "effectiveDateTime": "2021-09-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
@@ -650,7 +650,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "unit": "mm[Hg]",
                             "value": 180
                         },
-                            "date": "2021-04-01",
+                            "effectiveDateTime": "2021-04-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         },
@@ -667,7 +667,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "unit": "mm[Hg]",
                             "value": 200
                         },
-                            "date": "2021-10-10",
+                            "effectiveDateTime": "2021-10-10",
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
@@ -697,7 +697,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "unit": "mm[Hg]",
                                 "value": 180
                             },
-                                "date": "2021-11-01",
+                                "effectiveDateTime": "2021-11-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }

@@ -49,7 +49,7 @@ from src.lib import main
                         }
                     ]
                 },
-                "medication": [{"text": "Capoten"}],
+                "medication": [{"description": "Capoten"}],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -57,7 +57,7 @@ from src.lib import main
             {
                 "body": json.dumps({
                         "evidence":{
-                            "medication": [{"text": "Capoten"}],
+                            "medication": [{"description": "Capoten"}],
                             "bp_readings":  [                      
                             {
                             "diastolic": {
@@ -366,7 +366,7 @@ from src.lib import main
                             ]
                 },
                 "date_of_claim": "2021-11-09",
-                "medication": [{"text": 11}],
+                "medication": [{"description": 11}],
                 "vasrd": "7101"
             }
             ,
@@ -418,7 +418,7 @@ from src.lib import main
                         "observation": [{
                             "bp_readings": [{"0": [{"diastolic": [{"value": ["must be of number type"]}]}]}]
                             }],
-                        "medication": [{0: [{'text': ['must be of string type']}]}],
+                        "medication": [{0: [{'description': ['must be of string type']}]}],
                     }
                 })
             }

@@ -46,15 +46,11 @@ def validate_request_body(request_body):
             "schema": {
                 "type": "dict",
                 "schema": {
-                    "authored_on": {
+                    "authoredOn": {
                         "type": "string"
                     },
                     "status": {
                         "type": "string",
-                    },
-                    "text": {
-                        "type": "string",
-                        "required": True
                     },
                     "code": {
                         "type": "string",
@@ -64,8 +60,14 @@ def validate_request_body(request_body):
                         "schema": {"type": "string"}
                     },
                     "route": {"type": "string"},
-                    "refills": {"type": "integer"},
-                    "duration": {"type": "string"}
+                    "refills": {},
+                    "duration": {"type": "string"},
+                    "description": {"type": "string"},
+                    "notes": {
+                        "type": "list",
+                        "schema": {"type": "string"}
+                    }
+
 
                     }
                 }
@@ -97,7 +99,7 @@ def validate_request_body(request_body):
                                     "unit": {"type": "string"}
                                 }
                             },
-                            "date": {"type": "string"},
+                            "effectiveDateTime": {"type": "string"},
                             "practitioner": {"type": "string"},
                             "organization" : {"type": "string"}
                         }
