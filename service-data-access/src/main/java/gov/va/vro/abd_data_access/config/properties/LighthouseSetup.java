@@ -6,14 +6,13 @@ import lombok.Setter;
 /**
  * Lighthouse FHIR API access setup data.
  *
- *  @author Warren Lin
+ * @author Warren Lin
  */
-
 @Getter
 @Setter
 public class LighthouseSetup {
-    private String clientId;
-    private String assertionurl;
-    private String tokenurl;
-    private String fhirurl;
+  private String clientId;
+  private String assertionurl;
+  private String tokenurl;
+  private String fhirurl;
 }

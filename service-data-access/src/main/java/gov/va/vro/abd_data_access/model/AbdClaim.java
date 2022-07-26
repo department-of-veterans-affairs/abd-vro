@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AbdClaim {
-    private String veteranIcn;
-    private int diagnosticCode;
-    private String claimSubmissionId;
+  private String veteranIcn;
+  private int diagnosticCode;
+  private String claimSubmissionId;
 }

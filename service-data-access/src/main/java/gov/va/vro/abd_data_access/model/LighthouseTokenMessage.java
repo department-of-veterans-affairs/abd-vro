@@ -7,16 +7,16 @@ import lombok.Setter;
 /**
  * A Lighthouse token message.
  *
- *  @author Warren Lin
+ * @author Warren Lin
  */
 @Setter
 @Getter
 @NoArgsConstructor
 public class LighthouseTokenMessage {
-    private String access_token;
-    private String token_type;
-    private String scope;
-    private int expires_in;
-    private String state;
-    private String patient;
+  private String access_token;
+  private String token_type;
+  private String scope;
+  private int expires_in;
+  private String state;
+  private String patient;
 }
