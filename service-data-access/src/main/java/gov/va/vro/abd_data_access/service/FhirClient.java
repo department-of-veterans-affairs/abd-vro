@@ -49,20 +49,20 @@ public class FhirClient {
     }
   }
 
-  private static final Map<Integer, AbdDomain[]> dpToDomains =
+  private static final Map<String, AbdDomain[]> dpToDomains =
       Map.ofEntries(
-          new AbstractMap.SimpleEntry<Integer, AbdDomain[]>(
-              0,
+          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
+              "0",
               new AbdDomain[] {
                 AbdDomain.BLOOD_PRESSURE,
                 AbdDomain.CONDITION,
                 AbdDomain.PROCEDURE,
                 AbdDomain.MEDICATION
               }),
-          new AbstractMap.SimpleEntry<Integer, AbdDomain[]>(
-              7101, new AbdDomain[] {AbdDomain.BLOOD_PRESSURE}),
-          new AbstractMap.SimpleEntry<Integer, AbdDomain[]>(
-              6602, new AbdDomain[] {AbdDomain.MEDICATION}));
+          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
+              "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE}),
+          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
+              "6602", new AbdDomain[] {AbdDomain.MEDICATION}));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(

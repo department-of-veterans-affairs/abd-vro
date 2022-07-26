@@ -15,8 +15,9 @@ public class HealthDataAssessmentResponse {
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "90653535")
   private String veteranIcn;
 
+  @NonNull
   @Schema(description = "Diagnostic code for the claim contention", example = "7101")
-  private int diagnosticCode;
+  private String diagnosticCode;
 
   @Schema(description = "Medical evidence supporting assessment")
   private AbdEvidence evidence;
@@ -24,7 +25,8 @@ public class HealthDataAssessmentResponse {
   @Schema(description = "Error message in the case of an error")
   private String errorMessage;
 
-  public HealthDataAssessmentResponse(String veteranIcn, int diagnosticCode, String errorMessage) {
+  public HealthDataAssessmentResponse(
+      String veteranIcn, String diagnosticCode, String errorMessage) {
     this.veteranIcn = veteranIcn;
     this.diagnosticCode = diagnosticCode;
     this.errorMessage = errorMessage;

@@ -19,8 +19,9 @@ public class HealthDataAssessmentRequest {
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "9000682")
   private String veteranIcn;
 
+  @NonNull
   @Schema(description = "Diagnostic code for the claim contention", example = "7101")
-  private int diagnosticCode;
+  private String diagnosticCode;
 
   private String claimSubmissionId;
 }

@@ -28,7 +28,7 @@ public class SlipClaimSubmitRouter {
       log.error("No diagnotic code in the body.");
       return null;
     }
-    int diagnosticCode = Integer.parseInt(diagnosticCodeObj.toString());
+    String diagnosticCode = diagnosticCodeObj.toString();
     String route =
         "rabbitmq:claim-submit-exchange"
             + "?queue=claim-submit"

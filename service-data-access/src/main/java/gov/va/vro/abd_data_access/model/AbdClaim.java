@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class AbdClaim {
   private String veteranIcn;
-  private int diagnosticCode;
+  private String diagnosticCode;
   private String claimSubmissionId;
 }

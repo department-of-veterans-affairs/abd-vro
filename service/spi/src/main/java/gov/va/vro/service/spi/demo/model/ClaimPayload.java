@@ -13,7 +13,7 @@ import lombok.Setter;
 public class ClaimPayload {
   @NonNull private String veteranIcn;
 
-  private int diagnosticCode;
+  @NonNull private String diagnosticCode;
 
   private String claimSubmissionId;
 }

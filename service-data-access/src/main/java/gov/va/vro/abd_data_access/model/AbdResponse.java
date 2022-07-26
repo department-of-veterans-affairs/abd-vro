@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class AbdResponse {
   private String veteranIcn;
-  private int diagnosticCode;
+  private String diagnosticCode;
   private AbdEvidence evidence;
   private String errorMessage;
 
