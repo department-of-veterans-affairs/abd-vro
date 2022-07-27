@@ -1,9 +1,9 @@
-package gov.va.vro.controller.demo.mapper;
+package gov.va.vro.controller.mapper;
 
 import gov.va.starter.example.api.responses.PagedResponse;
-import gov.va.vro.api.demo.requests.GeneratePdfRequest;
-import gov.va.vro.api.demo.responses.GeneratePdfResponse;
-import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
+import gov.va.vro.api.requests.GeneratePdfRequest;
+import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package gov.va.vro.service.spi.demo.model;
+package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

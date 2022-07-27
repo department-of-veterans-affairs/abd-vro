@@ -1,7 +1,7 @@
-package gov.va.vro.controller.demo.mapper;
+package gov.va.vro.controller.mapper;
 
-import gov.va.vro.api.demo.requests.HealthDataAssessmentRequest;
-import gov.va.vro.service.spi.demo.model.ClaimPayload;
+import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.service.spi.model.ClaimPayload;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

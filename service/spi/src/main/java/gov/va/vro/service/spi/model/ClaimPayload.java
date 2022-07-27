@@ -1,4 +1,4 @@
-package gov.va.vro.service.spi.demo.model;
+package gov.va.vro.service.spi.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

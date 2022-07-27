@@ -1,4 +1,4 @@
-package gov.va.vro.api.demo.model;
+package gov.va.vro.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
