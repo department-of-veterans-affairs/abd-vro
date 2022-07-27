@@ -1,10 +1,6 @@
-package gov.va.vro.api.demo.responses;
+package gov.va.vro.api.responses;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter

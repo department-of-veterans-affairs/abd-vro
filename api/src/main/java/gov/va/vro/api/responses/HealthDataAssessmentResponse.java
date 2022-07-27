@@ -1,6 +1,6 @@
-package gov.va.vro.api.demo.responses;
+package gov.va.vro.api.responses;
 
-import gov.va.vro.api.demo.model.AbdEvidence;
+import gov.va.vro.api.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

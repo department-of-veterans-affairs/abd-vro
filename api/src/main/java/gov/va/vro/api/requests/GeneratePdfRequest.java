@@ -1,4 +1,4 @@
-package gov.va.vro.api.demo.requests;
+package gov.va.vro.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
