@@ -85,6 +85,7 @@ include ':service:provider'
 include ':service:spi'
 include ':service-python:assess_claim_dc7101'
 include ':service-python:pdf_generator'
+include ':service-data-access'
 include ':test-data-factory'
 include 'service:db'
 

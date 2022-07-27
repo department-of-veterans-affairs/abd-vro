@@ -62,6 +62,7 @@ ext {
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:pdf_generator',
+                     ':service-data-access',
                      ':container-init',
                      ':db-init',
                      ':opa-init',

@@ -1,0 +1,177 @@
+{
+    "medications": null,
+    "conditions": null,
+    "procedures": null,
+    "bp_readings": [
+        {
+            "date": "2009-03-19",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 83.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 131.0
+            },
+            "practitioner": "DR. JANE460 DOE922 MD",
+            "organization": "LYONS VA MEDICAL CENTER"
+        },
+        {
+            "date": "2010-03-25",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 82.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 138.0
+            },
+            "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+            "organization": "NEW AMSTERDAM CBOC"
+        },
+        {
+            "date": "2011-03-31",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 71.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 101.0
+            },
+            "practitioner": "DR. JOHN248 SMITH811 MD",
+            "organization": "LYONS VA MEDICAL CENTER"
+        },
+        {
+            "date": "2012-04-05",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 71.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 130.0
+            },
+            "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+            "organization": "WASHINGTON VA MEDICAL CENTER"
+        },
+        {
+            "date": "2013-04-11",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 84.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 119.0
+            },
+            "practitioner": null,
+            "organization": "LYONS VA MEDICAL CENTER"
+        },
+        {
+            "date": "2014-04-17",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 73.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 136.0
+            },
+            "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+            "organization": "WASHINGTON VA MEDICAL CENTER"
+        },
+        {
+            "date": "2015-04-23",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 87.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 102.0
+            },
+            "practitioner": "DR. JOHN248 SMITH811 MD",
+            "organization": null
+        },
+        {
+            "date": "2016-04-28",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 74.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 119.0
+            },
+            "practitioner": "DR. JANE460 DOE922 MD",
+            "organization": "LYONS VA MEDICAL CENTER"
+        },
+        {
+            "date": "2017-05-04",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 71.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 105.0
+            },
+            "practitioner": null,
+            "organization": "WASHINGTON VA MEDICAL CENTER"
+        },
+        {
+            "date": "2018-05-10",
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 82.0
+            },
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 110.0
+            },
+            "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+            "organization": "LYONS VA MEDICAL CENTER"
+        }
+    ]
+}
