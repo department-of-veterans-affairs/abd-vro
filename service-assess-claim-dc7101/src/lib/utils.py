@@ -38,9 +38,9 @@ def validate_request_body(request_body):
                     "abatement_date": {
                         "type": "string"
                     }
-                    }
                 }
-            },
+            }
+        },
         "medication": {
             "type": "list",
             "schema": {
@@ -67,41 +67,36 @@ def validate_request_body(request_body):
                         "type": "list",
                         "schema": {"type": "string"}
                     }
-                    }
                 }
-            },
-        "observation": {
-            "type": "dict",
+            }
+        },
+        "bp_readings": {
+            "type": "list",
             "schema": {
-                "bp_readings": {
-                    "type": "list",
-                    "schema": {
+                "type": "dict",
+                "require_all": True,
+                "schema": {
+                    "diastolic": {
                         "type": "dict",
-                        "require_all": True,
                         "schema": {
-                            "diastolic": {
-                                "type": "dict",
-                                "schema": {
-                                    "value": {"type": "number"},
-                                    "code": {"type": "string"},
-                                    "display":{"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
-                            },
-                            "systolic": {
-                                "type": "dict",
-                                "schema": {
-                                    "value": {"type": "number"},
-                                    "code": {"type": "string"},
-                                    "display":{"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
-                            },
-                            "date": {"type": "string"},
-                            "practitioner": {"type": "string"},
-                            "organization" : {"type": "string"}
+                            "value": {"type": "number"},
+                            "code": {"type": "string"},
+                            "display": {"type": "string"},
+                            "unit": {"type": "string"}
                         }
-                    }
+                    },
+                    "systolic": {
+                        "type": "dict",
+                        "schema": {
+                            "value": {"type": "number"},
+                            "code": {"type": "string"},
+                            "display": {"type": "string"},
+                            "unit": {"type": "string"}
+                        }
+                    },
+                    "date": {"type": "string"},
+                    "practitioner": {"type": "string"},
+                    "organization": {"type": "string"}
                 }
             }
         },

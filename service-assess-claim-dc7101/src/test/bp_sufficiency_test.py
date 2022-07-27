@@ -286,7 +286,7 @@ def test_calculate_predominant_readings(bp_readings, result):
     [
         # Two readings. No out of range dates.
         (
-            {"observation": {
+            {
                 "bp_readings": [
                         {
                             "diastolic": {
@@ -307,7 +307,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "date": "2021-09-01"
                         }
                 ]
-            },
+            ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -318,7 +318,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         ),
         # 2 reading test case with one out of range date
         (
-            {"observation": {
+           {
                 "bp_readings": [
                             {
                                 "diastolic": {
@@ -348,7 +348,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2020-11-08"
                             }
                         ]
-            },
+            ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -361,7 +361,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # Total number of readings is odd
         (
             {
-                "observation": {
+
                     "bp_readings": [
                             {
                                 "diastolic": {
@@ -427,7 +427,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2021-10-14"
                             }
                     ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -441,7 +441,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # the algorithm chooses the higher rating for both categories
         (
             {
-                "observation": {
+
                     "bp_readings": [
                             {
                                 "diastolic": {
@@ -498,7 +498,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2021-10-14"
                             }
                     ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -510,7 +510,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # +2 reading test case with 1 out of range date (which would change the results if included)
         (
             {
-                "observation": {
+
                     "bp_readings": [
                         {
                             "diastolic": {
@@ -576,7 +576,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "date": "2020-11-08"
                         }
                     ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -588,7 +588,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no reading within 30 days
         (
             {
-                "observation": {
+
                     "bp_readings": [
                         {
                         "diastolic": {
@@ -625,7 +625,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -635,7 +635,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no second reading within 180 days
         (
             {
-                "observation": {
+
                     "bp_readings": [
                         {
                         "diastolic": {
@@ -672,7 +672,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -682,7 +682,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 1 reading
         (
             {
-                "observation": {
+
                     "bp_readings": [                      
                             {
                             "diastolic": {
@@ -702,7 +702,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
             },
             {
@@ -712,7 +712,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 0 readings
         (
             {
-                "observation": {"bp_readings": []},
+                "bp_readings": [],
                 "date_of_claim": "2021-11-09",
             },
             {

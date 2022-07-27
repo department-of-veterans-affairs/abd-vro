@@ -10,7 +10,6 @@ from src.lib import main
         # All three calculator functions return valid results readings
         (
             {
-                "observation": {
                     "bp_readings": [
                         {
                             "diastolic": {
@@ -48,7 +47,7 @@ from src.lib import main
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
-                },
+                ,
                 "medication": [{"description": "Capoten"}],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
@@ -116,7 +115,7 @@ from src.lib import main
         # sufficient_to_autopopulate to fail as well 
         (
             {
-                "observation" : {
+
                     "bp_readings": [ 
                         {
                         "diastolic": {
@@ -153,7 +152,7 @@ from src.lib import main
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
-                },
+                ,
                 "medication": [],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
@@ -216,8 +215,8 @@ from src.lib import main
         (
             
             {
-                "observation":
-                {"bp_readings": []},
+
+                "bp_readings": [],
                 "medication": [],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
@@ -239,7 +238,7 @@ from src.lib import main
         # Bad data: "diastolic" key is missing in second reading
         (
             {
-                "observation" : {
+
                     "bp_readings": [                      
                             {
                             "diastolic": {
@@ -270,7 +269,7 @@ from src.lib import main
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -317,7 +316,7 @@ from src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"observation":[{"bp_readings": [{"1": [{"systolic": ["required field"]}]}]}]}
+                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}]}
                 })
             }
         ),
@@ -327,7 +326,7 @@ from src.lib import main
         # - "veteran_is_service_connected_for_dc7101" is a string
         (
             {
-                "observation" : {
+
                     "bp_readings": [                      
                             {
                             "diastolic": {
@@ -364,7 +363,7 @@ from src.lib import main
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
-                },
+                ,
                 "date_of_claim": "2021-11-09",
                 "medication": [{"description": 11}],
                 "vasrd": "7101"
@@ -415,9 +414,9 @@ from src.lib import main
                     "medication": []
                     },
                     "errors": {
-                        "observation": [{
+                        
                             "bp_readings": [{"0": [{"diastolic": [{"value": ["must be of number type"]}]}]}]
-                            }],
+                            ,
                         "medication": [{0: [{'description': ['must be of string type']}]}],
                     }
                 })

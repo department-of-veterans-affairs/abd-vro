@@ -16,9 +16,8 @@ example_decision_data = {
     "veteranIcn": "1234567890V123456",
     "vasrd": "7101",
     "date_of_claim": "2022-7-09",
-    "observation": {
-        "bp_readings": [
-            {
+    "bp_readings": [
+        {
             "date": "2022-04-19",
             "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
             "organization": "LYONS VA MEDICAL CENTER",
@@ -34,34 +33,33 @@ example_decision_data = {
                 "unit": "mm[Hg]",
                 "value": 87.0
             }
-            }
-        ]
-    },
+        }
+    ],
     "medication": [
         {
-        "status": "active",
-        "authoredOn": "2013-04-15T01:15:52Z",
-        "description": "Hydrochlorothiazide 25 MG",
-        "notes": [
-            "Hydrochlorothiazide 25 MG"
-        ],
-        "dosageInstructions": [
-            "Once per day.",
-            "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "refills": "null",
-        "duration": ""
+            "status": "active",
+            "authoredOn": "2013-04-15T01:15:52Z",
+            "description": "Hydrochlorothiazide 25 MG",
+            "notes": [
+                "Hydrochlorothiazide 25 MG"
+            ],
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician.",
+            "refills": "null",
+            "duration": ""
         },
         {
-        "status": "active",
-        "authoredOn": "2013-04-14T06:00:00Z",
-        "description": "Hydrochlorothiazide 25 MG",
-        "notes": [],
-        "dosageInstructions": [],
-        "route": "",
-        "refills": 0,
-        "duration": "30 days"
+            "status": "active",
+            "authoredOn": "2013-04-14T06:00:00Z",
+            "description": "Hydrochlorothiazide 25 MG",
+            "notes": [],
+            "dosageInstructions": [],
+            "route": "",
+            "refills": 0,
+            "duration": "30 days"
         }
     ]
 }
@@ -72,13 +70,12 @@ class BaseClient(object):
     def __init__(self):
         credentials = pika.PlainCredentials('guest', 'guest')
         parameters = pika.ConnectionParameters(HOST,
-                                            5672,
-                                            '/',
-                                            credentials)
+                                               5672,
+                                               '/',
+                                               credentials)
         self.connection = pika.BlockingConnection(parameters)
 
         self.channel = self.connection.channel()
-        print(self.channel.channel_number)
         result = self.channel.queue_declare(queue=REPLY_QUEUE_NAME, exclusive=True)
         self.callback_queue = result.method.queue
 
@@ -113,4 +110,3 @@ rpc = BaseClient()
 print(" [x] Requesting")
 response = rpc.call(example_decision_data)
 print(" [.] Got %r" % response)
-
