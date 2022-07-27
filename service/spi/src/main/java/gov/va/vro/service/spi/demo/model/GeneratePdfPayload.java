@@ -18,16 +18,18 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class GeneratePdfPayload {
-  @NonNull private String contention;
+  @NonNull private String claimSubmissionId;
+
+  @NonNull private String diagnosticCode;
 
   // input JSON string
-  @JsonProperty("patient_info")
-  private String patientInfo;
+  @JsonProperty("veteranInfo")
+  private String veteranInfo;
 
   // input JSON string
-  @JsonProperty("assessed_data")
-  private String assessedData;
+  @JsonProperty("evidence")
+  private String evidence;
 
   // output JSON string
-  private String pdfDocumentJson;
+  public String pdfDocumentJson;
 }

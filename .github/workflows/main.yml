@@ -110,6 +110,8 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-python \
             "ghcr.io/${{ github.repository }}/abd_vro-service-python:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-service-data-access \
+            "ghcr.io/${{ github.repository }}/abd_vro-data-access:${COMMIT_SHA:0:7}"
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
           docker pull postgres:latest
           docker tag postgres:latest \

@@ -10,17 +10,24 @@ pdf_options = {
     "zoom": "1.1",
 }
 
+redis_config = {
+    "host": os.environ.get("REDIS_PLACEHOLDERS_HOST", "localhost"),
+    "port": 6379,
+    "retry_limit": 3,
+}
+
 consumer_config = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
-    "exchange": "generate_pdf",
-    "queue_name": "pdf_generator",
+    "exchange_name": "pdf_generator",
+    "generate_queue_name": "generate_pdf",
+    "fetch_queue_name": "fetch_pdf",
     "retry_limit": 3,
 }
 
 codes = {
-  6602: "asthma",
-  7701: "hypertension"
+  "6602": "asthma",
+  "7701": "hypertension"
 }
 
 s3_config = {
