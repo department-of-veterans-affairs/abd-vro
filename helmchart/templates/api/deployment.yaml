@@ -96,12 +96,12 @@ spec:
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
-        - name: {{ .Values.name }}-service-assess-claim-dc7101
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
-          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
-        - name: {{ .Values.name }}-service-python
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.servicePython.imageName }}:{{ .Values.images.servicePython.tag }}
-          imagePullPolicy: {{ .Values.images.servicePython.imagePullPolicy }}
+        - name: {{ .Values.name }}-assess_claim_dc7101
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
+        - name: {{ .Values.name }}-pdf_generator
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
+          imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbitmq
@@ -116,4 +116,4 @@ spec:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
           resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.servicePython | nindent 12 }}
+          resources: {{- toYaml .Values.resources.servicePythonPdfGenerator | nindent 12 }}

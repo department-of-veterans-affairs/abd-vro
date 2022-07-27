@@ -22,9 +22,10 @@ class PDFGenerator:
 		filled_variables["start_date"] = datetime.now() - relativedelta(years=1)
 		return filled_variables
 
-	def generate_template_file(self, template_name: str, template_variables: dict) -> str:
+	def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False) -> str:
+		loader_path = "pdf_generator.src.lib" if test_mode else "lib"
 		jinja_env = Environment(
-			loader=PackageLoader("lib"),
+			loader=PackageLoader(loader_path),
 			autoescape=select_autoescape()
 		)
 		template = jinja_env.get_template(f"{template_name}.html")
