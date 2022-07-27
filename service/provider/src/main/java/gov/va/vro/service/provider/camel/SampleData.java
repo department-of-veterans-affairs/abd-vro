@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.camel;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;

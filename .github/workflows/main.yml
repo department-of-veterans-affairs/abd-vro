@@ -65,18 +65,14 @@ jobs:
           python-version: "3.9"
           cache: "pip"
 
-      - name: "PDF Generator: PIP Install"
-        run: pip install -r service-python/src/requirements.txt
-
-      - name: "PDF Generator: Pytest"
-        run: cd service-python/src && python -m pytest
-
       - name: "DC7101: PIP Install"
-        run: pip install -r service-assess-claim-dc7101/src/requirements.txt
+        run: pip install -r service-python/assess_claim_dc7101/src/requirements.txt
 
-      - name: "PDF Generator: Pytest"
-        run: cd service-assess-claim-dc7101/src && python -m pytest
+      - name: "PDF Generator: PIP Install"
+        run: pip install -r service-python/pdf_generator/src/requirements.txt
 
+      - name: "Pytest: Code Coverage"
+        run: cd service-python && python -m pytest --cov-report term-missing --cov
 
   publish-image:
     needs: [build-and-test-java, build-and-test-python]
@@ -108,8 +104,10 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-service-python \
-            "ghcr.io/${{ github.repository }}/abd_vro-service-python:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assess_claim_dc7101 \
+            "ghcr.io/${{ github.repository }}/abd_vro-assess_claim_dc7101:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-pdf_generator \
+            "ghcr.io/${{ github.repository }}/abd_vro-pdf_generator:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-data-access \
             "ghcr.io/${{ github.repository }}/abd_vro-data-access:${COMMIT_SHA:0:7}"
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
@@ -119,8 +117,6 @@ jobs:
           docker pull rabbitmq:3
           docker tag rabbitmq:3 \
             "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
-          docker tag va/abd_vro-service-assess-claim-dc7101 \
-            "ghcr.io/${{ github.repository }}/abd_vro-service-assess-claim-7101:${COMMIT_SHA:0:7}"
 
       - name: Push images
         run: |

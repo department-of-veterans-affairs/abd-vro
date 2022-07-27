@@ -117,15 +117,15 @@ services:
       - rabbitmq1
       - redis1
       - db-init
-      - service-assess-claim-dc7101
-      - service-python
+      - assess_claim_dc7101
+      - pdf_generator
     networks:
       - internal
       - external
 
 
-  service-assess-claim-dc7101:
-    image: va/abd_vro-service-assess-claim-dc7101:latest
+  assess_claim_dc7101:
+    image: va/abd_vro-assess_claim_dc7101:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
@@ -134,9 +134,9 @@ services:
       - rabbitmq1
     networks:
       - internal
-      
-  service-python:
-    image: va/abd_vro-service-python:latest
+
+  pdf_generator:
+    image: va/abd_vro-pdf_generator:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest

@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.camel;
 import gov.va.vro.service.provider.processors.MockRemoteService;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
