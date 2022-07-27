@@ -65,11 +65,11 @@ jobs:
           python-version: "3.9"
           cache: "pip"
 
-      - name: "PDF Generator: PIP Install"
-        run: pip install -r service-python/pdf_generator/src/requirements.txt
-
       - name: "DC7101: PIP Install"
         run: pip install -r service-python/assess_claim_dc7101/src/requirements.txt
+
+      - name: "PDF Generator: PIP Install"
+        run: pip install -r service-python/pdf_generator/src/requirements.txt
 
       - name: "Pytest: Code Coverage"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
@@ -104,6 +104,8 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assess_claim_dc7101 \
+            "ghcr.io/${{ github.repository }}/abd_vro-assess_claim_dc7101:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-pdf_generator \
             "ghcr.io/${{ github.repository }}/abd_vro-pdf_generator:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-data-access \
