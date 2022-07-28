@@ -18,8 +18,17 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String API_KEY_AUTH_HEADER_NAME = "X-API-Key";
 
-    @Autowired
+
     private ApiAuthKeyManager apiAuthKeyManager;
+
+
+    public ApiAuthKeyManager getApiAuthKeyManager() {
+        return apiAuthKeyManager;
+    }
+    @Autowired
+    public void setApiAuthKeyManager(ApiAuthKeyManager apiAuthKeyManager) {
+        this.apiAuthKeyManager = apiAuthKeyManager;
+    }
 
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
