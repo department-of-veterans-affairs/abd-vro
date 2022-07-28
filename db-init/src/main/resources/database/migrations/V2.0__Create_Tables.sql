@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS veteran (
     id uuid DEFAULT uuid_generate_v4 () NOT NULL,
     icn VARCHAR NOT NULL UNIQUE,
-    participant_id VARCHAR NOT NULL,
+    participant_id VARCHAR,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
     PRIMARY KEY(id)
@@ -11,8 +11,9 @@ CREATE TABLE IF NOT EXISTS veteran (
 
 CREATE TABLE IF NOT EXISTS claim (
     id uuid DEFAULT uuid_generate_v4 () NOT NULL,
+    claim_submission_id VARCHAR NOT NULL UNIQUE,
     veteran_id uuid DEFAULT uuid_generate_v4 () NOT NULL,
-    id_type VARCHAR NOT NULL UNIQUE,
+    id_type VARCHAR NOT NULL,
     incoming_status VARCHAR,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,

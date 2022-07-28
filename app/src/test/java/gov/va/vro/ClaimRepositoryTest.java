@@ -1,18 +1,18 @@
 package gov.va.vro;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class ClaimRepositoryTest {
@@ -20,6 +20,12 @@ class ClaimRepositoryTest {
   @Autowired private ClaimRepository claimRepository;
 
   @Autowired private VeteranRepository veteranRepository;
+
+  @AfterEach
+  public void delete() {
+    claimRepository.deleteAll();
+    veteranRepository.deleteAll();
+  }
 
   @Test
   void test() {

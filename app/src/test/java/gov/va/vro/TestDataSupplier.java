@@ -14,7 +14,7 @@ public class TestDataSupplier {
 
   public static ClaimEntity createClaim(String id, String idType, VeteranEntity veteran) {
     ClaimEntity claim = new ClaimEntity();
-    claim.setClaimId(id);
+    claim.setClaimSubmissionId(id);
     claim.setIdType(idType);
     claim.setVeteran(veteran);
     return claim;

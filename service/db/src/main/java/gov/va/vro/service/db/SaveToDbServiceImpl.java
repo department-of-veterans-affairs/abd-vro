@@ -25,7 +25,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
     Optional<ClaimEntity> existingClaim =
-        claimRepository.findByClaimIdAndIdType(claim.getClaimId(), claim.getIdType());
+        claimRepository.findByClaimSubmissionIdAndIdType(
+            claim.getClaimSubmissionId(), claim.getIdType());
     if (existingClaim.isPresent()) {
       return mapper.toClaim(existingClaim.get());
     }

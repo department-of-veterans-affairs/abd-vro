@@ -11,7 +11,7 @@ import javax.validation.constraints.Min;
 @Entity
 @Getter
 @Setter
-@Table(name = "assessment_result_entity")
+@Table(name = "assessment_result")
 public class AssessmentResultEntity extends BaseEntity {
 
   @ManyToOne private ContentionEntity contention;
