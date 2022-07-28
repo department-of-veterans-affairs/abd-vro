@@ -81,7 +81,6 @@ public class VroController implements VroResource {
   public ResponseEntity<Object> fetchPdf(String claimSubmissionId)
       throws RequestValidationException {
     String response = camelEntrance.fetchPdf(claimSubmissionId);
-    log.info("RESPONSE from fetchPdf: {}", response);
     FetchPdfResponse pdfResponse = null;
     try {
       pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
@@ -103,10 +102,7 @@ public class VroController implements VroResource {
 
       return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
     } else {
-      // model.setPdfDocumentJson(response);
-      // FetchPdfResponse responseObj =
-      // fetchPdfRequestMapper.toFetchPdfResponse(model);
-      return new ResponseEntity<>("", HttpStatus.OK);
+      return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
     }
   }
 }

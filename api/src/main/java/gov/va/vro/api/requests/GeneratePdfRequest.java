@@ -1,5 +1,6 @@
 package gov.va.vro.api.requests;
 
+import gov.va.vro.api.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -18,11 +19,8 @@ public class GeneratePdfRequest {
   private String diagnosticCode;
 
   @NonNull
-  @Schema(
-      description = "JSON string providing data for pdf",
-      example =
-          "{'first': 'test','middle': 'test', 'last': 'test', 'suffix': 'test', 'birthdate': '2000-10-20")
-  private String veteranInfo;
+  @Schema(description = "Veteran data for the pdf")
+  private VeteranInfo veteranInfo;
 
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
