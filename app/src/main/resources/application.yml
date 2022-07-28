@@ -5,8 +5,8 @@ info:
 
 # API Auth
 apiauth:
-  keyhdrname: X-API-Key
-  urlcontext: /v1/demo/**
+  hdr-key-name: X-API-Key
+  url-context: /v1/demo/**
 
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything

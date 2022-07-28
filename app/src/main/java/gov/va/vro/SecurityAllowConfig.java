@@ -19,11 +19,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
 
-  @Value("${apiauth.keyhdrname}")
+  @Value("${apiauth.hdr-key-name}")
   private String API_KEY_AUTH_HEADER_NAME;
 
-  @Value("${apiauth.urlcontext}")
+  @Value("${apiauth.url-context}")
   private String URL_CONTEXT;
+
   private ApiAuthKeyManager apiAuthKeyManager;
 
   @Autowired
@@ -38,15 +39,15 @@ public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
 
     // Secure end point
     httpSecurity
-            .antMatcher(URL_CONTEXT)
-            .csrf()
-            .disable()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .addFilter(apiAuthKeyFilter)
-            .authorizeRequests()
-            .anyRequest()
-            .authenticated();
+        .antMatcher(URL_CONTEXT)
+        .csrf()
+        .disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(apiAuthKeyFilter)
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated();
   }
 }

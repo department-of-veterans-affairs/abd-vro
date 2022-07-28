@@ -24,7 +24,6 @@ import javax.validation.Valid;
 
 @RequestMapping(value = "/v1/demo", produces = "application/json")
 @Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementation")
-// @SecurityRequirement(name = "bearer-jwt")
 @SecurityRequirement(name = "X-API-Key")
 @Timed
 public interface DemoResource {
