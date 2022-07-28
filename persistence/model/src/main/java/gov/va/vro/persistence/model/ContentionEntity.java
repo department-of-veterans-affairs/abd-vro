@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "contention")
 public class ContentionEntity extends BaseEntity {
 
   @ManyToOne private ClaimEntity claim;

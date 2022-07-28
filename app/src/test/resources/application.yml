@@ -72,8 +72,8 @@ spring:
       username: skuser
       password: localT3st!
   jpa:
-    show-sql: false
-    generate-ddl: false
+    show-sql: true
+    generate-ddl: true
     hibernate:
       ddl-auto: create
       naming:
