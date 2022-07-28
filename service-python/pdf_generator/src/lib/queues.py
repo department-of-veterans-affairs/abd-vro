@@ -40,7 +40,7 @@ def on_fetch_callback(channel, method, properties, body):
 	binding_key = method.routing_key
 	message = json.loads(body)
 	logging.info(f" [x] {binding_key}: Received message: {message}")
-	claim_id = message["claimSubmissionId"]
+	claim_id = str(message)
 	if redis_client.exists(claim_id):
 		pdf = redis_client.get_data(claim_id)
 		logging.info(f"Fetched PDF")

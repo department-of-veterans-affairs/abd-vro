@@ -2,7 +2,6 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.vro.api.requests.FetchPdfRequest;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
@@ -14,7 +13,6 @@ import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.ClaimPayload;
-import gov.va.vro.service.spi.model.FetchPdfPayload;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -80,11 +78,9 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<Object> fetchPdf(FetchPdfRequest request)
+  public ResponseEntity<Object> fetchPdf(String claimSubmissionId)
       throws RequestValidationException {
-    FetchPdfPayload model = fetchPdfRequestMapper.toModel(request);
-    log.info("MODEL from fetchPdf: {}", model);
-    String response = camelEntrance.fetchPdf(model);
+    String response = camelEntrance.fetchPdf(claimSubmissionId);
     log.info("RESPONSE from fetchPdf: {}", response);
     FetchPdfResponse pdfResponse = null;
     try {
@@ -107,9 +103,10 @@ public class VroController implements VroResource {
 
       return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
     } else {
-      model.setPdfDocumentJson(response);
-      FetchPdfResponse responseObj = fetchPdfRequestMapper.toFetchPdfResponse(model);
-      return new ResponseEntity<>(responseObj, HttpStatus.OK);
+      // model.setPdfDocumentJson(response);
+      // FetchPdfResponse responseObj =
+      // fetchPdfRequestMapper.toFetchPdfResponse(model);
+      return new ResponseEntity<>("", HttpStatus.OK);
     }
   }
 }
