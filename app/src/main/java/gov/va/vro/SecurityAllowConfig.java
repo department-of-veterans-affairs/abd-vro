@@ -1,24 +1,52 @@
-package gov.va.starter.example;
+package gov.va.vro;
 
+import gov.va.vro.security.ApiAuthKeyFilter;
+import gov.va.vro.security.ApiAuthKeyManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@Import(SecurityProblemSupport.class)
 public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable();
+  @Value("${apiauth.keyhdrname}")
+  private String API_KEY_AUTH_HEADER_NAME;
 
-    http.authorizeRequests().antMatchers("/").permitAll();
+  @Value("${apiauth.urlcontext}")
+  private String URL_CONTEXT;
+  private ApiAuthKeyManager apiAuthKeyManager;
+
+  @Autowired
+  public void setApiAuthKeyManager(ApiAuthKeyManager apiAuthKeyManager) {
+    this.apiAuthKeyManager = apiAuthKeyManager;
+  }
+
+  protected void configure(HttpSecurity httpSecurity) throws Exception {
+
+    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(API_KEY_AUTH_HEADER_NAME);
+    apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
+
+    // disable CSRF
+    httpSecurity
+            .antMatcher(URL_CONTEXT)
+            .csrf()
+            .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilter(apiAuthKeyFilter)
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated();
   }
 }

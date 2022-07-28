@@ -3,6 +3,11 @@ info:
     name: abd_vro
     description: Virtual Regional Office API
 
+# API Auth Keys
+apiauth:
+  keyhdrname: X-API-Key
+  urlcontext: /v1/demo/**
+
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
   endpoints.web:
@@ -176,5 +181,6 @@ starter:
 
 spring.config.import: >
   conf-camel.yml,
-  conf-camel-rabbitmq.yml,
+  conf-camel-rabbitmq.yml
+#  conf-apiauthkeys.yml
 #  conf-postgres.yml
