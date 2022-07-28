@@ -16,26 +16,27 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ApiAuthKeyManager implements AuthenticationManager {
 
-    private ApiAuthKeys apiAuthKeys;
+  private ApiAuthKeys apiAuthKeys;
 
-    public ApiAuthKeys getApiAuthKeys() {
-        return apiAuthKeys;
+  public ApiAuthKeys getApiAuthKeys() {
+    return apiAuthKeys;
+  }
+
+  @Autowired
+  public void setApiAuthKeys(ApiAuthKeys apiAuthKeys) {
+    this.apiAuthKeys = apiAuthKeys;
+  }
+
+  @Override
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+    String principal = (String) authentication.getPrincipal();
+
+    if (!apiAuthKeys.getKeys().contains(principal)) {
+      throw new BadCredentialsException("Invalid API Key.");
+    } else {
+      authentication.setAuthenticated(true);
+      return authentication;
     }
-    @Autowired
-    public void setApiAuthKeys(ApiAuthKeys apiAuthKeys) {
-        this.apiAuthKeys = apiAuthKeys;
-    }
-
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
-        String principal = (String) authentication.getPrincipal();
-
-        if (!apiAuthKeys.getKeys().contains(principal)) {
-            throw new BadCredentialsException("Invalid API Key.");
-        } else {
-            authentication.setAuthenticated(true);
-            return authentication;
-        }
-    }
+  }
 }

@@ -14,6 +14,5 @@ import java.util.List;
 @Validated
 @Data
 public class ApiAuthKeys {
-    private List<String> keys;
-
+  private List<String> keys;
 }
