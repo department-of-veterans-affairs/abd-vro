@@ -276,38 +276,10 @@ from assess_claim_dc7101.src.lib import main
             ,
             {
                 "body": json.dumps({
-                    "evidence":{'medication': [],
-                    
-                    "bp_readings": [                      
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 115
-                            },
-                            "systolic": {                
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180
-                            },
-                                "date": "2021-11-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            },
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 110
-                            },
-                                "date": "2021-09-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            }
-                            ]},
+                    "evidence":{
+                        'medication': [],
+                        "bp_readings": []
+                    },
                     "calculated":{
                     "predominance_calculation": {
                         "success": False,
@@ -316,7 +288,7 @@ from assess_claim_dc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}]}
+                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}], "medication": ["required field"]}
                 })
             }
         ),
@@ -375,42 +347,7 @@ from assess_claim_dc7101.src.lib import main
                         "diastolic_history_calculation": {"success": False},
                         "predominance_calculation": {'success': False}},
                     "evidence": {
-                        "bp_readings": [                      
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": "115"
-                            },
-                            "systolic": {                
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180
-                            },
-                                "date": "2021-11-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            },
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 110
-                            },
-                            "systolic": {                
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 200
-                            },
-                                "date": "2021-09-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            }
-                            ],
+                        "bp_readings": [],
                     "medication": []
                     },
                     "errors": {
