@@ -26,8 +26,7 @@ Response objects will resemble the following:
 {"evidence": {
     "medication": {
         "description": "Benazepril",
-        "code": "4492",
-        "authored_on": "2022-04-01",
+        "authoredOn": "2022-04-01",
         "status": "active"},
     "bp_readings": [
         {

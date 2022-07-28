@@ -53,9 +53,6 @@ def validate_request_body(request_body):
                     "status": {
                         "type": "string",
                     },
-                    "code": {
-                        "type": "string",
-                    },
                     "dosageInstructions": {
                         "type": "list",
                         "schema": {"type": "string"}

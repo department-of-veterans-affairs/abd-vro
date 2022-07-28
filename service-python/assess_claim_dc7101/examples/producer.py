@@ -16,25 +16,25 @@ example_decision_data = {
     "veteranIcn": "1234567890V123456",
     "vasrd": "7101",
     "date_of_claim": "2022-7-09",
-    # "bp_readings": [
-    #     {
-    #         "date": "2022-04-19",
-    #         "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
-    #         "organization": "LYONS VA MEDICAL CENTER",
-    #         "systolic": {
-    #             "code": "8480-6",
-    #             "display": "Systolic blood pressure",
-    #             "unit": "mm[Hg]",
-    #             "value": 115.0
-    #         },
-    #         "diastolic": {
-    #             "code": "8462-4",
-    #             "display": "Diastolic blood pressure",
-    #             "unit": "mm[Hg]",
-    #             "value": 87.0
-    #         }
-    #     }
-    # ],
+    "bp_readings": [
+        {
+            "date": "2022-04-19",
+            "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+            "organization": "LYONS VA MEDICAL CENTER",
+            "systolic": {
+                "code": "8480-6",
+                "display": "Systolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 115.0
+            },
+            "diastolic": {
+                "code": "8462-4",
+                "display": "Diastolic blood pressure",
+                "unit": "mm[Hg]",
+                "value": 87.0
+            }
+        }
+    ],
     "medication": [
         {
             "status": "active",
