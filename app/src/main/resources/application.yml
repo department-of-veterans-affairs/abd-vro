@@ -3,7 +3,7 @@ info:
     name: abd_vro
     description: Virtual Regional Office API
 
-# API Auth Keys
+# API Auth
 apiauth:
   keyhdrname: X-API-Key
   urlcontext: /v1/demo/**

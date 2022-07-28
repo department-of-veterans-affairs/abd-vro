@@ -38,5 +38,6 @@ public class ApiAuthKeyManager implements AuthenticationManager {
       authentication.setAuthenticated(true);
       return authentication;
     }
+
   }
 }

@@ -36,7 +36,7 @@ public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(API_KEY_AUTH_HEADER_NAME);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    // disable CSRF
+    // Secure end point
     httpSecurity
             .antMatcher(URL_CONTEXT)
             .csrf()
