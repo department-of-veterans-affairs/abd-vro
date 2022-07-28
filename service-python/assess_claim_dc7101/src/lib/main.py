@@ -33,9 +33,10 @@ def assess_hypertension(event: Dict):
         response_body["errors"] = validation_results["errors"]
 
     response_body.update(
-        {"evidence": {"medication": relevant_medication,
-        "bp_readings": event["bp_readings"]}
-        ,
+        {"evidence": {
+            "medication": relevant_medication,
+            "bp_readings": event["bp_readings"]
+            },
         "calculated": {
             "predominance_calculation": predominance_calculation,
             "diastolic_history_calculation": diastolic_history_calculation,
