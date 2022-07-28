@@ -2,16 +2,19 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.requests.FetchPdfRequest;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
-import gov.va.vro.controller.mapper.GenerateDataRequestMapper;
+import gov.va.vro.controller.mapper.FetchPdfRequestMapper;
+import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.ClaimPayload;
+import gov.va.vro.service.spi.model.FetchPdfPayload;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -28,15 +31,18 @@ public class VroController implements VroResource {
 
   // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
-  private final GenerateDataRequestMapper generate_pdf_mapper;
+  private final GeneratePdfRequestMapper generatePdfRequestMapper;
+  private final FetchPdfRequestMapper fetchPdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   public VroController(
       CamelEntrance camelEntrance,
-      GenerateDataRequestMapper generate_pdf_mapper,
+      GeneratePdfRequestMapper generatePdfRequestMapper,
+      FetchPdfRequestMapper fetchPdfRequestMapper,
       PostClaimRequestMapper postClaimRequestMapper) {
     this.camelEntrance = camelEntrance;
-    this.generate_pdf_mapper = generate_pdf_mapper;
+    this.generatePdfRequestMapper = generatePdfRequestMapper;
+    this.fetchPdfRequestMapper = fetchPdfRequestMapper;
     this.postClaimRequestMapper = postClaimRequestMapper;
   }
 
@@ -62,28 +68,31 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<GeneratePdfResponse> generate_pdf(GeneratePdfRequest request)
+  public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
       throws RequestValidationException {
-    GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
-    String response = camelEntrance.generate_pdf(model);
-    log.info("RESPONSE from generate_pdf: {}", response);
+    GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
+    log.info("MODEL from generatePdf: {}", model);
+    String response = camelEntrance.generatePdf(model);
+    log.info("RESPONSE from generatePdf: {}", response);
     model.setPdfDocumentJson(response);
-    GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
+    GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
     return new ResponseEntity<>(responseObj, HttpStatus.OK);
   }
 
   @Override
-  public ResponseEntity<Object> fetch_pdf(GeneratePdfRequest request)
+  public ResponseEntity<Object> fetchPdf(FetchPdfRequest request)
       throws RequestValidationException {
-    GeneratePdfPayload model = generate_pdf_mapper.toModel(request);
-    String response = camelEntrance.fetch_pdf(model);
+    FetchPdfPayload model = fetchPdfRequestMapper.toModel(request);
+    log.info("MODEL from fetchPdf: {}", model);
+    String response = camelEntrance.fetchPdf(model);
+    log.info("RESPONSE from fetchPdf: {}", response);
     FetchPdfResponse pdfResponse = null;
     try {
       pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
     } catch (Exception e) {
       log.info(e.getMessage());
     }
-    log.info("RESPONSE from fetch_pdf: {}", pdfResponse.toString());
+    log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
     if (pdfResponse.pdfData.length() > 0) {
       byte[] decoder = Base64.getDecoder().decode(pdfResponse.pdfData);
       InputStream is = new ByteArrayInputStream(decoder);
@@ -99,7 +108,7 @@ public class VroController implements VroResource {
       return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
     } else {
       model.setPdfDocumentJson(response);
-      GeneratePdfResponse responseObj = generate_pdf_mapper.toGeneratePdfResponse(model);
+      FetchPdfResponse responseObj = fetchPdfRequestMapper.toFetchPdfResponse(model);
       return new ResponseEntity<>(responseObj, HttpStatus.OK);
     }
   }

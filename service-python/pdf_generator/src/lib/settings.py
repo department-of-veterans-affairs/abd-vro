@@ -17,9 +17,9 @@ redis_config = {
 }
 
 queue_config = {
-    "exchange_name": "pdf_generator",
-    "generate_queue_name": "generate_pdf",
-    "fetch_queue_name": "fetch_pdf",
+    "exchange_name": "pdf-generator",
+    "generate_queue_name": "generate-pdf",
+    "fetch_queue_name": "fetch-pdf",
 }
 
 codes = {
