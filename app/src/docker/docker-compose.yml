@@ -26,6 +26,11 @@ services:
 
   rabbitmq1:
     image: rabbitmq:3-management
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 3s
+      retries: 30
     hostname: rabbitmq1
     expose:
       - "5672"
@@ -37,6 +42,16 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  redis1:
+    image: redis
+    hostname: redis1
+    expose:
+      - "6379"
+    networks:
+      - internal
+    ports:
+      - "6379:6379"
 
   postgres1:
     image: postgres
@@ -100,18 +115,17 @@ services:
     depends_on:
       - postgres1
       - rabbitmq1
+      - redis1
       - db-init
-      - service-assess-claim-dc7101
-      - service-python
+      - assess_claim_dc7101
+      - pdf_generator
     networks:
       - internal
       - external
 
 
-  service-assess-claim-dc7101:
-    image: va/abd_vro-service-assess-claim-dc7101:latest
-  service-python:
-    image: va/abd_vro-service-python:latest
+  assess_claim_dc7101:
+    image: va/abd_vro-assess_claim_dc7101:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
@@ -121,6 +135,34 @@ services:
     networks:
       - internal
 
+  pdf_generator:
+    image: va/abd_vro-pdf_generator:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      REDIS_PLACEHOLDERS_HOST: redis1
+    depends_on:
+      - rabbitmq1
+      - redis1
+    networks:
+      - internal
+
+  service-data-access:
+    image: va/abd_vro-service-data-access:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      LH_CLIENT_ID: 0oah28rb5jLj4NeSN2p7
+      LH_ASSERTION_URL: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
+      LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
+      LH_FHIR_URL: https://sandbox-api.va.gov/services/fhir/v0/r4
+    depends_on:
+      rabbitmq1:
+        condition: service_healthy
+    networks:
+      - internal
 
 #   jaeger:
 #     image: jaegertracing/all-in-one:1.20

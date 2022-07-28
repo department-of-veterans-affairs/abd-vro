@@ -1,0 +1,167 @@
+---
+swagger: "3.0"
+info:
+  description: API for DC7101 logical processing
+  version: 1.0.2
+  title: DCC7101 algorithms
+basePath: /dc7101
+schemes:
+- https
+paths:
+  /calculate:
+    post:
+      summary: processes patient data
+      description: Determines if patient has active is being treated with medicines for hypertension
+      operationId: DC7101
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: medical_data_fhir
+        description: Processed FHIR data
+        required: false
+        schema:
+          $ref: '#/definitions/MedicalData'
+      responses:
+        "200":
+          description: processing successful
+        "209":
+          description: VASRD diagnostic code not implemented
+        "400":
+          description: processing failed
+definitions:
+  MedicalData:
+    type: object
+    required:
+    - condition
+    - date_of_claim
+    - icn
+    - medication
+    - procedure
+    - vasrd
+    properties:
+      icn:
+        type: integer
+        example: 25
+      date_of_claim:
+        type: string
+        format: date-time
+        example: 2016-10-29T09:12:33.001Z
+      vasrd:
+        type: string
+        example: "7343"
+      condition:
+        $ref: '#/definitions/condition'
+      observation:
+        $ref: '#/definitions/observation'
+      medication:
+        $ref: '#/definitions/medication'
+      procedure:
+        $ref: '#/definitions/procedure'
+  condition:
+    required:
+    - code
+    - onset_date
+    - status
+    properties:
+      code:
+        type: string
+        example: "363419009"
+      status:
+        type: string
+        example: active
+      text:
+        type: string
+        example: Malignant tumor of head of pancreas (disorder)
+      onset_date:
+        format: date-time
+        example: 2016-08-29T09:12:33.001Z
+      abatement_date:
+        format: date-time
+        example: 2016-09-29T09:12:33.001Z
+  observation:
+    properties:
+      bp:
+        $ref: '#/definitions/observation_bp'
+      common_obj:
+        $ref: '#/definitions/observation_bp'
+  medication:
+    required:
+    - code
+    - status
+    - text
+    properties:
+      text:
+        type: string
+        example: 5-fluorouracil
+      status:
+        type: string
+        example: active
+      code:
+        type: string
+        example: "4492"
+      authored_on:
+        format: date-time
+        example: 2013-05-21T23:19:33Z
+  procedure:
+    required:
+    - code
+    - performed_date
+    - status
+    properties:
+      code:
+        type: string
+        example: "174710004"
+      text:
+        type: string
+        example: (Surgery - distal subtotal pancreatectomy)
+      performed_date:
+        format: date-time
+        example: 2013-08-17T23:19:33Z
+      status:
+        type: string
+        example: completed
+  response:
+    properties:
+      rrd_eligible:
+        type: boolean
+        example: true
+      evidence:
+        $ref: '#/definitions/response_evidence'
+  observation_bp:
+    type: object
+    properties:
+      type: {}
+      properties: {}
+  response_evidence_active_cancer_result:
+    type: object
+    properties:
+      active_cancer_present:
+        type: boolean
+      success:
+        type: boolean
+  response_evidence_medication_match_result:
+    type: object
+    properties:
+      continuous_medication_required:
+        type: boolean
+      success:
+        type: boolean
+  response_evidence_procedures_in_last_six_months:
+    type: object
+    properties:
+      procedure_within_six_months:
+        type: boolean
+      success:
+        type: boolean
+  response_evidence:
+    type: object
+    properties:
+      active_cancer_result:
+        $ref: '#/definitions/response_evidence_active_cancer_result'
+      medication_match_result:
+        $ref: '#/definitions/response_evidence_medication_match_result'
+      procedures_in_last_six_months:
+        $ref: '#/definitions/response_evidence_procedures_in_last_six_months'

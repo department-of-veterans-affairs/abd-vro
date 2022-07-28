@@ -83,9 +83,10 @@ include ':scripts'
 include ':service:activator'
 include ':service:provider'
 include ':service:spi'
-include ':service-assess-claim-dc7101'
-include ':service-python'
+include ':service-python:assess_claim_dc7101'
+include ':service-python:pdf_generator'
+include ':service-data-access'
 include ':test-data-factory'
-include 'service:save-to-db'
+include 'service:db'
 
 

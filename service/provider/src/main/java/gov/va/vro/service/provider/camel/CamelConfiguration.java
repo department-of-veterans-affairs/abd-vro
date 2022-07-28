@@ -6,7 +6,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.ClaimPayload;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
@@ -61,6 +62,7 @@ public class CamelConfiguration {
           ClaimSubmission.class,
           PayloadEntity.class,
           AssessHealthData.class,
+          ClaimPayload.class,
           GeneratePdfPayload.class);
   private final ObjectMapper mapper;
 

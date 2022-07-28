@@ -1,7 +1,9 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.processors.MockRemoteService;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.demo.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
@@ -12,21 +14,47 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
+
+  public static final String ENDPOINT_PROCESS_CLAIM = "direct:processClaim";
+  public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
+  public static final String ENDPOINT_ASSESS_CLAIM = "direct:assess";
+
   private final CamelUtils camelUtils;
+  private final SaveToDbService saveToDbService;
 
   @Override
   public void configure() {
     configureRouteFileLogger();
     configureRoutePostClaim();
+    configureRouteProcessClaim();
+    configureRouteClaimSubmit(); // ToDo remove in favor of RouteProcessClaim
     configureRouteClaimProcessed();
 
-    configureRouteHealthDataAssessor();
-    configureRoutePdfGenerator();
+    configureRouteGeneratePdf();
+    configureRouteFetchPdf();
+    // TODO: leaving them as examples, but they should be removed in a subsequent PR
+    //    configureRouteHealthDataAssessor();
   }
 
   private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint("seda:logToFile");
-    from("seda:logToFile").marshal().json().log(">>2> ${body.getClass()}").to("file://target/post");
+    camelUtils.asyncSedaEndpoint(ENDPOINT_LOG_TO_FILE);
+    from(ENDPOINT_LOG_TO_FILE)
+        .marshal()
+        .json()
+        .log(">>2> ${body.getClass()}")
+        .to("file://target/post");
+  }
+
+  private void configureRouteProcessClaim() {
+    from(ENDPOINT_PROCESS_CLAIM)
+        .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
+        .to(ENDPOINT_LOG_TO_FILE)
+        .to(ENDPOINT_ASSESS_CLAIM)
+        .log(">>5> ${body.toString()}");
+    // TODO: insert a post processing step here to update the DB with results from services
+
+    // Rabbit calls to processing services go here
+    from(ENDPOINT_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
   }
 
   private void configureRoutePostClaim() {
@@ -71,26 +99,47 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://camel.apache.org/components/3.11.x/rabbitmq-component.html
         // Subscribers of this RabbitMQ queue expect a JSON string
         // Since the RabbitMQ endpoint accepts a byte[] for the message,
-        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON string encoded
+        // CamelDtoConverter will automatically marshal AssessHealthData into a JSON
+        // string encoded
         // as a byte[]
         .to("rabbitmq:assess_health_data?routingKey=" + queueName);
   }
 
-  private void configureRoutePdfGenerator() {
-    String exchangeName = "generate_pdf";
-    String queueName = "pdf_generator";
+  private void configureRouteClaimSubmit() {
+    // send JSON-string payload to RabbitMQ
+    from("direct:claim-submit")
+        .routeId("claim-submit")
+        // Use Properties not Headers
+        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
+  }
+
+  private void configureRouteGeneratePdf() {
+    String exchangeName = "pdf_generator";
+    String queueName = "generate_pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:generate_pdf_demo")
-        .routeId("generate_pdf_demo")
+    from("direct:generate_pdf")
+        .routeId("generate_pdf")
 
-        // if patientInfo is empty, load a samplePayload for it
+        // if veteranInfo is empty, load a samplePayload for it
         .choice()
-        .when(simple("${body.patientInfo} == null"))
+        .when(simple("${body.veteranInfo} == null"))
         .setBody(
             exchange ->
                 sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
         .end()
+        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+  }
+
+  private void configureRouteFetchPdf() {
+    String exchangeName = "pdf_generator";
+    String queueName = "fetch_pdf";
+
+    // send JSON-string payload to RabbitMQ
+    from("direct:fetch_pdf")
+        .routeId("fetch_pdf")
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }
