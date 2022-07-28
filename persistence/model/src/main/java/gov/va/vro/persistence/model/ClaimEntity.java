@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
+@Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
   // claim identifier used by client

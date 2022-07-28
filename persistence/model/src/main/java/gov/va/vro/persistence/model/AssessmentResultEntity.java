@@ -5,11 +5,13 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "assessment_result_entity")
 public class AssessmentResultEntity extends BaseEntity {
 
   @ManyToOne private ContentionEntity contention;
