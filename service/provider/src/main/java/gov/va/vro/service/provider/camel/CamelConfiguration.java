@@ -3,10 +3,9 @@ package gov.va.vro.service.provider.camel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
-import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.persistence.model.PayloadEntity;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.model.ClaimPayload;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,11 +58,7 @@ public class CamelConfiguration {
 
   private static final Set<Class> dtoClasses =
       Sets.newHashSet(
-          ClaimSubmission.class,
-          PayloadEntity.class,
-          AssessHealthData.class,
-          ClaimPayload.class,
-          GeneratePdfPayload.class);
+          PayloadEntity.class, AssessHealthData.class, Claim.class, GeneratePdfPayload.class);
   private final ObjectMapper mapper;
 
   // TODO: replace with Auto-configured TypeConverter
@@ -130,7 +125,7 @@ public class CamelConfiguration {
     ServletRegistrationBean servlet =
         new ServletRegistrationBean(new CamelHttpTransportServlet(), contextPath + "/*");
     servlet.setName(servletName);
-    log.info("Camel REST servlet: {}", servlet.toString());
+    log.info("Camel REST servlet: {}", servlet);
     return servlet;
   }
 }

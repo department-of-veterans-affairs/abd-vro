@@ -7,7 +7,7 @@ import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.db.model.Claim;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
