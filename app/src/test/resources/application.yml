@@ -72,8 +72,8 @@ spring:
       username: skuser
       password: localT3st!
   jpa:
-    show-sql: false
-    generate-ddl: false
+    show-sql: true
+    generate-ddl: true
     hibernate:
       ddl-auto: create
       naming:
@@ -136,8 +136,12 @@ opentracing:
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
+  packages-to-exclude: gov.va.starter
+
   swagger-ui:
     operations-sorter: method
+    tagsSorter: alpha
+    path: swagger
 
 starter:
   openapi:
@@ -145,13 +149,12 @@ starter:
     default-oauth-security-scheme: true
     default-jwt-bearer-security-scheme: true
     license: MIT License
-    title: Example service
-    description: Example service providing ClaimSubmission info
+    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD)
+    description: Provides services to improve benefit delivery services
     version: v1
     licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
-    contactEmail: starter-java@example.com
-    contactUrl: https://example.va.gov/
-    contactName: Example
+    contactEmail: dung.lam1@va.gov
+    contactName: D (Yoom) Lam
     serverUrl: http://localhost:8080
   boot:
     kafka-lifecycle-notifier:

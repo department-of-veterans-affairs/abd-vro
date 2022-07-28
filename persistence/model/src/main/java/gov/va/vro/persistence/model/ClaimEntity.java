@@ -11,10 +11,11 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
+@Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
   // claim identifier used by client
-  @NotNull private String claimId;
+  @NotNull private String claimSubmissionId;
 
   // domain of the id, e.g. "va.gov-Form526Submission"
   @NotNull private String idType;
