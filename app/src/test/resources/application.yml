@@ -64,31 +64,30 @@ spring:
     name: "starter-api"
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/example
-    username: example_flyway
-    password: not-the-password
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+    username: skuser
+    password: localT3st!
     hikari:
-      jdbc-url: jdbc:postgresql://localhost:5432/example
-      username: example_flyway
-      password: not-the-password
-      schema: example
+      jdbc-url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+      username: skuser
+      password: localT3st!
   jpa:
     show-sql: true
-    generate-ddl: false
-#    hibernate:
-#      ddl-auto: create
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
-#    properties:
-#      org.hibernate.envers.audit_table_suffix: _audit
-#      org.hibernate.envers.revision_field_name: revision_id
-#      org.hibernate.envers.revision_type_field_name: type
-#      org.hibernate.envers.global_with_modified_flag: true
-#      org.hibernate.envers.store_data_at_delete: true
-#      hibernate:
-#        generate_statistics: false
-#        jdbc.lob.non_contextual_creation: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    properties:
+      org.hibernate.envers.audit_table_suffix: _audit
+      org.hibernate.envers.revision_field_name: revision_id
+      org.hibernate.envers.revision_type_field_name: type
+      org.hibernate.envers.global_with_modified_flag: true
+      org.hibernate.envers.store_data_at_delete: true
+      hibernate:
+        generate_statistics: false
+        jdbc.lob.non_contextual_creation: true
   resources:
     add-mappings: false
   mvc:
