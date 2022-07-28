@@ -14,13 +14,6 @@ import java.util.List;
 @Validated
 @Data
 public class ApiAuthKeys {
-  private List<String> keys;
-//
-//  public void setKeys(List<String> keys) {
-//    this.keys = keys;
-//  }
-//
-//  public List<String> getKeys() {
-//    return keys;
-//  }
+    private List<String> keys;
+
 }

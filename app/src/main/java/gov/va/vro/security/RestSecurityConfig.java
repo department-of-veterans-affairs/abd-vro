@@ -10,33 +10,33 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@Slf4j
 public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String API_KEY_AUTH_HEADER_NAME = "X-API-Key";
+    private static final String API_KEY_AUTH_HEADER_NAME = "X-API-Key";
 
-  @Autowired
-  private ApiAuthKeyManager apiAuthKeyManager;
+    @Autowired
+    private ApiAuthKeyManager apiAuthKeyManager;
 
-  protected void configure(HttpSecurity httpSecurity) throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(API_KEY_AUTH_HEADER_NAME);
-    apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
+        ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(API_KEY_AUTH_HEADER_NAME);
+        apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    // disable CSRF
-    httpSecurity
-        .antMatcher("/v1/demo/**")
-        .csrf()
-        .disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
-  }
+        // disable CSRF
+        httpSecurity
+                .antMatcher("/v1/demo/**")
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(apiAuthKeyFilter)
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
+    }
 }
