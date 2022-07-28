@@ -24,7 +24,7 @@ public class GeneratePdfPayload {
   private VeteranInfo veteranInfo;
 
   @JsonProperty("evidence")
-  private String evidence;
+  private AbdEvidence evidence;
 
   // output JSON string
   public String pdfDocumentJson;

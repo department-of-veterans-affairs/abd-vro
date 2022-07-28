@@ -1,5 +1,6 @@
 package gov.va.vro.api.requests;
 
+import gov.va.vro.api.model.AbdEvidence;
 import gov.va.vro.api.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -24,5 +25,5 @@ public class GeneratePdfRequest {
 
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
-  private String evidence;
+  private AbdEvidence evidence;
 }
