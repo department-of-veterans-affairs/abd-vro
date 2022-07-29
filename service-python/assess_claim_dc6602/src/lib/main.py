@@ -2,8 +2,7 @@ import json
 from typing import Dict
 
 from . import medication
-from . import utils
-
+import validator
 
 def assess_asthma(event: Dict):
     """
@@ -14,7 +13,7 @@ def assess_asthma(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = utils.validate_request_body(event)
+    validation_results = validator.validate_request_body(event)
     response_body = {}
 
     if validation_results["is_valid"]:
