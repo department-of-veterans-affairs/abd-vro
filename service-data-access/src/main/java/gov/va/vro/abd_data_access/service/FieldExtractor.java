@@ -93,86 +93,40 @@ public class FieldExtractor {
   public static AbdMedication extractMedication(MedicationRequest medication) {
     AbdMedication result = new AbdMedication();
 
-    if (medication.hasMedicationCodeableConcept()) {
-      CodeableConcept code = medication.getMedicationCodeableConcept();
-      if (code.hasCoding()) {
-        Coding coding = code.getCodingFirstRep();
-
-//        if (coding.hasCode()) {
-//          result.setCode(coding.getCode());
-//        }
-//
-//        if (coding.hasDisplay()) {
-//          result.setText(coding.getDisplay());
-//        }
-      }
-//
-//      String textFound = result.getText();
-//
-//      if ((textFound == null || textFound.isEmpty()) && code.hasText()) {
-//        result.setText(code.getText());
-//      }
-
-      if (medication.hasAuthoredOn()) {
-        result.setAuthoredOn(FieldExtractor.toDate(medication.getAuthoredOnElement()));
-      }
-
-      if (medication.hasStatus()) {
-        result.setStatus(medication.getStatus().getDisplay());
-      }
-
-      if (medication.hasDispenseRequest()) {
-        MedicationRequestDispenseRequestComponent dr = medication.getDispenseRequest();
-        if (dr.hasNumberOfRepeatsAllowed()) {
-          result.setRefills(dr.getNumberOfRepeatsAllowed());
-        }
-        if (dr.hasExpectedSupplyDuration()) {
-          Duration duration = dr.getExpectedSupplyDuration();
-          String d = duration.getValue().toString() + " " + duration.getUnit();
-          result.setDuration(d);
-        }
-      }
-
-      if (medication.hasNote()) {
-        List<String> notes =
-            medication.getNote().stream().map(annotation -> annotation.getText()).toList();
-        result.setNotes(notes);
-      }
-    } else {
-      if (medication.hasMedicationReference()) {
-        result.setDescription(medication.getMedicationReference().getDisplay());
-      }
-      if (medication.hasAuthoredOn()) {
-        result.setAuthoredOn(formatDate(medication.getAuthoredOn()));
-      }
-      if (medication.hasStatus()) {
-        result.setStatus(medication.getStatus().getDisplay());
-      }
-      if (medication.hasNote()) {
-        result.setNotes(medication.getNote().stream()
-                .map(n -> n.getText()).collect(Collectors.toList()));
-      }
-      if (medication.hasDosageInstruction()) {
-        List<String> dosages = medication.getDosageInstruction()
-                .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
-        List<String> codeText = medication.getDosageInstruction()
-                .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
-                .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
-                .collect(Collectors.toList());
-        dosages.addAll(codeText);
-        result.setDosageInstruction(dosages);
-        String routes = medication.getDosageInstruction()
-                .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
-                .map(d -> d.getRoute().getText()).collect(Collectors.joining(" "));
-        result.setRoute(routes);
-      }
-      if (medication.hasDispenseRequest()) {
-        result.setDuration(medication.getDispenseRequest()
-                .getExpectedSupplyDuration().getDisplay());
-        result.setRefills(medication.getDispenseRequest()
-                .getNumberOfRepeatsAllowed());
-      }
+    if (medication.hasMedicationReference()) {
+      result.setDescription(medication.getMedicationReference().getDisplay());
     }
+    if (medication.hasAuthoredOn()) {
+      result.setAuthoredOn(formatDate(medication.getAuthoredOn()));
+    }
+    if (medication.hasStatus()) {
+      result.setStatus(medication.getStatus().getDisplay());
+    }
+    if (medication.hasNote()) {
+      result.setNotes(medication.getNote().stream()
+              .map(n -> n.getText()).collect(Collectors.toList()));
+    }
+    if (medication.hasDosageInstruction()) {
+      List<String> dosages = medication.getDosageInstruction()
+              .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
+      List<String> codeText = medication.getDosageInstruction()
+              .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
+              .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
+              .collect(Collectors.toList());
+      dosages.addAll(codeText);
+      result.setDosageInstruction(dosages);
+      String routes = medication.getDosageInstruction()
+              .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
+              .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
+      result.setRoute(routes);
+    }
+    if (medication.hasDispenseRequest()) {
+      result.setDuration(medication.getDispenseRequest()
+              .getExpectedSupplyDuration().getDisplay());
+      result.setRefills(medication.getDispenseRequest()
+              .getNumberOfRepeatsAllowed());
+    }
+
     return result;
   }
 
