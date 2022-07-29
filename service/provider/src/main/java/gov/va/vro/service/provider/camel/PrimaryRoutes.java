@@ -27,6 +27,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
+
   }
 
   private void configureRouteFileLogger() {
@@ -62,9 +63,10 @@ public class PrimaryRoutes extends RouteBuilder {
     String exchangeName = "pdf_generator";
     String queueName = "generate_pdf";
 
+
     // send JSON-string payload to RabbitMQ
-    from("direct:generate_pdf")
-        .routeId("generate_pdf")
+    from("direct:generate-pdf")
+        .routeId("generate-pdf")
 
         // if veteranInfo is empty, load a samplePayload for it
         .choice()
@@ -77,12 +79,12 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteFetchPdf() {
-    String exchangeName = "pdf_generator";
-    String queueName = "fetch_pdf";
+    String exchangeName = "pdf-generator";
+    String queueName = "fetch-pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:fetch_pdf")
-        .routeId("fetch_pdf")
+    from("direct:fetch-pdf")
+        .routeId("fetch-pdf")
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }

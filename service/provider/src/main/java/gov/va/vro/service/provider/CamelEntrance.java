@@ -38,11 +38,11 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
   }
 
-  public String generate_pdf(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  public String generatePdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate-pdf", resource, String.class);
   }
 
-  public String fetch_pdf(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
+  public String fetchPdf(String claimSubmissionId) {
+    return producerTemplate.requestBody("direct:fetch-pdf", claimSubmissionId, String.class);
   }
 }

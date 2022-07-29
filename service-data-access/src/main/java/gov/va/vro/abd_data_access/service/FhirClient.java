@@ -7,9 +7,12 @@ import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.function.Function;
 
+@Slf4j
 public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
 
@@ -94,6 +97,7 @@ public class FhirClient {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
     String url = searchSpec.getUrl();
     String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
+    log.info("Get FHIR data from {}", url);
     return client
         .search()
         .byUrl(url)
@@ -114,6 +118,7 @@ public class FhirClient {
   }
 
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
+    log.info("Extract patient medication entries. number of entries: {}", entries.size());
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
@@ -171,6 +176,7 @@ public class FhirClient {
   }
 
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
+    log.info("Get medical evidence for claim: {}, {}, {}", claim.getVeteranIcn(), claim.getDiagnosticCode(), claim.getClaimSubmissionId());
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
     if (components == null) {
       return null;
