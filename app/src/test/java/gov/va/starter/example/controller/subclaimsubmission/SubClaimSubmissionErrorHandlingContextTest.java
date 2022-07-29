@@ -11,7 +11,6 @@ import gov.va.starter.boot.errorhandling.config.ErrorHandlerConfig;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.starter.boot.exception.ResourceNotFoundException;
 import gov.va.starter.boot.openapi.config.OpenApiConfiguration;
-import gov.va.starter.example.SecurityAllowConfig;
 import gov.va.starter.example.api.subclaimsubmission.requests.SubClaimSubmissionRequest;
 import gov.va.starter.example.api.subclaimsubmission.resources.SubClaimSubmissionResource;
 import gov.va.starter.example.controller.subclaimsubmission.mapper.SubClaimSubmissionRequestMapper;
@@ -19,6 +18,7 @@ import gov.va.starter.example.service.spi.subclaimsubmission.SubClaimSubmissionS
 import gov.va.starter.example.service.spi.subclaimsubmission.model.SubClaimSubmission;
 import gov.va.starter.example.subclaimsubmission.factory.SubClaimSubmissionFactory;
 import gov.va.starter.example.subclaimsubmission.model.SubClaimSubmissionData;
+import gov.va.vro.SecurityAllowConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
