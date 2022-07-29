@@ -72,8 +72,8 @@ spring:
       username: skuser
       password: localT3st!
   jpa:
-    show-sql: false
-    generate-ddl: false
+    show-sql: true
+    generate-ddl: true
     hibernate:
       ddl-auto: create
       naming:
@@ -136,8 +136,12 @@ opentracing:
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
+  packages-to-exclude: gov.va.starter
+
   swagger-ui:
     operations-sorter: method
+    tagsSorter: alpha
+    path: swagger
 
 starter:
   openapi:
