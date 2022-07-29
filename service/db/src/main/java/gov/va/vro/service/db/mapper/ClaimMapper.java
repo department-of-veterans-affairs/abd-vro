@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ClaimMapper {
 
-  ClaimEntity toClaimEntity(Claim request);
+  ClaimEntity toClaimEntity(Claim claim);
 
   @Mapping(target = "recordId", source = "id")
   Claim toClaim(ClaimEntity claimEntity);

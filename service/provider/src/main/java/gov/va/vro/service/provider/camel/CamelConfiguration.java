@@ -125,7 +125,7 @@ public class CamelConfiguration {
     ServletRegistrationBean servlet =
         new ServletRegistrationBean(new CamelHttpTransportServlet(), contextPath + "/*");
     servlet.setName(servletName);
-    log.info("Camel REST servlet: {}", servlet);
+    log.info("Camel REST servlet: {}", servlet.toString());
     return servlet;
   }
 }

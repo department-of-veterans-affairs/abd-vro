@@ -49,12 +49,11 @@ public class PrimaryRoutes extends RouteBuilder {
     from(ENDPOINT_SUBMIT_CLAIM)
         .routeId("claim-submit")
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
-        .to(ENDPOINT_LOG_TO_FILE)
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-        .log(">>5> ${body.toString()}");
+        .log(">>5> ${body}");
   }
 
   private void configureRouteGeneratePdf() {
