@@ -161,9 +161,9 @@ public class FieldExtractor {
                 .collect(Collectors.toList());
         dosages.addAll(codeText);
         result.setDosageInstruction(dosages);
-        List<String> routes = medication.getDosageInstruction()
-                .stream().map(d -> Optional.ofNullable(d.getRoute().getText()).orElse(""))
-                .collect(Collectors.toList());
+        String routes = medication.getDosageInstruction()
+                .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
+                .map(d -> d.getRoute().getText()).collect(Collectors.joining(" "));
         result.setRoute(routes);
       }
       if (medication.hasDispenseRequest()) {
