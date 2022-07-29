@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from src.lib import main
+from assess_claim_dc6602.src.lib import main
 
 
 @pytest.mark.parametrize(
