@@ -24,6 +24,12 @@ tasks/config.temp.dev
 opa/ingress/test.rego
 helmchart/opa-policies/ingress/test.rego
 
+api/bin/*
+app/bin/*
+controller/bin/*
+service/provider/bin/*
+service/spi/bin/*
+
 local.properties
 
 HELP.md

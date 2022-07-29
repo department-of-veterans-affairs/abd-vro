@@ -33,7 +33,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     // TODO: leaving them as examples, but they should be removed in a subsequent PR
-    //    configureRouteHealthDataAssessor();
+    // configureRouteHealthDataAssessor();
   }
 
   private void configureRouteFileLogger() {
@@ -51,7 +51,8 @@ public class PrimaryRoutes extends RouteBuilder {
         .to(ENDPOINT_LOG_TO_FILE)
         .to(ENDPOINT_ASSESS_CLAIM)
         .log(">>5> ${body.toString()}");
-    // TODO: insert a post processing step here to update the DB with results from services
+    // TODO: insert a post processing step here to update the DB with results from
+    // services
 
     // Rabbit calls to processing services go here
     from(ENDPOINT_ASSESS_CLAIM).bean(new MockRemoteService("Assess claim"), "processClaim");
@@ -116,12 +117,12 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteGeneratePdf() {
-    String exchangeName = "pdf_generator";
-    String queueName = "generate_pdf";
+    String exchangeName = "pdf-generator";
+    String queueName = "generate-pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:generate_pdf")
-        .routeId("generate_pdf")
+    from("direct:generate-pdf")
+        .routeId("generate-pdf")
 
         // if veteranInfo is empty, load a samplePayload for it
         .choice()
@@ -134,12 +135,12 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteFetchPdf() {
-    String exchangeName = "pdf_generator";
-    String queueName = "fetch_pdf";
+    String exchangeName = "pdf-generator";
+    String queueName = "fetch-pdf";
 
     // send JSON-string payload to RabbitMQ
-    from("direct:fetch_pdf")
-        .routeId("fetch_pdf")
+    from("direct:fetch-pdf")
+        .routeId("fetch-pdf")
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 }
