@@ -42,7 +42,7 @@ def on_fetch_callback(channel, method, properties, body):
 				redis_client = RedisClient(redis_config)
 
 				binding_key = method.routing_key
-				claim_id = str(body)
+				claim_id = str(body, 'UTF-8')
 				logging.info(f" [x] {binding_key}: Received Claim Submission ID: {claim_id}")
 				if redis_client.exists(claim_id):
 						pdf = redis_client.get_data(claim_id)
