@@ -27,7 +27,6 @@ public class PrimaryRoutes extends RouteBuilder {
 
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
-
   }
 
   private void configureRouteFileLogger() {
@@ -62,7 +61,6 @@ public class PrimaryRoutes extends RouteBuilder {
 
     String exchangeName = "pdf_generator";
     String queueName = "generate_pdf";
-
 
     // send JSON-string payload to RabbitMQ
     from("direct:generate-pdf")
