@@ -8,27 +8,19 @@
 
 ## Endpoints and Request Data
 
-- [Request PDF Generation](http://localhost:8080/v1/demo/generate_pdf)
-- [Fetch Generated PDF](http://localhost:8080/v1/demo/fetch_pdf)
+- [Request PDF Generation - POST http://localhost:8080/v1/evidence-pdf](http://localhost:8080/v1/evidence-pdf)
+- [Fetch Generated PDF - GET http://localhost:8080/v1/evidence-pdf/{claimSubmissionID}](http://localhost:8080/v1/evidence-pdf)
 
-Currently, the same request data is passed for both endpoints. Will update in future PR to only require the `claimSubmissionId` for the `Fetch Generated PDF` endpoint.
-```
-  {
-    "claimSubmissionId": "1",
-    "diagnosticCode": "7701",
-    "veteranInfo": "{\"first\": \"test\",\"middle\": \"test\", \"last\": \"test\", \"suffix\": \"test\", \"birthdate\": \"2000-10-20\"}",
-    "evidence": "{\"bp_readings\":[], \"medications\":[]}"
-  }
-```
+Both functions work off the same endpoint. The main difference being that the `POST` has a JSON request body while the `GET` uses the URL(`claimSubmissionID`) to find the corresponding PDF.
 
 ## How it works
 
 ### Queues
 
-On `service-python` startup, the consumer will attempt to create a `generate_pdf` and `fetch_pdf` queue on a `pdf_generator` exchange.
+On `service-python` startup, the consumer will attempt to create a `generate-pdf` and `fetch-pdf` queue on a `pdf-generator` exchange.
 
 ### Generate PDF Process
-Any messages passed to the `generate_pdf` queue will use the `diagnosticCode` provided to translate this into a human readable diagnostic type based on the mapping in `config/settings.py` in the `codes` variable.
+Any messages passed to the `generate-pdf` queue will use the `diagnosticCode` provided to translate this into a human readable diagnostic type based on the mapping in `config/settings.py` in the `codes` variable.
 
 It will use this diagnostic type like `hypertension` for example to pull up the appropriate template and template variables in the `templates` and `template_variables` folder respectively. For example, `diagostic_type="hypertension"` will fetch `templates/hypertension.html` and `template_variables/hypertension.json`.
 
@@ -51,7 +43,7 @@ The consumer will return a response similar to:
 
 ### Fetch PDF Process
 
-When the consumer recieves a message in the `fetch_pdf` queue, it will use the provided `claimSubmissionId` to look it up on Redis.
+When the consumer recieves a message in the `fetch-pdf` queue, it will use the provided `claimSubmissionId` to look it up on Redis.
 
 If the PDF still hasn't been generated, you will recieve a response similar to:
 ```
