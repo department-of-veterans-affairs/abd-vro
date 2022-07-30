@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v1", produces = "application/json")
-@Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementations")
+// @Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementations")
 @SecurityRequirement(name = "bearer-jwt")
 @Timed
 public interface VroResource {
@@ -33,6 +33,7 @@ public interface VroResource {
   @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "health-data-assessment")
+  @Tag(name = "Health Assessment")
   ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
       @Parameter(
               description = "Claim for which health data assessment requested",
@@ -50,6 +51,7 @@ public interface VroResource {
   @PostMapping("/evidence-pdf")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "evidence-pdf")
+  @Tag(name = "Pdf Generation")
   ResponseEntity<GeneratePdfResponse> generatePdf(
       @Parameter(
               description = "metadata for generatePdf",
@@ -67,6 +69,7 @@ public interface VroResource {
   @GetMapping("/evidence-pdf/{claimSubmissionId}")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "evidence-pdf")
+  @Tag(name = "Pdf Generation")
   ResponseEntity<Object> fetchPdf(@PathVariable String claimSubmissionId)
       throws RequestValidationException;
 }
