@@ -38,7 +38,7 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:postgresql://example_flyway:not-the-password@localhost:5432/example'
+    url = 'jdbc:postgresql://example:not-the-password@localhost:5432/example'
     user = 'example_flyway'
     password = 'not-the-password'
     locations = ["filesystem:${project.buildDir}/docker/database/migrations"]
