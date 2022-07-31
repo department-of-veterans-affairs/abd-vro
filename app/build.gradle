@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // implementation 'com.bisnode.opa:opa-filter-spring-boot-starter'
 
-    implementation 'com.h2database:h2'
+    testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'

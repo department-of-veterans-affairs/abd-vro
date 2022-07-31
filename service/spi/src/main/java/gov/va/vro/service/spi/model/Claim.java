@@ -1,4 +1,4 @@
-package gov.va.vro.service.spi.db.model;
+package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
