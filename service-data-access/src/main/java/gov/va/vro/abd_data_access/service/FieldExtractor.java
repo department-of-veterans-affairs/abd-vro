@@ -19,6 +19,12 @@ import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -31,6 +37,11 @@ public class FieldExtractor {
       return value.substring(0, index);
     }
     return value;
+  }
+
+  private static String formatDate(Date date) {
+    DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    return fmt.format(date);
   }
 
   public static AbdCondition extractCondition(Condition condition) {
@@ -82,51 +93,38 @@ public class FieldExtractor {
   public static AbdMedication extractMedication(MedicationRequest medication) {
     AbdMedication result = new AbdMedication();
 
-    if (medication.hasMedicationCodeableConcept()) {
-      CodeableConcept code = medication.getMedicationCodeableConcept();
-      if (code.hasCoding()) {
-        Coding coding = code.getCodingFirstRep();
-
-        if (coding.hasCode()) {
-          result.setCode(coding.getCode());
-        }
-
-        if (coding.hasDisplay()) {
-          result.setText(coding.getDisplay());
-        }
-      }
-
-      String textFound = result.getText();
-
-      if ((textFound == null || textFound.isEmpty()) && code.hasText()) {
-        result.setText(code.getText());
-      }
-
-      if (medication.hasAuthoredOn()) {
-        result.setDate(FieldExtractor.toDate(medication.getAuthoredOnElement()));
-      }
-
-      if (medication.hasStatus()) {
-        result.setStatus(medication.getStatus().getDisplay());
-      }
-
-      if (medication.hasDispenseRequest()) {
-        MedicationRequestDispenseRequestComponent dr = medication.getDispenseRequest();
-        if (dr.hasNumberOfRepeatsAllowed()) {
-          result.setRefills(dr.getNumberOfRepeatsAllowed());
-        }
-        if (dr.hasExpectedSupplyDuration()) {
-          Duration duration = dr.getExpectedSupplyDuration();
-          String d = duration.getValue().toString() + " " + duration.getUnit();
-          result.setDuration(d);
-        }
-      }
-
-      if (medication.hasNote()) {
-        List<String> notes =
-            medication.getNote().stream().map(annotation -> annotation.getText()).toList();
-        result.setNotes(notes);
-      }
+    if (medication.hasMedicationReference()) {
+      result.setDescription(medication.getMedicationReference().getDisplay());
+    }
+    if (medication.hasAuthoredOn()) {
+      result.setAuthoredOn(formatDate(medication.getAuthoredOn()));
+    }
+    if (medication.hasStatus()) {
+      result.setStatus(medication.getStatus().getDisplay());
+    }
+    if (medication.hasNote()) {
+      result.setNotes(medication.getNote().stream()
+              .map(n -> n.getText()).collect(Collectors.toList()));
+    }
+    if (medication.hasDosageInstruction()) {
+      List<String> dosages = medication.getDosageInstruction()
+              .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
+      List<String> codeText = medication.getDosageInstruction()
+              .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
+              .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
+              .collect(Collectors.toList());
+      dosages.addAll(codeText);
+      result.setDosageInstruction(dosages);
+      String routes = medication.getDosageInstruction()
+              .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
+              .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
+      result.setRoute(routes);
+    }
+    if (medication.hasDispenseRequest()) {
+      result.setDuration(medication.getDispenseRequest()
+              .getExpectedSupplyDuration().getDisplay());
+      result.setRefills(medication.getDispenseRequest()
+              .getNumberOfRepeatsAllowed());
     }
 
     return result;

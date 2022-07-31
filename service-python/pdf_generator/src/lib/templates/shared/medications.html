@@ -27,7 +27,10 @@
       {% else %}
         <b>{{medicine.description}}</b>
       {% endif %}
-      {% for dosage in medicine.dosageInstructions %}
+      {% for note in medicine.notes %}
+        {{note}}
+      {% endfor %}<br />
+      {% for dosage in medicine.dosageInstruction %}
         {{dosage}}
       {% endfor %}<br />
 

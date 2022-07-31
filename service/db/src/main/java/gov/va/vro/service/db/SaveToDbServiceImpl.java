@@ -7,7 +7,7 @@ import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.db.model.Claim;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
     Optional<ClaimEntity> existingClaim =
-        claimRepository.findByClaimIdAndIdType(claim.getClaimId(), claim.getIdType());
+        claimRepository.findByClaimSubmissionIdAndIdType(
+            claim.getClaimSubmissionId(), claim.getIdType());
     if (existingClaim.isPresent()) {
       return mapper.toClaim(existingClaim.get());
     }

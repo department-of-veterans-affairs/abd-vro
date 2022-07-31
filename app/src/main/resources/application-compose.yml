@@ -3,12 +3,13 @@
 spring:
   datasource:
     url: jdbc:postgresql://postgres1:5432/example
-    username: example_service
-    password: also-not-the-service-password
+    username: example_flyway
+    password: not-the-password
     hikari:
       jdbc-url: jdbc:postgresql://postgres1:5432/example
-      username: example_service
-      password: also-not-the-service-password
+      username: example_flyway
+      password: not-the-password
+      schema: example
   jpa:
     # Prefer to create table in as a flyway migration
     generate-ddl: false

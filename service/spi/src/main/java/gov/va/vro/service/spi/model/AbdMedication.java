@@ -1,10 +1,9 @@
-package gov.va.vro.abd_data_access.model;
+package gov.va.vro.service.spi.model;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter

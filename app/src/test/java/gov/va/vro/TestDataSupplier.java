@@ -1,4 +1,4 @@
-package gov.va.vro.persistence.repository;
+package gov.va.vro;
 
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.VeteranEntity;

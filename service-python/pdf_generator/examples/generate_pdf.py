@@ -13,7 +13,7 @@ channel = connection.channel()
 
 channel.queue_declare(queue=QUEUE_NAME)
 
-code = "7701"
+code = "7101"
 
 payload = {
   "claimSubmissionId": "1",

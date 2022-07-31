@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalog-entries
+  description: Collection of catalog entries for Virtual Regional Office
+  links:
+    - url: https://github.com/department-of-veterans-affairs/abd-vro/tree/develop/catalog
+      title: Virtual Regional Office 
+      icon: web
+    - url: https://lighthouseva.slack.com/archives/C020ZR4UL8H
+      title: lighthouse-bandicoot slack
+      icon: slack
+  annotations:
+    github.com/project-slug: department-of-veterans-affairs/abd-vro
+spec:
+  type: repository
+  lifecycle: experimental
+  owner: amida
