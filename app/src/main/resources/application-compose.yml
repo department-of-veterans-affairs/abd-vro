@@ -9,7 +9,7 @@ spring:
       jdbc-url: jdbc:postgresql://postgres1:5432/example
       username: example_flyway
       password: not-the-password
-      schema: example
+      schema: claims
   jpa:
     # Prefer to create table in as a flyway migration
     generate-ddl: false

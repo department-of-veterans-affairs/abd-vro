@@ -151,5 +151,4 @@ starter:
 
 spring.config.import: >
   conf-camel.yml,
-  conf-camel-rabbitmq.yml,
-#  conf-postgres.yml
+  conf-camel-rabbitmq.yml

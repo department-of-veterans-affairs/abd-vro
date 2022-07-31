@@ -21,7 +21,7 @@ dockerRun {
             'FLYWAY_PLACEHOLDERS_SERVICENAME': getEnvOrDefault('DB_SERVICE', 'example_service'),
             'FLYWAY_PLACEHOLDERS_ADMINNAME': getEnvOrDefault('DB_ADMIN', 'example_admin'),
             'FLYWAY_PLACEHOLDERS_DBNAME': getEnvOrDefault('DB_NAME', 'example'),
-            'FLYWAY_PLACEHOLDERS_SCHEMANAME': getEnvOrDefault('DB_SCHEMA', 'example'),
+            'FLYWAY_PLACEHOLDERS_SCHEMANAME': getEnvOrDefault('DB_SCHEMA', 'claims'),
             'FLYWAY_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password'),
             'FLYWAY_PLACEHOLDERS_SERVICEPASSWORD': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
             'FLYWAY_PLACEHOLDERS_ADMINPASSWORD': getEnvOrDefault('DB_ADMIN_PASSWORD', 'also-not-the-admin-password')
@@ -47,7 +47,7 @@ flyway {
             'servicename': 'example_service',
             'adminname': 'example_admin',
             'dbname': 'example',
-            'schemaname': 'example',
+            'schemaname': 'claims',
             'userpassword': 'also-not-the-user-password',
             'servicepassword': 'also-not-the-service-password',
             'adminpassword': 'also-not-the-admin-password'

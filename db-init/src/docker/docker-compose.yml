@@ -27,17 +27,6 @@ services:
 
   db-init:
     image: va/lighthouse-di-starterkit-java-db-init:latest
-# NOTE: These are the defaults from the flyway.conf   uncomment to override, esp for <secret-service-name> passwords
-#    environment:
-#      FLYWAY_URL: jdbc:postgresql://postgres1:5432/example?user=example_flyway&password=not-the-password
-#      FLYWAY_PLACEHOLDERS_USERNAME: example_user
-#      FLYWAY_PLACEHOLDERS_SERVICENAME: example_service
-#      FLYWAY_PLACEHOLDERS_ADMINNAME: example_admin
-#      FLYWAY_PLACEHOLDERS_DBNAME: example
-#      FLYWAY_PLACEHOLDERS_SCHEMANAME: example
-#      FLYWAY_PLACEHOLDERS_USERPASSWORD: also-not-the-user-password
-#      FLYWAY_PLACEHOLDERS_SERVICEPASSWORD: also-not-the-service-password
-#      FLYWAY_PLACEHOLDERS_ADMINPASSWORD: also-not-the-admin-password
     depends_on:
       - postgres1
     networks:
