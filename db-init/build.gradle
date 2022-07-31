@@ -15,8 +15,8 @@ docker {
 dockerRun {
     image "${dockerRegistry}/${rootProject.name}-db-init"
     env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'vro'),
-            'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'vro')}?user=${getEnvOrDefault('DB_ROOT_USER', 'example_flyway')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
-            'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'example_flyway'),
+            'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'vro')}?user=${getEnvOrDefault('DB_ROOT_USER', 'vro_user')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
+            'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'vro_user'),
             'FLYWAY_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_USER', 'example_user'),
             'FLYWAY_PLACEHOLDERS_SERVICENAME': getEnvOrDefault('DB_SERVICE', 'example_service'),
             'FLYWAY_PLACEHOLDERS_ADMINNAME': getEnvOrDefault('DB_ADMIN', 'example_admin'),
@@ -38,12 +38,12 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:postgresql://vro:not-the-password@localhost:5432/example'
-    user = 'example_flyway'
+    url = 'jdbc:postgresql://vro:not-the-password@localhost:5432/claims'
+    user = 'vro_user'
     password = 'not-the-password'
     locations = ["filesystem:${project.buildDir}/docker/database/migrations"]
     placeholders = [
-            'username': 'example_user',
+            'username': 'vro_user',
             'servicename': 'example_service',
             'adminname': 'example_admin',
             'dbname': 'vro',

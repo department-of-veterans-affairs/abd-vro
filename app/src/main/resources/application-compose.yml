@@ -3,11 +3,11 @@
 spring:
   datasource:
     url: jdbc:postgresql://postgres1:5432/vro
-    username: example_flyway
+    username: vro_user
     password: not-the-password
     hikari:
       jdbc-url: jdbc:postgresql://postgres1:5432/vro
-      username: example_flyway
+      username: vro_user
       password: not-the-password
       schema: claims
   jpa:

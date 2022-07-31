@@ -57,7 +57,7 @@ services:
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: example_flyway
+      POSTGRES_USER: vro_user
       POSTGRES_PASSWORD: not-the-password
       POSTGRES_DB: vro
     volumes:
