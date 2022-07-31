@@ -14,13 +14,13 @@ docker {
 
 dockerRun {
     image "${dockerRegistry}/${rootProject.name}-db-init"
-    env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'example'),
-            'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'example')}?user=${getEnvOrDefault('DB_ROOT_USER', 'example_flyway')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
+    env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'vro'),
+            'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'vro')}?user=${getEnvOrDefault('DB_ROOT_USER', 'example_flyway')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
             'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'example_flyway'),
             'FLYWAY_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_USER', 'example_user'),
             'FLYWAY_PLACEHOLDERS_SERVICENAME': getEnvOrDefault('DB_SERVICE', 'example_service'),
             'FLYWAY_PLACEHOLDERS_ADMINNAME': getEnvOrDefault('DB_ADMIN', 'example_admin'),
-            'FLYWAY_PLACEHOLDERS_DBNAME': getEnvOrDefault('DB_NAME', 'example'),
+            'FLYWAY_PLACEHOLDERS_DBNAME': getEnvOrDefault('DB_NAME', 'vro'),
             'FLYWAY_PLACEHOLDERS_SCHEMANAME': getEnvOrDefault('DB_SCHEMA', 'claims'),
             'FLYWAY_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password'),
             'FLYWAY_PLACEHOLDERS_SERVICEPASSWORD': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
@@ -38,7 +38,7 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:postgresql://example:not-the-password@localhost:5432/example'
+    url = 'jdbc:postgresql://vro:not-the-password@localhost:5432/example'
     user = 'example_flyway'
     password = 'not-the-password'
     locations = ["filesystem:${project.buildDir}/docker/database/migrations"]
@@ -46,7 +46,7 @@ flyway {
             'username': 'example_user',
             'servicename': 'example_service',
             'adminname': 'example_admin',
-            'dbname': 'example',
+            'dbname': 'vro',
             'schemaname': 'claims',
             'userpassword': 'also-not-the-user-password',
             'servicepassword': 'also-not-the-service-password',

@@ -18,7 +18,7 @@ services:
     environment:
       POSTGRES_USER: example_flyway
       POSTGRES_PASSWORD: not-the-password
-      POSTGRES_DB: example
+      POSTGRES_DB: vro
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
