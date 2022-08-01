@@ -139,7 +139,6 @@ starter:
     version: v1
     licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
     contactEmail: starter-java@example.com
-    contactUrl: https://example.va.gov/
     contactName: Example
     serverUrl: http://localhost:8080
   boot:

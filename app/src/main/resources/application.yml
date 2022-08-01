@@ -111,7 +111,7 @@ opentracing:
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
-  packages-to-exclude: gov.va.starter
+  packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
 
   swagger-ui:
     operations-sorter: method
@@ -123,9 +123,9 @@ starter:
     authUrl: https://iam.va.gov/whoami
     default-oauth-security-scheme: true
     default-jwt-bearer-security-scheme: true
-    license: MIT License
-    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD)
-    description: Provides services to improve benefit delivery services
+    license: CCO 1.0
+    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
+    description: APIs to improve benefit delivery services
     version: v1
     licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
     contactEmail: dung.lam1@va.gov

@@ -19,5 +19,6 @@ public class HealthDataAssessmentRequest {
   @Schema(description = "Diagnostic code for the claim contention", example = "7101")
   private String diagnosticCode;
 
+  @Schema(description = "Claim number", example = "1234")
   private String claimSubmissionId;
 }
