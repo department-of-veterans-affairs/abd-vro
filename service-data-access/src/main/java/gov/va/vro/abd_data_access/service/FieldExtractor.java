@@ -104,27 +104,27 @@ public class FieldExtractor {
     }
     if (medication.hasNote()) {
       result.setNotes(medication.getNote().stream()
-              .map(n -> n.getText()).collect(Collectors.toList()));
+          .map(n -> n.getText()).collect(Collectors.toList()));
     }
-    if (medication.hasDosageInstruction()) {
-      List<String> dosages = medication.getDosageInstruction()
-              .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
-      List<String> codeText = medication.getDosageInstruction()
-              .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
-              .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
-              .collect(Collectors.toList());
+    if (medication.hasDosageInstructions()) {
+      List<String> dosages = medication.getDosageInstructions()
+          .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
+      List<String> codeText = medication.getDosageInstructions()
+          .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
+          .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
+          .collect(Collectors.toList());
       dosages.addAll(codeText);
-      result.setDosageInstruction(dosages);
-      String routes = medication.getDosageInstruction()
-              .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
-              .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
+      result.setDosageInstructions(dosages);
+      String routes = medication.getDosageInstructions()
+          .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
+          .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
       result.setRoute(routes);
     }
     if (medication.hasDispenseRequest()) {
       result.setDuration(medication.getDispenseRequest()
-              .getExpectedSupplyDuration().getDisplay());
+          .getExpectedSupplyDuration().getDisplay());
       result.setRefills(medication.getDispenseRequest()
-              .getNumberOfRepeatsAllowed());
+          .getNumberOfRepeatsAllowed());
     }
 
     return result;
