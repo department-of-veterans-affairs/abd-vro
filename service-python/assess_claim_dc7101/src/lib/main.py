@@ -33,7 +33,9 @@ def assess_hypertension(event: Dict):
         response_body["errors"] = validation_results["errors"]
 
     response_body.update(
-        {"evidence": {
+        {
+            "status": "COMPLETE",
+            "evidence": {
             "medications": relevant_medication,
             "bp_readings": event["bp_readings"]
             },
