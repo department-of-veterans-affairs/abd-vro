@@ -10,8 +10,11 @@ import gov.va.vro.api.demo.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/v1/demo", produces = "application/json")
 @Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementation")
 @SecurityRequirement(name = "X-API-Key")
+@SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface DemoResource {
   @Operation(summary = "Demo assess_health_data", description = "Submit health data for assessment")
