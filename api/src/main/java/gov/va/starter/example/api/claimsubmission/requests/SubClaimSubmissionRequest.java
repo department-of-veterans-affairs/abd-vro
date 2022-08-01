@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+@Deprecated
 @Builder
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
