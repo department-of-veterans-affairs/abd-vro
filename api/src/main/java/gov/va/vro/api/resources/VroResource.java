@@ -33,7 +33,7 @@ public interface VroResource {
   @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "health-data-assessment")
-  @Tag(name = "Health Assessment")
+  @Tag(name = VroConstant.HEALTH_DATA_ASSESSMENT)
   ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
       @Parameter(
               description = "Claim for which health data assessment requested",
@@ -51,7 +51,7 @@ public interface VroResource {
   @PostMapping("/evidence-pdf")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "evidence-pdf")
-  @Tag(name = "Pdf Generation")
+  @Tag(name = VroConstant.EVIDENCE_PDF_GENERATION)
   ResponseEntity<GeneratePdfResponse> generatePdf(
       @Parameter(
               description = "metadata for generatePdf",
@@ -69,7 +69,24 @@ public interface VroResource {
   @GetMapping("/evidence-pdf/{claimSubmissionId}")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "evidence-pdf")
-  @Tag(name = "Pdf Generation")
+  @Tag(name = VroConstant.EVIDENCE_PDF_GENERATION)
   ResponseEntity<Object> fetchPdf(@PathVariable String claimSubmissionId)
+      throws RequestValidationException;
+
+  @Operation(
+      summary = "Hypertension health data assessment",
+      description = "Provides health data assessment for a hypertension claim")
+  @PostMapping("/health-data-7101-assessment")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Timed(value = "health-data-7101-assessment")
+  @Tag(name = VroConstant.FULL_HEALTH_DATA_ASSESSMENT)
+  ResponseEntity<HealthDataAssessmentResponse> postHealth7101Assessment(
+      @Parameter(
+              description = "Claim for which health data assessment requested",
+              required = true,
+              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
+          @Valid
+          @RequestBody
+          HealthDataAssessmentRequest claim)
       throws RequestValidationException;
 }

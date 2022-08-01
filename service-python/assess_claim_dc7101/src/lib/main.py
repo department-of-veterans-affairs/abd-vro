@@ -21,10 +21,9 @@ def assess_hypertension(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event)
-        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event)
-        relevant_medication = continuous_medication.continuous_medication_required(event)
-
+        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event["evidence"])
+        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event["evidence"])
+        relevant_medication = continuous_medication.continuous_medication_required(event["evidence"])
     else:
         predominance_calculation = {"success": False}
         diastolic_history_calculation = {"success": False}
@@ -34,15 +33,15 @@ def assess_hypertension(event: Dict):
 
     response_body.update(
         {"evidence": {
-            "medication": relevant_medication,
+            "medications": relevant_medication,
             "bp_readings": event["bp_readings"]
             },
+        "veteranIcn": event["veteranIcn"],
+        "diagnosticCode": event["diagnosticCode"],
         "calculated": {
             "predominance_calculation": predominance_calculation,
             "diastolic_history_calculation": diastolic_history_calculation,
     }
     })
 
-    return {
-        "body": json.dumps(response_body)
-    }
+    return response_body

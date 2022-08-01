@@ -105,4 +105,26 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
     }
   }
+
+  @Override
+  public ResponseEntity<HealthDataAssessmentResponse> postHealth7101Assessment(
+      HealthDataAssessmentRequest claim) throws RequestValidationException {
+    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+    try {
+      Claim model = postClaimRequestMapper.toModel(claim);
+      String responseAsString = camelEntrance.submitClaimFull(model);
+      log.info("Obtained health assessment", responseAsString);
+      ObjectMapper mapper = new ObjectMapper();
+      HealthDataAssessmentResponse response =
+          mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+      log.info("Returning health assessment for: {}", response.getVeteranIcn());
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (Exception ex) {
+      String msg = ex.getMessage();
+      log.error(ex.getStackTrace().toString());
+      HealthDataAssessmentResponse response =
+          new HealthDataAssessmentResponse(claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

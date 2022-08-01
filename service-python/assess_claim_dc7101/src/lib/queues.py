@@ -12,23 +12,17 @@ REPLY_QUEUE = queue_config["reply_queue_name"]
 
 
 def rpc(body, route):
-
 	logging.debug(f'CALL :{route}')
-
-	decision_response = main.assess_hypertension(json.loads(body.decode('utf-8')))
-
+	hypertensionInput = json.loads(body.decode('utf-8'))
+	hypertensionInput["date_of_claim"] = "2022-07-31"
+	decision_response = main.assess_hypertension(hypertensionInput)
 	return decision_response
 
 def on_request_callback(channel, method, properties, body):
-
+	logging.info("inside on_request_callback")
 	route = method.routing_key
 	response = rpc(body, route)
-	print("sent")
-
-	channel.basic_publish(exchange='', routing_key=REPLY_QUEUE, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=str(response))
-
-	channel.basic_ack(delivery_tag=method.delivery_tag)
-
+	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 def queue_setup(channel):
 	channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
