@@ -34,7 +34,7 @@ def assess_hypertension(event: Dict):
 
     response_body.update(
         {"evidence": {
-            "medication": relevant_medication,
+            "medications": relevant_medication,
             "bp_readings": event["bp_readings"]
             },
         "calculated": {

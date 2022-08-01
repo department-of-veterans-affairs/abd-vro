@@ -13,8 +13,7 @@ def validate_request_body(request_body):
     schema = {
         "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
-        "vasrd": {"type": "string",
-                  "required": True},
+        "vasrd": {"type": "string"},
         "condition": {
             "type": "list",
             "schema": {
@@ -41,7 +40,7 @@ def validate_request_body(request_body):
                 }
             }
         },
-        "medication": {
+        "medications": {
             "required": True,
             "type": "list",
             "schema": {

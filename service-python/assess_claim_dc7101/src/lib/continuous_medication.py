@@ -23,7 +23,7 @@ def continuous_medication_required(request_body):
   """
   relevant_medications = []
 
-  veterans_medication = request_body["medication"]
+  veterans_medication = request_body["medications"]
   for medication in veterans_medication:
     medication_display = medication["description"]
     for keyword in [x.lower() for x in hypertension_medications]:

@@ -28,7 +28,7 @@ from assess_claim_dc7101.src.lib import utils
                         },
                     ]
                     ,
-                    "medication": [{"description": "Capoten"}],
+                    "medications": [{"description": "Capoten"}],
                     "date_of_claim": "2021-11-09",
                     "vasrd": "7101",
                     "veteranIcn": "1234567890V123456",
@@ -70,7 +70,7 @@ from assess_claim_dc7101.src.lib import utils
                         },
                     ]
                     ,
-                    "medication": [{"description": 123}],
+                    "medications": [{"description": 123}],
                     "date_of_claim": 20211109,
                     "vasrd": "7101"
                 },
@@ -93,7 +93,7 @@ from assess_claim_dc7101.src.lib import utils
                         }
                     ]
                     ,
-                    "medication": [
+                    "medications": [
                         {0: [{'description': ['must be of string type']}]}
                     ],
                     "date_of_claim": ["must be of string type"],

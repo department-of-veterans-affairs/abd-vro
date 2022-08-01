@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-REPLY_QUEUE_NAME = 'example-assess'
 # HOST = os.environ['RABBITMQ_HOST']
 HOST = "localhost"
 EXCHANGE_NAME = 'health-assess-exchange'
@@ -14,7 +13,6 @@ SERVICE_QUEUE_NAME = '7101'
 
 example_decision_data = {
     "veteranIcn": "1234567890V123456",
-    "vasrd": "7101",
     "date_of_claim": "2022-7-09",
     "bp_readings": [
         {
@@ -35,7 +33,7 @@ example_decision_data = {
             }
         }
     ],
-    "medication": [
+    "medications": [
         {
             "status": "active",
             "authoredOn": "2013-04-15T01:15:52Z",
@@ -94,7 +92,7 @@ class BaseClient(object):
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange=EXCHANGE_NAME,
-            routing_key=decision_data["vasrd"],
+            routing_key='7101',
             properties=pika.BasicProperties(
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,

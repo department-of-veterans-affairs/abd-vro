@@ -8,7 +8,6 @@ import base64
 
 EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
-REPLY_QUEUE = queue_config["reply_queue_name"]
 
 
 def rpc(body, route):

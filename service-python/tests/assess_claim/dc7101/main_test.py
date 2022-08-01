@@ -48,7 +48,7 @@ from assess_claim_dc7101.src.lib import main
                         }
                     ]
                 ,
-                "medication": [{"description": "Capoten"}],
+                "medications": [{"description": "Capoten"}],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -56,7 +56,7 @@ from assess_claim_dc7101.src.lib import main
             {
                 "body": json.dumps({
                         "evidence":{
-                            "medication": [{"description": "Capoten"}],
+                            "medications": [{"description": "Capoten"}],
                             "bp_readings":  [                      
                             {
                             "diastolic": {
@@ -153,7 +153,7 @@ from assess_claim_dc7101.src.lib import main
                         }
                     ]
                 ,
-                "medication": [],
+                "medications": [],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -161,7 +161,7 @@ from assess_claim_dc7101.src.lib import main
             {
                 "body": json.dumps({
                     "evidence":{
-                        "medication": [],
+                        "medications": [],
                         "bp_readings": [                      
                             {
                             "diastolic": {
@@ -217,14 +217,14 @@ from assess_claim_dc7101.src.lib import main
             {
 
                 "bp_readings": [],
-                "medication": [],
+                "medications": [],
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
             ,
             {
                 "body": json.dumps({
-                    "evidence":{'medication': [],
+                    "evidence":{'medications': [],
                     "bp_readings": []},
                     "calculated":{"predominance_calculation": {
                         "success": False,
@@ -277,7 +277,7 @@ from assess_claim_dc7101.src.lib import main
             {
                 "body": json.dumps({
                     "evidence":{
-                        'medication': [],
+                        'medications': [],
                         "bp_readings": []
                     },
                     "calculated":{
@@ -288,7 +288,7 @@ from assess_claim_dc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}], "medication": ["required field"]}
+                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}], "medications": ["required field"]}
                 })
             }
         ),
@@ -337,7 +337,7 @@ from assess_claim_dc7101.src.lib import main
                             ]
                 ,
                 "date_of_claim": "2021-11-09",
-                "medication": [{"description": 11}],
+                "medications": [{"description": 11}],
                 "vasrd": "7101"
             }
             ,
@@ -348,13 +348,13 @@ from assess_claim_dc7101.src.lib import main
                         "predominance_calculation": {'success': False}},
                     "evidence": {
                         "bp_readings": [],
-                    "medication": []
+                    "medications": []
                     },
                     "errors": {
                         
                             "bp_readings": [{"0": [{"diastolic": [{"value": ["must be of number type"]}]}]}]
                             ,
-                        "medication": [{0: [{'description': ['must be of string type']}]}],
+                        "medications": [{0: [{'description': ['must be of string type']}]}],
                     }
                 })
             }
