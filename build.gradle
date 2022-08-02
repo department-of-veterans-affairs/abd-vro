@@ -56,7 +56,7 @@ ext {
                    ':controller',
                    ':persistence:impl',
                    ':persistence:model',
-                   ':service:activator',
+                   ':service:db',
                    ':service:provider',
                    ':service:spi',
                    ':test-data-factory']

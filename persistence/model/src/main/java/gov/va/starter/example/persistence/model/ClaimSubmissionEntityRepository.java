@@ -6,6 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
+@Deprecated
 public interface ClaimSubmissionEntityRepository
     extends PagingAndSortingRepository<ClaimSubmissionEntity, String> {
 

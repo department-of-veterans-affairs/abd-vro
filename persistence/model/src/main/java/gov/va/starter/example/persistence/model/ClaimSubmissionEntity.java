@@ -7,8 +7,9 @@ import java.time.Instant;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 
+@Deprecated
 @Entity
-@Table(name = "claimsubmission", schema = "example")
+@Table(name = "claimsubmission")
 @Getter
 @Setter
 @NoArgsConstructor
