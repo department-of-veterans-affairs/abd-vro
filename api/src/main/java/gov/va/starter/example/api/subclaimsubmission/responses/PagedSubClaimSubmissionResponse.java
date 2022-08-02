@@ -9,6 +9,7 @@ import java.util.List;
 // this class is necessary for easier documentation in springdoc
 // current versions cannot directly determine the type of the list in
 // PagedResponse<SubClaimSubmissionResponse>
+@Deprecated
 @Schema(
     name = "PagedAccountResponse",
     description = "Bundled list of resources with paging metadata")
