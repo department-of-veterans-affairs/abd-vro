@@ -3,8 +3,6 @@ package gov.va.vro.service.provider.camel;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.model.GeneratePdfPayload;
-import gov.va.vro.service.spi.model.VeteranInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -27,16 +25,6 @@ public class SampleData {
     }
     String sampleLighthouseObservationResponse = retrieveGist("lighthouse_observations_resp.json");
     payload.setBpObservations(sampleLighthouseObservationResponse);
-    return payload;
-  }
-
-  GeneratePdfPayload sampleGeneratePdfPayload(GeneratePdfPayload body) {
-    VeteranInfo veteranInfo = new VeteranInfo();
-
-    GeneratePdfPayload payload = new GeneratePdfPayload();
-    payload.setDiagnosticCode("6602");
-    payload.setVeteranInfo(veteranInfo);
-    // payload.setEvidence(retrieveGist("assessed_data_asthma.json"));
     return payload;
   }
 
