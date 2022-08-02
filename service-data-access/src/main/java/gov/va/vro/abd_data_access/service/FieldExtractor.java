@@ -114,7 +114,7 @@ public class FieldExtractor {
           .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
           .collect(Collectors.toList());
       dosages.addAll(codeText);
-      result.setDosageInstruction(dosages);
+      result.setDosageInstructions(dosages);
       String routes = medication.getDosageInstruction()
           .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
           .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
