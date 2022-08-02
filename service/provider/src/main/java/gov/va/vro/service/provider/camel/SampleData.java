@@ -30,16 +30,6 @@ public class SampleData {
     return payload;
   }
 
-  GeneratePdfPayload sampleGeneratePdfPayload(GeneratePdfPayload body) {
-    VeteranInfo veteranInfo = new VeteranInfo();
-
-    GeneratePdfPayload payload = new GeneratePdfPayload();
-    payload.setDiagnosticCode("6602");
-    payload.setVeteranInfo(veteranInfo);
-    // payload.setEvidence(retrieveGist("assessed_data_asthma.json"));
-    return payload;
-  }
-
   private JSONObject toJsonObject(String jsonString) {
     JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
     try {
@@ -51,11 +41,10 @@ public class SampleData {
   }
 
   private static String revision = "0d5ed1ce84d953e798782d3bba4aafd88d03d284";
-  private static String baseUrl =
-      "https://gist.githubusercontent.com/yoomlam/"
-          + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/"
-          + revision
-          + "/";
+  private static String baseUrl = "https://gist.githubusercontent.com/yoomlam/"
+      + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/"
+      + revision
+      + "/";
 
   // cache responses, so we don't hit the URL too often
   private static Map<String, String> gistCache = Maps.newHashMap();
