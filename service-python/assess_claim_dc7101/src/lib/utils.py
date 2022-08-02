@@ -14,7 +14,7 @@ def validate_request_body(request_body):
         "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
         "vasrd": {"type": "string"},
-        "eviednce":{
+        "evidence":{
             "type": "dict",
             "schema": {
             "condition": {
