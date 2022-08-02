@@ -14,116 +14,121 @@ def validate_request_body(request_body):
         "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
         "vasrd": {"type": "string"},
-        "condition": {
-            "type": "list",
+        "eviednce":{
+            "type": "dict",
             "schema": {
-                "type": "dict",
+            "condition": {
+                "type": "list",
                 "schema": {
-                    "code": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "status": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "text": {
-                        "type": "string"
-                    },
-                    "onset_date": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "abatement_date": {
-                        "type": "string"
+                    "type": "dict",
+                    "schema": {
+                        "code": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "status": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "onset_date": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "abatement_date": {
+                            "type": "string"
+                        }
                     }
                 }
-            }
-        },
-        "medications": {
-            "required": True,
-            "type": "list",
-            "schema": {
-                "type": "dict",
+            },
+            "medications": {
+                "required": True,
+                "type": "list",
                 "schema": {
-                    "authoredOn": {
-                        "type": "string"
-                    },
-                    "status": {
-                        "type": "string",
-                    },
-                    "dosageInstructions": {
-                        "type": "list",
-                        "schema": {"type": "string"}
-                    },
-                    "route": {"type": "string"},
-                    "refills": {},
-                    "duration": {"type": "string"},
-                    "description": {"type": "string"},
-                    "notes": {
-                        "type": "list",
-                        "schema": {"type": "string"}
+                    "type": "dict",
+                    "schema": {
+                        "authoredOn": {
+                            "type": "string"
+                        },
+                        "status": {
+                            "type": "string",
+                        },
+                        "dosageInstructions": {
+                            "type": "list",
+                            "schema": {"type": "string"}
+                        },
+                        "route": {"type": "string"},
+                        "refills": {},
+                        "duration": {"type": "string"},
+                        "description": {"type": "string"},
+                        "notes": {
+                            "type": "list",
+                            "schema": {"type": "string"}
+                        }
                     }
                 }
-            }
-        },
-        "bp_readings": {
-            "required":True,
-            "type": "list",
-            "schema": {
-                "type": "dict",
-                "require_all": True,
+            },
+            "bp_readings": {
+                "required":True,
+                "type": "list",
                 "schema": {
-                    "diastolic": {
-                        "type": "dict",
-                        "schema": {
-                            "value": {"type": "number"},
-                            "code": {"type": "string"},
-                            "display": {"type": "string"},
-                            "unit": {"type": "string"}
-                        }
-                    },
-                    "systolic": {
-                        "type": "dict",
-                        "schema": {
-                            "value": {"type": "number"},
-                            "code": {"type": "string"},
-                            "display": {"type": "string"},
-                            "unit": {"type": "string"}
-                        }
-                    },
-                    "date": {"type": "string"},
-                    "practitioner": {"type": "string"},
-                    "organization": {"type": "string"}
+                    "type": "dict",
+                    "require_all": True,
+                    "schema": {
+                        "diastolic": {
+                            "type": "dict",
+                            "schema": {
+                                "value": {"type": "number"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                                "unit": {"type": "string"}
+                            }
+                        },
+                        "systolic": {
+                            "type": "dict",
+                            "schema": {
+                                "value": {"type": "number"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                                "unit": {"type": "string"}
+                            }
+                        },
+                        "date": {"type": "string"},
+                        "practitioner": {"type": "string"},
+                        "organization": {"type": "string"}
+                    }
                 }
-            }
-        },
-        "procedure": {
-            "type": "list",
-            "schema": {
-                "type": "dict",
+            },
+            "procedure": {
+                "type": "list",
                 "schema": {
-                    "code": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "code_system": {
-                        "type": "string"
-                    },
-                    "text": {
-                        "type": "string"
-                    },
-                    "performed_date": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "status": {
-                        "type": "string",
-                        "required": True
-                    },
+                    "type": "dict",
+                    "schema": {
+                        "code": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "code_system": {
+                            "type": "string"
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "performed_date": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "status": {
+                            "type": "string",
+                            "required": True
+                        },
+                    }
                 }
             }
         }
+    }
     }
     v = Validator(schema)
 

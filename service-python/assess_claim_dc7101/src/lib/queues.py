@@ -13,10 +13,16 @@ SERVICE_QUEUE = queue_config["service_queue_name"]
 
 def on_request_callback(channel, method, properties, body):
 
+	binding_key = method.routing_key
+	message = json.loads(body.decode('utf-8'))
+	logging.info(f" [x] {binding_key}: Received message: {message}")
+
 	try:
-		response = main.assess_hypertension(json.loads(body.decode('utf-8')))
+		response = main.assess_hypertension(message)
 	except:
 		response = {"status": "ERROR", "evidence":{}, "calculated": {}}
+
+	logging.info(properties.reply_to)
 
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
