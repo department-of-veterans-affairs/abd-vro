@@ -35,8 +35,6 @@ services:
     expose:
       - "5672"
       - "15672"
-#    volumes:
-#      - mqdata:/var/lib/??/data
     networks:
       - internal
     ports:
@@ -59,9 +57,9 @@ services:
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: example_flyway
+      POSTGRES_USER: vro_user
       POSTGRES_PASSWORD: not-the-password
-      POSTGRES_DB: example
+      POSTGRES_DB: vro
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -73,17 +71,6 @@ services:
 
   db-init:
     image: va/abd_vro-db-init:latest
-    # NOTE: These are the defaults from the flyway.conf   uncomment to override, esp for <secret-service-name> passwords
-    #    environment:
-    #      FLYWAY_URL: jdbc:postgresql://postgres1:5432/example?user=example_flyway&password=not-the-password
-    #      FLYWAY_PLACEHOLDERS_USERNAME: example_user
-    #      FLYWAY_PLACEHOLDERS_SERVICENAME: example_service
-    #      FLYWAY_PLACEHOLDERS_ADMINNAME: example_admin
-    #      FLYWAY_PLACEHOLDERS_DBNAME: example
-    #      FLYWAY_PLACEHOLDERS_SCHEMANAME: example
-    #      FLYWAY_PLACEHOLDERS_USERPASSWORD: also-not-the-user-password
-    #      FLYWAY_PLACEHOLDERS_SERVICEPASSWORD: also-not-the-service-password
-    #      FLYWAY_PLACEHOLDERS_ADMINPASSWORD: also-not-the-admin-password
     depends_on:
       - postgres1
     networks:
@@ -104,7 +91,7 @@ services:
       - "8081:8081"
     environment:
       POSTGRES_HOST: postgres1
-      POSTGRES_DBNAME: example
+      POSTGRES_DBNAME: vro
       POSTGRES_USER: example_service
       POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
@@ -122,7 +109,6 @@ services:
     networks:
       - internal
       - external
-
 
   assess_claim_dc7101:
     image: va/abd_vro-assess_claim_dc7101:latest
