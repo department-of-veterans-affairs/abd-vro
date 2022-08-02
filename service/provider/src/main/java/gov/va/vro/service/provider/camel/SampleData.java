@@ -3,8 +3,6 @@ package gov.va.vro.service.provider.camel;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.model.GeneratePdfPayload;
-import gov.va.vro.service.spi.model.VeteranInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -41,10 +39,11 @@ public class SampleData {
   }
 
   private static String revision = "0d5ed1ce84d953e798782d3bba4aafd88d03d284";
-  private static String baseUrl = "https://gist.githubusercontent.com/yoomlam/"
-      + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/"
-      + revision
-      + "/";
+  private static String baseUrl =
+      "https://gist.githubusercontent.com/yoomlam/"
+          + "0e22b8d01f6fd1bd51d6912dd051fda9/raw/"
+          + revision
+          + "/";
 
   // cache responses, so we don't hit the URL too often
   private static Map<String, String> gistCache = Maps.newHashMap();
