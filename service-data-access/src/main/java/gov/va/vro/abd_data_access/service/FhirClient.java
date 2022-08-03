@@ -65,7 +65,10 @@ public class FhirClient {
                 AbdDomain.MEDICATION
               }),
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE}),
+              "7101", new AbdDomain[] {
+                  AbdDomain.BLOOD_PRESSURE,
+                  AbdDomain.MEDICATION
+              }),
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
               "6602", new AbdDomain[] {AbdDomain.MEDICATION}));
 

@@ -12,7 +12,7 @@ import gov.va.vro.controller.mapper.FetchPdfRequestMapper;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
-import gov.va.vro.service.spi.model.ClaimPayload;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -49,7 +49,7 @@ public class VroController implements VroResource {
       HealthDataAssessmentRequest claim) throws RequestValidationException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
-      ClaimPayload model = postClaimRequestMapper.toModel(claim);
+      Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
       ObjectMapper mapper = new ObjectMapper();
       HealthDataAssessmentResponse response =
@@ -100,7 +100,7 @@ public class VroController implements VroResource {
           ContentDisposition.attachment().filename("textdown.pdf").build();
       headers.setContentDisposition(disposition);
 
-      return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
+      return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
     }

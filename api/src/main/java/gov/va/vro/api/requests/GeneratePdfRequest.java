@@ -12,7 +12,7 @@ import lombok.*;
 @Schema(name = "GeneratePdfRequest", description = "Details for pdf generation")
 public class GeneratePdfRequest {
   @NonNull
-  @Schema(description = "Claim submission ID", example = "0")
+  @Schema(description = "Claim submission ID", example = "1234")
   private String claimSubmissionId;
 
   @NonNull

@@ -32,22 +32,6 @@ management:
     web.server.request.autotime.enabled: true
   server.port: 8081
 
-# Setting up K8 health probes - with health probs set to true you can use
-# the paths in your config like the snippet below
-
-#livenessProbe:
-#  httpGet:
-#    path: /actuator/health/liveness
-#    port: 8081
-#  failureThreshold: ...
-#  periodSeconds: ...
-#
-#readinessProbe:
-#  httpGet:
-#    path: /actuator/health/readiness
-#    port: 8081
-#  failureThreshold: ...
-
 server:
   tomcat:
     basedir: build/tomcat
@@ -74,20 +58,6 @@ spring:
   jpa:
     show-sql: true
     generate-ddl: true
-    hibernate:
-      ddl-auto: create
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
-    properties:
-      org.hibernate.envers.audit_table_suffix: _audit
-      org.hibernate.envers.revision_field_name: revision_id
-      org.hibernate.envers.revision_type_field_name: type
-      org.hibernate.envers.global_with_modified_flag: true
-      org.hibernate.envers.store_data_at_delete: true
-      hibernate:
-        generate_statistics: false
-        jdbc.lob.non_contextual_creation: true
   resources:
     add-mappings: false
   mvc:
@@ -167,9 +137,7 @@ starter:
         topic.name: example-entity-lifecycle
         level.concurrency: 1
 
-# opa:
-#   filter:
-#     enabled: true
-#     document-path: authz
-#     instance: http://opa:8181
-#     endpoints-whitelist: /swagger*/**,/v3/api-docs/**,/liveness,/readiness,/health/**
+spring.config.import: >
+  conf-camel.yml,
+  conf-camel-rabbitmq.yml
+  
