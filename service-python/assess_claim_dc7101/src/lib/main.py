@@ -21,9 +21,9 @@ def assess_hypertension(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event["evidence"])
-        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event["evidence"])
-        relevant_medication = continuous_medication.continuous_medication_required(event["evidence"])
+        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event)
+        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event)
+        relevant_medication = continuous_medication.continuous_medication_required(event)
 
     else:
         predominance_calculation = {"success": False}

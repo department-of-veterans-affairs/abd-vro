@@ -7,48 +7,57 @@ from assess_claim_dc7101.src.lib import continuous_medication
     [
         # Service connected and medication used to treat hypertension
         (
+            {"evidence":
             {
                 "bp_readings": [],
-                "medication": [{"description": "Benazepril"}],
+                "medications": [{"description": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
             [{"description": "Benazepril"}]
             ,
         ),
         # Not service connected but uses medication used to treat hypertension
         (
+            {"evidence":
             {
                 "bp_readings": [],
-                "medication": [{"description": "Benazepril"}],
+                "medications": [{"description": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
             [{"description": "Benazepril"}]
             ,
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
+            {"evidence":
             {
                 "bp_readings": [],
-                "medication": [{"description": "Advil"}],
+                "medications": [{"description": "Advil"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
             [],
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
+            {"evidence":
             {
                 "bp_readings": [],
-                "medication": [{"description": "Benazepril"}, {"description": "Advil"}],
+                "medications": [{"description": "Benazepril"}, {"description": "Advil"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
             [{"description": "Benazepril"}],
         ),
         # Service connected but no medication
         (
+            {"evidence":
             {
                 "bp_readings": [],
-                "medication": [],
-                'date_of_claim': '2021-11-09',
+                "medications": [],
+            }
             },
             [],
         ),

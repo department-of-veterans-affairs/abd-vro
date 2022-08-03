@@ -9,7 +9,7 @@ from assess_claim_dc7101.src.lib import predominant_bp
         # and 5/13 is exactly 180 days before 11/9
         (
             "2021-11-09",
-            [                      
+            [
                 {
                 "diastolic": {
                     "code": "8462-4",
@@ -17,7 +17,7 @@ from assess_claim_dc7101.src.lib import predominant_bp
                     "unit": "mm[Hg]",
                     "value": 115
                 },
-                "systolic": {                
+                "systolic": {              
                     "code": "8480-6",
                     "display": "Systolic blood pressure",
                     "unit": "mm[Hg]",
@@ -286,7 +286,7 @@ def test_calculate_predominant_readings(bp_readings, result):
     [
         # Two readings. No out of range dates.
         (
-            {
+            { "evidence":{
                 "bp_readings": [
                         {
                             "diastolic": {
@@ -307,6 +307,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "date": "2021-09-01"
                         }
                 ]
+            }
             ,
                 "date_of_claim": "2021-11-09",
             },
@@ -318,7 +319,8 @@ def test_calculate_predominant_readings(bp_readings, result):
         ),
         # 2 reading test case with one out of range date
         (
-           {
+            
+           {"evidence":{
                 "bp_readings": [
                             {
                                 "diastolic": {
@@ -348,6 +350,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2020-11-08"
                             }
                         ]
+           }
             ,
                 "date_of_claim": "2021-11-09",
             },
@@ -361,6 +364,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # Total number of readings is odd
         (
             {
+                "evidence": {
 
                     "bp_readings": [
                             {
@@ -427,6 +431,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2021-10-14"
                             }
                     ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -441,6 +446,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # the algorithm chooses the higher rating for both categories
         (
             {
+                "evidence": {
 
                     "bp_readings": [
                             {
@@ -498,6 +504,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "date": "2021-10-14"
                             }
                     ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -510,6 +517,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # +2 reading test case with 1 out of range date (which would change the results if included)
         (
             {
+                "evidence":{
 
                     "bp_readings": [
                         {
@@ -576,6 +584,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "date": "2020-11-08"
                         }
                     ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -588,6 +597,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no reading within 30 days
         (
             {
+                "evidence":{
 
                     "bp_readings": [
                         {
@@ -625,6 +635,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -635,6 +646,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 2 readings, but no second reading within 180 days
         (
             {
+                "evidence":{
 
                     "bp_readings": [
                         {
@@ -672,6 +684,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                             "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -682,6 +695,7 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 1 reading
         (
             {
+                "evidence":{
 
                     "bp_readings": [                      
                             {
@@ -702,6 +716,7 @@ def test_calculate_predominant_readings(bp_readings, result):
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
+                }
                 ,
                 "date_of_claim": "2021-11-09",
             },
@@ -712,7 +727,9 @@ def test_calculate_predominant_readings(bp_readings, result):
         # 0 readings
         (
             {
-                "bp_readings": [],
+                "evidence":{
+                "bp_readings": []
+                },
                 "date_of_claim": "2021-11-09",
             },
             {

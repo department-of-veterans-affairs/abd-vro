@@ -10,6 +10,7 @@ from assess_claim_dc7101.src.lib import main
         # All three calculator functions return valid results readings
         (
             {
+                "evidence": {
                     "bp_readings": [
                         {
                             "diastolic": {
@@ -49,8 +50,8 @@ from assess_claim_dc7101.src.lib import main
                     ]
                 ,
                 "medications": [{"description": "Capoten"}],
+                },
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
             }
             ,
             {
@@ -104,7 +105,8 @@ from assess_claim_dc7101.src.lib import main
                                 "diastolic_bp_predominantly_100_or_more": True,
                                 "success": True
                             }
-                        }
+                        },
+                        "status": "COMPLETE"
                     }
                 )
             }
@@ -115,7 +117,7 @@ from assess_claim_dc7101.src.lib import main
         # sufficient_to_autopopulate to fail as well 
         (
             {
-
+                "evidence":{
                     "bp_readings": [ 
                         {
                         "diastolic": {
@@ -154,6 +156,7 @@ from assess_claim_dc7101.src.lib import main
                     ]
                 ,
                 "medications": [],
+                },
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -207,7 +210,8 @@ from assess_claim_dc7101.src.lib import main
                             "diastolic_bp_predominantly_100_or_more": True,
                             "success": True
                         }
-                    }
+                    },
+                    "status": "COMPLETE",
                 })
             }
         ),
@@ -215,9 +219,11 @@ from assess_claim_dc7101.src.lib import main
         (
             
             {
+                "evidence":{
 
                 "bp_readings": [],
                 "medications": [],
+                },
                 "date_of_claim": "2021-11-09",
                 "vasrd": "7101"
             }
@@ -231,14 +237,15 @@ from assess_claim_dc7101.src.lib import main
                     },
                     "diastolic_history_calculation": {
                         "success": False
-                    }}
+                    }},
+                    "status": "COMPLETE",
                 })
             }
         ),
         # Bad data: "diastolic" key is missing in second reading
         (
             {
-
+                "evidence":{
                     "bp_readings": [                      
                             {
                             "diastolic": {
@@ -269,13 +276,12 @@ from assess_claim_dc7101.src.lib import main
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
-                ,
-                "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                }
             }
             ,
             {
                 "body": json.dumps({
+                    "status" : "COMPLETE",
                     "evidence":{
                         'medications': [],
                         "bp_readings": []
@@ -288,8 +294,9 @@ from assess_claim_dc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"bp_readings": [{"1": [{"systolic": ["required field"]}]}], "medications": ["required field"]}
-                })
+                    "errors": {"evidence":[{"bp_readings": [{"1": [{"systolic": ["required field"]}]}], "medications": ["required field"]}]
+                }
+            })
             }
         ),
         # Bad data:
@@ -298,7 +305,7 @@ from assess_claim_dc7101.src.lib import main
         # - "veteran_is_service_connected_for_dc7101" is a string
         (
             {
-
+                "evidence":{
                     "bp_readings": [                      
                             {
                             "diastolic": {
@@ -334,15 +341,15 @@ from assess_claim_dc7101.src.lib import main
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
-                            ]
-                ,
-                "date_of_claim": "2021-11-09",
-                "medications": [{"description": 11}],
-                "vasrd": "7101"
+                            ],
+                "medications": [{"description": 11}]
+                },
+                "date_of_claim": "2021-11-09"
             }
             ,
             {
                 "body": json.dumps({
+                    "status" : "COMPLETE",
                     "calculated": {
                         "diastolic_history_calculation": {"success": False},
                         "predominance_calculation": {'success': False}},
@@ -351,10 +358,12 @@ from assess_claim_dc7101.src.lib import main
                     "medications": []
                     },
                     "errors": {
+                        "evidence":[{
                         
                             "bp_readings": [{"0": [{"diastolic": [{"value": ["must be of number type"]}]}]}]
                             ,
-                        "medications": [{0: [{'description': ['must be of string type']}]}],
+                        "medications": [{0: [{'description': ['must be of string type']}]}]
+                        }],
                     }
                 })
             }
