@@ -1,5 +1,5 @@
 import operator
-from datetime import datetime
+from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 
@@ -132,7 +132,12 @@ def sufficient_to_autopopulate (request_body):
     """
 
     predominance_calculation = {}
-    date_of_claim = request_body["date_of_claim"]
+
+    if "date_of_claim" in request_body:
+        date_of_claim = request_body["date_of_claim"]
+    else:
+        date_of_claim = str(date.today())
+
     valid_bp_readings = []
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 

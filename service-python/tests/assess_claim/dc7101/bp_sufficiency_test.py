@@ -160,7 +160,7 @@ from assess_claim_dc7101.src.lib import predominant_bp
             "2021-11-09",
             [],
             False
-        )
+        ),
     ],
 )
 def test_bp_readings_meet_date_specs(date_of_claim, bp_readings, result):
@@ -731,6 +731,16 @@ def test_calculate_predominant_readings(bp_readings, result):
                 "bp_readings": []
                 },
                 "date_of_claim": "2021-11-09",
+            },
+            {
+                "success": False,
+            }
+        ),
+                (
+            {
+                "evidence":{
+                "bp_readings": []
+                },
             },
             {
                 "success": False,
