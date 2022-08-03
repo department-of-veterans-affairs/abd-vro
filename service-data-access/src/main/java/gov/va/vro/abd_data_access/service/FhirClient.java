@@ -15,6 +15,8 @@ import java.util.function.Function;
 @Slf4j
 public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
+  private static final int DEFAULT_PAGE = 0;
+  private static final int DEFAULT_SIZE = 30;
 
   @Autowired private IGenericClient client;
 
@@ -93,9 +95,10 @@ public class FhirClient {
                 return new SearchSpec("Condition", id);
               }));
 
-  public Bundle getBundle(AbdDomain domain, String patientIcn) throws AbdException {
+  public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
+          throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl();
+    String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
     String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
     log.info("Get FHIR data from {}", url);
     return client
@@ -166,10 +169,25 @@ public class FhirClient {
     String patientIcn = claim.getVeteranIcn();
     for (int i = 0; i < domains.length; ++i) {
       AbdDomain domain = domains[i];
-      Bundle bundle = getBundle(domain, patientIcn);
-      List<BundleEntryComponent> entries = bundle.getEntry();
-      if (entries.size() > 0) {
-        result.put(domain, entries);
+      int pageNo = DEFAULT_PAGE;
+      int pageSize = DEFAULT_SIZE;
+      boolean hasNextPage = false;
+      List<BundleEntryComponent> records = new ArrayList<>();
+      do {
+        pageNo++;
+        Bundle bundle = getBundle(domain, patientIcn, pageNo, pageSize);
+        List<BundleEntryComponent> entries = bundle.getEntry();
+        if (entries.size() > 0) {
+          records.addAll(entries);
+        }
+        if (bundle.hasLink()) {
+          hasNextPage = bundle.getLink().stream().anyMatch(l -> l.getRelation().equals("next"));
+        } else {
+          hasNextPage = false;
+        }
+      } while (hasNextPage);
+      if (!records.isEmpty()) {
+        result.put(domain, records);
       }
     }
     return result;
