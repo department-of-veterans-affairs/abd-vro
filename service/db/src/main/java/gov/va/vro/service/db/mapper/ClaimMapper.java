@@ -10,6 +10,4 @@ public interface ClaimMapper {
 
   ClaimEntity toClaimEntity(Claim claim);
 
-  @Mapping(target = "recordId", source = "id")
-  Claim toClaim(ClaimEntity claimEntity);
 }

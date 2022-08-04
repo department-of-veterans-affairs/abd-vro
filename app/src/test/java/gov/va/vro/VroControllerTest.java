@@ -1,5 +1,7 @@
 package gov.va.vro;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
@@ -15,41 +17,42 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class VroControllerTest {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
+  @MockBean private SlipClaimSubmitRouter slipClaimSubmitRouter;
 
-    @MockBean
-    private SlipClaimSubmitRouter slipClaimSubmitRouter;
+  @Autowired @InjectMocks private PrimaryRoutes primaryRoutes;
 
-    @Autowired
-    @InjectMocks
-    private PrimaryRoutes primaryRoutes;
+  @Test
+  void postHealthAssessment() {
 
+    Mockito.when(slipClaimSubmitRouter.routeClaimSubmit(Mockito.any(), Mockito.anyMap()))
+        .thenReturn("direct:hello");
 
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("1701");
 
-    @Test
-    void postHealthAssessment() {
+    ResponseEntity<HealthDataAssessmentResponse> responseEntity1 =
+        testRestTemplate.postForEntity(
+            "/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+    HealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
-        Mockito.when(slipClaimSubmitRouter.routeClaimSubmit(Mockito.any(), Mockito.anyMap()))
-                .thenReturn("direct:hello");
-
-        HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-        request.setClaimSubmissionId("1234");
-        request.setVeteranIcn("icn");
-        request.setDiagnosticCode("1701");
-
-        ResponseEntity<HealthDataAssessmentResponse> responseEntity =
-                testRestTemplate.postForEntity("/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        HealthDataAssessmentResponse response = responseEntity.getBody();
-        assertEquals(request.getDiagnosticCode(), response.getDiagnosticCode());
-        assertEquals(request.getVeteranIcn(), response.getVeteranIcn());
-    }
+    // Now submit an existing claim:
+    ResponseEntity<HealthDataAssessmentResponse> responseEntity2 =
+        testRestTemplate.postForEntity(
+            "/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
+    HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+  }
 }
