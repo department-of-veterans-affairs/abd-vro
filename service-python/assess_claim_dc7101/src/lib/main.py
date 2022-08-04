@@ -45,6 +45,4 @@ def assess_hypertension(event: Dict):
     }
     })
 
-    return {
-        "body": json.dumps(response_body)
-    }
+    return response_body

@@ -13,7 +13,7 @@ def validate_request_body(request_body):
     schema = {
         "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
-        "vasrd": {"type": "string"},
+        "diagnosticCode": {"type": "string"},
         "evidence":{
             "type": "dict",
             "schema": {
@@ -75,7 +75,6 @@ def validate_request_body(request_body):
                 "type": "list",
                 "schema": {
                     "type": "dict",
-                    "require_all": True,
                     "schema": {
                         "diastolic": {
                             "type": "dict",
