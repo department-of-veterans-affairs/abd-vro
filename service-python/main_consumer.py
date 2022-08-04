@@ -30,7 +30,6 @@ class RabbitMQConsumer:
 	def _create_connection(self):
 		for i in range(self.config["retry_limit"]):
 			try:
-				logging.info(self.config["host"])
 				parameters = pika.ConnectionParameters(host=self.config["host"], port = self.config["port"])
 				return pika.BlockingConnection(parameters)
 			except:
