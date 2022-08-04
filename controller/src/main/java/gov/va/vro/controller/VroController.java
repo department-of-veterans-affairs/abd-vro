@@ -33,6 +33,8 @@ public class VroController implements VroResource {
   private final FetchPdfRequestMapper fetchPdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
+  private final ObjectMapper mapper = new ObjectMapper();
+
   public VroController(
       CamelEntrance camelEntrance,
       GeneratePdfRequestMapper generatePdfRequestMapper,
@@ -51,7 +53,7 @@ public class VroController implements VroResource {
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
-      ObjectMapper mapper = new ObjectMapper();
+
       HealthDataAssessmentResponse response =
           mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", response.getVeteranIcn());

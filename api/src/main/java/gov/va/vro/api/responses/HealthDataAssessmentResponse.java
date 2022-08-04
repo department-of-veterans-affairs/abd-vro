@@ -19,7 +19,7 @@ public class HealthDataAssessmentResponse {
   private String diagnosticCode;
 
   @Schema(description = "Medical evidence supporting assessment")
-  @JsonInclude(JsonInclude.Include.ALWAYS)
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private AbdEvidence evidence;
 
   @Schema(description = "Error message in the case of an error")
