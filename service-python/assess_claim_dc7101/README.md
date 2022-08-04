@@ -5,7 +5,7 @@
 [RabbitMQ](https://www.rabbitmq.com/)
 
 ### RabbitMQ configuration
-The application connects to rabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and are routed by VASRD code. 
+The application connects to RabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and are routed by VASRD code. 
 
 ### Event object validation
 Incoming messages are validated by Cerberus to avoid container shutdown from unexpected exceptions.
@@ -51,6 +51,7 @@ Response objects will resemble the following:
 "calculated": {
     "predominance_calculation": {"success": False},
     "diastolic_history_calculation": {"success": False},
-    }
+    },
+"status": "COMPLETE"
 }
 ```
