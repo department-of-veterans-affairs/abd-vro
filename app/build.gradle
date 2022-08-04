@@ -23,7 +23,6 @@ dependencies {
     implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
     implementation 'gov.va.starter:kafka-entity-lifecycle-notifier'
-    // implementation 'gov.va.starter:open-policy-agent-config'
     implementation 'gov.va.starter:test-data'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -31,12 +30,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // implementation 'com.bisnode.opa:opa-filter-spring-boot-starter'
-
-    testImplementation 'com.h2database:h2'
-    runtimeOnly 'com.h2database:h2'
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.apache.camel:camel-test-spring-junit5:3.18.0'
 
     docker project(':container-init')
     docker project(':db-init')

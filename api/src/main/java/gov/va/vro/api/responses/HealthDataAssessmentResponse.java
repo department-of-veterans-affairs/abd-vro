@@ -3,14 +3,12 @@ package gov.va.vro.api.responses;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.api.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class HealthDataAssessmentResponse {
   @NonNull
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "90653535")
