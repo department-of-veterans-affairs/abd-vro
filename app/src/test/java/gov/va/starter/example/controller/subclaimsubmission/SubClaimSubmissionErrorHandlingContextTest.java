@@ -36,6 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
 
+@Deprecated
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters

@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
@@ -72,7 +71,6 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteGeneratePdf() {
-    SampleData sampleData = new SampleData();
 
     String exchangeName = "pdf-generator";
     String queueName = "generate-pdf";
@@ -80,14 +78,6 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from("direct:generate-pdf")
         .routeId("generate-pdf")
-
-        // if veteranInfo is empty, load a samplePayload for it
-        .choice()
-        .when(simple("${body.veteranInfo} == null"))
-        .setBody(
-            exchange ->
-                sampleData.sampleGeneratePdfPayload(exchange.getMessage(GeneratePdfPayload.class)))
-        .end()
         .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
   }
 
