@@ -18,7 +18,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private int refills;
   private String duration;
   private String authoredOn;
-  private List<String> dosageInstruction;
+  private List<String> dosageInstructions;
   private String route;
 
   @Override
