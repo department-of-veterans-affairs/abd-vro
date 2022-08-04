@@ -12,68 +12,123 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "diagnosticCode": {"type": "string"},
-        "evidence": {
-            "required": True,
+        "date_of_claim": {"type": "string"},
+        "vasrd": {"type": "string"},
+        "evidence":{
             "type": "dict",
             "schema": {
-                "medications": {
-                    "type": "list",
+            "condition": {
+                "type": "list",
+                "schema": {
+                    "type": "dict",
                     "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "authoredOn": {
-                                "type": "string"
-                            },
-                            "status": {
-                                "type": "string",
-                            },
-                            "dosageInstruction": {
-                                "type": "list",
-                                "schema": {"type": "string"}
-                            },
-                            "route": {"type": "string"},
-                            "refills": {},
-                            "duration": {"type": "string"},
-                            "description": {"type": "string"},
-                            "notes": {
-                                "type": "list",
-                                "schema": {"type": "string"}
-                            }
+                        "code": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "status": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "onset_date": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "abatement_date": {
+                            "type": "string"
                         }
                     }
-                },
-                "bp_readings": {
-                    "type": "list",
+                }
+            },
+            "medications": {
+                "required": True,
+                "type": "list",
+                "schema": {
+                    "type": "dict",
                     "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "diastolic": {
-                                "type": "dict",
-                                "schema": {
-                                    "value": {"type": "number"},
-                                    "code": {"type": "string"},
-                                    "display": {"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
-                            },
-                            "systolic": {
-                                "type": "dict",
-                                "schema": {
-                                    "value": {"type": "number"},
-                                    "code": {"type": "string"},
-                                    "display": {"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
-                            },
-                            "date": {"type": "string"},
-                            "practitioner": {"type": "string"},
-                            "organization": {"type": "string"}
+                        "authoredOn": {
+                            "type": "string"
+                        },
+                        "status": {
+                            "type": "string",
+                        },
+                        "dosageInstructions": {
+                            "type": "list",
+                            "schema": {"type": "string"}
+                        },
+                        "route": {"type": "string"},
+                        "refills": {},
+                        "duration": {"type": "string"},
+                        "description": {"type": "string"},
+                        "notes": {
+                            "type": "list",
+                            "schema": {"type": "string"}
                         }
+                    }
+                }
+            },
+            "bp_readings": {
+                "required":True,
+                "type": "list",
+                "schema": {
+                    "type": "dict",
+                    "require_all": True,
+                    "schema": {
+                        "diastolic": {
+                            "type": "dict",
+                            "schema": {
+                                "value": {"type": "number"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                                "unit": {"type": "string"}
+                            }
+                        },
+                        "systolic": {
+                            "type": "dict",
+                            "schema": {
+                                "value": {"type": "number"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                                "unit": {"type": "string"}
+                            }
+                        },
+                        "date": {"type": "string"},
+                        "practitioner": {"type": "string"},
+                        "organization": {"type": "string"}
+                    }
+                }
+            },
+            "procedure": {
+                "type": "list",
+                "schema": {
+                    "type": "dict",
+                    "schema": {
+                        "code": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "code_system": {
+                            "type": "string"
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "performed_date": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "status": {
+                            "type": "string",
+                            "required": True
+                        },
                     }
                 }
             }
         }
+    }
     }
     v = Validator(schema)
 

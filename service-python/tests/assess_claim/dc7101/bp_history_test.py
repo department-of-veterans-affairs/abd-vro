@@ -7,9 +7,12 @@ from assess_claim_dc7101.src.lib import bp_history
     [
         # 0 readings
         (
+            {"evidence": 
                 {
                     "bp_readings": []
-                },
+                }
+            
+            },
                 {
                     "success": False
                 }
@@ -17,7 +20,7 @@ from assess_claim_dc7101.src.lib import bp_history
         # 1 reading test case that passes
         (
                 {
-
+                    "evidence": {
                     "bp_readings": [
                         {
                             "diastolic": {"value": 100},
@@ -25,7 +28,7 @@ from assess_claim_dc7101.src.lib import bp_history
                             "date": "2021-11-01"
                         },
                     ]
-
+                    }
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": True,
@@ -35,6 +38,7 @@ from assess_claim_dc7101.src.lib import bp_history
         # 1 reading test case that fails
         (
                 {
+                    "evidence": {
 
                         "bp_readings": [
                             {
@@ -43,7 +47,7 @@ from assess_claim_dc7101.src.lib import bp_history
                                 "date": "2021-11-01"
                             },
                         ]
-
+                    }
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": False,
@@ -53,6 +57,7 @@ from assess_claim_dc7101.src.lib import bp_history
         # 2 reading test case that passes
         (
                 {
+                    "evidence": {
 
                         "bp_readings": [
                             {
@@ -66,7 +71,7 @@ from assess_claim_dc7101.src.lib import bp_history
                                 "date": "2021-09-01"
                             }
                         ]
-
+                }
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": True,
@@ -76,7 +81,7 @@ from assess_claim_dc7101.src.lib import bp_history
         # 2 reading test case that fails
         (
                 {
-
+                    "evidence": {
                         "bp_readings": [
                             {
                                 "diastolic": {"value": 90},
@@ -89,7 +94,7 @@ from assess_claim_dc7101.src.lib import bp_history
                                 "date": "2021-09-01"
                             }
                         ]
-
+                    }
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": False,
@@ -99,6 +104,8 @@ from assess_claim_dc7101.src.lib import bp_history
         # 3 reading test case that passes
         (
                 {
+                    "evidence": 
+                    {
 
                         "bp_readings": [
                             {
@@ -117,7 +124,7 @@ from assess_claim_dc7101.src.lib import bp_history
                                 "date": "2021-09-02"
                             }
                         ]
-
+                    }
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": True,
@@ -127,7 +134,7 @@ from assess_claim_dc7101.src.lib import bp_history
         # 3 reading test case that fails
         (
                 {
-
+                    "evidence": {
                         "bp_readings": [
                             {
                                 "diastolic": {"value": 101},
@@ -145,7 +152,8 @@ from assess_claim_dc7101.src.lib import bp_history
                                 "date": "2021-09-02"
                             }
                         ]
-
+                    }
+                    
                 },
                 {
                     "diastolic_bp_predominantly_100_or_more": False,

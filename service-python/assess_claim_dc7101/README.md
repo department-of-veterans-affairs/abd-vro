@@ -24,7 +24,7 @@ Response objects will resemble the following:
 
 ```
 {"evidence": {
-    "medication": {
+    "medications": {
         "description": "Benazepril",
         "authoredOn": "2022-04-01",
         "status": "active"},

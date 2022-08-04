@@ -36,7 +36,6 @@ definitions:
     type: object
     required:
     - condition
-    - date_of_claim
     - icn
     - medication
     - procedure

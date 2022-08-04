@@ -7,28 +7,31 @@ from assess_claim_dc7101.src.lib import utils
     [
         (
                 {
-
-                    "bp_readings": [
-                        {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 115
-                            },
-                            "systolic": {
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180
-                            },
-                            "date": "2021-11-01",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER"
-                        },
-                    ]
-                    ,
-                    "medication": [{"description": "Capoten"}],
+                    "evidence": 
+                    {
+                        "bp_readings": [
+                            {
+                                "diastolic": {
+                                    "code": "8462-4",
+                                    "display": "Diastolic blood pressure",
+                                    "unit": "mm[Hg]",
+                                    "value": 115
+                                },
+                                "systolic": {
+                                    "code": "8480-6",
+                                    "display": "Systolic blood pressure",
+                                    "unit": "mm[Hg]",
+                                    "value": 180
+                                },
+                                "date": "2021-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            }
+                        ,
+                        ]
+                        ,
+                        "medications": [{"description": "Capoten"}],
+                    },
                     "date_of_claim": "2021-11-09",
                     "vasrd": "7101",
                     "veteranIcn": "1234567890V123456",
@@ -38,6 +41,7 @@ from assess_claim_dc7101.src.lib import utils
         ),
         (
                 {
+                    "evidence":{
 
                     "bp_readings": [
                         {
@@ -70,12 +74,14 @@ from assess_claim_dc7101.src.lib import utils
                         },
                     ]
                     ,
-                    "medication": [{"description": 123}],
+                    "medications": [{"description": 123}],
+                    },
                     "date_of_claim": 20211109,
                     "vasrd": "7101"
                 },
                 False,
                 {
+                    "evidence":[{
                     "bp_readings": [
                         {
                             0: [
@@ -93,9 +99,10 @@ from assess_claim_dc7101.src.lib import utils
                         }
                     ]
                     ,
-                    "medication": [
+                    "medications": [
                         {0: [{'description': ['must be of string type']}]}
-                    ],
+                    ]
+                    }],
                     "date_of_claim": ["must be of string type"],
                 }
         ),
