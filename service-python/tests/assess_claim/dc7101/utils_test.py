@@ -33,7 +33,7 @@ from assess_claim_dc7101.src.lib import utils
                         "medications": [{"description": "Capoten"}],
                     },
                     "date_of_claim": "2021-11-09",
-                    "vasrd": "7101",
+                    "diagnosticCode": "7101",
                     "veteranIcn": "1234567890V123456",
                 },
                 True,
@@ -77,7 +77,7 @@ from assess_claim_dc7101.src.lib import utils
                     "medications": [{"description": 123}],
                     },
                     "date_of_claim": 20211109,
-                    "vasrd": "7101"
+                    "diagnosticCode": "7101"
                 },
                 False,
                 {

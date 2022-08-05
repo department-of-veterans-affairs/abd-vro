@@ -54,7 +54,7 @@ from assess_claim_dc7101.src.lib import main
                 "date_of_claim": "2021-11-09",
             }
             ,
-            json.dumps({
+            {
                         "evidence":{
                             "medications": [{"description": "Capoten"}],
                             "bp_readings":  [                      
@@ -107,7 +107,6 @@ from assess_claim_dc7101.src.lib import main
                         },
                         "status": "COMPLETE"
                     }
-                )
         ),
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn't
         # Note that the inverse can't happen (where history_of_diastolic_bp fails while sufficient_to_autopopulate doesn't)
@@ -156,10 +155,10 @@ from assess_claim_dc7101.src.lib import main
                 "medications": [],
                 },
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                "diagnosticCode": "7101"
             }
             ,
-            json.dumps({
+            {
                     "evidence":{
                         "medications": [],
                         "bp_readings": [                      
@@ -209,7 +208,7 @@ from assess_claim_dc7101.src.lib import main
                         }
                     },
                     "status": "COMPLETE",
-                })
+                }
         ),
         # Sufficiency and history algos fail
         (
@@ -221,10 +220,10 @@ from assess_claim_dc7101.src.lib import main
                 "medications": [],
                 },
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                "diagnosticCode": "7101"
             }
             ,
-            json.dumps({
+            {
                     "evidence":{'medications': [],
                     "bp_readings": []},
                     "calculated":{"predominance_calculation": {
@@ -234,7 +233,7 @@ from assess_claim_dc7101.src.lib import main
                         "success": False
                     }},
                     "status": "COMPLETE",
-                })
+                }
         ),
         # Bad data: "diastolic" key is missing in second reading
         (
@@ -272,7 +271,7 @@ from assess_claim_dc7101.src.lib import main
                             ]
                 }
             },
-            json.dumps({
+            {
                     "status" : "COMPLETE",
                     "evidence":{
                         'medications': [],
@@ -288,7 +287,6 @@ from assess_claim_dc7101.src.lib import main
                     ,
                     "errorMessage": {"errorString": "error validating request message data"}
                 }
-            )
         ),
         # Bad data:
         # - "diastolic" value is string instead of int
@@ -338,7 +336,7 @@ from assess_claim_dc7101.src.lib import main
                 "date_of_claim": "2021-11-09"
             }
             ,
-            json.dumps({
+            {
                     "status" : "COMPLETE",
                     "calculated": {
                         "diastolic_history_calculation": {"success": False},
@@ -348,7 +346,7 @@ from assess_claim_dc7101.src.lib import main
                     "medications": []
                     },
                     "errorMessage": {"errorString": "error validating request message data"}
-                })
+                }
         ),
     ],
 )
@@ -363,4 +361,4 @@ def test_main(request_body, response):
     """
     api_response = main.assess_hypertension(request_body)
 
-    assert json.loads(api_response) == json.loads(response)
+    assert api_response == response
