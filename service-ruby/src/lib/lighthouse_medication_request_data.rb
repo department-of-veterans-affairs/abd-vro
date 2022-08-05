@@ -44,7 +44,7 @@ class LighthouseMedicationRequestData
     end
 
     def dosage_hash
-      dosage_instructions = (entry['dosageInstruction'] || [])
+      dosage_instructions = (entry['dosageInstructions'] || [])
       toplevel_texts = dosage_instructions.map { |instr| instr['text'] || [] }
       code_texts = dosage_instructions.map { |instr| instr.dig('timing', 'code', 'text') || [] }
       routes = dosage_instructions.map { |instr| instr.dig('route', 'text') }.join(' ')
