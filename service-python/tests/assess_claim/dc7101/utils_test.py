@@ -80,10 +80,30 @@ from assess_claim_dc7101.src.lib import utils
                     "vasrd": "7101"
                 },
                 False,
-                [
-                    "date_of_claim",
-                    "evidence"
-                ]
+                {
+                    "evidence":[{
+                    "bp_readings": [
+                        {
+                            0: [
+                                {
+                                                    "systolic": [{"value": ["must be of number type"]}],
+                                    "diastolic": ["required field"]
+                                }
+                            ],
+                            1: [
+                                {
+                                    "date": ["must be of string type"],
+                                                    "diastolic": [{"value": ["must be of number type"]}]
+                                }
+                            ]
+                        }
+                    ],
+                    "medications": [
+                        {0: [{'description': ['must be of string type']}]}
+                        ]
+                    }],
+                    "date_of_claim": ["must be of string type"],
+                }
                 
         ),
     ],

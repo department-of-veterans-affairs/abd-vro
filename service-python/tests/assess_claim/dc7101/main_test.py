@@ -286,7 +286,7 @@ from assess_claim_dc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errorMessage": {"errorString": ["evidence"]}
+                    "errorMessage": {"errorString": "error validating request message data"}
                 }
             )
         ),
@@ -347,7 +347,7 @@ from assess_claim_dc7101.src.lib import main
                         "bp_readings": [],
                     "medications": []
                     },
-                    "errorMessage": {"errorString": ["evidence"]}
+                    "errorMessage": {"errorString": "error validating request message data"}
                 })
         ),
     ],

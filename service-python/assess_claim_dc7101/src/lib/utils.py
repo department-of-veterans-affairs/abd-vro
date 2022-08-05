@@ -142,5 +142,5 @@ def validate_request_body(request_body):
 
     return {
         "is_valid": v.validate(request_body),
-        "errors": list(v.errors.keys())
+        "errors": v.errors
     }
