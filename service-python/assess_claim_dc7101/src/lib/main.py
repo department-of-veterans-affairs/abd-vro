@@ -30,7 +30,7 @@ def assess_hypertension(event: Dict):
         diastolic_history_calculation = {"success": False}
         relevant_medication = []
         event["evidence"]["bp_readings"] = []
-        response_body["errors"] = validation_results["errors"]
+        response_body["errorMessage"] = {"errorString": validation_results["errors"]}
 
     response_body.update(
         {
@@ -45,6 +45,4 @@ def assess_hypertension(event: Dict):
     }
     })
 
-    return {
-        "body": json.dumps(response_body)
-    }
+    return json.dumps(response_body)

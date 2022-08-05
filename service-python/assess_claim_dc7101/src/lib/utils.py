@@ -1,6 +1,18 @@
 from cerberus import Validator
 
 
+def recursive_items(dictionary):
+    for key, value in dictionary.items():
+        if type(value) is dict:
+            yield (key, value)
+            yield from recursive_items(value)
+        if type(value) is list and len(value) > 0 and type(value[0]) is dict:
+            yield from recursive_items(value[0])
+        else:
+            yield (key, value)
+
+
+
 def validate_request_body(request_body):
     """
     Validates that the request body conforms to the expected data format
@@ -62,7 +74,10 @@ def validate_request_body(request_body):
                         "route": {"type": "string"},
                         "refills": {},
                         "duration": {"type": "string"},
-                        "description": {"type": "string"},
+                        "description": {
+                            "type": "string",
+                            "required":True
+                            },
                         "notes": {
                             "type": "list",
                             "schema": {"type": "string"}
@@ -75,12 +90,14 @@ def validate_request_body(request_body):
                 "type": "list",
                 "schema": {
                     "type": "dict",
-                    "require_all": True,
                     "schema": {
                         "diastolic": {
                             "type": "dict",
                             "schema": {
-                                "value": {"type": "number"},
+                                "value": {
+                                    "type": "number",
+                                    "required": True
+                                    },
                                 "code": {"type": "string"},
                                 "display": {"type": "string"},
                                 "unit": {"type": "string"}
@@ -89,7 +106,10 @@ def validate_request_body(request_body):
                         "systolic": {
                             "type": "dict",
                             "schema": {
-                                "value": {"type": "number"},
+                                "value": {
+                                    "type": "number",
+                                    "required": True
+                                    },
                                 "code": {"type": "string"},
                                 "display": {"type": "string"},
                                 "unit": {"type": "string"}
@@ -132,7 +152,11 @@ def validate_request_body(request_body):
     }
     v = Validator(schema)
 
+    error_dict = {}
+    for key, value in recursive_items(v.errors):
+        error_dict.update({key: value[0]})
+
     return {
         "is_valid": v.validate(request_body),
-        "errors": v.errors
+        "errors": error_dict
     }
