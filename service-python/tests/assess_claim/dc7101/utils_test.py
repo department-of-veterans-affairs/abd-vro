@@ -37,7 +37,7 @@ from assess_claim_dc7101.src.lib import utils
                     "veteranIcn": "1234567890V123456",
                 },
                 True,
-                {}
+                []
         ),
         (
                 {
@@ -80,13 +80,10 @@ from assess_claim_dc7101.src.lib import utils
                     "vasrd": "7101"
                 },
                 False,
-                {
-                    "value": "must be of number type",
-                    "diastolic": "required field",
-                    "date": "must be of string type",
-                    "description": "must be of string type",
-                    "date_of_claim": "must be of string type"
-                }   
+                [
+                    "date_of_claim",
+                    "evidence"
+                ]
                 
         ),
     ],
