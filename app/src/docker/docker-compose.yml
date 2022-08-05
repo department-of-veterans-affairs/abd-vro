@@ -111,7 +111,7 @@ services:
       - external
 
   assess_claim_dc7101:
-    image: va/abd_vro-assess-claim-dc7101:latest
+    image: va/abd_vro-assess_claim_dc7101:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
@@ -122,7 +122,7 @@ services:
       - internal
 
   pdf_generator:
-    image: va/abd_vro-pdf-generator:latest
+    image: va/abd_vro-pdf_generator:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
