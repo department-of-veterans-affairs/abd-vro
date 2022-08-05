@@ -81,6 +81,7 @@ def validate_request_body(request_body):
                     "schema": {
                         "diastolic": {
                             "type": "dict",
+                            "required": True,
                             "schema": {
                                 "value": {
                                     "type": "number",
@@ -93,6 +94,7 @@ def validate_request_body(request_body):
                         },
                         "systolic": {
                             "type": "dict",
+                            "required": True,
                             "schema": {
                                 "value": {
                                     "type": "number",

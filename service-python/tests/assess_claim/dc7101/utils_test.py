@@ -37,7 +37,7 @@ from assess_claim_dc7101.src.lib import utils
                     "veteranIcn": "1234567890V123456",
                 },
                 True,
-                []
+                {}
         ),
         (
                 {
