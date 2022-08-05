@@ -1,5 +1,6 @@
 import json
 from typing import Dict
+import logging
 
 from . import bp_history
 from . import continuous_medication
@@ -30,7 +31,8 @@ def assess_hypertension(event: Dict):
         diastolic_history_calculation = {"success": False}
         relevant_medication = []
         event["evidence"]["bp_readings"] = []
-        response_body["errorMessage"] = {"errorString": validation_results["errors"]}
+        logging.info(validation_results["errors"])
+        response_body["errorMessage"] = {"errorString": "errors validating request message data"}
 
     response_body.update(
         {
