@@ -11,8 +11,6 @@ import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class SaveToDbServiceImpl implements SaveToDbService {
@@ -24,13 +22,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
-    Optional<ClaimEntity> existingClaim =
-        claimRepository.findByClaimSubmissionIdAndIdType(
-            claim.getClaimSubmissionId(), claim.getIdType());
-    if (existingClaim.isPresent()) {
-      return mapper.toClaim(existingClaim.get());
-    }
-    var entity = createClaim(claim, veteranEntity);
+    ClaimEntity entity =
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .orElseGet(() -> createClaim(claim, veteranEntity));
     claim.setRecordId(entity.getId());
     return claim;
   }
