@@ -104,7 +104,7 @@ You can verify that the application is up and running by issuing the following c
 
 ```bash
 curl localhost:8081/health
-curl localhost:8081/info
+curl localhost:8081/actuator/info
 ```
 
 You should get back responses similar to the following:

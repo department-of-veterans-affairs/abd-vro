@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: vro-entities
+  description: A collection of Catalog Entities for the Virtual Regional Office
+  tags:
+  - developer-portal
+  - vro
+spec:
+  targets:
+    - https://github.com/department-of-veterans-affairs/abd-vro/tree/develop/catalog/all-apis.yaml

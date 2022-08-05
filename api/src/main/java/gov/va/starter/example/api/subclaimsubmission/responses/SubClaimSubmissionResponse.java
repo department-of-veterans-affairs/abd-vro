@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
+@Deprecated
 @AllArgsConstructor
-// @RequiredArgsConstructor
 @Getter
 @Schema(
     name = "SubClaimSubmissionResponse",

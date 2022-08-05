@@ -1,4 +1,4 @@
-package gov.va.vro.service.spi.db.model;
+package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -17,7 +17,7 @@ public class Claim {
 
   private UUID recordId;
 
-  @NotNull private String claimId;
+  @NotNull private String claimSubmissionId;
 
   // At the moment, this is the only id type
   @Builder.Default @NotNull private String idType = "va.gov-Form526Submission";

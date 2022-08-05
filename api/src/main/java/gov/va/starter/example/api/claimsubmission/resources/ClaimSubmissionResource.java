@@ -34,6 +34,7 @@ import org.zalando.problem.Problem;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+@Deprecated
 @RequestMapping(value = "/v1/example/claimsubmissions", produces = "application/json")
 @Tag(
     name = "ClaimSubmission API",
