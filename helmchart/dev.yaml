@@ -1,5 +1,4 @@
 environment: dev
-namespace: va-abd-rrd-dev
 
 rbac:
   create: true
