@@ -1,0 +1,6 @@
+environment: sandbox
+
+rbac:
+  create: true
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: ""

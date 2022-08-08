@@ -45,8 +45,8 @@ images:
   mq:
     imageName: abd_vro-rabbitmq
     tag: 3
-  serviceAssessClaimDC7101:
-    imageName: abd_vro-service-assess-claim-dc7101
+  assessClaimDC7101:
+    imageName: abd_vro-assess-claim-dc7101
     tag: latest
     imagePullPolicy: Always
 
@@ -65,6 +65,10 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
+  assessClaimDC7101:
+    indent: 12
+  pythonPdfGenerator:
+    indent: 12
   db:
     limits:
       cpu: 10m
