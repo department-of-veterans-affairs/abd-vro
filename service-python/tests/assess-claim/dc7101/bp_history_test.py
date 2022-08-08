@@ -1,5 +1,5 @@
 import pytest
-from assess_claim_dc7101.src.lib import bp_history
+from assess-claim-dc7101.src.lib import bp_history
 
 
 @pytest.mark.parametrize(

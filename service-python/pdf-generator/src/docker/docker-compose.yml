@@ -24,7 +24,8 @@ services:
     networks:
       - internal
 
-  pdf_generator:
+  pdf-generator:
+    container_name: pdf-generator
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest

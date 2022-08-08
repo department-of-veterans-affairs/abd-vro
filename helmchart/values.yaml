@@ -32,7 +32,7 @@ images:
     tag: latest
     imagePullPolicy: Always
   pdfGenerator:
-    imageName: abd_vro-pdf_generator
+    imageName: abd_vro-pdf-generator
     tag: latest
     imagePullPolicy: Always
   dbInit:
