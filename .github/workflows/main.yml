@@ -75,7 +75,7 @@ jobs:
         run: cd service-python && python -m pytest --cov-report term-missing --cov
 
   publish-image:
-    needs: [build-and-test-java, build-and-test-python]
+    needs: [build-and-test-java] # , build-and-test-python
     runs-on: ubuntu-latest
     steps:
       - name: Install Java
