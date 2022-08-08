@@ -1,5 +1,5 @@
 import pytest
-from assess_claim_dc7101.src.lib import continuous_medication
+from assess-claim-dc7101.src.lib import continuous_medication
 
 
 @pytest.mark.parametrize(
