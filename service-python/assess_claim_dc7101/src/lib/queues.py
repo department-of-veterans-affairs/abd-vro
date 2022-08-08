@@ -22,9 +22,6 @@ def on_request_callback(channel, method, properties, body):
 	except:
 		response = {"status": "ERROR", "evidence":{}, "calculated": {}}
 
-	logging.info(json.dumps(response))
-	logging.info(properties.correlation_id)
-	logging.info(properties.reply_to)
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
