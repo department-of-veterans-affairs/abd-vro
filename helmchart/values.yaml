@@ -65,10 +65,6 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
-  assessClaimDC7101:
-    indent: 12
-  pythonPdfGenerator:
-    indent: 12
   db:
     limits:
       cpu: 10m
@@ -77,7 +73,15 @@ resources:
     limits:
       cpu: 10m
       memory: 256Mi
-
+  assessClaimDC7101:
+    limits:
+      cpu: 150m
+      memory: 256Mi
+  pythonPdfGenerator:
+    limits:
+      cpu: 150m
+      memory: 256Mi
+    
 service:
   api:
     type: ClusterIP

@@ -99,6 +99,7 @@ spec:
         - name: {{ .Values.name }}-assess-claim-dc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
+          resources: {{- toYaml .Values.resources.assessClaimDC7101 | nindent 12 }}
         - name: {{ .Values.name }}-pdf-generator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
@@ -115,5 +116,4 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.assessClaimDC7101.indent | nindent 12 }}
-          resources: {{- toYaml .Values.resources.pythonPdfGenerator.indent | nindent 12 }}
+          resources: {{- toYaml .Values.resources.pythonPdfGenerator | nindent 12 }}
