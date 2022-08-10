@@ -7,13 +7,15 @@ plugins {
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
+
+    id 'starter.std.java.library-spring-conventions'
 }
 
 
 group = 'gov.va'
 version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
-java.sourceCompatibility = JavaVersion.VERSION_17
+//java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar.name)
@@ -44,6 +46,19 @@ dependencies {
     testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
     testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
     testImplementation 'org.skyscreamer:jsonassert:1.2.3'
+
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
+    implementation project(':test-data-factory')
+
+    implementation "gov.va.starter:exceptions"
+    implementation "gov.va.starter:entity-lifecycle-notifier"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
+    implementation 'gov.va.starter:test-data'
 }
 
 docker {
@@ -73,8 +88,6 @@ bootJar {
         )
     }
 }
-
-
 
 /*
 test {

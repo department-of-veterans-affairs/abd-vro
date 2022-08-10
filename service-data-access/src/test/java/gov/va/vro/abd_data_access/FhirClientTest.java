@@ -5,17 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import gov.va.vro.abd_data_access.model.AbdEvidence;
 import gov.va.vro.abd_data_access.service.FhirClient;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -30,15 +26,28 @@ class FhirClientTest {
     AbdEvidence evidence = client.getMedicalEvidence(CommonData.claim01);
 
     assertNotNull(evidence);
-    assertNotNull(evidence.getBloodPressures());
-    assertTrue(evidence.getBloodPressures().size() > 0);
+    if (evidence.getBloodPressures() != null) {
+      assertTrue(evidence.getBloodPressures().size() > 0);
+      int measuredBPCount =
+          evidence.getBloodPressures().stream()
+              .filter(s -> s.getDiastolic() != null | s.getSystolic() != null)
+              .collect(Collectors.toList())
+              .size();
+      assertEquals(measuredBPCount, evidence.getBloodPressures().size());
+    }
+    ;
 
-    ObjectMapper mapper = new ObjectMapper();
-    String actual = mapper.writeValueAsString(evidence);
+    if (evidence.getMedications() != null) {
+      assertTrue(evidence.getMedications().size() > 0);
+    }
+    ;
 
-    InputStream stream = expectedResource.getInputStream();
-    String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    if (evidence.getConditions() != null) {
+      assertTrue(evidence.getConditions().size() > 0);
+    }
 
-    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    if (evidence.getProcedures() != null) {
+      assertTrue(evidence.getProcedures().size() > 0);
+    }
   }
 }

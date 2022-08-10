@@ -9,9 +9,7 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Duration;
 import org.hl7.fhir.r4.model.MedicationRequest;
-import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestDispenseRequestComponent;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Procedure;
@@ -19,15 +17,13 @@ import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FieldExtractor {
   private static String toDate(DateTimeType dateTimeType) {
@@ -103,28 +99,34 @@ public class FieldExtractor {
       result.setStatus(medication.getStatus().getDisplay());
     }
     if (medication.hasNote()) {
-      result.setNotes(medication.getNote().stream()
-          .map(n -> n.getText()).collect(Collectors.toList()));
+      result.setNotes(
+          medication.getNote().stream().map(n -> n.getText()).collect(Collectors.toList()));
     }
     if (medication.hasDosageInstruction()) {
-      List<String> dosages = medication.getDosageInstruction()
-          .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
-      List<String> codeText = medication.getDosageInstruction()
-          .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
-          .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
-          .collect(Collectors.toList());
+      List<String> dosages =
+          medication.getDosageInstruction().parallelStream()
+              .map(d -> d.getText())
+              .collect(Collectors.toList());
+      List<String> codeText =
+          medication.getDosageInstruction().stream()
+              .filter(d -> d.hasTiming())
+              .filter(t -> t.getTiming().hasCode())
+              .filter(c -> c.getTiming().getCode().hasText())
+              .map(c -> c.getTiming().getCode().getText())
+              .collect(Collectors.toList());
       dosages.addAll(codeText);
       result.setDosageInstructions(dosages);
-      String routes = medication.getDosageInstruction()
-          .stream().filter(d -> d.hasRoute() && d.getRoute().hasText())
-          .map(d -> d.getRoute().getText()).findFirst().orElse(""); // Take 1st one for now
+      String routes =
+          medication.getDosageInstruction().stream()
+              .filter(d -> d.hasRoute() && d.getRoute().hasText())
+              .map(d -> d.getRoute().getText())
+              .findFirst()
+              .orElse(""); // Take 1st one for now
       result.setRoute(routes);
     }
     if (medication.hasDispenseRequest()) {
-      result.setDuration(medication.getDispenseRequest()
-          .getExpectedSupplyDuration().getDisplay());
-      result.setRefills(medication.getDispenseRequest()
-          .getNumberOfRepeatsAllowed());
+      result.setDuration(medication.getDispenseRequest().getExpectedSupplyDuration().getDisplay());
+      result.setRefills(medication.getDispenseRequest().getNumberOfRepeatsAllowed());
     }
 
     return result;

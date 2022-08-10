@@ -59,6 +59,7 @@ ext {
                    ':service:activator',
                    ':service:provider',
                    ':service:spi',
+                   ':service-data-access',
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assess-claim-dc7101',
