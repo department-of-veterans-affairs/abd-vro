@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class VroControllerTest {
+class VroControllerTest extends BaseIntegrationTest {
 
   @Autowired private TestRestTemplate testRestTemplate;
 

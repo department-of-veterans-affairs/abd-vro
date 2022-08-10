@@ -3,61 +3,18 @@ info:
     name: abd_vro
     description: Java API Starter from Template
 
-management:
-  # TODO: Figure out the proper security for these, and perhaps don't expose everything
-  endpoints.web:
-    exposure.include: "*"
-  endpoint:
-    health:
-      show-details: always
-      probes:
-        enabled: true
-      group:
-        liveness.include: livenessState
-        readiness.include: readinessState, db
-  metrics:
-    enabled: true
-    distribution:
-      percentiles.http.server.requests: 0.5, 0.90, 0.95, 0.99, 0.999
-      percentiles-histogram.http.server.requests: true
-      sla.http.server.requests: 10ms, 50ms
-      slo.http.server.requests: 10ms, 50ms
-    tags:
-      group: starter
-      service: example
-      region: "${POD_REGION:local}"
-      stack: "${CLUSTER:dev}"
-      ns: "${NAMESPACE:example}"
-      pod: "${POD_ID:docker}"
-    web.server.request.autotime.enabled: true
-  server.port: 8081
-
-server:
-  tomcat:
-    basedir: build/tomcat
-    max-threads: 100
-  ssl:
-    enabled: false
-  port: 8080
-
-log4j2:
-  formatMsgNoLookups: true
-
 spring:
   application:
     name: "starter-api"
 
   datasource:
-    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
-    username: skuser
-    password: localT3st!
-    hikari:
-      jdbc-url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
-      username: skuser
-      password: localT3st!
+    url: jdbc:tc:postgresql:9.6.8:///test_database
+    username: user
+    password: password
   jpa:
+    hibernate:
+      ddl-auto: create
     show-sql: true
-    generate-ddl: true
   resources:
     add-mappings: false
   mvc:
@@ -65,38 +22,7 @@ spring:
   http:
     encoding:
       force: true
-  kafka:
-    bootstrap-servers: "localhost:9092"
-    topic.name: default-kafka-topic
-    replication.factor: 1
-    partition.number: 1
-    consumer:
-      auto-offset-reset: earliest
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      group-id: starter
-      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-      value-deserializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonDeserializer
-      level.concurrency: 1
-      properties:
-        spring.json.trusted.packages: gov.va.starter.*
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
-    producer:
-      # This means the leader will wait for the full set of in-sync replicas to acknowledge
-      # the record. This guarantees that the record will not be lost as long as at least one
-      # in-sync replica remains alive. This is the strongest available guarantee.
-      # This is equivalent to the acks=-1 setting. For an eventing architecture this should be
-      # our default setting - no need for extremely high speed compromises here.
-      acks: all
-      batch-size: 1048576
-      buffer-memory: 2097152
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      compression-type: lz4
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-      value-serializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonSerializer
-      properties:
-        max.in.flight.requests.per.connection: 2
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
+
 
 opentracing:
   zipkin:
