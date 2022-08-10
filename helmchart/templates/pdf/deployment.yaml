@@ -53,7 +53,7 @@ spec:
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: {{- toYaml .Values.resources.api | nindent 12 }}
+          resources: {{- toYaml .Values.resources.pythonPdfGenerator | nindent 12 }}
 #        - name: {{ .Values.name }}-assess-claim-dc7101
 #          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
 #          imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
