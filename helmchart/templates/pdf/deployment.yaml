@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.labels.pdfGeneratorName.app }}
-  labels: {{- toYaml .Values.labels.pdfGeneratorName | nindent 4 }}
+  name: {{ .Values.labels.pdfGenerator.app }}
+  labels: {{- toYaml .Values.labels.pdfGenerator | nindent 4 }}
   annotations:
-    app.kubernetes.io/name: {{ .Values.labels.pdfGeneratorName.app }}
+    app.kubernetes.io/name: {{ .Values.labels.pdfGenerator.app }}
     app.kubernetes.io/version: {{ .Values.version | quote }}
     app.kubernetes.io/owner: {{ .Values.owner }}
     app.kubernetes.io/env: {{ .Values.environment }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels: {{- toYaml .Values.labels.pdfGeneratorName | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels.pdfGenerator | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.pdfGeneratorName | nindent 8 }}
+      labels: {{- toYaml .Values.labels.pdfGenerator | nindent 8 }}
       annotations:
-        app.kubernetes.io/podname: {{ .Values.labels.pdfGeneratorName.app }}
+        app.kubernetes.io/podname: {{ .Values.labels.pdfGenerator.app }}
         app.kubernetes.io/podversion: {{ .Values.version | quote }}
         app.kubernetes.io/podowner: {{ .Values.owner }}
         app.kubernetes.io/podenv: {{ .Values.environment }}
