@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
-  labels: {{- toYaml .Values.labels.api | nindent 2 }}
+  labels: {{- toYaml .Values.labels.api | nindent 4 }}
   annotations:
     app.kubernetes.io/name: {{ .Values.name }}
     app.kubernetes.io/version: {{ .Values.version | quote }}
@@ -12,10 +12,10 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels: {{- toYaml .Values.labels.api | nindent 4 }}
+    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.api | nindent 6 }}
+      labels: {{- toYaml .Values.labels.api | nindent 8 }}
       annotations:
         app.kubernetes.io/podname: {{ .Values.name }}
         app.kubernetes.io/podversion: {{ .Values.version | quote }}
@@ -43,7 +43,7 @@ spec:
                   sleep 5
                 done
               "
-          resources: {{- toYaml .Values.resources.db | nindent 10 }}
+          resources: {{- toYaml .Values.resources.db | nindent 12 }}
         - name: db-init
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
           imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
@@ -62,14 +62,14 @@ spec:
                   key: {{ .Values.postgres.passwordKey }}
             - name: FLYWAY_URL
               value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
-          resources: {{- toYaml .Values.resources.api | nindent 10 }}
+          resources: {{- toYaml .Values.resources.api | nindent 12 }}
       containers:
         - name: {{ .Values.name }}
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
-          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 10 }}
-          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 10 }}
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             - name: JAVA_OPTS
               value: -Xmx512m
@@ -95,11 +95,11 @@ spec:
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: {{- toYaml .Values.resources.api | nindent 10 }}
+          resources: {{- toYaml .Values.resources.api | nindent 12 }}
         - name: {{ .Values.name }}-assess-claim-dc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
-          resources: {{- toYaml .Values.resources.assessClaimDC7101 | nindent 10 }}
+          resources: {{- toYaml .Values.resources.assessClaimDC7101 | nindent 12 }}
         - name: {{ .Values.name }}-pdf-generator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
@@ -116,4 +116,4 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.pythonPdfGenerator | nindent 10 }}
+          resources: {{- toYaml .Values.resources.pythonPdfGenerator | nindent 12 }}
