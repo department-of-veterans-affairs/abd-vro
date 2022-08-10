@@ -6,7 +6,7 @@ lib_dir = os.path.dirname(__file__)
 def test_default_template_variables():
     pdf_generator = PDFGenerator({})
     template = "asthma"
-    default_variables = json.load(open(os.path.join(lib_dir, f"../../pdf_generator/src/lib/template_variables/{template}.json")))
+    default_variables = json.load(open(os.path.join(lib_dir, f"../../pdfgenerator/src/lib/template_variables/{template}.json")))
 
     generated_variables = pdf_generator.generate_template_variables(template, {})
 
