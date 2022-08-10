@@ -66,10 +66,10 @@ jobs:
           cache: "pip"
 
       - name: "DC7101: PIP Install"
-        run: pip install -r service-python/assess-claim-dc7101/src/requirements.txt
+        run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
 
       - name: "PDF Generator: PIP Install"
-        run: pip install -r service-python/pdf-generator/src/requirements.txt
+        run: pip install -r service-python/pdfgenerator/src/requirements.txt
 
       - name: "Pytest: Code Coverage"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
