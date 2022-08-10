@@ -33,8 +33,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // implementation 'com.bisnode.opa:opa-filter-spring-boot-starter'
 
-    testImplementation 'com.h2database:h2'
-    runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2:2.1.214'
+    runtimeOnly 'com.h2database:h2:2.1.214'
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
 
@@ -59,6 +59,19 @@ bootJar {
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         )
     }
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    exclude 'gov/va/starter/example/**'
+    exclude 'gov/va/vro/**'
+}
+
+afterEvaluate {
+    tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
 }
 
 tasks.named('lintDockerfile').configure {
