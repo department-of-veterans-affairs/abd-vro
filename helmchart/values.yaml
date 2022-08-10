@@ -56,16 +56,16 @@ resources:
   api:
     requests:
       cpu: 150m
-      memory: 512Mi
+      memory: 256Mi
     limits:
       cpu: 1000m
       memory: 1024Mi
   serviceRuby:
     requests:
       cpu: 150m
-      memory: 512Mi
+      memory: 256Mi
     limits:
-      cpu: 1000m
+      cpu: 150m
       memory: 1024Mi
   db:
     limits:
