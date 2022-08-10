@@ -118,7 +118,9 @@ public class VroController implements VroResource {
       ObjectMapper mapper = new ObjectMapper();
       HealthData7101AssessmentResponse response =
           mapper.readValue(responseAsString, HealthData7101AssessmentResponse.class);
-      log.info("Returning health assessment for: {}", response.getVeteranIcn());
+      log.info("Returning health assessment for: {}", claim.getVeteranIcn());
+      response.setVeteranIcn(claim.getVeteranIcn());
+      response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       String msg = ex.getMessage();
