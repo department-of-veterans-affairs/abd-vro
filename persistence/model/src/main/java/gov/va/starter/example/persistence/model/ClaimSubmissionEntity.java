@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 
 @Entity
-@Table(name = "claimsubmission", schema = "example")
+@Table(name = "claimsubmission")
 @Getter
 @Setter
 @NoArgsConstructor
