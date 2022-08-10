@@ -25,7 +25,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
       containers:
-        - name: {{ .Values.images.pdfGenerator.imageName }}
+        - name: {{ .Values.labels.pdfGenerator.app }}
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
