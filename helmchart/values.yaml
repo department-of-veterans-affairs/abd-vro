@@ -9,6 +9,8 @@ replicaCount: 1
 labels:
   api:
     app: abd_vro
+  pdfGenerator:
+    app: pdf-generator
   db:
     global: &labels-db-global
       app: postgres-db
