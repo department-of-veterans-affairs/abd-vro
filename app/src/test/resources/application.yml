@@ -3,6 +3,10 @@ info:
     name: abd_vro
     description: Java API Starter from Template
 
+apiauth:
+  hdr-key-name: X-API-Key
+  url-context: /v1/**
+
 spring:
   application:
     name: "starter-api"

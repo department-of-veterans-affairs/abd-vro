@@ -71,7 +71,6 @@ repositories {
 
 test {
     exclude 'gov/va/starter/example/**'
-    exclude 'gov/va/vro/**'
 }
 
 afterEvaluate {
