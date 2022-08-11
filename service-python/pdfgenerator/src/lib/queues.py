@@ -1,4 +1,4 @@
-from .pdfgenerator import PDFGenerator
+from .pdf_generator import PDFGenerator
 from .redis_client import RedisClient
 from .settings import codes as DIAGNOSTIC_CODE_MAPPING, pdf_options, redis_config, queue_config
 

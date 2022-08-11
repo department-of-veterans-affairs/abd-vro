@@ -11,7 +11,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Slf4j
 @Configuration
@@ -38,16 +37,15 @@ public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
     // Secure end point
-    httpSecurity
-        .antMatcher(URL_CONTEXT)
-        .csrf()
-        .disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
+    httpSecurity.antMatcher(URL_CONTEXT).csrf().disable();
+    // TODO: Will re-enable once we update swagger to handle this.
+    // In the meantime, we need to disable security to continue testing
+    //        .sessionManagement()
+    //        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    //        .and()
+    //        .addFilter(apiAuthKeyFilter)
+    //        .authorizeRequests()
+    //        .anyRequest()
+    //        .authenticated();
   }
 }
