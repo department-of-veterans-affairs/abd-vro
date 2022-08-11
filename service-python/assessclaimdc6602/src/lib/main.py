@@ -1,8 +1,8 @@
-import json
+import validator
+import logging
+from . import medication
 from typing import Dict
 
-from . import medication
-import validator
 
 def assess_asthma(event: Dict):
     """
@@ -18,6 +18,8 @@ def assess_asthma(event: Dict):
 
     if validation_results["is_valid"]:
         active_medication = medication.medication_required(event)
+        logging.info(validation_results["errors"])
+        response_body["errorMessage"] = {"errorString": "error validating request message data"}
 
     else:
         active_medication = []
@@ -27,6 +29,5 @@ def assess_asthma(event: Dict):
         "evidence": {"medication": active_medication}
     })
 
-    return {
-        "body": json.dumps(response_body)
-    }
+    return response_body
+    

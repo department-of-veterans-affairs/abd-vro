@@ -36,9 +36,9 @@ def medication_required(request_body):
   """
   relevant_medications = []
 
-  veterans_medication = request_body["medication"]
+  veterans_medication = request_body["evidence"]["medications"]
   for medication in veterans_medication:
-    medication_display = medication["text"]
+    medication_display = medication["description"]
     for keyword in [x.lower() for x in asthma_medications]:
       if (keyword in medication_display.lower()):
         relevant_medications.append(medication)
