@@ -1,5 +1,5 @@
 import operator
-from datetime import datetime
+from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 
@@ -47,8 +47,8 @@ def calculate_predominant_readings(bp_readings):
 
     if len(bp_readings) == 2:
         return {
-            "systolic_value": max(bp_readings[0]["systolic"], bp_readings[1]["systolic"]),
-            "diastolic_value": max(bp_readings[0]["diastolic"], bp_readings[1]["diastolic"])
+            "systolic_value": max(bp_readings[0]["systolic"]["value"], bp_readings[1]["systolic"]["value"]),
+            "diastolic_value": max(bp_readings[0]["diastolic"]["value"], bp_readings[1]["diastolic"]["value"])
         }
 
     diastolic_130_and_above = []
@@ -62,8 +62,8 @@ def calculate_predominant_readings(bp_readings):
     systolic_0_to_159 = []
 
     for reading in bp_readings:
-        diastolic_value = reading["diastolic"]
-        systolic_value = reading["systolic"]
+        diastolic_value = reading["diastolic"]["value"]
+        systolic_value = reading["systolic"]["value"]
 
         if diastolic_value >= 130:
             diastolic_130_and_above.append(reading)
@@ -82,7 +82,7 @@ def calculate_predominant_readings(bp_readings):
             systolic_160_to_199.append(reading)
         else:
             systolic_0_to_159.append(reading)
-
+        
     # This is a **list** of lists (rather than a dict of lists) because we want
     # to preserve order...
     # ...and we want to preserve order because, when there is a tie in the
@@ -116,8 +116,8 @@ def calculate_predominant_readings(bp_readings):
     longest_systolic_list.sort(key=operator.itemgetter("date"))
 
     return {
-        "systolic_value": longest_systolic_list[-1]["systolic"],
-        "diastolic_value": longest_diastolic_list[-1]["diastolic"]
+        "systolic_value": longest_systolic_list[-1]["systolic"]["value"],
+        "diastolic_value": longest_diastolic_list[-1]["diastolic"]["value"]
     }
 
 def sufficient_to_autopopulate (request_body):
@@ -132,11 +132,16 @@ def sufficient_to_autopopulate (request_body):
     """
 
     predominance_calculation = {}
-    date_of_claim = request_body["date_of_claim"]
+
+    if "date_of_claim" in request_body:
+        date_of_claim = request_body["date_of_claim"]
+    else:
+        date_of_claim = str(date.today())
+
     valid_bp_readings = []
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
-    for reading in request_body["observation"]["bp"]:
+    for reading in request_body["evidence"]["bp_readings"]:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             valid_bp_readings.append(reading)

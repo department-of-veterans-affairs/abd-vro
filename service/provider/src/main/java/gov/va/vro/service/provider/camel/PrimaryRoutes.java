@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class PrimaryRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
+  public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
 
   private final CamelUtils camelUtils;
@@ -21,7 +22,8 @@ public class PrimaryRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureRouteFileLogger();
-    configureRouteClaimSubmit(); // TODO: remove in favor of RouteProcessClaim
+    configureRouteClaimSubmit();
+    configureRouteClaimSubmitForFull();
     configureRouteClaimProcessed();
 
     configureRouteGeneratePdf();
@@ -52,6 +54,19 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
+        .log(">>5> ${body}");
+  }
+
+  private void configureRouteClaimSubmitForFull() {
+    // send JSON-string payload to RabbitMQ
+    from(ENDPOINT_SUBMIT_CLAIM_FULL)
+        .routeId("claim-submit-full")
+        .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
+        // Use Properties not Headers
+        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
         .log(">>5> ${body}");
   }
 

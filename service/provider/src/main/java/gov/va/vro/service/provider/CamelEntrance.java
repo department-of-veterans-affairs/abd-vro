@@ -38,6 +38,10 @@ public class CamelEntrance {
     return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
   }
 
+  public String submitClaimFull(Claim claim) {
+    return producerTemplate.requestBody("direct:claim-submit-full", claim, String.class);
+  }
+
   public String generatePdf(GeneratePdfPayload resource) {
     return producerTemplate.requestBody("direct:generate-pdf", resource, String.class);
   }
