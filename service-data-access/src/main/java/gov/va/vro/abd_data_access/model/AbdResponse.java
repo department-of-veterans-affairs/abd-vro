@@ -1,5 +1,6 @@
 package gov.va.vro.abd_data_access.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,9 @@ import lombok.Setter;
 public class AbdResponse {
   private String veteranIcn;
   private String diagnosticCode;
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   private AbdEvidence evidence;
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
 
   public AbdResponse() {}

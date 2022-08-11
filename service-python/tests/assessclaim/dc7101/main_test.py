@@ -10,39 +10,87 @@ from assessclaimdc7101.src.lib import main
         # All three calculator functions return valid results readings
         (
             {
-                "observation": {
-                    "bp": [
+                "evidence": {
+                    "bp_readings": [
                         {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2021-11-01"
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                            "date": "2021-11-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         },
                         {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2021-09-01"
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 110
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 200.0
+                            },
+
+                            "date": "2021-09-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
+                ,
+                "medications": [{"description": "Capoten"}],
                 },
-                "medication": [{"text": "Capoten"}],
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
             }
             ,
             {
-                "body": json.dumps({
                         "evidence":{
-                            "medication": [{"text": "Capoten"}],
-                            "bp":  [                      
+                            "medications": [{"description": "Capoten"}],
+                            "bp_readings":  [                      
                             {
-                                "diastolic": 115,
-                                "systolic": 180,
-                                "date": "2021-11-01"
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                                "date": "2021-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
                             },
                             {
-                                "diastolic": 110,
-                                "systolic": 200,
-                                "date": "2021-09-01"
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 110
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 200
+                            },
+                                "date": "2021-09-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
                         },
@@ -56,10 +104,9 @@ from assessclaimdc7101.src.lib import main
                                 "diastolic_bp_predominantly_100_or_more": True,
                                 "success": True
                             }
-                        }
+                        },
+                        "status": "COMPLETE"
                     }
-                )
-            }
         ),
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn't
         # Note that the inverse can't happen (where history_of_diastolic_bp fails while sufficient_to_autopopulate doesn't)
@@ -67,39 +114,89 @@ from assessclaimdc7101.src.lib import main
         # sufficient_to_autopopulate to fail as well 
         (
             {
-                "observation" : {
-                    "bp": [
+                "evidence":{
+                    "bp_readings": [ 
                         {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2020-11-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 115
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 180
+                        },
+                            "date": "2020-11-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         },
                         {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2020-09-01"
+                        "diastolic": {
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 110
+                        },
+                        "systolic": {                
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure",
+                            "unit": "mm[Hg]",
+                            "value": 200
+                        },
+                            "date": "2020-09-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER"
                         }
                     ]
+                ,
+                "medications": [],
                 },
-                "medication": [],
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                "diagnosticCode": "7101"
             }
             ,
             {
-                "body": json.dumps({
                     "evidence":{
-                        "medication": [],
-                        "bp": [                        {
-                            "diastolic": 115,
-                            "systolic": 180,
-                            "date": "2020-11-01"
-                        },
-                        {
-                            "diastolic": 110,
-                            "systolic": 200,
-                            "date": "2020-09-01"
-                        }]
+                        "medications": [],
+                        "bp_readings": [                      
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                                "date": "2020-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            },
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 110
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 200
+                            },
+                                "date": "2020-09-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            }
+                            ]
                     },
                     "calculated":{
                         "predominance_calculation": {
@@ -109,69 +206,77 @@ from assessclaimdc7101.src.lib import main
                             "diastolic_bp_predominantly_100_or_more": True,
                             "success": True
                         }
-                    }
-                })
-            }
+                    },
+                    "status": "COMPLETE",
+                }
         ),
         # Sufficiency and history algos fail
         (
             
             {
-                "observation":
-                {"bp": []},
-                "medication": [],
+                "evidence":{
+
+                "bp_readings": [],
+                "medications": [],
+                },
                 "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
+                "diagnosticCode": "7101"
             }
             ,
             {
-                "body": json.dumps({
-                    "evidence":{'medication': [],
-                    "bp": []},
+                    "evidence":{'medications': [],
+                    "bp_readings": []},
                     "calculated":{"predominance_calculation": {
                         "success": False,
                     },
                     "diastolic_history_calculation": {
                         "success": False
-                    }}
-                })
-            }
+                    }},
+                    "status": "COMPLETE",
+                }
         ),
         # Bad data: "diastolic" key is missing in second reading
         (
             {
-                "observation" : {
-                    "bp": [
-                        {
-                            "diastolic": 111,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        }
-                    ]
-                },
-                "date_of_claim": "2021-11-09",
-                "vasrd": "7101"
-            }
-            ,
+                "evidence":{
+                    "bp_readings": [                      
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                                "date": "2021-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            },
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 110
+                            },
+                                "date": "2021-09-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            }
+                            ]
+                }
+            },
             {
-                "body": json.dumps({
-                    "evidence":{'medication': [],
-                    
-                    "bp": [
-                        {
-                            "diastolic": 111,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        }
-                    ]},
+                    "status" : "COMPLETE",
+                    "evidence":{
+                        'medications': [],
+                        "bp_readings": []
+                    },
                     "calculated":{
                     "predominance_calculation": {
                         "success": False,
@@ -180,9 +285,8 @@ from assessclaimdc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errors": {"observation":[{"bp": [{"1": [{"diastolic": ["required field"]}]}]}]}
-                })
-            }
+                    "errorMessage": {"errorString": "error validating request message data"}
+                }
         ),
         # Bad data:
         # - "diastolic" value is string instead of int
@@ -190,54 +294,59 @@ from assessclaimdc7101.src.lib import main
         # - "veteran_is_service_connected_for_dc7101" is a string
         (
             {
-                "observation" : {
-                    "bp": [
-                        {
-                            "diastolic": "180",
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "diastolic": 120,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        }
-                    ]
+                "evidence":{
+                    "bp_readings": [                      
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": "115"
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180
+                            },
+                                "date": "2021-11-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            },
+                            {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 110
+                            },
+                            "systolic": {                
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 200
+                            },
+                                "date": "2021-09-01",
+                                "practitioner": "DR. JANE460 DOE922 MD",
+                                "organization": "LYONS VA MEDICAL CENTER"
+                            }
+                            ],
+                "medications": [{"description": 11}]
                 },
-                "date_of_claim": "2021-11-09",
-                "medication": [{"text": 11}],
-                "vasrd": "7101"
+                "date_of_claim": "2021-11-09"
             }
             ,
             {
-                "body": json.dumps({
+                    "status" : "COMPLETE",
                     "calculated": {
                         "diastolic_history_calculation": {"success": False},
                         "predominance_calculation": {'success': False}},
                     "evidence": {
-                        "bp": [
-                        {
-                            "diastolic": "180",
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "diastolic": 120,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        }
-                        
-                    ],
-                    "medication": []
+                        "bp_readings": [],
+                    "medications": []
                     },
-                    "errors": {
-                        "observation": [{
-                            "bp": [{"0": [{"diastolic": ["must be of integer type"]}]}]
-                            }],
-                        "medication": [{0: [{'text': ['must be of string type']}]}],
-                    }
-                })
-            }
+                    "errorMessage": {"errorString": "error validating request message data"}
+                }
         ),
     ],
 )
@@ -252,4 +361,4 @@ def test_main(request_body, response):
     """
     api_response = main.assess_hypertension(request_body)
 
-    assert json.loads(api_response["body"]) == json.loads(response["body"])
+    assert api_response == response

@@ -7,48 +7,57 @@ from assessclaimdc7101.src.lib import continuous_medication
     [
         # Service connected and medication used to treat hypertension
         (
+            {"evidence":
             {
-                "observation": {"bp": []},
-                "medication": [{"text": "Benazepril"}],
+                "bp_readings": [],
+                "medications": [{"description": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
-            [{"text": "Benazepril"}]
+            [{"description": "Benazepril"}]
             ,
         ),
         # Not service connected but uses medication used to treat hypertension
         (
+            {"evidence":
             {
-                "observation": {"bp": []},
-                "medication": [{"text": "Benazepril"}],
+                "bp_readings": [],
+                "medications": [{"description": "Benazepril"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
-            [{"text": "Benazepril"}]
+            [{"description": "Benazepril"}]
             ,
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
+            {"evidence":
             {
-                "observation": {"bp": []},
-                "medication": [{"text": "Advil"}],
+                "bp_readings": [],
+                "medications": [{"description": "Advil"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
             [],
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
+            {"evidence":
             {
-                "observation": {"bp": []},
-                "medication": [{"text": "Benazepril"}, {"text": "Advil"}],
+                "bp_readings": [],
+                "medications": [{"description": "Benazepril"}, {"description": "Advil"}],
                 'date_of_claim': '2021-11-09',
+            }
             },
-            [{"text": "Benazepril"}],
+            [{"description": "Benazepril"}],
         ),
         # Service connected but no medication
         (
+            {"evidence":
             {
-                "observation": {"bp": []},
-                "medication": [],
-                'date_of_claim': '2021-11-09',
+                "bp_readings": [],
+                "medications": [],
+            }
             },
             [],
         ),

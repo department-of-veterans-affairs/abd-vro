@@ -7,150 +7,158 @@ from assessclaimdc7101.src.lib import bp_history
     [
         # 0 readings
         (
-            {
-                "observation": {"bp": []}
+            {"evidence": 
+                {
+                    "bp_readings": []
+                }
+            
             },
-            {
-                "success": False
-            }
+                {
+                    "success": False
+                }
         ),
         # 1 reading test case that passes
         (
-            {
-                "observation": {
-                        "bp": [
+                {
+                    "evidence": {
+                    "bp_readings": [
                         {
-                            "diastolic": 100,
-                            "systolic": 180,
+                            "diastolic": {"value": 100},
+                            "systolic": {"value": 180},
                             "date": "2021-11-01"
                         },
                     ]
+                    }
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": True,
+                    "success": True
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": True,
-                "success": True 
-            }
         ),
         # 1 reading test case that fails
         (
-            {
-                "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 90,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        },
-                    ]
+                {
+                    "evidence": {
+
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                        ]
+                    }
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": False,
+                    "success": True
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": False,
-                "success": True 
-            }
         ),
         # 2 reading test case that passes
         (
-            {
-                "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 100,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        },
-                        {
-                            "diastolic": 90,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        }
-                    ]
+                {
+                    "evidence": {
+
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 100},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-01"
+                            }
+                        ]
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": True,
-                "success": True 
-            }
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": True,
+                    "success": True
+                }
         ),
         # 2 reading test case that fails
         (
-            {
-                "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 90,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        },
-                        {
-                            "diastolic": 90,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        }
-                    ]
+                {
+                    "evidence": {
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-01"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": False,
+                    "success": True
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": False,
-                "success": True 
-            }
         ),
         # 3 reading test case that passes
         (
-            {
-                "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 101,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        },
-                        {
-                            "diastolic": 90,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "diastolic": 115,
-                            "systolic": 200,
-                            "date": "2021-09-02"
-                        }
-                    ]
+                {
+                    "evidence": 
+                    {
+
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 101},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-01"
+                            },
+                            {
+                                "diastolic": {"value": 115},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-02"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": True,
+                    "success": True
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": True,
-                "success": True 
-            }
         ),
         # 3 reading test case that fails
         (
-            {
-                "observation": {
-                    "bp": [
-                        {
-                            "diastolic": 101,
-                            "systolic": 180,
-                            "date": "2021-11-01"
-                        },
-                        {
-                            "diastolic": 90,
-                            "systolic": 200,
-                            "date": "2021-09-01"
-                        },
-                        {
-                            "diastolic": 95,
-                            "systolic": 200,
-                            "date": "2021-09-02"
-                        }
-                    ]
+                {
+                    "evidence": {
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 101},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                            {
+                                "diastolic": {"value": 90},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-01"
+                            },
+                            {
+                                "diastolic": {"value": 95},
+                                "systolic": {"value": 200},
+                                "date": "2021-09-02"
+                            }
+                        ]
+                    }
+                    
+                },
+                {
+                    "diastolic_bp_predominantly_100_or_more": False,
+                    "success": True
                 }
-            },
-            {
-                "diastolic_bp_predominantly_100_or_more": False,
-                "success": True 
-            }
         ),
     ],
 )

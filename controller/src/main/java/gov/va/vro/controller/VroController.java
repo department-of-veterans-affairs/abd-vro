@@ -7,6 +7,7 @@ import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.responses.HealthData7101AssessmentResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.FetchPdfRequestMapper;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
@@ -58,7 +59,7 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       String msg = ex.getMessage();
-      log.error(ex.getStackTrace().toString());
+      log.error("Error in health assessment", ex);
       HealthDataAssessmentResponse response =
           new HealthDataAssessmentResponse(claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
       return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,6 +104,31 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
+    }
+  }
+
+  @Override
+  public ResponseEntity<HealthData7101AssessmentResponse> postHealth7101Assessment(
+      HealthDataAssessmentRequest claim) throws RequestValidationException {
+    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+    try {
+      Claim model = postClaimRequestMapper.toModel(claim);
+      String responseAsString = camelEntrance.submitClaimFull(model);
+      log.info("Obtained full health assessment", responseAsString);
+      ObjectMapper mapper = new ObjectMapper();
+      HealthData7101AssessmentResponse response =
+          mapper.readValue(responseAsString, HealthData7101AssessmentResponse.class);
+      log.info("Returning health assessment for: {}", claim.getVeteranIcn());
+      response.setVeteranIcn(claim.getVeteranIcn());
+      response.setDiagnosticCode(claim.getDiagnosticCode());
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (Exception ex) {
+      String msg = ex.getMessage();
+      log.error("Error in health 7101 assessment", ex);
+      HealthData7101AssessmentResponse response =
+          new HealthData7101AssessmentResponse(
+              claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

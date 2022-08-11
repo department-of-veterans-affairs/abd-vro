@@ -36,4 +36,24 @@ public class SlipClaimSubmitRouter {
     log.info("Routing to {}.", route);
     return route;
   }
+
+  /**
+   * Computes endpoint where health data should be routed next.
+   *
+   * @param body the message body
+   * @param props the exchange properties where we can store state between invocations
+   * @return endpoints to go, or <tt>null</tt> to indicate the end
+   */
+  public String routeClaimSubmitFull(Object body, @ExchangeProperties Map<String, Object> props) {
+    Object diagnosticCodeObj = props.get("diagnosticCode");
+    if (diagnosticCodeObj == null) {
+      log.error("No diagnostic code in the body.");
+      return null;
+    }
+    String diagnosticCode = diagnosticCodeObj.toString();
+    String route = "rabbitmq:health-assess-exchange" + "?routingKey=" + diagnosticCode;
+
+    log.info("Routing to {}.", route);
+    return route;
+  }
 }
