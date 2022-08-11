@@ -1,9 +1,9 @@
-package gov.va.vro;
+package gov.va.vro.config;
 
 import gov.va.vro.security.ApiAuthKeyFilter;
 import gov.va.vro.security.ApiAuthKeyManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@RequiredArgsConstructor
 public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
 
   @Value("${apiauth.hdr-key-name}")
@@ -24,12 +25,7 @@ public class SecurityAllowConfig extends WebSecurityConfigurerAdapter {
   @Value("${apiauth.url-context}")
   private String URL_CONTEXT;
 
-  private ApiAuthKeyManager apiAuthKeyManager;
-
-  @Autowired
-  public void setApiAuthKeyManager(ApiAuthKeyManager apiAuthKeyManager) {
-    this.apiAuthKeyManager = apiAuthKeyManager;
-  }
+  private final ApiAuthKeyManager apiAuthKeyManager;
 
   protected void configure(HttpSecurity httpSecurity) throws Exception {
 

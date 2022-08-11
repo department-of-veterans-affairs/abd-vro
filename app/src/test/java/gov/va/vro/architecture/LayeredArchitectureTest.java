@@ -1,4 +1,4 @@
-package gov.va.starter.example.architecture;
+package gov.va.vro.architecture;
 
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 

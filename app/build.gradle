@@ -69,10 +69,6 @@ repositories {
     mavenCentral()
 }
 
-test {
-    exclude 'gov/va/starter/example/**'
-}
-
 afterEvaluate {
     tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
 }
