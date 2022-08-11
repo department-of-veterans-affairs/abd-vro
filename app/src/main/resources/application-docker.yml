@@ -12,6 +12,7 @@ spring:
       password: not-the-password
       schema: claims
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
     hibernate:
       ddl-auto: none

@@ -11,7 +11,7 @@ spring:
       password: not-the-password
       schema: claims
   jpa:
-    # Prefer to create table in as a flyway migration
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
     hibernate:
       ddl-auto: none
