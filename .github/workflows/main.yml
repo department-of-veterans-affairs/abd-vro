@@ -66,10 +66,10 @@ jobs:
           cache: "pip"
 
       - name: "DC7101: PIP Install"
-        run: pip install -r service-python/assess-claim-dc7101/src/requirements.txt
+        run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
 
       - name: "PDF Generator: PIP Install"
-        run: pip install -r service-python/pdf-generator/src/requirements.txt
+        run: pip install -r service-python/pdfgenerator/src/requirements.txt
 
       - name: "Pytest: Code Coverage"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
@@ -104,10 +104,10 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-assess-claim-dc7101 \
-            "ghcr.io/${{ github.repository }}/abd_vro-assess-claim-dc7101:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-pdf-generator \
-            "ghcr.io/${{ github.repository }}/abd_vro-pdf-generator:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-data-access \
             "ghcr.io/${{ github.repository }}/abd_vro-data-access:${COMMIT_SHA:0:7}"
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
@@ -125,5 +125,5 @@ jobs:
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/abd_vro-postgres:latest"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-pdf-generator:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-assess-claim-dc7101:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
