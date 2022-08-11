@@ -3,19 +3,17 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres1:5432/vro
-    username: vro_user
-    password: not-the-password
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+    username: skuser
+    password: localT3st!
     hikari:
-      jdbc-url: jdbc:postgresql://postgres1:5432/vro
-      username: vro_user
-      password: not-the-password
-      schema: claims
+      jdbc-url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+      username: skuser
+      password: localT3st!
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: false
+    generate-ddl: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
 
 logging:
   level:
