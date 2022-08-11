@@ -9,7 +9,8 @@ Guided by the vision to get Veterans benefits *in minutes, not months*, the VA A
 The overall goal for this project is to build automation to enrich Veteran claims with relevant data and remove unnecessary roadblocks to get Veteran's their benefits faster. Specifically, we aim to:
 * Reduce the time a Veteran waits for a decision on an application (aka “claim processing time”)
 * Reduce the number of unnecessary medical exams ordered for disability compensation applications (aka “unnecessary exams”)
-* Reduce the amount of manual effort required to make a decision on each claim (aka“touch time”)
+* Reduce the amount of manual effort required to make a decision on each claim (aka “touch time”)
+* Maintain or improve decision-making accuracy (aka "quality")
 
 # VRO Software
 
@@ -104,7 +105,7 @@ You can verify that the application is up and running by issuing the following c
 
 ```bash
 curl localhost:8081/health
-curl localhost:8081/info
+curl localhost:8081/actuator/info
 ```
 
 You should get back responses similar to the following:

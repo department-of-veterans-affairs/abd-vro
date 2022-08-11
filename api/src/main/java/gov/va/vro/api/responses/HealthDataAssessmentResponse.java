@@ -1,5 +1,6 @@
 package gov.va.vro.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.api.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -20,9 +21,11 @@ public class HealthDataAssessmentResponse {
   private String diagnosticCode;
 
   @Schema(description = "Medical evidence supporting assessment")
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   private AbdEvidence evidence;
 
   @Schema(description = "Error message in the case of an error")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
 
   public HealthDataAssessmentResponse(

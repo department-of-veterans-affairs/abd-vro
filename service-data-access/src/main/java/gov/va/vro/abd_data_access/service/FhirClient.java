@@ -7,11 +7,16 @@ import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.function.Function;
 
+@Slf4j
 public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
+  private static final int DEFAULT_PAGE = 0;
+  private static final int DEFAULT_SIZE = 30;
 
   @Autowired private IGenericClient client;
 
@@ -60,7 +65,10 @@ public class FhirClient {
                 AbdDomain.MEDICATION
               }),
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE}),
+              "7101", new AbdDomain[] {
+                  AbdDomain.BLOOD_PRESSURE,
+                  AbdDomain.MEDICATION
+              }),
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
               "6602", new AbdDomain[] {AbdDomain.MEDICATION}));
 
@@ -90,10 +98,12 @@ public class FhirClient {
                 return new SearchSpec("Condition", id);
               }));
 
-  public Bundle getBundle(AbdDomain domain, String patientIcn) throws AbdException {
+  public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
+          throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl();
+    String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
     String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
+    log.info("Get FHIR data from {}", url);
     return client
         .search()
         .byUrl(url)
@@ -114,6 +124,7 @@ public class FhirClient {
   }
 
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
+    log.info("Extract patient medication entries. number of entries: {}", entries.size());
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
@@ -161,16 +172,32 @@ public class FhirClient {
     String patientIcn = claim.getVeteranIcn();
     for (int i = 0; i < domains.length; ++i) {
       AbdDomain domain = domains[i];
-      Bundle bundle = getBundle(domain, patientIcn);
-      List<BundleEntryComponent> entries = bundle.getEntry();
-      if (entries.size() > 0) {
-        result.put(domain, entries);
+      int pageNo = DEFAULT_PAGE;
+      int pageSize = DEFAULT_SIZE;
+      boolean hasNextPage = false;
+      List<BundleEntryComponent> records = new ArrayList<>();
+      do {
+        pageNo++;
+        Bundle bundle = getBundle(domain, patientIcn, pageNo, pageSize);
+        List<BundleEntryComponent> entries = bundle.getEntry();
+        if (entries.size() > 0) {
+          records.addAll(entries);
+        }
+        if (bundle.hasLink()) {
+          hasNextPage = bundle.getLink().stream().anyMatch(l -> l.getRelation().equals("next"));
+        } else {
+          hasNextPage = false;
+        }
+      } while (hasNextPage);
+      if (!records.isEmpty()) {
+        result.put(domain, records);
       }
     }
     return result;
   }
 
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
+    log.info("Get medical evidence for claim: {}, {}, {}", claim.getVeteranIcn(), claim.getDiagnosticCode(), claim.getClaimSubmissionId());
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
     if (components == null) {
       return null;

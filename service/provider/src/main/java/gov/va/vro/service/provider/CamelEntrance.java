@@ -2,10 +2,8 @@ package gov.va.vro.service.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
-import gov.va.vro.service.provider.camel.PrimaryRoutes;
-import gov.va.vro.service.spi.db.model.Claim;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
-import gov.va.vro.service.spi.model.ClaimPayload;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +21,6 @@ public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
 
-  public Claim processClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_PROCESS_CLAIM, claim, Claim.class);
-  }
-
   @Deprecated // part of the demo code
   public ClaimSubmission postClaim(ClaimSubmission claim) {
     // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
@@ -40,15 +34,19 @@ public class CamelEntrance {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public String submitClaim(ClaimPayload claim) {
+  public String submitClaim(Claim claim) {
     return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
   }
 
-  public String generate_pdf(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:generate_pdf", resource, String.class);
+  public String submitClaimFull(Claim claim) {
+    return producerTemplate.requestBody("direct:claim-submit-full", claim, String.class);
   }
 
-  public String fetch_pdf(GeneratePdfPayload resource) {
-    return producerTemplate.requestBody("direct:fetch_pdf", resource, String.class);
+  public String generatePdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody("direct:generate-pdf", resource, String.class);
+  }
+
+  public String fetchPdf(String claimSubmissionId) {
+    return producerTemplate.requestBody("direct:fetch-pdf", claimSubmissionId, String.class);
   }
 }

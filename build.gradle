@@ -61,8 +61,8 @@ ext {
                    ':service:spi',
                    ':test-data-factory']
     dockerModules = [':app',
-                     ':service-python:assess_claim_dc7101',
-                     ':service-python:pdf_generator',
+                     ':service-python:assessclaimdc7101',
+                     ':service-python:pdfgenerator',
                      ':service-data-access',
                      ':container-init',
                      ':db-init',

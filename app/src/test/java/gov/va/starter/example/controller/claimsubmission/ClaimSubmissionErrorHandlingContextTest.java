@@ -11,7 +11,6 @@ import gov.va.starter.boot.errorhandling.config.ErrorHandlerConfig;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.starter.boot.exception.ResourceNotFoundException;
 import gov.va.starter.boot.openapi.config.OpenApiConfiguration;
-import gov.va.starter.example.SecurityAllowConfig;
 import gov.va.starter.example.api.claimsubmission.requests.ClaimSubmissionRequest;
 import gov.va.starter.example.api.claimsubmission.resources.ClaimSubmissionResource;
 import gov.va.starter.example.claimsubmission.factory.ClaimSubmissionFactory;
@@ -19,6 +18,7 @@ import gov.va.starter.example.claimsubmission.model.ClaimSubmissionData;
 import gov.va.starter.example.controller.claimsubmission.mapper.ClaimSubmissionRequestMapper;
 import gov.va.starter.example.service.spi.claimsubmission.ClaimSubmissionService;
 import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
+import gov.va.vro.SecurityAllowConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.Problem;
 
+@Deprecated
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -16,19 +15,16 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder
-@ToString(includeFieldNames = true)
 public class GeneratePdfPayload {
   @NonNull private String claimSubmissionId;
 
   @NonNull private String diagnosticCode;
 
-  // input JSON string
   @JsonProperty("veteranInfo")
-  private String veteranInfo;
+  private VeteranInfo veteranInfo;
 
-  // input JSON string
   @JsonProperty("evidence")
-  private String evidence;
+  private AbdEvidence evidence;
 
   // output JSON string
   public String pdfDocumentJson;
