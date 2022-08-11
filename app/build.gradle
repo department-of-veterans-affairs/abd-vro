@@ -30,12 +30,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
 
+    testImplementation 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     testImplementation 'org.testcontainers:postgresql:1.17.3'
-    runtimeOnly 'org.postgresql:postgresql'
     //This version is compatible with current spring version: 5.3.8
     testImplementation 'org.apache.camel:camel-test-spring-junit5:3.11.0'
 
