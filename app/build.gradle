@@ -62,6 +62,19 @@ bootJar {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+test {
+    exclude 'gov/va/starter/example/**'
+    exclude 'gov/va/vro/**'
+}
+
+afterEvaluate {
+    tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
+}
+
 tasks.named('lintDockerfile').configure {
     ext.targets = ["src/docker/Dockerfile"]
 }
