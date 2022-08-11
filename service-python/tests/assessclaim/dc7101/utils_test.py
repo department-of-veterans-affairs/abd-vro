@@ -1,5 +1,5 @@
 import pytest
-from assess-claim-dc7101.src.lib import utils
+from assessclaimdc7101.src.lib import utils
 
 
 @pytest.mark.parametrize(

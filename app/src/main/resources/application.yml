@@ -3,6 +3,11 @@ info:
     name: abd_vro
     description: Virtual Regional Office API
 
+# API Auth
+apiauth:
+  hdr-key-name: X-API-Key
+  url-context: /v1/**
+
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
   endpoints.web:

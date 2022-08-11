@@ -23,7 +23,7 @@ class PDFGenerator:
 		return filled_variables
 
 	def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False) -> str:
-		loader_path = "pdf_generator.src.lib" if test_mode else "lib"
+		loader_path = "pdfgenerator.src.lib" if test_mode else "lib"
 		jinja_env = Environment(
 			loader=PackageLoader(loader_path),
 			autoescape=select_autoescape()
