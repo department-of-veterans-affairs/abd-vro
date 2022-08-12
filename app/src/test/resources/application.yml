@@ -19,7 +19,7 @@ spring:
     password: password
   jpa:
     hibernate:
-      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+      dialect: org.hibernate.dialect.PostgreSQL9Dialect
       ddl-auto: create
     show-sql: true
 
