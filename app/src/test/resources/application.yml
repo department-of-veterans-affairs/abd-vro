@@ -12,13 +12,13 @@ spring:
     name: "starter-api"
 
   datasource:
+    platform: postgres
     url: jdbc:tc:postgresql:9.6.8:///test_database
     username: user
     password: password
   jpa:
     hibernate:
       ddl-auto: create
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
   resources:
