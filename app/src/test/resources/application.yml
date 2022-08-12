@@ -12,9 +12,9 @@ spring:
     name: "starter-api"
 
   datasource:
-    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;
-    username: skuser
-    password: localT3st!
+    url: jdbc:tc:postgresql:9.6.8:///test_database
+    username: user
+    password: password
   jpa:
     hibernate:
       ddl-auto: create
