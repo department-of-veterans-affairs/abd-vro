@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAttribute;
 
 @Entity
-@Table(name = "subclaimsubmission", schema = "example")
+@Table(name = "subclaimsubmission")
 @Getter
 @Setter
 @NoArgsConstructor
