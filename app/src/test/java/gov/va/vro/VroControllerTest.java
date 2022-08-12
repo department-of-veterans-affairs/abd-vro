@@ -1,9 +1,12 @@
 package gov.va.vro;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.provider.camel.SlipClaimSubmitRouter;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class VroControllerTest extends BaseIntegrationTest {
@@ -26,6 +31,8 @@ class VroControllerTest extends BaseIntegrationTest {
   @MockBean private SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   @Autowired @InjectMocks private PrimaryRoutes primaryRoutes;
+
+  @Autowired private ClaimRepository claimRepository;
 
   @Test
   void postHealthAssessment() {
@@ -54,5 +61,10 @@ class VroControllerTest extends BaseIntegrationTest {
     HealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+
+    // side-effect: cleaim is creacter in teh DB
+    Optional<ClaimEntity> claimEntityOptional =
+        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
+    assertTrue(claimEntityOptional.isPresent());
   }
 }
