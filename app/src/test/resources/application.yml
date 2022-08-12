@@ -12,9 +12,9 @@ spring:
     name: "starter-api"
 
   datasource:
-    url: jdbc:tc:postgresql:9.6.8:///test_database
-    username: user
-    password: password
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;
+    username: skuser
+    password: localT3st!
   jpa:
     hibernate:
       ddl-auto: create
@@ -47,30 +47,6 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-
-starter:
-  openapi:
-    authUrl: https://iam.va.gov/whoami
-    default-oauth-security-scheme: true
-    default-jwt-bearer-security-scheme: true
-    license: MIT License
-    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD)
-    description: Provides services to improve benefit delivery services
-    version: v1
-    licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
-    contactEmail: dung.lam1@va.gov
-    contactName: D (Yoom) Lam
-    serverUrl: http://localhost:8080
-  boot:
-    kafka-lifecycle-notifier:
-      enabled: false
-      producer:
-        topic.name: example-entity-lifecycle
-        replication.factor: 1
-        partition.number: 1
-      consumer:
-        topic.name: example-entity-lifecycle
-        level.concurrency: 1
 
 spring.config.import: >
   conf-camel.yml,
