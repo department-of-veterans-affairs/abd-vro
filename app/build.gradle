@@ -34,8 +34,6 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
 
-    implementation 'org.flywaydb:flyway-core'
-    //The h2 database is still used as part of the build process
     testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
