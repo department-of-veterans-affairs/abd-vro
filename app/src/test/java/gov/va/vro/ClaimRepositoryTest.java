@@ -4,31 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
-import gov.va.vro.persistence.repository.VeteranRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest
-class ClaimRepositoryTest {
-
-  @Autowired private ClaimRepository claimRepository;
-
-  @Autowired private VeteranRepository veteranRepository;
-
-  @AfterEach
-  public void delete() {
-    claimRepository.deleteAll();
-    veteranRepository.deleteAll();
-  }
+class ClaimRepositoryTest extends BaseIntegrationTest {
 
   @Test
-  void test() {
+  void insertQuery() {
     var veteran = TestDataSupplier.createVeteran("X", "Y");
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());

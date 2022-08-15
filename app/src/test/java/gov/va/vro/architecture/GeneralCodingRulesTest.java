@@ -1,4 +1,4 @@
-package gov.va.starter.example.architecture;
+package gov.va.vro.architecture;
 
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
 
@@ -33,7 +33,7 @@ public class GeneralCodingRulesTest {
   @Test
   public void noFieldInjection() {
     GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(
-        classes.that(resideOutsideOfPackage("gov.va.starter.example.config")));
+        classes.that(resideOutsideOfPackage("gov.va.vro.config")));
   }
 
   @Test
