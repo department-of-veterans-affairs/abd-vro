@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from assess_claim_dc6602.src.lib import main
+from assessclaimdc6602.src.lib import main
 
 
 @pytest.mark.parametrize(
@@ -9,29 +9,35 @@ from assess_claim_dc6602.src.lib import main
     [
         (
             {
-                "medication": [{"text": "Prednisone"}],
-                "date_of_claim": "2021-11-09",
-                "vasrd": "6602"  
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [{"description": "Prednisone"}]
+                },
+                "date_of_claim": "2021-11-09"
             },
-            {"body": json.dumps({"evidence": {"medication": [{"text": "Prednisone"}]}})}
+            {"evidence": {"medications": [{"description": "Prednisone"}]}}
         ),
 
         # demonstrates ability to match substrings in medication["text"] property
         (
             {
-                "medication": [{"text": "predniSONE 1 MG Oral Tablet"}],
-                "date_of_claim": "2021-11-09",
-                "vasrd": "6602"  
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}]
+                },
+                "date_of_claim": "2021-11-09"
             },
-            {"body": json.dumps({"evidence": {"medication": [{"text": "predniSONE 1 MG Oral Tablet"}]}})}
+            {"evidence": {"medications": [{"description": "predniSONE 1 MG Oral Tablet"}]}}
         ),
         (
             {
-                "medication": [{"text" : "Advil"}],
-                "date_of_claim": "2021-11-09",
-                "vasrd": "6602"  
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [{"description" : "Advil"}]
+                },
+                "date_of_claim": "2021-11-09"
             },
-            {"body": json.dumps({"evidence": {"medication": []}})}
+            {"evidence": {"medications": []}}
         ),
     ],
 )
@@ -46,4 +52,4 @@ def test_main(request_body, response):
     """
     api_response = main.assess_asthma(request_body)
 
-    assert json.loads(api_response["body"]) == json.loads(response["body"])
+    assert api_response == response

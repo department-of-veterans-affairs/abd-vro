@@ -1,5 +1,5 @@
 import pytest
-from assess_claim_dc6602.src.lib import medication
+from assessclaimdc6602.src.lib import medication
 
 
 @pytest.mark.parametrize(
@@ -7,39 +7,47 @@ from assess_claim_dc6602.src.lib import medication
     [
         # Service connected and medication used to treat hypertension
         (
-            {
-                "bp": [],
-                "medication": [{"text": "Albuterol"}],
-                'date_of_claim': '2021-11-09',
+            {"evidence":
+                {
+                    "bp": [],
+                    "medications": [{"description": "Albuterol"}],
+                    'date_of_claim': '2021-11-09',
+                }
             },
-            [{"text": "Albuterol"}],
+            [{"description": "Albuterol"}],
         ),
         # Not service connected but uses medication used to treat hypertension
         (
-            {
-                "bp": [],
-                "medication": [{"text": "Albuterol"}],
-                'date_of_claim': '2021-11-09',
+            {"evidence":
+                {
+                    "bp": [],
+                    "medications": [{"description": "Albuterol"}],
+                    'date_of_claim': '2021-11-09',
+                }
             },
-            [{"text": "Albuterol"}],
+            [{"description": "Albuterol"}],
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
-            {
-                "bp": [],
-                "medication": [{"text": "Advil"}],
-                'date_of_claim': '2021-11-09',
+            {"evidence":
+                {
+                    "bp": [],
+                    "medications": [{"description": "Advil"}],
+                    'date_of_claim': '2021-11-09',
+                }
             },
             [],
         ),
         # multiple medications, some to treat and others not to treat asthma
         (
-            {
-                "bp": [],
-                "medication": [{"text": "Albuterol"}, {"text": "Advil"}],
-                'date_of_claim': '2021-11-09',
+            {"evidence":
+                {
+                    "bp": [],
+                    "medications": [{"description": "Albuterol"}, {"description": "Advil"}],
+                    'date_of_claim': '2021-11-09',
+                }
             },
-            [{"text": "Albuterol"}],
+            [{"description": "Albuterol"}],
         ),
     ],
 )

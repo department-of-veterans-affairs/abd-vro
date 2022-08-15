@@ -18,15 +18,15 @@ def assess_asthma(event: Dict):
 
     if validation_results["is_valid"]:
         active_medication = medication.medication_required(event)
-        logging.info(validation_results["errors"])
-        response_body["errorMessage"] = {"errorString": "error validating request message data"}
+
 
     else:
         active_medication = []
-        response_body["errors"] = validation_results["errors"]
+        logging.info(validation_results["errors"])
+        response_body["errorMessage"] = {"errorString": "error validating request message data"}
 
     response_body.update({
-        "evidence": {"medication": active_medication}
+        "evidence": {"medications": active_medication}
     })
 
     return response_body

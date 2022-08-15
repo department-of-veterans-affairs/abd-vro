@@ -7,25 +7,29 @@ import validator
     [
         (
             {
-
-                "medication": [{"text":"Capoten"}],
-                "date_of_claim": "2021-11-09",
-                "vasrd": "6602"
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [{"description": "Capoten"}]
+                },
+                "date_of_claim": "2021-11-09"
             },
             True,
             {}
         ),
         (
             {
-                "medication": [{"text":123}],
-                "date_of_claim": 20211109,
-                "vasrd": "6602"
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [{"description": 123}]
+                },
+                "date_of_claim": 20211109
             },
             False,
             {
-                "medication": [
-                    {0: [{'text': ['must be of string type']}]}
-                ],
+                "evidence":[{
+                    "medications": [
+                     {0: [{'description': ['must be of string type']}]}
+                ]}],
                 "date_of_claim": ["must be of string type"],
             }
         ),
