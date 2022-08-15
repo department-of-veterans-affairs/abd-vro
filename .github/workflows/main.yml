@@ -74,12 +74,6 @@ jobs:
       - name: "Pytest: Code Coverage"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
 
-      - name: "Asthma processor service: PIP Install"
-        run: pip install -r service-assess-claim-dc6602/src/requirements.txt
-
-      - name: "Asthma processor service: Pytest"
-        run: cd service-assess-claim-dc6602/src && python -m pytest
-
 
   publish-image:
     needs: [build-and-test-java, build-and-test-python]
