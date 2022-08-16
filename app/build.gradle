@@ -11,7 +11,6 @@ dependencies {
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
-    implementation project(':persistence:impl')
     implementation project(':service:provider')
     implementation project(':service:spi')
     implementation project(':service:db')
@@ -23,7 +22,6 @@ dependencies {
     implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
     implementation 'gov.va.starter:kafka-entity-lifecycle-notifier'
-    // implementation 'gov.va.starter:open-policy-agent-config'
     implementation 'gov.va.starter:test-data'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -31,12 +29,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // implementation 'com.bisnode.opa:opa-filter-spring-boot-starter'
 
-    testImplementation 'com.h2database:h2:2.1.214'
-    runtimeOnly 'com.h2database:h2:2.1.214'
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+    testImplementation 'org.testcontainers:postgresql:1.17.3'
+    //This version is compatible with current spring version: 5.3.8
+    testImplementation 'org.apache.camel:camel-test-spring-junit5:3.11.0'
 
     docker project(':container-init')
     docker project(':db-init')
@@ -63,11 +65,6 @@ bootJar {
 
 repositories {
     mavenCentral()
-}
-
-test {
-    exclude 'gov/va/starter/example/**'
-    exclude 'gov/va/vro/**'
 }
 
 afterEvaluate {
