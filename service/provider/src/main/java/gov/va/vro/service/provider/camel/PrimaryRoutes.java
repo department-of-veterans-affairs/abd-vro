@@ -73,7 +73,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
 
     String exchangeName = "pdf-generator";
-    String queueName = "generate-pdf";
+    String queueName = "wassszx";
 
     // send JSON-string payload to RabbitMQ
     from("direct:generate-pdf")
