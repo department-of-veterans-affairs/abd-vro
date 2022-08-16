@@ -90,4 +90,12 @@ public interface VroResource {
           @RequestBody
           HealthDataAssessmentRequest claim)
       throws RequestValidationException;
+
+  @Operation(
+      summary = "Gets all claims stored in vro database.",
+      description = "Retrieves all claims from vro db and displays icn, diagnostic code, etc.")
+  @GetMapping("/fetch-claims")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "fetch-claims")
+  ResponseEntity<Object> fetchClaims() throws Exception;
 }

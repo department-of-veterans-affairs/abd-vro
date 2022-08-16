@@ -15,6 +15,8 @@ import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.SimpleClaim;
+import gov.va.vro.service.spi.services.fetchclaims.FetchClaimsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -34,15 +38,19 @@ public class VroController implements VroResource {
   private final FetchPdfRequestMapper fetchPdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
+  private final FetchClaimsService fetchClaimsService;
+
   public VroController(
       CamelEntrance camelEntrance,
       GeneratePdfRequestMapper generatePdfRequestMapper,
       FetchPdfRequestMapper fetchPdfRequestMapper,
-      PostClaimRequestMapper postClaimRequestMapper) {
+      PostClaimRequestMapper postClaimRequestMapper,
+      FetchClaimsService fetchClaimsService) {
     this.camelEntrance = camelEntrance;
     this.generatePdfRequestMapper = generatePdfRequestMapper;
     this.fetchPdfRequestMapper = fetchPdfRequestMapper;
     this.postClaimRequestMapper = postClaimRequestMapper;
+    this.fetchClaimsService = fetchClaimsService;
   }
 
   @Override
@@ -130,5 +138,16 @@ public class VroController implements VroResource {
               claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
       return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @Override
+  public ResponseEntity<Object> fetchClaims() {
+    List<SimpleClaim> claimList = new ArrayList<>();
+    try {
+      claimList = fetchClaimsService.fetchClaims();
+    } catch (Exception e) {
+      log.error("Could not fetch all claims.");
+    }
+    return new ResponseEntity<>(claimList, HttpStatus.OK);
   }
 }
