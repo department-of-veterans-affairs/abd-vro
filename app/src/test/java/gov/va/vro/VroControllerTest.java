@@ -58,7 +58,7 @@ class VroControllerTest extends BaseIntegrationTest {
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
-    // side-effect: cleaim is creacter in teh DB
+    // side effect: claim is created in the DB
     Optional<ClaimEntity> claimEntityOptional =
         claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
     assertTrue(claimEntityOptional.isPresent());
