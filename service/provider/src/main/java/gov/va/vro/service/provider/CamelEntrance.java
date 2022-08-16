@@ -1,7 +1,5 @@
 package gov.va.vro.service.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.starter.example.service.spi.claimsubmission.model.ClaimSubmission;
 import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -21,18 +19,9 @@ public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
 
-  @Deprecated // part of the demo code
-  public ClaimSubmission postClaim(ClaimSubmission claim) {
-    // https://camel.apache.org/manual/producertemplate.html#_send_vs_request_methods
-    return producerTemplate.requestBody("direct:postClaim", claim, ClaimSubmission.class);
-  }
-
-  @Deprecated // part of the demo code
   public String assess_health_data_demo(AssessHealthData resource) {
     return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
   }
-
-  private final ObjectMapper mapper = new ObjectMapper();
 
   public String submitClaim(Claim claim) {
     return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
