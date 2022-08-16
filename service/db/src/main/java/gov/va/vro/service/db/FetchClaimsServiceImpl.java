@@ -3,7 +3,6 @@ package gov.va.vro.service.db;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
-import gov.va.vro.service.spi.model.Contention;
 import gov.va.vro.service.spi.model.SimpleClaim;
 import gov.va.vro.service.spi.services.fetchclaims.FetchClaimsService;
 import lombok.RequiredArgsConstructor;

@@ -146,7 +146,7 @@ public class VroController implements VroResource {
     try {
       claimList = fetchClaimsService.fetchClaims();
     } catch (Exception e) {
-      log.error("Could not fetch all claims.");
+      log.error("Could not fetch all claims or contentions");
     }
     return new ResponseEntity<>(claimList, HttpStatus.OK);
   }
