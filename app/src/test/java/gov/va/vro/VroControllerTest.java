@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -45,18 +44,15 @@ class VroControllerTest extends BaseIntegrationTest {
     request.setVeteranIcn("icn");
     request.setDiagnosticCode("1701");
 
-    ResponseEntity<HealthDataAssessmentResponse> responseEntity1 =
-        testRestTemplate.postForEntity(
-            "/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    var responseEntity1 = post("/v1/health-data-assessment", request);
+
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     HealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
     // Now submit an existing claim:
-    ResponseEntity<HealthDataAssessmentResponse> responseEntity2 =
-        testRestTemplate.postForEntity(
-            "/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    var responseEntity2 = post("/v1/health-data-assessment", request);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     HealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
@@ -66,5 +62,14 @@ class VroControllerTest extends BaseIntegrationTest {
     Optional<ClaimEntity> claimEntityOptional =
         claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
     assertTrue(claimEntityOptional.isPresent());
+  }
+
+  private ResponseEntity<HealthDataAssessmentResponse> post(
+      String url, HealthDataAssessmentRequest request) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "ec4624eb-a02d-4d20-bac6-095b98a792a2");
+    var httpEntity = new HttpEntity<>(request, headers);
+    return testRestTemplate.exchange(
+        url, HttpMethod.POST, httpEntity, HealthDataAssessmentResponse.class);
   }
 }
