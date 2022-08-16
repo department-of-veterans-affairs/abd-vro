@@ -11,7 +11,6 @@ dependencies {
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
-    implementation project(':persistence:impl')
     implementation project(':service:provider')
     implementation project(':service:spi')
     implementation project(':service:db')
