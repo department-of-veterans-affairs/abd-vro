@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @Builder
-@ToString(includeFieldNames = true)
+@ToString
 public class FetchPdfResponse {
   String claimSubmissionId;
   String status;
