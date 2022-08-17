@@ -9,7 +9,7 @@ from assessclaimdc6602.src.lib import medication
         (
             {"evidence":
                 {
-                    "bp": [],
+                    "bp_readings": [],
                     "medications": [{"description": "Albuterol"}],
                     'date_of_claim': '2021-11-09',
                 }
@@ -20,7 +20,7 @@ from assessclaimdc6602.src.lib import medication
         (
             {"evidence":
                 {
-                    "bp": [],
+                    "bp_readings": [],
                     "medications": [{"description": "Albuterol"}],
                     'date_of_claim': '2021-11-09',
                 }
@@ -31,7 +31,7 @@ from assessclaimdc6602.src.lib import medication
         (
             {"evidence":
                 {
-                    "bp": [],
+                    "bp_readings": [],
                     "medications": [{"description": "Advil"}],
                     'date_of_claim': '2021-11-09',
                 }
@@ -42,7 +42,7 @@ from assessclaimdc6602.src.lib import medication
         (
             {"evidence":
                 {
-                    "bp": [],
+                    "bp_readings": [],
                     "medications": [{"description": "Albuterol"}, {"description": "Advil"}],
                     'date_of_claim': '2021-11-09',
                 }
