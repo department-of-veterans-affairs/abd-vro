@@ -14,6 +14,7 @@ import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
@@ -25,6 +26,7 @@ import java.util.Base64;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class VroController implements VroResource {
 
   private final CamelEntrance camelEntrance;
@@ -32,15 +34,6 @@ public class VroController implements VroResource {
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-
-  public VroController(
-      CamelEntrance camelEntrance,
-      GeneratePdfRequestMapper generatePdfRequestMapper,
-      PostClaimRequestMapper postClaimRequestMapper) {
-    this.camelEntrance = camelEntrance;
-    this.generatePdfRequestMapper = generatePdfRequestMapper;
-    this.postClaimRequestMapper = postClaimRequestMapper;
-  }
 
   @Override
   public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
@@ -86,8 +79,8 @@ public class VroController implements VroResource {
       log.error(e.getMessage());
     }
     log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
-    if (pdfResponse.pdfData.length() > 0) {
-      byte[] decoder = Base64.getDecoder().decode(pdfResponse.pdfData);
+    if (pdfResponse.hasContent()) {
+      byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
       InputStream is = new ByteArrayInputStream(decoder);
       InputStreamResource resource = new InputStreamResource(is);
 
@@ -111,7 +104,7 @@ public class VroController implements VroResource {
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment", responseAsString);
+      log.info("Obtained full health assessment: {}", responseAsString);
 
       HealthData7101AssessmentResponse response =
           objectMapper.readValue(responseAsString, HealthData7101AssessmentResponse.class);

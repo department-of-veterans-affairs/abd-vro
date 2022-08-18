@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,6 @@ import org.springframework.stereotype.Service;
 public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
-
-  public String assess_health_data_demo(AssessHealthData resource) {
-    return producerTemplate.requestBody("direct:assess_health_data_demo", resource, String.class);
-  }
 
   public String submitClaim(Claim claim) {
     return producerTemplate.requestBody("direct:claim-submit", claim, String.class);
