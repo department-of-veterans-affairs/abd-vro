@@ -5,9 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@Builder
 @ToString
 public class FetchPdfResponse {
 
