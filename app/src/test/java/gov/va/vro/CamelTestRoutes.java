@@ -1,6 +1,7 @@
 package gov.va.vro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.api.model.AbdEvidence;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.spi.model.Claim;
@@ -28,6 +29,7 @@ public class CamelTestRoutes extends RouteBuilder {
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
     response.setErrorMessage("I am not a real endpoint.");
+    response.setEvidence(new AbdEvidence());
     return objectMapper.writeValueAsString(response);
   }
 }

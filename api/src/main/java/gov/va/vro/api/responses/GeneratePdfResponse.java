@@ -17,5 +17,5 @@ public class GeneratePdfResponse {
   @Schema(
       description = "JSON results",
       example = "{\"claimSubmissionId\": 0, \"status\": \"IN_PROGRESS\", \"pdf\": \"\"}")
-  public final String pdfDocumentJson;
+  private final String pdfDocumentJson;
 }

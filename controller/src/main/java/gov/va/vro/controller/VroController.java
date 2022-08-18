@@ -2,6 +2,7 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
@@ -37,69 +38,89 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
-      HealthDataAssessmentRequest claim) throws RequestValidationException {
-    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+      HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException {
+    log.info(
+        "Getting health assessment for claim {} and veteran icn {}",
+        claim.getClaimSubmissionId(),
+        claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
 
       HealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+      if (response.getEvidence() == null) {
+        throw new ClaimProcessingException(
+            claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
+      }
       log.info("Returning health assessment for: {}", response.getVeteranIcn());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (ClaimProcessingException cpe) {
+      throw cpe;
     } catch (Exception ex) {
-      String msg = ex.getMessage();
       log.error("Error in health assessment", ex);
-      HealthDataAssessmentResponse response =
-          new HealthDataAssessmentResponse(claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
-      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ClaimProcessingException(
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
-      throws RequestValidationException {
-    GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
-    log.info("MODEL from generatePdf: {}", model);
-    String response = camelEntrance.generatePdf(model);
-    log.info("RESPONSE from generatePdf: {}", response);
-    model.setPdfDocumentJson(response);
-    GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
-    return new ResponseEntity<>(responseObj, HttpStatus.OK);
+      throws RequestValidationException, ClaimProcessingException {
+    log.info("Generating pdf for claim: {}", request.getClaimSubmissionId());
+    try {
+      GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
+      log.info("MODEL from generatePdf: {}", model);
+      String response = camelEntrance.generatePdf(model);
+      log.info("RESPONSE from generatePdf: {}", response);
+      model.setPdfDocumentJson(response);
+      GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
+      return new ResponseEntity<>(responseObj, HttpStatus.OK);
+    } catch (Exception ex) {
+      log.error("Error in generate pdf", ex);
+      throw new ClaimProcessingException(
+          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
   }
 
   @Override
   public ResponseEntity<Object> fetchPdf(String claimSubmissionId)
-      throws RequestValidationException {
-    String response = camelEntrance.fetchPdf(claimSubmissionId);
-    FetchPdfResponse pdfResponse = null;
+      throws RequestValidationException, ClaimProcessingException {
+
+    log.info("Fetching pdf for claim: {}", claimSubmissionId);
     try {
-      pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
-    } catch (Exception e) {
-      log.error(e.getMessage());
-    }
-    log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
-    if (pdfResponse.hasContent()) {
-      byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
-      InputStream is = new ByteArrayInputStream(decoder);
-      InputStreamResource resource = new InputStreamResource(is);
+      String response = camelEntrance.fetchPdf(claimSubmissionId);
+      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
 
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_PDF);
+      log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
+      if (pdfResponse.hasContent()) {
+        byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+        try (InputStream is = new ByteArrayInputStream(decoder)) {
+          InputStreamResource resource = new InputStreamResource(is);
+          HttpHeaders headers = new HttpHeaders();
+          headers.setContentType(MediaType.APPLICATION_PDF);
 
-      ContentDisposition disposition =
-          ContentDisposition.attachment().filename("textdown.pdf").build();
-      headers.setContentDisposition(disposition);
+          ContentDisposition disposition =
+              ContentDisposition.attachment().filename("textdown.pdf").build();
+          headers.setContentDisposition(disposition);
+          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
 
-      return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
+      }
+    } catch (Exception ex) {
+      log.error("Error in fetch pdf", ex);
+      throw new ClaimProcessingException(
+          claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 
   @Override
   public ResponseEntity<HealthData7101AssessmentResponse> postHealth7101Assessment(
-      HealthDataAssessmentRequest claim) throws RequestValidationException {
+      HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
@@ -113,12 +134,9 @@ public class VroController implements VroResource {
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
-      String msg = ex.getMessage();
       log.error("Error in health 7101 assessment", ex);
-      HealthData7101AssessmentResponse response =
-          new HealthData7101AssessmentResponse(
-              claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
-      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ClaimProcessingException(
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 }
