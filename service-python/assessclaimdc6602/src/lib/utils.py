@@ -19,6 +19,7 @@ def validate_request_body(request_body):
             "type": "dict",
             "schema": {
             "conditions": {
+                "required": True,
                 "type": "list",
                 "schema": {
                     "type": "dict",
@@ -29,14 +30,12 @@ def validate_request_body(request_body):
                         },
                         "status": {
                             "type": "string",
-                            "required": True
                         },
                         "text": {
                             "type": "string"
                         },
                         "onset_date": {
-                            "type": "string",
-                            "required": True
+                            "type": "string"
                         },
                         "abatement_date": {
                             "type": "string"
@@ -77,7 +76,6 @@ def validate_request_body(request_body):
                 }
             },
             "bp_readings": {
-                "required":True,
                 "type": "list",
                 "schema": {
                     "type": "dict",

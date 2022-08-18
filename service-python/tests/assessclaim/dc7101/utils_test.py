@@ -1,5 +1,5 @@
 import pytest
-import validator
+from assessclaimdc7101.src.lib import utils
 
 
 @pytest.mark.parametrize(
@@ -119,6 +119,6 @@ def test_validate_request_body(request_body, result_is_valid, errors):
     :param result: boolean describing whether or not the blood pressure readings meet the specifications
     :type result: bool
     """
-    result = validator.validate_request_body(request_body)
+    result = utils.validate_request_body(request_body)
     assert result["is_valid"] == result_is_valid
     assert result["errors"] == errors

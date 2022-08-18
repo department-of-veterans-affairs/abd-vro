@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from assessclaimdc6602.src.lib import main
 
@@ -10,7 +8,6 @@ from assessclaimdc6602.src.lib import main
         (
             {
                 "evidence": {
-                    "bp_readings": [],
                     "medications": [{"description": "Prednisone"}],
                     "conditions": []
                 },
@@ -24,9 +21,8 @@ from assessclaimdc6602.src.lib import main
         (
             {
                 "evidence": {
-                    "bp_readings": [],
                     "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
-                    "conditions": []
+                    "conditions": [ {"code": "15777000", "text": "Prediabetes"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
@@ -36,18 +32,18 @@ from assessclaimdc6602.src.lib import main
                 },
              "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
         ),
+        # calculator feild mild-persistent-asthma-or-greater is True
         (
             {
                 "evidence": {
-                    "bp_readings": [],
                     "medications": [{"description" : "Advil"}],
-                    "conditions": []
+                    "conditions": [{"text": "Eosinophilic asthma","code": "J82.83"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
             {"evidence": {"medications": [],
-            "conditions": []},
-            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
+            "conditions": [{"text": "Eosinophilic asthma", "code": "J82.83"}]},
+            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": True, "success": True}}}
         ),
     ],
 )

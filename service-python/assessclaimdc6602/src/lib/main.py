@@ -1,5 +1,6 @@
-import validator
 import logging
+
+from . import utils
 from . import medication
 from . import condition
 from typing import Dict
@@ -14,7 +15,7 @@ def assess_asthma(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = validator.validate_request_body(event)
+    validation_results = utils.validate_request_body(event)
     response_body = {}
 
     if validation_results["is_valid"]:
@@ -23,7 +24,7 @@ def assess_asthma(event: Dict):
 
     else:
         active_medications = []
-        active_conditions = {"conditions":[], "persistent_calculation": {"succsess" : False, "mild-persistent-asthma-or-greater": False}}
+        active_conditions = {"conditions":[], "persistent_calculation": {"success" : False, "mild-persistent-asthma-or-greater": False}}
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = {"errorString": "error validating request message data"}
 

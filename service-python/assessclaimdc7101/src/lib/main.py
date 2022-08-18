@@ -2,10 +2,10 @@ import json
 from typing import Dict
 import logging
 
+from . import utils
 from . import bp_history
 from . import continuous_medication
 from . import predominant_bp
-import validator
 
 
 def assess_hypertension(event: Dict):
@@ -18,7 +18,7 @@ def assess_hypertension(event: Dict):
     :rtype: dict
     """
 
-    validation_results = validator.validate_request_body(event)
+    validation_results = utils.validate_request_body(event)
     response_body = {}
 
     if validation_results["is_valid"]:
