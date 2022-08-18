@@ -1,8 +1,7 @@
 package gov.va.vro;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.model.AbdEvidence;
@@ -131,7 +130,7 @@ class VroControllerTest extends BaseIntegrationTest {
             (Function<Object, Object>) o -> toJsonString(fetchPdfResponse)));
 
     var response = get("/v1/evidence-pdf/1234", null, String.class);
-    System.out.println(response);
+    assertNotNull(response);
   }
 
   @SneakyThrows

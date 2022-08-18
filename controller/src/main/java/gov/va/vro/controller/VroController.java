@@ -108,7 +108,7 @@ public class VroController implements VroResource {
         }
 
       } else {
-        return new ResponseEntity<>(pdfResponse.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
       }
     } catch (Exception ex) {
       log.error("Error in fetch pdf", ex);
