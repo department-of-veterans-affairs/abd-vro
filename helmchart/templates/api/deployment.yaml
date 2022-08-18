@@ -99,6 +99,9 @@ spec:
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
+        - name: {{ .Values.name }}-assessclaimdc6602
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC6602.imageName }}:{{ .Values.images.assessClaimDC6602.tag }}
+          imagePullPolicy: {{ .Values.images.assessClaimDC6602.imagePullPolicy }}
         - name: {{ .Values.name }}-pdfgenerator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}

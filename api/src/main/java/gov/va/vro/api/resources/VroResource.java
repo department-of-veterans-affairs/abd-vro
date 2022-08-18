@@ -3,8 +3,8 @@ package gov.va.vro.api.resources;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthData7101AssessmentResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,11 +77,11 @@ public interface VroResource {
   @Operation(
       summary = "Hypertension health data assessment",
       description = "Provides full health data assessment for a hypertension claim")
-  @PostMapping("/health-data-7101-assessment")
+  @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
-  @Timed(value = "health-data-7101-assessment")
+  @Timed(value = "full-health-data-assessment")
   @Tag(name = "Full Health Assessment")
-  ResponseEntity<HealthData7101AssessmentResponse> postHealth7101Assessment(
+  ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       @Parameter(
               description = "Claim for which health data assessment requested",
               required = true,

@@ -105,6 +105,7 @@ services:
       - redis1
       - db-init
       - assess-claim-dc7101
+      - assess-claim-dc6602
       - pdf-generator
     networks:
       - internal
@@ -112,6 +113,17 @@ services:
 
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+    depends_on:
+      - rabbitmq1
+    networks:
+      - internal
+
+  assess-claim-dc6602:
+    image: va/abd_vro-assessclaimdc6602:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
@@ -140,7 +152,7 @@ services:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-      LH_CLIENT_ID: 0oah28rb5jLj4NeSN2p7
+      LH_CLIENT_ID: 0oafwk6gtfY6anrRl2p7
       LH_ASSERTION_URL: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
       LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
       LH_FHIR_URL: https://sandbox-api.va.gov/services/fhir/v0/r4

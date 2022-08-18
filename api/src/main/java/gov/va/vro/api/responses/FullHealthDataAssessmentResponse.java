@@ -13,7 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
-public class HealthData7101AssessmentResponse {
+public class FullHealthDataAssessmentResponse {
   @NonNull
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "90653535")
   private String veteranIcn;
@@ -42,7 +42,7 @@ public class HealthData7101AssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String status;
 
-  public HealthData7101AssessmentResponse(
+  public FullHealthDataAssessmentResponse(
       String veteranIcn, String diagnosticCode, String errorMessage) {
     this.veteranIcn = veteranIcn;
     this.diagnosticCode = diagnosticCode;

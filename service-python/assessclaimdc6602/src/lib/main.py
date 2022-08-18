@@ -33,7 +33,7 @@ def assess_asthma(event: Dict):
             "conditions": active_conditions["conditions"]
         },
         "calculated": {
-            "persistent_calculation":active_conditions["persistant_calculation"]
+            "persistent_calculation": active_conditions["persistent_calculation"]
         }
     })
 

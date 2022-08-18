@@ -10,6 +10,7 @@ def validate_request_body(request_body):
     :return: dict with boolean result showing if request is valid and if not, any applicable errors
     :rtype: dict
     """
+    request_body =  {x:y for x,y in request_body.items() if y is not None}
     schema = {
        "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
@@ -17,7 +18,7 @@ def validate_request_body(request_body):
         "evidence":{
             "type": "dict",
             "schema": {
-            "condition": {
+            "conditions": {
                 "type": "list",
                 "schema": {
                     "type": "dict",
@@ -57,7 +58,9 @@ def validate_request_body(request_body):
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            "schema": {"type": "string"}
+                            'default': [],
+                            "schema": {"type": "string",
+                            "default": ""}
                         },
                         "route": {"type": "string"},
                         "refills": {},

@@ -4,22 +4,41 @@ from assessclaimdc6602.src.lib import condition
 
 
 @pytest.mark.parametrize(
-     "request_body, continuous_medication_required_calculation",
+     "request_body, conditions_calc",
     [
         # Service connected and medication used to treat hypertension
         (
             {"evidence":
                 {
                     "bp_readings": [],
+                    "conditions": [],
                     "medications": [{"description": "Albuterol"}],
-                    'date_of_claim': '2021-11-09',
-                }
+                },
+                'date_of_claim': '2021-11-09'
             },
-            [{"description": "Albuterol"}],
+            {"conditions":[], "persistent_calculation": {"success" : True, "mild-persistent-asthma-or-greater": False}},
+        ),
+        (
+            {"evidence":
+                {
+                    "bp_readings": [],
+                    "conditions": [{
+                        "text": "Asthma",
+                        "code": "195967001"}],
+                    "medications": [{"description": "Hydrochlorothiazide 25 MG"}]
+                    
+                },
+                'date_of_claim': '2021-11-09'
+            },
+            {"conditions":[{
+                        "text": "Asthma",
+                        "code": "195967001"}], "persistent_calculation": {"success" : True, "mild-persistent-asthma-or-greater": False}},
         ),
     ]
 )
-def test_condtions_calculation():
+def test_condtions_calculation(request_body, conditions_calc):
     """
     
     """
+    active_conditons = condition.conditions_calculation(request_body)
+    assert active_conditons == conditions_calc

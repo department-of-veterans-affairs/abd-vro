@@ -11,11 +11,13 @@ from assessclaimdc6602.src.lib import main
             {
                 "evidence": {
                     "bp_readings": [],
-                    "medications": [{"description": "Prednisone"}]
+                    "medications": [{"description": "Prednisone"}],
+                    "conditions": []
                 },
                 "date_of_claim": "2021-11-09"
             },
-            {"evidence": {"medications": [{"description": "Prednisone"}]}}
+            {"evidence": {"medications": [{"description": "Prednisone"}], "conditions": []},
+            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
         ),
 
         # demonstrates ability to match substrings in medication["text"] property
@@ -23,21 +25,29 @@ from assessclaimdc6602.src.lib import main
             {
                 "evidence": {
                     "bp_readings": [],
-                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}]
+                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
+                    "conditions": []
                 },
                 "date_of_claim": "2021-11-09"
             },
-            {"evidence": {"medications": [{"description": "predniSONE 1 MG Oral Tablet"}]}}
+            {"evidence": {
+                "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
+                "conditions": []
+                },
+             "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
         ),
         (
             {
                 "evidence": {
                     "bp_readings": [],
-                    "medications": [{"description" : "Advil"}]
+                    "medications": [{"description" : "Advil"}],
+                    "conditions": []
                 },
                 "date_of_claim": "2021-11-09"
             },
-            {"evidence": {"medications": []}}
+            {"evidence": {"medications": [],
+            "conditions": []},
+            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
         ),
     ],
 )

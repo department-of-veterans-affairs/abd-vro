@@ -49,7 +49,11 @@ images:
     imageName: abd_vro-service-assessclaimdc7101
     tag: latest
     imagePullPolicy: Always
-
+  serviceAssessClaimDC6602:
+    imageName: abd_vro-service-assessclaimdc6602
+    tag: latest
+    imagePullPolicy: Always
+    
 resources:
   api:
     requests:

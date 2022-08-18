@@ -112,7 +112,9 @@ persistant_asthma = {
     "125001000119103",
     "10676431000119100",
     "10676591000119100",
-    "10675991000119100"}
+    "10675991000119100",
+    "J82.83",
+    }   
     
 def conditions_calculation(request_body):
   """
@@ -123,16 +125,20 @@ def conditions_calculation(request_body):
   :return: response body indicating success or failure with additional attributes 
   :rtype: dict
   """
+  calculation = {"success": True, "mild-persistent-asthma-or-greater": False}
   response = {}
   relevant_conditions = []
 
-  veterans_conditions = request_body["evidence"]["condition"]
+  veterans_conditions = request_body["evidence"]["conditions"]
   for condition in veterans_conditions:
     condition_code = condition["code"]
     if condition_code in asthma_conditions:
         relevant_conditions.append(condition)
     elif condition_code in persistant_asthma:
         relevant_conditions.append(condition)
-        response["mild-persistent-asthma-or-greater"]= True
+        calculation["mild-persistent-asthma-or-greater"]= True
+
+  response["conditions"] = relevant_conditions
+  response["persistent_calculation"] = calculation
 
   return response
