@@ -11,6 +11,7 @@ import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
@@ -56,6 +57,7 @@ class VroControllerTest extends BaseIntegrationTest {
   @Test
   void postHealthAssessment() throws Exception {
 
+    // intercept the original endpoint, skip it and replace it with the mock endpoint
     adviceWith(
         camelContext,
         "claim-submit",
@@ -67,8 +69,9 @@ class VroControllerTest extends BaseIntegrationTest {
                         + "&routingKey=code.1701")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
+    // The mock endpoint returns a valid response
     mockSubmitClaimEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.fromFunction(this::claimToResponse));
+        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -98,6 +101,35 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
+  void postHealthAssessment_missing_evidence() throws Exception {
+    adviceWith(
+        camelContext,
+        "claim-submit",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:claim-submit-exchange"
+                        + "?queue=claim-submit"
+                        + "&routingKey=code.1701")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit"));
+
+    mockSubmitClaimEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
+
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("1701");
+
+    var responseEntity = post("/v1/health-data-assessment", request, ClaimProcessingError.class);
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    var claimProcessingError = responseEntity.getBody();
+    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  }
+
+  @Test
   void generatePdf() throws Exception {
     adviceWith(
         camelContext,
@@ -116,6 +148,16 @@ class VroControllerTest extends BaseIntegrationTest {
     generatePdf.setEvidence(new AbdEvidence());
     var response = post("/v1/evidence-pdf", generatePdf, GeneratePdfResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void generatePdf_invalid_input() {
+    var generatePdf = new GeneratePdfRequest();
+    generatePdf.setClaimSubmissionId("1234");
+    generatePdf.setVeteranInfo(new VeteranInfo());
+    generatePdf.setEvidence(new AbdEvidence());
+    var response = post("/v1/evidence-pdf", generatePdf, Object.class);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }
 
   @Test
@@ -162,12 +204,14 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @SneakyThrows
-  private String claimToResponse(Claim claim) {
+  private String claimToResponse(Claim claim, boolean evidence) {
     var response = new HealthDataAssessmentResponse();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
     response.setErrorMessage("I am not a real endpoint.");
-    response.setEvidence(new AbdEvidence());
+    if (evidence) {
+      response.setEvidence(new AbdEvidence());
+    }
     return objectMapper.writeValueAsString(response);
   }
 }
