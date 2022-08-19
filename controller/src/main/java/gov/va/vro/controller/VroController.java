@@ -9,7 +9,6 @@ import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthData7101AssessmentResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
-import gov.va.vro.controller.mapper.FetchPdfRequestMapper;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -28,20 +27,18 @@ import java.util.Base64;
 @RestController
 public class VroController implements VroResource {
 
-  // https://www.baeldung.com/constructor-injection-in-spring#implicit-constructor-injection
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
-  private final FetchPdfRequestMapper fetchPdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
+
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public VroController(
       CamelEntrance camelEntrance,
       GeneratePdfRequestMapper generatePdfRequestMapper,
-      FetchPdfRequestMapper fetchPdfRequestMapper,
       PostClaimRequestMapper postClaimRequestMapper) {
     this.camelEntrance = camelEntrance;
     this.generatePdfRequestMapper = generatePdfRequestMapper;
-    this.fetchPdfRequestMapper = fetchPdfRequestMapper;
     this.postClaimRequestMapper = postClaimRequestMapper;
   }
 
@@ -52,9 +49,9 @@ public class VroController implements VroResource {
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
-      ObjectMapper mapper = new ObjectMapper();
+
       HealthDataAssessmentResponse response =
-          mapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+          objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", response.getVeteranIcn());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
@@ -84,9 +81,9 @@ public class VroController implements VroResource {
     String response = camelEntrance.fetchPdf(claimSubmissionId);
     FetchPdfResponse pdfResponse = null;
     try {
-      pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
+      pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
     } catch (Exception e) {
-      log.info(e.getMessage());
+      log.error(e.getMessage());
     }
     log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
     if (pdfResponse.pdfData.length() > 0) {
@@ -115,9 +112,9 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
       log.info("Obtained full health assessment", responseAsString);
-      ObjectMapper mapper = new ObjectMapper();
+
       HealthData7101AssessmentResponse response =
-          mapper.readValue(responseAsString, HealthData7101AssessmentResponse.class);
+          objectMapper.readValue(responseAsString, HealthData7101AssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());

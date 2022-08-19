@@ -16,6 +16,8 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
 
+  private static final String PDF_EXCHANGE = "pdf-generator";
+
   private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
 
@@ -72,22 +74,20 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private void configureRouteGeneratePdf() {
 
-    String exchangeName = "pdf-generator";
     String queueName = "generate-pdf";
 
     // send JSON-string payload to RabbitMQ
     from("direct:generate-pdf")
         .routeId("generate-pdf")
-        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+        .to("rabbitmq:" + PDF_EXCHANGE + "?routingKey=" + queueName);
   }
 
   private void configureRouteFetchPdf() {
-    String exchangeName = "pdf-generator";
     String queueName = "fetch-pdf";
 
     // send JSON-string payload to RabbitMQ
     from("direct:fetch-pdf")
         .routeId("fetch-pdf")
-        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+        .to("rabbitmq:" + PDF_EXCHANGE + "?routingKey=" + queueName);
   }
 }
