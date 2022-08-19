@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 CONSUMER_CONFIG = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
-    "retry_limit": 3,
+    "retry_limit": 5,
 }
 
 

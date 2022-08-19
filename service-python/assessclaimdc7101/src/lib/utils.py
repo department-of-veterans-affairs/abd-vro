@@ -57,7 +57,9 @@ def validate_request_body(request_body):
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            "schema": {"type": "string"}
+                            "default": [],
+                            "schema": {"type": "string",
+                            "default": ""}
                         },
                         "route": {"type": "string"},
                         "refills": {},
