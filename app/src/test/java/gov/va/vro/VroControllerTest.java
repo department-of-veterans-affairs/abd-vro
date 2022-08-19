@@ -15,18 +15,15 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
-import gov.va.vro.service.provider.camel.SlipClaimSubmitRouter;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,13 +40,12 @@ class VroControllerTest extends BaseIntegrationTest {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @MockBean private SlipClaimSubmitRouter slipClaimSubmitRouter;
-
-  @Autowired @InjectMocks private PrimaryRoutes primaryRoutes;
-
   @Autowired private ClaimRepository claimRepository;
 
   @Autowired protected CamelContext camelContext;
+
+  @EndpointInject("mock:claim-submit")
+  private MockEndpoint mockSubmitClaimEndpoint;
 
   @EndpointInject("mock:generate-pdf")
   private MockEndpoint mockGeneratePdfEndpoint;
@@ -58,10 +54,21 @@ class VroControllerTest extends BaseIntegrationTest {
   private MockEndpoint mockFetchPdfEndpoint;
 
   @Test
-  void postHealthAssessment() {
+  void postHealthAssessment() throws Exception {
 
-    Mockito.when(slipClaimSubmitRouter.routeClaimSubmit(Mockito.any(), Mockito.anyMap()))
-        .thenReturn("direct:hello");
+    adviceWith(
+        camelContext,
+        "claim-submit",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:claim-submit-exchange"
+                        + "?queue=claim-submit"
+                        + "&routingKey=code.1701")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit"));
+    mockSubmitClaimEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.fromFunction(this::claimToResponse));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -152,5 +159,15 @@ class VroControllerTest extends BaseIntegrationTest {
     headers.add("X-API-Key", "ec4624eb-a02d-4d20-bac6-095b98a792a2");
     var httpEntity = new HttpEntity<>(request, headers);
     return testRestTemplate.exchange(url, method, httpEntity, responseType);
+  }
+
+  @SneakyThrows
+  private String claimToResponse(Claim claim) {
+    var response = new HealthDataAssessmentResponse();
+    response.setDiagnosticCode(claim.getDiagnosticCode());
+    response.setVeteranIcn(claim.getVeteranIcn());
+    response.setErrorMessage("I am not a real endpoint.");
+    response.setEvidence(new AbdEvidence());
+    return objectMapper.writeValueAsString(response);
   }
 }
