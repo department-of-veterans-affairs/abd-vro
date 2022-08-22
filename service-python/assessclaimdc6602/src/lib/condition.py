@@ -74,7 +74,7 @@ asthma_conditions = {
     '10692721000119102'
 }
 
-persistant_asthma = {
+persistent_asthma = {
     "370218001", 
     "370221004", 
     "424643009", 
@@ -134,7 +134,7 @@ def conditions_calculation(request_body):
     condition_code = condition["code"]
     if condition_code in asthma_conditions:
         relevant_conditions.append(condition)
-    elif condition_code in persistant_asthma:
+    elif condition_code in persistent_asthma:
         relevant_conditions.append(condition)
         calculation["mild-persistent-asthma-or-greater"]= True
 
