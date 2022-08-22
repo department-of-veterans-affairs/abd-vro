@@ -113,7 +113,7 @@ public class VroController implements VroResource {
       String responseAsString = camelEntrance.submitClaimFull(model);
       log.info("Obtained full health assessment", responseAsString);
       FullHealthDataAssessmentResponse response =
-        objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
+          objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());
