@@ -5,21 +5,24 @@ import gov.va.vro.api.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Schema(name = "GeneratePdfRequest", description = "Details for pdf generation")
 public class GeneratePdfRequest {
-  @NonNull
+  @NotBlank
   @Schema(description = "Claim submission ID", example = "1234")
   private String claimSubmissionId;
 
-  @NonNull
-  @Schema(description = "Diagnostic code", example = "6602")
+  @NotBlank
+  @Schema(description = "Diagnostic code", example = "7101")
   private String diagnosticCode;
 
-  @NonNull
+  @NotNull
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
 

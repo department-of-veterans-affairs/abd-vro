@@ -3,7 +3,8 @@ package gov.va.vro.api.responses;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Getter
@@ -12,9 +13,9 @@ import lombok.NonNull;
     description = "Metadata describing an GeneratePdfResponse resource")
 public class GeneratePdfResponse {
 
-  @NonNull
+  @NotNull
   @Schema(
       description = "JSON results",
       example = "{\"claimSubmissionId\": 0, \"status\": \"IN_PROGRESS\", \"pdf\": \"\"}")
-  public final String pdfDocumentJson;
+  private final String pdfDocumentJson;
 }
