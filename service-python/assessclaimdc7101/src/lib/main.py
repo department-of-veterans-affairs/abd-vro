@@ -32,7 +32,7 @@ def assess_hypertension(event: Dict):
         relevant_medication = []
         event["evidence"]["bp_readings"] = []
         logging.info(validation_results["errors"])
-        response_body["errorMessage"] = {"errorString": "error validating request message data"}
+        response_body["errorMessage"] = "error validating request message data"
 
     response_body.update(
         {

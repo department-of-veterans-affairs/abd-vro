@@ -3,8 +3,6 @@ package gov.va.vro.service.provider.camel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
-import gov.va.vro.persistence.model.PayloadEntity;
-import gov.va.vro.service.spi.demo.model.AssessHealthData;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.seda.SedaComponent;
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
-import org.apache.camel.impl.converter.CoreTypeConverterRegistry;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +30,8 @@ import java.util.Set;
 public class CamelConfiguration {
   private final CamelContext camelContext;
   private final CamelUtils camelUtils;
+
+  private final MessageQueueProperties messageQueueProps;
 
   @Bean
   CamelContextConfiguration contextConfiguration() {
@@ -57,8 +56,7 @@ public class CamelConfiguration {
   }
 
   private static final Set<Class> dtoClasses =
-      Sets.newHashSet(
-          PayloadEntity.class, AssessHealthData.class, Claim.class, GeneratePdfPayload.class);
+      Sets.newHashSet(Claim.class, GeneratePdfPayload.class);
   private final ObjectMapper mapper;
 
   // TODO: replace with Auto-configured TypeConverter
@@ -81,25 +79,6 @@ public class CamelConfiguration {
     // printTypeConverters();
     return converter;
   }
-
-  private void printTypeConverters() {
-    TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
-    ((CoreTypeConverterRegistry) registry)
-        .getTypeMappings()
-        .forEach(
-            (fromClass, toClass, converter) ->
-                log.info(
-                    "{} -> {} : {}",
-                    fromClass.getName(),
-                    toClass.getName(),
-                    converter.getClass().getSimpleName()));
-    log.info(
-        "AssessHealthData -> byte[] : " + registry.lookup(AssessHealthData.class, byte[].class));
-    log.info(
-        "byte[] -> AssessHealthData : " + registry.lookup(byte[].class, AssessHealthData.class));
-  }
-
-  private final MessageQueueProperties messageQueueProps;
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
