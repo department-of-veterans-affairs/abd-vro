@@ -54,7 +54,6 @@ ext {
     codeModules = [':app',
                    ':api',
                    ':controller',
-                   ':persistence:impl',
                    ':persistence:model',
                    ':service:provider',
                    ':service:spi',

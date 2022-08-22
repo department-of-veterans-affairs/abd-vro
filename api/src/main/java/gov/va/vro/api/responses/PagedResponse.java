@@ -1,4 +1,4 @@
-package gov.va.starter.example.api.responses;
+package gov.va.vro.api.responses;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
