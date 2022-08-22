@@ -75,8 +75,8 @@ public interface VroResource {
       throws RequestValidationException;
 
   @Operation(
-      summary = "Hypertension health data assessment",
-      description = "Provides full health data assessment for a hypertension claim")
+      summary = "Full health data assessment",
+      description = "Provides full health data assessment for a claim")
   @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @Timed(value = "full-health-data-assessment")

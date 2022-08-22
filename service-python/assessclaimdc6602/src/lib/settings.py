@@ -1,4 +1,4 @@
 queue_config = {
-    "exchange_name": "assess_health_data",
+    "exchange_name": "health-assess-exchange",
     "service_queue_name": "6602",
 }

@@ -10,9 +10,8 @@ def validate_request_body(request_body):
     :return: dict with boolean result showing if request is valid and if not, any applicable errors
     :rtype: dict
     """
-    request_body =  {x:y for x,y in request_body.items() if y is not None}
     schema = {
-       "veteranIcn": {"type": "string"},
+        "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "evidence":{
@@ -34,11 +33,12 @@ def validate_request_body(request_body):
                         "text": {
                             "type": "string"
                         },
-                        "onset_date": {
+                        "onsetDate": {
                             "type": "string"
                         },
-                        "abatement_date": {
-                            "type": "string"
+                        "abatementDate": {
+                            "type": "string",
+                            "default": ""
                         }
                     }
                 }
@@ -53,11 +53,11 @@ def validate_request_body(request_body):
                             "type": "string"
                         },
                         "status": {
-                            "type": "string",
+                            "type": "string"
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            'default': [],
+                            "default": [],
                             "schema": {"type": "string",
                             "default": ""}
                         },
@@ -72,69 +72,6 @@ def validate_request_body(request_body):
                             "type": "list",
                             "schema": {"type": "string"}
                         }
-                    }
-                }
-            },
-            "bp_readings": {
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "diastolic": {
-                            "type": "dict",
-                            "required": True,
-                            "schema": {
-                                "value": {
-                                    "type": "number",
-                                    "required": True
-                                    },
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                                "unit": {"type": "string"}
-                            }
-                        },
-                        "systolic": {
-                            "type": "dict",
-                            "required": True,
-                            "schema": {
-                                "value": {
-                                    "type": "number",
-                                    "required": True
-                                    },
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                                "unit": {"type": "string"}
-                            }
-                        },
-                        "date": {"type": "string"},
-                        "practitioner": {"type": "string"},
-                        "organization": {"type": "string"}
-                    }
-                }
-            },
-            "procedure": {
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "code": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "code_system": {
-                            "type": "string"
-                        },
-                        "text": {
-                            "type": "string"
-                        },
-                        "performed_date": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "status": {
-                            "type": "string",
-                            "required": True
-                        },
                     }
                 }
             }

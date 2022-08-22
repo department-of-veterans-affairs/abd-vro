@@ -12,5 +12,5 @@ COPY . /app/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "-u", "app.py"]
+CMD ["python", "-u", "main_consumer.py"]
 #https://stackoverflow.com/a/55954143

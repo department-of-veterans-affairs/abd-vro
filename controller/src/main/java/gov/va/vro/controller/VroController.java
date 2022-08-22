@@ -124,7 +124,7 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       String msg = ex.getMessage();
-      log.error("Error in health 7101 assessment", ex);
+      log.error("Error in full health assessment", ex);
       FullHealthDataAssessmentResponse response =
           new FullHealthDataAssessmentResponse(
               claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
