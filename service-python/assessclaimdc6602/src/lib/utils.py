@@ -34,16 +34,16 @@ def validate_request_body(request_body):
                             "type": "string"
                         },
                         "onsetDate": {
-                            "type": "string"
+                            "type": "string",
                         },
                         "abatementDate": {
                             "type": "string",
-                            "default": ""
+                            "nullable": True,
                         }
                     }
                 }
             },
-            "medications": {
+             "medications": {
                 "required": True,
                 "type": "list",
                 "schema": {
@@ -53,23 +53,30 @@ def validate_request_body(request_body):
                             "type": "string"
                         },
                         "status": {
-                            "type": "string"
+                            "type": "string",
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            "default": [],
+                            "nullable": True,
                             "schema": {"type": "string",
                             "default": ""}
                         },
-                        "route": {"type": "string"},
+                        "route": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "refills": {},
-                        "duration": {"type": "string"},
+                        "duration": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "description": {
                             "type": "string",
                             "required": True
                             },
                         "notes": {
                             "type": "list",
+                            "nullable": True,
                             "schema": {"type": "string"}
                         }
                     }

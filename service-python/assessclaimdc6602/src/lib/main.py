@@ -26,7 +26,7 @@ def assess_asthma(event: Dict):
         active_medications = []
         active_conditions = {"conditions":[], "persistent_calculation": {"success" : False, "mild-persistent-asthma-or-greater": False}}
         logging.info(validation_results["errors"])
-        response_body["errorMessage"] = {"errorString": "error validating request message data"}
+        response_body["errorMessage"] = "error validating request message data"
 
     response_body.update({
         "evidence": {

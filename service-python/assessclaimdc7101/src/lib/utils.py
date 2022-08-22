@@ -31,19 +31,26 @@ def validate_request_body(request_body):
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            "default": [],
+                            "nullable": True,
                             "schema": {"type": "string",
                             "default": ""}
                         },
-                        "route": {"type": "string"},
+                        "route": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "refills": {},
-                        "duration": {"type": "string"},
+                        "duration": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "description": {
                             "type": "string",
                             "required": True
                             },
                         "notes": {
                             "type": "list",
+                            "nullable": True,
                             "schema": {"type": "string"}
                         }
                     }
@@ -82,8 +89,14 @@ def validate_request_body(request_body):
                             }
                         },
                         "date": {"type": "string"},
-                        "practitioner": {"type": "string"},
-                        "organization": {"type": "string"}
+                        "practitioner": {
+                            "type": "string",
+                            "nullable": True
+                            },
+                        "organization": {
+                            "type": "string",
+                            "nullable": True
+                            }
                     }
                 }
             }

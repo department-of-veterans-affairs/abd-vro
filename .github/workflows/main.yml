@@ -129,5 +129,4 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}
-          
+          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
