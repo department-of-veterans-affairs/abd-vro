@@ -285,7 +285,7 @@ from assessclaimdc7101.src.lib import main
                         "success": False
                     }}
                     ,
-                    "errorMessage": {"errorString": "error validating request message data"}
+                    "errorMessage": "error validating request message data"
                 }
         ),
         # Bad data:
@@ -345,7 +345,7 @@ from assessclaimdc7101.src.lib import main
                         "bp_readings": [],
                     "medications": []
                     },
-                    "errorMessage": {"errorString": "error validating request message data"}
+                    "errorMessage":  "error validating request message data"
                 }
         ),
     ],
