@@ -5,7 +5,6 @@ import gov.va.vro.api.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.Map;
@@ -14,16 +13,14 @@ import java.util.Map;
 @Getter
 @Setter
 public class HealthData7101AssessmentResponse {
-  @NonNull
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "90653535")
   private String veteranIcn;
 
-  @NonNull
   @Schema(description = "Diagnostic code for the claim contention", example = "7101")
   private String diagnosticCode;
 
   @Schema(description = "Medical evidence supporting assessment")
-  @JsonInclude(JsonInclude.Include.ALWAYS)
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private AbdEvidence evidence;
 
   @Schema(description = "Error message in the case of an error")
@@ -41,11 +38,4 @@ public class HealthData7101AssessmentResponse {
   @Schema(description = "Status")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String status;
-
-  public HealthData7101AssessmentResponse(
-      String veteranIcn, String diagnosticCode, String errorMessage) {
-    this.veteranIcn = veteranIcn;
-    this.diagnosticCode = diagnosticCode;
-    this.errorMessage = errorMessage;
-  }
 }

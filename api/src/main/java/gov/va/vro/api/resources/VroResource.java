@@ -1,6 +1,7 @@
 package gov.va.vro.api.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.GeneratePdfResponse;
@@ -42,7 +43,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Evidence pdf generation launch",
@@ -60,7 +61,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           GeneratePdfRequest request)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Generated evidence pdf download",
@@ -71,7 +72,7 @@ public interface VroResource {
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
   ResponseEntity<Object> fetchPdf(@PathVariable String claimSubmissionId)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Hypertension health data assessment",
@@ -88,5 +89,5 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 }
