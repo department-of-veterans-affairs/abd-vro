@@ -24,11 +24,11 @@ tasks/config.temp.dev
 opa/ingress/test.rego
 helmchart/opa-policies/ingress/test.rego
 
-api/bin/*.class
-app/bin/*.class
-controller/bin/*.class
-service/provider/bin/*.class
-service/spi/bin/*.class
+api/bin/**/*.class
+app/bin/**/*.class
+controller/bin/**/*.class
+service/provider/bin/**/*.class
+service/spi/bin/**/*.class
 
 local.properties
 
