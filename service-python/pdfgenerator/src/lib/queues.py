@@ -49,9 +49,10 @@ def on_fetch_callback(channel, method, properties, body):
 						logging.info(f"Fetched PDF")
 						response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "pdfData": str(pdf.decode("ascii"))}
 				else:
-						logging.info(f"PDF still generating")
-						response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdfData": ""}
-		except:
+						logging.info(f"Claim ID not found")
+						response = {"claimSubmissionId": claim_id, "status": "NOT_FOUND", "pdfData": ""}
+		except Exception as e:
+				logging.warn(f"Exception: {e}")
 				response = {"claimSubmissionId": claim_id, "status": "ERROR", "pdfData": ""}
 		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
