@@ -1,18 +1,31 @@
-hypertension_medications = {
-  "benazepril",
-  "lotensin",
-  "captopril",
-  "capoten",
-  "enalapril",
-  "enalaprilat",
-  "fosinopril",
-  "monopril",
-  "lisinopril",
-  "prinivil",
-  "zestril",
+asthma_medications = {
+    "Aerochamber",
+    "Albuterol",
+    "Beclomethasone",
+    "Benralizumab",
+    "Budesonide",
+    "Ciclesonide",
+    "Fluticasone",
+    "Levalbuterol",
+    "Mepolizumab",
+    "Methylprednisolone",
+    "Mometasone",
+    "Montelukast",
+    "Omalizumab",
+    "Prednisone",
+    "Reslizumab",
+    "Salmeterol",
+    "Theophylline",
+    "Zafirlukast",
+    "Zileuton",
+    "Asthma",
+    "Breath",
+    "Inhal",
+    "Puff",
+    "SOB",
 }
 
-def continuous_medication_required(request_body):
+def medication_required(request_body):
   """
   Determine if there is the veteran requires continuous medication for hypertension
 
@@ -26,7 +39,7 @@ def continuous_medication_required(request_body):
   veterans_medication = request_body["evidence"]["medications"]
   for medication in veterans_medication:
     medication_display = medication["description"]
-    for keyword in [x.lower() for x in hypertension_medications]:
+    for keyword in [x.lower() for x in asthma_medications]:
       if (keyword in medication_display.lower()):
         relevant_medications.append(medication)
   

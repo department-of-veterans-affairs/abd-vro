@@ -2,10 +2,10 @@ import json
 from typing import Dict
 import logging
 
+from . import utils
 from . import bp_history
 from . import continuous_medication
 from . import predominant_bp
-from . import utils
 
 
 def assess_hypertension(event: Dict):
