@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
 
-  public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
+  public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit?timeout=100000";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
