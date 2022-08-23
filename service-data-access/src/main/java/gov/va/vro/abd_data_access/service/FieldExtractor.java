@@ -185,8 +185,10 @@ public class FieldExtractor {
 
       result.setUnit(quantity.getUnit());
 
-      BigDecimal value = quantity.getValue().setScale(1, RoundingMode.HALF_UP);
-      result.setValue(value);
+      if (quantity.hasValue()) {
+        BigDecimal value = quantity.getValue().setScale(1, RoundingMode.HALF_UP);
+        result.setValue(value);
+      }
     }
 
     return result;
