@@ -58,6 +58,7 @@ public class LighthouseApiService {
     OBSERVATION("launch patient/Observation.read"),
     MEDICATION_REQUEST("launch patient/MedicationRequest.read"),
     CONDITION("launch patient/Condition.read"),
+    PROCEDURE("launch patient/Procedure.read"),
     UNKNOWN("");
 
     private final String scope;
