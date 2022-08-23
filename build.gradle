@@ -61,6 +61,7 @@ ext {
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
+                     ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
                      ':service-data-access',
                      ':container-init',
