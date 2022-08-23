@@ -17,7 +17,33 @@ def validate_request_body(request_body):
         "evidence":{
             "type": "dict",
             "schema": {
-            "medications": {
+            "conditions": {
+                "required": True,
+                "type": "list",
+                "schema": {
+                    "type": "dict",
+                    "schema": {
+                        "code": {
+                            "type": "string",
+                            "required": True
+                        },
+                        "status": {
+                            "type": "string",
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "onsetDate": {
+                            "type": "string",
+                        },
+                        "abatementDate": {
+                            "type": "string",
+                            "nullable": True,
+                        }
+                    }
+                }
+            },
+             "medications": {
                 "required": True,
                 "type": "list",
                 "schema": {
@@ -53,50 +79,6 @@ def validate_request_body(request_body):
                             "nullable": True,
                             "schema": {"type": "string"}
                         }
-                    }
-                }
-            },
-            "bp_readings": {
-                "required":True,
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "diastolic": {
-                            "type": "dict",
-                            "required": True,
-                            "schema": {
-                                "value": {
-                                    "type": "number",
-                                    "required": True
-                                    },
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                                "unit": {"type": "string"}
-                            }
-                        },
-                        "systolic": {
-                            "type": "dict",
-                            "required": True,
-                            "schema": {
-                                "value": {
-                                    "type": "number",
-                                    "required": True
-                                    },
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                                "unit": {"type": "string"}
-                            }
-                        },
-                        "date": {"type": "string"},
-                        "practitioner": {
-                            "type": "string",
-                            "nullable": True
-                            },
-                        "organization": {
-                            "type": "string",
-                            "nullable": True
-                            }
                     }
                 }
             }
