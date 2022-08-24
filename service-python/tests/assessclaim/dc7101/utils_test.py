@@ -30,7 +30,9 @@ from assessclaimdc7101.src.lib import utils
                         ,
                         ]
                         ,
-                        "medications": [{"description": "Capoten"}],
+                        "medications": [{"description": "Capoten",
+                        "status": "active",
+                        "authoredOn": "1950-04-06T04:00:00Z"}],
                     },
                     "date_of_claim": "2021-11-09",
                     "diagnosticCode": "7101",
@@ -74,7 +76,9 @@ from assessclaimdc7101.src.lib import utils
                         },
                     ]
                     ,
-                    "medications": [{"description": 123}],
+                    "medications": [{"description": 123,
+                    "status": "active",
+                    "authoredOn": "1950-04-06T04:00:00Z"}],
                     },
                     "date_of_claim": 20211109,
                     "diagnosticCode": "7101"

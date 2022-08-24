@@ -1,3 +1,5 @@
+from datetime import datetime
+
 asthma_medications = {
     "Aerochamber",
     "Albuterol",
@@ -35,12 +37,23 @@ def medication_required(request_body):
   :rtype: dict
   """
   relevant_medications = []
+  other_medications = []
 
   veterans_medication = request_body["evidence"]["medications"]
   for medication in veterans_medication:
+    tagged = False
     medication_display = medication["description"]
     for keyword in [x.lower() for x in asthma_medications]:
       if (keyword in medication_display.lower()):
         relevant_medications.append(medication)
+        tagged = True
+
+    if tagged == False:
+      other_medications.append(medication)
   
+  relevant_medications = sorted(relevant_medications, key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(), reverse=True)
+  other_medications = sorted(other_medications, key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(), reverse=True)
+
+  relevant_medications.extend(other_medications)
+
   return relevant_medications

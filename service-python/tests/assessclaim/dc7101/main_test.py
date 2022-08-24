@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from assessclaimdc7101.src.lib import main
 
@@ -50,7 +48,8 @@ from assessclaimdc7101.src.lib import main
                     ]
                 ,
                 "medications": [{"description": "Capoten",
-                "status": "active"}],
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}],
                 },
                 "date_of_claim": "2021-11-09",
             }
@@ -58,7 +57,8 @@ from assessclaimdc7101.src.lib import main
             {
                         "evidence":{
                             "medications": [{"description": "Capoten",
-                                "status": "active"}],
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z"}],
                             "bp_readings":  [                      
                             {
                             "diastolic": {

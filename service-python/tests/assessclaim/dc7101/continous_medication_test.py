@@ -11,13 +11,15 @@ from assessclaimdc7101.src.lib import continuous_medication
             {
                 "bp_readings": [],
                 "medications": [{"description": "Benazepril",
-                "status": "active"}],
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}],
                 'date_of_claim': '2021-11-09',
             }
             },
             [{"description": "Benazepril",
-                "status": "active"}]
-            ,
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}]
+
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -25,12 +27,14 @@ from assessclaimdc7101.src.lib import continuous_medication
             {
                 "bp_readings": [],
                 "medications": [{"description": "Benazepril",
-                "status": "active"}],
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}],
                 'date_of_claim': '2021-11-09',
             }
             },
             [{"description": "Benazepril",
-                "status": "active"}]
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}]
             ,
         ),
         # Service connected but doesn't use medication used to treat hypertension
@@ -39,29 +43,43 @@ from assessclaimdc7101.src.lib import continuous_medication
             {
                 "bp_readings": [],
                 "medications": [{"description": "Advil",
-                "status": "active"}],
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}],
                 'date_of_claim': '2021-11-09',
             }
             },
             [{"description": "Advil",
-                "status": "active"}],
+                "status": "active",
+                "authoredOn": "1950-04-06T04:00:00Z"}],
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
             {"evidence":
             {
                 "bp_readings": [],
-                "medications": [{"description": "Benazepril",
-                "status": "active"}, {"description": "Advil",
-                "status": "active"}],
+                "medications": [
+                    {"description": "Benazepril",
+                    "status": "active",
+                    "authoredOn": "1950-04-06T04:00:00Z"}, 
+                    {"description": "Advil",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}
+                    ],
                 'date_of_claim': '2021-11-09',
             }
             },
-            [{"description": "Benazepril",
-                "status": "active"},
+            [
                 {
-                "description": "Advil",
-                "status": "active"}],
+                    "description": "Advil",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"
+                },
+                {
+                    "description": "Benazepril",
+                    "status": "active",
+                    "authoredOn": "1950-04-06T04:00:00Z"
+                }
+            ],
         ),
         # Service connected but no medication
         (

@@ -8,7 +8,9 @@ from assessclaimdc6602.src.lib import utils
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Capoten"}]
+                    "medications": [{"description": "Capoten",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
@@ -18,7 +20,9 @@ from assessclaimdc6602.src.lib import utils
         (
             {
                 "evidence": {
-                    "medications": [{"description": 123}]
+                    "medications": [{"description": 123,
+                                     "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]
                 },
                 "date_of_claim": 20211109
             },

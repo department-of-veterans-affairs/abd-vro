@@ -8,34 +8,47 @@ from assessclaimdc6602.src.lib import main
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Prednisone"}]
+                    "medications": [{"description": "Prednisone",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"
+                    }]
                 },
                 "date_of_claim": "2021-11-09"
             },
-            {"evidence": {"medications": [{"description": "Prednisone"}]}}
+            {"evidence": {"medications": [{"description": "Prednisone",
+            "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
 
         # demonstrates ability to match substrings in medication["text"] property
         (
             {
                 "evidence": {
-                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}]
+                    "medications": [{"description": "predniSONE 1 MG Oral Tablet",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
             {"evidence": {
-                "medications": [{"description": "predniSONE 1 MG Oral Tablet"}]
+                "medications": [{"description": "predniSONE 1 MG Oral Tablet",
+                "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]
                 }}
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
             {
                 "evidence": {
-                    "medications": [{"description" : "Advil"}]
+                    "medications": [{"description" : "Advil",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
-            {"evidence": {"medications": []}}
+            {"evidence": {"medications": [{"description" : "Advil",
+                    "status": "active",
+                    "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
     ],
 )
