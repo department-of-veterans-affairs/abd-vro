@@ -30,7 +30,7 @@ public class FetchClaimsServiceImpl implements FetchClaimsService {
       claim.setVeteranIcn(claimEntity.getVeteran().getIcn());
       List<String> contentionList = new ArrayList<>();
       for (int i = 0; i < claimEntity.getContentions().size(); i++) {
-        String contention = (claimEntity.getContentions().get(i).getDiagnosticCode());
+        String contention = claimEntity.getContentions().get(i).getDiagnosticCode();
         contentionList.add(contention);
       }
       claim.setContentions(contentionList);
