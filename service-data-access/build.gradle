@@ -3,12 +3,12 @@ plugins {
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
 	id "io.freefair.lombok" version "6.5.0.2"
-    id 'com.adarshr.test-logger' version '3.2.0'
+//    id 'com.adarshr.test-logger' version '3.2.0'
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
+    id 'jacoco'
 
-    id 'starter.std.java.library-spring-conventions'
 }
 
 
@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.jsonwebtoken:jjwt:0.2'
     implementation 'com.auth0:java-jwt:2.2.2'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
     testImplementation 'org.testcontainers:testcontainers:1.17.3'
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
@@ -46,36 +47,26 @@ dependencies {
     testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
     testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
     testImplementation 'org.skyscreamer:jsonassert:1.2.3'
+}
 
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = file("$buildDir/jacoco")
+}
 
-    implementation project(':test-data-factory')
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
 
-    implementation "gov.va.starter:exceptions"
-    implementation "gov.va.starter:entity-lifecycle-notifier"
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
-    implementation 'gov.va.starter:test-data'
+jacocoTestReport {
+    dependsOn test
 }
 
 docker {
     files "build/libs/service-data-access-0.0.1-SNAPSHOT.jar", "bin/entrypoint.sh"
     buildArgs([JAR_FILE: "service-data-access-0.0.1-SNAPSHOT.jar", ENTRYPOINT_FILE: "entrypoint.sh"])
 }
-
-//dockerRun {
-//    env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me'),
-//            'JAVA_PROFILE': '-Dspring.profiles.include=docker'
-//}
-
-
-// application {
-//     // Define the main class for the application.
-//    mainClass = 'gov.va.vro.abd_data_access.AbdApplication'
-// }
 
 bootJar {
     manifest {
@@ -88,22 +79,3 @@ bootJar {
         )
     }
 }
-
-/*
-test {
-	useJUnitPlatform()
-}
-
-dockerRun {
-    image "${dockerRegistry}/${rootProject.name}-service-data-access"
-}
-*/
-/*
-docker {
-    // Expects src/docker/Dockerfile to exist
-    // Copies files into build/docker/ folder, where the container image will be built
-    copySpec.into(".").from("../../src"){
-        exclude('docker')
-    }
-}
-*/
