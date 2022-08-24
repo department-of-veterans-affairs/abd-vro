@@ -8,8 +8,7 @@ from assessclaimdc6602.src.lib import utils
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Capoten"}],
-                    "conditions": []
+                    "medications": [{"description": "Capoten"}]
                 },
                 "date_of_claim": "2021-11-09"
             },
@@ -19,8 +18,7 @@ from assessclaimdc6602.src.lib import utils
         (
             {
                 "evidence": {
-                    "medications": [{"description": 123}],
-                    "conditions": []
+                    "medications": [{"description": 123}]
                 },
                 "date_of_claim": 20211109
             },

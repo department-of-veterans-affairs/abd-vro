@@ -49,14 +49,16 @@ from assessclaimdc7101.src.lib import main
                         }
                     ]
                 ,
-                "medications": [{"description": "Capoten"}],
+                "medications": [{"description": "Capoten",
+                "status": "active"}],
                 },
                 "date_of_claim": "2021-11-09",
             }
             ,
             {
                         "evidence":{
-                            "medications": [{"description": "Capoten"}],
+                            "medications": [{"description": "Capoten",
+                                "status": "active"}],
                             "bp_readings":  [                      
                             {
                             "diastolic": {
@@ -93,25 +95,9 @@ from assessclaimdc7101.src.lib import main
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                             ]
-                        },
-                        "calculated": {
-                            "predominance_calculation": {
-                                "success": True,
-                                "predominant_diastolic_reading": 115,
-                                "predominant_systolic_reading": 200
-                            },
-                            "diastolic_history_calculation": {
-                                "diastolic_bp_predominantly_100_or_more": True,
-                                "success": True
-                            }
-                        },
-                        "status": "COMPLETE"
+                        }
                     }
         ),
-        # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn't
-        # Note that the inverse can't happen (where history_of_diastolic_bp fails while sufficient_to_autopopulate doesn't)
-        # because the only way history_of_diastolic_bp can fail is if there are no bp readings, which would cause
-        # sufficient_to_autopopulate to fail as well 
         (
             {
                 "evidence":{
@@ -156,58 +142,13 @@ from assessclaimdc7101.src.lib import main
                 },
                 "date_of_claim": "2021-11-09",
                 "diagnosticCode": "7101"
-            }
-            ,
+            },
+            # Blood pressue readings don't meet date specs
             {
                     "evidence":{
                         "medications": [],
-                        "bp_readings": [                      
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 115
-                            },
-                            "systolic": {                
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180
-                            },
-                                "date": "2020-11-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            },
-                            {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 110
-                            },
-                            "systolic": {                
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 200
-                            },
-                                "date": "2020-09-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            }
-                            ]
-                    },
-                    "calculated":{
-                        "predominance_calculation": {
-                            "success": False,
-                        },
-                        "diastolic_history_calculation": {
-                            "diastolic_bp_predominantly_100_or_more": True,
-                            "success": True
-                        }
-                    },
-                    "status": "COMPLETE",
+                        "bp_readings": []
+                    }
                 }
         ),
         # Sufficiency and history algos fail
@@ -225,17 +166,10 @@ from assessclaimdc7101.src.lib import main
             ,
             {
                     "evidence":{'medications': [],
-                    "bp_readings": []},
-                    "calculated":{"predominance_calculation": {
-                        "success": False,
-                    },
-                    "diastolic_history_calculation": {
-                        "success": False
-                    }},
-                    "status": "COMPLETE",
+                    "bp_readings": []}
                 }
         ),
-        # Bad data: "diastolic" key is missing in second reading
+        # Bad data: "systolic" key is missing in second reading
         (
             {
                 "evidence":{
@@ -272,18 +206,10 @@ from assessclaimdc7101.src.lib import main
                 }
             },
             {
-                    "status" : "COMPLETE",
                     "evidence":{
                         'medications': [],
                         "bp_readings": []
-                    },
-                    "calculated":{
-                    "predominance_calculation": {
-                        "success": False,
-                    },
-                    "diastolic_history_calculation": {
-                        "success": False
-                    }}
+                    }
                     ,
                     "errorMessage": "error validating request message data"
                 }
@@ -337,13 +263,9 @@ from assessclaimdc7101.src.lib import main
             }
             ,
             {
-                    "status" : "COMPLETE",
-                    "calculated": {
-                        "diastolic_history_calculation": {"success": False},
-                        "predominance_calculation": {'success': False}},
-                    "evidence": {
-                        "bp_readings": [],
-                    "medications": []
+                    "evidence":{
+                        'medications': [],
+                        "bp_readings": []
                     },
                     "errorMessage":  "error validating request message data"
                 }

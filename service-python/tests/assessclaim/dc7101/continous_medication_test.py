@@ -10,11 +10,13 @@ from assessclaimdc7101.src.lib import continuous_medication
             {"evidence":
             {
                 "bp_readings": [],
-                "medications": [{"description": "Benazepril"}],
+                "medications": [{"description": "Benazepril",
+                "status": "active"}],
                 'date_of_claim': '2021-11-09',
             }
             },
-            [{"description": "Benazepril"}]
+            [{"description": "Benazepril",
+                "status": "active"}]
             ,
         ),
         # Not service connected but uses medication used to treat hypertension
@@ -22,11 +24,13 @@ from assessclaimdc7101.src.lib import continuous_medication
             {"evidence":
             {
                 "bp_readings": [],
-                "medications": [{"description": "Benazepril"}],
+                "medications": [{"description": "Benazepril",
+                "status": "active"}],
                 'date_of_claim': '2021-11-09',
             }
             },
-            [{"description": "Benazepril"}]
+            [{"description": "Benazepril",
+                "status": "active"}]
             ,
         ),
         # Service connected but doesn't use medication used to treat hypertension
@@ -34,22 +38,30 @@ from assessclaimdc7101.src.lib import continuous_medication
             {"evidence":
             {
                 "bp_readings": [],
-                "medications": [{"description": "Advil"}],
+                "medications": [{"description": "Advil",
+                "status": "active"}],
                 'date_of_claim': '2021-11-09',
             }
             },
-            [],
+            [{"description": "Advil",
+                "status": "active"}],
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
             {"evidence":
             {
                 "bp_readings": [],
-                "medications": [{"description": "Benazepril"}, {"description": "Advil"}],
+                "medications": [{"description": "Benazepril",
+                "status": "active"}, {"description": "Advil",
+                "status": "active"}],
                 'date_of_claim': '2021-11-09',
             }
             },
-            [{"description": "Benazepril"}],
+            [{"description": "Benazepril",
+                "status": "active"},
+                {
+                "description": "Advil",
+                "status": "active"}],
         ),
         # Service connected but no medication
         (

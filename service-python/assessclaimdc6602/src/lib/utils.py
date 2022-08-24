@@ -17,32 +17,6 @@ def validate_request_body(request_body):
         "evidence":{
             "type": "dict",
             "schema": {
-            "conditions": {
-                "required": True,
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "code": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "status": {
-                            "type": "string",
-                        },
-                        "text": {
-                            "type": "string"
-                        },
-                        "onsetDate": {
-                            "type": "string",
-                        },
-                        "abatementDate": {
-                            "type": "string",
-                            "nullable": True,
-                        }
-                    }
-                }
-            },
              "medications": {
                 "required": True,
                 "type": "list",
