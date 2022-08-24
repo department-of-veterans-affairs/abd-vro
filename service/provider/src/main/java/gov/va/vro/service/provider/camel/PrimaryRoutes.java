@@ -15,6 +15,12 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
+  public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
+  public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
+
+  private static final String PDF_EXCHANGE = "pdf-generator";
+  private static final String GENERATE_PDF_QUEUE = "generate-pdf";
+  private static final String FETCH_PDF_QUEUE = "fetch-pdf";
 
   private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
@@ -71,23 +77,14 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteGeneratePdf() {
-
-    String exchangeName = "pdf-generator";
-    String queueName = "generate-pdf";
-
-    // send JSON-string payload to RabbitMQ
-    from("direct:generate-pdf")
-        .routeId("generate-pdf")
-        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+    from(ENDPOINT_GENERATE_PDF).routeId("generate-pdf").to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 
   private void configureRouteFetchPdf() {
-    String exchangeName = "pdf-generator";
-    String queueName = "fetch-pdf";
+    from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
+  }
 
-    // send JSON-string payload to RabbitMQ
-    from("direct:fetch-pdf")
-        .routeId("fetch-pdf")
-        .to("rabbitmq:" + exchangeName + "?routingKey=" + queueName);
+  private String pdfRoute(String queueName) {
+    return String.format("rabbitmq:%s?routingKey=%s", PDF_EXCHANGE, queueName);
   }
 }

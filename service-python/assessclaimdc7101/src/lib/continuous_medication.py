@@ -1,15 +1,15 @@
 hypertension_medications = {
-    "benazepril",
-    "lotensin",
-    "captopril",
-    "capoten",
-    "enalapril",
-    "enalaprilat",
-    "fosinopril",
-    "monopril",
-    "lisinopril",
-    "prinivil",
-    "zestril",
+  "benazepril",
+  "lotensin",
+  "captopril",
+  "capoten",
+  "enalapril",
+  "enalaprilat",
+  "fosinopril",
+  "monopril",
+  "lisinopril",
+  "prinivil",
+  "zestril",
 }
 
 def continuous_medication_required(request_body):

@@ -17,32 +17,6 @@ def validate_request_body(request_body):
         "evidence":{
             "type": "dict",
             "schema": {
-            "condition": {
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "code": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "status": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "text": {
-                            "type": "string"
-                        },
-                        "onset_date": {
-                            "type": "string",
-                            "required": True
-                        },
-                        "abatement_date": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "medications": {
                 "required": True,
                 "type": "list",
@@ -57,17 +31,26 @@ def validate_request_body(request_body):
                         },
                         "dosageInstructions": {
                             "type": "list",
-                            "schema": {"type": "string"}
+                            "nullable": True,
+                            "schema": {"type": "string",
+                            "default": ""}
                         },
-                        "route": {"type": "string"},
+                        "route": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "refills": {},
-                        "duration": {"type": "string"},
+                        "duration": {
+                            "type": "string",
+                            "nullable": True
+                            },
                         "description": {
                             "type": "string",
                             "required": True
                             },
                         "notes": {
                             "type": "list",
+                            "nullable": True,
                             "schema": {"type": "string"}
                         }
                     }
@@ -106,34 +89,14 @@ def validate_request_body(request_body):
                             }
                         },
                         "date": {"type": "string"},
-                        "practitioner": {"type": "string"},
-                        "organization": {"type": "string"}
-                    }
-                }
-            },
-            "procedure": {
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "code": {
+                        "practitioner": {
                             "type": "string",
-                            "required": True
-                        },
-                        "code_system": {
-                            "type": "string"
-                        },
-                        "text": {
-                            "type": "string"
-                        },
-                        "performed_date": {
+                            "nullable": True
+                            },
+                        "organization": {
                             "type": "string",
-                            "required": True
-                        },
-                        "status": {
-                            "type": "string",
-                            "required": True
-                        },
+                            "nullable": True
+                            }
                     }
                 }
             }

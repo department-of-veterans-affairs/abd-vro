@@ -1,10 +1,11 @@
 package gov.va.vro.api.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthData7101AssessmentResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,6 @@ import javax.validation.Valid;
 
 @RequestMapping(value = "/v1", produces = "application/json")
 @Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementations")
-// @SecurityRequirement(name = "bearer-jwt")
 @SecurityRequirement(name = "X-API-Key")
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
@@ -43,7 +43,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Evidence pdf generation launch",
@@ -61,7 +61,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           GeneratePdfRequest request)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Generated evidence pdf download",
@@ -72,16 +72,16 @@ public interface VroResource {
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
   ResponseEntity<Object> fetchPdf(@PathVariable String claimSubmissionId)
-      throws RequestValidationException;
+      throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
-      summary = "Hypertension health data assessment",
-      description = "Provides full health data assessment for a hypertension claim")
-  @PostMapping("/health-data-7101-assessment")
+      summary = "Full health data assessment",
+      description = "Provides full health data assessment for a claim")
+  @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
-  @Timed(value = "health-data-7101-assessment")
+  @Timed(value = "full-health-data-assessment")
   @Tag(name = "Full Health Assessment")
-  ResponseEntity<HealthData7101AssessmentResponse> postHealth7101Assessment(
+  ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       @Parameter(
               description = "Claim for which health data assessment requested",
               required = true,
@@ -89,7 +89,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException;
+
 
   @Operation(
       summary = "Gets all claims stored in vro database.",
@@ -98,4 +98,7 @@ public interface VroResource {
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
   ResponseEntity<Object> fetchClaims() throws Exception;
+
+      throws RequestValidationException, ClaimProcessingException;
+
 }

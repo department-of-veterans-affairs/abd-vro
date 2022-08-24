@@ -4,8 +4,9 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.spi.model.Claim;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ClaimMapper {
 
   ClaimEntity toClaimEntity(Claim claim);
