@@ -1,7 +1,158 @@
 {
-    "medications": null,
-    "conditions": null,
-    "procedures": null,
+    "medications": [
+        {
+            "status": "Active",
+            "description": "Hydrochlorothiazide 6.25 MG",
+            "refills": 0,
+            "authoredOn": "1950-04-05T23:00:00Z",
+            "dosageInstructions": [
+                "QD"
+            ],
+            "route": "ORAL"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "Hydrochlorothiazide 6.25 MG"
+            ],
+            "description": "Hydrochlorothiazide 6.25 MG",
+            "refills": 0,
+            "authoredOn": "1950-04-06T07:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Active",
+            "description": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler",
+            "refills": 0,
+            "authoredOn": "1952-04-11T23:00:00Z"
+        },
+        {
+            "status": "Active",
+            "description": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler",
+            "refills": 0,
+            "authoredOn": "1952-04-11T23:00:00Z",
+            "dosageInstructions": [
+                "QID PRN"
+            ],
+            "route": "INHALATION ORAL"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
+            ],
+            "description": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler",
+            "refills": 0,
+            "authoredOn": "1952-04-12T07:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+            ],
+            "description": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler",
+            "refills": 0,
+            "authoredOn": "1952-04-12T07:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Active",
+            "description": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "1953-04-25T23:00:00Z"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet"
+            ],
+            "description": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "1953-04-26T08:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Completed",
+            "description": "Acetaminophen 160 MG",
+            "refills": 0,
+            "authoredOn": "2009-08-04T00:00:00Z"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "Acetaminophen 160 MG"
+            ],
+            "description": "Acetaminophen 160 MG",
+            "refills": 0,
+            "authoredOn": "2009-08-04T08:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Completed",
+            "description": "Ibuprofen 200 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "2012-11-16T00:00:00Z",
+            "dosageInstructions": [
+                "DAILY PRN"
+            ],
+            "route": "ORAL"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "Ibuprofen 200 MG Oral Tablet"
+            ],
+            "description": "Ibuprofen 200 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "2012-11-16T08:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        },
+        {
+            "status": "Completed",
+            "description": "Naproxen sodium 220 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "2014-11-27T00:00:00Z"
+        },
+        {
+            "status": "Active",
+            "notes": [
+                "Naproxen sodium 220 MG Oral Tablet"
+            ],
+            "description": "Naproxen sodium 220 MG Oral Tablet",
+            "refills": 0,
+            "authoredOn": "2014-11-27T08:24:55Z",
+            "dosageInstructions": [
+                "Once per day.",
+                "As directed by physician."
+            ],
+            "route": "As directed by physician."
+        }
+    ],
     "bp_readings": [
         {
             "date": "2009-03-19",
@@ -85,7 +236,6 @@
                 "unit": "mm[Hg]",
                 "value": 119.0
             },
-            "practitioner": null,
             "organization": "LYONS VA MEDICAL CENTER"
         },
         {
@@ -119,8 +269,7 @@
                 "unit": "mm[Hg]",
                 "value": 102.0
             },
-            "practitioner": "DR. JOHN248 SMITH811 MD",
-            "organization": null
+            "practitioner": "DR. JOHN248 SMITH811 MD"
         },
         {
             "date": "2016-04-28",
@@ -153,7 +302,6 @@
                 "unit": "mm[Hg]",
                 "value": 105.0
             },
-            "practitioner": null,
             "organization": "WASHINGTON VA MEDICAL CENTER"
         },
         {

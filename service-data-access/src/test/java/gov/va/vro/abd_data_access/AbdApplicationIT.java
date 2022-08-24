@@ -10,6 +10,7 @@ import lombok.val;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class AbdApplicationIT {
           .waitingFor(
               Wait.forHttp("/api/vhosts").forPort(15672).withBasicCredentials("guest", "guest"));
 
-  // @Test
+  @Test
   void testForClaim01() throws Exception {
     AbdClaim claim = CommonData.claim01;
     ObjectMapper mapper = new ObjectMapper();
