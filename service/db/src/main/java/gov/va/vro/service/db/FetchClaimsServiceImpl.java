@@ -23,18 +23,17 @@ public class FetchClaimsServiceImpl implements FetchClaimsService {
     List<ClaimEntity> claimList = new ArrayList<>();
     claimList = claimRepository.findAll();
     List<SimpleClaim> simpleClaims = new ArrayList<>();
-    SimpleClaim claim = new SimpleClaim();
-    List<String> contentionList = new ArrayList<>();
 
     for (ClaimEntity claimEntity : claimList) {
+      SimpleClaim claim = new SimpleClaim();
       claim.setClaimSubmissionId(claimEntity.getClaimSubmissionId());
       claim.setVeteranIcn(claimEntity.getVeteran().getIcn());
+      List<String> contentionList = new ArrayList<>();
       for (int i = 0; i < claimEntity.getContentions().size(); i++) {
         String contention = (claimEntity.getContentions().get(i).getDiagnosticCode());
         contentionList.add(contention);
       }
       claim.setContentions(contentionList);
-
       simpleClaims.add(claim);
     }
 
