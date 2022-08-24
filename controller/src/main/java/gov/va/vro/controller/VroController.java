@@ -18,7 +18,6 @@ import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.model.SimpleClaim;
 import gov.va.vro.service.spi.services.fetchclaims.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
@@ -39,22 +38,8 @@ public class VroController implements VroResource {
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
-
   private final FetchClaimsService fetchClaimsService;
   private final ObjectMapper objectMapper = new ObjectMapper();
-  public VroController(
-      CamelEntrance camelEntrance,
-      GeneratePdfRequestMapper generatePdfRequestMapper,
-      FetchPdfRequestMapper fetchPdfRequestMapper,
-      PostClaimRequestMapper postClaimRequestMapper,
-      FetchClaimsService fetchClaimsService) {
-    this.camelEntrance = camelEntrance;
-    this.generatePdfRequestMapper = generatePdfRequestMapper;
-    this.fetchPdfRequestMapper = fetchPdfRequestMapper;
-    this.postClaimRequestMapper = postClaimRequestMapper;
-    this.fetchClaimsService = fetchClaimsService;
-  }
-
 
   @Override
   public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
@@ -144,7 +129,7 @@ public class VroController implements VroResource {
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment", responseAsString);
+      log.info("Obtained full health assessment: {}", responseAsString);
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());

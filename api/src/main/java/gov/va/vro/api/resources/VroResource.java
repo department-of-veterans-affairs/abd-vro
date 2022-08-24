@@ -88,8 +88,7 @@ public interface VroResource {
               schema = @Schema(implementation = HealthDataAssessmentRequest.class))
           @Valid
           @RequestBody
-          HealthDataAssessmentRequest claim)
-
+          HealthDataAssessmentRequest claim);
 
   @Operation(
       summary = "Gets all claims stored in vro database.",
@@ -97,8 +96,5 @@ public interface VroResource {
   @GetMapping("/fetch-claims")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
-  ResponseEntity<Object> fetchClaims() throws Exception;
-
-      throws RequestValidationException, ClaimProcessingException;
-
+  ResponseEntity<Object> fetchClaims() throws RequestValidationException, ClaimProcessingException;
 }
