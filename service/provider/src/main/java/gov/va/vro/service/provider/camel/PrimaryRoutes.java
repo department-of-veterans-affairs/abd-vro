@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
 
-  public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit?timeout=100000";
+  public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
@@ -59,8 +59,7 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-        .log(">>5> ${body}");
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
   private void configureRouteClaimSubmitForFull() {
@@ -72,8 +71,7 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
-        .log(">>5> ${body}");
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"));
   }
 
   private void configureRouteGeneratePdf() {

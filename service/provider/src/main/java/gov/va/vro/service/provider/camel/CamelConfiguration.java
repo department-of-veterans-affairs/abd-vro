@@ -24,7 +24,6 @@ import java.util.Set;
 @EntityScan({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
 @RequiredArgsConstructor
 public class CamelConfiguration {
-  public static final int DEFAULT_TIMEOUT = 100000;
   private final CamelContext camelContext;
   private final CamelUtils camelUtils;
 
@@ -79,10 +78,6 @@ public class CamelConfiguration {
     factory.setPort(messageQueueProps.getPort());
     factory.setUsername(messageQueueProps.getUser());
     factory.setPassword(messageQueueProps.getPassword());
-    factory.setConnectionTimeout(DEFAULT_TIMEOUT);
-    factory.setChannelRpcTimeout(DEFAULT_TIMEOUT);
-    factory.setWorkPoolTimeout(DEFAULT_TIMEOUT);
-    factory.setHandshakeTimeout(DEFAULT_TIMEOUT);
     return factory;
   }
 }

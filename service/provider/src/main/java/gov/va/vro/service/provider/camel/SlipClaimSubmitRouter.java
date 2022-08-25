@@ -13,6 +13,12 @@ import java.util.Map;
 @Slf4j
 @Component
 public class SlipClaimSubmitRouter {
+
+  private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+
+  private static final String RABBIT_ROUTE_TEMPLATE =
+      "rabbitmq:claim-submit-exchange?queue=%s&routingKey=code.%s&requestTimeout=%d";
+
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -28,11 +34,8 @@ public class SlipClaimSubmitRouter {
     }
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
-        "rabbitmq:claim-submit-exchange"
-            + "?queue=claim-submit"
-            + "&routingKey=code."
-            + diagnosticCode;
-
+        String.format(
+            RABBIT_ROUTE_TEMPLATE, "claim-submit", diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -51,8 +54,12 @@ public class SlipClaimSubmitRouter {
       return null;
     }
     String diagnosticCode = diagnosticCodeObj.toString();
-    String route = "rabbitmq:health-assess-exchange" + "?routingKey=" + diagnosticCode;
-
+    String route =
+        String.format(
+            RABBIT_ROUTE_TEMPLATE,
+            "health-assess-exchange",
+            diagnosticCode,
+            DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
