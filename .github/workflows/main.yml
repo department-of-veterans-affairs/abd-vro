@@ -106,6 +106,8 @@ jobs:
             "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-assessclaimdc7101 \
             "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-pdfgenerator \
             "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-service-data-access \
@@ -127,3 +129,4 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
