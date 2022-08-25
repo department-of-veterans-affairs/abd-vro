@@ -110,7 +110,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.1701")
+                        + "&routingKey=code.1701&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
 

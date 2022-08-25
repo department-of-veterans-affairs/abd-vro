@@ -16,9 +16,6 @@ public class SlipClaimSubmitRouter {
 
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
 
-  private static final String RABBIT_ROUTE_TEMPLATE =
-      "rabbitmq:claim-submit-exchange?queue=%s&routingKey=code.%s&requestTimeout=%d";
-
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -35,7 +32,8 @@ public class SlipClaimSubmitRouter {
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
         String.format(
-            RABBIT_ROUTE_TEMPLATE, "claim-submit", diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            "rabbitmq:claim-submit-exchange?queue=claim-submit&routingKey=code.%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -56,10 +54,8 @@ public class SlipClaimSubmitRouter {
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
         String.format(
-            RABBIT_ROUTE_TEMPLATE,
-            "health-assess-exchange",
-            diagnosticCode,
-            DEFAULT_REQUEST_TIMEOUT);
+            "rabbitmq:claim-submit-exchange?&routingKey=code.%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
