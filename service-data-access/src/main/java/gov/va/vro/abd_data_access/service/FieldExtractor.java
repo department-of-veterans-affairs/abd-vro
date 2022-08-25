@@ -104,11 +104,11 @@ public class FieldExtractor {
     }
     if (medication.hasNote()) {
       result.setNotes(medication.getNote().stream()
-          .map(n -> n.getText()).collect(Collectors.toList()));
+          .filter(n -> n.hasText()).map(n -> n.getText()).collect(Collectors.toList()));
     }
     if (medication.hasDosageInstruction()) {
       List<String> dosages = medication.getDosageInstruction()
-          .parallelStream().map(d -> d.getText()).collect(Collectors.toList());
+          .parallelStream().filter(d -> d.hasText()).map(d -> d.getText()).collect(Collectors.toList());
       List<String> codeText = medication.getDosageInstruction()
           .stream().filter(d -> d.hasTiming()).filter(t -> t.getTiming().hasCode())
           .filter(c -> c.getTiming().getCode().hasText()).map(c -> c.getTiming().getCode().getText())
@@ -121,10 +121,14 @@ public class FieldExtractor {
       result.setRoute(routes);
     }
     if (medication.hasDispenseRequest()) {
-      result.setDuration(medication.getDispenseRequest()
-          .getExpectedSupplyDuration().getDisplay());
-      result.setRefills(medication.getDispenseRequest()
-          .getNumberOfRepeatsAllowed());
+      if (medication.getDispenseRequest().hasExpectedSupplyDuration()) {
+        result.setDuration(medication.getDispenseRequest()
+                .getExpectedSupplyDuration().getDisplay());
+      }
+      if (medication.getDispenseRequest().hasNumberOfRepeatsAllowed()) {
+        result.setRefills(medication.getDispenseRequest()
+                .getNumberOfRepeatsAllowed());
+      }
     }
 
     return result;
@@ -176,12 +180,16 @@ public class FieldExtractor {
     result.setCode(coding.getCode());
     result.setDisplay(coding.getDisplay());
 
-    Quantity quantity = component.getValueQuantity();
+    if (component.hasValueQuantity()) {
+      Quantity quantity = component.getValueQuantity();
 
-    result.setUnit(quantity.getUnit());
+      result.setUnit(quantity.getUnit());
 
-    BigDecimal value = quantity.getValue().setScale(1, RoundingMode.HALF_UP);
-    result.setValue(value);
+      if (quantity.hasValue()) {
+        BigDecimal value = quantity.getValue().setScale(1, RoundingMode.HALF_UP);
+        result.setValue(value);
+      }
+    }
 
     return result;
   }
