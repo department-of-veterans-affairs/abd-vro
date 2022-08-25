@@ -17,6 +17,7 @@ from assessclaimdc6602.src.lib import main
             },
             {"evidence": {"medications": [{"description": "Prednisone",
             "status": "active",
+            'flagged': 1,
                     "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
 
@@ -33,6 +34,7 @@ from assessclaimdc6602.src.lib import main
             {"evidence": {
                 "medications": [{"description": "predniSONE 1 MG Oral Tablet",
                 "status": "active",
+                'flagged': 1,
                     "authoredOn": "1952-04-06T04:00:00Z"}]
                 }}
         ),
@@ -48,6 +50,7 @@ from assessclaimdc6602.src.lib import main
             },
             {"evidence": {"medications": [{"description" : "Advil",
                     "status": "active",
+                    'flagged': 0,
                     "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
     ],
