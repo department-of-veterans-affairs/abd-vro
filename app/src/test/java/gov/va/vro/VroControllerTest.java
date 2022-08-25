@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -55,6 +56,7 @@ class VroControllerTest extends BaseIntegrationTest {
   private MockEndpoint mockFetchPdfEndpoint;
 
   @Test
+  @DirtiesContext
   void postHealthAssessment() throws Exception {
 
     // intercept the original endpoint, skip it and replace it with the mock endpoint
@@ -101,7 +103,8 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
-  void postHealthAssessment_missing_evidence() throws Exception {
+  @DirtiesContext
+  void claimSubmit_missing_evidence() throws Exception {
     adviceWith(
         camelContext,
         "claim-submit",
@@ -130,6 +133,7 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
+  @DirtiesContext
   void generatePdf() throws Exception {
     adviceWith(
         camelContext,
@@ -161,6 +165,7 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
+  @DirtiesContext
   void fetchPdf() throws Exception {
     adviceWith(
         camelContext,
