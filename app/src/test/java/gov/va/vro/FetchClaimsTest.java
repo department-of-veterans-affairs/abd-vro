@@ -9,12 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -23,6 +19,18 @@ public class FetchClaimsTest extends BaseIntegrationTest {
   @Autowired private FetchClaimsService fetchClaimsService;
 
   @Autowired private TestRestTemplate testRestTemplate;
+
+  private <I, O> ResponseEntity<O> get(String url, I request, Class<O> responseType) {
+    return exchange(url, request, HttpMethod.GET, responseType);
+  }
+
+  private <I, O> ResponseEntity<O> exchange(
+      String url, I request, HttpMethod method, Class<O> responseType) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "ec4624eb-a02d-4d20-bac6-095b98a792a2");
+    var httpEntity = new HttpEntity<>(request, headers);
+    return testRestTemplate.exchange(url, method, httpEntity, responseType);
+  }
 
   @Test
   void fetchClaimsPositive() {
@@ -33,10 +41,8 @@ public class FetchClaimsTest extends BaseIntegrationTest {
     var claim = TestDataSupplier.createClaim("1111111", "type", veteran);
     ContentionEntity contention1 = new ContentionEntity("code1");
     ContentionEntity contention2 = new ContentionEntity("code2");
-    List<ContentionEntity> contentionEntities = new ArrayList<>();
-    contentionEntities.add(contention1);
-    contentionEntities.add(contention2);
-    claim.setContentions(contentionEntities);
+    claim.addContention(contention1);
+    claim.addContention(contention2);
     claimRepository.save(claim);
 
     // Claim 2
@@ -45,10 +51,8 @@ public class FetchClaimsTest extends BaseIntegrationTest {
     var claim2 = TestDataSupplier.createClaim("2222222", "type", veteran);
     ContentionEntity contention3 = new ContentionEntity("code3");
     ContentionEntity contention4 = new ContentionEntity("code4");
-    List<ContentionEntity> contentionEntities2 = new ArrayList<>();
-    contentionEntities2.add(contention3);
-    contentionEntities2.add(contention4);
-    claim2.setContentions(contentionEntities2);
+    claim2.addContention(contention3);
+    claim2.addContention(contention4);
     claimRepository.save(claim2);
 
     // Claim3
@@ -57,17 +61,16 @@ public class FetchClaimsTest extends BaseIntegrationTest {
     var claim3 = TestDataSupplier.createClaim("3333333", "type", veteran);
     ContentionEntity contention5 = new ContentionEntity("code5");
     ContentionEntity contention6 = new ContentionEntity("code6");
-    List<ContentionEntity> contentionEntities3 = new ArrayList<>();
-    contentionEntities3.add(contention5);
-    contentionEntities3.add(contention6);
-    claim3.setContentions(contentionEntities3);
+    claim3.addContention(contention5);
+    claim3.addContention(contention6);
     claimRepository.save(claim3);
 
+    var test = claimRepository.findAll();
     // Run the fetch-claims endpoint to fetch all claims in DB
     // Save full HTTP response in responseEntity
     // Save FetchClaimsResponse object in response
     ResponseEntity<FetchClaimsResponse> responseEntity =
-        testRestTemplate.getForEntity("v1/fetch-claims", FetchClaimsResponse.class);
+        get("/v1/fetch-claims", null, FetchClaimsResponse.class);
     FetchClaimsResponse response = responseEntity.getBody();
 
     // Verify that the status code os 'OK' and the list size is 3

@@ -2,14 +2,12 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.FetchPdfResponse;
-import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
-import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.api.responses.*;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -147,13 +145,27 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<Object> fetchClaims() {
+  public ResponseEntity<FetchClaimsResponse> fetchClaims() {
     List<SimpleClaim> claimList = new ArrayList<>();
     try {
       claimList = fetchClaimsService.fetchClaims();
+      List<ClaimInfo> claims = new ArrayList<>();
+      for (SimpleClaim claim : claimList) {
+        ClaimInfo info = new ClaimInfo();
+        info.setClaimSubmissionId(claim.getClaimSubmissionId());
+        info.setVeteranIcn(claim.getVeteranIcn());
+        info.setContentions(claim.getContentions());
+        claims.add(info);
+      }
+      FetchClaimsResponse response = new FetchClaimsResponse();
+      response.setClaims(claims);
+      response.setErrorMessage("Success");
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
-      log.error("Could not fetch all claims or contentions");
+      FetchClaimsResponse failure = new FetchClaimsResponse();
+      failure.setErrorMessage("Could not retrieve claims from DB.   " + e.getMessage());
+      log.error("Could not retrieve claims from DB.   " + e.getMessage());
+      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return new ResponseEntity<>(claimList, HttpStatus.OK);
   }
 }
