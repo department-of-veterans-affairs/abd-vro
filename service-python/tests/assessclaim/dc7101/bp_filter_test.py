@@ -29,6 +29,26 @@ from assessclaimdc7101.src.lib import bp_filter
                     "date": "2021-11-01"
                 }
             ]     
+        ),
+        (
+            {
+                "evidence": {
+                "bp_readings": [
+                    {
+                        "diastolic": {"value": 100},
+                        "systolic": {"value": 180},
+                        "date": "2021-11-01"
+                    },
+                    {
+                        "diastolic": {"value": 100},
+                        "systolic": {"value": 180},
+                        "date": "2020-11-01"
+                    }
+                ]
+                },
+                "date_of_claim": "2022-11-02"
+            },
+            []     
         )
     ]
 )

@@ -41,17 +41,17 @@ def medication_required(request_body):
 
   veterans_medication = request_body["evidence"]["medications"]
   for medication in veterans_medication:
-    flagged = False
-    medication_display = medication["description"]
-    for keyword in [x.lower() for x in asthma_medications]:
-      if (keyword in medication_display.lower()):
-        medication["flagged"] = 1
-        relevant_medications.append(medication)
-        flagged = True
-
-    if flagged == False:
-      medication["flagged"] = 0
-      other_medications.append(medication)
+    if medication["status"].lower() == "active":
+      flagged = False
+      medication_display = medication["description"]
+      for keyword in [x.lower() for x in asthma_medications]:
+        if (keyword in medication_display.lower()):
+          medication["flagged"] = 1
+          relevant_medications.append(medication)
+          flagged = True
+      if flagged == False:
+        medication["flagged"] = 0
+        other_medications.append(medication)
   
   relevant_medications = sorted(relevant_medications, key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(), reverse=True)
   other_medications = sorted(other_medications, key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(), reverse=True)
