@@ -1,0 +1,76 @@
+name: Build
+
+on:
+  # Trigger on all pull requests from main and develop branches
+  pull_request:
+    branches:
+      - "*"
+
+#env:
+#  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#  COMMIT_SHA: ${{ github.sha }}
+
+jobs:
+  cis-benchmark-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: |
+          ./gradlew docker
+
+      - name: Run cis-benchmark tests
+        run: |
+          cd ..
+          git clone https://github.com/docker/docker-bench-security.git
+          cd docker-bench-security
+          sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
+
+  build-and-test-java:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install Java build dependencies
+        uses: ./.github/actions/install-build-dependencies
+
+      - name: Build and test docker image
+        run: ./gradlew build check
+
+  build-and-test-python:
+    runs-on: ubuntu-latest
+    services:
+      rabbitmq:
+        image: rabbitmq:3.8
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "pip"
+
+      - name: "DC7101: PIP Install"
+        run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
+
+      - name: "PDF Generator: PIP Install"
+        run: pip install -r service-python/pdfgenerator/src/requirements.txt
+
+      - name: "Pytest: Code Coverage"
+        run: cd service-python && python -m pytest --cov-report term-missing --cov
