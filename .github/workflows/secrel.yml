@@ -1,0 +1,27 @@
+name: Reusable SecRel Flow
+
+on:
+  #Trigger on every code push
+  #push:
+
+  # Trigger on all pull requests to main branch
+  pull_request:
+    branches:
+      - main
+
+  # Trigger on all published GitHub Releases
+  release:
+    types: [ "created" ]
+
+  # Trigger manually
+  workflow_dispatch:
+
+jobs:
+  # Sample job that runs after the "dev-stuff" job, that calls the Tornado reusable workflow
+  build-and-scan:
+    #needs: [ dev-stuff ]
+    name: Tornado Pipeline
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v2.1.1
+    with:
+      config-file: .github/secrel/config.yml
+    secrets: inherit
