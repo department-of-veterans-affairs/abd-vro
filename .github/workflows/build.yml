@@ -6,6 +6,12 @@ on:
     branches:
       - "*"
 
+  # Trigger when called by another GitHub Action
+  workflow_call:
+    secrets:
+      ACCESS_TOKEN:
+        required: true
+
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 

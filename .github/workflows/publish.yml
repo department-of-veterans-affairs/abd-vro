@@ -11,8 +11,13 @@ env:
   COMMIT_SHA: ${{ github.sha }}
 
 jobs:
+  call-build-workflow:
+    uses: ./.github/workflows/build.yml
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
   publish-image:
-    needs: [build-and-test-java, build-and-test-python]
+    needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Install Java
