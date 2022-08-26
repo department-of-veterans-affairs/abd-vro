@@ -1,4 +1,5 @@
-name: Check for vulnerabilities in Prod
+name: "SecRel aqua-check"
+# Aqua vulnerability checker
 
 on:
   workflow_dispatch:
@@ -7,6 +8,8 @@ on:
 
 jobs:
   aqua-check:
+    # only run for the internal repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: Aqua Check
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/aqua-checker.yml@v2.1.1
     with:

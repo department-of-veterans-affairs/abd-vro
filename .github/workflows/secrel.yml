@@ -1,14 +1,13 @@
-name: Reusable SecRel Flow
+name: "SecRel workflow"
 
 on:
-  #Trigger on every code push
-  #push:
+  # Trigger on every code push to main and develop branches
+  push:
+    branches: [ main, develop ]
 
-  # Trigger on all pull requests to main and develop branches
+  # Trigger on all PRs from main and develop branches
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ main, develop ]
 
   # Trigger on all published GitHub Releases
   release:
