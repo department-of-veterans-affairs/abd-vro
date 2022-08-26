@@ -16,42 +16,7 @@ env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
-  cis-benchmark-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Build image
-        run: |
-          ./gradlew docker
-
-      - name: Run cis-benchmark tests
-        run: |
-          cd ..
-          git clone https://github.com/docker/docker-bench-security.git
-          cd docker-bench-security
-          sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
-
-  build-and-test-java:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Install Java build dependencies
-        uses: ./.github/actions/install-build-dependencies
-
-      - name: Build and test docker image
-        run: ./gradlew build check
-
-  build-and-test-python:
+  build-and-test:
     runs-on: ubuntu-latest
     services:
       rabbitmq:
@@ -65,17 +30,27 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
+      # Install all dependencies
+
+      - name: Install Java build dependencies
+        uses: ./.github/actions/install-build-dependencies
+
       - name: Install Python
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
           cache: "pip"
 
-      - name: "DC7101: PIP Install"
+      - name: "Install Python dependencies for DC7101"
         run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
 
-      - name: "PDF Generator: PIP Install"
+      - name: "Install Python dependencies for PDF Generator"
         run: pip install -r service-python/pdfgenerator/src/requirements.txt
 
-      - name: "Pytest: Code Coverage"
+      # Build and test
+
+      - name: Build and test Java code
+        run: ./gradlew build check
+
+      - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
