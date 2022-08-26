@@ -1,7 +1,7 @@
 name: Build
 
 on:
-  # Trigger on all pull requests from main and develop branches
+  # Trigger on all pull requests
   pull_request:
     branches:
       - "*"
