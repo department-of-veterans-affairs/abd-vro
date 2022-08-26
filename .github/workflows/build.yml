@@ -12,6 +12,9 @@ on:
       ACCESS_TOKEN:
         required: true
 
+  # Allow manual triggering
+  workflow_dispatch:
+
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
