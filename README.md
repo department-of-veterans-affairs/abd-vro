@@ -1,5 +1,5 @@
-- `develop` branch: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/department-of-veterans-affairs/abd-vro/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/department-of-veterans-affairs/abd-vro/tree/develop)
-- `main` branch: [![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=adbf14b0367e25d8a01014669c255af742498dd3)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
+- `develop` branch: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/department-of-veterans-affairs/abd-vro/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/department-of-veterans-affairs/abd-vro/tree/develop)
+- `main` branch: [![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
 
 # ABD VRO
 
