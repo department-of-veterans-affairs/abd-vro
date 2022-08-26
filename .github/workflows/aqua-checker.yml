@@ -1,0 +1,14 @@
+name: Check for vulnerabilities in Prod
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'
+
+jobs:
+  aqua-check:
+    name: Aqua Check
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/aqua-checker.yml@v2.1.1
+    with:
+      config-file: .github/secrel/config.yml
+    secrets: inherit
