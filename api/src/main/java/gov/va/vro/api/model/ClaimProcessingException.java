@@ -7,14 +7,11 @@ public class ClaimProcessingException extends Exception {
 
   @Getter private final String claimSubmissionId;
   @Getter private final HttpStatus httpStatus;
-  private Exception exception;
-  private String message;
 
   public ClaimProcessingException(String claimSubmissionId, HttpStatus httpStatus, String message) {
     super(message);
     this.claimSubmissionId = claimSubmissionId;
     this.httpStatus = httpStatus;
-    this.message = message;
   }
 
   public ClaimProcessingException(
@@ -22,12 +19,12 @@ public class ClaimProcessingException extends Exception {
     super(exception);
     this.claimSubmissionId = claimSubmissionId;
     this.httpStatus = httpStatus;
-    this.exception = exception;
   }
 
   public String getOriginalMessage() {
+    Throwable exception = super.getCause();
     if (exception == null) {
-      return message;
+      return this.getMessage();
     }
     if (exception.getCause() == null) {
       return exception.getMessage();
