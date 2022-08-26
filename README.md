@@ -1,5 +1,7 @@
 - `develop` branch: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/department-of-veterans-affairs/abd-vro/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/department-of-veterans-affairs/abd-vro/tree/develop)
+[![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 - `main` branch: [![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
+[![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 
 # ABD VRO
 
