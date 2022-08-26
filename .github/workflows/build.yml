@@ -6,9 +6,8 @@ on:
     branches:
       - "*"
 
-#env:
-#  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-#  COMMIT_SHA: ${{ github.sha }}
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
   cis-benchmark-tests:
