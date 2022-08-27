@@ -52,7 +52,6 @@ jobs:
     #- run: |
     #   make bootstrap
     #   make release
-
     - name: Install Java build dependencies
       uses: ./.github/actions/install-build-dependencies
 
