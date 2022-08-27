@@ -2,7 +2,7 @@
 # Configuration for Snyk
 # * This is only required for Maven builds
 # Snyk calls it's own internal build from the package manager, similar to a mvn install.
-# If your application is built in Java, specificy the java-version for Snyk to successfully build the application.
+# If your application is built in Java, specify the java-version for Snyk to successfully build the application.
 # You will have to change the arguments to match your settings.xml and the Github secret associated with the argument
 # snyk:
 #   java-version: 16
