@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  # Trigger on all pull requests
+  pull_request:
+    branches:
+      - "*"
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
+    secrets:
+      ACCESS_TOKEN:
+        required: true
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      rabbitmq:
+        image: rabbitmq:3.8
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Install all dependencies
+
+      - name: Install Java build dependencies
+        uses: ./.github/actions/install-build-dependencies
+
+      - name: Install Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "pip"
+
+      - name: "Install Python dependencies for DC7101"
+        run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
+
+      - name: "Install Python dependencies for PDF Generator"
+        run: pip install -r service-python/pdfgenerator/src/requirements.txt
+
+      # Build and test
+
+      - name: Build and test Java code
+        run: ./gradlew build check
+
+      - name: "Build and test Python code with test coverage report"
+        run: cd service-python && python -m pytest --cov-report term-missing --cov
