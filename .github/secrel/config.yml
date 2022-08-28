@@ -1,0 +1,30 @@
+---
+# Configuration for Snyk
+# * This is only required for Maven builds
+# Snyk calls it's own internal build from the package manager, similar to a mvn install.
+# If your application is built in Java, specify the java-version for Snyk to successfully build the application.
+# You will have to change the arguments to match your settings.xml and the Github secret associated with the argument
+# snyk:
+#   java-version: 16
+#   additional-args:
+#   - -Dexample-build-arg=some-value
+#   - -Dexample.maven=${{ secrets.example_secret }}
+
+# Remove image block if you're not building Docker images
+images:
+- name: app-image
+  path: "./Dockerfile"
+  args:
+  - example-build-arg=some-value
+  - example-build-arg-secret=${{ secrets.example_secret }}
+# Additional images can be specified like below
+# - name: 
+#   path: ""
+#   args:
+#   -
+# Remove source block if you're not building sources
+source:
+  java-version: 16
+  args:
+    - -Dexample-build-arg=some-value
+    - -Dexample.maven=${{ secrets.example_secret }}
