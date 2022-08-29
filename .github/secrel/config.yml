@@ -12,19 +12,31 @@
 
 # Remove image block if you're not building Docker images
 images:
-- name: app-image
-  path: "./Dockerfile"
-  args:
-  - example-build-arg=some-value
-  - example-build-arg-secret=${{ secrets.example_secret }}
+- name: abd_vro-app
+  path: "./app/src/docker/Dockerfile"
+#  args:
+#  - example-build-arg=some-value
+#  - example-build-arg-secret=${{ secrets.example_secret }}
+
 # Additional images can be specified like below
-# - name: 
-#   path: ""
-#   args:
-#   -
+#- name: abd_vro-db-init
+#  path: "./db-init/src/docker/Dockerfile"
+#- name: container-init
+#  path: "./container-init/src/docker/Dockerfile"
+#- name: opa-init
+#  path: "./opa-init/src/docker/Dockerfile"
+#- name: abd_vro-service-assessclaimdc7101
+#  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+#- name: abd_vro-pdfgenerator
+#  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+#- name: abd_vro-service-assessclaimdc6602
+#  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+#- name: service-data-access
+#  path: "./service-data-access/src/docker/Dockerfile"
+
 # Remove source block if you're not building sources
-source:
-  java-version: 16
-  args:
-    - -Dexample-build-arg=some-value
-    - -Dexample.maven=${{ secrets.example_secret }}
+#source:
+#  java-version: 16
+#  args:
+#    - -Dexample-build-arg=some-value
+#    - -Dexample.maven=${{ secrets.example_secret }}
