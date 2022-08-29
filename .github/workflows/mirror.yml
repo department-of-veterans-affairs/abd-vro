@@ -1,6 +1,17 @@
 name: Mirroring
 
-on: [push, delete]
+on:
+  # Trigger on all pull requests
+  pull_request:
+    branches:
+      - "*"
+
+  # When changes are pushed to special branches
+  push:
+    branches: [ main, develop ]
+
+  # When a Git reference (Git branch or tag) is deleted
+  delete:
 
 # Ensures that only one mirror task will run at a time.
 concurrency:
