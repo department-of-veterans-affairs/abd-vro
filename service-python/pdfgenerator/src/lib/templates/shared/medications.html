@@ -27,12 +27,16 @@
       {% else %}
         <b>{{medicine.description}}</b>
       {% endif %}
-      {% for note in medicine.notes %}
-        {{note}}
-      {% endfor %}<br />
-      {% for dosage in medicine.dosageInstructions %}
-        {{dosage}}
-      {% endfor %}<br />
+      {% if medicine.notes %}
+        {% for note in medicine.notes %}
+          {{note}}
+        {% endfor %}<br />
+      {% endif %}
+      {% if medicine.dosageInstructions %}
+        {% for dosage in medicine.dosageInstructions %}
+          {{dosage}}
+        {% endfor %}<br />
+      {% endif %}
 
       Prescribed on:
       {% if medicine.authoredOn %}
