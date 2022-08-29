@@ -34,13 +34,6 @@ jobs:
         run: |
           ./gradlew docker
 
-      - name: Run Docker benchmark security tests
-        run: |
-          cd ..
-          git clone https://github.com/docker/docker-bench-security.git
-          cd docker-bench-security
-          sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1.14.1
         with:
