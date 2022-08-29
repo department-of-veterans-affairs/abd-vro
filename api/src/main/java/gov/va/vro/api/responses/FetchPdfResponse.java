@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @AllArgsConstructor
-@ToString
 public class FetchPdfResponse {
 
   @NotBlank private String claimSubmissionId;
