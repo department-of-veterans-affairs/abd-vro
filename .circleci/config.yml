@@ -50,7 +50,7 @@ jobs:
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-      - run: ./gradlew docker
+#      - run: ./gradlew docker
       - run:
           name: Copy subproject build artifacts
           command: |
@@ -65,13 +65,13 @@ jobs:
           when: always
       - store_test_results:
           path: ~/test-results
-      - run:
-          name: Run cis-benchmark tests
-          command: |
-            cd ..
-            git clone https://github.com/docker/docker-bench-security.git
-            cd docker-bench-security
-            sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
+#      - run:
+#          name: Run cis-benchmark tests
+#          command: |
+#            cd ..
+#            git clone https://github.com/docker/docker-bench-security.git
+#            cd docker-bench-security
+#            sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
 
 workflows:
   version: 2
