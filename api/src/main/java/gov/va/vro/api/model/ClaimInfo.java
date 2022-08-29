@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @ToString(includeFieldNames = true)
 public class ClaimInfo {
-  public String claimSubmissionId;
-  public String veteranIcn;
-  List<String> contentions;
+  private String claimSubmissionId;
+  private String veteranIcn;
+  private List<String> contentions;
 }
