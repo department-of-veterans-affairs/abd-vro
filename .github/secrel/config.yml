@@ -10,10 +10,21 @@
 #   - -Dexample-build-arg=some-value
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
+snyk:
+  additional-args:
+  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
 # Remove image block if you're not building Docker images
 images:
-- name: abd_vro-app
-  path: "./app/src/docker/Dockerfile"
+  - name: abd_vro
+    path: "./Dockerfile"
+    args:
+      -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+  - name: abd_vro-db-init
+    path: "./db-init/src/docker/Dockerfile"
+
+#- name: abd_vro-app
+#  path: "./app/src/docker/Dockerfile"
 #  args:
 #  - example-build-arg=some-value
 #  - example-build-arg-secret=${{ secrets.example_secret }}
