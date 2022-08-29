@@ -60,8 +60,8 @@ jobs:
             v1-dependencies-
           key: v1-dependencies-${{ hashFiles('build.gradle') }}
 
-      - name: Setup gradle
-        run: ./gradlew dependencies
+#      - name: Setup gradle
+#        run: ./gradlew dependencies
 
       # Build and test
 
