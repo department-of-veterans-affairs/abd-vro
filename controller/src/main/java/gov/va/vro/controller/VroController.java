@@ -13,6 +13,7 @@ import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.model.SimpleClaim;
 import gov.va.vro.service.spi.services.fetchclaims.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +64,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in health assessment", ex);
       throw new ClaimProcessingException(
-          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 
@@ -82,7 +83,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in generate pdf", ex);
       throw new ClaimProcessingException(
-          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 
@@ -114,14 +115,14 @@ public class VroController implements VroResource {
       }
     } catch (Exception ex) {
       log.error("Error in fetch pdf", ex);
-      throw new ClaimProcessingException(claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex);
+      throw new ClaimProcessingException(
+          claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
   }
 
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
-      HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException {
+      HealthDataAssessmentRequest claim) throws RequestValidationException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
@@ -134,44 +135,36 @@ public class VroController implements VroResource {
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
+      String msg = ex.getMessage();
       log.error("Error in full health assessment", ex);
-      throw new ClaimProcessingException(
-          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+      FullHealthDataAssessmentResponse response =
+          new FullHealthDataAssessmentResponse(
+              claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @Override
   public ResponseEntity<FetchClaimsResponse> fetchClaims() {
-
+    List<SimpleClaim> claimList = new ArrayList<>();
     try {
-      List<Claim> claimList = fetchClaimsService.fetchClaims();
+      claimList = fetchClaimsService.fetchClaims();
       List<ClaimInfo> claims = new ArrayList<>();
-      for (Claim claim : claimList) {
+      for (SimpleClaim claim : claimList) {
         ClaimInfo info = new ClaimInfo();
         info.setClaimSubmissionId(claim.getClaimSubmissionId());
         info.setVeteranIcn(claim.getVeteranIcn());
-        List<String> contentionsList = new ArrayList<>();
-        for (String contention : claim.getContentions()) {
-          contentionsList.add(contention);
-          info.setContentions(contentionsList);
-        }
+        info.setContentions(claim.getContentions());
         claims.add(info);
       }
       FetchClaimsResponse response = new FetchClaimsResponse();
-      if (claims.size() < 1)
-        throw new IllegalStateException("No claims found in DB, claims.size() < 1");
       response.setClaims(claims);
       response.setErrorMessage("Success");
       return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      FetchClaimsResponse failure = new FetchClaimsResponse();
-      failure.setErrorMessage(e.getMessage());
-      log.error(e.getMessage());
-      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (Exception e) {
       FetchClaimsResponse failure = new FetchClaimsResponse();
-      failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
-      log.error("Could not fetch claims from the DB.  " + e.getCause());
+      failure.setErrorMessage("Could not retrieve claims from DB.   " + e.getMessage());
+      log.error("Could not retrieve claims from DB.   " + e.getMessage());
       return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

@@ -1,6 +1,6 @@
 package gov.va.vro;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.persistence.model.ContentionEntity;
@@ -65,17 +65,17 @@ public class FetchClaimsTest extends BaseIntegrationTest {
     claim3.addContention(contention6);
     claimRepository.save(claim3);
 
+    var test = claimRepository.findAll();
     // Run the fetch-claims endpoint to fetch all claims in DB
     // Save full HTTP response in responseEntity
     // Save FetchClaimsResponse object in response
-    var test = claimRepository.findAll();
     ResponseEntity<FetchClaimsResponse> responseEntity =
         get("/v1/fetch-claims", null, FetchClaimsResponse.class);
     FetchClaimsResponse response = responseEntity.getBody();
 
     // Verify that the status code os 'OK' and the list size is 3
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    assertNotNull(response);
+    assert response != null;
     assertEquals(3, response.getClaims().size());
 
     // Verify content in each claim is correct
@@ -83,21 +83,35 @@ public class FetchClaimsTest extends BaseIntegrationTest {
     assertEquals(claim.getClaimSubmissionId(), response.getClaims().get(0).getClaimSubmissionId());
     assertEquals(claim.getVeteran().getIcn(), response.getClaims().get(0).getVeteranIcn());
     assertEquals(2, response.getClaims().get(0).getContentions().size());
-    assertTrue(response.getClaims().get(0).getContentions().contains("code1"));
-    assertTrue(response.getClaims().get(0).getContentions().contains("code2"));
+    assertEquals(
+        claim.getContentions().get(0).getDiagnosticCode(),
+        response.getClaims().get(0).getContentions().get(0));
+    assertEquals(
+        claim.getContentions().get(1).getDiagnosticCode(),
+        response.getClaims().get(0).getContentions().get(1));
 
     // Verify Claim2
     assertEquals(claim2.getClaimSubmissionId(), response.getClaims().get(1).getClaimSubmissionId());
     assertEquals(claim2.getVeteran().getIcn(), response.getClaims().get(1).getVeteranIcn());
     assertEquals(2, response.getClaims().get(1).getContentions().size());
-    assertTrue(response.getClaims().get(1).getContentions().contains("code3"));
-    assertTrue(response.getClaims().get(1).getContentions().contains("code4"));
+    assertEquals(
+        claim2.getContentions().get(0).getDiagnosticCode(),
+        response.getClaims().get(1).getContentions().get(0));
+    assertEquals(
+        claim2.getContentions().get(1).getDiagnosticCode(),
+        response.getClaims().get(1).getContentions().get(1));
 
     // Verify Claim3
     assertEquals(claim3.getClaimSubmissionId(), response.getClaims().get(2).getClaimSubmissionId());
     assertEquals(claim3.getVeteran().getIcn(), response.getClaims().get(2).getVeteranIcn());
     assertEquals(2, response.getClaims().get(2).getContentions().size());
-    assertTrue(response.getClaims().get(2).getContentions().contains("code5"));
-    assertTrue(response.getClaims().get(2).getContentions().contains("code6"));
+    assertEquals(
+        claim3.getContentions().get(0).getDiagnosticCode(),
+        response.getClaims().get(2).getContentions().get(0));
+    assertEquals(
+        claim3.getContentions().get(1).getDiagnosticCode(),
+        response.getClaims().get(2).getContentions().get(1));
   }
+
+  // Need a test for when the service fails and error messages need to be displayed
 }

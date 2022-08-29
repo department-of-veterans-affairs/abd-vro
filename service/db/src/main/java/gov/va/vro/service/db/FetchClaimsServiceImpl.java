@@ -3,7 +3,7 @@ package gov.va.vro.service.db;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
-import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.SimpleClaim;
 import gov.va.vro.service.spi.services.fetchclaims.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,14 +19,24 @@ public class FetchClaimsServiceImpl implements FetchClaimsService {
   private final ClaimMapper mapper;
 
   @Override
-  public List<Claim> fetchClaims() {
-    List<ClaimEntity> claimList = claimRepository.findAll();
-    List<Claim> claims = new ArrayList<>();
-    for (ClaimEntity obj : claimList) {
-      Claim claim = mapper.toClaim(obj);
-      claims.add(claim);
+  public List<SimpleClaim> fetchClaims() {
+    List<ClaimEntity> claimList = new ArrayList<>();
+    claimList = claimRepository.findAll();
+    List<SimpleClaim> simpleClaims = new ArrayList<>();
+
+    for (ClaimEntity claimEntity : claimList) {
+      SimpleClaim claim = new SimpleClaim();
+      claim.setClaimSubmissionId(claimEntity.getClaimSubmissionId());
+      claim.setVeteranIcn(claimEntity.getVeteran().getIcn());
+      List<String> contentionList = new ArrayList<>();
+      for (int i = 0; i < claimEntity.getContentions().size(); i++) {
+        String contention = claimEntity.getContentions().get(i).getDiagnosticCode();
+        contentionList.add(contention);
+      }
+      claim.setContentions(contentionList);
+      simpleClaims.add(claim);
     }
 
-    return claims;
+    return simpleClaims;
   }
 }
