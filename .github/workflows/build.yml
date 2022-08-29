@@ -61,6 +61,8 @@ jobs:
           key: v1-dependencies-${{ hashFiles('build.gradle') }}
 
 #      - name: Setup gradle
+# The `dependencies` gradle task tries to pull VA's cookiecutter jar,
+# which fails and is not needed
 #        run: ./gradlew dependencies
 
       # Build and test
