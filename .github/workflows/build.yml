@@ -83,7 +83,7 @@ jobs:
           install: true
       - name: Build
         run: |
-          echo "GITHUB_ACCESS_TOKEN=${{ secrets.LHDI_PAT }}" > all-secrets.txt
+          echo "GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" > all-secrets.txt
           docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
           rm all-secrets.txt
         working-directory: ./code
