@@ -11,7 +11,6 @@ dependencies {
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
     implementation "gov.va.starter:exceptions"
-    implementation project(':persistence')
     implementation 'gov.va.starter:test-data'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 

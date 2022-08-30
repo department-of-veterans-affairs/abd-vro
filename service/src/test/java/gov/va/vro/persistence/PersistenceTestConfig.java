@@ -1,4 +1,4 @@
-package gov.va;
+package gov.va.vro.persistence;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
