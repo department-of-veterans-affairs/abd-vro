@@ -9,6 +9,7 @@ runs:
       with:
         distribution: temurin
         java-version: '17'
+        cache: 'gradle'
 
     - name: Install hadolint
       shell: bash

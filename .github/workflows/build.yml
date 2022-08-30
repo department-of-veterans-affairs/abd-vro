@@ -35,18 +35,17 @@ jobs:
 
       # Install all dependencies
 
-      - name: Restore cache
-        uses: actions/cache@v3
-        id: vro-cache
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.cache/pip
-          key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
+#      - name: Restore cache
+#        uses: actions/cache@v3
+#        id: vro-cache
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper
+#            ~/.cache/pip
+#          key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
 
       - name: Install Java build dependencies
-        if: steps.vro-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/install-build-dependencies
 
       - name: Install Python
@@ -97,4 +96,14 @@ jobs:
           install: true
 
       - name: Build
-        run: docker build -f ./db-init/src/docker/Dockerfile .
+        run: |
+          docker build -f ./app/src/docker/Dockerfile .
+          docker build -f ./db-init/src/docker/Dockerfile .
+          docker build -f ./container-init/src/docker/Dockerfile .
+          docker build -f ./opa-init/src/docker/Dockerfile .
+
+          docker build -f ./service-data-access/src/docker/Dockerfile .
+
+          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile .
+          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile .
+          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile .
