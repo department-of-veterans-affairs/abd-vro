@@ -44,8 +44,6 @@ jobs:
             ~/.gradle/wrapper
             ~/.cache/pip
           key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
-          restore-keys: |
-            vro-dependencies-
 
       - name: Install Java build dependencies
         if: steps.vrocache.outputs.cache-hit != 'true'
