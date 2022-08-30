@@ -3,7 +3,6 @@ plugins {
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
 	id "io.freefair.lombok" version "6.5.0.2"
-//    id 'com.adarshr.test-logger' version '3.2.0'
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
@@ -15,7 +14,7 @@ plugins {
 group = 'gov.va'
 version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
-//java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar.name)
@@ -24,6 +23,13 @@ tasks.dockerPrepare.configure {
 // repositories {
 //    mavenCentral()
 // }
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -47,6 +53,20 @@ dependencies {
     testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
     testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
     testImplementation 'org.skyscreamer:jsonassert:1.2.3'
+
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
+    integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+    integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.0'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
+    integrationTestImplementation 'org.skyscreamer:jsonassert:1.2.3'
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 jacoco {
@@ -56,11 +76,20 @@ jacoco {
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
+    exclude '**/integrationTest'
+    finalizedBy jacocoTestReport {
+        executionData(file("${project.buildDir}/jacoco/test.exec"))
+    }
 }
 
-jacocoTestReport {
-    dependsOn test
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    finalizedBy jacocoTestReport {
+        executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
+    }
 }
 
 docker {
