@@ -35,19 +35,35 @@ jobs:
 
       # Install all dependencies
 
+      - name: Restore cache
+        uses: actions/cache@v3
+        id: vrocache
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.cache/pip
+          key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
+          restore-keys: |
+            vro-dependencies-
+
       - name: Install Java build dependencies
+        if: steps.vrocache.outputs.cache-hit != 'true'
         uses: ./.github/actions/install-build-dependencies
 
       - name: Install Python
+        if: steps.vrocache.outputs.cache-hit != 'true'
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
           cache: "pip"
 
       - name: "Install Python dependencies for DC7101"
+        if: steps.vrocache.outputs.cache-hit != 'true'
         run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
 
       - name: "Install Python dependencies for PDF Generator"
+        if: steps.vrocache.outputs.cache-hit != 'true'
         run: pip install -r service-python/pdfgenerator/src/requirements.txt
 
       # Build and test
