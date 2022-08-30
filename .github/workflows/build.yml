@@ -89,7 +89,6 @@ jobs:
           docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
           docker build -f ./db-init/src/docker/Dockerfile .
           rm all-secrets.txt
-#        working-directory: ./code
 
   build-docker-db:
     runs-on: ubuntu-latest
@@ -105,22 +104,3 @@ jobs:
       - name: Build
         run: |
           docker build -f ./db-init/src/docker/Dockerfile .
-#        working-directory: ./code
-
-  validate-new-app-generation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Install cookiecutter
-        run: pip install cookiecutter==1.7.3
-
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Compare changes in template
-        run: ./gradlew ccdiff -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }} --info --stacktrace
