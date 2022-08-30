@@ -37,7 +37,7 @@ jobs:
 
       - name: Restore cache
         uses: actions/cache@v3
-        id: vrocache
+        id: vro-cache
         with:
           path: |
             ~/.gradle/caches
@@ -46,6 +46,7 @@ jobs:
           key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
 
       - name: Install Java build dependencies
+        if: steps.vro-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/install-build-dependencies
 
       - name: Install Python
