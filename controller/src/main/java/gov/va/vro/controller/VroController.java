@@ -160,16 +160,9 @@ public class VroController implements VroResource {
         claims.add(info);
       }
       FetchClaimsResponse response = new FetchClaimsResponse();
-      if (claims.size() < 1)
-        throw new IllegalStateException("No claims found in DB, claims.size() < 1");
       response.setClaims(claims);
       response.setErrorMessage("Success");
       return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      FetchClaimsResponse failure = new FetchClaimsResponse();
-      failure.setErrorMessage(e.getMessage());
-      log.error(e.getMessage());
-      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (Exception e) {
       FetchClaimsResponse failure = new FetchClaimsResponse();
       failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
