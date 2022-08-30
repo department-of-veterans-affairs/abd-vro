@@ -35,16 +35,6 @@ jobs:
 
       # Install all dependencies
 
-#      - name: Restore cache
-#        uses: actions/cache@v3
-#        id: vro-cache
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#            ~/.cache/pip
-#          key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
-
       - name: Install Java build dependencies
         uses: ./.github/actions/install-build-dependencies
 
