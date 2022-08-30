@@ -10,7 +10,7 @@ dependencies {
 
     implementation project(':api')
     implementation project(':controller')
-    implementation project(':persistence:model')
+    implementation project(':persistence')
     implementation project(':service:provider')
     implementation project(':service:spi')
     implementation project(':service:db')
@@ -56,8 +56,6 @@ bootJar {
         attributes(
                 'Application-Version': "${project.version}",
                 'Start-Class': 'gov.va.vro.VroApplication',
-//                "Application-Git-Commit": "${gitRevision}",
-//                "Application-Git-Branch-Name": "${gitBranchName}",
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         )
     }

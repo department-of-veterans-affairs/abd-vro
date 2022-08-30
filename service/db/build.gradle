@@ -8,7 +8,7 @@ dependencies {
     implementation "gov.va.starter:exceptions"
     //implementation 'gov.va.starter:test-data'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation project(':persistence:model')
+    implementation project(':persistence')
     implementation project(':service:spi')
 
     testImplementation "com.h2database:h2"

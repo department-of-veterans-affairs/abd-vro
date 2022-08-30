@@ -21,8 +21,6 @@ plugins {
     id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
     id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
-//    id("com.cdsap.talaiot") version "${talaiot_version}" apply false
-//    id("com.cdsap.talaiot.plugin.base") version "${talaiot_plugin_base_version}" apply false
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
@@ -54,7 +52,7 @@ ext {
     codeModules = [':app',
                    ':api',
                    ':controller',
-                   ':persistence:model',
+                   ':persistence',
                    ':service:provider',
                    ':service:spi',
                    ':test-data-factory']
