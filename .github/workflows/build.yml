@@ -55,11 +55,9 @@ jobs:
           cache: "pip"
 
       - name: "Install Python dependencies for DC7101"
-        if: steps.vrocache.outputs.cache-hit != 'true'
         run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
 
       - name: "Install Python dependencies for PDF Generator"
-        if: steps.vrocache.outputs.cache-hit != 'true'
         run: pip install -r service-python/pdfgenerator/src/requirements.txt
 
       # Build and test
@@ -84,20 +82,7 @@ jobs:
         run: |
           echo 'GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}' > all-secrets.txt
           docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
-          docker build -f ./db-init/src/docker/Dockerfile .
           rm all-secrets.txt
-
-  build-docker-db:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-
-      - uses: docker/setup-buildx-action@v2
-        id: buildx
-        with:
-          install: true
-
-      - name: Build
-        run: |
+       # Build each Dockerfile
           docker build -f ./db-init/src/docker/Dockerfile .
+        # Clean up
