@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import gov.va.vro.abd_data_access.model.AbdBloodPressure;
 import gov.va.vro.abd_data_access.model.AbdCondition;
 import gov.va.vro.abd_data_access.model.AbdMedication;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,14 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for FieldExtractor.
+ *
+ * @author warren
+ * @Date 8/30/22
+ */
 
+@Slf4j
 class FieldExtractorTest {
 
     private final static String TEST_CODE = "test";
@@ -61,7 +69,7 @@ class FieldExtractorTest {
 
             entries.parallelStream().forEach(e -> verifyAbdMedication(e));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("testExtractMedication error: {}", e.getMessage());
             fail("text extractmedication.");
         }
     }
@@ -74,7 +82,7 @@ class FieldExtractorTest {
 
     @Test
     public void testExtractBPMeasurement() {
-
+        // TODO: Revisit this when it is needed.
     }
 
     @Test
@@ -90,7 +98,7 @@ class FieldExtractorTest {
 
             entries.parallelStream().forEach(e -> verifyBloodPressure(e));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("testExtractBloodPressure error: {}", e.getMessage(), e);
             fail("testExtractBloodPressure.");
         }
     }

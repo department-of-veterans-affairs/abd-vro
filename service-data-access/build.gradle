@@ -46,14 +46,19 @@ dependencies {
     implementation 'com.auth0:java-jwt:2.2.2'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
-    testImplementation 'org.testcontainers:testcontainers:1.17.3'
-    testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
-    testImplementation 'org.testcontainers:rabbitmq:1.17.3'
     testImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.0'
     testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
     testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
     testImplementation 'org.skyscreamer:jsonassert:1.2.3'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.7.0'
 
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+
+
+    integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+    integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
     integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
     integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'

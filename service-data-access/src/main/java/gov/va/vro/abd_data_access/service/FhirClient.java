@@ -6,6 +6,7 @@ import gov.va.vro.abd_data_access.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -193,17 +194,17 @@ public class FhirClient {
   }
 
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
-    log.info(
-        "Get medical evidence for claim: {}, {}, {}",
-        claim.getVeteranIcn(),
-        claim.getDiagnosticCode(),
-        claim.getClaimSubmissionId());
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
     if (components == null) {
       return null;
     }
+    return getAbdEvidence(components);
+  }
+
+  @NotNull
+  public AbdEvidence getAbdEvidence(Map<AbdDomain, List<BundleEntryComponent>> components) {
     AbdEvidence result = new AbdEvidence();
-    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent : components.entrySet()) {
+    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent: components.entrySet()) {
       List<BundleEntryComponent> entries = entryComponent.getValue();
       switch (entryComponent.getKey()) {
         case MEDICATION:
