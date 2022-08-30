@@ -61,7 +61,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in health assessment", ex);
       throw new ClaimProcessingException(
-          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
@@ -80,7 +80,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in generate pdf", ex);
       throw new ClaimProcessingException(
-          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
@@ -112,19 +112,19 @@ public class VroController implements VroResource {
       }
     } catch (Exception ex) {
       log.error("Error in fetch pdf", ex);
-      throw new ClaimProcessingException(
-          claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+      throw new ClaimProcessingException(claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
-      HealthDataAssessmentRequest claim) throws RequestValidationException {
+      HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment", responseAsString);
+      log.info("Obtained full health assessment: {}", responseAsString);
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
@@ -132,12 +132,9 @@ public class VroController implements VroResource {
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
-      String msg = ex.getMessage();
       log.error("Error in full health assessment", ex);
-      FullHealthDataAssessmentResponse response =
-          new FullHealthDataAssessmentResponse(
-              claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
-      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ClaimProcessingException(
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 }

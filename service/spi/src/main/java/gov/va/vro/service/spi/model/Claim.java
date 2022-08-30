@@ -3,6 +3,7 @@ package gov.va.vro.service.spi.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.util.Set;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
@@ -29,4 +30,6 @@ public class Claim {
   @NotNull private String veteranIcn;
 
   @NotNull private String diagnosticCode;
+
+  private Set<String> contentions;
 }
