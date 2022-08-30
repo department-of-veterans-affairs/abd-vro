@@ -15,7 +15,7 @@ public class ClaimProcessingError {
 
   public ClaimProcessingError(ClaimProcessingException exception) {
     this.claimSubmissionId = exception.getClaimSubmissionId();
-    this.message = exception.getMessage();
+    this.message = exception.getOriginalMessage();
   }
 
   public ClaimProcessingError(String message) {
