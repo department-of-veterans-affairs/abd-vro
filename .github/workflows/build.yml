@@ -95,15 +95,15 @@ jobs:
         with:
           install: true
 
-      - name: Build
+      - name: Build all Dockerfiles
         run: |
-          docker build -f ./app/src/docker/Dockerfile .
+#          docker build -f ./app/src/docker/Dockerfile .
           docker build -f ./db-init/src/docker/Dockerfile .
-          docker build -f ./container-init/src/docker/Dockerfile .
-          docker build -f ./opa-init/src/docker/Dockerfile .
-
-          docker build -f ./service-data-access/src/docker/Dockerfile .
-
-          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile .
-          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile .
-          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile .
+#          docker build -f ./container-init/src/docker/Dockerfile .
+#          docker build -f ./opa-init/src/docker/Dockerfile .
+#
+#          docker build -f ./service-data-access/src/docker/Dockerfile .
+#
+#          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile .
+#          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile .
+#          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile .
