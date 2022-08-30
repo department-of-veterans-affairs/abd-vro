@@ -13,7 +13,6 @@ dependencies {
     implementation "gov.va.starter:exceptions"
     implementation project(':persistence')
     implementation project(':service:spi')
-    implementation project(':test-data-factory')
     implementation 'gov.va.starter:test-data'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -31,4 +30,6 @@ dependencies {
     // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
     // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+
+    testImplementation "com.h2database:h2"
 }

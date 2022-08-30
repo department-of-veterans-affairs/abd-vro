@@ -13,7 +13,6 @@ dependencies {
     implementation project(':persistence')
     implementation project(':service:provider')
     implementation project(':service:spi')
-    implementation project(':service:db')
     implementation project(':test-data-factory')
 
     implementation 'gov.va.starter:health'
