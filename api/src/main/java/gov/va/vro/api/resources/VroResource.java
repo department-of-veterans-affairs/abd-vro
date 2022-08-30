@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v1", produces = "application/json")
-@Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementations")
 @SecurityRequirement(name = "X-API-Key")
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
