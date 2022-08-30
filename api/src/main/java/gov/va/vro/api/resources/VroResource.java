@@ -4,6 +4,7 @@ import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
@@ -88,5 +89,15 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException;
+
+  @Operation(
+      summary = "Gets all claims stored in vro database.",
+      description =
+          "Retrieves all claims from vro db and displays claimSubmissionId, veteran ICN, and contention diagnostic codes.")
+  @GetMapping("/fetch-claims")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "fetch-claims")
+  ResponseEntity<FetchClaimsResponse> fetchClaims()
       throws RequestValidationException, ClaimProcessingException;
 }
