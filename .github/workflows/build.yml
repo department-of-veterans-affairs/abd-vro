@@ -46,7 +46,6 @@ jobs:
           key: vro-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/requirements.txt') }}
 
       - name: Install Java build dependencies
-        if: steps.vrocache.outputs.cache-hit != 'true'
         uses: ./.github/actions/install-build-dependencies
 
       - name: Install Python
