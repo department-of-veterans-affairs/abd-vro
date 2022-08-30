@@ -52,8 +52,7 @@ ext {
     codeModules = [':app',
                    ':api',
                    ':persistence',
-                   ':service:provider',
-                   ':service:spi',
+                   ':service',
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
