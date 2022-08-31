@@ -1,24 +1,19 @@
 package gov.va.vro.persistence.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.persistence.model.ContentionEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-@DataJpaTest
-class ClaimRepositoryTest {
-
-  @Autowired private ClaimRepository claimRepository;
-
-  @Autowired private VeteranRepository veteranRepository;
+class ClaimRepositoryTest extends BaseIntegrationTest {
 
   @Test
-  void test() {
+  void insertQuery() {
     var veteran = TestDataSupplier.createVeteran("X", "Y");
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());

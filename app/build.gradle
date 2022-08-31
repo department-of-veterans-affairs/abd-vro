@@ -9,7 +9,6 @@ dependencies {
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
     implementation project(':api')
-    implementation project(':service')
     implementation project(':test-data-factory')
 
     implementation 'gov.va.starter:health'
@@ -25,6 +24,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Apache Camel
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
 
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'

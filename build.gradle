@@ -51,7 +51,6 @@ ext {
     jacoco_minimum_coverage = 0.8
     codeModules = [':app',
                    ':api',
-                   ':service',
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
