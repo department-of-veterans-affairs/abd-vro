@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  build_then_test:
     # Remove if parallelism is not desired
     parallelism: 2
     environment:
@@ -72,3 +72,9 @@ jobs:
             git clone https://github.com/docker/docker-bench-security.git
             cd docker-bench-security
             sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
+
+workflows:
+  version: 2
+  circleci_workflow:
+    jobs:
+      - build_then_test

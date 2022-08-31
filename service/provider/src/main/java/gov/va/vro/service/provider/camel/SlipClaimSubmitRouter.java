@@ -13,6 +13,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class SlipClaimSubmitRouter {
+
+  private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -28,11 +31,9 @@ public class SlipClaimSubmitRouter {
     }
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
-        "rabbitmq:claim-submit-exchange"
-            + "?queue=claim-submit"
-            + "&routingKey=code."
-            + diagnosticCode;
-
+        String.format(
+            "rabbitmq:claim-submit-exchange?queue=claim-submit&routingKey=code.%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -51,8 +52,10 @@ public class SlipClaimSubmitRouter {
       return null;
     }
     String diagnosticCode = diagnosticCodeObj.toString();
-    String route = "rabbitmq:health-assess-exchange" + "?routingKey=" + diagnosticCode;
-
+    String route =
+        String.format(
+            "rabbitmq:health-assess-exchange?routingKey=%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }

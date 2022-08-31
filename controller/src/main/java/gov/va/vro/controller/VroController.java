@@ -2,19 +2,18 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.FetchPdfResponse;
-import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
-import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.api.responses.*;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -23,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,6 +34,8 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
+
+  private final FetchClaimsService fetchClaimsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -61,7 +64,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in health assessment", ex);
       throw new ClaimProcessingException(
-          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
@@ -80,7 +83,7 @@ public class VroController implements VroResource {
     } catch (Exception ex) {
       log.error("Error in generate pdf", ex);
       throw new ClaimProcessingException(
-          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
@@ -112,19 +115,19 @@ public class VroController implements VroResource {
       }
     } catch (Exception ex) {
       log.error("Error in fetch pdf", ex);
-      throw new ClaimProcessingException(
-          claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+      throw new ClaimProcessingException(claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
-      HealthDataAssessmentRequest claim) throws RequestValidationException {
+      HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException {
     log.info("Getting health assessment for: {}", claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment", responseAsString);
+      log.info("Obtained full health assessment: {}", responseAsString);
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
@@ -132,12 +135,39 @@ public class VroController implements VroResource {
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
-      String msg = ex.getMessage();
       log.error("Error in full health assessment", ex);
-      FullHealthDataAssessmentResponse response =
-          new FullHealthDataAssessmentResponse(
-              claim.getVeteranIcn(), claim.getDiagnosticCode(), msg);
-      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ClaimProcessingException(
+          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+  }
+
+  @Override
+  public ResponseEntity<FetchClaimsResponse> fetchClaims() {
+
+    try {
+
+      List<Claim> claimList = fetchClaimsService.fetchClaims();
+      List<ClaimInfo> claims = new ArrayList<>();
+      for (Claim claim : claimList) {
+        ClaimInfo info = new ClaimInfo();
+        info.setClaimSubmissionId(claim.getClaimSubmissionId());
+        info.setVeteranIcn(claim.getVeteranIcn());
+        List<String> contentionsList = new ArrayList<>();
+        for (String contention : claim.getContentions()) {
+          contentionsList.add(contention);
+          info.setContentions(contentionsList);
+        }
+        claims.add(info);
+      }
+      FetchClaimsResponse response = new FetchClaimsResponse();
+      response.setClaims(claims);
+      response.setErrorMessage("Success");
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      FetchClaimsResponse failure = new FetchClaimsResponse();
+      failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
+      log.error("Could not fetch claims from the DB.  " + e.getCause());
+      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
