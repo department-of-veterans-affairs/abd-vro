@@ -17,7 +17,7 @@ from assessclaimdc6602.src.lib import main
             },
             {"evidence": {"medications": [{"description": "Prednisone",
             "status": "active",
-            'asthma_relevant': 1,
+            'asthma_relevant': "True",
                     "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
 
@@ -34,7 +34,7 @@ from assessclaimdc6602.src.lib import main
             {"evidence": {
                 "medications": [{"description": "predniSONE 1 MG Oral Tablet",
                 "status": "active",
-                'asthma_relevant': 1,
+                'asthma_relevant': "True",
                     "authoredOn": "1952-04-06T04:00:00Z"}]
                 }}
         ),
@@ -50,7 +50,7 @@ from assessclaimdc6602.src.lib import main
             },
             {"evidence": {"medications": [{"description" : "Advil",
                     "status": "active",
-                    'asthma_relevant': 0,
+                    'asthma_relevant': "False",
                     "authoredOn": "1952-04-06T04:00:00Z"}]}}
         ),
     ],
