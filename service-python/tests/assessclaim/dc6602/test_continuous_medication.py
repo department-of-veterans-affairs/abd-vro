@@ -19,7 +19,7 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol",
                     "status": "active",
-                    'asthma_relevant': "True",
+                    'asthma_relevant': "true",
                     "authoredOn": "1950-04-06T04:00:00Z"
                 }
             ]
@@ -38,7 +38,7 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol",
                     "status": "active",
-                    'asthma_relevant': "True",
+                    'asthma_relevant': "true",
                     "authoredOn": "1950-04-06T04:00:00Z"
                 }
             ]
@@ -55,7 +55,7 @@ from assessclaimdc6602.src.lib import medication
             },
             [{"description": "Advil",
                     "status": "active",
-                    'asthma_relevant': "False",
+                    'asthma_relevant': "false",
                     "authoredOn": "1950-04-06T04:00:00Z"}],
         ),
         # multiple medications, some to treat and others not to treat asthma
@@ -74,13 +74,13 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol",
                     "status": "active",
-                    'asthma_relevant': "True",
+                    'asthma_relevant': "true",
                     "authoredOn": "1950-04-06T04:00:00Z"
                 },
                 {
                     "description": "Advil",
                     "status": "active",
-                    'asthma_relevant': "False",
+                    'asthma_relevant': "false",
                     "authoredOn": "1952-04-06T04:00:00Z"
                 }
             ]

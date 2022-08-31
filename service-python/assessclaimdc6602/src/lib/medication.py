@@ -46,11 +46,11 @@ def medication_required(request_body):
       medication_display = medication["description"]
       for keyword in [x.lower() for x in asthma_medications]:
         if (keyword in medication_display.lower()):
-          medication["asthma_relevant"] = "True"
+          medication["asthma_relevant"] = "true"
           relevant_medications.append(medication)
           flagged = True
       if flagged == False:
-        medication["asthma_relevant"] = "False"
+        medication["asthma_relevant"] = "false"
         other_medications.append(medication)
   
   relevant_medications = sorted(relevant_medications, key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(), reverse=True)

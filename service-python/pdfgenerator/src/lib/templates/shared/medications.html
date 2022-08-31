@@ -20,7 +20,7 @@
   {% for medicine in evidence.medications %}
     <br />
     <p>
-      {% if medicine.asthma_relevant == "True" %}
+      {% if medicine.asthma_relevant %}
         <span class="dejavu">&#9654;</span>
         <b>{{medicine.description}}</b>
         <span class="dejavu">&#9664;</span>
