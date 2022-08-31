@@ -46,9 +46,8 @@ plugins {
 }
 
 ext {
-    // TODO: set back to true; temporarily disable test code coverage enforcement
-    jacoco_enforce_violations = false
-    jacoco_minimum_coverage = 0.8
+    jacoco_enforce_violations = true
+    jacoco_minimum_coverage = 0.7
     codeModules = [':app',
                    ':api',
                    ':test-data-factory']
@@ -80,8 +79,6 @@ def maintainerclean = tasks.register('maintainerclean') {
     def tb = taskBuilder('clean')
     codeModules.each { dependsOn tb(it) }
     dockerModules.each { dependsOn tb(it) }
-    //depender codeModules, taskBuilder('clean')
-    //depender dockerModules, taskBuilder('clean')
 }
 
 def dockerclean = tasks.register('dockerclean') {
