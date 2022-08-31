@@ -9,7 +9,6 @@ dependencies {
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
     implementation project(':api')
-    implementation project(':test-data-factory')
 
     implementation 'gov.va.starter:health'
     implementation 'gov.va.starter:tracing'

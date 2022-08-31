@@ -77,12 +77,10 @@ include ':docs'
 include ':db-init'
 include ':opa-init'
 include ':scripts'
-include ':service'
 include ':service-python:assessclaimdc7101'
 include ':service-python:assessclaimdc6602'
 include ':service-python:pdfgenerator'
 include ':service-data-access'
-include ':test-data-factory'
 include 'service:db'
 
 
