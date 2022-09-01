@@ -4,6 +4,7 @@ import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v1", produces = "application/json")
-@Tag(name = "ABD-VRO API", description = "Automated Benefit Delivery Implementations")
 @SecurityRequirement(name = "X-API-Key")
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
@@ -88,5 +88,15 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
+      throws RequestValidationException, ClaimProcessingException;
+
+  @Operation(
+      summary = "Gets all claims stored in vro database.",
+      description =
+          "Retrieves all claims from vro db and displays claimSubmissionId, veteran ICN, and contention diagnostic codes.")
+  @GetMapping("/fetch-claims")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "fetch-claims")
+  ResponseEntity<FetchClaimsResponse> fetchClaims()
       throws RequestValidationException, ClaimProcessingException;
 }
