@@ -20,7 +20,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private String authoredOn;
   private List<String> dosageInstructions;
   private String route;
-  
+
   @Override
   public int compareTo(AbdMedication otherMedication) {
     return StringUtils.compare(authoredOn, otherMedication.authoredOn);
