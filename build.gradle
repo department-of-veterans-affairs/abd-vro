@@ -47,7 +47,7 @@ plugins {
 
 ext {
     jacoco_enforce_violations = true
-    jacoco_minimum_coverage = 0.65
+    jacoco_minimum_coverage = 0.53
     codeModules = [':app',
                    ':api']
     dockerModules = [':app',
