@@ -31,9 +31,10 @@ def on_generate_callback(channel, method, properties, body):
 			pdf = pdf_generator.generate_pdf_from_string(template)
 			redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
 			logging.info("Saved PDF")
-			response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "pdf": None}
-	except:
-			response = {"claimSubmissionId": claim_id, "status": "ERROR", "pdf": None}
+			response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS"}
+	except Exception as e:
+			logging.error(e, exc_info=True)
+			response = {"claimSubmissionId": claim_id, "status": "ERROR"}
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
