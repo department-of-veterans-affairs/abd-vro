@@ -1,29 +1,22 @@
 package gov.va.vro.security;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor
 public class ApiAuthKeyManager implements AuthenticationManager {
 
-  private ApiAuthKeys apiAuthKeys;
+  private final List<String> apiAuthKeys;
 
-  public ApiAuthKeys getApiAuthKeys() {
-    return apiAuthKeys;
-  }
-
-  @Autowired
-  public void setApiAuthKeys(ApiAuthKeys apiAuthKeys) {
+  public ApiAuthKeyManager(@Value("${apiauthkeys}") List<String> apiAuthKeys) {
     this.apiAuthKeys = apiAuthKeys;
   }
 
@@ -32,7 +25,7 @@ public class ApiAuthKeyManager implements AuthenticationManager {
 
     String principal = (String) authentication.getPrincipal();
 
-    if (!apiAuthKeys.getKeys().contains(principal)) {
+    if (!apiAuthKeys.contains(principal)) {
       throw new BadCredentialsException("Invalid API Key.");
     } else {
       authentication.setAuthenticated(true);
