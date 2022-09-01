@@ -8,22 +8,6 @@ volumes:
   pgdata:
 
 services:
-  # opa:
-  #   image: openpolicyagent/opa
-  #   hostname: opa
-  #   expose:
-  #     - "8181"
-  #   ports:
-  #     - "8181:8181"
-  #   command:
-  #     - run
-  #     - --server
-  #     - --log-level
-  #     - debug
-  #   networks:
-  #     - internal
-  #     - external
-
   rabbitmq1:
     image: rabbitmq:3-management
     healthcheck:
@@ -57,8 +41,8 @@ services:
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: vro_user
-      POSTGRES_PASSWORD: not-the-password
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: vro
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -76,13 +60,6 @@ services:
     networks:
       - internal
 
-  # opa-init:
-  #   image: va/abd_vro-opa-init:latest
-  #   depends_on:
-  #     - opa
-  #   networks:
-  #     - internal
-
   abd_vro:
     image: va/abd_vro-app:latest
     hostname: abd_vro
@@ -90,15 +67,11 @@ services:
       - "8080:8080"
       - "8081:8081"
     environment:
-      POSTGRES_HOST: postgres1
-      POSTGRES_DBNAME: vro
-      POSTGRES_USER: example_service
-      POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       # TODO: move these RabbitMQ configurations into a reusable yaml block
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
     depends_on:
       - postgres1
       - rabbitmq1
@@ -115,8 +88,8 @@ services:
     image: va/abd_vro-assessclaimdc7101:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
     depends_on:
       - rabbitmq1
     networks:
@@ -126,8 +99,8 @@ services:
     image: va/abd_vro-assessclaimdc6602:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
     depends_on:
       - rabbitmq1
     networks:
@@ -137,8 +110,8 @@ services:
     image: va/abd_vro-pdfgenerator:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
       REDIS_PLACEHOLDERS_HOST: redis1
     depends_on:
       - rabbitmq1
@@ -150,8 +123,8 @@ services:
     image: va/abd_vro-service-data-access:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
       LH_CLIENT_ID: 0oah28rb5jLj4NeSN2p7
       LH_ASSERTION_URL: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
       LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
@@ -161,48 +134,3 @@ services:
         condition: service_healthy
     networks:
       - internal
-
-#   jaeger:
-#     image: jaegertracing/all-in-one:1.20
-#     hostname: jaeger
-#     ports:
-#       - "5775:5775/udp"
-#       - "6831:6831/udp"
-#       - "6832:6832/udp"
-#       - "5778:5778"
-#       - "16686:16686"
-#       - "14268:14268"
-#       - "14250:14250"
-#     environment:
-#       COLLECTOR_ZIPKIN_HTTP_PORT : "9411"
-#     networks:
-#       - internal
-#       - external
-
-#   zookeeper:
-#     image: wurstmeister/zookeeper
-#     hostname: zookeeper
-#     ports:
-#       - "2181:2181"
-#     networks:
-#       - internal
-
-#   kafka:
-#     image: wurstmeister/kafka
-#     hostname: kafka
-#     ports:
-#       - "9092:9092"
-#     expose:
-#       - "9093"
-#     environment:
-#       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://kafka:9092
-#       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-#       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-#       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-#       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-# #      KAFKA_ADVERTISED_HOST_NAME: kafka #192.168.99.100
-#     volumes:
-#       - /var/run/docker.sock:/var/run/docker.sock
-#     networks:
-#       - internal
-#       - external

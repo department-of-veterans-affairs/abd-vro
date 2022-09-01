@@ -37,22 +37,6 @@ management:
     web.server.request.autotime.enabled: true
   server.port: 8081
 
-# Setting up K8 health probes - with health probes set to true you can use
-# the paths in your config like the snippet below
-
-#livenessProbe:
-#  httpGet:
-#    path: /actuator/health/liveness
-#    port: 8081
-#  failureThreshold: ...
-#  periodSeconds: ...
-#
-#readinessProbe:
-#  httpGet:
-#    path: /actuator/health/readiness
-#    port: 8081
-#  failureThreshold: ...
-
 server:
   tomcat:
     basedir: build/tomcat
@@ -146,13 +130,6 @@ starter:
       consumer:
         topic.name: example-entity-lifecycle
         level.concurrency: 1
-
-# opa:
-#   filter:
-#     enabled: true
-#     document-path: authz
-#     instance: http://opa:8181
-#     endpoints-whitelist: /swagger*/**,/v3/api-docs/**,/liveness,/readiness,/health/**
 
 spring.config.import: >
   conf-camel.yml,
