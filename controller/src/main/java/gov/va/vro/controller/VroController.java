@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -104,8 +105,14 @@ public class VroController implements VroResource {
           HttpHeaders headers = new HttpHeaders();
           headers.setContentType(MediaType.APPLICATION_PDF);
 
+          String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+
           ContentDisposition disposition =
-              ContentDisposition.attachment().filename("textdown.pdf").build();
+              ContentDisposition.attachment()
+                  .filename(
+                      String.format(
+                          "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", "UNKNOWN", timestamp))
+                  .build();
           headers.setContentDisposition(disposition);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
