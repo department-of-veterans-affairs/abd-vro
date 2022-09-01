@@ -32,15 +32,15 @@ images:
   - name: service-data-access
     context: "./service-data-access/src/main/resources"
     path: "./service-data-access/src/docker/Dockerfile"
-#  - name: abd_vro-service-assessclaimdc7101
-#    context: "./service-python"
-#    path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
-#  - name: abd_vro-pdfgenerator
-#    context: "./service-python"
-#    path: "./service-python/pdfgenerator/src/docker/Dockerfile"
-#  - name: abd_vro-service-assessclaimdc6602
-#    context: "./service-python"
-#    path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+  - name: abd_vro-pdfgenerator
+    context: "./service-python/pdfgenerator/src"
+    path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+  - name: abd_vro-service-assessclaimdc7101
+    context: "./service-python/assessclaimdc7101/src"
+    path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+  - name: abd_vro-service-assessclaimdc6602
+    context: "./service-python/assessclaimdc6602/src"
+    path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
 
 # Remove source block if you're not building sources
 #source:

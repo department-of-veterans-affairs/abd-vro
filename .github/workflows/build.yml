@@ -93,8 +93,8 @@ jobs:
           docker build -f ./opa-init/src/docker/Dockerfile ./opa-init/src/main/resources
           docker build -f ./service-data-access/src/docker/Dockerfile ./service-data-access/src/main/resources
 
-          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src/
-          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src/
-          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src/
+          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src
+          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
+          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src
 
           # Reminder: also add path to Dockerfile to .github/secrel/config.yml
