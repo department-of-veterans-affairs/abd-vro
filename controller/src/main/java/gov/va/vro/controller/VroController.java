@@ -22,15 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class VroController implements VroResource {
 
+  public static final String PDF_FILENAME = "textdown.pdf";
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
@@ -71,11 +72,14 @@ public class VroController implements VroResource {
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
       throws RequestValidationException, ClaimProcessingException {
-    log.info("Generating pdf for claim: {}", request.getClaimSubmissionId());
+    log.info(
+        "Generating pdf for claim: {} and diagnostic code {}",
+        request.getClaimSubmissionId(),
+        request.getDiagnosticCode());
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
-      log.info("MODEL from generatePdf: {}", model);
       String response = camelEntrance.generatePdf(model);
+      // There is no PII in the response
       log.info("RESPONSE from generatePdf: {}", response);
       model.setPdfDocumentJson(response);
       GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
@@ -95,8 +99,7 @@ public class VroController implements VroResource {
     try {
       String response = camelEntrance.fetchPdf(claimSubmissionId);
       FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
-
-      log.info("RESPONSE from fetchPdf: {}", pdfResponse.toString());
+      log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
       if (pdfResponse.hasContent()) {
         byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
         try (InputStream is = new ByteArrayInputStream(decoder)) {
@@ -105,7 +108,7 @@ public class VroController implements VroResource {
           headers.setContentType(MediaType.APPLICATION_PDF);
 
           ContentDisposition disposition =
-              ContentDisposition.attachment().filename("textdown.pdf").build();
+              ContentDisposition.attachment().filename(PDF_FILENAME).build();
           headers.setContentDisposition(disposition);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
@@ -123,14 +126,17 @@ public class VroController implements VroResource {
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       HealthDataAssessmentRequest claim)
       throws RequestValidationException, ClaimProcessingException {
-    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+    log.info("Getting health assessment for veteran icn: {}", claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment: {}", responseAsString);
+
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
-      log.info("Returning health assessment for: {}", claim.getVeteranIcn());
+      log.info(
+          "Returning health assessment with status {} for veteran icn: {}",
+          response.getStatus(),
+          claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -147,27 +153,23 @@ public class VroController implements VroResource {
     try {
 
       List<Claim> claimList = fetchClaimsService.fetchClaims();
-      List<ClaimInfo> claims = new ArrayList<>();
-      for (Claim claim : claimList) {
-        ClaimInfo info = new ClaimInfo();
-        info.setClaimSubmissionId(claim.getClaimSubmissionId());
-        info.setVeteranIcn(claim.getVeteranIcn());
-        List<String> contentionsList = new ArrayList<>();
-        for (String contention : claim.getContentions()) {
-          contentionsList.add(contention);
-          info.setContentions(contentionsList);
-        }
-        claims.add(info);
-      }
-      FetchClaimsResponse response = new FetchClaimsResponse();
-      response.setClaims(claims);
-      response.setErrorMessage("Success");
+      List<ClaimInfo> claims =
+          claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
+      FetchClaimsResponse response = new FetchClaimsResponse(claims, "Success");
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
       FetchClaimsResponse failure = new FetchClaimsResponse();
       failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
-      log.error("Could not fetch claims from the DB.  " + e.getCause());
+      log.error("Could not fetch claims from the DB.", e);
       return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private ClaimInfo getClaimInfo(Claim claim) {
+    ClaimInfo info = new ClaimInfo();
+    info.setClaimSubmissionId(claim.getClaimSubmissionId());
+    info.setVeteranIcn(claim.getVeteranIcn());
+    info.setContentions(claim.getContentions().stream().toList());
+    return info;
   }
 }
