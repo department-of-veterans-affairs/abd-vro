@@ -77,4 +77,7 @@ workflows:
   version: 2
   circleci_workflow:
     jobs:
-      - build_then_test
+      - build_then_test:
+          filters:
+            branches:
+              only: [main, develop]
