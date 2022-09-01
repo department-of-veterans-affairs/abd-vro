@@ -21,7 +21,6 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private String authoredOn;
   private List<String> dosageInstructions;
   private String route;
-  private Boolean asthma_relevant;
 
   @Override
   public int compareTo(AbdMedication otherMedication) {
