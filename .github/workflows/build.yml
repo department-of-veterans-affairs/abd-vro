@@ -88,6 +88,6 @@ jobs:
 
       - name: Build all Dockerfiles
         run: |
-          docker build -f ./db-init/src/docker/Dockerfile .
+          docker build -f ./db-init/src/docker/Dockerfile ./db-init/src
           # TODO: add other Dockerfiles for other images
           # Reminder: add path to Dockerfile to .github/secrel/config.yml
