@@ -38,19 +38,16 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:postgresql://vro:not-the-password@localhost:5432/claims'
-    user = 'vro_user'
-    password = 'not-the-password'
+    url = "jdbc:postgresql://vro:not-the-password@localhost:5432/claims"
+    user = getEnvOrDefault('DB_ROOT_USER', 'vro_user')
+    password = getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')
     locations = ["filesystem:${project.buildDir}/docker/database/migrations"]
     placeholders = [
             'username': 'vro_user',
             'servicename': 'example_service',
             'adminname': 'example_admin',
             'dbname': 'vro',
-            'schemaname': 'claims',
-            'userpassword': 'also-not-the-user-password',
-            'servicepassword': 'also-not-the-service-password',
-            'adminpassword': 'also-not-the-admin-password'
+            'schemaname': 'claims'
     ]
     configurations = [ 'flywayMigration' ]
 }
