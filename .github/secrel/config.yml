@@ -21,29 +21,23 @@ images:
     args:
       -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
   - name: abd_vro-db-init
+    context: "./db-init/src"
     path: "./db-init/src/docker/Dockerfile"
-
-#- name: abd_vro-app
-#  path: "./app/src/docker/Dockerfile"
-#  args:
-#  - example-build-arg=some-value
-#  - example-build-arg-secret=${{ secrets.example_secret }}
-
-# Additional images can be specified like below
-#- name: abd_vro-db-init
-#  path: "./db-init/src/docker/Dockerfile"
-#- name: container-init
-#  path: "./container-init/src/docker/Dockerfile"
-#- name: opa-init
-#  path: "./opa-init/src/docker/Dockerfile"
-#- name: abd_vro-service-assessclaimdc7101
-#  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
-#- name: abd_vro-pdfgenerator
-#  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
-#- name: abd_vro-service-assessclaimdc6602
-#  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
-#- name: service-data-access
-#  path: "./service-data-access/src/docker/Dockerfile"
+#  - name: container-init
+#    context: "./container-init/src"
+#    path: "./container-init/src/docker/Dockerfile"
+#  - name: opa-init
+#    context: "./opa-init/src"
+#    path: "./opa-init/src/docker/Dockerfile"
+#  - name: abd_vro-service-assessclaimdc7101
+#    context: "./service-python"
+#    path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+#  - name: abd_vro-pdfgenerator
+#    context: "./service-python"
+#    path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+#  - name: abd_vro-service-assessclaimdc6602
+#    context: "./service-python"
+#    path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
 
 # Remove source block if you're not building sources
 #source:

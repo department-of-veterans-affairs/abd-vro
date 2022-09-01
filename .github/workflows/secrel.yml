@@ -24,7 +24,7 @@ jobs:
     #needs: [ dev-stuff ]
 
     name: Tornado Pipeline
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v2.1.1
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v2.2.0
     with:
       config-file: .github/secrel/config.yml
     secrets: inherit
