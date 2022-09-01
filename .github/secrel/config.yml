@@ -23,12 +23,15 @@ images:
   - name: abd_vro-db-init
     context: "./db-init/src/main/resources"
     path: "./db-init/src/docker/Dockerfile"
-#  - name: container-init
-#    context: "./container-init/src"
-#    path: "./container-init/src/docker/Dockerfile"
-#  - name: opa-init
-#    context: "./opa-init/src"
-#    path: "./opa-init/src/docker/Dockerfile"
+  - name: container-init
+    context: "./container-init/src/main/resources"
+    path: "./container-init/src/docker/Dockerfile"
+  - name: opa-init
+    context: "./opa-init/src/main/resources"
+    path: "./opa-init/src/docker/Dockerfile"
+  - name: service-data-access
+    context: "./service-data-access/src/main/resources"
+    path: "./service-data-access/src/docker/Dockerfile"
 #  - name: abd_vro-service-assessclaimdc7101
 #    context: "./service-python"
 #    path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
