@@ -9,6 +9,7 @@ import gov.va.vro.api.model.VeteranInfo;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FetchPdfResponse;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.exception.ClaimProcessingError;
@@ -48,6 +49,9 @@ class VroControllerTest extends BaseIntegrationTest {
 
   @EndpointInject("mock:claim-submit")
   private MockEndpoint mockSubmitClaimEndpoint;
+
+  @EndpointInject("mock:claim-submit-full")
+  private MockEndpoint mockFullHealthEndpoint;
 
   @EndpointInject("mock:generate-pdf")
   private MockEndpoint mockGeneratePdfEndpoint;
@@ -100,6 +104,53 @@ class VroControllerTest extends BaseIntegrationTest {
     Optional<ClaimEntity> claimEntityOptional =
         claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
     assertTrue(claimEntityOptional.isPresent());
+  }
+
+  @Test
+  @DirtiesContext
+  void postFullHealthAssessment() throws Exception {
+
+    // intercept the original endpoint, skip it and replace it with the mock endpoint
+    adviceWith(
+            camelContext,
+            "claim-submit",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:claim-submit-exchange"
+                                            + "?queue=claim-submit"
+                                            + "&routingKey=code.1701&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit"));
+    // Mock secondary process endpoint
+    adviceWith(
+            camelContext,
+            "claim-submit-full",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:health-assess-exchange"
+                                            + "?queue=1701"
+                                            + "&routingKey=1701&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit-full"));
+    // The mock endpoint returns a valid response
+    mockFullHealthEndpoint.whenAnyExchangeReceived(
+            FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("1701");
+
+    var responseEntity1 =
+            post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+
+    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+    FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+
   }
 
   @Test
