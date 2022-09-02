@@ -56,14 +56,14 @@ jobs:
             "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
           docker tag va/dev_vro-init-db \
             "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
-          docker tag va/dev_vro-assessclaimdc7101 \
-            "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker tag va/dev_vro-assessclaimdc6602 \
-            "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker tag va/dev_vro-pdfgenerator \
-            "ghcr.io/${{ github.repository }}/dev_vro-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-service-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-service-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-service-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
           docker tag va/dev_vro-service-data-access \
-            "ghcr.io/${{ github.repository }}/dev_vro-data-access:${COMMIT_SHA:0:7}"
+            "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
 
       - name: Push images
         run: |
@@ -74,6 +74,7 @@ jobs:
           # Remove the following section once SecRel works 
           docker push "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/dev_vro-pdfgenerator:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
