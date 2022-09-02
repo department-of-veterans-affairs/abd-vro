@@ -10,7 +10,6 @@ EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
 
 
-
 def on_request_callback(channel, method, properties, body):
 
 	binding_key = method.routing_key
@@ -20,7 +19,7 @@ def on_request_callback(channel, method, properties, body):
 	try:
 		response = main.assess_asthma(message)
 	except:
-		response = {"status": "ERROR", "evidence":{}, "calculated": {}}
+		response = {"status": "ERROR", "evidence": {}, "calculated": {}}
 
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 	logging.info(f" [x] {binding_key}: Message sent to: {properties.reply_to}")
