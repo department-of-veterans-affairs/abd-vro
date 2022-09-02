@@ -20,13 +20,13 @@ images:
   path: "./Dockerfile"
   args:
     -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-- name: vro-db-init
+- name: vro-init-db
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
-- name: vro-container-init
+- name: vro-init-container
   context: "./container-init/src/main/resources"
   path: "./container-init/src/docker/Dockerfile"
-- name: vro-opa-init
+- name: vro-init-opa
   context: "./opa-init/src/main/resources"
   path: "./opa-init/src/docker/Dockerfile"
 - name: vro-service-data-access
