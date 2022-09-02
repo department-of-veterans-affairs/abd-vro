@@ -18,7 +18,7 @@ pluginManagement {
             url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
             credentials(HttpHeaderCredentials) {
                 name = "Authorization"
-                value = "Bearer " + System.getenv("GITHUB_ACCESS_TOKEN")
+                value = "Bearer " + GITHUB_ACCESS_TOKEN
             }
             authentication {
                 register("header", HttpHeaderAuthentication)
@@ -48,7 +48,7 @@ dependencyResolutionManagement {
             url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
             credentials(HttpHeaderCredentials) {
                 name = "Authorization"
-                value = "Bearer " + System.getenv("GITHUB_ACCESS_TOKEN")
+                value = "Bearer " + GITHUB_ACCESS_TOKEN
             }
             authentication {
                 register("header", HttpHeaderAuthentication)
