@@ -15,6 +15,7 @@ import java.util.Map;
 public class SlipClaimSubmitRouter {
 
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+  public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
   /**
    * Computes endpoint where claim should be routed next.
@@ -26,8 +27,8 @@ public class SlipClaimSubmitRouter {
   public String routeClaimSubmit(Object body, @ExchangeProperties Map<String, Object> props) {
     Object diagnosticCodeObj = props.get("diagnosticCode");
     if (diagnosticCodeObj == null) {
-      log.error("No diagnostic code in the body.");
-      return null;
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
@@ -48,8 +49,8 @@ public class SlipClaimSubmitRouter {
   public String routeClaimSubmitFull(Object body, @ExchangeProperties Map<String, Object> props) {
     Object diagnosticCodeObj = props.get("diagnosticCode");
     if (diagnosticCodeObj == null) {
-      log.error("No diagnostic code in the body.");
-      return null;
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
