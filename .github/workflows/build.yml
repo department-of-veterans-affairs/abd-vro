@@ -56,7 +56,7 @@ jobs:
         run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Build and test Python code with test coverage report"
-        run: cd service-python && python -m pytest --cov-report term-missing --cov
+        run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80
 
   build-docker-app:
     runs-on: ubuntu-latest
