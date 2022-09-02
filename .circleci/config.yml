@@ -65,16 +65,19 @@ jobs:
           when: always
       - store_test_results:
           path: ~/test-results
-      - run:
-          name: Run cis-benchmark tests
-          command: |
-            cd ..
-            git clone https://github.com/docker/docker-bench-security.git
-            cd docker-bench-security
-            sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
+#      - run:
+#          name: Run cis-benchmark tests
+#          command: |
+#            cd ..
+#            git clone https://github.com/docker/docker-bench-security.git
+#            cd docker-bench-security
+#            sh docker-bench-security.sh -c container_images -i abd_vro -e check_4_5
 
 workflows:
   version: 2
   circleci_workflow:
     jobs:
-      - build_then_test
+      - build_then_test:
+          filters:
+            branches:
+              only: [main, develop]
