@@ -46,34 +46,34 @@ jobs:
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
           docker pull postgres:latest
           docker tag postgres:latest \
-            "ghcr.io/${{ github.repository }}/abd_vro-postgres:latest"
+            "ghcr.io/${{ github.repository }}/vro-postgres:latest"
           docker pull rabbitmq:3
           docker tag rabbitmq:3 \
-            "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
+            "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
           # Remove the following section once SecRel works
-          docker tag va/abd_vro-app \
-            "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-db-init \
-            "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-assessclaimdc7101 \
-            "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-assessclaimdc6602 \
-            "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-pdfgenerator \
-            "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-service-data-access \
-            "ghcr.io/${{ github.repository }}/abd_vro-data-access:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-app \
+            "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-init-db \
+            "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/dev_vro-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag va/dev_vro-service-data-access \
+            "ghcr.io/${{ github.repository }}/dev_vro-data-access:${COMMIT_SHA:0:7}"
 
       - name: Push images
         run: |
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-postgres:latest"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-rabbitmq:3"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-postgres:latest"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-rabbitmq:3"
 
           # Remove the following section once SecRel works 
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-app:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-db-init:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-pdfgenerator:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/abd_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker push "ghcr.io/${{ github.repository }}/dev_vro-assessclaimdc6602:${COMMIT_SHA:0:7}"
