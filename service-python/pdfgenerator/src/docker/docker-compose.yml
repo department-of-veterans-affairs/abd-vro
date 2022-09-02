@@ -28,8 +28,8 @@ services:
     container_name: pdfgenerator
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_USERNAME: admin
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: not-that-rabbit
       REDIS_PLACEHOLDERS_HOST: rabbitmq1
     build:
       dockerfile: ./Dockerfile
