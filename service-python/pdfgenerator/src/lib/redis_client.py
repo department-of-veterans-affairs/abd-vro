@@ -29,6 +29,7 @@ class RedisClient:
 
 	def save_data(self, key, value):
 		self.client.set(key, value)
+		self.client.expire(key, self.config["expiration"])
 
 
 	def get_data(self, key):
