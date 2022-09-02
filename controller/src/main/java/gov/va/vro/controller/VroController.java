@@ -123,17 +123,26 @@ public class VroController implements VroResource {
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       HealthDataAssessmentRequest claim)
       throws RequestValidationException, ClaimProcessingException {
-    log.info("Getting health assessment for: {}", claim.getVeteranIcn());
+    log.info(
+        "Getting full health assessment for claim {} and veteran icn {}",
+        claim.getClaimSubmissionId(),
+        claim.getVeteranIcn());
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
-      log.info("Obtained full health assessment: {}", responseAsString);
+
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
+      if (response.getEvidence() == null) {
+        throw new ClaimProcessingException(
+                claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
+      }
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (ClaimProcessingException cpe) {
+      throw cpe;
     } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
