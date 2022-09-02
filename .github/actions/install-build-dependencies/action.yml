@@ -9,8 +9,23 @@ runs:
       with:
         distribution: temurin
         java-version: '17'
+        cache: 'gradle'
+
+    # http://man7.org/linux/man-pages/man1/date.1.html
+    - name: Get Date
+      id: get-date
+      run: echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+      shell: bash
+
+    - name: Restore hadolint
+      uses: actions/cache@v3
+      id: cache-hadolint
+      with:
+        path: /usr/local/bin/hadolint
+        key: hadolint-${{ steps.get-date.outputs.date }}
 
     - name: Install hadolint
+      if: steps.cache-hadolint.outputs.cache-hit != 'true'
       shell: bash
       run: |
         sudo wget -O /usr/local/bin/hadolint \

@@ -31,7 +31,7 @@ jobs:
           - 5672:5672
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Install all dependencies
 
@@ -53,7 +53,48 @@ jobs:
       # Build and test
 
       - name: Build and test Java code
-        run: ./gradlew build check
+        run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov
+
+  build-docker-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - uses: docker/setup-buildx-action@v2
+        id: buildx
+        with:
+          install: true
+
+      - name: Build docker-app
+        run: |
+          echo 'GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}' > all-secrets.txt
+          docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
+          rm all-secrets.txt
+
+  build-docker-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - uses: docker/setup-buildx-action@v2
+        id: buildx
+        with:
+          install: true
+
+      - name: Build all Dockerfiles
+        run: |
+          docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
+          docker build -f ./container-init/src/docker/Dockerfile ./container-init/src/main/resources
+          docker build -f ./opa-init/src/docker/Dockerfile ./opa-init/src/main/resources
+          docker build -f ./service-data-access/src/docker/Dockerfile ./service-data-access/src/main/resources
+
+          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src
+          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
+          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src
+
+          # Reminder: also add path to Dockerfile to .github/secrel/config.yml
