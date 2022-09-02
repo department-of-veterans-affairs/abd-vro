@@ -1,4 +1,5 @@
 FROM alpine:3.7
+LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 RUN apk --no-cache add curl==7.61.1-r3
 HEALTHCHECK NONE
