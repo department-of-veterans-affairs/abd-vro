@@ -68,8 +68,8 @@ jobs:
       - name: Push images
         run: |
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
-          docker push "ghcr.io/${{ github.repository }}/dev_vro-postgres:latest"
-          docker push "ghcr.io/${{ github.repository }}/dev_vro-rabbitmq:3"
+          docker push "ghcr.io/${{ github.repository }}/vro-postgres:latest"
+          docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
           # Remove the following section once SecRel works 
           docker push "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
