@@ -14,7 +14,6 @@ public class PrimaryRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
-  public static final String ENDPOINT_LOG_TO_FILE = "seda:logToFile";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
 
@@ -27,22 +26,12 @@ public class PrimaryRoutes extends RouteBuilder {
 
   @Override
   public void configure() {
-    configureRouteFileLogger();
     configureRouteClaimSubmit();
     configureRouteClaimSubmitForFull();
     configureRouteClaimProcessed();
 
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
-  }
-
-  private void configureRouteFileLogger() {
-    camelUtils.asyncSedaEndpoint(ENDPOINT_LOG_TO_FILE);
-    from(ENDPOINT_LOG_TO_FILE)
-        .marshal()
-        .json()
-        .log(">>2> ${body.getClass()}")
-        .to("file://target/post");
   }
 
   private void configureRouteClaimProcessed() {
