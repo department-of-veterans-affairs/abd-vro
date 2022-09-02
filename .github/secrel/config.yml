@@ -32,7 +32,7 @@ images:
 - name: vro-service-data-access
   context: "./service-data-access/src/main/resources"
   path: "./service-data-access/src/docker/Dockerfile"
-- name: vro-pdfgenerator
+- name: vro-service-pdfgenerator
   context: "./service-python/pdfgenerator/src"
   path: "./service-python/pdfgenerator/src/docker/Dockerfile"
 - name: vro-service-assessclaimdc7101
