@@ -11,7 +11,7 @@ jobs:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: Aqua Check
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/aqua-checker.yml@v2.1.1
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/aqua-checker.yml@v2.2.0
     with:
       config-file: .github/secrel/config.yml
     secrets: inherit
