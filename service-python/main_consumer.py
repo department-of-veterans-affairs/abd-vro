@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 from lib.queues import queue_setup
 
 import pika
@@ -12,6 +12,7 @@ CONSUMER_CONFIG = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
     "retry_limit": 3,
+		"timeout": 60 * 5 # 3 hours
 }
 
 
@@ -33,8 +34,8 @@ class RabbitMQConsumer:
 				parameters = pika.ConnectionParameters(host=self.config["host"], port = self.config["port"])
 				return pika.BlockingConnection(parameters)
 			except:
-				logging.warn(f"RabbitMQ Connection Failed. Retrying in 15s")
-				sleep(15)
+				logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s")
+				sleep(30)
 
 
 	def setup_queues(self):
@@ -44,8 +45,26 @@ class RabbitMQConsumer:
 
 
 if __name__ == "__main__":
-	consumer = RabbitMQConsumer(CONSUMER_CONFIG)
 
-	atexit.register(consumer.channel.stop_consuming)
+	start_timer = None
+	current_timer = None
 
-	consumer.channel.start_consuming()
+	while(True):
+		
+		try:
+				consumer = RabbitMQConsumer(CONSUMER_CONFIG)
+
+				atexit.register(consumer.channel.stop_consuming)
+
+				consumer.channel.start_consuming()
+		except pika.exceptions.ConnectionClosedByBroker:
+			if start_timer is None:
+				start_timer = time()
+				current_timer = time()
+			else:
+				current_timer = time() - start_timer
+			# if current_timer < CONSUMER_CONFIG["timeout"]:
+				logging.warning("Connection was closed. Retrying...")
+				continue
+			# else:
+				# break

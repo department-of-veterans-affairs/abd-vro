@@ -16,10 +16,10 @@ class RedisClient:
 		for i in range(self.config["retry_limit"]):
 			try:
 				client = redis.Redis(host=self.config["host"], port = self.config["port"])
-				logging.warn(f"Redis Connected: {client}")
+				logging.warning(f"Redis Connected: {client}")
 				return client
 			except:
-				logging.warn(f"Redis Connection Failed. Retrying in 15s")
+				logging.warning(f"Redis Connection Failed. Retrying in 15s")
 				sleep(15)
 
 	
