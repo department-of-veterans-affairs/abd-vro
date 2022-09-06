@@ -118,7 +118,8 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     depends_on:
-      - rabbitmq1
+      rabbitmq1:
+        condition: service_healthy
     networks:
       - internal
 
@@ -129,7 +130,8 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     depends_on:
-      - rabbitmq1
+      rabbitmq1:
+        condition: service_healthy
     networks:
       - internal
 
@@ -141,8 +143,10 @@ services:
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
       REDIS_PLACEHOLDERS_HOST: redis1
     depends_on:
-      - rabbitmq1
-      - redis1
+      rabbitmq1:
+        condition: service_healthy
+      redis1:
+        condition: service_healthy
     networks:
       - internal
 
