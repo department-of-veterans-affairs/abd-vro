@@ -12,7 +12,7 @@ CONSUMER_CONFIG = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
     "port": 5672,
     "retry_limit": 3,
-		"timeout": 60 * 5 # 3 hours
+		"timeout": 60 * 60 * 3 # 3 hours
 }
 
 
@@ -50,21 +50,19 @@ if __name__ == "__main__":
 	current_timer = None
 
 	while(True):
-		
 		try:
 				consumer = RabbitMQConsumer(CONSUMER_CONFIG)
 
-				atexit.register(consumer.channel.stop_consuming)
 
 				consumer.channel.start_consuming()
-		except pika.exceptions.ConnectionClosedByBroker:
+		except:
 			if start_timer is None:
 				start_timer = time()
-				current_timer = time()
+				current_timer = 0
 			else:
 				current_timer = time() - start_timer
-			# if current_timer < CONSUMER_CONFIG["timeout"]:
+			if current_timer < CONSUMER_CONFIG["timeout"]:
 				logging.warning("Connection was closed. Retrying...")
 				continue
-			# else:
-				# break
+			else:
+				break
