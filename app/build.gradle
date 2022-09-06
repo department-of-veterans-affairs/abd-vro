@@ -33,8 +33,10 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
 
-    testImplementation 'com.h2database:h2'
-    runtimeOnly 'com.h2database:h2'
+    testImplementation "com.h2database:h2:${h2_version}"
+    runtimeOnly "com.h2database:h2:${h2_version}"
+    // implementation "org.postgresql:postgresql:${postgresql_version}"
+    // runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     testImplementation 'org.testcontainers:postgresql:1.17.3'
     //This version is compatible with current spring version: 5.3.8
