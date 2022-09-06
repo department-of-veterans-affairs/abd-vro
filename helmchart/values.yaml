@@ -27,30 +27,30 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
-  app:
-    imageName: abd_vro-app
+  db:
+    imageName: vro-postgres
     tag: latest
-    imagePullPolicy: Always
-  pdfGenerator:
-    imageName: abd_vro-pdfgenerator
+  mq:
+    imageName: vro-rabbitmq
+    tag: 3
+  app:
+    imageName: dev_vro-app
     tag: latest
     imagePullPolicy: Always
   dbInit:
-    imageName: abd_vro-db-init
+    imageName: dev_vro-init-db
     tag: latest
     imagePullPolicy: Always
-  db:
-    imageName: abd_vro-postgres
+  pdfGenerator:
+    imageName: dev_vro-service-pdfgenerator
     tag: latest
-  mq:
-    imageName: abd_vro-rabbitmq
-    tag: 3
+    imagePullPolicy: Always
   serviceAssessClaimDC7101:
-    imageName: abd_vro-service-assessclaimdc7101
+    imageName: dev_vro-service-assessclaimdc7101
     tag: latest
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
-    imageName: abd_vro-service-assessclaimdc6602
+    imageName: dev_vro-service-assessclaimdc6602
     tag: latest
     imagePullPolicy: Always
     

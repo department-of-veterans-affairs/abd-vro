@@ -1,3 +1,9 @@
+#Ignoring the password file
+all-secrets.txt
+
+#Ignoring cache folders
+.cache
+
 .idea/
 .gradle/
 .gradletasknamecache

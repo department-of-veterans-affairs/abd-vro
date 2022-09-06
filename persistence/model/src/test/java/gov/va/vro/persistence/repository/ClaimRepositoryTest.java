@@ -55,5 +55,10 @@ class ClaimRepositoryTest {
         .ifPresentOrElse(
             contention -> assertEquals(2, contention2.getAssessmentResults().size()),
             Assertions::fail);
+
+    assertTrue(
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .isPresent());
   }
 }

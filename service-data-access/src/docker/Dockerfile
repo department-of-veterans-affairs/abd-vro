@@ -1,4 +1,5 @@
 FROM openjdk:17
+LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 WORKDIR /project
