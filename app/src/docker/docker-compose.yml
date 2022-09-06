@@ -145,8 +145,7 @@ services:
     depends_on:
       rabbitmq1:
         condition: service_healthy
-      redis1:
-        condition: service_healthy
+
     networks:
       - internal
 
