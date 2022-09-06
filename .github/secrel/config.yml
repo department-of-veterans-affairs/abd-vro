@@ -10,21 +10,41 @@
 #   - -Dexample-build-arg=some-value
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
+snyk:
+  additional-args:
+  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
 # Remove image block if you're not building Docker images
 images:
-- name: app-image
+- name: vro
   path: "./Dockerfile"
   args:
-  - example-build-arg=some-value
-  - example-build-arg-secret=${{ secrets.example_secret }}
-# Additional images can be specified like below
-# - name: 
-#   path: ""
-#   args:
-#   -
+    -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+- name: vro-init-db
+  context: "./db-init/src/main/resources"
+  path: "./db-init/src/docker/Dockerfile"
+- name: vro-init-container
+  context: "./container-init/src/main/resources"
+  path: "./container-init/src/docker/Dockerfile"
+- name: vro-init-opa
+  context: "./opa-init/src/main/resources"
+  path: "./opa-init/src/docker/Dockerfile"
+- name: vro-service-data-access
+  context: "./service-data-access/src/main/resources"
+  path: "./service-data-access/src/docker/Dockerfile"
+- name: vro-service-pdfgenerator
+  context: "./service-python/pdfgenerator/src"
+  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+- name: vro-service-assessclaimdc7101
+  context: "./service-python/assessclaimdc7101/src"
+  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+- name: vro-service-assessclaimdc6602
+  context: "./service-python/assessclaimdc6602/src"
+  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+
 # Remove source block if you're not building sources
-source:
-  java-version: 16
-  args:
-    - -Dexample-build-arg=some-value
-    - -Dexample.maven=${{ secrets.example_secret }}
+#source:
+#  java-version: 16
+#  args:
+#    - -Dexample-build-arg=some-value
+#    - -Dexample.maven=${{ secrets.example_secret }}
