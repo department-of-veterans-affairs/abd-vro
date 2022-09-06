@@ -9,7 +9,7 @@ RUN --mount=type=secret,id=all-secrets GITHUB_ACCESS_TOKEN=$(cat /run/secrets/al
 ./gradlew assemble -PGITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
 
 # Stage 2 - Run Stage
-FROM openjdk:17-alpine as run
+FROM eclipse-temurin:17-alpine as run
 RUN mkdir /app
 
 # Move jars over from build stage
