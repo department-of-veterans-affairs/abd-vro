@@ -103,6 +103,8 @@ public class VroController implements VroResource {
       if (pdfResponse.hasContent()) {
         if (pdfResponse.getStatus() == "NOT_FOUND") {
           return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus() == "ERROR") {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
         try (InputStream is = new ByteArrayInputStream(decoder)) {
