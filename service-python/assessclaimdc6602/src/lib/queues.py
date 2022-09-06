@@ -24,6 +24,7 @@ def on_request_callback(channel, method, properties, body):
 	channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 	logging.info(f" [x] {binding_key}: Message sent to: {properties.reply_to}")
 
+
 def queue_setup(channel):
 
 	channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
