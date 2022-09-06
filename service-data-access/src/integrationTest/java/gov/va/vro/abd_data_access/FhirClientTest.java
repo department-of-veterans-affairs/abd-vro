@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 class FhirClientTest {
   @Autowired private FhirClient client;
 
-  @Value("classpath:expected-json/lh-patient01-7101.json")
-  private Resource expectedResource;
-
   @Test
   public void testLighthouseAPIAccess() throws Exception {
     AbdEvidence evidence = client.getMedicalEvidence(CommonData.claim01);
