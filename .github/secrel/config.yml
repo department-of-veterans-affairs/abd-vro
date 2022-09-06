@@ -16,29 +16,29 @@ snyk:
 
 # Remove image block if you're not building Docker images
 images:
-- name: abd_vro
+- name: vro
   path: "./Dockerfile"
   args:
     -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-- name: abd_vro-db-init
+- name: vro-init-db
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
-- name: container-init
+- name: vro-init-container
   context: "./container-init/src/main/resources"
   path: "./container-init/src/docker/Dockerfile"
-- name: opa-init
+- name: vro-init-opa
   context: "./opa-init/src/main/resources"
   path: "./opa-init/src/docker/Dockerfile"
-- name: service-data-access
+- name: vro-service-data-access
   context: "./service-data-access/src/main/resources"
   path: "./service-data-access/src/docker/Dockerfile"
-- name: abd_vro-pdfgenerator
+- name: vro-service-pdfgenerator
   context: "./service-python/pdfgenerator/src"
   path: "./service-python/pdfgenerator/src/docker/Dockerfile"
-- name: abd_vro-service-assessclaimdc7101
+- name: vro-service-assessclaimdc7101
   context: "./service-python/assessclaimdc7101/src"
   path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
-- name: abd_vro-service-assessclaimdc6602
+- name: vro-service-assessclaimdc6602
   context: "./service-python/assessclaimdc6602/src"
   path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
 
