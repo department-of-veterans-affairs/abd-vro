@@ -23,12 +23,12 @@ images:
 - name: vro-init-db
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
-#- name: vro-init-container
-#  context: "./container-init/src/main/resources"
-#  path: "./container-init/src/docker/Dockerfile"
-#- name: vro-init-opa
-#  context: "./opa-init/src/main/resources"
-#  path: "./opa-init/src/docker/Dockerfile"
+- name: vro-init-container
+  context: "./container-init/src/main/resources"
+  path: "./container-init/src/docker/Dockerfile"
+- name: vro-init-opa
+  context: "./opa-init/src/main/resources"
+  path: "./opa-init/src/docker/Dockerfile"
 - name: vro-service-data-access
   context: "./service-data-access/src/main/resources"
   path: "./service-data-access/src/docker/Dockerfile"
