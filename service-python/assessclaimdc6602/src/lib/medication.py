@@ -53,12 +53,16 @@ def medication_required(request_body):
                 medication["asthma_relevant"] = "false"
                 other_medications.append(medication)
 
-    relevant_medications = sorted(relevant_medications,
-                                  key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-                                  reverse=True)
-    other_medications = sorted(other_medications,
-                               key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-                               reverse=True)
+    relevant_medications = sorted(
+        relevant_medications,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
+    other_medications = sorted(
+        other_medications,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
 
     relevant_medications.extend(other_medications)
 

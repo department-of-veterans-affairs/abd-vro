@@ -24,11 +24,12 @@ def assess_asthma(event: Dict):
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
-    response_body.update({
-        "evidence": {
-            "medications": active_medications,
+    response_body.update(
+        {
+            "evidence": {
+                "medications": active_medications,
+            }
         }
-    })
+    )
 
     return response_body
-    

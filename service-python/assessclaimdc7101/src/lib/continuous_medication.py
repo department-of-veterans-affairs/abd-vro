@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def continuous_medication_required(request_body):
     """
     Determine if there is the veteran requires continuous medication for hypertension
@@ -15,8 +16,10 @@ def continuous_medication_required(request_body):
         if medication["status"].lower() == "active":
             relevant_medications.append(medication)
 
-    relevant_medications = sorted(relevant_medications,
-                                  key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-                                  reverse=True)
+    relevant_medications = sorted(
+        relevant_medications,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
 
     return relevant_medications

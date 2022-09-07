@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 HOST = "localhost"
-EXCHANGE_NAME = 'health-assess-exchange'
-SERVICE_QUEUE_NAME = '7101'
+EXCHANGE_NAME = "health-assess-exchange"
+SERVICE_QUEUE_NAME = "7101"
 
 example_decision_data = {
     "veteranIcn": "1234567890V123456",
@@ -23,14 +23,14 @@ example_decision_data = {
                     "code": "8480-6",
                     "display": "Systolic blood pressure",
                     "unit": "mm[Hg]",
-                    "value": 115.0
+                    "value": 115.0,
                 },
                 "diastolic": {
                     "code": "8462-4",
                     "display": "Diastolic blood pressure",
                     "unit": "mm[Hg]",
-                    "value": 87.0
-                }
+                    "value": 87.0,
+                },
             }
         ],
         "medications": [
@@ -38,16 +38,11 @@ example_decision_data = {
                 "status": "active",
                 "authoredOn": "2013-04-15T01:15:52Z",
                 "description": "Hydrochlorothiazide 25 MG",
-                "notes": [
-                    "Hydrochlorothiazide 25 MG"
-                ],
-                "dosageInstructions": [
-                    "Once per day.",
-                    "As directed by physician."
-                ],
+                "notes": ["Hydrochlorothiazide 25 MG"],
+                "dosageInstructions": ["Once per day.", "As directed by physician."],
                 "route": "As directed by physician.",
                 "refills": "null",
-                "duration": ""
+                "duration": "",
             },
             {
                 "status": "active",
@@ -57,32 +52,29 @@ example_decision_data = {
                 "dosageInstructions": [],
                 "route": "",
                 "refills": 0,
-                "duration": "30 days"
-            }
-        ]
-    }
+                "duration": "30 days",
+            },
+        ],
+    },
 }
 
 
 class BaseClient(object):
-
     def __init__(self):
-        credentials = pika.PlainCredentials('guest', 'guest')
-        parameters = pika.ConnectionParameters(HOST,
-                                               5672,
-                                               '/',
-                                               credentials)
+        credentials = pika.PlainCredentials("guest", "guest")
+        parameters = pika.ConnectionParameters(HOST, 5672, "/", credentials)
         self.connection = pika.BlockingConnection(parameters)
 
         self.channel = self.connection.channel()
-        result = self.channel.queue_declare(queue='', exclusive=True)
+        result = self.channel.queue_declare(queue="", exclusive=True)
         self.callback_queue = result.method.queue
         self.channel.queue_bind(queue=self.callback_queue, exchange=EXCHANGE_NAME)
 
         self.channel.basic_consume(
             queue=self.callback_queue,
             on_message_callback=self.on_response,
-            auto_ack=True)
+            auto_ack=True,
+        )
 
         self.response = None
         self.corr_id = None
@@ -91,7 +83,6 @@ class BaseClient(object):
         print(props.correlation_id)
         if self.corr_id == props.correlation_id:
             self.response = body
-
 
     def call(self, decision_data):
         self.response = None
@@ -102,10 +93,11 @@ class BaseClient(object):
             exchange=EXCHANGE_NAME,
             routing_key=SERVICE_QUEUE_NAME,
             properties=pika.BasicProperties(
-                            reply_to = self.callback_queue,
-                            correlation_id = self.corr_id,
-                            ),
-            body=bytes(json.dumps(decision_data), 'utf-8'))
+                reply_to=self.callback_queue,
+                correlation_id=self.corr_id,
+            ),
+            body=bytes(json.dumps(decision_data), "utf-8"),
+        )
 
         while self.response is None:
             self.connection.process_data_events()

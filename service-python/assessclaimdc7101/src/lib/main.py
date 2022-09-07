@@ -20,7 +20,9 @@ def assess_hypertension(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        relevant_medication = continuous_medication.continuous_medication_required(event)
+        relevant_medication = continuous_medication.continuous_medication_required(
+            event
+        )
         valid_bp_readings = bp_filter.bp_recency(event)
 
     else:
@@ -32,9 +34,10 @@ def assess_hypertension(event: Dict):
     response_body.update(
         {
             "evidence": {
-            "medications": relevant_medication,
-            "bp_readings": valid_bp_readings
+                "medications": relevant_medication,
+                "bp_readings": valid_bp_readings,
             }
-    })
+        }
+    )
 
     return response_body

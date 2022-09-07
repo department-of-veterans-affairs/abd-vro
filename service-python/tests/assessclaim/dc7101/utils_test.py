@@ -6,109 +6,117 @@ from assessclaimdc7101.src.lib import utils
     "request_body, result_is_valid, errors",
     [
         (
-                {
-                    "evidence": 
-                    {
-                        "bp_readings": [
-                            {
-                                "diastolic": {
-                                    "code": "8462-4",
-                                    "display": "Diastolic blood pressure",
-                                    "unit": "mm[Hg]",
-                                    "value": 115
-                                },
-                                "systolic": {
-                                    "code": "8480-6",
-                                    "display": "Systolic blood pressure",
-                                    "unit": "mm[Hg]",
-                                    "value": 180
-                                },
-                                "date": "2021-11-01",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            }
-                        ,
-                        ]
-                        ,
-                        "medications": [{"description": "Capoten",
-                        "status": "active",
-                        "authoredOn": "1950-04-06T04:00:00Z"}],
-                    },
-                    "date_of_claim": "2021-11-09",
-                    "diagnosticCode": "7101",
-                    "veteranIcn": "1234567890V123456",
+            {
+                "evidence": {
+                    "bp_readings": [
+                        {
+                            "diastolic": {
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 115,
+                            },
+                            "systolic": {
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure",
+                                "unit": "mm[Hg]",
+                                "value": 180,
+                            },
+                            "date": "2021-11-01",
+                            "practitioner": "DR. JANE460 DOE922 MD",
+                            "organization": "LYONS VA MEDICAL CENTER",
+                        },
+                    ],
+                    "medications": [
+                        {
+                            "description": "Capoten",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        }
+                    ],
                 },
-                True,
-                {}
+                "date_of_claim": "2021-11-09",
+                "diagnosticCode": "7101",
+                "veteranIcn": "1234567890V123456",
+            },
+            True,
+            {},
         ),
         (
-                {
-                    "evidence":{
-
+            {
+                "evidence": {
                     "bp_readings": [
                         {
                             "systolic": {
                                 "code": "8480-6",
                                 "display": "Systolic blood pressure",
                                 "unit": "mm[Hg]",
-                                "value": "180"
+                                "value": "180",
                             },
                             "date": "2021-11-01",
                             "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER"
+                            "organization": "LYONS VA MEDICAL CENTER",
                         },
                         {
                             "diastolic": {
                                 "code": "8462-4",
                                 "display": "Diastolic blood pressure",
                                 "unit": "mm[Hg]",
-                                "value": "115"
+                                "value": "115",
                             },
                             "systolic": {
                                 "code": "8480-6",
                                 "display": "Systolic blood pressure",
                                 "unit": "mm[Hg]",
-                                "value": 180
+                                "value": 180,
                             },
                             "date": 20211101,
                             "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER"
+                            "organization": "LYONS VA MEDICAL CENTER",
                         },
-                    ]
-                    ,
-                    "medications": [{"description": 123,
-                    "status": "active",
-                    "authoredOn": "1950-04-06T04:00:00Z"}],
-                    },
-                    "date_of_claim": 20211109,
-                    "diagnosticCode": "7101"
-                },
-                False,
-                {
-                    "evidence":[{
-                    "bp_readings": [
-                        {
-                            0: [
-                                {
-                                                    "systolic": [{"value": ["must be of number type"]}],
-                                    "diastolic": ["required field"]
-                                }
-                            ],
-                            1: [
-                                {
-                                    "date": ["must be of string type"],
-                                                    "diastolic": [{"value": ["must be of number type"]}]
-                                }
-                            ]
-                        }
                     ],
                     "medications": [
-                        {0: [{'description': ['must be of string type']}]}
-                        ]
-                    }],
-                    "date_of_claim": ["must be of string type"],
-                }
-                
+                        {
+                            "description": 123,
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        }
+                    ],
+                },
+                "date_of_claim": 20211109,
+                "diagnosticCode": "7101",
+            },
+            False,
+            {
+                "evidence": [
+                    {
+                        "bp_readings": [
+                            {
+                                0: [
+                                    {
+                                        "systolic": [
+                                            {"value": ["must be of number type"]}
+                                        ],
+                                        "diastolic": ["required field"],
+                                    }
+                                ],
+                                1: [
+                                    {
+                                        "date": ["must be of string type"],
+                                        "diastolic": [
+                                            {"value": ["must be of number type"]}
+                                        ],
+                                    }
+                                ],
+                            }
+                        ],
+                        "medications": [
+                            {0: [{"description": ["must be of string type"]}]}
+                        ],
+                    }
+                ],
+                "date_of_claim": ["must be of string type"],
+            },
         ),
     ],
 )
