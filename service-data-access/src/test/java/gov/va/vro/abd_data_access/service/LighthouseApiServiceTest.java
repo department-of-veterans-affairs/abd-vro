@@ -43,7 +43,7 @@ class LighthouseApiServiceTest {
     private static final String CLIENTID = "00ah28rb5jLj4NeSN2p7";
     private static final String ASSERTIONURL = "https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token";
     private static final String TOKENURL = "https://sandbox-api.va.gov/oauth2/health/system/v1/token";
-    private static final String TEST_KEY_FILE = "private.pem";
+    private static final String TEST_KEY_FILE = "testkey.pem";
     private static final String TEST_TOKEN = "lighthouseToken.json";
 
     @InjectMocks
