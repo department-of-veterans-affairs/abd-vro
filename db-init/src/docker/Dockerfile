@@ -4,4 +4,7 @@ COPY database /flyway/sql
 COPY flyway.conf /flyway/conf
 HEALTHCHECK NONE
 
+RUN useradd --no-create-home someuser
+USER someuser
+
 CMD [ "migrate", "-X" ]
