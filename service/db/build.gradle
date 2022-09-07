@@ -11,6 +11,6 @@ dependencies {
     implementation project(':persistence:model')
     implementation project(':service:spi')
 
-    testImplementation "com.h2database:h2"
+    testImplementation "com.h2database:h2:${h2_version}"
 }
 
