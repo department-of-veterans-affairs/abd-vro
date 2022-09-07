@@ -9,7 +9,6 @@ EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
 
 
-
 def on_request_callback(channel, method, properties, body):
 
 	binding_key = method.routing_key
