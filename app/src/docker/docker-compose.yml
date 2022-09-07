@@ -143,6 +143,7 @@ services:
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
       REDIS_PLACEHOLDERS_HOST: redis1
     depends_on:
+      redis:
       rabbitmq1:
         condition: service_healthy
     networks:
