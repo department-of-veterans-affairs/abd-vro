@@ -6,11 +6,13 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /app
-WORKDIR /app
+RUN adduser --disabled-password python
+USER python
 
-COPY . /app/
+WORKDIR /home/python
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=python:python . /home/python/
+
+RUN pip install --no-cache-dir --user -r requirements.txt
 
 CMD ["python", "-u", "main_consumer.py"]
