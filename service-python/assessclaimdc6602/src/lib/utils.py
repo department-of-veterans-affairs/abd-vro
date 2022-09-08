@@ -14,80 +14,37 @@ def validate_request_body(request_body):
         "veteranIcn": {"type": "string"},
         "date_of_claim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
-        "evidence":{
+        "evidence": {
             "type": "dict",
             "schema": {
-            "conditions": {
-                "required": True,
-                "type": "list",
-                "schema": {
-                    "type": "dict",
+                "medications": {
+                    "required": True,
+                    "type": "list",
                     "schema": {
-                        "code": {
-                            "type": "string",
-                            "required": True
+                        "type": "dict",
+                        "schema": {
+                            "authoredOn": {"type": "string", "required": True},
+                            "status": {"type": "string", "required": True},
+                            "dosageInstructions": {
+                                "type": "list",
+                                "nullable": True,
+                                "schema": {"type": "string", "default": ""},
+                            },
+                            "route": {"type": "string", "nullable": True},
+                            "refills": {},
+                            "duration": {"type": "string", "nullable": True},
+                            "description": {"type": "string", "required": True},
+                            "notes": {
+                                "type": "list",
+                                "nullable": True,
+                                "schema": {"type": "string"},
+                            },
                         },
-                        "status": {
-                            "type": "string",
-                        },
-                        "text": {
-                            "type": "string"
-                        },
-                        "onsetDate": {
-                            "type": "string",
-                        },
-                        "abatementDate": {
-                            "type": "string",
-                            "nullable": True,
-                        }
-                    }
+                    },
                 }
             },
-             "medications": {
-                "required": True,
-                "type": "list",
-                "schema": {
-                    "type": "dict",
-                    "schema": {
-                        "authoredOn": {
-                            "type": "string"
-                        },
-                        "status": {
-                            "type": "string",
-                        },
-                        "dosageInstructions": {
-                            "type": "list",
-                            "nullable": True,
-                            "schema": {"type": "string",
-                            "default": ""}
-                        },
-                        "route": {
-                            "type": "string",
-                            "nullable": True
-                            },
-                        "refills": {},
-                        "duration": {
-                            "type": "string",
-                            "nullable": True
-                            },
-                        "description": {
-                            "type": "string",
-                            "required": True
-                            },
-                        "notes": {
-                            "type": "list",
-                            "nullable": True,
-                            "schema": {"type": "string"}
-                        }
-                    }
-                }
-            }
-        }
-    }
+        },
     }
     v = Validator(schema)
 
-    return {
-        "is_valid": v.validate(request_body),
-        "errors": v.errors
-    }
+    return {"is_valid": v.validate(request_body), "errors": v.errors}
