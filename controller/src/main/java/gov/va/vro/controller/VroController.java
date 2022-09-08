@@ -53,8 +53,8 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
 
-      HealthDataAssessmentResponse response = objectMapper.readValue(responseAsString,
-          HealthDataAssessmentResponse.class);
+      HealthDataAssessmentResponse response =
+          objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
@@ -110,11 +110,12 @@ public class VroController implements VroResource {
 
           String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
           String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-          ContentDisposition disposition = ContentDisposition.attachment()
-              .filename(
-                  String.format(
-                      "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
-              .build();
+          ContentDisposition disposition =
+              ContentDisposition.attachment()
+                  .filename(
+                      String.format(
+                          "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+                  .build();
 
           headers.setContentDisposition(disposition);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
@@ -146,8 +147,8 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
 
-      FullHealthDataAssessmentResponse response = objectMapper.readValue(responseAsString,
-          FullHealthDataAssessmentResponse.class);
+      FullHealthDataAssessmentResponse response =
+          objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
@@ -171,7 +172,8 @@ public class VroController implements VroResource {
     try {
 
       List<Claim> claimList = fetchClaimsService.fetchClaims();
-      List<ClaimInfo> claims = claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
+      List<ClaimInfo> claims =
+          claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
       FetchClaimsResponse response = new FetchClaimsResponse(claims, "Success");
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
