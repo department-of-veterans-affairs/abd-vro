@@ -102,4 +102,4 @@ jobs:
           docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
           docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src
 
-          # Reminder: also add path to Dockerfile to .github/secrel/config.yml
+          # Reminder to also add new images to .github/secrel/config.yml
