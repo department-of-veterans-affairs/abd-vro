@@ -8,30 +8,43 @@ from assessclaimdc6602.src.lib import utils
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Capoten"}],
-                    "conditions": []
+                    "medications": [
+                        {
+                            "description": "Capoten",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
             True,
-            {}
+            {},
         ),
         (
             {
                 "evidence": {
-                    "medications": [{"description": 123}],
-                    "conditions": []
+                    "medications": [
+                        {
+                            "description": 123,
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": 20211109
+                "date_of_claim": 20211109,
             },
             False,
             {
-                "evidence":[{
-                    "medications": [
-                     {0: [{'description': ['must be of string type']}]}
-                ]}],
+                "evidence": [
+                    {
+                        "medications": [
+                            {0: [{"description": ["must be of string type"]}]}
+                        ]
+                    }
+                ],
                 "date_of_claim": ["must be of string type"],
-            }
+            },
         ),
     ],
 )

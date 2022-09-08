@@ -1,11 +1,9 @@
-import json
 from typing import Dict
 import logging
 
 from . import utils
-from . import bp_history
 from . import continuous_medication
-from . import predominant_bp
+from . import bp_filter
 
 
 def assess_hypertension(event: Dict):
@@ -22,29 +20,24 @@ def assess_hypertension(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event)
-        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event)
-        relevant_medication = continuous_medication.continuous_medication_required(event)
+        relevant_medication = continuous_medication.continuous_medication_required(
+            event
+        )
+        valid_bp_readings = bp_filter.bp_recency(event)
 
     else:
-        predominance_calculation = {"success": False}
-        diastolic_history_calculation = {"success": False}
         relevant_medication = []
-        event["evidence"]["bp_readings"] = []
+        valid_bp_readings = []
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
     response_body.update(
         {
-            "status": "COMPLETE",
             "evidence": {
-            "medications": relevant_medication,
-            "bp_readings": event["evidence"]["bp_readings"]
-            },
-        "calculated": {
-            "predominance_calculation": predominance_calculation,
-            "diastolic_history_calculation": diastolic_history_calculation,
-    }
-    })
+                "medications": relevant_medication,
+                "bp_readings": valid_bp_readings,
+            }
+        }
+    )
 
     return response_body
