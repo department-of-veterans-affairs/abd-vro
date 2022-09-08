@@ -98,8 +98,8 @@ task integrationTest(type: Test) {
 }
 
 docker {
-    files "build/libs/service-data-access-0.0.1-SNAPSHOT.jar", "bin/entrypoint.sh"
-    buildArgs([JAR_FILE: "service-data-access-0.0.1-SNAPSHOT.jar", ENTRYPOINT_FILE: "entrypoint.sh"])
+    files "build/libs/service-data-access-${project.version}.jar", "bin/entrypoint.sh"
+    buildArgs([JAR_FILE: "service-data-access-${project.version}.jar", ENTRYPOINT_FILE: "entrypoint.sh"])
 }
 
 bootJar {
