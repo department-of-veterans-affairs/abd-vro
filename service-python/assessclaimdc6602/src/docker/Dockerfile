@@ -6,12 +6,12 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN adduser --disabled-password python
-USER python
+RUN adduser --disabled-password docker
+USER docker
 
-WORKDIR /home/python
+WORKDIR /home/docker
 
-COPY --chown=python:python . /home/python/
+COPY --chown=docker:docker . /home/docker/
 
 RUN pip install --no-cache-dir --user -r requirements.txt
 

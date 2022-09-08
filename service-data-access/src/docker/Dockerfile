@@ -6,4 +6,5 @@ WORKDIR /project
 COPY ${ENTRYPOINT_FILE} entrypoint.sh
 RUN chmod +x entrypoint.sh
 COPY ${JAR_FILE} service-data-access.jar
+RUN adduser -m docker
 CMD ["sh", "entrypoint.sh"]
