@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,22 +52,24 @@ class FhirClientTest {
     private static final int DEFAULT_SIZE = 30;
 
     @Spy
-    private FhirClient client = new FhirClient();
+    private final FhirClient client = new FhirClient();
 
     private IParser parser;
     private Bundle medicationBundle, bpBundle;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         FhirContext fhirContext = FhirContext.forR4();
         EncodingEnum respType = EncodingEnum.forContentType(CONTENT_TYPE);
         parser = respType.newParser(fhirContext);
 
-        String testfile = getClass().getClassLoader().getResource(MEDICATION_REQUEST_RESPONSE).getPath();
-        medicationBundle = getBundle(testfile);
+        String testfile = Objects.requireNonNull(getClass().getClassLoader()
+                .getResource(MEDICATION_REQUEST_RESPONSE)).getPath();
+        medicationBundle = getMedicalInfoBundle(testfile);
 
-        testfile = getClass().getClassLoader().getResource(OBSERVATION_RESPONSE).getPath();
-        bpBundle = getBundle(testfile);
+        testfile = Objects.requireNonNull(getClass().getClassLoader()
+                .getResource(OBSERVATION_RESPONSE)).getPath();
+        bpBundle = getMedicalInfoBundle(testfile);
     }
 
     private void mockGetBundle(Bundle bundle, AbdDomain domain) throws AbdException {
@@ -92,7 +95,7 @@ class FhirClientTest {
         testClaim.setVeteranIcn(TEST_PATIENT);
         try {
             mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
-            mockGetBundle(new Bundle(), AbdDomain.CONDITION);
+            //mockGetBundle(new Bundle(), AbdDomain.CONDITION);
             AbdEvidence evidence = client.getMedicalEvidence(testClaim);
             assertNotNull(evidence);
             assertTrue(evidence.getMedications().size() > 0);
@@ -128,13 +131,15 @@ class FhirClientTest {
     public void testGetAbdEvidence() {
         Map<AbdDomain, List<Bundle.BundleEntryComponent>> domainBundles = new HashMap<>();
         try {
-            String testfile = getClass().getClassLoader().getResource(MEDICATION_REQUEST_RESPONSE).getPath();
-            Bundle bundle = getBundle(testfile);
+            String testfile = Objects.requireNonNull(getClass().getClassLoader()
+                    .getResource(MEDICATION_REQUEST_RESPONSE)).getPath();
+            Bundle bundle = getMedicalInfoBundle(testfile);
             assertNotNull(bundle);
             domainBundles.put(AbdDomain.MEDICATION, bundle.getEntry());
 
-            testfile = getClass().getClassLoader().getResource(OBSERVATION_RESPONSE).getPath();
-            bundle = getBundle(testfile);
+            testfile = Objects.requireNonNull(getClass().getClassLoader()
+                    .getResource(OBSERVATION_RESPONSE)).getPath();
+            bundle = getMedicalInfoBundle(testfile);
             assertNotNull(bundle);
             domainBundles.put(AbdDomain.BLOOD_PRESSURE, bundle.getEntry());
 
@@ -150,7 +155,7 @@ class FhirClientTest {
         }
     }
 
-    private Bundle getBundle(String filename) {
+    private Bundle getMedicalInfoBundle(String filename) {
         try {
             File initialFile = new File(filename);
             InputStream theResponseInputStream = new FileInputStream(initialFile);

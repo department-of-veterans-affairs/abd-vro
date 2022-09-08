@@ -9,6 +9,8 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -67,7 +69,9 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
               "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
           new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "6602", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}));
+              "6602", new AbdDomain[] {
+                  AbdDomain.MEDICATION
+              }));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -96,7 +100,7 @@ public class FhirClient {
               }));
 
   public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
-      throws AbdException {
+          throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
     String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
     String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);

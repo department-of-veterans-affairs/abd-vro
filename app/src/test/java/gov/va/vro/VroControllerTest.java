@@ -63,7 +63,8 @@ class VroControllerTest extends BaseIntegrationTest {
   @DirtiesContext
   void postHealthAssessment() throws Exception {
 
-    // intercept the original endpoint, skip it and replace it with the mock endpoint
+    // intercept the original endpoint, skip it and replace it with the mock
+    // endpoint
     adviceWith(
         camelContext,
         "claim-submit",
@@ -140,7 +141,8 @@ class VroControllerTest extends BaseIntegrationTest {
   @DirtiesContext
   void postFullHealthAssessment() throws Exception {
 
-    // intercept the original endpoint, skip it and replace it with the mock endpoint
+    // intercept the original endpoint, skip it and replace it with the mock
+    // endpoint
     adviceWith(
         camelContext,
         "claim-submit",
@@ -278,7 +280,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .to("mock:fetch-pdf"));
     mockFetchPdfEndpoint.expectedMessageCount(1);
 
-    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", null);
+    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null);
 
     mockFetchPdfEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.fromFunction(

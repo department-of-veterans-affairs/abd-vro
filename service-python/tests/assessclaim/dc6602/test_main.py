@@ -8,42 +8,82 @@ from assessclaimdc6602.src.lib import main
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Prednisone"}],
-                    "conditions": []
+                    "medications": [
+                        {
+                            "description": "Prednisone",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {"medications": [{"description": "Prednisone"}], "conditions": []},
-            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "description": "Prednisone",
+                            "status": "active",
+                            "asthma_relevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
+                }
+            },
         ),
-
         # demonstrates ability to match substrings in medication["text"] property
         (
             {
                 "evidence": {
-                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
-                    "conditions": [ {"code": "15777000", "text": "Prediabetes"}]
+                    "medications": [
+                        {
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {
-                "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
-                "conditions": []
-                },
-             "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
+                            "asthma_relevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
+                }
+            },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
             {
                 "evidence": {
-                    "medications": [{"description" : "Advil"}],
-                    "conditions": [{"text": "Eosinophilic asthma","code": "J82.83"}]
+                    "medications": [
+                        {
+                            "description": "Advil",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {"medications": [],
-            "conditions": [{"text": "Eosinophilic asthma", "code": "J82.83"}]},
-            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": True, "success": True}}}
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "description": "Advil",
+                            "status": "active",
+                            "asthma_relevant": "false",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
+                }
+            },
         ),
     ],
 )
