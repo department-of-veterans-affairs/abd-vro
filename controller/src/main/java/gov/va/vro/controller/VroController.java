@@ -53,8 +53,8 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
 
-      HealthDataAssessmentResponse response =
-          objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
+      HealthDataAssessmentResponse response = objectMapper.readValue(responseAsString,
+          HealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
@@ -102,11 +102,6 @@ public class VroController implements VroResource {
       FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
       log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
       if (pdfResponse.hasContent()) {
-        if (pdfResponse.getStatus() == "NOT_FOUND") {
-          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
-        } else if (pdfResponse.getStatus() == "ERROR") {
-          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
         byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
         try (InputStream is = new ByteArrayInputStream(decoder)) {
           InputStreamResource resource = new InputStreamResource(is);
@@ -115,18 +110,22 @@ public class VroController implements VroResource {
 
           String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
           String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-          ContentDisposition disposition =
-              ContentDisposition.attachment()
-                  .filename(
-                      String.format(
-                          "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
-                  .build();
+          ContentDisposition disposition = ContentDisposition.attachment()
+              .filename(
+                  String.format(
+                      "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+              .build();
 
           headers.setContentDisposition(disposition);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
 
       } else {
+        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus().equals("ERROR")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
       }
     } catch (Exception ex) {
@@ -147,8 +146,8 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
 
-      FullHealthDataAssessmentResponse response =
-          objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
+      FullHealthDataAssessmentResponse response = objectMapper.readValue(responseAsString,
+          FullHealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
@@ -172,8 +171,7 @@ public class VroController implements VroResource {
     try {
 
       List<Claim> claimList = fetchClaimsService.fetchClaims();
-      List<ClaimInfo> claims =
-          claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
+      List<ClaimInfo> claims = claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
       FetchClaimsResponse response = new FetchClaimsResponse(claims, "Success");
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
