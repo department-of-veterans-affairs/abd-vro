@@ -10,6 +10,7 @@ public class FetchPdfResponse {
 
   @NotBlank private String claimSubmissionId;
   private String status;
+  private String diagnosis;
   private String pdfData;
 
   public boolean hasContent() {

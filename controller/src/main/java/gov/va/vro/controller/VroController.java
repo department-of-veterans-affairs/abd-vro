@@ -16,6 +16,7 @@ import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VroController implements VroResource {
 
-  public static final String PDF_FILENAME = "textdown.pdf";
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
@@ -107,8 +108,15 @@ public class VroController implements VroResource {
           HttpHeaders headers = new HttpHeaders();
           headers.setContentType(MediaType.APPLICATION_PDF);
 
+          String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+          String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
           ContentDisposition disposition =
-              ContentDisposition.attachment().filename(PDF_FILENAME).build();
+              ContentDisposition.attachment()
+                  .filename(
+                      String.format(
+                          "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+                  .build();
+
           headers.setContentDisposition(disposition);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }

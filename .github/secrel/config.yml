@@ -16,10 +16,13 @@ snyk:
 
 # Remove image block if you're not building Docker images
 images:
-- name: vro
+- name: vro-fat-jar
   path: "./Dockerfile"
   args:
     -  GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+- name: vro-app
+  context: "./app/src/main/resources"
+  path: "./app/src/docker/Dockerfile"
 - name: vro-init-db
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
