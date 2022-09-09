@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Used by ClaimProcessorRoute to dynamically route claim to endpoints depending on claim
- * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html
+ * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html.
  */
 @Slf4j
 @Component
@@ -33,7 +33,8 @@ public class SlipClaimSubmitRouter {
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
         String.format(
-            "rabbitmq:claim-submit-exchange?queue=claim-submit&routingKey=code.%s&requestTimeout=%d",
+            "rabbitmq:claim-submit-exchange?queue=claim-submit&"
+                + "routingKey=code.%s&requestTimeout=%d",
             diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;

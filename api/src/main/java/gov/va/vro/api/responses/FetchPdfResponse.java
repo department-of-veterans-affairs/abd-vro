@@ -1,6 +1,7 @@
 package gov.va.vro.api.responses;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
