@@ -71,6 +71,26 @@ repositories {
 
 afterEvaluate {
     tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
+
+    tasks.named('forkedSpringBootRun').configure {
+        dependsOn 'bootStartScripts'
+        dependsOn ':app:checkstyleGatling'
+        dependsOn 'checkstyleIntegrationTest'
+        dependsOn 'checkstyleMain'
+        dependsOn 'checkstyleTest'
+        dependsOn 'compileGatlingJava'
+        dependsOn 'compileGatlingScala'
+        dependsOn 'compileIntegrationTestJava'
+        dependsOn 'dockerfileZip'
+        dependsOn 'integrationTest'
+        dependsOn 'jar'
+        dependsOn 'spotlessJava'
+        dependsOn 'startScripts'
+        dependsOn 'test'
+
+        dependsOn 'jacocoTestReport'
+        dependsOn 'jacocoTestCoverageVerification'
+    }
 }
 
 tasks.named('lintDockerfile').configure {
