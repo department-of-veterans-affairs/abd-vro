@@ -3,6 +3,7 @@ ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 WORKDIR /project
 COPY ${ENTRYPOINT_FILE} entrypoint.sh
+RUN chmod 777 /project/build/tomcat
 RUN chmod +x entrypoint.sh
 COPY ${JAR_FILE} starter-java.jar
 EXPOSE 8081
