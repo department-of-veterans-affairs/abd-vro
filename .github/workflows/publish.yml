@@ -54,16 +54,28 @@ jobs:
           # Tag dev images for non-prod testing
           docker tag va/abd_vro-app \
             "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-app \
+            "ghcr.io/${{ github.repository }}/dev_vro-app:latest"
           docker tag va/abd_vro-db-init \
             "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-app \
+            "ghcr.io/${{ github.repository }}/dev_vro-init-db:latest"
           docker tag va/abd_vro-assessclaimdc7101 \
             "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:latest"
           docker tag va/abd_vro-assessclaimdc6602 \
             "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:latest"
           docker tag va/abd_vro-pdfgenerator \
             "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:latest"
           docker tag va/abd_vro-service-data-access \
             "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-service-data-access \
+            "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:latest"
 
       - name: Push images
         run: |
