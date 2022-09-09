@@ -62,9 +62,14 @@ spec:
                   key: {{ .Values.postgres.passwordKey }}
             - name: FLYWAY_URL
               value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
       containers:
-        - name: {{ .Values.name }}
+        - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
@@ -95,13 +100,33 @@ spec:
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: {{- toYaml .Values.resources.api | nindent 12 }}
+          resources: 
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
         - name: {{ .Values.name }}-assessclaimdc7101
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
-          imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
         - name: {{ .Values.name }}-assessclaimdc6602
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC6602.imageName }}:{{ .Values.images.assessClaimDC6602.tag }}
-          imagePullPolicy: {{ .Values.images.assessClaimDC6602.imagePullPolicy }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
         - name: {{ .Values.name }}-pdfgenerator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
@@ -118,6 +143,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.serviceAssessClaimDC6602 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.servicePythonPdfGenerator | nindent 12 }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
