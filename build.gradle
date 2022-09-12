@@ -57,6 +57,7 @@ ext {
                    ':persistence:model',
                    ':service:provider',
                    ':service:spi',
+                   ':service-data-access',
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
