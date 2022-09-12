@@ -7,7 +7,11 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.*;
+import gov.va.vro.api.responses.FetchClaimsResponse;
+import gov.va.vro.api.responses.FetchPdfResponse;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
+import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -18,7 +22,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.*;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
@@ -122,6 +130,11 @@ public class VroController implements VroResource {
         }
 
       } else {
+        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus().equals("ERROR")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
       }
     } catch (Exception ex) {

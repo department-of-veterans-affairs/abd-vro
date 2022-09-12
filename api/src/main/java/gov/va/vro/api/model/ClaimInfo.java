@@ -1,6 +1,11 @@
 package gov.va.vro.api.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -9,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString(includeFieldNames = true)
+@ToString
 public class ClaimInfo {
   private String claimSubmissionId;
   private String veteranIcn;

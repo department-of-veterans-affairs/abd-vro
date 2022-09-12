@@ -19,8 +19,6 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
 
-    var claim = TestDataSupplier.createClaim("123", "type", veteran);
-
     ContentionEntity contention1 = new ContentionEntity("c1");
     contention1.addAssessmentResult(2);
     contention1.addEvidenceSummaryDocument("doc1", 1);
@@ -28,6 +26,7 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     ContentionEntity contention2 = new ContentionEntity("c2");
     contention2.addAssessmentResult(1);
     contention2.addAssessmentResult(2);
+    var claim = TestDataSupplier.createClaim("123", "type", veteran);
     claim.addContention(contention1);
     claim.addContention(contention2);
 
