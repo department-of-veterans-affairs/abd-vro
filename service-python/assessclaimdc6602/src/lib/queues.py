@@ -14,7 +14,6 @@ def on_request_callback(channel, method, properties, body):
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message: {properties.correlation_id}")
-
     try:
         response = main.assess_asthma(message)
     except:
@@ -44,3 +43,4 @@ def queue_setup(channel):
     logging.info(
         f" [*] Waiting for data for queue: {SERVICE_QUEUE}. To exit press CTRL+C"
     )
+
