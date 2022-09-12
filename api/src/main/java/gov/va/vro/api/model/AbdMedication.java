@@ -2,6 +2,7 @@ package gov.va.vro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,10 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private int refills;
   private Boolean asthma_relevant;
   private String duration;
+
+  @Schema(example = "1950-04-05T23:00:00Z")
   private String authoredOn;
+
   private List<String> dosageInstructions;
   private String route;
 
