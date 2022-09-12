@@ -52,8 +52,8 @@ def on_fetch_callback(channel, method, properties, body):
 						logging.info("Fetched PDF")
 						response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "diagnosis": str(diagnosis_name.decode("ascii")), "pdfData": str(pdf.decode("ascii"))}
 				else:
-						logging.info(f"PDF still generating")
-						response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS", "diagnosis": "", "pdfData": ""}
+						logging.info(f"Claim ID not found")
+						response = {"claimSubmissionId": claim_id, "status": "NOT_FOUND", "diagnosis": "", "pdfData": ""}
 		except Exception as e:
 				logging.error(e, exc_info=True)
 				response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": ""}

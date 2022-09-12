@@ -7,7 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -20,6 +21,12 @@ public interface ClaimMapper {
   @Mapping(target = "veteranIcn", source = "veteran.icn")
   Claim toClaim(ClaimEntity claimEntity);
 
+  /***
+   * <p>Maps list of contention entities to a set of strings.</p>
+   *
+   * @param contentionEntities contention entities
+   * @return return set of strings
+   */
   default Set<String> toContentionSet(List<ContentionEntity> contentionEntities) {
     return contentionEntities.stream()
         .map(ContentionEntity::getDiagnosticCode)
