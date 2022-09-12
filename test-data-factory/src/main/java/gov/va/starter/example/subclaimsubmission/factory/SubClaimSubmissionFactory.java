@@ -6,6 +6,9 @@ import gov.va.starter.example.subclaimsubmission.model.SubClaimSubmissionData;
 import java.util.Arrays;
 
 public class SubClaimSubmissionFactory extends NamedDataFactory<SubClaimSubmissionData> {
+  /***
+   * <p>Sub claim submission factory.</p>
+   */
   public SubClaimSubmissionFactory() {
     data.put(
         DEFAULT_SPEC,

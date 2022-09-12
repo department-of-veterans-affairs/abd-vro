@@ -1,7 +1,12 @@
 package gov.va.vro.api.responses;
 
 import gov.va.vro.api.model.ClaimInfo;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
