@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-/** Defines primary routes */
+/** Defines primary routes. */
 @Slf4j
 @Component
 @RequiredArgsConstructor

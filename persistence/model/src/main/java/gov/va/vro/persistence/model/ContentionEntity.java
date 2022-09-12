@@ -6,7 +6,12 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -34,10 +39,24 @@ public class ContentionEntity extends BaseEntity {
       orphanRemoval = true)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
+  /***
+   * <p>Summary.</p>
+   *
+   *
+   * @param diagnosticCode diagnostic code
+   *
+   */
   public ContentionEntity(String diagnosticCode) {
     this.diagnosticCode = diagnosticCode;
   }
 
+  /***
+   * <p>Summary.</p>
+   *
+   * @param evidenceCount evidence count
+   *
+   * @return return value
+   */
   public AssessmentResultEntity addAssessmentResult(int evidenceCount) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
     assessmentResult.setEvidenceCount(evidenceCount);
@@ -46,6 +65,15 @@ public class ContentionEntity extends BaseEntity {
     return assessmentResult;
   }
 
+  /***
+   * <p>Summary.</p>
+   *
+   * @param documentName document name
+   *
+   * @param evidenceCount evidence count
+   *
+   * @return return value
+   */
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
       String documentName, int evidenceCount) {
     EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();

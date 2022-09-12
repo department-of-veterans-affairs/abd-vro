@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AbdBPMeasurement {
+public class AbdBpMeasurement {
   private String code;
   private String display;
   private String unit;

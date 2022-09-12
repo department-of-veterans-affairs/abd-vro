@@ -26,6 +26,12 @@ public class CamelDtoConverter extends TypeConverterSupport {
   private final ObjectWriter writer;
   private final ObjectReader reader;
 
+  /***
+   * <p>Summary.</p>
+   *
+   * @param dtoClasses DTO Classes
+   * @param mapper mapper
+   */
   public CamelDtoConverter(Collection<Class> dtoClasses, ObjectMapper mapper) {
     this.dtoClasses = dtoClasses;
     this.writer = mapper.writer();
@@ -40,8 +46,12 @@ public class CamelDtoConverter extends TypeConverterSupport {
     try {
       log.info("class: {}, targetClass: {}", value.getClass(), targetClass);
       if (dtoClasses.contains(value.getClass())) {
-        if (targetClass == byte[].class) return (T) toByteArray(value);
-        if (targetClass == InputStream.class) return (T) toInputStream(value);
+        if (targetClass == byte[].class) {
+          return (T) toByteArray(value);
+        }
+        if (targetClass == InputStream.class) {
+          return (T) toInputStream(value);
+        }
       } else if (value.getClass() == byte[].class) {
         return toPojo(targetClass, (byte[]) value);
       }

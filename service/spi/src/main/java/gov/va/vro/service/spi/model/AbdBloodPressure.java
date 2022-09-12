@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
   private String date;
-  private AbdBPMeasurement diastolic;
-  private AbdBPMeasurement systolic;
+  private AbdBpMeasurement diastolic;
+  private AbdBpMeasurement systolic;
   private String practitioner;
   private String organization;
 
