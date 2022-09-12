@@ -15,8 +15,8 @@ import java.util.function.Function;
  * <p>With FunctionProcessor you can use the real method calls, so it will be refactored along with
  * everything else.
  *
- * @param <I>
- * @param <O>
+ * @param <I> I
+ * @param <O> O
  */
 @RequiredArgsConstructor
 public class FunctionProcessor<I, O> implements Processor {

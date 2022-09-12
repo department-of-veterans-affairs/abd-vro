@@ -3,7 +3,11 @@ package gov.va.vro.api.requests;
 import gov.va.vro.api.model.AbdEvidence;
 import gov.va.vro.api.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
