@@ -122,6 +122,11 @@ public class VroController implements VroResource {
         }
 
       } else {
+        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus().equals("ERROR")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
       }
     } catch (Exception ex) {
