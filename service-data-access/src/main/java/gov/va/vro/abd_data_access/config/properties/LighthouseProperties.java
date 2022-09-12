@@ -15,4 +15,5 @@ public class LighthouseProperties {
   private String assertionurl;
   private String tokenurl;
   private String fhirurl;
+  private String pemkey;
 }
