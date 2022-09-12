@@ -46,12 +46,12 @@ def medication_required(request_body):
             medication_display = medication["description"]
             for keyword in [x.lower() for x in asthma_medications]:
                 if keyword in medication_display.lower():
-                    medication["asthma_relevant"] = "true"
+                    medication["asthmaRelevant"] = "true"
                     relevant_medications.append(medication)
                     flagged = True
                     break
             if not flagged:
-                medication["asthma_relevant"] = "false"
+                medication["asthmaRelevant"] = "false"
                 other_medications.append(medication)
 
     relevant_medications = sorted(

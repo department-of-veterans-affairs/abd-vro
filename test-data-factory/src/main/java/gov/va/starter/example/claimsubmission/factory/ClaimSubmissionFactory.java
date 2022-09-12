@@ -6,6 +6,9 @@ import gov.va.starter.example.claimsubmission.model.ClaimSubmissionData;
 import java.util.Arrays;
 
 public class ClaimSubmissionFactory extends NamedDataFactory<ClaimSubmissionData> {
+  /***
+   * <p>Claim submission factory.</p>
+   */
   public ClaimSubmissionFactory() {
     data.put(
         DEFAULT_SPEC,

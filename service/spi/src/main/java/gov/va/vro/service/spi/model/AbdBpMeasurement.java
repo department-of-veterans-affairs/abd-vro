@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class AbdBPMeasurement {
+public class AbdBpMeasurement {
   private String code;
   private String display;
   private String unit;

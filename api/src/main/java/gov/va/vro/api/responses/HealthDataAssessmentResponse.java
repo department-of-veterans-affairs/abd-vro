@@ -29,6 +29,15 @@ public class HealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
 
+  /***
+   *<p>Summary.</p>
+   *
+   *@param veteranIcn veteran ICN number
+   *
+   *@param diagnosticCode diagnostic code
+   *
+   *@param errorMessage error message
+   */
   public HealthDataAssessmentResponse(
       String veteranIcn, String diagnosticCode, String errorMessage) {
     this.veteranIcn = veteranIcn;

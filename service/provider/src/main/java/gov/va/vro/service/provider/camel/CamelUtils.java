@@ -16,12 +16,26 @@ import java.util.stream.Collectors;
 public class CamelUtils {
   private final CamelContext camelContext;
 
+  /***
+   * <p>Endpoints To String.</p>
+   *
+   * @param delimiter delimiter
+   *
+   * @return return value
+   */
   public String endpointsToString(String delimiter) {
     return camelContext.getEndpoints().stream()
         .map(endpoint -> endpointToString(endpoint))
         .collect(Collectors.joining(delimiter));
   }
 
+  /***
+   * <p>Endpoint To String.</p>
+   *
+   * @param endpoint endpoint
+   *
+   * @return return
+   */
   public String endpointToString(Endpoint endpoint) {
     String[] configs;
 
@@ -42,6 +56,13 @@ public class CamelUtils {
     return endpoint.getEndpointBaseUri() + " -- " + String.join(", ", configs);
   }
 
+  /***
+   * <p>Async Seda Endpoint.</p>
+   *
+   * @param name name
+   *
+   * @return return
+   */
   public SedaEndpoint asyncSedaEndpoint(String name) {
     String sedaName = sedaEndpointName(name);
     SedaEndpoint endpoint = camelContext.getEndpoint(sedaName, SedaEndpoint.class);
@@ -49,6 +70,13 @@ public class CamelUtils {
     return endpoint;
   }
 
+  /***
+   * <p>Multi-Consumer Seda Endpoint.</p>
+   *
+   * @param name name
+   *
+   * @return return
+   */
   public SedaEndpoint multiConsumerSedaEndpoint(String name) {
     String sedaName = sedaEndpointName(name);
     SedaEndpoint endpoint = camelContext.getEndpoint(sedaName, SedaEndpoint.class);
@@ -56,8 +84,17 @@ public class CamelUtils {
     return endpoint;
   }
 
+  /***
+   * <p>Seda endpoint name.</p>
+   *
+   * @param name name
+   *
+   * @return return
+   */
   private String sedaEndpointName(String name) {
-    if (name.startsWith("seda:")) return name;
+    if (name.startsWith("seda:")) {
+      return name;
+    }
     return "seda:" + name;
   }
 }

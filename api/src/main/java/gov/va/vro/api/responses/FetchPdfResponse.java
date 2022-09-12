@@ -1,7 +1,8 @@
 package gov.va.vro.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
