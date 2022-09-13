@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,7 +37,7 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -61,7 +60,7 @@ spec:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
             - name: FLYWAY_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
             - name: POSTGRES_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -79,7 +78,7 @@ spec:
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -91,11 +90,17 @@ spec:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
             - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: $(SPRING_DATASOURCE_URL)
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
             - name: SPRING_DATASOURCE_HIKARI_USERNAME
-              value: $(SPRING_DATASOURCE_USERNAME)
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
             - name: SPRING_DATASOURCE_HIKARI_PASSWORD
-              value: $(SPRING_DATASOURCE_PASSWORD)
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
@@ -110,6 +115,19 @@ spec:
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbitmq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
           resources:
             requests:
               cpu: 150m
@@ -120,6 +138,19 @@ spec:
         - name: {{ .Values.name }}-assessclaimdc6602
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbitmq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
           resources:
             requests:
               cpu: 150m
@@ -132,7 +163,7 @@ spec:
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
-              value: {{ .Chart.Name }}-rabbitmq
+              value: {{ .Chart.Name }}-rabbitmq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -143,6 +174,54 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+        - name: {{ .Values.name }}-service-data-access
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceDataAccess.imageName }}:{{ .Values.images.serviceDataAccess.tag }}
+          imagePullPolicy: {{ .Values.images.serviceDataAccess.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbitmq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+            - name: LH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhPrivateKey }}
+            - name: LH_ACCESS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhAccessClientId }}
+            - name: LH_ASSERTION_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhAssertionUrl }}
+            - name: LH_TOKEN_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhTokenUrl }}
+            - name: LH_FHIR_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhFhirUrl }}
           resources:
             requests:
               cpu: 150m
