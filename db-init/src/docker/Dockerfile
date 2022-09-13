@@ -4,7 +4,7 @@ COPY database /flyway/sql
 COPY flyway.conf /flyway/conf
 HEALTHCHECK NONE
 
-RUN useradd --no-create-home someuser
-USER someuser
+RUN useradd --no-create-home docker
+USER docker
 
 CMD [ "migrate", "-X" ]
