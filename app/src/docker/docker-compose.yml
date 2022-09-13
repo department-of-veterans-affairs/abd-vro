@@ -40,6 +40,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    restart: on-failure:5
 
   redis1:
     image: redis
@@ -50,6 +51,7 @@ services:
       - internal
     ports:
       - "6379:6379"
+    restart: on-failure:5
 
   postgres1:
     image: postgres
@@ -68,6 +70,7 @@ services:
       - external
     ports:
       - "5432:5432"
+    restart: on-failure:5
 
   db-init:
     image: va/abd_vro-db-init:latest
@@ -75,6 +78,7 @@ services:
       - postgres1
     networks:
       - internal
+    restart: on-failure:5
 
   # opa-init:
   #   image: va/abd_vro-opa-init:latest
@@ -112,6 +116,7 @@ services:
     networks:
       - internal
       - external
+    restart: on-failure:5
 
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
@@ -126,6 +131,7 @@ services:
         condition: service_healthy
     networks:
       - internal
+    restart: on-failure:5
 
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
@@ -140,6 +146,7 @@ services:
         condition: service_healthy
     networks:
       - internal
+    restart: on-failure:5
 
   pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
@@ -157,6 +164,7 @@ services:
         condition: service_healthy
     networks:
       - internal
+    restart: on-failure:5
 
   service-data-access:
     image: va/abd_vro-service-data-access:latest
@@ -175,6 +183,7 @@ services:
         condition: service_healthy
     networks:
       - internal
+    restart: on-failure:5
 
 #   jaeger:
 #     image: jaegertracing/all-in-one:1.20
