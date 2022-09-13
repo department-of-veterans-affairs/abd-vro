@@ -15,6 +15,12 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+  redis:
+    global: &labels-redis-global
+      app: redis-cache
+    pod:
+      <<: *labels-redis-global
+      sidecar.istio.io/inject: "false"
   mq:
     global: &labels-mq-global
       app: rabbit-mq
@@ -27,6 +33,10 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
+  redis:
+    imageName: redis
+    tag: latest
+    imagePullPolicy: Always
   db:
     imageName: vro-postgres
     tag: latest
@@ -35,23 +45,27 @@ images:
     tag: 3
   app:
     imageName: dev_vro-app
-    tag: latest
+    tag: 3dce562
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-init-db
-    tag: latest
+    tag: 3dce562
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: latest
+    tag: 3dce562
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: latest
+    tag: 3dce562
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: latest
+    tag: 3dce562
+    imagePullPolicy: Always
+  serviceDataAccess:
+    imageName: dev_vro-service-data-access
+    tag: 3dce562
     imagePullPolicy: Always
     
 resources:
@@ -73,6 +87,10 @@ resources:
     limits:
       cpu: 10m
       memory: 256Mi
+  redis:
+    limits:
+      cpu: 10m
+      memory: 256Mi
   mq:
     limits:
       cpu: 10m
@@ -87,6 +105,10 @@ service:
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
+  redis:
+    type: ClusterIP
+    sourcePort: 6379
+    targetPort: 6379
   mq:
     type: ClusterIP
     sourcePort: 5672
@@ -130,8 +152,8 @@ readinessProbe:
 postgres:
   dbName: example
   secretName: postgres
-  usernameKey: username
-  passwordKey: password
+  usernameKey: User
+  passwordKey: Pass
   rootUsernameKey: root-username
   rootPasswordKey: root-password
   usernameValue: someuser
@@ -139,7 +161,14 @@ postgres:
 
 rabbitmq:
   secretName: rabbitmq
-  usernameKey: username
-  passwordKey: password
+  usernameKey: User
+  passwordKey: Pass
   usernameValue: guest
   passwordValue: guest
+
+dataservice:
+  lhTokenUrl: lhTokenUrl
+  lhFhirUrl: lhFhirUrl
+  lhPrivateKey: lhPrivateKey
+  lhAssertionUrl: lhAssertionUrl
+  lhAccessClientId: lhAccessClientId

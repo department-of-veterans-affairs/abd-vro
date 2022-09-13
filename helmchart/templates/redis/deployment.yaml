@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-rabbit-mq
-  labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+  name: {{ .Chart.Name }}-redis
+  labels: {{- toYaml .Values.labels.redis.global | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.mq.global | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels.redis.global | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
+      labels: {{- toYaml .Values.labels.redis.pod | nindent 8 }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
       containers:
-        - name: rabbit-mq
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
+        - name: redis-cache
+          image: redis
           env:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
