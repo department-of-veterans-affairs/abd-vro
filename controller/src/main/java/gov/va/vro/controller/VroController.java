@@ -7,16 +7,13 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.FetchClaimsResponse;
-import gov.va.vro.api.responses.FetchPdfResponse;
-import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
-import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.api.responses.*;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.services.ClaimMetricsService;
 import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +43,8 @@ public class VroController implements VroResource {
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   private final FetchClaimsService fetchClaimsService;
+
+  private final ClaimMetricsService claimMetricsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -198,5 +197,20 @@ public class VroController implements VroResource {
     info.setVeteranIcn(claim.getVeteranIcn());
     info.setContentions(claim.getContentions().stream().toList());
     return info;
+  }
+
+  @Override
+  public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
+    ClaimMetricsResponse response = new ClaimMetricsResponse();
+    try {
+      Integer total = claimMetricsService.claimMetrics();
+      response.setNumberOfClaims(total);
+      response.setStatusMessage("Success");
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      response.setStatusMessage("Failure: " + e.getCause());
+      log.error("Could noe get claim metrics. ", e);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

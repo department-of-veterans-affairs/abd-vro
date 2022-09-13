@@ -4,10 +4,7 @@ import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.FetchClaimsResponse;
-import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
-import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.api.responses.*;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -122,5 +119,14 @@ public interface VroResource {
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
   ResponseEntity<FetchClaimsResponse> fetchClaims()
+      throws RequestValidationException, ClaimProcessingException;
+
+  @Operation(
+      summary = "Retrieves metrics on claims stored in abd-vro database",
+      description = "Returns number of claims in abd-vro databse")
+  @GetMapping("/claimMetrics")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "claimMetrics")
+  ResponseEntity<ClaimMetricsResponse> claimMetrics()
       throws RequestValidationException, ClaimProcessingException;
 }
