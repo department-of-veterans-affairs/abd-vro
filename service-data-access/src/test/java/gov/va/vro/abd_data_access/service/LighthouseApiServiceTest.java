@@ -12,14 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,24 +53,23 @@ class LighthouseApiServiceTest {
     @Mock
     private LighthouseProperties lhProps;
 
-    @Mock
-    private Resource privatePem;
-
     private LighthouseTokenMessage testToken;
 
     private void setupMocking() {
-        Mockito.doReturn(ASSERTIONURL)
-                .when(lhProps).getAssertionurl();
-        Mockito.doReturn(TOKENURL)
-                .when(lhProps).getTokenurl();
-        Mockito.doReturn(CLIENTID)
-                .when(lhProps).getClientId();
 
         try {
             String filename = Objects.requireNonNull(getClass().getClassLoader().getResource(TEST_KEY_FILE)).getPath();
             File keyfile = new File(filename);
-            Mockito.doReturn(new FileInputStream(keyfile))
-                    .when(privatePem).getInputStream();
+            String key = Files.readString(keyfile.toPath());
+
+            Mockito.doReturn(ASSERTIONURL)
+                    .when(lhProps).getAssertionurl();
+            Mockito.doReturn(TOKENURL)
+                    .when(lhProps).getTokenurl();
+            Mockito.doReturn(CLIENTID)
+                    .when(lhProps).getClientId();
+            Mockito.doReturn(key)
+                    .when(lhProps).getPemkey();
 
             filename = Objects.requireNonNull(getClass().getClassLoader().getResource(TEST_TOKEN)).getPath();
             Path tokenFilePath = Path.of(filename);
