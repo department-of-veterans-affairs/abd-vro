@@ -156,15 +156,11 @@ postgres:
   passwordKey: Pass
   rootUsernameKey: root-username
   rootPasswordKey: root-password
-  usernameValue: someuser
-  passwordValue: somepass
 
 rabbitmq:
   secretName: rabbitmq
   usernameKey: User
   passwordKey: Pass
-  usernameValue: guest
-  passwordValue: guest
 
 dataservice:
   lhTokenUrl: lhTokenUrl
