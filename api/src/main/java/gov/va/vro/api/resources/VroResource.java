@@ -2,9 +2,14 @@ package gov.va.vro.api.resources;
 
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.*;
+import gov.va.vro.api.responses.ClaimMetricsResponse;
+import gov.va.vro.api.responses.FetchClaimsResponse;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
+import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -118,15 +123,17 @@ public interface VroResource {
   @GetMapping("/fetch-claims")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
+  @Tag(name = "Fetch Claims")
   ResponseEntity<FetchClaimsResponse> fetchClaims()
       throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Retrieves metrics on claims stored in abd-vro database",
       description = "Returns number of claims in abd-vro databse")
-  @GetMapping("/claimMetrics")
+  @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claimMetrics")
+  @Timed(value = "claim-metrics")
+  @Tag(name = "Claim Metrics")
   ResponseEntity<ClaimMetricsResponse> claimMetrics()
-      throws RequestValidationException, ClaimProcessingException;
+      throws RequestValidationException, ClaimProcessingException, MetricsProcessingException;
 }
