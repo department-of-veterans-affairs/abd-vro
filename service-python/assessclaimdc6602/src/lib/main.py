@@ -23,7 +23,7 @@ def assess_asthma(event: Dict):
         active_conditions = condition.conditions_calculation(event)
     else:
         active_medications = []
-        active_conditions = {"conditions": []}
+        active_conditions = []
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
@@ -31,7 +31,7 @@ def assess_asthma(event: Dict):
         {
             "evidence": {
                 "medications": active_medications,
-                "conditions": active_conditions["conditions"],
+                "conditions": active_conditions,
             }
         }
     )
