@@ -4,10 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.*;
+import gov.va.vro.api.responses.ClaimMetricsResponse;
+import gov.va.vro.api.responses.FetchClaimsResponse;
+import gov.va.vro.api.responses.FetchPdfResponse;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
+import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -200,17 +206,20 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
+  public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     try {
-      Integer total = claimMetricsService.claimMetrics();
-      response.setNumberOfClaims(total);
-      response.setStatusMessage("Success");
+      response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
+      if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      }
       return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
     } catch (Exception e) {
-      response.setStatusMessage("Failure: " + e.getCause());
-      log.error("Could noe get claim metrics. ", e);
-      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      log.error("Error in claim metrics services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 }
