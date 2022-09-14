@@ -2,11 +2,11 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres1:5432/vro
+    url: jdbc:postgresql://vro-api-postgres-service:5432/vro
     username: vro_user
     password: not-the-password
     hikari:
-      jdbc-url: jdbc:postgresql://postgres1:5432/vro
+      jdbc-url: jdbc:postgresql://vro-api-postgres-service:5432/vro
       username: vro_user
       password: not-the-password
       schema: claims
