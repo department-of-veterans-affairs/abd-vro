@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
+import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
@@ -17,6 +19,7 @@ import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
+import gov.va.vro.service.spi.services.ClaimMetricsService;
 import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,8 @@ public class VroController implements VroResource {
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   private final FetchClaimsService fetchClaimsService;
+
+  private final ClaimMetricsService claimMetricsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -198,5 +203,23 @@ public class VroController implements VroResource {
     info.setVeteranIcn(claim.getVeteranIcn());
     info.setContentions(claim.getContentions().stream().toList());
     return info;
+  }
+
+  @Override
+  public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
+    ClaimMetricsResponse response = new ClaimMetricsResponse();
+    try {
+      response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
+      if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      }
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
+    } catch (Exception e) {
+      log.error("Error in claim metrics services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
   }
 }
