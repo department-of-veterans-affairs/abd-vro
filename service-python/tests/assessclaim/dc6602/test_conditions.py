@@ -43,10 +43,10 @@ from assessclaimdc6602.src.lib import condition
 )
 def test_conditions_calculation(request_body, conditions_calc):
     """
+    Test the filtering of conditions for Asthma
 
-    :param request_body:
-    :param conditions_calc:
-    :return:
+    :param request_body: sample data for a claim reqeust
+    :param conditions_calc:e expected output from the condition algorithm
     """
     active_conditions = condition.conditions_calculation(request_body)
     assert active_conditions == conditions_calc
