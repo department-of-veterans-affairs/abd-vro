@@ -23,7 +23,7 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol inhaler",
                     "status": "active",
-                    "asthmaRelevant": "true",
+                    "asthma_relevant": ["Bronchodilator/Used in Respiratory Failure"],
                     "authoredOn": "1950-04-06T04:00:00Z",
                 }
             ],
@@ -46,7 +46,7 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol",
                     "status": "active",
-                    "asthmaRelevant": "true",
+                    "asthma_relevant": ["Bronchodilator/Used in Respiratory Failure"],
                     "authoredOn": "1950-04-06T04:00:00Z",
                 }
             ],
@@ -69,7 +69,7 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Advil",
                     "status": "active",
-                    "asthmaRelevant": "false",
+                    "asthma_relevant": [],
                     "authoredOn": "1950-04-06T04:00:00Z",
                 }
             ],
@@ -97,17 +97,43 @@ from assessclaimdc6602.src.lib import medication
                 {
                     "description": "Albuterol",
                     "status": "active",
-                    "asthmaRelevant": "true",
+                    "asthma_relevant": ["Bronchodilator/Used in Respiratory Failure"],
                     "authoredOn": "1950-04-06T04:00:00Z",
                 },
                 {
                     "description": "Advil",
                     "status": "active",
-                    "asthmaRelevant": "false",
+                    "asthma_relevant": [],
                     "authoredOn": "1952-04-06T04:00:00Z",
                 },
             ],
         ),
+        # medication description contains multiple keywords
+        (
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
+                                               "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z",
+                            },
+                        ],
+                        "date_of_claim": "2021-11-09",
+                    }
+                },
+                [
+                    {
+                        "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
+                                       "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+                        "status": "active",
+                        "asthma_relevant": ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"],
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                    },
+                ],
+        ),
+
     ],
 )
 def test_continuous_medication_required(
@@ -115,7 +141,6 @@ def test_continuous_medication_required(
 ):
     """
     Test the history of continuous medication required algorithm
-
     :param request_body: request body with blood pressure readings and other data
     :type request_body: dict
     :param continuous_medication_required_calculation: correct return value from algorithm
@@ -125,3 +150,25 @@ def test_continuous_medication_required(
         medication.medication_required(request_body)
         == continuous_medication_required_calculation
     )
+
+
+@pytest.mark.parametrize(
+    "medication_display, expected",
+    [("Albuterol", ["Bronchodilator/Used in Respiratory Failure"]),
+     ("Advil", []),
+     # medication description contains multiple keywords,
+     # returns the most general category for any medication in description
+     ("14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+      ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"])],
+)
+# Service connected and medication used to treat hypertension
+def test_categorize_med(medication_display, expected):
+    """
+    Test the categorization of medications
+    :param medication_display: medication description
+    :param expected: category
+    """
+
+    category = medication.categorize_med(medication_display)
+
+    assert category == expected

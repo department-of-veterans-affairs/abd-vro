@@ -14,7 +14,8 @@ from assessclaimdc6602.src.lib import main
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -24,10 +25,13 @@ from assessclaimdc6602.src.lib import main
                         {
                             "description": "Prednisone",
                             "status": "active",
-                            "asthmaRelevant": "true",
+                            "asthma_relevant": [
+                                "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"
+                            ],
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": []
                 }
             },
         ),
@@ -41,7 +45,8 @@ from assessclaimdc6602.src.lib import main
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -51,10 +56,13 @@ from assessclaimdc6602.src.lib import main
                         {
                             "description": "predniSONE 1 MG Oral Tablet",
                             "status": "active",
-                            "asthmaRelevant": "true",
+                            "asthma_relevant": [
+                                "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"
+                            ],
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
                 }
             },
         ),
@@ -68,7 +76,8 @@ from assessclaimdc6602.src.lib import main
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -78,10 +87,11 @@ from assessclaimdc6602.src.lib import main
                         {
                             "description": "Advil",
                             "status": "active",
-                            "asthmaRelevant": "false",
+                            "asthma_relevant": [],
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
                 }
             },
         ),
