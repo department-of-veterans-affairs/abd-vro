@@ -22,7 +22,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       return metrics;
     } catch (Exception e) {
       log.error("Could not get metrics in claim repository.", e);
-      metrics.setTotalClaims(null);
+      metrics.setTotalClaims(0);
       metrics.setErrorMessage("Failure;" + e.getMessage());
       return metrics;
     }

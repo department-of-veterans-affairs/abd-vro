@@ -14,6 +14,6 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class ClaimMetricsInfo {
-  Long totalClaims;
+  long totalClaims;
   String errorMessage;
 }

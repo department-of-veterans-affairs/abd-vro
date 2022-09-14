@@ -123,7 +123,7 @@ public interface VroResource {
   @GetMapping("/fetch-claims")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
-  @Tag(name = "Fetch Claims")
+  @Tag(name = "Claim Metrics")
   ResponseEntity<FetchClaimsResponse> fetchClaims()
       throws RequestValidationException, ClaimProcessingException;
 
