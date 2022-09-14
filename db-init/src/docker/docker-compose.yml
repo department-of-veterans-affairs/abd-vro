@@ -8,9 +8,9 @@ volumes:
   pgdata:
 
 services:
-  postgres1:
+  vro-api-postgres-service:
     image: postgres
-    hostname: postgres1
+    hostname: vro-api-postgres-service
     ports:
       - "5432:5432"
     expose:
@@ -28,7 +28,7 @@ services:
   db-init:
     image: va/lighthouse-di-starterkit-java-db-init:latest
     depends_on:
-      - postgres1
+      - vro-api-postgres-service
     networks:
       - internal
 

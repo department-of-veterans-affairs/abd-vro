@@ -1,4 +1,4 @@
-ARG WKHTML_VERSION=3.9.9-0.12.6-small
+ARG WKHTML_VERSION=3.10.6-0.12.6-small
 
 FROM surnet/alpine-python-wkhtmltopdf:${WKHTML_VERSION}
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro

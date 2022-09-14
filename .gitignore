@@ -13,6 +13,7 @@ build/
 /reports/
 docker-machine-driver-hyperkit
 .DS_Store
+.vs
 
 target/
 

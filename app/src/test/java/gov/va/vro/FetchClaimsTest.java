@@ -33,7 +33,7 @@ public class FetchClaimsTest extends BaseIntegrationTest {
   private <I, O> ResponseEntity<O> exchange(
       String url, I request, HttpMethod method, Class<O> responseType) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("X-API-Key", "ec4624eb-a02d-4d20-bac6-095b98a792a2");
+    headers.add("X-API-Key", "test-key-01");
     var httpEntity = new HttpEntity<>(request, headers);
     return testRestTemplate.exchange(url, method, httpEntity, responseType);
   }
