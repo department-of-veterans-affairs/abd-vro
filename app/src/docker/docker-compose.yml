@@ -36,9 +36,9 @@ services:
     ports:
       - "6379:6379"
 
-  postgres1:
+  vro-api-postgres-service:
     image: postgres
-    hostname: postgres1
+    hostname: vro-api-postgres-service
     expose:
       - "5432"
     environment:
@@ -57,7 +57,7 @@ services:
   db-init:
     image: va/abd_vro-db-init:latest
     depends_on:
-      - postgres1
+      - vro-api-postgres-service
     networks:
       - internal
 
@@ -75,7 +75,7 @@ services:
       - "8080:8080"
       - "8081:8081"
     environment:
-      POSTGRES_HOST: postgres1
+      POSTGRES_HOST: vro-api-postgres-service
       POSTGRES_DBNAME: vro
       POSTGRES_USER: example_service
       POSTGRES_PASSWORD: also-not-the-service-password
@@ -85,7 +85,7 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PASSWORD}
     depends_on:
-      - postgres1
+      - vro-api-postgres-service
       - rabbitmq1
       - redis1
       - db-init
