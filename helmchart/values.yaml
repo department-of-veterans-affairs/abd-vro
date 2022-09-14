@@ -45,27 +45,27 @@ images:
     tag: 3
   app:
     imageName: dev_vro-app
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-init-db
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: 3dce562
+    tag: latest
     imagePullPolicy: Always
     
 resources:
@@ -154,7 +154,7 @@ readinessProbe:
 #   targetCPUUtilizationPercentage: 80
 
 postgres:
-  dbName: example
+  dbName: vro
   secretName: postgres
   usernameKey: User
   passwordKey: Pass

@@ -38,7 +38,7 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d vro -h postgres1 -p 5432; do
+                until pg_isready -d vro -h vro-api-postgres-service -p 5432; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -102,7 +102,7 @@ spec:
                   name: psql-secret
                   key: password
             - name: POSTGRES_HOST
-              value: jdbc:postgresql://postgres1:5432/vro?user=$POSTGRES_USERNAME&password=$POSTGRES_PASSWORD
+              value: jdbc:postgresql://vro-api-postgres-service:5432/vro?user=$POSTGRES_USERNAME&password=$POSTGRES_PASSWORD
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: ZIPKIN_ENABLED
