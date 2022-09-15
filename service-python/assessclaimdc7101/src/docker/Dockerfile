@@ -1,6 +1,6 @@
-ARG PYTHON_VERSION=3.8
+ARG PYTHON_VERSION=3.9
 
-FROM python:${PYTHON_VERSION}
+FROM python:${PYTHON_VERSION}-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 ENV PYTHONDONTWRITEBYTECODE 1
