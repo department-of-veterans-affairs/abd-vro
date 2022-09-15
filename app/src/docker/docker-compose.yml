@@ -61,13 +61,6 @@ services:
     networks:
       - internal
 
-  # opa-init:
-  #   image: va/abd_vro-opa-init:latest
-  #   depends_on:
-  #     - opa
-  #   networks:
-  #     - internal
-
   abd_vro:
     image: va/abd_vro-app:latest
     hostname: abd_vro

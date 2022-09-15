@@ -44,7 +44,6 @@ dependencies {
 
     docker project(':container-init')
     docker project(':db-init')
-    docker project(':opa-init')
 }
 
 
@@ -100,5 +99,4 @@ tasks.named('lintDockerfile').configure {
 tasks.named('dockerComposeUp').configure {
     dependsOn ':container-init:docker'
     dependsOn ':db-init:docker'
-    dependsOn ':opa-init:docker'
 }

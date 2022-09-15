@@ -65,8 +65,7 @@ ext {
                      ':service-python:pdfgenerator',
                      ':service-data-access',
                      ':container-init',
-                     ':db-init',
-                     ':opa-init']
+                     ':db-init']
 }
 
 
