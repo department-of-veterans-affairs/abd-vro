@@ -14,7 +14,7 @@ redis_config = {
     "host": os.environ.get("REDIS_PLACEHOLDERS_HOST", "localhost"),
     "port": 6379,
     "retry_limit": 3,
-    "expiration": 60 * 60 * 3 # 3 hours
+    "expiration": 60 * 60 * 3,  # 3 hours
 }
 
 queue_config = {
@@ -23,8 +23,4 @@ queue_config = {
     "fetch_queue_name": "fetch-pdf",
 }
 
-codes = {
-  "6602": "asthma",
-  "7101": "hypertension"
-}
-
+codes = {"6602": "asthma", "7101": "hypertension"}

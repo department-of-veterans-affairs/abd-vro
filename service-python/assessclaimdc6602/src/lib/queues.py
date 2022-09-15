@@ -43,4 +43,3 @@ def queue_setup(channel):
     logging.info(
         f" [*] Waiting for data for queue: {SERVICE_QUEUE}. To exit press CTRL+C"
     )
-

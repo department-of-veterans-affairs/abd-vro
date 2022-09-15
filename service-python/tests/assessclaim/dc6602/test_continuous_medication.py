@@ -110,30 +110,31 @@ from assessclaimdc6602.src.lib import medication
         ),
         # medication description contains multiple keywords
         (
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
+                            "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        },
+                    ],
+                    "date_of_claim": "2021-11-09",
+                }
+            },
+            [
                 {
-                    "evidence": {
-                        "medications": [
-                            {
-                                "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
-                                               "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-                                "status": "active",
-                                "authoredOn": "1950-04-06T04:00:00Z",
-                            },
-                        ],
-                        "date_of_claim": "2021-11-09",
-                    }
+                    "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
+                    "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+                    "status": "active",
+                    "asthma_relevant": [
+                        "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"
+                    ],
+                    "authoredOn": "1950-04-06T04:00:00Z",
                 },
-                [
-                    {
-                        "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
-                                       "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-                        "status": "active",
-                        "asthma_relevant": ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"],
-                        "authoredOn": "1950-04-06T04:00:00Z",
-                    },
-                ],
+            ],
         ),
-
     ],
 )
 def test_continuous_medication_required(
@@ -154,12 +155,16 @@ def test_continuous_medication_required(
 
 @pytest.mark.parametrize(
     "medication_display, expected",
-    [("Albuterol", ["Bronchodilator/Used in Respiratory Failure"]),
-     ("Advil", []),
-     # medication description contains multiple keywords,
-     # returns the most general category for any medication in description
-     ("14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-      ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"])],
+    [
+        ("Albuterol", ["Bronchodilator/Used in Respiratory Failure"]),
+        ("Advil", []),
+        # medication description contains multiple keywords,
+        # returns the most general category for any medication in description
+        (
+            "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
+            ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"],
+        ),
+    ],
 )
 # Service connected and medication used to treat hypertension
 def test_categorize_med(medication_display, expected):
