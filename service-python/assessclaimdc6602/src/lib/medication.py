@@ -15,7 +15,7 @@ def categorize_med(medication_display):
         if flag:
             # most general category has been identified
             break
-        for medication in [x.lower() for x in medication_dict[category]]:
+        for medication in medication_dict[category]:
             if medication in medication_display.lower():
                 flag.append(category)
                 break
