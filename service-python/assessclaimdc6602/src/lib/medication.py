@@ -10,16 +10,16 @@ def categorize_med(medication_display):
     :return: list
     """
     medication_dict = codesets.medication_codesets.med_dict
-    flag = []
+    category = []
     for category in list(medication_dict.keys()):
-        if flag:
+        if category:
             # most general category has been identified
             break
         for medication in medication_dict[category]:
             if medication in medication_display.lower():
-                flag.append(category)
+                category.append(category)
                 break
-    return flag
+    return category
 
 
 def medication_required(request_body):
@@ -36,10 +36,12 @@ def medication_required(request_body):
     veterans_medication = request_body["evidence"]["medications"]
     for medication in veterans_medication:
         if medication["status"].lower() == "active":
+            medication["conditionRelated"] = "false"
             medication_display = medication["description"]
-            flag = categorize_med(medication_display)
-            medication["asthma_relevant"] = flag
-            if flag:
+            category = categorize_med(medication_display)
+            medication["suggestedCategory"] = category
+            if category:
+                medication["conditionRelated"] = "true"
                 relevant_medications.append(medication)
             else:
                 other_medications.append(medication)
