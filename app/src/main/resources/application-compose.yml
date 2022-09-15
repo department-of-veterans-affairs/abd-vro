@@ -3,12 +3,12 @@
 spring:
   datasource:
     url: jdbc:postgresql://vro-api-postgres-service:5432/vro
-    username: vro_user
-    password: not-the-password
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     hikari:
       jdbc-url: jdbc:postgresql://vro-api-postgres-service:5432/vro
-      username: vro_user
-      password: not-the-password
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
       schema: claims
   jpa:
     generate-ddl: false
