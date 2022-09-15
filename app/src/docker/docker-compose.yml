@@ -46,7 +46,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: vro
+      POSTGRES_DB: ${POSTGRES_DBNAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -73,7 +73,7 @@ services:
       - "8081:8081"
     environment:
       POSTGRES_HOST: vro-api-postgres-service
-      POSTGRES_DBNAME: vro
+      POSTGRES_DBNAME: ${POSTGRES_DBNAME}
       POSTGRES_USER: example_service
       POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
