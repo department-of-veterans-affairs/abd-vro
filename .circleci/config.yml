@@ -21,7 +21,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run: java --version
       - run: ./gradlew build
-      
+
       # TODO: parallelize this since `./gradlew check` runs the subprojects' tests as well
       - run: ./gradlew check
       - save_cache:
