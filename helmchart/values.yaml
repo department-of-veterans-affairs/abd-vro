@@ -152,14 +152,18 @@ readinessProbe:
 #   minReplicas: 1
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
-
+api:
+  apiKeySecret: api
+  apiKey01: apiKey01
+  apiKey02: apiKey02
 postgres:
-  dbName: vro
+  dbName: example_admin
   secretName: postgres
-  usernameKey: User
-  passwordKey: Pass
-  rootUsernameKey: root-username
-  rootPasswordKey: root-password
+  usernameKey: username
+  passwordKey: password
+  initDbName: vro
+  initUsernameKey: initUsername
+  initPasswordKey: initPassword
 
 rabbitmq:
   secretName: rabbitmq

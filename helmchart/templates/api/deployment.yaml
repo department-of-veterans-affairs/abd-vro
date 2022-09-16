@@ -31,13 +31,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
+                  key: {{ .Values.postgres.initUsernameKey }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d {{ .Values.postgres.initDbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -221,6 +221,16 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: SPRING_DATASOURCE_URL
@@ -262,6 +272,16 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -285,6 +305,16 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -308,6 +338,16 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -331,6 +371,16 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceDataAccess.imageName }}:{{ .Values.images.serviceDataAccess.tag }}
           imagePullPolicy: {{ .Values.images.serviceDataAccess.imagePullPolicy }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  value: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
