@@ -136,7 +136,7 @@ services:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-      REDIS_PLACEHOLDERS_HOST: redis1
+      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
     security_opt:
       - no-new-privileges:true
     depends_on:
