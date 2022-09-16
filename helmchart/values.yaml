@@ -157,7 +157,7 @@ api:
   apiKey01: apiKey01
   apiKey02: apiKey02
 postgres:
-  dbName: example_admin
+  dbName: vro
   secretName: postgres
   usernameKey: username
   passwordKey: password
