@@ -4,9 +4,9 @@ networks:
   internal:
 
 services:
-  rabbitmq1:
+  vro-api-rabbit-mq-service:
     image: rabbitmq:3
-    hostname: rabbitmq1
+    hostname: vro-api-rabbit-mq-service
     expose:
       - "5672"
     ports:
@@ -27,10 +27,10 @@ services:
   pdfgenerator:
     container_name: pdfgenerator
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-      REDIS_PLACEHOLDERS_HOST: rabbitmq1
+      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
     build:
       dockerfile: ./Dockerfile
     ports: 

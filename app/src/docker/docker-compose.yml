@@ -24,14 +24,14 @@ services:
   #     - internal
   #     - external
 
-  rabbitmq1:
+  vro-api-rabbit-mq-service:
     image: rabbitmq:3-management
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
       timeout: 3s
       retries: 30
-    hostname: rabbitmq1
+    hostname: vro-api-rabbit-mq-service
     expose:
       - "5672"
       - "15672"
@@ -42,9 +42,9 @@ services:
       - "15672:15672"
     restart: on-failure:5
 
-  redis1:
+  vro-api-redis-service:
     image: redis
-    hostname: redis1
+    hostname: vro-api-redis-service
     expose:
       - "6379"
     networks:
@@ -100,15 +100,15 @@ services:
       POSTGRES_PASSWORD: also-not-the-service-password
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       # TODO: move these RabbitMQ configurations into a reusable yaml block
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     security_opt: 
       - no-new-privileges:true
     depends_on:
       - vro-api-postgres-service
-      - rabbitmq1
-      - redis1
+      - vro-api-rabbit-mq-service
+      - vro-api-redis-service
       - db-init
       - assess-claim-dc7101
       - assess-claim-dc6602
@@ -121,13 +121,13 @@ services:
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     security_opt: 
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
@@ -136,13 +136,13 @@ services:
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
     security_opt: 
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
@@ -151,16 +151,16 @@ services:
   pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-      REDIS_PLACEHOLDERS_HOST: redis1
+      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
     security_opt: 
       - no-new-privileges:true
     depends_on:
-      redis1:
+      vro-api-redis-service:
         condition: service_started
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
@@ -169,7 +169,7 @@ services:
   service-data-access:
     image: va/abd_vro-service-data-access:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
@@ -180,7 +180,7 @@ services:
     security_opt: 
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
