@@ -56,7 +56,7 @@ jobs:
       uses: ./.github/actions/install-build-dependencies
 
     - name: Build and test docker image
-      run: ./gradlew build check
+      run: ./gradlew build -x test check
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
