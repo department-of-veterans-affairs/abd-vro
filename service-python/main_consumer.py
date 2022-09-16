@@ -10,6 +10,8 @@ logging.basicConfig(level=logging.INFO)
 
 CONSUMER_CONFIG = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
+		"username": os.environ.get("RABBITMQ_PLACEHOLDERS_USERNAME", "guest"),
+		"password": os.environ.get("RABBITMQ_PLACEHOLDERS_USERPASSWORD", "guest"),
     "port": 5672,
     "retry_limit": 3,
 		"timeout": 60 * 60 * 3 # 3 hours
@@ -29,9 +31,10 @@ class RabbitMQConsumer:
 
 
 	def _create_connection(self):
+		credentials = pika.PlainCredentials(self.config["username"], self.config["password"])
 		for i in range(self.config["retry_limit"]):
 			try:
-				parameters = pika.ConnectionParameters(host=self.config["host"], port = self.config["port"])
+				parameters = pika.ConnectionParameters(host=self.config["host"], port=self.config["port"], credentials=credentials)
 				return pika.BlockingConnection(parameters)
 			except:
 				logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s")
