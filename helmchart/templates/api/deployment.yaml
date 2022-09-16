@@ -225,6 +225,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
+
                   key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
