@@ -45,27 +45,27 @@ images:
     tag: 3
   app:
     imageName: dev_vro-app
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-init-db
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: 5969a28
+    tag: 0b9c9c4
     imagePullPolicy: Always
     
 resources:
