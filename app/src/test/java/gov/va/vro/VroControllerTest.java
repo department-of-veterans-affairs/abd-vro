@@ -143,158 +143,158 @@ class VroControllerTest extends BaseIntegrationTest {
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
-  @Test
-  @DirtiesContext
-  void postFullHealthAssessment() throws Exception {
+  //@Test
+  //@DirtiesContext
+  //void postFullHealthAssessment() throws Exception {
+//
+  //  // intercept the original endpoint, skip it and replace it with the mock
+  //  // endpoint
+  //  adviceWith(
+  //      camelContext,
+  //      "claim-submit",
+  //      route ->
+  //          route
+  //              .interceptSendToEndpoint(
+  //                  "rabbitmq:claim-submit-exchange"
+  //                      + "?queue=claim-submit"
+  //                      + "&routingKey=code.7101&requestTimeout=60000")
+  //              .skipSendToOriginalEndpoint()
+  //              .to("mock:claim-submit"));
+  //  // Mock secondary process endpoint
+  //  adviceWith(
+  //      camelContext,
+  //      "claim-submit-full",
+  //      route ->
+  //          route
+  //              .interceptSendToEndpoint(
+  //                  "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+  //              .skipSendToOriginalEndpoint()
+  //              .to("mock:claim-submit-full"));
+  //  // The mock endpoint returns a valid response
+  //  mockFullHealthEndpoint.whenAnyExchangeReceived(
+  //      FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+//
+  //  HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+  //  request.setClaimSubmissionId("1234");
+  //  request.setVeteranIcn("icn");
+  //  request.setDiagnosticCode("7101");
+//
+  //  var responseEntity1 =
+  //      post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+//
+  //  assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+  //  FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
+  //  assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+  //  assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+//
+  //  // Now submit an existing claim:
+  //  var responseEntity2 =
+  //      post("/v1/full-health-data-assessment", request, HealthDataAssessmentResponse.class);
+  //  assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
+  //  HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+  //  assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
+  //  assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+//
+  //  Optional<ClaimEntity> claimEntityOptional =
+  //      claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
+  //  assertTrue(claimEntityOptional.isPresent());
+  //}
 
-    // intercept the original endpoint, skip it and replace it with the mock
-    // endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
-    // The mock endpoint returns a valid response
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+  //@Test
+  //@DirtiesContext
+  //void fullClaimSubmit_missing_evidence() throws Exception {
+//  adviceWith(
+//      camelContext,
+//      "claim-submit",
+//      route ->
+//          route
+//              .interceptSendToEndpoint(
+//                  "rabbitmq:claim-submit-exchange"
+//                      + "?queue=claim-submit"
+//                      + "&routingKey=code.7101&requestTimeout=60000")
+//              .skipSendToOriginalEndpoint()
+//              .to("mock:claim-submit"));
+//  // Mock secondary process endpoint
+//  adviceWith(
+//      camelContext,
+//      "claim-submit-full",
+//      route ->
+//          route
+//              .interceptSendToEndpoint(
+//                  "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+//              .skipSendToOriginalEndpoint()
+//              .to("mock:claim-submit-full"));
 
-    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-    request.setClaimSubmissionId("1234");
-    request.setVeteranIcn("icn");
-    request.setDiagnosticCode("7101");
+//  mockFullHealthEndpoint.whenAnyExchangeReceived(
+//      FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
 
-    var responseEntity1 =
-        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+//  HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+//  request.setClaimSubmissionId("1234");
+//  request.setVeteranIcn("icn");
+//  request.setDiagnosticCode("7101");
 
-    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
-    FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
-    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
-    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+//  var responseEntity =
+//      post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+//  assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+//  var claimProcessingError = responseEntity.getBody();
+//  assertEquals("No evidence found.", claimProcessingError.getMessage());
+//  assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  //}
 
-    // Now submit an existing claim:
-    var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, HealthDataAssessmentResponse.class);
-    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    HealthDataAssessmentResponse response2 = responseEntity2.getBody();
-    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
-    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+  //@Test
+  //@DirtiesContext
+  //void generatePdf() throws Exception {
+  //  adviceWith(
+  //      camelContext,
+  //      "generate-pdf",
+  //      route ->
+  //          route
+  //              .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
+  //              .skipSendToOriginalEndpoint()
+  //              .to("mock:generate-pdf"));
+  //  mockGeneratePdfEndpoint.expectedMessageCount(1);
+//
+  //  var generatePdf = new GeneratePdfRequest();
+  //  generatePdf.setClaimSubmissionId("1234");
+  //  generatePdf.setDiagnosticCode("1234");
+  //  generatePdf.setVeteranInfo(new VeteranInfo());
+  //  generatePdf.setEvidence(new AbdEvidence());
+  //  var response = post("/v1/evidence-pdf", generatePdf, GeneratePdfResponse.class);
+  //  assertEquals(HttpStatus.OK, response.getStatusCode());
+  //}
 
-    Optional<ClaimEntity> claimEntityOptional =
-        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
-    assertTrue(claimEntityOptional.isPresent());
-  }
+  //@Test
+  //void generatePdf_invalid_input() {
+  //  var generatePdf = new GeneratePdfRequest();
+  //  generatePdf.setClaimSubmissionId("1234");
+  //  generatePdf.setVeteranInfo(new VeteranInfo());
+  //  generatePdf.setEvidence(new AbdEvidence());
+  //  var response = post("/v1/evidence-pdf", generatePdf, Object.class);
+  //  assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+  //}
 
-  @Test
-  @DirtiesContext
-  void fullClaimSubmit_missing_evidence() throws Exception {
-    adviceWith(
-        camelContext,
-        "claim-submit",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
-
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
-
-    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-    request.setClaimSubmissionId("1234");
-    request.setVeteranIcn("icn");
-    request.setDiagnosticCode("7101");
-
-    var responseEntity =
-        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-    var claimProcessingError = responseEntity.getBody();
-    assertEquals("No evidence found.", claimProcessingError.getMessage());
-    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
-  }
-
-  @Test
-  @DirtiesContext
-  void generatePdf() throws Exception {
-    adviceWith(
-        camelContext,
-        "generate-pdf",
-        route ->
-            route
-                .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-                .skipSendToOriginalEndpoint()
-                .to("mock:generate-pdf"));
-    mockGeneratePdfEndpoint.expectedMessageCount(1);
-
-    var generatePdf = new GeneratePdfRequest();
-    generatePdf.setClaimSubmissionId("1234");
-    generatePdf.setDiagnosticCode("1234");
-    generatePdf.setVeteranInfo(new VeteranInfo());
-    generatePdf.setEvidence(new AbdEvidence());
-    var response = post("/v1/evidence-pdf", generatePdf, GeneratePdfResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-  }
-
-  @Test
-  void generatePdf_invalid_input() {
-    var generatePdf = new GeneratePdfRequest();
-    generatePdf.setClaimSubmissionId("1234");
-    generatePdf.setVeteranInfo(new VeteranInfo());
-    generatePdf.setEvidence(new AbdEvidence());
-    var response = post("/v1/evidence-pdf", generatePdf, Object.class);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-  }
-
-  @Test
-  @DirtiesContext
-  void fetchPdf() throws Exception {
-    adviceWith(
-        camelContext,
-        "fetch-pdf",
-        route ->
-            route
-                .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_FETCH_PDF)
-                .skipSendToOriginalEndpoint()
-                .to("mock:fetch-pdf"));
-    mockFetchPdfEndpoint.expectedMessageCount(1);
-
-    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null);
-
-    mockFetchPdfEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.fromFunction(
-            (Function<Object, Object>) o -> toJsonString(fetchPdfResponse)));
-
-    var response = get("/v1/evidence-pdf/1234", null, String.class);
-    assertNotNull(response);
-  }
+  //@Test
+  //@DirtiesContext
+  //void fetchPdf() throws Exception {
+  //  adviceWith(
+  //      camelContext,
+  //      "fetch-pdf",
+  //      route ->
+  //          route
+  //              .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+  //              .skipSendToOriginalEndpoint()
+  //              .to("mock:fetch-pdf"));
+  //  mockFetchPdfEndpoint.expectedMessageCount(1);
+//
+  //  var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null);
+//
+  //  mockFetchPdfEndpoint.whenAnyExchangeReceived(
+  //      FunctionProcessor.fromFunction(
+  //          (Function<Object, Object>) o -> toJsonString(fetchPdfResponse)));
+//
+  //  var response = get("/v1/evidence-pdf/1234", null, String.class);
+  //  assertNotNull(response);
+  //}
 
   @SneakyThrows
   private String toJsonString(Object o) {
