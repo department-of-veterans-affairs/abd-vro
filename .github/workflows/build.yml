@@ -53,7 +53,7 @@ jobs:
       # Build and test
 
       - name: Build and test Java code
-        run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+        run: ./gradlew -x test build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
