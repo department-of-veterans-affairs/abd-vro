@@ -21,22 +21,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run: java --version
       - run: ./gradlew build
-      - run:
-          name: Run tests in parallel # See: https://circleci.com/docs/2.0/parallelism-faster-jobs/
-          # Use "./gradlew test" instead if tests are not run in parallel
-          # Note: We're only testing the app subproject here
-          command: |
-            cd app/src/test/java
-            # Get list of classnames of tests that should run on this node
-            CLASSNAMES=$(circleci tests glob "**/*.java" \
-              | cut -c 1- | sed 's@/@.@g' \
-              | sed 's/.\{5\}$//' \
-              | circleci tests split --split-by=timings --timings-type=classname)
-            cd ../../../..
-            # Format the arguments to "./gradlew test"
-            # GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
-            # echo "Prepared arguments for Gradle: $GRADLE_ARGS"
-            # ./gradlew app:test $GRADLE_ARGS
+      
       # TODO: parallelize this since `./gradlew check` runs the subprojects' tests as well
       - run: ./gradlew check
       - save_cache:
