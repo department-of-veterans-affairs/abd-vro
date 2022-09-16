@@ -225,7 +225,6 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-
                   key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
@@ -234,8 +233,10 @@ spec:
                   key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}?currentSchema=claims
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -246,10 +247,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
-            - name: SPRING_DATASOURCE_SCHEMA1234
-              value: claims
             - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}?currentSchema=claims
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
             - name: SPRING_DATASOURCE_HIKARI_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -264,6 +263,8 @@ spec:
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
+            - name: JAVA_PROFILE
+            - value: -Dspring.profiles.include=compose
           resources: 
             requests:
               cpu: 150m

@@ -89,7 +89,7 @@ spec:
             timeoutSeconds: 10
             failureThreshold: 3
           env:
-            - name: POSTGRES_DBNAME
+            - name: POSTGRES_DB
               value: example
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
