@@ -45,27 +45,27 @@ images:
     tag: 3
   app:
     imageName: dev_vro-app
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-init-db
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: latest
+    tag: 5969a28
     imagePullPolicy: Always
     
 resources:
@@ -152,14 +152,18 @@ readinessProbe:
 #   minReplicas: 1
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
-
+api:
+  apiKeySecret: api
+  apiKey01: apiKey01
+  apiKey02: apiKey02
 postgres:
-  dbName: vro
+  dbName: example_admin
   secretName: postgres
-  usernameKey: User
-  passwordKey: Pass
-  rootUsernameKey: root-username
-  rootPasswordKey: root-password
+  usernameKey: username
+  passwordKey: password
+  initDbName: vro
+  initUsernameKey: initUsername
+  initPasswordKey: initPassword
 
 rabbitmq:
   secretName: rabbitmq

@@ -5,6 +5,7 @@ spring:
     url: jdbc:postgresql://vro-api-postgres-service:5432/vro
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+    schema: claims
     hikari:
       jdbc-url: jdbc:postgresql://vro-api-postgres-service:5432/vro
       username: ${POSTGRES_USER}

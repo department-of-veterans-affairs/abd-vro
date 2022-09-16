@@ -7,9 +7,9 @@ networks:
 #  pgdata:
 
 services:
-  rabbitmq1:
+  vro-api-rabbit-mq-service:
     image: rabbitmq:3
-    hostname: rabbitmq1
+    hostname: vro-api-rabbit-mq-service
     expose:
       - "5672"
 #    volumes:
@@ -35,6 +35,6 @@ services:
 #      - /tmp
 #      - /app/tmp/pids
     depends_on:
-      - rabbitmq1
+      - vro-api-rabbit-mq-service
     networks:
       - internal
