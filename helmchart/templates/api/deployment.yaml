@@ -225,16 +225,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey01 }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey02 }}
+                  key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}?currentSchema=claims
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -245,8 +245,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
+            - name: SPRING_DATASOURCE_SCHEMA1234
+              value: claims
             - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}?currentSchema=claims
             - name: SPRING_DATASOURCE_HIKARI_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -276,12 +278,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey01 }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey02 }}
+                  key: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -309,12 +311,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey01 }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey02 }}
+                  key: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -342,12 +344,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey01 }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey02 }}
+                  key: {{ .Values.api.apiKey02 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -374,13 +376,13 @@ spec:
             - name: apiAuthKey01
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey01 }}
+                  name: {{ .Values.api.apiKeySecret }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: apiAuthKey02
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  value: {{ .Values.api.apiKey02 }}
+                  name: {{ .Values.api.apiKeySecret }}
+                  key: {{ .Values.api.apiKey01 }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
