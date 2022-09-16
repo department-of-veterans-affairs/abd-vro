@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jre
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE
