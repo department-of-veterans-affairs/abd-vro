@@ -5,7 +5,6 @@ spring:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-    schema: ${POSTGRES_SCHEMA}
     hikari:
       jdbc-url: ${POSTGRES_URL}
       username: ${POSTGRES_USER}
