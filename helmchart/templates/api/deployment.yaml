@@ -264,7 +264,7 @@ spec:
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
             - name: JAVA_PROFILE
-            - value: -Dspring.profiles.include=compose
+              value: -Dspring.profiles.include=compose
           resources: 
             requests:
               cpu: 150m
