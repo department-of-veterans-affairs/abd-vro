@@ -34,7 +34,7 @@ class RabbitMQConsumer:
 		credentials = pika.PlainCredentials(self.config["username"], self.config["password"])
 		for i in range(self.config["retry_limit"]):
 			try:
-				parameters = pika.ConnectionParameters(self.config["host"], self.config["port"], '/', credentials)
+				parameters = pika.ConnectionParameters(host=self.config["host"], port=self.config["port"], credentials=credentials)
 				return pika.BlockingConnection(parameters)
 			except:
 				logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s")
