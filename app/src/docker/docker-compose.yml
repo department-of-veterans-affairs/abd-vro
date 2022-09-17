@@ -25,6 +25,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
     restart: on-failure:5
 
   vro-api-redis-service:
