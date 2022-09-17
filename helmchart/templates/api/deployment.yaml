@@ -264,7 +264,9 @@ spec:
               value: /{{ .Values.name }}
             - name: JAVA_PROFILE
               value: -Dspring.profiles.include=compose
-          resources: 
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+          resources:
             requests:
               cpu: 150m
               memory: 512Mi
