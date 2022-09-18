@@ -156,14 +156,18 @@ api:
   apiKeySecret: api
   apiKey01: apiKey01
   apiKey02: apiKey02
+
 postgres:
   dbName: vro
   secretName: postgres
   usernameKey: username
   passwordKey: password
+  dbnameKey: dbName
   initDbName: vro
   initUsernameKey: initUsername
   initPasswordKey: initPassword
+  urlKey: url
+  schemaKey: schema
 
 rabbitmq:
   secretName: rabbitmq
