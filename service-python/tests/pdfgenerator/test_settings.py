@@ -14,6 +14,7 @@ valid_pdf = {
 valid_redis = {
     "host": "",
     "port": "",
+    "password": "",
     "retry_limit": "",
     "expiration": ""
 }
