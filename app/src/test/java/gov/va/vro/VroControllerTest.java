@@ -134,7 +134,7 @@ class VroControllerTest extends BaseIntegrationTest {
     assertEquals("No evidence found.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
-
+  //FIX THESE
   // @Test
   // @DirtiesContext
   // void postFullHealthAssessment() throws Exception {
