@@ -30,4 +30,6 @@ spec:
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
+          command: ["redis-server"]
+          args: ["--requirepass", "$(REDIS_PLACEHOLDERS_PASSWORD)"]
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
