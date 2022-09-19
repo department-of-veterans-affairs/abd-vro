@@ -176,7 +176,7 @@ rabbitmq:
 
 redis:
   secretName: redis
-  passwordKey: redisPasswordKey
+  passwordKey: redisPassword
 
 dataservice:
   lhTokenUrl: lhTokenUrl
