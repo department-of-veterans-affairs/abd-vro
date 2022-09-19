@@ -90,3 +90,19 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
+      
+      - name: Publish to develop
+        run: |
+          #install via helm
+          helm upgrade --install $HELM_APP_NAME helmchart \
+              --set-string environment="${ENV}"\
+              --set-string images.app.tag="${IMAGE_TAG}"\
+              --set-string images.serviceRuby.tag="${IMAGE_TAG}"\
+              --set-string images.dbInit.tag="${IMAGE_TAG}"\
+              --set-string info.version="${VERSION}"\
+              --set-string info.git_hash="${GIT_SHA}" \
+              --set-string info.deploy_env="${ENV}" \
+              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
+              --debug \
+              -f helmchart/"${ENV}".yaml -n ${TEAMNAME}-"${ENV}" --wait
+
