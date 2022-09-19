@@ -64,9 +64,7 @@ ext {
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
                      ':service-data-access',
-                     ':container-init',
-                     ':db-init',
-                     ':opa-init']
+                     ':db-init']
 }
 
 

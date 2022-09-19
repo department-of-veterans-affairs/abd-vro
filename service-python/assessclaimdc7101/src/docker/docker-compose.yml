@@ -1,9 +1,9 @@
 version: "3.6"
 
 services:
-  rabbitmq1:
+  vro-api-rabbit-mq-service:
     image: rabbitmq:3
-    hostname: rabbitmq1
+    hostname: vro-api-rabbit-mq-service
     container_name: "rabbitmq"
     expose:
       - "5672"
@@ -16,7 +16,7 @@ services:
       context: ../dc7101/.
     image: "dc7101"
     environment:
-      RABBITMQ_HOST: "rabbitmq1"
+      RABBITMQ_HOST: "vro-api-rabbit-mq-service"
     networks:
       - internal
 

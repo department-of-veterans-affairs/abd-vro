@@ -31,13 +31,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
+                  key: {{ .Values.postgres.initUsernameKey }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d {{ .Values.postgres.initDbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -221,37 +221,52 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
-            - name: SPRING_DATASOURCE_USERNAME
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.urlKey }}
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.usernameKey }}
-            - name: SPRING_DATASOURCE_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
-            - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
-            - name: SPRING_DATASOURCE_HIKARI_USERNAME
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
-            - name: SPRING_DATASOURCE_HIKARI_PASSWORD
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: POSTGRES_SCHEMA
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.passwordKey }}
+                  key: {{ .Values.postgres.schemaKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: 
+            - name: JAVA_PROFILE
+              value: -Dspring.profiles.include=compose
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+          resources:
             requests:
               cpu: 150m
               memory: 512Mi
@@ -320,6 +335,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
+            - name: REDIS_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-redis-service
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
           resources:
             requests:
               cpu: 150m
