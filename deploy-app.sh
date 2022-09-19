@@ -45,6 +45,5 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string info.deploy_env="${ENV}" \
               --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
               --debug \
-              -n ${TEAMNAME}-"${ENV}" #\
-              #--dry-run
+              -n ${TEAMNAME}-"${ENV}" #--dry-run
               #-f helmchart/"${ENV}".yaml
