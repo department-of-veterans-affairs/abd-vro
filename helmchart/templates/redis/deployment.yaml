@@ -17,16 +17,11 @@ spec:
         - name: redis-cache
           image: redis
           env:
-            - name: RABBITMQ_DEFAULT_USER
+            - name: REDIS_PLACEHOLDERS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.rabbitmq.secretName }}
-                  key: {{ .Values.rabbitmq.usernameKey }}
-            - name: RABBITMQ_DEFAULT_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.rabbitmq.secretName }}
-                  key: {{ .Values.rabbitmq.passwordKey }}
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
