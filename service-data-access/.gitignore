@@ -28,10 +28,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### Gradle ###
-
-!gradle/wrapper/gradle-wrapper.jar
-
 ### STS ###
 .apt_generated
 .classpath
@@ -62,12 +58,3 @@ build/
 
 ### Mac artifacts ###
 .DS_Store
-
-### Gradle
-.gradle
-
-### Build result
-
-src/main/resources/private.pem
-bin/
-!bin/entryppoint.sh

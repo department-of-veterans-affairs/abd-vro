@@ -94,7 +94,6 @@ jobs:
         run: |
           docker build -f ./app/src/docker/Dockerfile ./app/src/main/resources
           docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
-          docker build -f ./container-init/src/docker/Dockerfile ./container-init/src/main/resources
 
       - name: Build Dockerfiles - Java microservice
         run: |

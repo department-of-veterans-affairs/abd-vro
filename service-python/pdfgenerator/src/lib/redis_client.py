@@ -15,7 +15,7 @@ class RedisClient:
 	def _create_client(self):
 		for i in range(self.config["retry_limit"]):
 			try:
-				client = redis.Redis(host=self.config["host"], port = self.config["port"])
+				client = redis.Redis(host=self.config["host"], port = self.config["port"], password = self.config["password"])
 				logging.warning(f"Redis Connected: {client}")
 				return client
 			except:

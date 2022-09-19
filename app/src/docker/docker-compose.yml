@@ -25,6 +25,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
     restart: on-failure:5
 
   vro-api-redis-service:
@@ -37,6 +40,7 @@ services:
     ports:
       - "6379:6379"
     restart: on-failure:5
+    command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
   vro-api-postgres-service:
     image: postgres
@@ -137,6 +141,7 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
       REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
+      REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
     security_opt:
       - no-new-privileges:true
     depends_on:
