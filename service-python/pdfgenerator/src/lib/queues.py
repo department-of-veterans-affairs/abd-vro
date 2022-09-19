@@ -19,20 +19,20 @@ def on_generate_callback(channel, method, properties, body):
 
 				binding_key = method.routing_key
 				message = json.loads(body)
-				logging.info(f" [x] {binding_key}: Received message: {message}")
+				# logging.info(f" [x] {binding_key}: Received message: {message}")
 				claim_id = message["claimSubmissionId"]
 				message["veteran_info"] = message["veteranInfo"]
 				message["evidence"] = message["evidence"]
 				code = message["diagnosticCode"]
 				diagnosis_name = DIAGNOSTIC_CODE_MAPPING[code]
 				variables = pdf_generator.generate_template_variables(diagnosis_name, message)
-				logging.info(f"Variables: {variables}")
+				# logging.info(f"Variables: {variables}")
 				template = pdf_generator.generate_template_file(diagnosis_name, variables)
 				pdf = pdf_generator.generate_pdf_from_string(template)
 				redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
 				redis_client.save_data(f"{claim_id}_type", diagnosis_name)
 				logging.info("Saved PDF")
-				response = {"claimSubmissionId": claim_id, "status": "IN_PROGRESS"}
+				response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
 		except Exception as e:
 				logging.error(e, exc_info=True)
 				response = {"claimSubmissionId": claim_id, "status": "ERROR"}
