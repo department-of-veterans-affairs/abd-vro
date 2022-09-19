@@ -336,7 +336,7 @@ spec:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
             - name: REDIS_PLACEHOLDERS_HOST
-              value: { { .Chart.Name } }-redis-service
+              value: {{ .Chart.Name }}-redis-service
             - name: REDIS_PLACEHOLDERS_PASSWORD
               valueFrom:
                 secretKeyRef:
