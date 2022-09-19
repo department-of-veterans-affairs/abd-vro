@@ -335,8 +335,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-            - name: RABBITMQ_PLACEHOLDERS_HOST
+            - name: REDIS_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-redis-service
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.redisPasswordKey }}
           resources:
             requests:
               cpu: 150m
