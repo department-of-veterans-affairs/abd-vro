@@ -23,13 +23,11 @@ from assessclaimdc7101.src.lib import bp_filter
                 },
                 "date_of_claim": "2021-11-02",
             },
-            [
-                {
-                    "diastolic": {"value": 100},
-                    "systolic": {"value": 180},
-                    "date": "2021-11-01",
-                }
-            ],
+            {'bpReadings': [{'date': '2021-11-01',
+                             'diastolic': {'value': 100},
+                             'systolic': {'value': 180}}],
+             'recentBpReadings': 1,
+             'totalBpReadings': 2},
         ),
         (
             {
@@ -49,7 +47,7 @@ from assessclaimdc7101.src.lib import bp_filter
                 },
                 "date_of_claim": "2022-11-02",
             },
-            [],
+            {'bpReadings': [], 'recentBpReadings': 0, 'totalBpReadings': 2},
         ),
     ],
 )
