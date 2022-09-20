@@ -28,7 +28,7 @@ else
 fi
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n -n ${TEAMNAME}-"${ENV}"
+helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
