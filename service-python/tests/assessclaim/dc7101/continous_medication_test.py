@@ -20,10 +20,16 @@ from assessclaimdc7101.src.lib import continuous_medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Benazepril',
-                              'status': 'active'}],
-             'medicationsCount': 1},
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -40,10 +46,16 @@ from assessclaimdc7101.src.lib import continuous_medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Benazepril',
-                              'status': 'active'}],
-             'medicationsCount': 1},
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
@@ -60,10 +72,16 @@ from assessclaimdc7101.src.lib import continuous_medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Advil',
-                              'status': 'active'}],
-             'medicationsCount': 1},
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
@@ -85,13 +103,21 @@ from assessclaimdc7101.src.lib import continuous_medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                              'description': 'Advil',
-                              'status': 'active'},
-                             {'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Benazepril',
-                              'status': 'active'}],
-             'medicationsCount': 2},
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1952-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    },
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    },
+                ],
+                "medicationsCount": 2,
+            },
         ),
         # Service connected but no medication
         (
@@ -101,7 +127,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                     "medications": [],
                 }
             },
-            {'medications': [], 'medicationsCount': 0},
+            {"medications": [], "medicationsCount": 0},
         ),
     ],
 )

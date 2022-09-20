@@ -19,12 +19,18 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'asthmaRelevant': 'true',
-                              'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Albuterol inhaler',
-                              'status': 'active'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 1},
+            {
+                "medications": [
+                    {
+                        "asthmaRelevant": "true",
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Albuterol inhaler",
+                        "status": "active",
+                    }
+                ],
+                "relevantMedCount": 1,
+                "totalMedCount": 1,
+            },
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -40,12 +46,18 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'asthmaRelevant': 'true',
-                              'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Albuterol',
-                              'status': 'active'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 1},
+            {
+                "medications": [
+                    {
+                        "asthmaRelevant": "true",
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Albuterol",
+                        "status": "active",
+                    }
+                ],
+                "relevantMedCount": 1,
+                "totalMedCount": 1,
+            },
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
@@ -61,12 +73,18 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'asthmaRelevant': 'false',
-                              'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Advil',
-                              'status': 'active'}],
-             'relevantMedCount': 0,
-             'totalMedCount': 1},
+            {
+                "medications": [
+                    {
+                        "asthmaRelevant": "false",
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    }
+                ],
+                "relevantMedCount": 0,
+                "totalMedCount": 1,
+            },
         ),
         # multiple medications, some to treat and others not to treat asthma
         (
@@ -87,16 +105,24 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {'medications': [{'asthmaRelevant': 'true',
-                              'authoredOn': '1950-04-06T04:00:00Z',
-                              'description': 'Albuterol',
-                              'status': 'active'},
-                             {'asthmaRelevant': 'false',
-                              'authoredOn': '1952-04-06T04:00:00Z',
-                              'description': 'Advil',
-                              'status': 'active'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 2},
+            {
+                "medications": [
+                    {
+                        "asthmaRelevant": "true",
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Albuterol",
+                        "status": "active",
+                    },
+                    {
+                        "asthmaRelevant": "false",
+                        "authoredOn": "1952-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    },
+                ],
+                "relevantMedCount": 1,
+                "totalMedCount": 2,
+            },
         ),
     ],
 )

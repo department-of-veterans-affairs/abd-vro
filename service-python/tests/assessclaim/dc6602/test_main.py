@@ -18,11 +18,19 @@ from assessclaimdc6602.src.lib import main
                 },
                 "date_of_claim": "2021-11-09",
             },
-            {'evidence': {'medications': [{'asthmaRelevant': 'true',
-                                           'authoredOn': '1952-04-06T04:00:00Z',
-                                           'description': 'Prednisone',
-                                           'status': 'active'}]},
-             'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Prednisone",
+                            "status": "active",
+                        }
+                    ]
+                },
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+            },
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -38,11 +46,19 @@ from assessclaimdc6602.src.lib import main
                 },
                 "date_of_claim": "2021-11-09",
             },
-            {'evidence': {'medications': [{'asthmaRelevant': 'true',
-                                           'authoredOn': '1952-04-06T04:00:00Z',
-                                           'description': 'predniSONE 1 MG Oral Tablet',
-                                           'status': 'active'}]},
-             'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
+                        }
+                    ]
+                },
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+            },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
@@ -58,11 +74,19 @@ from assessclaimdc6602.src.lib import main
                 },
                 "date_of_claim": "2021-11-09",
             },
-            {'evidence': {'medications': [{'asthmaRelevant': 'false',
-                                           'authoredOn': '1952-04-06T04:00:00Z',
-                                           'description': 'Advil',
-                                           'status': 'active'}]},
-             'evidenceSummary': {'relevantMedCount': 0, 'totalMedCount': 1}},
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "false",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Advil",
+                            "status": "active",
+                        }
+                    ]
+                },
+                "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
+            },
         ),
     ],
 )

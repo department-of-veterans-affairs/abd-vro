@@ -40,8 +40,8 @@ def assess_hypertension(event: Dict):
             "evidenceSummary": {
                 "totalBpReadings": bp_readings["totalBpReadings"],
                 "recentBpReadings": bp_readings["recentBpReadings"],
-                "medicationsCount": relevant_medication["medicationsCount"]
-            }
+                "medicationsCount": relevant_medication["medicationsCount"],
+            },
         }
     )
 
