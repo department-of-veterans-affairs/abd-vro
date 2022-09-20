@@ -1,7 +1,9 @@
 - `develop` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 [![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 - `main` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 [![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 
 # ABD VRO
 
