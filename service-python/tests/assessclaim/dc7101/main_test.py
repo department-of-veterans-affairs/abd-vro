@@ -199,7 +199,6 @@ from assessclaimdc7101.src.lib import main
                 }
             },
             {
-                "evidence": {"medications": [], "bp_readings": []},
                 "errorMessage": "error validating request message data",
             },
         ),
@@ -251,7 +250,6 @@ from assessclaimdc7101.src.lib import main
                 "date_of_claim": "2021-11-09",
             },
             {
-                "evidence": {"medications": [], "bp_readings": []},
                 "errorMessage": "error validating request message data",
             },
         ),
