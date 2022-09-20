@@ -48,12 +48,14 @@ services:
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
-      POSTGRES_SCHEMA: claims
+      POSTGRES_USER: ${POSTGRES_SUPER_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_SUPER_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+      FLYWAY_DB: ${POSTGRES_DB}
     volumes:
+      - ./initdb/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
       - pgdata:/var/lib/postgresql/data
     networks:
       - internal
