@@ -7,9 +7,15 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+  workflow_call:
+    secrets:
+      DEV_KUBE_CONFIG: 
+        required: true
+
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   COMMIT_SHA: ${{ github.sha }}
+  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
 
 jobs:
   call-build-workflow:
