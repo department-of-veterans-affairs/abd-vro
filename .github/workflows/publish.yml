@@ -94,7 +94,6 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
       
       - name: Generate kubeconfig
-        uses: actions/checkout@v2
         run: |
           mkdir ~/.kube
           echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
