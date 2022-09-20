@@ -10,7 +10,8 @@ on:
   push:
     branches: [ main, develop ]
 
-  # When a Git reference (Git branch or tag) is deleted
+  # When a Git reference (Git branch or tag) is created or deleted
+  create:
   delete:
 
   # Allow manual triggering
