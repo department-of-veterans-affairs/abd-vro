@@ -22,8 +22,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG}}
-        
 
   publish-image:
     needs: call-build-workflow
