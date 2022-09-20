@@ -16,6 +16,8 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG}}
+        
 
   publish-image:
     needs: call-build-workflow
@@ -91,6 +93,18 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
       
+      - name: Generate kubeconfig
+        uses: actions/checkout@v2
+        run: |
+          mkdir ~/.kube
+          echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Push to DI
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          ./deploy-app.sh dev ${COMMIT_SHA:0:7}
       #- name: Publish to develop
       #  run: |
       #    #install via helm
