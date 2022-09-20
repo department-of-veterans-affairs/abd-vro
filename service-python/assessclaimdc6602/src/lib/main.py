@@ -7,7 +7,7 @@ from typing import Dict
 
 def assess_asthma(event: Dict):
     """
-    Take a request that includes hypertension related data, and return a response
+    Take a request that includes asthma related data, and return a filtered response
 
     :param event: request body
     :type event: dict

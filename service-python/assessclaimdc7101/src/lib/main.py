@@ -26,7 +26,7 @@ def assess_hypertension(event: Dict):
         bp_readings = bp_filter.bp_recency(event)
 
     else:
-        relevant_medication = {"medications": [], "medicationsCount":0 }
+        relevant_medication = {"medications": [], "medicationsCount": 0}
         bp_readings = {"bpReadings": [], "totalBpReadings": 0, "recentBpReadings": 0}
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
