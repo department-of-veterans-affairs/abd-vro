@@ -63,7 +63,7 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "403", description = "Unauthorized"),
         @ApiResponse(responseCode = "500", description = "PDF Generator Server Error")
       })
   @Timed(value = "evidence-pdf")
@@ -87,7 +87,7 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "403", description = "Unauthorized"),
         @ApiResponse(
             responseCode = "404",
             description = "PDF generation for specified claimSubmissionID not requested"),
