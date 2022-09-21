@@ -284,7 +284,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .to("mock:fetch-pdf"));
     mockFetchPdfEndpoint.expectedMessageCount(1);
 
-    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null);
+    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null, "");
 
     mockFetchPdfEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.fromFunction(
