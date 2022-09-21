@@ -43,7 +43,7 @@ services:
     command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
   vro-api-postgres-service:
-    image: postgres
+    image: va/abd_vro-postgres
     hostname: vro-api-postgres-service
     expose:
       - "5432"
@@ -51,11 +51,10 @@ services:
       POSTGRES_USER: ${POSTGRES_SUPER_USER}
       POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
       POSTGRES_DB: ${POSTGRES_SUPER_DB}
-      FLYWAY_USER: ${FLYWAY_USER}
-      FLYWAY_PASSWORD: ${FLYWAY_PASSWORD}
+      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
     volumes:
-      - ./initdb/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
       - pgdata:/var/lib/postgresql/data
     networks:
       - internal
@@ -72,9 +71,9 @@ services:
     networks:
       - internal
     environment:
-      FLYWAY_URL: jdbc:postgresql://vro-api-postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_INIT_USER}&password=${POSTGRES_INIT_PASSWORD}
-      FLYWAY_USER: ${POSTGRES_INIT_USER}
-      FLYWAY_PASSWORD: ${POSTGRES_INIT_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://vro-api-postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_ADMIN_USER}&password=${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
       FLYWAY_TABLE: ${FLYWAY_TABLE}
       FLYWAY_TABLESPACE: ${FLYWAY_TABLESPACE}
