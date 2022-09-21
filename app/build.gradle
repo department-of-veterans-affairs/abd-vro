@@ -35,8 +35,6 @@ dependencies {
 
     testImplementation "com.h2database:h2:${h2_version}"
     runtimeOnly "com.h2database:h2:${h2_version}"
-    // implementation "org.postgresql:postgresql:${postgresql_version}"
-    // runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     testImplementation 'org.testcontainers:postgresql:1.17.3'
     //This version is compatible with current spring version: 5.3.8
@@ -51,20 +49,18 @@ application {
     mainClass = 'gov.va.vro.VroApplication'
 }
 
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar)
+}
+
 bootJar {
     manifest {
         attributes(
                 'Application-Version': "${project.version}",
                 'Start-Class': 'gov.va.vro.VroApplication',
-//                "Application-Git-Commit": "${gitRevision}",
-//                "Application-Git-Branch-Name": "${gitBranchName}",
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         )
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 afterEvaluate {
