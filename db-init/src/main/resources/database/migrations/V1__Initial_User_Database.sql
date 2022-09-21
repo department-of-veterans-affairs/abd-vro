@@ -1,7 +1,7 @@
--- Flyway user and db is created by postgres container initialization and can serve as admin for the db
+-- "username", "userpassword", and "dbname" are defined in flyway.conf
+--
 
 CREATE ROLE #[username] LOGIN PASSWORD '#[userpassword]';
-
 GRANT CONNECT ON DATABASE #[dbname] TO #[username];
 
 GRANT USAGE ON SCHEMA #[schemaname] TO #[username];
