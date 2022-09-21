@@ -2,7 +2,6 @@ name: Publish images
 
 on:
   push:
-    branches: [ develop ]
     tags: [ qa ]
   # Allow manual triggering
   workflow_dispatch:
