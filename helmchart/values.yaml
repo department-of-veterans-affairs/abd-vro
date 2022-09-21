@@ -185,37 +185,10 @@ dataservice:
   lhAssertionUrl: lhAssertionUrl
   lhAccessClientId: lhAccessClientId
 
-dbInit:
-  flywayurl: jdbc:postgresql://vro-api-postgres-service:5432/vro?user=vro_user&password=not-the-password
-  flywayuser: vro_user
-  flywaypassword: not-the-password
-  flywayconnectRetries: 10
-  flywaydefaultSchema: claims
-  flywayschemas: claims
-  flywaycreateSchemas: true
-  flywaytable: schema_history
-  flywaytablespace: pg_default
-  flywaylocations: classpath:gov.va.starter.example.migration,database/migrations,filesystem:/flyway/sql/migrations
-  flywaysqlMigrationPrefix: V
-  flywayrepeatableSqlMigrationPrefix: RRR
-  flywaysqlMigrationSeparator: __
-  flywaysqlMigrationSuffixes: .sql
-  flywayencoding: ISO-8859-1
-  flywayplaceholderReplacement: true
-  flywayplaceholdersusername: example_user
-  flywayplaceholdersservicename: example_service
-  flywayplaceholdersadminname: example_admin
-  flywayplaceholdersdbname: vro
-  flywayplaceholdersschemaname: claims
-  flywayplaceholdersuserpassword: also-not-the-user-password
-  flywayplaceholdersservicepassword: also-not-the-service-password
-  flywayplaceholdersadminpassword: also-not-the-admin-password
-  flywayplaceholderPrefix: \#\[
-  flywayplaceholderSuffix: \]
-  flywayskipDefaultCallbacks: false
-  flywaytarget: latest
-  flywayoutOfOrder: false
-  flywayvalidateOnMigrate: true
-  flywaycleanOnValidationError: true
-  flywaymixed: true
-  flywaygroup: false
+dbinit:
+  secretName: dbInit
+  urlKey: url
+  usernameKey: username
+  passwordKey: password
+  flywayTableKey: flywayTable
+  flywayTablespaceKey: flywayTablespace
