@@ -9,6 +9,7 @@ def continuous_medication_required(request_body):
     :return: response body indicating success or failure with additional attributes
     :rtype: dict
     """
+    response = {}
     relevant_medications = []
 
     veterans_medication = request_body["evidence"]["medications"]
@@ -21,5 +22,6 @@ def continuous_medication_required(request_body):
         key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
         reverse=True,
     )
-
-    return relevant_medications
+    response["medications"] = relevant_medications
+    response["medicationsCount"] = len(relevant_medications)
+    return response

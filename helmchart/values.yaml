@@ -186,7 +186,7 @@ dataservice:
   lhAccessClientId: lhAccessClientId
 
 dbinit:
-  secretName: dbInit
+  secretName: dbinit
   urlKey: url
   usernameKey: username
   passwordKey: password

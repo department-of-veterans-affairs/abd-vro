@@ -57,50 +57,55 @@ from assessclaimdc7101.src.lib import main
             },
             {
                 "evidence": {
-                    "medications": [
-                        {
-                            "description": "Capoten",
-                            "status": "active",
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                        }
-                    ],
                     "bp_readings": [
                         {
+                            "date": "2021-11-01",
                             "diastolic": {
                                 "code": "8462-4",
-                                "display": "Diastolic blood pressure",
+                                "display": "Diastolic blood " "pressure",
                                 "unit": "mm[Hg]",
                                 "value": 115,
                             },
+                            "organization": "LYONS VA MEDICAL CENTER",
+                            "practitioner": "DR. JANE460 DOE922 MD",
                             "systolic": {
                                 "code": "8480-6",
-                                "display": "Systolic blood pressure",
+                                "display": "Systolic blood " "pressure",
                                 "unit": "mm[Hg]",
                                 "value": 180,
                             },
-                            "date": "2021-11-01",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER",
                         },
                         {
+                            "date": "2021-09-01",
                             "diastolic": {
                                 "code": "8462-4",
-                                "display": "Diastolic blood pressure",
+                                "display": "Diastolic blood " "pressure",
                                 "unit": "mm[Hg]",
                                 "value": 110,
                             },
+                            "organization": "LYONS VA MEDICAL CENTER",
+                            "practitioner": "DR. JANE460 DOE922 MD",
                             "systolic": {
                                 "code": "8480-6",
-                                "display": "Systolic blood pressure",
+                                "display": "Systolic blood " "pressure",
                                 "unit": "mm[Hg]",
-                                "value": 200,
+                                "value": 200.0,
                             },
-                            "date": "2021-09-01",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER",
                         },
                     ],
-                }
+                    "medications": [
+                        {
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                            "description": "Capoten",
+                            "status": "active",
+                        }
+                    ],
+                },
+                "evidenceSummary": {
+                    "medicationsCount": 1,
+                    "recentBpReadings": 2,
+                    "totalBpReadings": 2,
+                },
             },
         ),
         (
@@ -148,7 +153,14 @@ from assessclaimdc7101.src.lib import main
                 "diagnosticCode": "7101",
             },
             # Blood pressue readings don't meet date specs
-            {"evidence": {"medications": [], "bp_readings": []}},
+            {
+                "evidence": {"bp_readings": [], "medications": []},
+                "evidenceSummary": {
+                    "medicationsCount": 0,
+                    "recentBpReadings": 0,
+                    "totalBpReadings": 2,
+                },
+            },
         ),
         # Sufficiency and history algos fail
         (
@@ -160,7 +172,14 @@ from assessclaimdc7101.src.lib import main
                 "date_of_claim": "2021-11-09",
                 "diagnosticCode": "7101",
             },
-            {"evidence": {"medications": [], "bp_readings": []}},
+            {
+                "evidence": {"bp_readings": [], "medications": []},
+                "evidenceSummary": {
+                    "medicationsCount": 0,
+                    "recentBpReadings": 0,
+                    "totalBpReadings": 0,
+                },
+            },
         ),
         # Bad data: "systolic" key is missing in second reading
         (
@@ -200,6 +219,12 @@ from assessclaimdc7101.src.lib import main
             },
             {
                 "errorMessage": "error validating request message data",
+                "evidence": {"bp_readings": [], "medications": []},
+                "evidenceSummary": {
+                    "medicationsCount": 0,
+                    "recentBpReadings": 0,
+                    "totalBpReadings": 0,
+                },
             },
         ),
         # Bad data:
@@ -251,6 +276,12 @@ from assessclaimdc7101.src.lib import main
             },
             {
                 "errorMessage": "error validating request message data",
+                "evidence": {"bp_readings": [], "medications": []},
+                "evidenceSummary": {
+                    "medicationsCount": 0,
+                    "recentBpReadings": 0,
+                    "totalBpReadings": 0,
+                },
             },
         ),
     ],
