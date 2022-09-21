@@ -20,15 +20,18 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.initUsernameKey }}
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.initPasswordKey }}
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.passwordKey }}
             - name: POSTGRES_DB
-              value: {{ .Values.postgres.initDbName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.dbnameKey }}
           ports:
             - containerPort: {{ .Values.service.db.sourcePort }}
               protocol: TCP
