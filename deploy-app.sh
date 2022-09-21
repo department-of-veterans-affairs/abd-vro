@@ -33,7 +33,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
               --set-string images.redis.tag="latest"\
-              --set-string images.db.tag="latest"\
+              --set-string images.db.tag="${IMAGE_TAG}"\
               --set-string images.mq.tag="3"\
               --set-string images.dbInit.tag="${IMAGE_TAG}"\
               --set-string images.pdfGenerator.tag="${IMAGE_TAG}"\
