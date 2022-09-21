@@ -10,16 +10,16 @@ def categorize_med(medication_display):
     :return: list
     """
     medication_dict = codesets.medication_codesets.med_dict
-    category = []
-    for category in list(medication_dict.keys()):
-        if category:
+    medication_category = []
+    for category_id in list(medication_dict.keys()):
+        if medication_category:
             # most general category has been identified
             break
-        for medication in medication_dict[category]:
+        for medication in medication_dict[category_id]:
             if medication in medication_display.lower():
-                category.append(category)
+                medication_category.append(category_id)
                 break
-    return category
+    return medication_category
 
 
 def medication_required(request_body):

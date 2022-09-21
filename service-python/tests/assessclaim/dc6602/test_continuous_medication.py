@@ -19,18 +19,14 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {
-                "medications": [
-                    {
-                        "asthmaRelevant": "true",
-                        "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol inhaler",
-                        "status": "active",
-                    }
-                ],
-                "relevantMedCount": 1,
-                "totalMedCount": 1,
-            },
+            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                              'conditionRelated': 'true',
+                              'description': 'Albuterol inhaler',
+                              'status': 'active',
+                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
+                                                    'Failure']}],
+             'relevantMedCount': 1,
+             'totalMedCount': 1},
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -46,18 +42,14 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {
-                "medications": [
-                    {
-                        "asthmaRelevant": "true",
-                        "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol",
-                        "status": "active",
-                    }
-                ],
-                "relevantMedCount": 1,
-                "totalMedCount": 1,
-            },
+            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                              'conditionRelated': 'true',
+                              'description': 'Albuterol',
+                              'status': 'active',
+                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
+                                                    'Failure']}],
+             'relevantMedCount': 1,
+             'totalMedCount': 1},
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
@@ -73,18 +65,13 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {
-                "medications": [
-                    {
-                        "asthmaRelevant": "false",
-                        "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Advil",
-                        "status": "active",
-                    }
-                ],
-                "relevantMedCount": 0,
-                "totalMedCount": 1,
-            },
+            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                              'conditionRelated': 'false',
+                              'description': 'Advil',
+                              'status': 'active',
+                              'suggestedCategory': []}],
+             'relevantMedCount': 0,
+             'totalMedCount': 1},
         ),
         # multiple medications, some to treat and others not to treat asthma
         (
@@ -105,24 +92,19 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {
-                "medications": [
-                    {
-                        "asthmaRelevant": "true",
-                        "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol",
-                        "status": "active",
-                    },
-                    {
-                        "asthmaRelevant": "false",
-                        "authoredOn": "1952-04-06T04:00:00Z",
-                        "description": "Advil",
-                        "status": "active",
-                    },
-                ],
-                "relevantMedCount": 1,
-                "totalMedCount": 2,
-            },
+            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                              'conditionRelated': 'true',
+                              'description': 'Albuterol',
+                              'status': 'active',
+                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
+                                                    'Failure']},
+                             {'authoredOn': '1952-04-06T04:00:00Z',
+                              'conditionRelated': 'false',
+                              'description': 'Advil',
+                              'status': 'active',
+                              'suggestedCategory': []}],
+             'relevantMedCount': 1,
+             'totalMedCount': 2},
         ),
         # medication description contains multiple keywords
         (
@@ -139,18 +121,15 @@ from assessclaimdc6602.src.lib import medication
                     "date_of_claim": "2021-11-09",
                 }
             },
-            {"medications":[
-                {
-                    "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
-                    "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-                    "status": "active",
-                    "asthma_relevant": [
-                        "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"
-                    ],
-                    "authoredOn": "1950-04-06T04:00:00Z",
-                },
-                ]
-            }
+            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                              'conditionRelated': 'true',
+                              'description': '14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT '
+                                             '/ vilanterol 0.025 MG/ACTUAT Dry Powder '
+                                             'Inhaler',
+                              'status': 'active',
+                              'suggestedCategory': ['Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive']}],
+             'relevantMedCount': 1,
+             'totalMedCount': 1}
         ),
     ],
 )
