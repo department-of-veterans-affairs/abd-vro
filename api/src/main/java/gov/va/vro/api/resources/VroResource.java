@@ -43,11 +43,11 @@ public interface VroResource {
   @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
-          value = {
-                  @ApiResponse(responseCode = "201", description = "Successful Request"),
-                  @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                  @ApiResponse(responseCode = "500", description = "Data Access Server Error")
-          })
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "500", description = "Data Access Server Error")
+      })
   @Timed(value = "health-data-assessment")
   @Tag(name = "Health Assessment")
   ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
@@ -110,11 +110,11 @@ public interface VroResource {
   @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
-          value = {
-                  @ApiResponse(responseCode = "201", description = "Successful Request"),
-                  @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                  @ApiResponse(responseCode = "500", description = "Claim Processing Server Error")
-          })
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "500", description = "Claim Processing Server Error")
+      })
   @Timed(value = "full-health-data-assessment")
   @Tag(name = "Full Health Assessment")
   ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
