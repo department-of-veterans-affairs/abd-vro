@@ -37,7 +37,7 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.initDbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_ADMIN_USER; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
