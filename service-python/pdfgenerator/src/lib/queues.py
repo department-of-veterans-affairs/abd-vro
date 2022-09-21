@@ -35,14 +35,12 @@ def on_generate_callback(channel, method, properties, body):
 				response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
 		except Exception as e:
 				logging.error(e, exc_info=True)
-				response = {"claimSubmissionId": claim_id, "status": "ERROR"}
+				response = {"claimSubmissionId": claim_id, "status": "ERROR", "reason": str(e)}
 		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
-
 
 def on_fetch_callback(channel, method, properties, body):
 		try:
 				redis_client = RedisClient(redis_config)
-
 				binding_key = method.routing_key
 				claim_id = str(body, 'UTF-8')
 				logging.info(f" [x] {binding_key}: Received Claim Submission ID: {claim_id}")
@@ -56,7 +54,8 @@ def on_fetch_callback(channel, method, properties, body):
 						response = {"claimSubmissionId": claim_id, "status": "NOT_FOUND", "diagnosis": "", "pdfData": ""}
 		except Exception as e:
 				logging.error(e, exc_info=True)
-				response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": ""}
+				response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": "", "reason": str(e)}
+				logging.info(response)
 		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 

@@ -93,9 +93,13 @@ public class VroController implements VroResource {
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
       String response = camelEntrance.generatePdf(model);
-      // There is no PII in the response
-      log.info("RESPONSE from generatePdf: {}", response);
-      model.setPdfDocumentJson(response);
+      GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
+      log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
+      log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getReason());
+      // model.setPdfDocumentJson(response);
+      if (pdfResponse.getStatus().equals("ERROR")) {
+        return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
       GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
       return new ResponseEntity<>(responseObj, HttpStatus.OK);
     } catch (Exception ex) {
@@ -138,6 +142,7 @@ public class VroController implements VroResource {
         if (pdfResponse.getStatus().equals("NOT_FOUND")) {
           return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
         } else if (pdfResponse.getStatus().equals("ERROR")) {
+          log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getReason());
           return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
