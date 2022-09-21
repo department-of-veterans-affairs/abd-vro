@@ -1,10 +1,10 @@
-from .settings import queue_config
-from . import main
-
-import pika
 import json
 import logging
-import base64
+
+import pika
+
+from . import main
+from .settings import queue_config
 
 EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
@@ -18,7 +18,7 @@ def on_request_callback(channel, method, properties, body):
 
     try:
         response = main.assess_hypertension(message)
-    except:
+    except Exception:
         response = {"status": "ERROR", "evidence": {}, "calculated": {}}
 
     channel.basic_publish(

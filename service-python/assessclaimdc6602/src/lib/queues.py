@@ -1,9 +1,10 @@
-from .settings import queue_config
-from . import main
-
-import pika
 import json
 import logging
+
+import pika
+
+from . import main
+from .settings import queue_config
 
 EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
@@ -16,7 +17,7 @@ def on_request_callback(channel, method, properties, body):
     logging.info(f" [x] {binding_key}: Received message: {properties.correlation_id}")
     try:
         response = main.assess_asthma(message)
-    except:
+    except Exception:
         response = {"status": "ERROR", "evidence": {}, "calculated": {}}
 
     channel.basic_publish(
@@ -43,4 +44,3 @@ def queue_setup(channel):
     logging.info(
         f" [*] Waiting for data for queue: {SERVICE_QUEUE}. To exit press CTRL+C"
     )
-
