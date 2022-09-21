@@ -187,6 +187,9 @@ dataservice:
 
 dbinit:
   secretName: dbinit
+  superUsernameKey: superUsername
+  superPasswordKey: superPassword
+  superDbnameKey: superDbname
   urlKey: url
   usernameKey: username
   passwordKey: password
