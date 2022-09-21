@@ -93,6 +93,7 @@ jobs:
       - name: Build Dockerfiles - base application
         run: |
           docker build -f ./app/src/docker/Dockerfile ./app/src/main/resources
+          docker build -f ./postgres/src/docker/Dockerfile ./postgres/src/main/resources
           docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
 
       - name: Build Dockerfiles - Java microservice
