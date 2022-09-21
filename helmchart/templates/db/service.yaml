@@ -11,3 +11,15 @@ spec:
       protocol: TCP
       name: http
   selector: {{- toYaml .Values.labels.db.global | nindent 4 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc #This is where to set the storage class name from the table above
+  resources:
+    requests:
+      storage: 5Gi
