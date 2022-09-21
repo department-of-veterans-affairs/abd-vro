@@ -17,7 +17,7 @@ def on_request_callback(channel, method, properties, body):
     try:
         response = main.assess_asthma(message)
     except:
-        response = {"status": "ERROR", "evidence": {}, "calculated": {}}
+        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
 
     channel.basic_publish(
         exchange=EXCHANGE,

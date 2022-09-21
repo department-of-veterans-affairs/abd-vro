@@ -1,9 +1,9 @@
-- `develop` branch: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/department-of-veterans-affairs/abd-vro/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/department-of-veterans-affairs/abd-vro/tree/develop)
-[![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+- `develop` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 [![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
-- `main` branch: [![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
-[![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
+- `main` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
 [![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 
 # ABD VRO
 

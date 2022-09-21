@@ -7,9 +7,15 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+  workflow_call:
+    secrets:
+      DEV_KUBE_CONFIG: 
+        required: true
+
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   COMMIT_SHA: ${{ github.sha }}
+  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
 
 jobs:
   call-build-workflow:
@@ -90,3 +96,30 @@ jobs:
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
           docker push "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}"
+      
+      - name: Generate kubeconfig
+        run: |
+          mkdir ~/.kube
+          echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Push to DEV (CD)
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          ./deploy-app.sh dev ${COMMIT_SHA:0:7}
+      #- name: Publish to develop
+      #  run: |
+      #    #install via helm
+      #    helm upgrade --install $HELM_APP_NAME helmchart \
+      #        --set-string environment="${ENV}"\
+      #        --set-string images.app.tag="${IMAGE_TAG}"\
+      #        --set-string images.serviceRuby.tag="${IMAGE_TAG}"\
+      #        --set-string images.dbInit.tag="${IMAGE_TAG}"\
+      #        --set-string info.version="${VERSION}"\
+      #        --set-string info.git_hash="${GIT_SHA}" \
+      #        --set-string info.deploy_env="${ENV}" \
+      #        --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
+      #        --debug \
+      #        -f helmchart/"${ENV}".yaml -n ${TEAMNAME}-"${ENV}" --wait
+

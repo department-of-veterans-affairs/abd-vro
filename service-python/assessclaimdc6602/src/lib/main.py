@@ -8,7 +8,7 @@ from typing import Dict
 
 def assess_asthma(event: Dict):
     """
-    Take a request that includes hypertension related data, and return a response
+    Take a request that includes asthma related data, and return a filtered response
 
     :param event: request body
     :type event: dict
@@ -21,19 +21,22 @@ def assess_asthma(event: Dict):
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
         active_conditions = condition.conditions_calculation(event)
+
+        response_body.update(
+            {
+                "evidence": {
+                    "medications": active_medications,
+                    "conditions": active_conditions,
+                },
+                "evidenceSummary": {
+                    "relevantMedCount": active_medications["relevantMedCount"],
+                    "totalMedCount": active_medications["totalMedCount"],
+                },
+            }
+        )
     else:
-        active_medications = []
-        active_conditions = []
+
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
-
-    response_body.update(
-        {
-            "evidence": {
-                "medications": active_medications,
-                "conditions": active_conditions,
-            }
-        }
-    )
 
     return response_body
