@@ -1,4 +1,4 @@
-name: Publish images
+name: Publish dev images
 
 on:
   push:
