@@ -19,6 +19,15 @@ def assess_asthma(event: Dict):
 
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
+
+        response_body.update(
+            {
+                "evidence": {
+                    "medications": active_medications,
+                }
+            }
+        )
+
     else:
         active_medications = {
             "medications": [],
