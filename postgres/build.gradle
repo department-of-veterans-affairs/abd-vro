@@ -12,7 +12,7 @@ docker {
 }
 
 dockerRun {
-    env 'FOO': getEnvOrDefault('FOO', 'foo')
+    image "${dockerRegistry}/${rootProject.name}-postgres"
 }
 
 

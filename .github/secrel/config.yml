@@ -18,6 +18,9 @@ images:
 - name: vro-app
   context: "./app/src/main/resources"
   path: "./app/src/docker/Dockerfile"
+- name: vro-postgres
+  context: "./postgres/src/main/resources"
+  path: "./postgres/src/docker/Dockerfile"
 - name: vro-init-db
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
