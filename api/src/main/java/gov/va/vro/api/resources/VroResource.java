@@ -133,11 +133,11 @@ public interface VroResource {
           "Retrieves all claims from vro db and displays claimSubmissionId,"
               + " veteran ICN, and contention diagnostic codes.")
   @ApiResponses(
-          value = {
-                  @ApiResponse(responseCode = "201", description = "Successful"),
-                  @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                  @ApiResponse(responseCode = "500", description = "Fetch Claims Server Error")
-          })
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "500", description = "Fetch Claims Server Error")
+      })
   @GetMapping("/fetch-claims")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "fetch-claims")
@@ -149,11 +149,11 @@ public interface VroResource {
       summary = "Retrieves metrics on claims stored in abd-vro database",
       description = "Returns number of claims in abd-vro databse")
   @ApiResponses(
-          value = {
-                  @ApiResponse(responseCode = "201", description = "Successful"),
-                  @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                  @ApiResponse(responseCode = "500", description = "Claim Metrics Server Error")
-          })
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "500", description = "Claim Metrics Server Error")
+      })
   @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-metrics")
