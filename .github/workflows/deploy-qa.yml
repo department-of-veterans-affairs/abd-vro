@@ -54,44 +54,37 @@ jobs:
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-pdfgenerator:latest"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest"
           
-
+      - name: Check images
+        run: |
+          docker image list
       - name: Push QA images
         run: |
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           # Pushes QA images for non-prod testing
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-postgres:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-app:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-init-db:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7}"
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-postgres
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-app
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-init-db
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-data-access
 
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-postgres:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-app:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-init-db:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest"
-          docker push "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest"
-
-      - name: Push QA images
+      - name: Clean Up QA images
         run: |
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-postgres:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-app:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-init-db:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7}"
-
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-postgres:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-app:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-init-db:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest"
-          docker rmi "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest"
+          docker rmi ghcr.io/${{ github.repository }}/qa_vro-postgres:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-app:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-init-db:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-postgres:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-app:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-init-db:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest 
 
       - name: Generate kubeconfig
         run: |
