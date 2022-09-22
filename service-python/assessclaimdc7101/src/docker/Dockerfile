@@ -6,6 +6,8 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+RUN yum info expat && yum -y update expat
+
 RUN adduser --disabled-password docker
 USER docker
 
