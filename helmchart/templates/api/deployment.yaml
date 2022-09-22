@@ -27,17 +27,22 @@ spec:
         - name: pg-isready
           image: postgres
           env:
-            - name: POSTGRES_USERNAME
+            - name: POSTGRES_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.initUsernameKey }}
+                  key: {{ .Values.postgres.dbnameKey }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.initDbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d $POSTGRES_DB -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_ADMIN_USER; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done

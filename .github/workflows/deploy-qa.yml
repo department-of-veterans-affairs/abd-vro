@@ -2,7 +2,6 @@ name: Publish images
 
 on:
   push:
-    branches: [ develop ]
     tags: [ qa ]
   # Allow manual triggering
   workflow_dispatch:
@@ -67,6 +66,8 @@ jobs:
 
       - name: Push images
         run: |
+          # Reminder to also add new images to build.yml and .github/secrel/config.yml
+
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 

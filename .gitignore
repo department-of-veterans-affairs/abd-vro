@@ -7,7 +7,7 @@ setenv.sh
 
 #Ignoring cache folders
 .cache
-
+.monokle
 .idea/
 .gradle/
 .gradletasknamecache
