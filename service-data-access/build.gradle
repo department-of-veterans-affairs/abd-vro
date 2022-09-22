@@ -4,10 +4,11 @@ plugins {
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
 	id "io.freefair.lombok" version "6.5.0.2"
-    id 'com.adarshr.test-logger' version '3.2.0'
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
+    id 'jacoco'
+
 }
 
 
@@ -24,6 +25,13 @@ ext {
     springBootVersion = '2.6.7'
     camelVersion = '3.18.0'
     testcontainersVersion = '1.17.3'
+}
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
 }
 
 dependencies {
@@ -47,13 +55,54 @@ dependencies {
     testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:$camelVersion"
     testImplementation "org.apache.camel.springboot:camel-jackson-starter:$camelVersion"
     testImplementation 'org.skyscreamer:jsonassert:1.2.3'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.7.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+
+
+    integrationTestImplementation 'org.testcontainers:testcontainers:$testcontainersVersion'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:$testcontainersVersion'
+    integrationTestImplementation 'org.testcontainers:rabbitmq:$testcontainersVersion'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:$camelVersion'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:$camelVersion'
+    integrationTestImplementation 'org.skyscreamer:jsonassert:1.2.3'
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = file("$buildDir/jacoco")
+}
+
+test {
+    useJUnitPlatform()
+    exclude '**/integrationTest'
+    finalizedBy jacocoTestReport {
+        executionData(file("${project.buildDir}/jacoco/test.exec"))
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    finalizedBy jacocoTestReport {
+        executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
+    }
 }
 
 docker {
-    files "build/libs/service-data-access-0.0.1-SNAPSHOT.jar", "bin/entrypoint.sh"
-    buildArgs([JAR_FILE: "service-data-access-0.0.1-SNAPSHOT.jar", ENTRYPOINT_FILE: "entrypoint.sh"])
+    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
 }
-
 
 bootJar {
     manifest {
@@ -66,24 +115,3 @@ bootJar {
         )
     }
 }
-
-
-
-/*
-test {
-	useJUnitPlatform()
-}
-
-dockerRun {
-    image "${dockerRegistry}/${rootProject.name}-service-data-access"
-}
-*/
-/*
-docker {
-    // Expects src/docker/Dockerfile to exist
-    // Copies files into build/docker/ folder, where the container image will be built
-    copySpec.into(".").from("../../src"){
-        exclude('docker')
-    }
-}
-*/

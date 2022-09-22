@@ -2,11 +2,13 @@
 
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
 
+#verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ]
 then
   echo "Please enter valid environment (dev, sandbox, qa, prod)" && exit 1
 fi
 
+#get the current sha from github repository
 GIT_SHA=$(git rev-parse HEAD)
 if [ -n "$2" ]
 then

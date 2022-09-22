@@ -8,11 +8,15 @@ import java.util.Map;
 
 /**
  * Used by ClaimProcessorRoute to dynamically route claim to endpoints depending on claim
- * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html
+ * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html.
  */
 @Slf4j
 @Component
 public class SlipClaimSubmitRouter {
+
+  private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+  public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
+
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -23,16 +27,15 @@ public class SlipClaimSubmitRouter {
   public String routeClaimSubmit(Object body, @ExchangeProperties Map<String, Object> props) {
     Object diagnosticCodeObj = props.get("diagnosticCode");
     if (diagnosticCodeObj == null) {
-      log.error("No diagnostic code in the body.");
-      return null;
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
-        "rabbitmq:claim-submit-exchange"
-            + "?queue=claim-submit"
-            + "&routingKey=code."
-            + diagnosticCode;
-
+        String.format(
+            "rabbitmq:claim-submit-exchange?queue=claim-submit&"
+                + "routingKey=code.%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -47,12 +50,14 @@ public class SlipClaimSubmitRouter {
   public String routeClaimSubmitFull(Object body, @ExchangeProperties Map<String, Object> props) {
     Object diagnosticCodeObj = props.get("diagnosticCode");
     if (diagnosticCodeObj == null) {
-      log.error("No diagnostic code in the body.");
-      return null;
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     String diagnosticCode = diagnosticCodeObj.toString();
-    String route = "rabbitmq:health-assess-exchange" + "?routingKey=" + diagnosticCode;
-
+    String route =
+        String.format(
+            "rabbitmq:health-assess-exchange?routingKey=%s&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }

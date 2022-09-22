@@ -15,6 +15,12 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+  redis:
+    global: &labels-redis-global
+      app: redis-cache
+    pod:
+      <<: *labels-redis-global
+      sidecar.istio.io/inject: "false"
   mq:
     global: &labels-mq-global
       app: rabbit-mq
@@ -27,31 +33,39 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
-  app:
-    imageName: abd_vro-app
-    tag: latest
-    imagePullPolicy: Always
-  pdfGenerator:
-    imageName: abd_vro-pdfgenerator
-    tag: latest
-    imagePullPolicy: Always
-  dbInit:
-    imageName: abd_vro-db-init
+  redis:
+    imageName: redis
     tag: latest
     imagePullPolicy: Always
   db:
-    imageName: abd_vro-postgres
-    tag: latest
+    imageName: dev_vro-postgres
+    tag: 0b9c9c4
   mq:
-    imageName: abd_vro-rabbitmq
+    imageName: vro-rabbitmq
     tag: 3
+  app:
+    imageName: dev_vro-app
+    tag: 0b9c9c4
+    imagePullPolicy: Always
+  dbInit:
+    imageName: dev_vro-init-db
+    tag: 0b9c9c4
+    imagePullPolicy: Always
+  pdfGenerator:
+    imageName: dev_vro-service-pdfgenerator
+    tag: 0b9c9c4
+    imagePullPolicy: Always
   serviceAssessClaimDC7101:
-    imageName: abd_vro-service-assessclaimdc7101
-    tag: latest
+    imageName: dev_vro-service-assessclaimdc7101
+    tag: 0b9c9c4
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
-    imageName: abd_vro-service-assessclaimdc6602
-    tag: latest
+    imageName: dev_vro-service-assessclaimdc6602
+    tag: 0b9c9c4
+    imagePullPolicy: Always
+  serviceDataAccess:
+    imageName: dev_vro-service-data-access
+    tag: 0b9c9c4
     imagePullPolicy: Always
     
 resources:
@@ -73,6 +87,10 @@ resources:
     limits:
       cpu: 10m
       memory: 256Mi
+  redis:
+    limits:
+      cpu: 10m
+      memory: 256Mi
   mq:
     limits:
       cpu: 10m
@@ -87,10 +105,18 @@ service:
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
+  redis:
+    type: ClusterIP
+    sourcePort: 6379
+    targetPort: 6379
   mq:
     type: ClusterIP
     sourcePort: 5672
     targetPort: 5672
+  mqManagement:
+    type: ClusterIP
+    sourcePort: 15672
+    targetPort: 15672
 
 ports:
   - name: http
@@ -126,20 +152,46 @@ readinessProbe:
 #   minReplicas: 1
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
+api:
+  apiKeySecret: api
+  apiKey01: apiKey01
+  apiKey02: apiKey02
 
 postgres:
-  dbName: example
+  dbName: vro
   secretName: postgres
   usernameKey: username
   passwordKey: password
-  rootUsernameKey: root-username
-  rootPasswordKey: root-password
-  usernameValue: someuser
-  passwordValue: somepass
+  dbnameKey: dbName
+  initDbName: vro
+  initUsernameKey: initUsername
+  initPasswordKey: initPassword
+  urlKey: url
+  schemaKey: schema
 
 rabbitmq:
   secretName: rabbitmq
+  usernameKey: User
+  passwordKey: Pass
+
+redis:
+  secretName: redis
+  passwordKey: redisPassword
+
+dataservice:
+  lhTokenUrl: lhTokenUrl
+  lhFhirUrl: lhFhirUrl
+  lhPrivateKey: lhPrivateKey
+  lhAssertionUrl: lhAssertionUrl
+  lhAccessClientId: lhAccessClientId
+
+dbinit:
+  secretName: dbinit
+  superUsernameKey: superUsername
+  superPasswordKey: superPassword
+  superDbnameKey: superDbname
+  urlKey: url
   usernameKey: username
   passwordKey: password
-  usernameValue: guest
-  passwordValue: guest
+  flywayTableKey: flywayTable
+  flywayTablespaceKey: flywayTablespace

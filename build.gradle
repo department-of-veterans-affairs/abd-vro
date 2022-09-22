@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
     id("org.ajoberstar.grgit") version "${grgit_version}" apply false
-    id("org.springframework.boot") version "${spring_boot_plugin_version}" apply false
+    id("org.springframework.boot") version "${spring_boot_version}" apply false
     id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
     id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
     id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
@@ -57,15 +57,14 @@ ext {
                    ':persistence:model',
                    ':service:provider',
                    ':service:spi',
+                   ':service-data-access',
                    ':test-data-factory']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
                      ':service-data-access',
-                     ':container-init',
-                     ':db-init',
-                     ':opa-init']
+                     ':db-init']
 }
 
 

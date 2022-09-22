@@ -1,3 +1,13 @@
+#Ignoring the password file
+all-secrets.txt
+
+# Files copied from repo abd-vro-dev-secrets
+private.pem
+setenv.sh
+
+#Ignoring cache folders
+.cache
+.monokle
 .idea/
 .gradle/
 .gradletasknamecache
@@ -7,6 +17,7 @@ build/
 /reports/
 docker-machine-driver-hyperkit
 .DS_Store
+.vs
 
 target/
 

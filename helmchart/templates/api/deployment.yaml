@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,17 +27,22 @@ spec:
         - name: pg-isready
           image: postgres
           env:
-            - name: POSTGRES_USERNAME
+            - name: POSTGRES_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
+                  key: {{ .Values.postgres.dbnameKey }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d $POSTGRES_DB -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_ADMIN_USER; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -48,66 +52,123 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
           imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
           env:
-            - name: FLYWAY_PLACEHOLDERS_DBNAME
-              value: {{ .Values.postgres.dbName }}
+            - name: FLYWAY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.urlKey }}
             - name: FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.passwordKey }}
+            - name: FLYWAY_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
+            - name: FLYWAY_TABLE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.flywayTableKey }}
+            - name: FLYWAY_TABLESPACE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.flywayTablespaceKey }}
+            - name: FLYWAY_PLACEHOLDERS_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.usernameKey }}
-            - name: FLYWAY_PASSWORD
+            - name: FLYWAY_PLACEHOLDERS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
+            - name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
-            - name: FLYWAY_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort}}/{{ .Values.postgres.dbName }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
       containers:
-        - name: {{ .Values.name }}
+        - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
-            - name: SPRING_DATASOURCE_USERNAME
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.urlKey }}
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.usernameKey }}
-            - name: SPRING_DATASOURCE_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
-            - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: $(SPRING_DATASOURCE_URL)
-            - name: SPRING_DATASOURCE_HIKARI_USERNAME
-              value: $(SPRING_DATASOURCE_USERNAME)
-            - name: SPRING_DATASOURCE_HIKARI_PASSWORD
-              value: $(SPRING_DATASOURCE_PASSWORD)
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: POSTGRES_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: {{- toYaml .Values.resources.api | nindent 12 }}
+            - name: JAVA_PROFILE
+              value: -Dspring.profiles.include=compose
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
         - name: {{ .Values.name }}-assessclaimdc7101
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC7101.imageName }}:{{ .Values.images.assessClaimDC7101.tag }}
-          imagePullPolicy: {{ .Values.images.assessClaimDC7101.imagePullPolicy }}
-        - name: {{ .Values.name }}-assessclaimdc6602
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.assessClaimDC6602.imageName }}:{{ .Values.images.assessClaimDC6602.tag }}
-          imagePullPolicy: {{ .Values.images.assessClaimDC6602.imagePullPolicy }}
-        - name: {{ .Values.name }}-pdfgenerator
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
-          imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
           env:
             - name: RABBITMQ_PLACEHOLDERS_HOST
-              value: {{ .Chart.Name }}-rabbitmq
+              value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -118,6 +179,111 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
-          resources: {{- toYaml .Values.resources.serviceAssessClaimDC7101 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.serviceAssessClaimDC6602 | nindent 12 }}
-          resources: {{- toYaml .Values.resources.servicePythonPdfGenerator | nindent 12 }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+        - name: {{ .Values.name }}-assessclaimdc6602
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
+          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+        - name: {{ .Values.name }}-pdfgenerator
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
+          imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+            - name: REDIS_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-redis-service
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+        - name: {{ .Values.name }}-service-data-access
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceDataAccess.imageName }}:{{ .Values.images.serviceDataAccess.tag }}
+          imagePullPolicy: {{ .Values.images.serviceDataAccess.imagePullPolicy }}
+          env:
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+            - name: LH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhPrivateKey }}
+            - name: LH_ACCESS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhAccessClientId }}
+            - name: LH_ASSERTION_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhAssertionUrl }}
+            - name: LH_TOKEN_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhTokenUrl }}
+            - name: LH_FHIR_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhFhirUrl }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

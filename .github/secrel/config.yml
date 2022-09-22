@@ -1,0 +1,45 @@
+---
+# Configuration for Snyk
+# * This is only required for Maven builds
+# Snyk calls it's own internal build from the package manager, similar to a mvn install.
+# If your application is built in Java, specify the java-version for Snyk to successfully build the application.
+# You will have to change the arguments to match your settings.xml and the Github secret associated with the argument
+# snyk:
+#   java-version: 16
+#   additional-args:
+#   - -Dexample-build-arg=some-value
+#   - -Dexample.maven=${{ secrets.example_secret }}
+
+snyk:
+  additional-args:
+  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
+images:
+- name: vro-app
+  context: "./app/src/main/resources"
+  path: "./app/src/docker/Dockerfile"
+- name: vro-postgres
+  context: "./postgres/src/main/resources"
+  path: "./postgres/src/docker/Dockerfile"
+- name: vro-init-db
+  context: "./db-init/src/main/resources"
+  path: "./db-init/src/docker/Dockerfile"
+- name: vro-service-data-access
+  context: "./service-data-access/src/main/resources"
+  path: "./service-data-access/src/docker/Dockerfile"
+- name: vro-service-pdfgenerator
+  context: "./service-python/pdfgenerator/src"
+  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+- name: vro-service-assessclaimdc7101
+  context: "./service-python/assessclaimdc7101/src"
+  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+- name: vro-service-assessclaimdc6602
+  context: "./service-python/assessclaimdc6602/src"
+  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+
+# Remove source block if you're not building sources
+#source:
+#  java-version: 16
+#  args:
+#    - -Dexample-build-arg=some-value
+#    - -Dexample.maven=${{ secrets.example_secret }}

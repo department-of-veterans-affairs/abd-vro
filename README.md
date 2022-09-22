@@ -1,4 +1,9 @@
-[![CircleCI](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main.svg?style=shield&circle-token=adbf14b0367e25d8a01014669c255af742498dd3)](https://circleci.com/gh/department-of-veterans-affairs/abd-vro/tree/main)
+- `develop` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+[![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
+- `main` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+[![Publish images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/publish.yml)
+[![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 
 # ABD VRO
 
@@ -47,7 +52,7 @@ If no other changes have been made, this application will have [these features][
 Before you run this application locally, you will need to make sure you have all the following required dependencies available in your local environment:
 
 - Java 17 ([Mac Guide][6] | [Other OS Guide][5])
-- Gradle 7.2 (used by Github Actions)
+- Gradle ~7.2~ 7.4 (to be compatible with Java 17)
 - [docker][7]
 - [hadolint][8]
 - [spectral][12]

@@ -8,9 +8,9 @@
   <table>
     <tr><td>
       <b>Important!</b> Medications that <b>may</b> have been prescribed for asthma are marked
-      with <span class="dejavu">&#9654;</span>arrows<span class="dejavu">&#9664;</span>.
+      with <span class="dejavu">&#9654;</span>arrows<span class="dejavu">&#9664;</span>. <br />
       Claims adjudicators should check the patient's medical records to see what the medication was
-      prescribed for.<br/>
+      prescribed for.<br />
       See "How we identify asthma prescriptions" at the end of this document for more details.
     </td></tr>
   </table>
@@ -20,23 +20,27 @@
   {% for medicine in evidence.medications %}
     <br />
     <p>
-      {% if medicine.flagged %}
+      {% if medicine.asthmaRelevant %}
         <span class="dejavu">&#9654;</span>
         <b>{{medicine.description}}</b>
-        <span class="dejavu">&#9664;</span>
+        <span class="dejavu">&#9664;</span><br />
       {% else %}
-        <b>{{medicine.description}}</b>
+        <b>{{medicine.description}}</b><br />
       {% endif %}
-      {% for note in medicine.notes %}
-        {{note}}
-      {% endfor %}<br />
-      {% for dosage in medicine.dosageInstructions %}
-        {{dosage}}
-      {% endfor %}<br />
+      {% if medicine.notes %}
+        {% for note in medicine.notes %}
+          {{note}}
+        {% endfor %}<br />
+      {% endif %}
+      {% if medicine.dosageInstructions %}
+        {% for dosage in medicine.dosageInstructions %}
+          {{dosage}}
+        {% endfor %}<br />
+      {% endif %}
 
       Prescribed on:
       {% if medicine.authoredOn %}
-        {{medicine.authoredOn}}
+        {{medicine.authoredOn.strftime('%m/%d/%Y')}} at {{medicine.authoredOn.strftime('%H:%M %p %Z')}}
       {% endif %}
 
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

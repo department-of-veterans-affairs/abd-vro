@@ -1,6 +1,8 @@
 package gov.va.vro.persistence.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.persistence.model.ContentionEntity;
 import org.junit.jupiter.api.Assertions;
@@ -25,8 +27,6 @@ class ClaimRepositoryTest {
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
 
-    var claim = TestDataSupplier.createClaim("123", "type", veteran);
-
     ContentionEntity contention1 = new ContentionEntity("c1");
     contention1.addAssessmentResult(2);
     contention1.addEvidenceSummaryDocument("doc1", 1);
@@ -34,6 +34,7 @@ class ClaimRepositoryTest {
     ContentionEntity contention2 = new ContentionEntity("c2");
     contention2.addAssessmentResult(1);
     contention2.addAssessmentResult(2);
+    var claim = TestDataSupplier.createClaim("123", "type", veteran);
     claim.addContention(contention1);
     claim.addContention(contention2);
 
@@ -55,5 +56,10 @@ class ClaimRepositoryTest {
         .ifPresentOrElse(
             contention -> assertEquals(2, contention2.getAssessmentResults().size()),
             Assertions::fail);
+
+    assertTrue(
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .isPresent());
   }
 }

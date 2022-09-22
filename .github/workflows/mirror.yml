@@ -1,6 +1,21 @@
 name: Mirroring
 
-on: [push, delete]
+on:
+  pull_request:
+    branches: [ main, develop ]
+    # Limit to certain PR event types since this action triggers checks to run on the mirror
+    types: [ready_for_review, review_requested]
+
+  # When changes are pushed to special branches
+  push:
+    branches: [ main, develop ]
+
+  # When a Git reference (Git branch or tag) is created or deleted
+  create:
+  delete:
+
+  # Allow manual triggering
+  workflow_dispatch:
 
 # Ensures that only one mirror task will run at a time.
 concurrency:

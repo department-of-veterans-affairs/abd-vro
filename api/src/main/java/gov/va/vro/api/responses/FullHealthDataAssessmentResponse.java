@@ -29,9 +29,9 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Map<String, Object> errors;
 
-  @Schema(description = "Calculated fields")
+  @Schema(description = "Evidence summary fields")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private Map<String, Object> calculated;
+  private Map<String, Object> evidenceSummary;
 
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -41,6 +41,15 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String status;
 
+  /***
+   *<p>Summary.</p>
+   *
+   * @param veteranIcn veteran ICN number
+   *
+   * @param diagnosticCode diagnostic code
+   *
+   * @param errorMessage error message
+   */
   public FullHealthDataAssessmentResponse(
       String veteranIcn, String diagnosticCode, String errorMessage) {
     this.veteranIcn = veteranIcn;

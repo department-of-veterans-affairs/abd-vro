@@ -33,16 +33,16 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:postgresql'
 
-    testImplementation 'com.h2database:h2'
-    runtimeOnly 'com.h2database:h2'
+    testImplementation "com.h2database:h2:${h2_version}"
+    runtimeOnly "com.h2database:h2:${h2_version}"
+    // implementation "org.postgresql:postgresql:${postgresql_version}"
+    // runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     testImplementation 'org.testcontainers:postgresql:1.17.3'
     //This version is compatible with current spring version: 5.3.8
     testImplementation 'org.apache.camel:camel-test-spring-junit5:3.11.0'
 
-    docker project(':container-init')
     docker project(':db-init')
-    docker project(':opa-init')
 }
 
 
@@ -69,6 +69,26 @@ repositories {
 
 afterEvaluate {
     tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
+
+    tasks.named('forkedSpringBootRun').configure {
+        dependsOn 'bootStartScripts'
+        dependsOn ':app:checkstyleGatling'
+        dependsOn 'checkstyleIntegrationTest'
+        dependsOn 'checkstyleMain'
+        dependsOn 'checkstyleTest'
+        dependsOn 'compileGatlingJava'
+        dependsOn 'compileGatlingScala'
+        dependsOn 'compileIntegrationTestJava'
+        dependsOn 'dockerfileZip'
+        dependsOn 'integrationTest'
+        dependsOn 'jar'
+        dependsOn 'spotlessJava'
+        dependsOn 'startScripts'
+        dependsOn 'test'
+
+        dependsOn 'jacocoTestReport'
+        dependsOn 'jacocoTestCoverageVerification'
+    }
 }
 
 tasks.named('lintDockerfile').configure {
@@ -76,7 +96,5 @@ tasks.named('lintDockerfile').configure {
 }
 
 tasks.named('dockerComposeUp').configure {
-    dependsOn ':container-init:docker'
     dependsOn ':db-init:docker'
-    dependsOn ':opa-init:docker'
 }

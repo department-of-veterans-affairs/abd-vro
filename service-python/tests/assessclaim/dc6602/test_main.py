@@ -8,42 +8,85 @@ from assessclaimdc6602.src.lib import main
         (
             {
                 "evidence": {
-                    "medications": [{"description": "Prednisone"}],
-                    "conditions": []
+                    "medications": [
+                        {
+                            "description": "Prednisone",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {"medications": [{"description": "Prednisone"}], "conditions": []},
-            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Prednisone",
+                            "status": "active",
+                        }
+                    ]
+                },
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+            },
         ),
-
         # demonstrates ability to match substrings in medication["text"] property
         (
             {
                 "evidence": {
-                    "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
-                    "conditions": [ {"code": "15777000", "text": "Prediabetes"}]
+                    "medications": [
+                        {
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {
-                "medications": [{"description": "predniSONE 1 MG Oral Tablet"}],
-                "conditions": []
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "true",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
+                        }
+                    ]
                 },
-             "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": False, "success": True}}}
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+            },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
             {
                 "evidence": {
-                    "medications": [{"description" : "Advil"}],
-                    "conditions": [{"text": "Eosinophilic asthma","code": "J82.83"}]
+                    "medications": [
+                        {
+                            "description": "Advil",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        }
+                    ]
                 },
-                "date_of_claim": "2021-11-09"
+                "date_of_claim": "2021-11-09",
             },
-            {"evidence": {"medications": [],
-            "conditions": [{"text": "Eosinophilic asthma", "code": "J82.83"}]},
-            "calculated": {"persistent_calculation": {"mild-persistent-asthma-or-greater": True, "success": True}}}
+            {
+                "evidence": {
+                    "medications": [
+                        {
+                            "asthmaRelevant": "false",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Advil",
+                            "status": "active",
+                        }
+                    ]
+                },
+                "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
+            },
         ),
     ],
 )

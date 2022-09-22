@@ -18,7 +18,7 @@ pluginManagement {
             url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
             credentials(HttpHeaderCredentials) {
                 name = "Authorization"
-                value = "Bearer " + System.getenv("GITHUB_ACCESS_TOKEN")
+                value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
             }
             authentication {
                 register("header", HttpHeaderAuthentication)
@@ -38,6 +38,7 @@ pluginManagement {
     }
 }
 
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
@@ -48,7 +49,7 @@ dependencyResolutionManagement {
             url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
             credentials(HttpHeaderCredentials) {
                 name = "Authorization"
-                value = "Bearer " + System.getenv("GITHUB_ACCESS_TOKEN")
+                value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
             }
             authentication {
                 register("header", HttpHeaderAuthentication)
@@ -72,11 +73,10 @@ dependencyResolutionManagement {
 rootProject.name = 'abd_vro'
 include ':api'
 include ':app'
-include ':container-init'
 include ':controller'
 include ':docs'
 include ':db-init'
-include ':opa-init'
+include ':postgres'
 include ':persistence:model'
 include ':scripts'
 include ':service:provider'

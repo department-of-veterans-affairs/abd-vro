@@ -1,8 +1,15 @@
 package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+import java.util.Set;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
@@ -29,4 +36,6 @@ public class Claim {
   @NotNull private String veteranIcn;
 
   @NotNull private String diagnosticCode;
+
+  private Set<String> contentions;
 }

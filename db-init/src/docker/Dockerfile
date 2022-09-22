@@ -1,7 +1,10 @@
-FROM flyway/flyway:7.5.4
+FROM flyway/flyway:9.2.3
+LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 COPY database /flyway/sql
 COPY flyway.conf /flyway/conf
 HEALTHCHECK NONE
-LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
+
+RUN useradd --no-create-home docker
+USER docker
 
 CMD [ "migrate", "-X" ]

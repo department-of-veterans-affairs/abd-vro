@@ -9,6 +9,7 @@ import gov.va.vro.api.model.VeteranInfo;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FetchPdfResponse;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.exception.ClaimProcessingError;
@@ -26,7 +27,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -48,6 +54,9 @@ class VroControllerTest extends BaseIntegrationTest {
   @EndpointInject("mock:claim-submit")
   private MockEndpoint mockSubmitClaimEndpoint;
 
+  @EndpointInject("mock:claim-submit-full")
+  private MockEndpoint mockFullHealthEndpoint;
+
   @EndpointInject("mock:generate-pdf")
   private MockEndpoint mockGeneratePdfEndpoint;
 
@@ -55,9 +64,11 @@ class VroControllerTest extends BaseIntegrationTest {
   private MockEndpoint mockFetchPdfEndpoint;
 
   @Test
+  @DirtiesContext
   void postHealthAssessment() throws Exception {
 
-    // intercept the original endpoint, skip it and replace it with the mock endpoint
+    // intercept the original endpoint, skip it and replace it with the mock
+    // endpoint
     adviceWith(
         camelContext,
         "claim-submit",
@@ -66,7 +77,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.1701")
+                        + "&routingKey=code.1701&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
     // The mock endpoint returns a valid response
@@ -101,7 +112,8 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
-  void postHealthAssessment_missing_evidence() throws Exception {
+  @DirtiesContext
+  void claimSubmit_missing_evidence() throws Exception {
     adviceWith(
         camelContext,
         "claim-submit",
@@ -110,7 +122,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.1701")
+                        + "&routingKey=code.1701&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
 
@@ -130,6 +142,105 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
+  @DirtiesContext
+  void postFullHealthAssessment() throws Exception {
+
+    // intercept the original endpoint, skip it and replace it with the mock
+    // endpoint
+    adviceWith(
+        camelContext,
+        "claim-submit",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:claim-submit-exchange"
+                        + "?queue=claim-submit"
+                        + "&routingKey=code.7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit"));
+    // Mock secondary process endpoint
+    adviceWith(
+        camelContext,
+        "claim-submit-full",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit-full"));
+    // The mock endpoint returns a valid response
+    mockFullHealthEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("7101");
+
+    var responseEntity1 =
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+
+    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+    FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+
+    // Now submit an existing claim:
+    var responseEntity2 =
+        post("/v1/full-health-data-assessment", request, HealthDataAssessmentResponse.class);
+    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
+    HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+
+    Optional<ClaimEntity> claimEntityOptional =
+        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
+    assertTrue(claimEntityOptional.isPresent());
+  }
+
+  @Test
+  @DirtiesContext
+  void fullClaimSubmit_missing_evidence() throws Exception {
+    adviceWith(
+        camelContext,
+        "claim-submit",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:claim-submit-exchange"
+                        + "?queue=claim-submit"
+                        + "&routingKey=code.7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit"));
+    // Mock secondary process endpoint
+    adviceWith(
+        camelContext,
+        "claim-submit-full",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit-full"));
+
+    mockFullHealthEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
+
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("7101");
+
+    var responseEntity =
+        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    var claimProcessingError = responseEntity.getBody();
+    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  }
+
+  @Test
+  @DirtiesContext
   void generatePdf() throws Exception {
     adviceWith(
         camelContext,
@@ -161,6 +272,7 @@ class VroControllerTest extends BaseIntegrationTest {
   }
 
   @Test
+  @DirtiesContext
   void fetchPdf() throws Exception {
     adviceWith(
         camelContext,
@@ -172,7 +284,7 @@ class VroControllerTest extends BaseIntegrationTest {
                 .to("mock:fetch-pdf"));
     mockFetchPdfEndpoint.expectedMessageCount(1);
 
-    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", null);
+    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null);
 
     mockFetchPdfEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.fromFunction(
@@ -198,7 +310,7 @@ class VroControllerTest extends BaseIntegrationTest {
   private <I, O> ResponseEntity<O> exchange(
       String url, I request, HttpMethod method, Class<O> responseType) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("X-API-Key", "ec4624eb-a02d-4d20-bac6-095b98a792a2");
+    headers.add("X-API-Key", "test-key-01");
     var httpEntity = new HttpEntity<>(request, headers);
     return testRestTemplate.exchange(url, method, httpEntity, responseType);
   }

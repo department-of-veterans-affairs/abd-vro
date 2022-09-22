@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-rabbitmq
+  name: {{ .Chart.Name }}-rabbit-mq
   labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
 spec:
   replicas: 1

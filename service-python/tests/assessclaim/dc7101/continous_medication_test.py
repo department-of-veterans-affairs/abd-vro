@@ -7,63 +7,133 @@ from assessclaimdc7101.src.lib import continuous_medication
     [
         # Service connected and medication used to treat hypertension
         (
-            {"evidence":
             {
-                "bp_readings": [],
-                "medications": [{"description": "Benazepril"}],
-                'date_of_claim': '2021-11-09',
-            }
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [
+                        {
+                            "description": "Benazepril",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        }
+                    ],
+                    "date_of_claim": "2021-11-09",
+                }
             },
-            [{"description": "Benazepril"}]
-            ,
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Not service connected but uses medication used to treat hypertension
         (
-            {"evidence":
             {
-                "bp_readings": [],
-                "medications": [{"description": "Benazepril"}],
-                'date_of_claim': '2021-11-09',
-            }
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [
+                        {
+                            "description": "Benazepril",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        }
+                    ],
+                    "date_of_claim": "2021-11-09",
+                }
             },
-            [{"description": "Benazepril"}]
-            ,
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Service connected but doesn't use medication used to treat hypertension
         (
-            {"evidence":
             {
-                "bp_readings": [],
-                "medications": [{"description": "Advil"}],
-                'date_of_claim': '2021-11-09',
-            }
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [
+                        {
+                            "description": "Advil",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        }
+                    ],
+                    "date_of_claim": "2021-11-09",
+                }
             },
-            [],
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    }
+                ],
+                "medicationsCount": 1,
+            },
         ),
         # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
-            {"evidence":
             {
-                "bp_readings": [],
-                "medications": [{"description": "Benazepril"}, {"description": "Advil"}],
-                'date_of_claim': '2021-11-09',
-            }
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [
+                        {
+                            "description": "Benazepril",
+                            "status": "active",
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                        },
+                        {
+                            "description": "Advil",
+                            "status": "active",
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        },
+                    ],
+                    "date_of_claim": "2021-11-09",
+                }
             },
-            [{"description": "Benazepril"}],
+            {
+                "medications": [
+                    {
+                        "authoredOn": "1952-04-06T04:00:00Z",
+                        "description": "Advil",
+                        "status": "active",
+                    },
+                    {
+                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "description": "Benazepril",
+                        "status": "active",
+                    },
+                ],
+                "medicationsCount": 2,
+            },
         ),
         # Service connected but no medication
         (
-            {"evidence":
             {
-                "bp_readings": [],
-                "medications": [],
-            }
+                "evidence": {
+                    "bp_readings": [],
+                    "medications": [],
+                }
             },
-            [],
+            {"medications": [], "medicationsCount": 0},
         ),
     ],
 )
-def test_continuous_medication_required(request_body, continuous_medication_required_calculation):
+def test_continuous_medication_required(
+    request_body, continuous_medication_required_calculation
+):
     """
     Test the history of continuous medication required algorithm
 
@@ -72,4 +142,7 @@ def test_continuous_medication_required(request_body, continuous_medication_requ
     :param continuous_medication_required_calculation: correct return value from algorithm
     :type continuous_medication_required_calculation: dict
     """
-    assert continuous_medication.continuous_medication_required(request_body) == continuous_medication_required_calculation
+    assert (
+        continuous_medication.continuous_medication_required(request_body)
+        == continuous_medication_required_calculation
+    )

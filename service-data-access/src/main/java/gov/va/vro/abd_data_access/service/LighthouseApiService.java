@@ -12,9 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,13 +24,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Security;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
@@ -80,20 +77,18 @@ public class LighthouseApiService {
           yield OBSERVATION;
         case CONDITION:
           yield CONDITION;
-        default:
-          yield UNKNOWN;
+        case PROCEDURE:
+          yield PROCEDURE;
       };
     }
   }
 
   private static final String PATIENT_CODING = "{\"patient\":\"%s\"}";
 
-  @Autowired private LighthouseProperties lhProps;
+  @Autowired
+  private LighthouseProperties lhProps;
 
   @Autowired private RestTemplate restTemplate;
-
-  @Value("classpath:private.pem")
-  private Resource privatePem;
 
   /**
    * Creates a bear token to access the Lighthouse FHIR API endpoint for the given patient.
@@ -122,7 +117,8 @@ public class LighthouseApiService {
 
   private String getCCGAssertion(String assertionUrl, String clientId) throws AbdException {
     try {
-      final PemReader pemReader = new PemReader(new InputStreamReader(privatePem.getInputStream()));
+      InputStream inputStream = new ByteArrayInputStream(lhProps.getPemkey().getBytes());
+      final PemReader pemReader = new PemReader(new InputStreamReader(inputStream));
       PemObject pemObject;
       try {
         pemObject = pemReader.readPemObject();
@@ -148,11 +144,11 @@ public class LighthouseApiService {
         | NoSuchAlgorithmException
         | NoSuchProviderException
         | InvalidKeySpecException e) {
-      log.error(e.getMessage());
+      log.error("Failed to create assertion for VA Lighthouse API. {}", e.getMessage(), e);
       throw new AbdException("Failed to create signing key for VA Lighthouse API.", e);
     } catch (NullPointerException e) {
-      log.error(e.getMessage());
-      throw new AbdException("Cannot find key file for Lighthouse access.");
+      log.error("Failed to find a valid key for VA Lighthouse API. {}", e.getMessage(), e);
+      throw new AbdException("Cannot find a valid key for Lighthouse access.", e);
     }
   }
 
@@ -163,6 +159,7 @@ public class LighthouseApiService {
     try {
       return mapper.readValue(result, LighthouseTokenMessage.class);
     } catch (IOException e) {
+      log.error("Failed to parse lighthouse token message.", e);
       throw new AbdException("Failed to parse lighthouse token message.", e);
     }
   }
@@ -173,6 +170,22 @@ public class LighthouseApiService {
 
   private String getToken(String tokenUtl, String assertion, String patientIcn, String scope)
       throws AbdException {
+    log.info("get httpEntity for token. tokenurl={}\n, scope={}", tokenUtl, scope);
+    HttpEntity<MultiValueMap<String, String>> httpEntity =
+            getLighthouseTokenRequestEntity(assertion, patientIcn, scope);
+    try {
+      ResponseEntity<String> tokenResp =
+          restTemplate.postForEntity(tokenUtl, httpEntity, String.class);
+
+      return tokenResp.getBody();
+    } catch (RestClientException e) {
+      log.error("Failed to get Lighthouse token.", e);
+      throw new AbdException("Failed to get Lighthouse token.", e);
+    }
+  }
+
+  @NotNull
+  private HttpEntity<MultiValueMap<String, String>> getLighthouseTokenRequestEntity(String assertion, String patientIcn, String scope) {
     String launchCode = getPatientCoding(patientIcn);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -183,19 +196,10 @@ public class LighthouseApiService {
     requestBody.add("client_assertion", assertion);
     requestBody.add("launch", launchCode);
     requestBody.add("scope", scope);
-    HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
-    try {
-      ResponseEntity<String> tokenResp =
-          restTemplate.postForEntity(tokenUtl, httpEntity, String.class);
-
-      return tokenResp.getBody();
-    } catch (RestClientException e) {
-      throw new AbdException("Failed to get Lighthouse token.", e);
-    }
+    return new HttpEntity<>(requestBody, headers);
   }
 
-  public String getLighthouseScope(AbdDomain domain) {
-    log.info("Getting lighthouse scope for domain {}", domain.name());
+  private String getLighthouseScope(AbdDomain domain) {
     return SCOPE.getScope(domain).getScope();
   }
 }

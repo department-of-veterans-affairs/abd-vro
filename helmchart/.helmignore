@@ -10,6 +10,10 @@
 .hg/
 .hgignore
 .svn/
+#templates/api/
+#templates/mq/
+#templates/db/
+#templates/redis/
 # Common backup files
 *.swp
 *.bak
@@ -20,3 +24,4 @@
 .idea/
 *.tmproj
 .vscode/
+

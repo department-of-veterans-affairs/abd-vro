@@ -23,9 +23,17 @@ import java.util.Collection;
 @Slf4j
 public class CamelDtoConverter extends TypeConverterSupport {
 
+  private final ObjectWriter writer;
+  private final ObjectReader reader;
+
+  /***
+   * <p>Summary.</p>
+   *
+   * @param dtoClasses DTO Classes
+   * @param mapper mapper
+   */
   public CamelDtoConverter(Collection<Class> dtoClasses, ObjectMapper mapper) {
     this.dtoClasses = dtoClasses;
-    this.mapper = mapper;
     this.writer = mapper.writer();
     this.reader = mapper.reader();
   }
@@ -38,8 +46,12 @@ public class CamelDtoConverter extends TypeConverterSupport {
     try {
       log.info("class: {}, targetClass: {}", value.getClass(), targetClass);
       if (dtoClasses.contains(value.getClass())) {
-        if (targetClass == byte[].class) return (T) toByteArray(value);
-        if (targetClass == InputStream.class) return (T) toInputStream(value);
+        if (targetClass == byte[].class) {
+          return (T) toByteArray(value);
+        }
+        if (targetClass == InputStream.class) {
+          return (T) toInputStream(value);
+        }
       } else if (value.getClass() == byte[].class) {
         return toPojo(targetClass, (byte[]) value);
       }
@@ -49,13 +61,7 @@ public class CamelDtoConverter extends TypeConverterSupport {
     return null;
   }
 
-  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-  private final ObjectMapper mapper;
-  private final ObjectWriter writer;
-  private final ObjectReader reader;
-
   public byte[] toByteArray(Object obj) throws JsonProcessingException {
-    // log.trace("convert toByteArray: {}", writer.writeValueAsString(obj));
     return writer.writeValueAsBytes(obj);
   }
 

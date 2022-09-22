@@ -3,11 +3,11 @@ package gov.va.vro.abd_data_access.service;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import gov.va.vro.abd_data_access.exception.AbdException;
 import gov.va.vro.abd_data_access.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.function.Function;
@@ -46,33 +46,29 @@ public class FhirClient {
     }
 
     public String getUrl() {
-      String url = String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]);
+      StringBuilder url = new StringBuilder(String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]));
       for (int i = 1; i < searchParams.length; ++i) {
-        url += String.format("&%s=%s", searchParams[i], searchValues[i]);
+        url.append(String.format("&%s=%s", searchParams[i], searchValues[i]));
       }
-      return url;
+      return url.toString();
     }
   }
 
   private static final Map<String, AbdDomain[]> dpToDomains =
       Map.ofEntries(
-          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "0",
-              new AbdDomain[] {
-                AbdDomain.BLOOD_PRESSURE,
-                AbdDomain.CONDITION,
-                AbdDomain.PROCEDURE,
-                AbdDomain.MEDICATION
-              }),
-          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "7101", new AbdDomain[] {
-                  AbdDomain.BLOOD_PRESSURE,
-                  AbdDomain.MEDICATION
-              }),
-          new AbstractMap.SimpleEntry<String, AbdDomain[]>(
-              "6602", new AbdDomain[] {
-                      AbdDomain.MEDICATION,
-                      AbdDomain.CONDITION
+              new AbstractMap.SimpleEntry<>(
+                      "0",
+                      new AbdDomain[]{
+                              AbdDomain.BLOOD_PRESSURE,
+                              AbdDomain.CONDITION,
+                              AbdDomain.PROCEDURE,
+                              AbdDomain.MEDICATION
+                      }),
+              new AbstractMap.SimpleEntry<>(
+                      "7101", new AbdDomain[]{AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
+              new AbstractMap.SimpleEntry<>(
+                      "6602", new AbdDomain[]{
+                      AbdDomain.MEDICATION
               }));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
@@ -87,19 +83,13 @@ public class FhirClient {
               }),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.MEDICATION,
-              (id) -> {
-                return new SearchSpec("MedicationRequest", id);
-              }),
+              (id) -> new SearchSpec("MedicationRequest", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.PROCEDURE,
-              (id) -> {
-                return new SearchSpec("Procedure", id);
-              }),
+              (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.CONDITION,
-              (id) -> {
-                return new SearchSpec("Condition", id);
-              }));
+              (id) -> new SearchSpec("Condition", id)));
 
   public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
           throws AbdException {
@@ -154,9 +144,7 @@ public class FhirClient {
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
       AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      if (summary != null) {
-        result.add(summary);
-      }
+      result.add(summary);
     }
     if (result.size() < 1) {
       return null;
@@ -173,15 +161,13 @@ public class FhirClient {
     }
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
-    for (int i = 0; i < domains.length; ++i) {
-      AbdDomain domain = domains[i];
+    for (AbdDomain domain : domains) {
       int pageNo = DEFAULT_PAGE;
-      int pageSize = DEFAULT_SIZE;
-      boolean hasNextPage = false;
+      boolean hasNextPage;
       List<BundleEntryComponent> records = new ArrayList<>();
       do {
         pageNo++;
-        Bundle bundle = getBundle(domain, patientIcn, pageNo, pageSize);
+        Bundle bundle = getBundle(domain, patientIcn, pageNo, DEFAULT_SIZE);
         List<BundleEntryComponent> entries = bundle.getEntry();
         if (entries.size() > 0) {
           records.addAll(entries);
@@ -200,39 +186,37 @@ public class FhirClient {
   }
 
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
-    log.info("Get medical evidence for claim: {}, {}, {}", claim.getVeteranIcn(), claim.getDiagnosticCode(), claim.getClaimSubmissionId());
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
     if (components == null) {
       return null;
     }
+    return getAbdEvidence(components);
+  }
+
+  @NotNull
+  public AbdEvidence getAbdEvidence(Map<AbdDomain, List<BundleEntryComponent>> components) {
     AbdEvidence result = new AbdEvidence();
-    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent : components.entrySet()) {
+    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent: components.entrySet()) {
       List<BundleEntryComponent> entries = entryComponent.getValue();
       switch (entryComponent.getKey()) {
-        case MEDICATION:
+        case MEDICATION -> {
           List<AbdMedication> medications = getPatientMedications(entries);
-          if (medications != null) {
-            result.setMedications(medications);
-          }
-          break;
-        case CONDITION:
+          result.setMedications(medications);
+        }
+        case CONDITION -> {
           List<AbdCondition> conditions = getPatientConditions(entries);
-          if (conditions != null) {
-            result.setConditions(conditions);
-          }
-          break;
-        case PROCEDURE:
+          result.setConditions(conditions);
+        }
+        case PROCEDURE -> {
           List<AbdProcedure> procedures = getPatientProcedures(entries);
-          if (procedures != null) {
-            result.setProcedures(procedures);
-          }
-          break;
-        case BLOOD_PRESSURE:
+          result.setProcedures(procedures);
+        }
+        case BLOOD_PRESSURE -> {
           List<AbdBloodPressure> bps = getPatientBloodPressures(entries);
           if (bps != null) {
             result.setBloodPressures(bps);
           }
-          break;
+        }
       }
     }
     return result;
