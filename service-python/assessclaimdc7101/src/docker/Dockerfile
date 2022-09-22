@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update -y && apt-get install -y expat
+RUN apk update && apk upgrade
 
 RUN adduser --disabled-password docker
 USER docker
