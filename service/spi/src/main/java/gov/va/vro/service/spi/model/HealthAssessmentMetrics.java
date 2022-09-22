@@ -13,10 +13,9 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString(includeFieldNames = true)
-public class ClaimMetricsInfo {
+public class HealthAssessmentMetrics {
+
   private String totalBpReadings;
   private String recentBpReadings;
   private String medicationsCount;
-  private long totalClaims;
-  private String errorMessage;
 }

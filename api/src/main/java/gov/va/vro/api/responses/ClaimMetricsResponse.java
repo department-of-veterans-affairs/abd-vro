@@ -17,6 +17,9 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class ClaimMetricsResponse {
   private long numberOfClaims;
+  private String totalBpReadings;
+  private String recentBpReadings;
+  private String medicationsCount;
 
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)

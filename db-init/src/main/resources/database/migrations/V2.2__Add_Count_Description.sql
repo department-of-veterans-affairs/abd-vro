@@ -1,0 +1,1 @@
+ALTER TABLE assessment_result ADD count_description VARCHAR NOT NULL
