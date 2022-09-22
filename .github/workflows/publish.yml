@@ -111,18 +111,4 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
           ./deploy-app.sh dev ${COMMIT_SHA:0:7}
-      #- name: Publish to develop
-      #  run: |
-      #    #install via helm
-      #    helm upgrade --install $HELM_APP_NAME helmchart \
-      #        --set-string environment="${ENV}"\
-      #        --set-string images.app.tag="${IMAGE_TAG}"\
-      #        --set-string images.serviceRuby.tag="${IMAGE_TAG}"\
-      #        --set-string images.dbInit.tag="${IMAGE_TAG}"\
-      #        --set-string info.version="${VERSION}"\
-      #        --set-string info.git_hash="${GIT_SHA}" \
-      #        --set-string info.deploy_env="${ENV}" \
-      #        --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-      #        --debug \
-      #        -f helmchart/"${ENV}".yaml -n ${TEAMNAME}-"${ENV}" --wait
 
