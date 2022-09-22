@@ -13,9 +13,10 @@ public class HealthAssessmentMetricsService {
   HealthAssessmentMetrics ham = new HealthAssessmentMetrics();
 
   public HealthAssessmentMetrics getMetrics() {
-    // need to get data from julians service, add up BpReadings, RecentBpReadings, and Medications
-    // count
-    // then stick inside ham, return ham to ClaimMetrics and fill the ClaimMetrics obj
+    // We need to get evidenceSummary data from FullHealthAssessment and put in DB.
+    // Then add up BpReadings, RecentBpReadings, and Medications count and save totals to ham.
+    // Then return ham to ClaimMetrics.
+
 
     return ham;
   }

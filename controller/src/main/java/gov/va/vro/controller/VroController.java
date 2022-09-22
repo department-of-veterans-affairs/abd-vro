@@ -210,6 +210,9 @@ public class VroController implements VroResource {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     try {
       response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
+      //response.setTotalBpReadings();
+      //response.setMedicationsCount();
+      //response.setRecentBpReadings();
       if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
         throw new MetricsProcessingException(
             HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
