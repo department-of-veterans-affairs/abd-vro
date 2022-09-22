@@ -50,11 +50,11 @@ spec:
           ports:
             - containerPort: {{ .Values.service.db.sourcePort }}
               protocol: TCP
-          volumeMounts:
-            - name: persistent-storage
-              mountPath: /var/lib/postgresql/data/pgdata
-          resources: {{- toYaml .Values.resources.db | nindent 12 }}
-      volumes:
-        - name: persistent-storage
-          persistentVolumeClaim:
-            claimName: efs-claim #This name should match that of the persistent volume claim created above
+      #    volumeMounts:
+      #      - name: persistent-storage
+      #        mountPath: /var/lib/postgresql/data/pgdata
+      #    resources: {{- toYaml .Values.resources.db | nindent 12 }}
+      #volumes:
+      #  - name: persistent-storage
+      #    persistentVolumeClaim:
+      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
