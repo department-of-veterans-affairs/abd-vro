@@ -42,6 +42,16 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.passwordKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.passwordKey }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
