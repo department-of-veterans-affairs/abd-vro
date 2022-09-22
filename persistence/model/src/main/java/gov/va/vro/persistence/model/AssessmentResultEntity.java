@@ -19,4 +19,6 @@ public class AssessmentResultEntity extends BaseEntity {
   // number of evidence data points found to support fast tracking the claim
   @Min(0)
   private int evidenceCount;
+
+  private String countDescription;
 }
