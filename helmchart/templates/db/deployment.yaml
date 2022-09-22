@@ -30,8 +30,8 @@ spec:
             - name: POSTGRES_SUPER_DB
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.superDbnameKey }}
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.superDbnameKey }}
             - name: POSTGRES_ADMIN_USER
               valueFrom:
                 secretKeyRef:
@@ -42,6 +42,16 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.passwordKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.passwordKey }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
@@ -50,11 +60,11 @@ spec:
           ports:
             - containerPort: {{ .Values.service.db.sourcePort }}
               protocol: TCP
-          volumeMounts:
-            - name: persistent-storage
-              mountPath: /var/lib/postgresql/data/pgdata
+      #    volumeMounts:
+      #      - name: persistent-storage
+      #        mountPath: /var/lib/postgresql/data/pgdata
           resources: {{- toYaml .Values.resources.db | nindent 12 }}
-      volumes:
-        - name: persistent-storage
-          persistentVolumeClaim:
-            claimName: efs-claim #This name should match that of the persistent volume claim created above
+      #volumes:
+      #  - name: persistent-storage
+      #    persistentVolumeClaim:
+      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
