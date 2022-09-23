@@ -1,4 +1,4 @@
-name: "SecRel aqua-check"
+name: "SecRel aqua-check on latest release"
 # Aqua vulnerability checker
 
 on:
