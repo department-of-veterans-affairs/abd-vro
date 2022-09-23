@@ -48,7 +48,7 @@ images:
     tag: 0b9c9c4
     imagePullPolicy: Always
   dbInit:
-    imageName: dev_vro-init-db
+    imageName: dev_vro-initdb
     tag: 0b9c9c4
     imagePullPolicy: Always
   pdfGenerator:
