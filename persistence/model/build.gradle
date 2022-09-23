@@ -8,6 +8,12 @@ dependencies {
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
     implementation project(':test-data-factory')
 
+    // override starter-bom
+    implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+    implementation "org.springframework:spring-webmvc:${spring_framework_version}"
+    implementation "org.springframework:spring-beans:${spring_framework_version}"
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+
     // include jdbc tracing here since we are assuming for this version we are using JDBC SQL
     implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
