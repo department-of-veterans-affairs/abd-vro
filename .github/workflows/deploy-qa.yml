@@ -1,4 +1,4 @@
-name: Publish images
+name: Publish QA images
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-db-init:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-db-init:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7}"
 
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-app:latest"
