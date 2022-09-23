@@ -219,12 +219,6 @@ from assessclaimdc7101.src.lib import main
             },
             {
                 "errorMessage": "error validating request message data",
-                "evidence": {"bp_readings": [], "medications": []},
-                "evidenceSummary": {
-                    "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 0,
-                },
             },
         ),
         # Bad data:
@@ -276,12 +270,6 @@ from assessclaimdc7101.src.lib import main
             },
             {
                 "errorMessage": "error validating request message data",
-                "evidence": {"bp_readings": [], "medications": []},
-                "evidenceSummary": {
-                    "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 0,
-                },
             },
         ),
     ],
