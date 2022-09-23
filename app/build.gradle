@@ -5,7 +5,7 @@ plugins {
 }
 
 scala {
-    zincVersion = "1.7.1"
+//    zincVersion = "1.6.1"
 }
 
 dependencies {
