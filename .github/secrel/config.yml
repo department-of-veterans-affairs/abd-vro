@@ -22,7 +22,7 @@ images:
 - name: vro-postgres
   context: "./postgres/src/main/resources"
   path: "./postgres/src/docker/Dockerfile"
-- name: vro-init-db
+- name: vro-db-init
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
 - name: vro-service-data-access
