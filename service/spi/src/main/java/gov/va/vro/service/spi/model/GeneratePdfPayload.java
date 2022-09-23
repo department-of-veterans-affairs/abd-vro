@@ -26,6 +26,6 @@ public class GeneratePdfPayload {
   @JsonProperty("evidence")
   private AbdEvidence evidence;
 
-  // output JSON string
-  public String pdfDocumentJson;
+  private String status;
+  private String reason;
 }

@@ -92,16 +92,17 @@ public class VroController implements VroResource {
         request.getDiagnosticCode());
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
+      log.info(model.toString());
       String response = camelEntrance.generatePdf(model);
+      log.info(response.toString());
       GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
+      log.info(pdfResponse.toString());
       log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
-      log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getReason());
-      // model.setPdfDocumentJson(response);
       if (pdfResponse.getStatus().equals("ERROR")) {
+        log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
         return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      GeneratePdfResponse responseObj = generatePdfRequestMapper.toGeneratePdfResponse(model);
-      return new ResponseEntity<>(responseObj, HttpStatus.OK);
+      return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
     } catch (Exception ex) {
       log.error("Error in generate pdf", ex);
       throw new ClaimProcessingException(
@@ -142,7 +143,7 @@ public class VroController implements VroResource {
         if (pdfResponse.getStatus().equals("NOT_FOUND")) {
           return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
         } else if (pdfResponse.getStatus().equals("ERROR")) {
-          log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getReason());
+          log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
           return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pdfResponse, HttpStatus.OK);

@@ -25,8 +25,10 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,6 +37,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -62,6 +66,9 @@ class VroControllerTest extends BaseIntegrationTest {
 
   @EndpointInject("mock:fetch-pdf")
   private MockEndpoint mockFetchPdfEndpoint;
+
+  @Value("classpath:test-data/pdf-generator-input-01.json")
+  private Resource pdfGeneratorInput01;
 
   @Test
   @DirtiesContext
@@ -242,6 +249,9 @@ class VroControllerTest extends BaseIntegrationTest {
   @Test
   @DirtiesContext
   void generatePdf() throws Exception {
+    var mapper = new ObjectMapper();
+    var mockResponseObj = new GeneratePdfResponse("1234", "7701", "COMPLETE");
+    String mockResponse = mapper.writeValueAsString(mockResponseObj);
     adviceWith(
         camelContext,
         "generate-pdf",
@@ -249,15 +259,14 @@ class VroControllerTest extends BaseIntegrationTest {
             route
                 .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
                 .skipSendToOriginalEndpoint()
+                .setBody(route.simple(mockResponse))
                 .to("mock:generate-pdf"));
     mockGeneratePdfEndpoint.expectedMessageCount(1);
 
-    var generatePdf = new GeneratePdfRequest();
-    generatePdf.setClaimSubmissionId("1234");
-    generatePdf.setDiagnosticCode("1234");
-    generatePdf.setVeteranInfo(new VeteranInfo());
-    generatePdf.setEvidence(new AbdEvidence());
-    var response = post("/v1/evidence-pdf", generatePdf, GeneratePdfResponse.class);
+    InputStream stream = pdfGeneratorInput01.getInputStream();
+    String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    GeneratePdfRequest input = mapper.readValue(inputAsString, GeneratePdfRequest.class);
+    var response = post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
