@@ -36,7 +36,6 @@ def on_generate_callback(channel, method, properties, body):
 		except Exception as e:
 				logging.error(e, exc_info=True)
 				response = {"claimSubmissionId": claim_id, "status": "ERROR", "reason": str(e)}
-				logging.error(response)
 		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 def on_fetch_callback(channel, method, properties, body):
@@ -56,7 +55,6 @@ def on_fetch_callback(channel, method, properties, body):
 		except Exception as e:
 				logging.error(e, exc_info=True)
 				response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": "", "reason": str(e)}
-				logging.error(response)
 		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
