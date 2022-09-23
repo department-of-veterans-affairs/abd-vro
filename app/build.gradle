@@ -40,7 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     testImplementation "com.h2database:h2:${h2_version}"
-    runtimeOnly "com.h2database:h2:${h2_version}"
+    testRuntimeOnly "com.h2database:h2:${h2_version}"
     implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
