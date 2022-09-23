@@ -63,9 +63,9 @@ jobs:
             "ghcr.io/${{ github.repository }}/dev_vro-postgres:${COMMIT_SHA:0:7}"
           docker tag va/abd_vro-postgres \
             "ghcr.io/${{ github.repository }}/dev_vro-postgres:latest"
-          docker tag va/abd_vro-db-init \
+          docker tag va/abd_vro-dbinit \
             "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}"
-          docker tag va/abd_vro-app \
+          docker tag va/abd_vro-dbinit \
             "ghcr.io/${{ github.repository }}/dev_vro-init-db:latest"
           docker tag va/abd_vro-assessclaimdc7101 \
             "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"

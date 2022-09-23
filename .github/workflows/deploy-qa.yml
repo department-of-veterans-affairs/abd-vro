@@ -43,7 +43,7 @@ jobs:
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-init-db:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
-          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-pdfgenerator:${COMMIT_SHA:0:7}"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7}"
 
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-app:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-app:latest"
@@ -51,7 +51,7 @@ jobs:
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-init-db:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-init-db:latest"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest"
-          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest"
+          docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-pdfgenerator:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-pdfgenerator:latest"
           docker tag "ghcr.io/${{ github.repository }}/dev_vro-service-data-access:${COMMIT_SHA:0:7}" "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest"
           
       - name: Check images
@@ -64,10 +64,10 @@ jobs:
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-postgres
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-app
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator
-          docker push -a ghcr.io/${{ github.repository }}/qa_vro-init-db
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-data-access
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-init-db
 
       - name: Clean Up QA images
         run: |
