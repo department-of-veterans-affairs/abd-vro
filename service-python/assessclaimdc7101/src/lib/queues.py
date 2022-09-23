@@ -18,7 +18,8 @@ def on_request_callback(channel, method, properties, body):
 
     try:
         response = main.assess_hypertension(message)
-    except:
+    except Exception as e:
+        logging.error(e, exc_info=True)
         response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
 
     channel.basic_publish(
