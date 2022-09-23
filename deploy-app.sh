@@ -48,7 +48,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string images.redis.imageName=redis \
               --set-string images.db.imageName=${ENV}_vro-postgres \
               --set-string images.mq.imageName=vro-rabbitmq \
-              --set-string images.dbInit.imageName=${ENV}_vro-init-db \
+              --set-string images.dbInit.imageName=${ENV}_vro-db-init \
               --set-string images.pdfGenerator.imageName=${ENV}_vro-service-pdfgenerator \
               --set-string images.serviceAssessClaimDC7101.imageName=${ENV}_vro-service-assessclaimdc7101 \
               --set-string images.serviceAssessClaimDC6602.imageName=${ENV}_vro-service-assessclaimdc6602 \
