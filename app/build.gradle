@@ -4,6 +4,10 @@ plugins {
     id 'starter.java.build-utils-conventions'
 }
 
+scala {
+    zincVersion = "1.7.1"
+}
+
 dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
