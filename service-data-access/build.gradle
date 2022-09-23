@@ -32,10 +32,10 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
     implementation 'org.springframework:spring-web:5.3.23'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-	implementation 'com.fasterxml.jackson.core:jackson-core' 
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
     implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.1'
     implementation 'ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.1.1'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -66,7 +66,7 @@ dependencies {
     integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.1'
     integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.1'
     integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.1'
-    integrationTestImplementation 'org.skyscreamer:jsonassert:1.'
+    integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
 
 configurations {

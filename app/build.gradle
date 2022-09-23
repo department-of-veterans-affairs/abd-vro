@@ -13,9 +13,7 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
-
-    // https://mvnrepository.com/artifact/io.gatling.highcharts/gatling-charts-highcharts
-    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
+    implementation "io.gatling.highcharts:gatling-charts-highcharts:${highcharts_version}"
 
     implementation project(':api')
     implementation project(':controller')
@@ -40,7 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     testImplementation "com.h2database:h2:${h2_version}"
-    runtimeOnly "com.h2database:h2:${h2_version}"
+    testRuntimeOnly "com.h2database:h2:${h2_version}"
     implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
