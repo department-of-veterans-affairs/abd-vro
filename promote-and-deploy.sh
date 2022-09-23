@@ -5,11 +5,11 @@ then
   echo "Please enter valid environment (sandbox, qa, prod)" && exit 1
 fi
 PREV_ENV=dev
-if ["${ENV}" == "sandbox"]
+if [ "${ENV}" == "sandbox" ]
 then
   PREV_ENV=qa
 fi
-if ["${ENV}" != "prod"]
+if [ "${ENV}" == "prod" ]
 then
   PREV_ENV=sandbox
 fi
@@ -23,10 +23,12 @@ github_repository=department-of-veterans-affairs/abd-vro
 GIT_SHA=$(git rev-parse HEAD)
 if [ -n "$2" ]
 then
-  COMMIT_SHA=${$2:0:7}
+  COMMIT_SHA=$2
+  COMMIT_SHA=${COMMIT_SHA:0:7}
 else
   COMMIT_SHA=latest
 fi
+echo PROCESSING FOR $COMMIT_SHA
 docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-app:${COMMIT_SHA}"
 docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-postgres:${COMMIT_SHA}"
 docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-db-init:${COMMIT_SHA}"
