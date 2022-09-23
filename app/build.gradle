@@ -14,6 +14,9 @@ dependencies {
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
 
+    // https://mvnrepository.com/artifact/io.gatling.highcharts/gatling-charts-highcharts
+    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
+
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
