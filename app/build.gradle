@@ -8,6 +8,12 @@ dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
+    // override starter-bom
+    implementation 'org.springframework.boot:spring-boot-dependencies:2.7.4'
+    implementation 'org.springframework:spring-webmvc:5.3.23'
+    implementation 'org.springframework:spring-beans:5.3.23'
+    implementation 'io.github.classgraph:classgraph:4.8.149'
+
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
