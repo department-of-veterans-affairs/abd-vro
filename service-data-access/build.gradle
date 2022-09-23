@@ -33,11 +33,11 @@ sourceSets {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'org.springframework:spring-web:5.3.22'
+    implementation 'org.springframework:spring-web:5.3.23'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'com.fasterxml.jackson.core:jackson-core' 
-    implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.7.2'
-    implementation 'ca.uhn.hapi.fhir:hapi-fhir-server-openapi:5.7.2'
+    implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.1'
+    implementation 'ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.1.1'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.projectlombok:lombok:1.18.24'
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.7'
