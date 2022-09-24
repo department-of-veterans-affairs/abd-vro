@@ -51,10 +51,15 @@ dependencies {
     docker project(':db-init')
 }
 
-
 application {
     // Define the main class for the application.
     mainClass = 'gov.va.vro.VroApplication'
+}
+
+openApi {
+    customBootRun {
+        args = ["--spring.profiles.active=foropenapi"]
+    }
 }
 
 bootJar {
