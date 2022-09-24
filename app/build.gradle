@@ -59,8 +59,10 @@ application {
 openApi {
     customBootRun {
         args = ["--spring.profiles.active=foropenapi"]
+        getClasspath().setFrom(sourceSets.test.runtimeClasspath)
     }
 }
+
 
 bootJar {
     manifest {
@@ -78,10 +80,13 @@ repositories {
     mavenCentral()
 }
 
+
 afterEvaluate {
     tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
 
     tasks.named('forkedSpringBootRun').configure {
+        classpath = sourceSets.test.runtimeClasspath
+
         dependsOn 'bootStartScripts'
         dependsOn ':app:checkstyleGatling'
         dependsOn 'checkstyleIntegrationTest'

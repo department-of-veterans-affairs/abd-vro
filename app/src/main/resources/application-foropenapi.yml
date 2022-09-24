@@ -13,6 +13,8 @@ management:
   endpoints.web:
     exposure.include: "*"
   endpoint:
+    metrics:
+      enabled: false
     health:
       show-details: always
       probes:
@@ -65,6 +67,10 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+  metrics:
+    metrics:
+      export:
+        enabled: false
   kafka:
     bootstrap-servers: "kafka:9092"
 
@@ -77,9 +83,13 @@ spring:
       force: true
 
 opentracing:
+  jaeger:
+    enabled: false
   zipkin:
     enabled: false
-    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+  spring:
+    web:
+      ignoreAutoConfiguredSkipPatterns: true
 
 springdoc:
   writer-with-default-pretty-printer: true
