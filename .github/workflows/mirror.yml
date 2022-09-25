@@ -3,7 +3,7 @@ name: Mirroring
 on:
   pull_request:
     branches: [ main, develop ]
-    # Limit to certain PR event types since this action triggers checks to run on the mirror
+    # Limit to certain PR event types since this action could trigger actions to run in the mirror repo
     types: [ready_for_review, review_requested]
 
   # When changes are pushed to special branches
