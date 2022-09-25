@@ -4,6 +4,11 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+  # Trigger on all pull requests
+  pull_request:
+    branches:
+      - "*"
+
 jobs:
   security:
     runs-on: ubuntu-latest
