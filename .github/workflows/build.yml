@@ -30,14 +30,13 @@ jobs:
         ports:
           - 5672:5672
     steps:
-      - uses: actions/checkout@v3
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
 
-      - name: Set up VRO build env
+      - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
-      # Build and test
-
-      - name: Build and test Java code
+      - name: "Build and test Java code"
         run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Build and test Python code with test coverage report"
@@ -67,7 +66,7 @@ jobs:
   build-docker-images:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: "Checkout source code"
         uses: actions/checkout@v3
 
       - uses: docker/setup-buildx-action@v2
@@ -75,17 +74,17 @@ jobs:
         with:
           install: true
 
-      - name: Build Dockerfiles - base application
+      - name: "Build Dockerfiles - base application"
         run: |
           docker build -f ./app/src/docker/Dockerfile ./app/src/main/resources
           docker build -f ./postgres/src/docker/Dockerfile ./postgres/src/main/resources
           docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
 
-      - name: Build Dockerfiles - Java microservice
+      - name: "Build Dockerfiles - Java microservice"
         run: |
           docker build -f ./service-data-access/src/docker/Dockerfile ./service-data-access/src/main/resources
 
-      - name: Build Dockerfiles - Python microservice
+      - name: "Build Dockerfiles - Python microservice"
         run: |
           docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src
           docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
