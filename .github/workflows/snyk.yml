@@ -45,10 +45,10 @@ jobs:
           function snyk-image(){
             snyk container test va/abd_vro-$1:latest --file=./${2:-$1}/src/docker/Dockerfile --severity-threshold=medium --sarif-file-output=snyk-$1.sarif
           }
-          snyk-image app
-          snyk-image postgres
-          snyk-image db-init
-          snyk-image service-data-access
+          snyk-image app || echo "Alerts found"
+          snyk-image postgres || echo "Alerts found"
+          snyk-image db-init || echo "Alerts found"
+          snyk-image service-data-access || echo "Alerts found"
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
