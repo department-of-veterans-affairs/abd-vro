@@ -37,7 +37,10 @@ jobs:
         uses: ./.github/actions/setup-vro
 
       - name: "Build and test Java code"
-        run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+        # build task will run tests
+        # Gradle task dependency https://docs.gradle.org/current/userguide/img/javaPluginTasks.png
+        run: ./gradlew build
+#        run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
