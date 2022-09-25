@@ -52,8 +52,8 @@ jobs:
       #- run: |
       #   make bootstrap
       #   make release
-      - name: Install Java build dependencies
-        uses: ./.github/actions/install-build-dependencies
+      - name: Set up VRO build env
+        uses: ./.github/actions/setup-vro
 
       - name: Build and test docker image
         run: ./gradlew build check

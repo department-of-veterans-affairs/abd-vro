@@ -31,7 +31,7 @@ jobs:
           - 5672:5672
     steps:
       - name: Set up VRO build env
-        uses: ./.github/actions/vro-setup
+        uses: ./.github/actions/setup-vro
 
       # Build and test
 
