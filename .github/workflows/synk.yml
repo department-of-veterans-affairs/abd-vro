@@ -36,7 +36,7 @@ jobs:
         run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Snyk test"
-        run: snyk test --all-sub-projects --sarif-file-output=snyk.sarif --severity-threshold=medium
+        run: snyk test --all-projects --sarif-file-output=snyk.sarif --severity-threshold=medium --print-deps
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
