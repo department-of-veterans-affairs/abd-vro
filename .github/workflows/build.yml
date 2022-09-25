@@ -35,20 +35,8 @@ jobs:
 
       # Install all dependencies
 
-      - name: Install Java build dependencies
-        uses: ./.github/actions/install-build-dependencies
-
-      - name: Install Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
-          cache: "pip"
-
-      - name: "Install Python dependencies for DC7101"
-        run: pip install -r service-python/assessclaimdc7101/src/requirements.txt
-
-      - name: "Install Python dependencies for PDF Generator"
-        run: pip install -r service-python/pdfgenerator/src/requirements.txt
+      - name: Set up VRO build env
+        uses: ./.github/actions/vro-setup
 
       # Build and test
 
