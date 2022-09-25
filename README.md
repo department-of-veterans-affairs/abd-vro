@@ -52,7 +52,7 @@ If no other changes have been made, this application will have [these features][
 Before you run this application locally, you will need to make sure you have all the following required dependencies available in your local environment:
 
 - Java 17 ([Mac Guide][6] | [Other OS Guide][5])
-- Gradle ~7.2~ 7.4 (to be compatible with Java 17)
+- Gradle ~7.2~, ~7.4~ (to be compatible with Java 17), 7.5
 - [docker][7]
 - [hadolint][8]
 - [spectral][12]

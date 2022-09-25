@@ -22,30 +22,16 @@ def assess_asthma(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications,
-                }
+                    "medications": active_medications["medications"],
+                },
+                "evidenceSummary": {
+                    "relevantMedCount": active_medications["relevantMedCount"],
+                    "totalMedCount": active_medications["totalMedCount"],
+                },
             }
         )
-
     else:
-        active_medications = {
-            "medications": [],
-            "relevantMedCount": 0,
-            "totalMedCount": 0,
-        }
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
-
-    response_body.update(
-        {
-            "evidence": {
-                "medications": active_medications["medications"],
-            },
-            "evidenceSummary": {
-                "relevantMedCount": active_medications["relevantMedCount"],
-                "totalMedCount": active_medications["totalMedCount"],
-            },
-        }
-    )
 
     return response_body

@@ -11,13 +11,13 @@ SERVICE_QUEUE = queue_config["service_queue_name"]
 
 
 def on_request_callback(channel, method, properties, body):
-
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message: {properties.correlation_id}")
     try:
         response = main.assess_asthma(message)
-    except Exception:
+    except Exception as e:
+        logging.error(e, exc_info=True)
         response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
 
     channel.basic_publish(
@@ -30,7 +30,6 @@ def on_request_callback(channel, method, properties, body):
 
 
 def queue_setup(channel):
-
     channel.exchange_declare(
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )

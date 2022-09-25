@@ -17,32 +17,32 @@ spec:
         - name: postgres-db
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
           env:
-            - name: POSTGRES_SUPER_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dbinit.secretName }}
-                  key: {{ .Values.dbinit.superUsernameKey }}
-            - name: POSTGRES_SUPER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dbinit.secretName }}
-                  key: {{ .Values.dbinit.superPasswordKey }}
             - name: POSTGRES_SUPER_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.superDbnameKey }}
-            - name: POSTGRES_ADMIN_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.superPasswordKey }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.superUsernameKey }}
+            - name: FLYWAY_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.usernameKey }}
-            - name: POSTGRES_ADMIN_PASSWORD
+            - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.passwordKey }}
-            - name: POSTGRES_DB
+            - name: FLYWAY_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
@@ -50,11 +50,11 @@ spec:
           ports:
             - containerPort: {{ .Values.service.db.sourcePort }}
               protocol: TCP
-          volumeMounts:
-            - name: persistent-storage
-              mountPath: /var/lib/postgresql/data/pgdata
+      #    volumeMounts:
+      #      - name: persistent-storage
+      #        mountPath: /var/lib/postgresql/data/pgdata
           resources: {{- toYaml .Values.resources.db | nindent 12 }}
-      volumes:
-        - name: persistent-storage
-          persistentVolumeClaim:
-            claimName: efs-claim #This name should match that of the persistent volume claim created above
+      #volumes:
+      #  - name: persistent-storage
+      #    persistentVolumeClaim:
+      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
