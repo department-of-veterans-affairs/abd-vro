@@ -31,9 +31,11 @@ jobs:
 
       - name: "Build Java code"
         run: ./gradlew build
-#        run: ./gradlew build check -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+
+      - name: "Build Docker images"
+        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: Snyk monitor
-        run: snyk test
+        run: snyk test --all-sub-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
