@@ -5,9 +5,6 @@ description: "Installs Java and Python, along with dependencies to build VRO"
 runs:
   using: composite
   steps:
-    - name: "Checkout source code"
-      uses: actions/checkout@v3
-
     - name: "Install Java"
       uses: actions/setup-java@v3
       with:

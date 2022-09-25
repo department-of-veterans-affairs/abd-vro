@@ -30,6 +30,8 @@ jobs:
         ports:
           - 5672:5672
     steps:
+      - uses: actions/checkout@v3
+
       - name: Set up VRO build env
         uses: ./.github/actions/setup-vro
 
