@@ -42,6 +42,9 @@ jobs:
       - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
 
+      - name: "Build Docker images"
+        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+
 # This job doesn't seem relevant since VRO is runs entirely from images.
 # We don't use the generated "fat jar" file at all.
 # Leaving this job here until VRO completes SecRel pipeline.
@@ -63,31 +66,31 @@ jobs:
 #          docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
 #          rm all-secrets.txt
 
-  build-docker-images:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
-
-      - uses: docker/setup-buildx-action@v2
-        id: buildx
-        with:
-          install: true
-
-      - name: "Build Dockerfiles - base application"
-        run: |
-          docker build -f ./app/src/docker/Dockerfile ./app/src/main/resources
-          docker build -f ./postgres/src/docker/Dockerfile ./postgres/src/main/resources
-          docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
-
-      - name: "Build Dockerfiles - Java microservice"
-        run: |
-          docker build -f ./service-data-access/src/docker/Dockerfile ./service-data-access/src/main/resources
-
-      - name: "Build Dockerfiles - Python microservice"
-        run: |
-          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src
-          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
-          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src
+#  build-docker-images:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: "Checkout source code"
+#        uses: actions/checkout@v3
+#
+#      - uses: docker/setup-buildx-action@v2
+#        id: buildx
+#        with:
+#          install: true
+#
+#      - name: "Build Dockerfiles - base application"
+#        run: |
+#          docker build -f ./app/src/docker/Dockerfile ./app/src/main/resources
+#          docker build -f ./postgres/src/docker/Dockerfile ./postgres/src/main/resources
+#          docker build -f ./db-init/src/docker/Dockerfile ./db-init/src/main/resources
+#
+#      - name: "Build Dockerfiles - Java microservice"
+#        run: |
+#          docker build -f ./service-data-access/src/docker/Dockerfile ./service-data-access/src/main/resources
+#
+#      - name: "Build Dockerfiles - Python microservice"
+#        run: |
+#          docker build -f ./service-python/pdfgenerator/src/docker/Dockerfile ./service-python/pdfgenerator/src
+#          docker build -f ./service-python/assessclaimdc7101/src/docker/Dockerfile ./service-python/assessclaimdc7101/src
+#          docker build -f ./service-python/assessclaimdc6602/src/docker/Dockerfile ./service-python/assessclaimdc6602/src
 
       # Reminder to also add new images to .github/secrel/config.yml
