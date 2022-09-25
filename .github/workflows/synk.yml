@@ -30,9 +30,6 @@ jobs:
       - name: "Build Java code"
         run: ./gradlew build
 
-      - name: "Build Docker images"
-        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
-
       - name: "Snyk test"
         run: snyk test --all-projects --sarif-file-output=snyk.sarif --severity-threshold=medium
         continue-on-error: true # To make sure that SARIF upload gets called
