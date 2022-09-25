@@ -1,15 +1,6 @@
 name: Snyk scan
 
 on:
-  pull_request:
-    branches: [main, develop]
-    # Limit to certain PR event types since this action is slow
-    types: [ready_for_review, review_requested]
-
-  # When changes are pushed to special branches
-  push:
-    branches: [main, develop]
-
   # Allow manual triggering
   workflow_dispatch:
 
@@ -48,7 +39,12 @@ jobs:
           snyk-image app || echo "Alerts found"
           snyk-image postgres || echo "Alerts found"
           snyk-image db-init || echo "Alerts found"
+
           snyk-image service-data-access || echo "Alerts found"
+
+          snyk-image service-pdfgenerator service-python/pdfgenerator || echo "Alerts found"
+          snyk-image service-assessclaimdc7101 service-python/assessclaimdc7101 || echo "Alerts found"
+          snyk-image service-assessclaimdc6602 service-python/assessclaimdc6602 || echo "Alerts found"
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
