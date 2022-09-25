@@ -1,5 +1,5 @@
 name: Install Java tools
-description: Installs hadolint and spectral for Java
+description: Installs hadolint and spectral for Java, and shellcheck
 
 runs:
   using: composite
