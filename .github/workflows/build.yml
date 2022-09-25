@@ -66,12 +66,18 @@ jobs:
 #          docker build . --no-cache --progress=plain --secret id=all-secrets,src=all-secrets.txt
 #          rm all-secrets.txt
 
-#  build-docker-images:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: "Checkout source code"
-#        uses: actions/checkout@v3
-#
+  build-docker-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: "Build Docker images"
+        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+
 #      - uses: docker/setup-buildx-action@v2
 #        id: buildx
 #        with:
