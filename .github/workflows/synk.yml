@@ -1,0 +1,26 @@
+name: Snyk scan
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle-jdk17@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+#      - uses: snyk/actions/setup@master
+#
+#      - name: "Set up VRO build env"
+#        uses: ./.github/actions/setup-vro
+#
+#      - name: Snyk monitor
+#        run: snyk test
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
