@@ -11,11 +11,11 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
 
     implementation "gov.va.starter:exceptions"
-    //implementation 'gov.va.starter:test-data'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation project(':persistence:model')
     implementation project(':service:spi')
 
-    testImplementation "com.h2database:h2:${h2_version}"
+    testRuntimeOnly "com.h2database:h2:${h2_version}"
 }
 
