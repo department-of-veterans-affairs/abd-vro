@@ -27,8 +27,10 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
-      - name: "Build Java code"
-        run: ./gradlew build
+# https://support.snyk.io/hc/en-us/articles/360015552617-Which-projects-must-be-built-before-testing-with-CLI-
+# says Gradle projects don't need to be explicitly built
+#      - name: "Build Java code"
+#        run: ./gradlew build
 
       - name: "Snyk test"
         run: snyk test --all-projects --sarif-file-output=snyk.sarif --severity-threshold=medium
