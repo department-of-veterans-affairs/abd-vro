@@ -42,9 +42,6 @@ jobs:
       - name: "Build and test Python code with test coverage report"
         run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
 
-      - name: "Build Docker images"
-        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
-
 # This job doesn't seem relevant since VRO is runs entirely from images.
 # We don't use the generated "fat jar" file at all.
 # Leaving this job here until VRO completes SecRel pipeline.

@@ -1,4 +1,4 @@
-name: "CodeQL vulnerability scan"
+name: "CodeQL security scan"
 
 on:
   pull_request:
@@ -55,8 +55,10 @@ jobs:
       - name: Set up VRO build env
         uses: ./.github/actions/setup-vro
 
-      - name: Build and test docker image
-        run: ./gradlew build check
+      - name: Build and test VRO
+        # build task will run tests
+        # Gradle task dependency https://docs.gradle.org/current/userguide/img/javaPluginTasks.png
+        run: ./gradlew build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
