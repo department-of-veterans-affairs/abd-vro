@@ -30,11 +30,6 @@ jobs:
         ports:
           - 5672:5672
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-
-      # Install all dependencies
-
       - name: Set up VRO build env
         uses: ./.github/actions/vro-setup
 

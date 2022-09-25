@@ -1,6 +1,6 @@
-name: VRO setup
+name: "VRO setup"
 
-description: Installs Java and Python, along with dependencies to build VRO
+description: "Installs Java and Python, along with dependencies to build VRO"
 
 runs:
   using: composite
