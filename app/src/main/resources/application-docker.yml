@@ -3,19 +3,18 @@
 
 spring:
   datasource:
-    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
-    username: skuser
-    password: localT3st!
-    schema: claims
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     hikari:
-      jdbc-url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
-      username: skuser
-      password: localT3st!
-      schema: claims
+      jdbc-url: ${POSTGRES_URL}
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      schema: ${POSTGRES_SCHEMA}
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 logging:
   level:
