@@ -44,6 +44,8 @@ jobs:
         run: |
           snyk container test va/abd_vro-app:latest --file=./app/src/docker/Dockerfile
           snyk container test va/abd_vro-db-init:latest --file=./db-init/src/docker/Dockerfile
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 #      - name: "Upload to GitHub Code Scanning"
 #        uses: github/codeql-action/upload-sarif@v2
