@@ -1,4 +1,4 @@
-antibiotics = [
+antibiotics = {
     "amoxicillin",
     "sulfamethoxazole",
     "trimethoprim",
@@ -77,4 +77,4 @@ antibiotics = [
     "Zithromax 500 MG Injection",
     "5 ML sulfamethoxazole 80 MG/ML / trimethoprim 16 MG/ML Injection",
     "Septra"
-]
+}

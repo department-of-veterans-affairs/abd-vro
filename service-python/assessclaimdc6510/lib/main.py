@@ -2,6 +2,7 @@ import logging
 
 from . import utils
 from . import medication
+from . import condition
 from typing import Dict
 
 
@@ -19,17 +20,17 @@ def assess_asthma(event: Dict):
 
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
+        conditions = condition.conditions_calculation(event)
+        response_body.update(
+            {
+                "evidence": {
+                    "medications": active_medications,
+                    "conditions": conditions
+                }
+            }
+        )
     else:
-        active_medications = []
         logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
-
-    response_body.update(
-        {
-            "evidence": {
-                "medications": active_medications,
-            }
-        }
-    )
 
     return response_body
