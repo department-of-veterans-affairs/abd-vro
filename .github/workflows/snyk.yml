@@ -78,6 +78,11 @@ jobs:
         with:
           sarif_file: snyk-app.sarif
           category: snyk-image-app
+      - name: "Upload to GitHub Code Scanning: postgres"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-postgres.sarif
+          category: snyk-image-postgres
       - name: "Upload to GitHub Code Scanning: db-init"
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -88,3 +93,18 @@ jobs:
         with:
           sarif_file: snyk-service-data-access.sarif
           category: snyk-image-service-data-access
+      - name: "Upload to GitHub Code Scanning: pdfgenerator"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-pdfgenerator.sarif
+          category: snyk-image-pdfgenerator
+      - name: "Upload to GitHub Code Scanning: assessclaimdc7101"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-assessclaimdc7101.sarif
+          category: snyk-image-assessclaimdc7101
+      - name: "Upload to GitHub Code Scanning: assessclaimdc6602"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-assessclaimdc6602.sarif
+          category: snyk-image-assessclaimdc6602
