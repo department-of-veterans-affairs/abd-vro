@@ -8,7 +8,16 @@ import gov.va.vro.abd_data_access.model.AbdCondition;
 import gov.va.vro.abd_data_access.model.AbdMedication;
 import gov.va.vro.abd_data_access.model.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +47,7 @@ class FieldExtractorTest {
     private final static String OBSERVATION_RESPONSE = "observation-response-bundle.json";
     private final static String PROCEDURE_RESPONSE = "procedure-response-bundle.json";
     private final static String CONDITION_RESPONSE = "condition-response-bundle.json";
-    private final static String TEST = "test.json";
+    private final static String TEST = "bloodpresure-measurement-test.json";
 
     private IParser parser;
 
