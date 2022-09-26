@@ -1,16 +1,9 @@
-name: Install build dependencies
-description: Installs JDK 17, hadolint, and spectral for Java app builds
+name: Install Java tools
+description: Installs hadolint and spectral for Java, and shellcheck
 
 runs:
   using: composite
   steps:
-    - name: Install Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: temurin
-        java-version: '17'
-        cache: 'gradle'
-
     # http://man7.org/linux/man-pages/man1/date.1.html
     - name: Get Date
       id: get-date
