@@ -70,6 +70,12 @@ bootJar {
     }
 }
 
+openApi {
+    customBootRun {
+        getClasspath().setFrom(sourceSets.test.runtimeClasspath)
+    }
+}
+
 afterEvaluate {
     tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
 
