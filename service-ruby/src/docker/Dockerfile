@@ -44,4 +44,6 @@ WORKDIR /app
 COPY . /app/
 RUN bundle install
 
+RUN useradd --no-create-home someuser
+USER someuser
 CMD ["./entrypoint.sh"]
