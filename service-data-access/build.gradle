@@ -2,7 +2,7 @@
 plugins {
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
-	id "io.freefair.lombok" version "6.5.0.2"
+	id "io.freefair.lombok" version "6.5.1"
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
