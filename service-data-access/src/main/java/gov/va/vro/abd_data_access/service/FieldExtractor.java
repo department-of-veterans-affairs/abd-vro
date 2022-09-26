@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class FieldExtractor {
     private static String toDate(DateTimeType dateTimeType) {
         String value = dateTimeType.asStringValue();
+        if (value == null) return "";
         int index = value.indexOf('T');
         if (index > 0) {
             return value.substring(0, index);
