@@ -63,7 +63,8 @@ jobs:
           snyk-image assessclaimdc6602 service-python/assessclaimdc6602
 
           if [ "$FAILED_IMAGES" ]; then
-            { echo "Failed images: $FAILED_IMAGES"; return 9; }
+            echo "Failed images: $FAILED_IMAGES"
+            exit 9
           else
             echo "No failed images"
           fi
@@ -71,7 +72,18 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-#      - name: "Upload to GitHub Code Scanning"
-#        uses: github/codeql-action/upload-sarif@v2
-#        with:
-#          sarif_file: snyk.sarif
+      - name: "Upload to GitHub Code Scanning: app"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-app.sarif
+          category: snyk-image-app
+      - name: "Upload to GitHub Code Scanning: db-init"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-db-init.sarif
+          category: snyk-image-db-init
+      - name: "Upload to GitHub Code Scanning: service-data-access"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-service-data-access.sarif
+          category: snyk-image-service-data-access
