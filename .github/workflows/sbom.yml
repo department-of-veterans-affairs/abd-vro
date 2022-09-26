@@ -2,9 +2,7 @@ name: Software BOM
 
 on:
   push:
-
     branches: [ main, develop ]
-
 
   # Allow manual triggering
   workflow_dispatch:
