@@ -23,6 +23,7 @@ import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
+import org.apache.camel.builder.Builder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
@@ -267,7 +268,7 @@ class VroControllerTest extends BaseIntegrationTest {
             route
                 .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
                 .skipSendToOriginalEndpoint()
-                .setBody(route.simple(mockResponse))
+                .setBody(Builder.simple(mockResponse))
                 .to("mock:generate-pdf"));
     mockGeneratePdfEndpoint.expectedMessageCount(1);
 
