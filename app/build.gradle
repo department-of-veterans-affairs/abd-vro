@@ -15,7 +15,7 @@ dependencies {
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
 
     // https://mvnrepository.com/artifact/io.gatling.highcharts/gatling-charts-highcharts
-    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
+    testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
 
     implementation project(':api')
     implementation project(':controller')
@@ -39,8 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    testImplementation "com.h2database:h2:${h2_version}"
-    runtimeOnly "com.h2database:h2:${h2_version}"
+    testRuntimeOnly "com.h2database:h2:${h2_version}"
     implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
     testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
@@ -57,20 +56,24 @@ application {
     mainClass = 'gov.va.vro.VroApplication'
 }
 
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar)
+}
+
 bootJar {
     manifest {
         attributes(
                 'Application-Version': "${project.version}",
                 'Start-Class': 'gov.va.vro.VroApplication',
-//                "Application-Git-Commit": "${gitRevision}",
-//                "Application-Git-Branch-Name": "${gitBranchName}",
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         )
     }
 }
 
-repositories {
-    mavenCentral()
+openApi {
+    customBootRun {
+        getClasspath().setFrom(sourceSets.test.runtimeClasspath)
+    }
 }
 
 afterEvaluate {
