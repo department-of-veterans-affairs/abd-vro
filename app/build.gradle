@@ -15,7 +15,7 @@ dependencies {
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
 
     // https://mvnrepository.com/artifact/io.gatling.highcharts/gatling-charts-highcharts
-    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
+    testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
 
     implementation project(':api')
     implementation project(':controller')
