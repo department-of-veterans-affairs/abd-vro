@@ -1,9 +1,10 @@
-from .settings import queue_config
-from . import main
-
-import pika
 import json
 import logging
+
+import pika
+
+from . import main
+from .settings import queue_config
 
 EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]

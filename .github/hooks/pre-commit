@@ -1,0 +1,3 @@
+#!/bin/sh
+isort .
+flake8
