@@ -1,6 +1,15 @@
 name: Snyk scan
 
 on:
+  pull_request:
+    branches: [main, develop]
+    # Limit to certain PR event types since this action doesn't need to run for every commit
+    types: [ready_for_review, review_requested]
+
+  # When changes are pushed to special branches
+  push:
+    branches: [main, develop]
+
   # Allow manual triggering
   workflow_dispatch:
 
@@ -23,6 +32,8 @@ jobs:
 #      - name: "Build Java code"
 #        run: ./gradlew build
 
+# Each of our 24 projects counts towards the "Private manifest" limit (401/month)
+# https://docs.snyk.io/products/snyk-open-source/use-snyk-open-source-from-the-cli#snyk-open-source-file-types
 #      - name: "Snyk test"
 #        run: snyk test --all-projects --sarif-file-output=snyk.sarif --severity-threshold=medium
 #        continue-on-error: true # To make sure that SARIF upload gets called
@@ -31,6 +42,8 @@ jobs:
 
       - name: "Build Docker images"
         run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+
+# These image scans are unlimited
       - name: "Snyk scan images"
         run: |
           function snyk-image(){
