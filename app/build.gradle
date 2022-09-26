@@ -50,6 +50,11 @@ dependencies {
     docker project(':db-init')
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+    }
+}
 
 application {
     // Define the main class for the application.
