@@ -19,45 +19,46 @@ def on_generate_callback(channel, method, properties, body):
         redis_client = RedisClient(redis_config)
         pdf_generator = PDFGenerator(pdf_options)
 
-				binding_key = method.routing_key
-				message = json.loads(body)
-				# logging.info(f" [x] {binding_key}: Received message: {message}")
-				claim_id = message["claimSubmissionId"]
-				message["veteran_info"] = message["veteranInfo"]
-				message["evidence"] = message["evidence"]
-				code = message["diagnosticCode"]
-				diagnosis_name = DIAGNOSTIC_CODE_MAPPING[code]
-				variables = pdf_generator.generate_template_variables(diagnosis_name, message)
-				# logging.info(f"Variables: {variables}")
-				template = pdf_generator.generate_template_file(diagnosis_name, variables)
-				pdf = pdf_generator.generate_pdf_from_string(template)
-				redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
-				redis_client.save_data(f"{claim_id}_type", diagnosis_name)
-				logging.info("Saved PDF")
-				response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
-		except Exception as e:
-				logging.error(e, exc_info=True)
-				response = {"claimSubmissionId": claim_id, "status": "ERROR", "reason": str(e)}
-		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
+        # binding_key = method.routing_key
+        message = json.loads(body)
+        # logging.info(f" [x] {binding_key}: Received message: {message}")
+        claim_id = message["claimSubmissionId"]
+        message["veteran_info"] = message["veteranInfo"]
+        message["evidence"] = message["evidence"]
+        code = message["diagnosticCode"]
+        diagnosis_name = DIAGNOSTIC_CODE_MAPPING[code]
+        variables = pdf_generator.generate_template_variables(diagnosis_name, message)
+        # logging.info(f"Variables: {variables}")
+        template = pdf_generator.generate_template_file(diagnosis_name, variables)
+        pdf = pdf_generator.generate_pdf_from_string(template)
+        redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
+        redis_client.save_data(f"{claim_id}_type", diagnosis_name)
+        logging.info("Saved PDF")
+        response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        response = {"claimSubmissionId": claim_id, "status": "ERROR", "reason": str(e)}
+    channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
+
 
 def on_fetch_callback(channel, method, properties, body):
-		try:
-				redis_client = RedisClient(redis_config)
-				binding_key = method.routing_key
-				claim_id = str(body, 'UTF-8')
-				logging.info(f" [x] {binding_key}: Received Claim Submission ID: {claim_id}")
-				if redis_client.exists(claim_id):
-						pdf = redis_client.get_data(claim_id)
-						diagnosis_name = redis_client.get_data(f"{claim_id}_type")
-						logging.info("Fetched PDF")
-						response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "diagnosis": str(diagnosis_name.decode("ascii")), "pdfData": str(pdf.decode("ascii"))}
-				else:
-						logging.info(f"Claim ID not found")
-						response = {"claimSubmissionId": claim_id, "status": "NOT_FOUND", "diagnosis": "", "pdfData": ""}
-		except Exception as e:
-				logging.error(e, exc_info=True)
-				response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": "", "reason": str(e)}
-		channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
+    try:
+        redis_client = RedisClient(redis_config)
+        binding_key = method.routing_key
+        claim_id = str(body, 'UTF-8')
+        logging.info(f" [x] {binding_key}: Received Claim Submission ID: {claim_id}")
+        if redis_client.exists(claim_id):
+            pdf = redis_client.get_data(claim_id)
+            diagnosis_name = redis_client.get_data(f"{claim_id}_type")
+            logging.info("Fetched PDF")
+            response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "diagnosis": str(diagnosis_name.decode("ascii")), "pdfData": str(pdf.decode("ascii"))}
+        else:
+            logging.info("Claim ID not found")
+            response = {"claimSubmissionId": claim_id, "status": "NOT_FOUND", "diagnosis": "", "pdfData": ""}
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        response = {"claimSubmissionId": claim_id, "status": "ERROR", "diagnosis": "", "pdfData": "", "reason": str(e)}
+    channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
 def queue_setup(channel):
