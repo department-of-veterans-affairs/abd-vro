@@ -15,6 +15,7 @@ public class FetchPdfResponse {
   private String status;
   private String diagnosis;
   private String pdfData;
+  private String reason;
 
   public boolean hasContent() {
     return pdfData != null && pdfData.length() > 0;
