@@ -56,20 +56,18 @@ application {
     mainClass = 'gov.va.vro.VroApplication'
 }
 
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar)
+}
+
 bootJar {
     manifest {
         attributes(
                 'Application-Version': "${project.version}",
                 'Start-Class': 'gov.va.vro.VroApplication',
-//                "Application-Git-Commit": "${gitRevision}",
-//                "Application-Git-Branch-Name": "${gitBranchName}",
                 'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         )
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 openApi {
