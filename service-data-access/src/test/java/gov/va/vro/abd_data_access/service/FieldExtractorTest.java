@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import gov.va.vro.abd_data_access.model.AbdBloodPressure;
 import gov.va.vro.abd_data_access.model.AbdCondition;
 import gov.va.vro.abd_data_access.model.AbdMedication;
+import gov.va.vro.abd_data_access.model.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,10 +33,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class FieldExtractorTest {
 
-    private final static String TEST_CODE = "test";
     private final static String CONTENT_TYPE = "application/fhir+json";
     private final static String MEDICATION_REQUEST_RESPONSE = "medication-response-bundle.json";
     private final static String OBSERVATION_RESPONSE = "observation-response-bundle.json";
+    private final static String PROCEDURE_RESPONSE = "procedure-response-bundle.json";
+    private final static String CONDITION_RESPONSE = "condition-response-bundle.json";
+    private final static String TEST = "test.json";
 
     private IParser parser;
 
@@ -45,62 +51,104 @@ class FieldExtractorTest {
 
     @Test
     public void testExtractCondition() {
-        // TODO: Revisit this when Condition is added.
-        //  (It is not planned to include condition for current version.)
-        System.out.println("test ExtractCondition");
-        Condition testCondition = new Condition();
-        CodeableConcept code = new CodeableConcept();
-        code.setText(TEST_CODE);
-        testCondition.setCode(code);
-        AbdCondition abdCondition = FieldExtractor.extractCondition(testCondition);
-        assertEquals(TEST_CODE, abdCondition.getText());
+        log.info("test ExtractCondition");
+
+        try {
+            Bundle retVal = getBundle(CONDITION_RESPONSE);
+            List<Bundle.BundleEntryComponent> entries = retVal.getEntry();
+            assertTrue(entries.size() > 1);
+
+            entries.parallelStream().forEach(this::verifyCondition);
+        } catch (Exception e) {
+            log.error("testExtractCondition error: {}", e.getMessage(), e);
+            fail("testExtractCondition.");
+        }
     }
 
     @Test
     public void testExtractMedication() {
+        log.info("test testExtractMedication");
         try {
-            String testfile = getClass().getClassLoader().getResource(MEDICATION_REQUEST_RESPONSE).getPath();
-            File initialFile = new File(testfile);
-            InputStream theResponseInputStream = new FileInputStream(initialFile);
-            Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
-            theResponseInputStream.close();
+            Bundle retVal = getBundle(MEDICATION_REQUEST_RESPONSE);
             List<Bundle.BundleEntryComponent> entries = retVal.getEntry();
             assertTrue(entries.size() > 1);
 
-            entries.parallelStream().forEach(e -> verifyAbdMedication(e));
+            entries.parallelStream().forEach(this::verifyAbdMedication);
         } catch (Exception e) {
-            log.error("testExtractMedication error: {}", e.getMessage());
+            log.error("testExtractMedication error: {}", e.getMessage(), e);
             fail("text extractmedication.");
         }
     }
 
     @Test
     public void testExtractProcedure() {
-        // TODO: Revisit this when Procedure is added.
-        //  (It is not planned to include procedure for current version.)
-    }
+        log.info("test ExtractProcedure");
+        try {
+            Bundle retVal = getBundle(PROCEDURE_RESPONSE);
+            List<Bundle.BundleEntryComponent> entries = retVal.getEntry();
+            assertTrue(entries.size() > 1);
 
-    @Test
-    public void testExtractBPMeasurement() {
-        // TODO: Revisit this when it is needed.
+            entries.parallelStream().forEach(this::verifyProcedure);
+        } catch (Exception e) {
+            log.error("ExtractProcedure error: {}", e.getMessage(), e);
+            fail("text ExtractProcedure.");
+        }
     }
 
     @Test
     public void testExtractBloodPressure() {
+        log.info("test ExtractBloodPressure");
         try {
-            String testfile = getClass().getClassLoader().getResource(OBSERVATION_RESPONSE).getPath();
-            File initialFile = new File(testfile);
-            InputStream theResponseInputStream = new FileInputStream(initialFile);
-            Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
-            theResponseInputStream.close();
+            Bundle retVal = getBundle(OBSERVATION_RESPONSE);
             List<Bundle.BundleEntryComponent> entries = retVal.getEntry();
             assertTrue(entries.size() > 1);
 
-            entries.parallelStream().forEach(e -> verifyBloodPressure(e));
+            entries.parallelStream().forEach(this::verifyBloodPressure);
         } catch (Exception e) {
             log.error("testExtractBloodPressure error: {}", e.getMessage(), e);
             fail("testExtractBloodPressure.");
         }
+    }
+
+    @Test
+    public void testBloodPressureMeasurement() {
+        log.info("test BloodPressureMeasurement");
+        try {
+            Bundle bundle = getBundle(TEST);
+            List<Bundle.BundleEntryComponent> entries = bundle.getEntry();
+            bundle.getEntry().forEach(e -> {
+                Observation o = (Observation) e.getResource();
+                o.getComponent().forEach(c -> {
+                    if (!c.hasValueQuantity()) {
+                        Quantity quantity = new Quantity();
+                        quantity.setUnit("mm[Hg]");
+                        String code = c.getCode().getCodingFirstRep().getCode();
+                        if (code.equals("8462-4")) {
+                            quantity.setValue(80);
+                            c.setValue(quantity);
+                        } else if (code.equals("8480-6")) {
+                            quantity.setValue(120);
+                            c.setValue(quantity);
+                        }
+                    }
+                });
+            });
+            entries.parallelStream().forEach(this::verifyBloodPressure);
+        } catch (Exception e) {
+            log.error("testBloodPressureMeasurement error: {}", e.getMessage(), e);
+            fail("testBloodPressureMeasurement.");
+        }
+
+    }
+
+    private Bundle getBundle(String conditionResponse) throws IOException {
+        String testfile =
+                Objects.requireNonNull(getClass().getClassLoader().getResource(conditionResponse)).getPath();
+        File initialFile = new File(testfile);
+        InputStream theResponseInputStream = new FileInputStream(initialFile);
+        Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
+        theResponseInputStream.close();
+        return retVal;
     }
 
     private void verifyAbdMedication(Bundle.BundleEntryComponent entry) {
@@ -122,19 +170,57 @@ class FieldExtractorTest {
         if (resource.hasPerformer()) {
             List<String> references = resource.getPerformer().stream()
                     .filter(p -> p.hasReference() & p.hasDisplay())
-                    .map(p -> p.getReference()).collect(Collectors.toList());
+                    .map(Reference::getReference).collect(Collectors.toList());
             if (!references.isEmpty()) {
                 boolean hasPractitioner = references.stream()
                         .anyMatch(r -> r.contains("Practitioner"));
                 boolean hasOrganization = references.stream()
                         .anyMatch(r -> r.contains("Organization"));
                 if (hasPractitioner) {
-                    assertTrue(!abdBloodPressure.getPractitioner().isEmpty());
+                    assertFalse(abdBloodPressure.getPractitioner().isEmpty());
                 }
                 if (hasOrganization) {
-                    assertTrue(!abdBloodPressure.getOrganization().isEmpty());
+                    assertFalse(abdBloodPressure.getOrganization().isEmpty());
                 }
             }
+        }
+    }
+
+    private void verifyProcedure(Bundle.BundleEntryComponent entry) {
+        Procedure procedure = (Procedure) entry.getResource();
+        assertEquals(ResourceType.Procedure, procedure.getResourceType());
+        AbdProcedure abdProcedure = FieldExtractor.extractProcedure(procedure);
+        assertEquals(procedure.hasStatus(), !Optional.ofNullable(abdProcedure.getStatus()).orElse("").isEmpty());
+        assertEquals(procedure.hasCode(), !Optional.ofNullable(abdProcedure.getCode()).orElse("").isEmpty());
+    }
+
+    private void verifyCondition(Bundle.BundleEntryComponent entry) {
+        Condition condition = (Condition) entry.getResource();
+        assertEquals(ResourceType.Condition, condition.getResourceType());
+        AbdCondition abdCondition = FieldExtractor.extractCondition(condition);
+        log.info("abdCondition: {}", abdCondition.getText());
+        if (condition.hasCode()) {
+            CodeableConcept codeableConcept = condition.getCode();
+            if (codeableConcept.hasCoding()) {
+                Coding coding = codeableConcept.getCodingFirstRep();
+                assertEquals(Optional.ofNullable(coding.getCode()).orElse(""),
+                        Optional.ofNullable(abdCondition.getCode()).orElse(""));
+                if (coding.hasDisplay()) {
+                    assertEquals(coding.getDisplay(), abdCondition.getText());
+                }
+            }
+        }
+        if (condition.hasAbatementDateTimeType()) {
+            assertEquals(Optional.ofNullable(condition.getAbatementDateTimeType().asStringValue())
+                            .orElse("")
+                            .isEmpty(),
+                    abdCondition.getAbatementDate().isEmpty());
+        }
+        if (condition.hasOnsetDateTimeType()) {
+            assertEquals(Optional.ofNullable(condition.getOnsetDateTimeType().asStringValue())
+                            .orElse("")
+                            .isEmpty(),
+                    abdCondition.getOnsetDate().isEmpty());
         }
     }
 }
