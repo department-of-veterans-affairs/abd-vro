@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main, develop]
     # Limit to certain PR event types since this action doesn't need to run for every commit
-    # types: [ready_for_review, review_requested]
+    #types: [ready_for_review, review_requested]
 
   # When changes are pushed to special branches
   push:
@@ -22,7 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: "Run Trivy vulnerability scanner in IaC mode"
+      - name: Run Trivy GitHub SBOM and submit to Dependency Snapshots
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'github'
+          output: 'dependency-results.sbom.json'
+          github-pat: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: "Scan configs"
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
@@ -42,7 +50,7 @@ jobs:
       - name: "Build jars and Docker images"
         run: ./gradlew :app:docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
-      - name: "Run Trivy vulnerability scanner in repo mode"
+      - name: "Scan rootfs"
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'rootfs'
@@ -55,7 +63,7 @@ jobs:
           sarif_file: 'trivy-rootfs-results.sarif'
           category: trivy-rootfs
 
-      - name: "Run Trivy vulnerability scanner in repo mode"
+      - name: "Scan image: app"
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'image'
@@ -67,4 +75,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-image-results.sarif'
-          category: trivy-image
+          category: trivy-image-app
