@@ -29,8 +29,7 @@ jobs:
           hide-progress: false
           format: 'sarif'
           output: 'trivy-config-results.sarif'
-          exit-code: '1'
-          ignore-unfixed: true
+          # ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy config scan results
@@ -44,15 +43,19 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
       - name: "Build Docker images"
         run: ./gradlew :app:docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
+          scan-type: 'image'
           image-ref: 'va/abd_vro-app:latest'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-image-results.sarif'
           severity: 'CRITICAL,HIGH'
 
       - name: Upload image results to GitHub Security tab
