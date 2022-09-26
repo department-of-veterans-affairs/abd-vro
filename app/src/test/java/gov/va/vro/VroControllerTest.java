@@ -1,7 +1,9 @@
 package gov.va.vro;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.model.AbdEvidence;
@@ -21,6 +23,7 @@ import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
+import org.apache.camel.builder.Builder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
@@ -101,6 +104,7 @@ class VroControllerTest extends BaseIntegrationTest {
 
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     HealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    assertNotNull(response1);
     assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
@@ -109,6 +113,7 @@ class VroControllerTest extends BaseIntegrationTest {
         post("/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
@@ -144,6 +149,7 @@ class VroControllerTest extends BaseIntegrationTest {
     var responseEntity = post("/v1/health-data-assessment", request, ClaimProcessingError.class);
     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
+    assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
@@ -189,6 +195,7 @@ class VroControllerTest extends BaseIntegrationTest {
 
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    assertNotNull(response1);
     assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
@@ -197,6 +204,7 @@ class VroControllerTest extends BaseIntegrationTest {
         post("/v1/full-health-data-assessment", request, HealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
@@ -242,6 +250,7 @@ class VroControllerTest extends BaseIntegrationTest {
         post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
+    assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
@@ -259,7 +268,7 @@ class VroControllerTest extends BaseIntegrationTest {
             route
                 .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
                 .skipSendToOriginalEndpoint()
-                .setBody(route.simple(mockResponse))
+                .setBody(Builder.simple(mockResponse))
                 .to("mock:generate-pdf"));
     mockGeneratePdfEndpoint.expectedMessageCount(1);
 
