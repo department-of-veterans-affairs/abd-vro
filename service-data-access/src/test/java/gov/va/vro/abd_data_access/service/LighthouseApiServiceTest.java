@@ -1,6 +1,6 @@
 package gov.va.vro.abd_data_access.service;
 
-import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.abd_data_access.config.properties.LighthouseProperties;
 import gov.va.vro.abd_data_access.exception.AbdException;
 import gov.va.vro.abd_data_access.model.LighthouseTokenMessage;
