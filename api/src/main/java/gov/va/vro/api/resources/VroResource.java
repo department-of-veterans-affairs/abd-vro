@@ -86,8 +86,14 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
-        @ApiResponse(responseCode = "500", description = "PDF Generator Server Error")
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
@@ -110,11 +116,18 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "404",
-            description = "PDF generation for specified claimSubmissionID not requested"),
-        @ApiResponse(responseCode = "500", description = "PDF Generator Server Error")
+            description = "PDF generation for specified claimSubmissionID not requested",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
@@ -167,8 +180,14 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
-        @ApiResponse(responseCode = "500", description = "Fetch Claims Server Error")
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Fetch Claims Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping("/fetch-claims")
   @ResponseStatus(HttpStatus.OK)
@@ -183,8 +202,14 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
-        @ApiResponse(responseCode = "500", description = "Claim Metrics Server Error")
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
