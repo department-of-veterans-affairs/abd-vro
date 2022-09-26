@@ -97,6 +97,8 @@ afterEvaluate {
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
+
+        dependsOn 'dockerPrepare'
     }
 }
 
