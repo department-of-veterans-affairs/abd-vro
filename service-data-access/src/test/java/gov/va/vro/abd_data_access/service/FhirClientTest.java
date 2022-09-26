@@ -6,8 +6,10 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import gov.va.vro.abd_data_access.exception.AbdException;
 import gov.va.vro.abd_data_access.model.AbdBloodPressure;
 import gov.va.vro.abd_data_access.model.AbdClaim;
+import gov.va.vro.abd_data_access.model.AbdCondition;
 import gov.va.vro.abd_data_access.model.AbdEvidence;
 import gov.va.vro.abd_data_access.model.AbdMedication;
+import gov.va.vro.abd_data_access.model.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.AfterEach;
@@ -47,6 +49,8 @@ class FhirClientTest {
     private final static String CONTENT_TYPE = "application/fhir+json";
     private final static String MEDICATION_REQUEST_RESPONSE = "medication-response-bundle.json";
     private final static String OBSERVATION_RESPONSE = "observation-response-bundle.json";
+    private final static String CONDITION_RESPONSE = "condition-response-bundle.json";
+    private final static String PROCEDURE_RESPONSE = "procedure-response-bundle.json";
 
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_SIZE = 30;
@@ -95,7 +99,6 @@ class FhirClientTest {
         testClaim.setVeteranIcn(TEST_PATIENT);
         try {
             mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
-            //mockGetBundle(new Bundle(), AbdDomain.CONDITION);
             AbdEvidence evidence = client.getMedicalEvidence(testClaim);
             assertNotNull(evidence);
             assertTrue(evidence.getMedications().size() > 0);
@@ -143,12 +146,28 @@ class FhirClientTest {
             assertNotNull(bundle);
             domainBundles.put(AbdDomain.BLOOD_PRESSURE, bundle.getEntry());
 
+            testfile = Objects.requireNonNull(getClass().getClassLoader()
+            .getResource(CONDITION_RESPONSE)).getPath();
+            bundle = getMedicalInfoBundle(testfile);
+            assertNotNull(bundle);
+            domainBundles.put(AbdDomain.CONDITION, bundle.getEntry());
+
+            testfile = Objects.requireNonNull(getClass().getClassLoader()
+            .getResource(PROCEDURE_RESPONSE)).getPath();
+            bundle = getMedicalInfoBundle(testfile);
+            assertNotNull(bundle);
+            domainBundles.put(AbdDomain.PROCEDURE, bundle.getEntry());
+
             AbdEvidence evidence = client.getAbdEvidence(domainBundles);
             assertNotNull(evidence);
             List<AbdMedication> medications = evidence.getMedications();
             assertNotNull(medications);
             List<AbdBloodPressure> bp = evidence.getBloodPressures();
             assertNotNull(bp);
+            List<AbdCondition> conditions = evidence.getConditions();
+            assertNotNull(conditions);
+            List<AbdProcedure> procedures = evidence.getProcedures();
+            assertNotNull(procedures);
         } catch (Exception e) {
             log.error("testGetAbdEvidence error: {}", e.getMessage(), e);
             fail("testGetAbdEvidence");
