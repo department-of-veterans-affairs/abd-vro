@@ -11,9 +11,12 @@ import java.util.Optional;
 @Mapper(componentModel = "spring")
 public interface GeneratePdfRequestMapper {
 
-  @Mapping(target = "pdfDocumentJson", ignore = true)
+  @Mapping(target = "status", ignore = true)
+  @Mapping(target = "reason", ignore = true)
   GeneratePdfPayload toModel(GeneratePdfRequest request);
 
+  @Mapping(target = "status")
+  @Mapping(target = "reason")
   GeneratePdfResponse toGeneratePdfResponse(GeneratePdfPayload src);
 
   default GeneratePdfResponse toGeneratePdfResponse(Optional<GeneratePdfPayload> src) {

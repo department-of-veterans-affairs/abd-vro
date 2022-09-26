@@ -12,7 +12,7 @@ on:
 
   # In case vulnerability checks are updated
   schedule:
-    - cron: "27 2 * * 1"
+    - cron: "30 12 * * 1"
 
   # Allow manual triggering
   workflow_dispatch:

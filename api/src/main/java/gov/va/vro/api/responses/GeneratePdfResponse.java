@@ -1,21 +1,17 @@
 package gov.va.vro.api.responses;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
-@AllArgsConstructor
 @Getter
-@Schema(
-    name = "GeneratePdfResponse",
-    description = "Metadata describing an GeneratePdfResponse resource")
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class GeneratePdfResponse {
 
-  @NotNull
-  @Schema(
-      description = "JSON results",
-      example = "{\"claimSubmissionId\": 0, \"status\": \"IN_PROGRESS\", \"pdf\": \"\"}")
-  private final String pdfDocumentJson;
+  @NotBlank private String claimSubmissionId;
+  private String status;
+  private String reason;
 }
