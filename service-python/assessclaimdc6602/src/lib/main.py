@@ -1,5 +1,3 @@
-import logging
-
 from . import utils
 from . import medication
 from typing import Dict

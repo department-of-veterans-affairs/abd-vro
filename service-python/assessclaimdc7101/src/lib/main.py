@@ -1,5 +1,4 @@
 from typing import Dict
-import logging
 
 from . import utils
 from . import continuous_medication
