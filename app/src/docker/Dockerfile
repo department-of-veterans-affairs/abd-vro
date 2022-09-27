@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:19-jre
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 WORKDIR /project
