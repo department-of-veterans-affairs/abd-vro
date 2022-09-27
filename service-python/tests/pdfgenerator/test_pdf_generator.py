@@ -1,5 +1,7 @@
+import json
+import os
+
 from pdfgenerator.src.lib.pdf_generator import PDFGenerator
-import json, os
 
 lib_dir = os.path.dirname(__file__)
 

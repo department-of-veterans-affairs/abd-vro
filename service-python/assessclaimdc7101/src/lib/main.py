@@ -1,8 +1,6 @@
 from typing import Dict
 
-from . import utils
-from . import continuous_medication
-from . import bp_filter
+from . import bp_filter, continuous_medication, utils
 
 
 def assess_hypertension(event: Dict):
