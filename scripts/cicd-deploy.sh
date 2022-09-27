@@ -42,7 +42,6 @@ kubectl create secret generic github-access-token \
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
-              --set-string images.serviceRuby.tag="${IMAGE_TAG}"\
               --set-string images.dbInit.tag="${IMAGE_TAG}"\
               --set-string info.version="${VERSION}"\
               --set-string info.git_hash="${GIT_SHA}" \
