@@ -5,21 +5,28 @@
 
 version: 2
 updates:
-
-  # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
-    # Workflow files stored in the
-    # default location of `.github/workflows`
+    # Workflow files are expected in the relative location `.github/workflows`
     directory: "/"
+    # Raise pull requests for updates against this branch
+    target-branch: "develop"
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "gradle"
+    directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "pip"
     directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
