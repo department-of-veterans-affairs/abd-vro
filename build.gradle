@@ -24,7 +24,6 @@ plugins {
 
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
-    id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("gov.va.starter.plugin.cookiecutter") version "${starter_boot_version}" apply false
