@@ -1,14 +1,13 @@
 
 plugins {
     id 'starter.std.java.library-spring-conventions'
-	id 'org.springframework.boot'
-	id 'io.spring.dependency-management'
-	id "io.freefair.lombok" version "6.5.1"
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id "io.freefair.lombok" version "6.5.1"
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
     id 'jacoco'
-    id 'io.gatling.gradle'
 }
 
 
@@ -36,12 +35,6 @@ sourceSets {
 dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
-    // override starter-bom
-    implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-    implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-    implementation "org.springframework:spring-beans:${spring_framework_version}"
-    implementation "io.github.classgraph:classgraph:${class_graph_version}"
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
