@@ -21,23 +21,15 @@ public class PrimaryRoutes extends RouteBuilder {
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
   private static final String FETCH_PDF_QUEUE = "fetch-pdf";
 
-  private final CamelUtils camelUtils;
   private final SaveToDbService saveToDbService;
 
   @Override
   public void configure() {
     configureRouteClaimSubmit();
     configureRouteClaimSubmitForFull();
-    configureRouteClaimProcessed();
 
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
-  }
-
-  private void configureRouteClaimProcessed() {
-    camelUtils.asyncSedaEndpoint("seda:claim-vro-processed");
-    camelUtils.multiConsumerSedaEndpoint("seda:claim-vro-processed");
-    from("seda:claim-vro-processed").log(">>>> VRO processed! claim: ${body.toString()}");
   }
 
   private void configureRouteClaimSubmit() {
