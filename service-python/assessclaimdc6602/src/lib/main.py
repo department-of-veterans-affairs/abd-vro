@@ -1,4 +1,3 @@
-import logging
 from typing import Dict
 
 from . import medication, utils
@@ -31,7 +30,6 @@ def assess_asthma(event: Dict):
             }
         )
     else:
-        logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body
