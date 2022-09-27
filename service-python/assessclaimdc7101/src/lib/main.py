@@ -1,9 +1,6 @@
 from typing import Dict
-import logging
 
-from . import utils
-from . import continuous_medication
-from . import bp_filter
+from . import bp_filter, continuous_medication, utils
 
 
 def assess_hypertension(event: Dict):
@@ -39,7 +36,6 @@ def assess_hypertension(event: Dict):
         )
 
     else:
-        logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body

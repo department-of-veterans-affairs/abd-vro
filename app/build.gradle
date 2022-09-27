@@ -23,7 +23,6 @@ dependencies {
     implementation project(':service:provider')
     implementation project(':service:spi')
     implementation project(':service:db')
-    implementation project(':test-data-factory')
 
     implementation 'gov.va.starter:health'
     implementation 'gov.va.starter:tracing'
@@ -50,6 +49,11 @@ dependencies {
     docker project(':db-init')
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+    }
+}
 
 application {
     // Define the main class for the application.
@@ -81,12 +85,9 @@ afterEvaluate {
 
     tasks.named('forkedSpringBootRun').configure {
         dependsOn 'bootStartScripts'
-        dependsOn ':app:checkstyleGatling'
         dependsOn 'checkstyleIntegrationTest'
         dependsOn 'checkstyleMain'
         dependsOn 'checkstyleTest'
-        dependsOn 'compileGatlingJava'
-        dependsOn 'compileGatlingScala'
         dependsOn 'compileIntegrationTestJava'
         dependsOn 'dockerfileZip'
         dependsOn 'integrationTest'

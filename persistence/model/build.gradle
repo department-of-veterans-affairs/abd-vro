@@ -6,7 +6,6 @@ plugins {
 dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-    implementation project(':test-data-factory')
 
     // override starter-bom
     implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
