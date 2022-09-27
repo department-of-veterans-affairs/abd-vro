@@ -36,13 +36,13 @@ def queue_setup(channel):
     channel.exchange_declare(
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )
-    channel.queue_declare(queue=SERVICE_QUEUE)
-    channel.queue_bind(queue=SERVICE_QUEUE, exchange=EXCHANGE)
+    channel.queue_declare(queue=f"health-assess-queue.{SERVICE_QUEUE}")
+    channel.queue_bind(queue=f"health-assess-queue.{SERVICE_QUEUE}", exchange=EXCHANGE)
 
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(
-        queue=SERVICE_QUEUE, on_message_callback=on_request_callback, auto_ack=True
+        queue=f"health-assess-queue.{SERVICE_QUEUE}", on_message_callback=on_request_callback, auto_ack=True
     )
     logging.info(
-        f" [*] Waiting for data for queue: {SERVICE_QUEUE}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: health-assess-queue.{SERVICE_QUEUE}. To exit press CTRL+C"
     )

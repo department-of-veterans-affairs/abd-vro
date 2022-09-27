@@ -178,7 +178,7 @@ class VroControllerTest extends BaseIntegrationTest {
         route ->
             route
                 .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+                    "rabbitmq:health-assess-exchange?routingKey=health-assess-queue.7101&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
     // The mock endpoint returns a valid response
@@ -234,7 +234,7 @@ class VroControllerTest extends BaseIntegrationTest {
         route ->
             route
                 .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange?routingKey=7101&requestTimeout=60000")
+                    "rabbitmq:health-assess-exchange?routingKey=health-assess-queue.7101&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
 
