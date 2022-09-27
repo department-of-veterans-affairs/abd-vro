@@ -85,12 +85,9 @@ afterEvaluate {
 
     tasks.named('forkedSpringBootRun').configure {
         dependsOn 'bootStartScripts'
-        dependsOn ':app:checkstyleGatling'
         dependsOn 'checkstyleIntegrationTest'
         dependsOn 'checkstyleMain'
         dependsOn 'checkstyleTest'
-        dependsOn 'compileGatlingJava'
-        dependsOn 'compileGatlingScala'
         dependsOn 'compileIntegrationTestJava'
         dependsOn 'dockerfileZip'
         dependsOn 'integrationTest'
