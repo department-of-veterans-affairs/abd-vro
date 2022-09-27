@@ -17,7 +17,6 @@ dependencies {
     implementation "gov.va.starter:exceptions"
     implementation project(':persistence:model')
     implementation project(':service:spi')
-    implementation project(':test-data-factory')
     implementation 'gov.va.starter:test-data'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 

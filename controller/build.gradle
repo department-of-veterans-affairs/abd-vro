@@ -14,7 +14,6 @@ dependencies {
     implementation project(':api')
     implementation project(':service:provider')
     implementation project(':service:spi')
-    implementation project(':test-data-factory')
 
     implementation "gov.va.starter:exceptions"
     implementation "gov.va.starter:entity-lifecycle-notifier"
@@ -23,6 +22,5 @@ dependencies {
 
     implementation "io.opentracing.contrib:opentracing-spring-web-starter"
     implementation 'gov.va.starter:test-data'
-//    implementation('org.postgresql:postgresql')
 
 }
