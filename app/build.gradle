@@ -29,8 +29,6 @@ dependencies {
     implementation 'gov.va.starter:error-handling'
     implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
-    implementation 'gov.va.starter:kafka-entity-lifecycle-notifier'
-    implementation 'gov.va.starter:test-data'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
