@@ -62,9 +62,9 @@ def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
             queue.on_request_callback(channel, method, properties, body_formatted)
 
     assert (
-        f" [x] {diagnosticCode}: Received message: {properties.correlation_id}"
+        f" [x] {diagnosticCode}: Received message."
         in caplog.text
     )
     assert (
-        f" [x] {diagnosticCode}: Message sent to: {properties.reply_to}" in caplog.text
+        f" [x] {diagnosticCode}: Message sent." in caplog.text
     )
