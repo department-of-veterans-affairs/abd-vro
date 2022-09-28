@@ -47,6 +47,12 @@ dependencies {
     docker project(':db-init')
 }
 
+// Disable tasks associated with Gatling
+project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
+project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
+project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
+project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
+
 configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
@@ -108,3 +114,5 @@ tasks.named('lintDockerfile').configure {
 tasks.named('dockerComposeUp').configure {
     dependsOn ':db-init:docker'
 }
+
+
