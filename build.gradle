@@ -39,6 +39,13 @@ plugins {
     id("starter.java.versions-conventions") version "${starter_boot_version}"
     id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
     id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
+    id('ru.vyarus.use-python') version "2.3.0"
+}
+
+python {
+    installVirtualenv = true
+
+    pip 'redis:4.3.4'
 }
 
 ext {
@@ -123,3 +130,6 @@ tasks.register('resetloop') {
     dependsOn restartloop
 }
 
+task cmd(type: PythonTask) {
+    command = "-c print('sample')"
+}
