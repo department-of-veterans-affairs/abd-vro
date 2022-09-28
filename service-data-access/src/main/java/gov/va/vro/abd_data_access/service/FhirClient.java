@@ -46,7 +46,9 @@ public class FhirClient {
     }
 
     public String getUrl() {
-      StringBuilder url = new StringBuilder(String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]));
+      StringBuilder url =
+          new StringBuilder(
+              String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]));
       for (int i = 1; i < searchParams.length; ++i) {
         url.append(String.format("&%s=%s", searchParams[i], searchValues[i]));
       }
@@ -56,20 +58,17 @@ public class FhirClient {
 
   private static final Map<String, AbdDomain[]> dpToDomains =
       Map.ofEntries(
-              new AbstractMap.SimpleEntry<>(
-                      "0",
-                      new AbdDomain[]{
-                              AbdDomain.BLOOD_PRESSURE,
-                              AbdDomain.CONDITION,
-                              AbdDomain.PROCEDURE,
-                              AbdDomain.MEDICATION
-                      }),
-              new AbstractMap.SimpleEntry<>(
-                      "7101", new AbdDomain[]{AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
-              new AbstractMap.SimpleEntry<>(
-                      "6602", new AbdDomain[]{
-                      AbdDomain.MEDICATION
-              }));
+          new AbstractMap.SimpleEntry<>(
+              "0",
+              new AbdDomain[] {
+                AbdDomain.BLOOD_PRESSURE,
+                AbdDomain.CONDITION,
+                AbdDomain.PROCEDURE,
+                AbdDomain.MEDICATION
+              }),
+          new AbstractMap.SimpleEntry<>(
+              "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
+          new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -82,17 +81,14 @@ public class FhirClient {
                 return result;
               }),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.MEDICATION,
-              (id) -> new SearchSpec("MedicationRequest", id)),
+              AbdDomain.MEDICATION, (id) -> new SearchSpec("MedicationRequest", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.PROCEDURE,
-              (id) -> new SearchSpec("Procedure", id)),
+              AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.CONDITION,
-              (id) -> new SearchSpec("Condition", id)));
+              AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
 
   public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
-          throws AbdException {
+      throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
     String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
     String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
@@ -196,7 +192,7 @@ public class FhirClient {
   @NotNull
   public AbdEvidence getAbdEvidence(Map<AbdDomain, List<BundleEntryComponent>> components) {
     AbdEvidence result = new AbdEvidence();
-    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent: components.entrySet()) {
+    for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent : components.entrySet()) {
       List<BundleEntryComponent> entries = entryComponent.getValue();
       switch (entryComponent.getKey()) {
         case MEDICATION -> {

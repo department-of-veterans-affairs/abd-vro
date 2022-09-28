@@ -85,8 +85,7 @@ public class LighthouseApiService {
 
   private static final String PATIENT_CODING = "{\"patient\":\"%s\"}";
 
-  @Autowired
-  private LighthouseProperties lhProps;
+  @Autowired private LighthouseProperties lhProps;
 
   @Autowired private RestTemplate restTemplate;
 
@@ -172,7 +171,7 @@ public class LighthouseApiService {
       throws AbdException {
     log.info("get httpEntity for token. tokenurl={}\n, scope={}", tokenUtl, scope);
     HttpEntity<MultiValueMap<String, String>> httpEntity =
-            getLighthouseTokenRequestEntity(assertion, patientIcn, scope);
+        getLighthouseTokenRequestEntity(assertion, patientIcn, scope);
     try {
       ResponseEntity<String> tokenResp =
           restTemplate.postForEntity(tokenUtl, httpEntity, String.class);
@@ -185,7 +184,8 @@ public class LighthouseApiService {
   }
 
   @NotNull
-  private HttpEntity<MultiValueMap<String, String>> getLighthouseTokenRequestEntity(String assertion, String patientIcn, String scope) {
+  private HttpEntity<MultiValueMap<String, String>> getLighthouseTokenRequestEntity(
+      String assertion, String patientIcn, String scope) {
     String launchCode = getPatientCoding(patientIcn);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
