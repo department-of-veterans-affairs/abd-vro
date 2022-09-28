@@ -23,14 +23,14 @@ def test_queue_setup(queue, service_queue_name, caplog):
         durable=True,
         auto_delete=True,
     )
-    channel.queue_declare.assert_called_with(queue=f"health-assess-queue.{service_queue_name}")
+    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}")
     channel.queue_bind.assert_called_with(
-        queue=f"health-assess-queue.{service_queue_name}", exchange="health-assess-exchange"
+        queue=f"health-assess.{service_queue_name}", exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: health-assess-queue.{service_queue_name}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: health-assess.{service_queue_name}. To exit press CTRL+C"
         in caplog.text
     )
 
