@@ -24,14 +24,19 @@ plugins {
 
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
+    id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
+    id("gov.va.starter.plugin.cookiecutter") version "${starter_boot_version}" apply false
     id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
     id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
     id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
     id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
     id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
     id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
+    id("org.asciidoctor.jvm.pdf") version "${asciidoctor_plugin_version}" apply false
+    id("org.asciidoctor.jvm.gems") version "${asciidoctor_plugin_version}" apply false
+    id("org.asciidoctor.jvm.convert") version "${asciidoctor_plugin_version}" apply false
     id("starter.java.build-utils-property-conventions") version "${starter_boot_version}"
     id("starter.java.build-utils-task-conventions") version "${starter_boot_version}"
     id("starter.java.release-conventions") version "${starter_boot_version}"
