@@ -1,20 +1,19 @@
 
 plugins {
-	id 'org.springframework.boot'
-	id 'io.spring.dependency-management'
-	id "io.freefair.lombok" version "6.5.1"
+    id 'starter.std.java.library-spring-conventions'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id "io.freefair.lombok" version "6.5.1"
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
     id 'jacoco'
-
 }
 
 
 group = 'gov.va'
 version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
-java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar.name)
@@ -34,6 +33,9 @@ sourceSets {
 }
 
 dependencies {
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
     implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
