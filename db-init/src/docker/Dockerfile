@@ -1,4 +1,4 @@
-FROM flyway/flyway:9.2.3
+FROM flyway/flyway:9.3.1
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 COPY database /flyway/sql
 COPY flyway.conf /flyway/conf
