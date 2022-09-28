@@ -56,7 +56,7 @@ public class SlipClaimSubmitRouter {
     String diagnosticCode = diagnosticCodeObj.toString();
     String route =
         String.format(
-            "rabbitmq:health-assess-exchange?routingKey=health-assess-queue.%s&requestTimeout=%d",
+            "rabbitmq:health-assess-exchange?" + "routingKey=health-assess.%s&requestTimeout=%d",
             diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
