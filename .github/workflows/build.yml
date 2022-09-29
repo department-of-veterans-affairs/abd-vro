@@ -36,8 +36,8 @@ jobs:
         ports:
           - 5672:5672
     steps:
-      - run: |
-          echo "DEBUG json: ${{toJSON(github.event)}}"
+#      - run: |
+#          echo "DEBUG json: ${{toJSON(github.event)}}"
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
