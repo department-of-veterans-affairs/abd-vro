@@ -2,6 +2,7 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
+import gov.va.vro.api.model.AssessmentResult;
 import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
@@ -17,6 +18,7 @@ import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -49,6 +51,8 @@ public class VroController implements VroResource {
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   private final FetchClaimsService fetchClaimsService;
+
+  private final  SaveToDbService saveToDbService;
 
   private final ClaimMetricsService claimMetricsService;
 
@@ -168,6 +172,15 @@ public class VroController implements VroResource {
 
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
+      gov.va.vro.service.spi.model.AssessmentResult ar = new gov.va.vro.service.spi.model.AssessmentResult();
+      String evidenceSummary = response.getEvidenceSummary().toString();
+      ar.setEvidenceSummary(evidenceSummary);
+      try{
+        saveToDbService.insertAssessmentResult(ar);
+      }catch(Exception e){
+        log.error("Error saving evidence summary to db.");
+      }
+
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");

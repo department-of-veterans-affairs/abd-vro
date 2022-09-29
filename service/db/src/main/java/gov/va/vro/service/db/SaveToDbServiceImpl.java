@@ -1,12 +1,15 @@
 package gov.va.vro.service.db;
 
+import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
+import gov.va.vro.service.spi.model.AssessmentResult;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
+
   private final ClaimMapper mapper;
 
   @Override
@@ -28,6 +34,17 @@ public class SaveToDbServiceImpl implements SaveToDbService {
             .orElseGet(() -> createClaim(claim, veteranEntity));
     claim.setRecordId(entity.getId());
     return claim;
+  }
+
+  @Override
+  public AssessmentResult insertAssessmentResult(AssessmentResult assessmentResult){
+    AssessmentResultEntity arEntity = new AssessmentResultEntity();
+    arEntity.setEvidenceCount(assessmentResult.getEvidenceCount());
+    String evidenceSummary = assessmentResult.getEvidenceSummary().toString();
+    arEntity.setEvidenceSummary(evidenceSummary);
+    assessmentResultRepository.save(arEntity);
+    assessmentResult.setId(arEntity.getId());
+    return assessmentResult;
   }
 
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {

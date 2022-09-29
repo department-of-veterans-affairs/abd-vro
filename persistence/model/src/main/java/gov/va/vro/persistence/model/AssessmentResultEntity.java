@@ -1,5 +1,6 @@
 package gov.va.vro.persistence.model;
 
+import io.swagger.v3.core.util.Json;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,6 @@ public class AssessmentResultEntity extends BaseEntity {
   // number of evidence data points found to support fast tracking the claim
   @Min(0)
   private int evidenceCount;
+
+  private String evidenceSummary;
 }
