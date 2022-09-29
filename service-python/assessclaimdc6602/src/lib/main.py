@@ -1,6 +1,6 @@
 from typing import Dict
 
-from . import medication, conditon, utils
+from . import medication, condition, utils
 
 
 def assess_asthma(event: Dict):
