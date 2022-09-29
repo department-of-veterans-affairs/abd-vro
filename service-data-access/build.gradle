@@ -2,7 +2,7 @@
 plugins {
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
-	id "io.freefair.lombok" version "6.5.0.2"
+	id "io.freefair.lombok" version "6.5.1"
     id 'starter.java.container-conventions'
     id 'starter.java.build-utils-conventions'
     id 'java'
@@ -20,9 +20,11 @@ tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar.name)
 }
 
-// repositories {
-//    mavenCentral()
-// }
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml:1.30") with module("org.yaml:snakeyaml:1.33")
+    }
+}
 
 sourceSets {
     integrationTest {
@@ -32,41 +34,42 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'org.springframework:spring-web:5.3.22'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-	implementation 'com.fasterxml.jackson.core:jackson-core' 
-    implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.7.2'
-    implementation 'ca.uhn.hapi.fhir:hapi-fhir-server-openapi:5.7.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
+    implementation 'org.springframework:spring-web:5.3.23'
+    implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.1'
+    implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.1.1') {
+        exclude group: 'xalan', module: 'xalan'
+    }
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.projectlombok:lombok:1.18.24'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'io.jsonwebtoken:jjwt:0.2'
-    implementation 'com.auth0:java-jwt:2.2.2'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'com.auth0:java-jwt:4.0.0'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
-    testImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.0'
-    testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
-    testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
-    testImplementation 'org.skyscreamer:jsonassert:1.2.3'
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.7.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
+    testImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.2'
+    testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.2'
+    testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.2'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.1'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
 
     integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
     integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
-    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
     integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
     integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
     integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.0'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.0'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.0'
-    integrationTestImplementation 'org.skyscreamer:jsonassert:1.2.3'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.2'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.2'
+    integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.2'
+    integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
 
 configurations {

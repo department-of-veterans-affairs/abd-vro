@@ -38,8 +38,8 @@ images:
     tag: latest
     imagePullPolicy: Always
   db:
-    imageName: vro-postgres
-    tag: latest
+    imageName: dev_vro-postgres
+    tag: 0b9c9c4
   mq:
     imageName: vro-rabbitmq
     tag: 3
@@ -48,7 +48,7 @@ images:
     tag: 0b9c9c4
     imagePullPolicy: Always
   dbInit:
-    imageName: dev_vro-init-db
+    imageName: dev_vro-db-init
     tag: 0b9c9c4
     imagePullPolicy: Always
   pdfGenerator:
@@ -70,13 +70,6 @@ images:
     
 resources:
   api:
-    requests:
-      cpu: 150m
-      memory: 512Mi
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
-  serviceRuby:
     requests:
       cpu: 150m
       memory: 512Mi
@@ -187,6 +180,9 @@ dataservice:
 
 dbinit:
   secretName: dbinit
+  superUsernameKey: superUsername
+  superPasswordKey: superPassword
+  superDbnameKey: superDbname
   urlKey: url
   usernameKey: username
   passwordKey: password

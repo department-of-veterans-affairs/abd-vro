@@ -1,2 +1,0 @@
-# Settings (like the RabbitMQ connection options or API keys)
-# Loaded by setup.rb and put into a global variable.

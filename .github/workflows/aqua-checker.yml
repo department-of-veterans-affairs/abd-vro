@@ -1,10 +1,10 @@
-name: "SecRel aqua-check"
+name: "SecRel aqua-check on latest release"
 # Aqua vulnerability checker
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 11 * * *'
 
 jobs:
   aqua-check:

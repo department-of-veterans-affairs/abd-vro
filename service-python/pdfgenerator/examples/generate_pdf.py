@@ -1,6 +1,7 @@
-import pika
 import json
 import logging
+
+import pika
 
 logging.basicConfig(level=logging.INFO)
 
