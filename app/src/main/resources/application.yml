@@ -135,7 +135,7 @@ opentracing:
 
 springdoc:
   writer-with-default-pretty-printer: true
-  show-actuator: true
+  show-actuator: false
   packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
 
   swagger-ui:
