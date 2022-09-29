@@ -1,8 +1,8 @@
 package gov.va.vro.abddataaccess.exception;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class AbdExceptionTest {
     final AbdException ex3 = new AbdException(ex2);
     final AbdException ex4 = new AbdException("test", ex1);
 
-    assertTrue(!ex1.getMessage().isEmpty());
+    assertFalse(ex1.getMessage().isEmpty());
     assertEquals("test", ex2.getMessage());
     assertNotEquals(ex1.getMessage(), ex2.getMessage());
 
