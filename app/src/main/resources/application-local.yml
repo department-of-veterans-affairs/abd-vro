@@ -1,4 +1,4 @@
-# This file is used when app/src/docker/docker-compose.yml is used due to: spring.profiles.include=compose
+# This file is for running a local instance via the IDE
 
 spring:
   datasource:
