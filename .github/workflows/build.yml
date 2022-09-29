@@ -3,6 +3,8 @@ name: Build
 on:
   # Trigger on all pull requests
   pull_request:
+    branches-ignore:
+      - "dependabot/**"
     branches:
       - "*"
 
