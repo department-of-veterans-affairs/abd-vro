@@ -8,6 +8,7 @@ COPY ${JAR_FILE} starter-java.jar
 EXPOSE 8081
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
-RUN adduser --home /home/docker docker
-USER docker
+
+RUN useradd --no-create-home someuser
+USER someuser
 CMD ["sh", "entrypoint.sh"]

@@ -1,0 +1,27 @@
+name: "Set up VRO build env"
+
+description: "Installs Java and Python, along with dependencies to build VRO"
+
+runs:
+  using: composite
+  steps:
+    - name: "Install Java"
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: '17'
+        cache: 'gradle'
+
+    - uses: ./.github/actions/install-java-tools
+
+    - name: "Install Python"
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+        cache: "pip"
+
+    - name: "Install Python dependencies"
+      shell: bash
+      run: |
+        pip install -r service-python/assessclaimdc7101/src/requirements.txt
+        pip install -r service-python/pdfgenerator/src/requirements.txt

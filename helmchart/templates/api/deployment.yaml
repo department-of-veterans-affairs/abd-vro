@@ -27,17 +27,22 @@ spec:
         - name: pg-isready
           image: postgres
           env:
-            - name: POSTGRES_USERNAME
+            - name: POSTGRES_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
+                  key: {{ .Values.postgres.dbnameKey }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d {{ .Values.postgres.dbName }} -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_USERNAME; do
+                until pg_isready -d $POSTGRES_DB -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_ADMIN_USER; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
@@ -47,171 +52,56 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
           imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
           env:
-            - name: flyway.url
+            - name: FLYWAY_URL
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.url
-            - name: flyway.user
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.urlKey }}
+            - name: FLYWAY_USER
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.user
-            - name: flyway.password
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.usernameKey }}
+            - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.password
-            - name: flyway.connectRetries
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.passwordKey }}
+            - name: FLYWAY_SCHEMA
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.connectRetries
-            - name: flyway.defaultSchema
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
+            - name: FLYWAY_TABLE
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.defaultSchema
-            - name: flyway.schemas
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.flywayTableKey }}
+            - name: FLYWAY_TABLESPACE
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.schemas
-            - name: flyway.createSchemas
+                  name: {{ .Values.dbinit.secretName }}
+                  key: {{ .Values.dbinit.flywayTablespaceKey }}
+            - name: FLYWAY_PLACEHOLDERS_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.createSchemas
-            - name: flyway.table
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+            - name: FLYWAY_PLACEHOLDERS_DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.table
-            - name: flyway.tablespace
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.tablespace
-            - name: flyway.locations
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
+            - name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dbinit
-                  key: flyway.locations
-            - name: flyway.sqlMigrationPrefix
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.sqlMigrationPrefix
-            - name: flyway.repeatableSqlMigrationPrefix
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.repeatableSqlMigrationPrefix
-            - name: flyway.sqlMigrationSeparator
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.sqlMigrationSeparator
-            - name: flyway.sqlMigrationSuffixes
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.sqlMigrationSuffixes
-            - name: flyway.encoding
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.encoding
-            - name: flyway.placeholderReplacement
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholderReplacement
-            - name: flyway.placeholders.username
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.username
-            - name: flyway.placeholders.servicename
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.servicename
-            - name: flyway.placeholders.adminname
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.adminname
-            - name: flyway.placeholders.dbname
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.dbname
-            - name: flyway.placeholders.schemaname
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.schemaname
-            - name: flyway.placeholders.userpassword
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.userpassword
-            - name: flyway.placeholders.servicepassword
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.servicepassword
-            - name: flyway.placeholders.adminpassword
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholders.adminpassword
-            - name: flyway.placeholderPrefix
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholderPrefix
-            - name: flyway.placeholderSuffix
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.placeholderSuffix
-            - name: flyway.skipDefaultCallbacks
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.skipDefaultCallbacks
-            - name: flyway.target
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.target
-            - name: flyway.outOfOrder
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.outOfOrder
-            - name: flyway.validateOnMigrate
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.validateOnMigrate
-            - name: flyway.cleanOnValidationError
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.cleanOnValidationError
-            - name: flyway.mixed
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.mixed
-            - name: flyway.group
-              valueFrom:
-                secretKeyRef:
-                  name: dbinit
-                  key: flyway.group
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
       containers:
         - name: {{ .Values.name }}-api
@@ -221,37 +111,52 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
-            - name: SPRING_DATASOURCE_USERNAME
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.urlKey }}
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.usernameKey }}
-            - name: SPRING_DATASOURCE_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.passwordKey }}
-            - name: SPRING_DATASOURCE_HIKARI_JDBCURL
-              value: jdbc:postgresql://{{ .Chart.Name }}-postgres-service:{{ .Values.service.db.targetPort }}/{{ .Values.postgres.dbName }}
-            - name: SPRING_DATASOURCE_HIKARI_USERNAME
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.usernameKey }}
-            - name: SPRING_DATASOURCE_HIKARI_PASSWORD
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: POSTGRES_SCHEMA
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
-                  key: {{ .Values.postgres.passwordKey }}
+                  key: {{ .Values.postgres.schemaKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-          resources: 
+            - name: JAVA_PROFILE
+              value: -Dspring.profiles.include=compose
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+          resources:
             requests:
               cpu: 150m
               memory: 512Mi
@@ -320,6 +225,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rabbitmq.secretName }}
                   key: {{ .Values.rabbitmq.passwordKey }}
+            - name: REDIS_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-redis-service
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
           resources:
             requests:
               cpu: 150m

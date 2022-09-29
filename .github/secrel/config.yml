@@ -11,6 +11,7 @@
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
 snyk:
+  java-version: 17
   additional-args:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
@@ -18,15 +19,12 @@ images:
 - name: vro-app
   context: "./app/src/main/resources"
   path: "./app/src/docker/Dockerfile"
-- name: vro-init-db
+- name: vro-postgres
+  context: "./postgres/src/main/resources"
+  path: "./postgres/src/docker/Dockerfile"
+- name: vro-db-init
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
-- name: vro-init-container
-  context: "./container-init/src/main/resources"
-  path: "./container-init/src/docker/Dockerfile"
-- name: vro-init-opa
-  context: "./opa-init/src/main/resources"
-  path: "./opa-init/src/docker/Dockerfile"
 - name: vro-service-data-access
   context: "./service-data-access/src/main/resources"
   path: "./service-data-access/src/docker/Dockerfile"
@@ -46,3 +44,9 @@ images:
 #  args:
 #    - -Dexample-build-arg=some-value
 #    - -Dexample.maven=${{ secrets.example_secret }}
+
+python:
+  requirements:
+    - ./service-python/pdfgenerator/src/requirements.txt
+    - ./service-python/assessclaimdc6602/src/requirements.txt
+    - ./service-python/assessclaimdc7101/src/requirements.txt

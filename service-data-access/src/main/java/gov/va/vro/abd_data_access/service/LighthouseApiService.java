@@ -1,6 +1,6 @@
 package gov.va.vro.abd_data_access.service;
 
-import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.abd_data_access.config.properties.LighthouseProperties;
 import gov.va.vro.abd_data_access.exception.AbdException;
 import gov.va.vro.abd_data_access.model.LighthouseTokenMessage;
@@ -100,9 +100,6 @@ public class LighthouseApiService {
    */
   public String getLighthouseToken(AbdDomain domain, String patientICN) throws AbdException {
     String scope = getLighthouseScope(domain);
-    log.info("LH properties - clientID: {}", lhProps.getClientId());
-    log.info("LH properties - assertionURL: {}", lhProps.getAssertionurl());
-    log.info("LH properties - tokenURL: {}", lhProps.getTokenurl());
     LighthouseTokenMessage tokenMessage = getToken(patientICN, scope);
     return "Bearer " + tokenMessage.getAccess_token();
   }
@@ -147,16 +144,15 @@ public class LighthouseApiService {
         | NoSuchAlgorithmException
         | NoSuchProviderException
         | InvalidKeySpecException e) {
-      log.error(e.getMessage());
+      log.error("Failed to create assertion for VA Lighthouse API. {}", e.getMessage(), e);
       throw new AbdException("Failed to create signing key for VA Lighthouse API.", e);
     } catch (NullPointerException e) {
-      log.error(e.getMessage());
+      log.error("Failed to find a valid key for VA Lighthouse API. {}", e.getMessage(), e);
       throw new AbdException("Cannot find a valid key for Lighthouse access.", e);
     }
   }
 
   private LighthouseTokenMessage getToken(String patientIcn, String scope) throws AbdException {
-    log.info("get assertion. client id = {}", lhProps.getClientId());
     String assertion = getCCGAssertion(lhProps.getAssertionurl(), lhProps.getClientId());
     String result = getToken(assertion, patientIcn, scope);
     ObjectMapper mapper = new ObjectMapper();
@@ -204,7 +200,6 @@ public class LighthouseApiService {
   }
 
   private String getLighthouseScope(AbdDomain domain) {
-    log.debug("Getting lighthouse scope for domain {}", domain.name());
     return SCOPE.getScope(domain).getScope();
   }
 }

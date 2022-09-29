@@ -8,30 +8,15 @@ volumes:
   pgdata:
 
 services:
-  # opa:
-  #   image: openpolicyagent/opa
-  #   hostname: opa
-  #   expose:
-  #     - "8181"
-  #   ports:
-  #     - "8181:8181"
-  #   command:
-  #     - run
-  #     - --server
-  #     - --log-level
-  #     - debug
-  #   networks:
-  #     - internal
-  #     - external
 
-  rabbitmq1:
+  vro-api-rabbit-mq-service:
     image: rabbitmq:3-management
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
       timeout: 3s
       retries: 30
-    hostname: rabbitmq1
+    hostname: vro-api-rabbit-mq-service
     expose:
       - "5672"
       - "15672"
@@ -40,11 +25,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
     restart: on-failure:5
 
-  redis1:
+  vro-api-redis-service:
     image: redis
-    hostname: redis1
+    hostname: vro-api-redis-service
     expose:
       - "6379"
     networks:
@@ -52,16 +40,20 @@ services:
     ports:
       - "6379:6379"
     restart: on-failure:5
+    command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
   vro-api-postgres-service:
-    image: postgres
+    image: va/abd_vro-postgres
     hostname: vro-api-postgres-service
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: vro_user
-      POSTGRES_PASSWORD: not-the-password
-      POSTGRES_DB: vro
+      POSTGRES_USER: ${POSTGRES_SUPER_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_SUPER_DB}
+      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -78,14 +70,18 @@ services:
       - vro-api-postgres-service
     networks:
       - internal
+    environment:
+      FLYWAY_URL: jdbc:postgresql://vro-api-postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_ADMIN_USER}&password=${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
+      FLYWAY_TABLE: ${FLYWAY_TABLE}
+      FLYWAY_TABLESPACE: ${FLYWAY_TABLESPACE}
+      FLYWAY_PLACEHOLDERS_USERNAME: ${POSTGRES_USER}
+      FLYWAY_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
+      FLYWAY_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
+      FLYWAY_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
     restart: on-failure:5
-
-  # opa-init:
-  #   image: va/abd_vro-opa-init:latest
-  #   depends_on:
-  #     - opa
-  #   networks:
-  #     - internal
 
   abd_vro:
     image: va/abd_vro-app:latest
@@ -95,20 +91,22 @@ services:
       - "8081:8081"
     environment:
       POSTGRES_HOST: vro-api-postgres-service
-      POSTGRES_DBNAME: vro
-      POSTGRES_USER: example_service
-      POSTGRES_PASSWORD: also-not-the-service-password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
+      POSTGRES_SCHEMA: claims
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       # TODO: move these RabbitMQ configurations into a reusable yaml block
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-    security_opt: 
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+    security_opt:
       - no-new-privileges:true
     depends_on:
       - vro-api-postgres-service
-      - rabbitmq1
-      - redis1
+      - vro-api-rabbit-mq-service
+      - vro-api-redis-service
       - db-init
       - assess-claim-dc7101
       - assess-claim-dc6602
@@ -121,28 +119,28 @@ services:
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-    security_opt: 
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+    security_opt:
+
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
-    restart: on-failure:5
 
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-    security_opt: 
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+    security_opt:
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
@@ -151,16 +149,17 @@ services:
   pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-      REDIS_PLACEHOLDERS_HOST: redis1
-    security_opt: 
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
+      REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+    security_opt:
       - no-new-privileges:true
     depends_on:
-      redis1:
+      vro-api-redis-service:
         condition: service_started
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
@@ -169,64 +168,19 @@ services:
   service-data-access:
     image: va/abd_vro-service-data-access:latest
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq1
-      RABBITMQ_PLACEHOLDERS_USERNAME: guest
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
       LH_ASSERTION_URL: ${LH_ASSERTION_URL}
       LH_TOKEN_URL: ${LH_TOKEN_URL}
       LH_FHIR_URL: ${LH_FHIR_URL}
-    security_opt: 
+    security_opt:
       - no-new-privileges:true
     depends_on:
-      rabbitmq1:
+      vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
       - internal
     restart: on-failure:5
-
-#   jaeger:
-#     image: jaegertracing/all-in-one:1.20
-#     hostname: jaeger
-#     ports:
-#       - "5775:5775/udp"
-#       - "6831:6831/udp"
-#       - "6832:6832/udp"
-#       - "5778:5778"
-#       - "16686:16686"
-#       - "14268:14268"
-#       - "14250:14250"
-#     environment:
-#       COLLECTOR_ZIPKIN_HTTP_PORT : "9411"
-#     networks:
-#       - internal
-#       - external
-
-#   zookeeper:
-#     image: wurstmeister/zookeeper
-#     hostname: zookeeper
-#     ports:
-#       - "2181:2181"
-#     networks:
-#       - internal
-
-#   kafka:
-#     image: wurstmeister/kafka
-#     hostname: kafka
-#     ports:
-#       - "9092:9092"
-#     expose:
-#       - "9093"
-#     environment:
-#       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://kafka:9092
-#       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-#       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-#       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-#       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-# #      KAFKA_ADVERTISED_HOST_NAME: kafka #192.168.99.100
-#     volumes:
-#       - /var/run/docker.sock:/var/run/docker.sock
-#     networks:
-#       - internal
-#       - external

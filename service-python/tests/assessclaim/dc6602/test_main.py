@@ -22,13 +22,14 @@ from assessclaimdc6602.src.lib import main
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Prednisone",
-                            "status": "active",
                             "asthmaRelevant": "true",
                             "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Prednisone",
+                            "status": "active",
                         }
                     ]
-                }
+                },
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
             },
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -49,13 +50,14 @@ from assessclaimdc6602.src.lib import main
                 "evidence": {
                     "medications": [
                         {
-                            "description": "predniSONE 1 MG Oral Tablet",
-                            "status": "active",
                             "asthmaRelevant": "true",
                             "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "predniSONE 1 MG Oral Tablet",
+                            "status": "active",
                         }
                     ]
-                }
+                },
+                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
             },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
@@ -76,13 +78,14 @@ from assessclaimdc6602.src.lib import main
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Advil",
-                            "status": "active",
                             "asthmaRelevant": "false",
                             "authoredOn": "1952-04-06T04:00:00Z",
+                            "description": "Advil",
+                            "status": "active",
                         }
                     ]
-                }
+                },
+                "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
             },
         ),
     ],

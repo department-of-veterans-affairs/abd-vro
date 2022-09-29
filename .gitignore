@@ -1,9 +1,13 @@
 #Ignoring the password file
 all-secrets.txt
 
+# Files copied from repo abd-vro-dev-secrets
+private.pem
+setenv.sh
+
 #Ignoring cache folders
 .cache
-
+.monokle
 .idea/
 .gradle/
 .gradletasknamecache

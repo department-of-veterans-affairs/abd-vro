@@ -1,9 +1,6 @@
 from typing import Dict
-import logging
 
-from . import utils
-from . import continuous_medication
-from . import bp_filter
+from . import bp_filter, continuous_medication, utils
 
 
 def assess_hypertension(event: Dict):
@@ -23,21 +20,22 @@ def assess_hypertension(event: Dict):
         relevant_medication = continuous_medication.continuous_medication_required(
             event
         )
-        valid_bp_readings = bp_filter.bp_recency(event)
+        bp_readings = bp_filter.bp_recency(event)
+        response_body.update(
+            {
+                "evidence": {
+                    "medications": relevant_medication["medications"],
+                    "bp_readings": bp_readings["bpReadings"],
+                },
+                "evidenceSummary": {
+                    "totalBpReadings": bp_readings["totalBpReadings"],
+                    "recentBpReadings": bp_readings["recentBpReadings"],
+                    "medicationsCount": relevant_medication["medicationsCount"],
+                },
+            }
+        )
 
     else:
-        relevant_medication = []
-        valid_bp_readings = []
-        logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
-
-    response_body.update(
-        {
-            "evidence": {
-                "medications": relevant_medication,
-                "bp_readings": valid_bp_readings,
-            }
-        }
-    )
 
     return response_body

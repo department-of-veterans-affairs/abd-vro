@@ -52,14 +52,28 @@ management:
 #    path: /actuator/health/readiness
 #    port: 8081
 #  failureThreshold: ...
+#
 
 server:
   tomcat:
     basedir: build/tomcat
     max-threads: 100
+    maxHttpFormPostSize: 26214400
+    maxHttpPostSize: 26214400
+    maxSwallowSize: 26214400
   ssl:
     enabled: false
   port: 8080
+  maxHttpHeaderSize: 48000
+  session:
+    timeout: 60
+  connection:
+    timeout: 60000
+  servlet:
+    session:
+      timeout: 60000
+
+
 
 log4j2:
   formatMsgNoLookups: true
@@ -67,7 +81,13 @@ log4j2:
 spring:
   application:
     name: "starter-api"
-
+  servlet:
+    multipart:
+      maxFileSize: 25MB
+      maxRequestSize: 25MB
+      enabled: true
+    session:
+      timeout: 60000
   resources:
     add-mappings: false
   mvc:

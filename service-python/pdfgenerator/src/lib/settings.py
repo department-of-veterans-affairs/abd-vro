@@ -13,8 +13,10 @@ pdf_options = {
 redis_config = {
     "host": os.environ.get("REDIS_PLACEHOLDERS_HOST", "localhost"),
     "port": 6379,
+    "password": os.environ.get("REDIS_PLACEHOLDERS_PASSWORD", "not-redis-password"),
     "retry_limit": 3,
-    "expiration": 60 * 60 * 3 # 3 hours
+    # 3 hours
+    "expiration": 60 * 60 * 3
 }
 
 queue_config = {
@@ -27,4 +29,3 @@ codes = {
   "6602": "asthma",
   "7101": "hypertension"
 }
-
