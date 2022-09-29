@@ -5,8 +5,6 @@ on:
   pull_request:
     branches-ignore:
       - "dependabot/**"
-    branches:
-      - "*"
 
   # Workaround for Dependabot PRs
   # See https://github.com/dependabot/dependabot-core/issues/3253
