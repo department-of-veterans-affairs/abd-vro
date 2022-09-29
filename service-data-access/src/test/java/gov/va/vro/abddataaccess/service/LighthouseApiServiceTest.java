@@ -1,6 +1,8 @@
 package gov.va.vro.abddataaccess.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
@@ -93,7 +95,7 @@ class LighthouseApiServiceTest {
   public void testGetLighthouseToken() throws AbdException {
     setupMocking();
     String resp = service.getLighthouseToken(AbdDomain.BLOOD_PRESSURE, TEST_PATIENT);
-    assertEquals(testToken.getToken_type() + " " + testToken.getAccess_token(), resp);
+    assertEquals(testToken.getTokenType() + " " + testToken.getAccessToken(), resp);
   }
 
   @Test

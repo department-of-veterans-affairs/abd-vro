@@ -15,7 +15,7 @@ public class AppPropertiesTests {
   @Autowired private AppProperties properties;
 
   @Test
-  public void testRabbitMQProperties() {
+  public void testRabbitMqProperties() {
     RabbitMqProperties rmqp = properties.rabbitmq();
 
     assertEquals("claim-submit-exchange", rmqp.getClaimSubmitExchange());

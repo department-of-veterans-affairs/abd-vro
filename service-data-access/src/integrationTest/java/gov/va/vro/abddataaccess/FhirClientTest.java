@@ -1,6 +1,8 @@
 package gov.va.vro.abddataaccess;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.abddataaccess.model.AbdEvidence;
 import gov.va.vro.abddataaccess.service.FhirClient;
@@ -17,18 +19,18 @@ class FhirClientTest {
   @Autowired private FhirClient client;
 
   @Test
-  public void testLighthouseAPIAccess() throws Exception {
+  public void testLighthouseApiAccess() throws Exception {
     AbdEvidence evidence = client.getMedicalEvidence(CommonData.claim01);
 
     assertNotNull(evidence);
     if (evidence.getBloodPressures() != null) {
       assertTrue(evidence.getBloodPressures().size() > 0);
-      int measuredBPCount =
+      int measuredBpCount =
           evidence.getBloodPressures().stream()
               .filter(s -> s.getDiastolic() != null | s.getSystolic() != null)
               .collect(Collectors.toList())
               .size();
-      assertEquals(measuredBPCount, evidence.getBloodPressures().size());
+      assertEquals(measuredBpCount, evidence.getBloodPressures().size());
     }
     ;
 

@@ -37,9 +37,9 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @ActiveProfiles("test")
 @Testcontainers
-@ContextConfiguration(initializers = AbdApplicationIT.Initializer.class)
+@ContextConfiguration(initializers = AbdApplicationIt.Initializer.class)
 @Slf4j
-public class AbdApplicationIT {
+public class AbdApplicationIt {
   static class Initializer
       implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     @Override

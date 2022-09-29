@@ -89,6 +89,8 @@ public class LighthouseApiService {
           yield CONDITION;
         case PROCEDURE:
           yield PROCEDURE;
+        default:
+          yield null;
       };
     }
   }
@@ -110,7 +112,7 @@ public class LighthouseApiService {
   public String getLighthouseToken(AbdDomain domain, String patientIcn) throws AbdException {
     String scope = getLighthouseScope(domain);
     LighthouseTokenMessage tokenMessage = getToken(patientIcn, scope);
-    return "Bearer " + tokenMessage.getAccess_token();
+    return "Bearer " + tokenMessage.getAccessToken();
   }
 
   /**

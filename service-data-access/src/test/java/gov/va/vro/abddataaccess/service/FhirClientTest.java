@@ -59,7 +59,8 @@ class FhirClientTest {
   @Spy private final FhirClient client = new FhirClient();
 
   private IParser parser;
-  private Bundle medicationBundle, bpBundle;
+  private Bundle medicationBundle;
+  private Bundle bpBundle;
 
   @BeforeEach
   void setUp() {

@@ -1,5 +1,7 @@
 package gov.va.vro.abddataaccess.model;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,11 +14,12 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class LighthouseTokenMessage {
-  private String access_token;
-  private String token_type;
+  private String accessToken;
+  private String tokenType;
   private String scope;
-  private int expires_in;
+  private int expiresIn;
   private String state;
   private String patient;
 }

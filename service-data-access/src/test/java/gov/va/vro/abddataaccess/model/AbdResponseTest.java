@@ -1,12 +1,13 @@
 package gov.va.vro.abddataaccess.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-/** @author warren @Date 9/6/22 */
 class AbdResponseTest {
 
   private static final String TEST_ICN = "90203902";
@@ -24,11 +25,11 @@ class AbdResponseTest {
 
   @Test
   public void test() {
-    AbdClaim claim = new AbdClaim(TEST_ICN, TEST_DIAG_CODE, TEST_CLAIM_ID);
+    final AbdClaim claim = new AbdClaim(TEST_ICN, TEST_DIAG_CODE, TEST_CLAIM_ID);
 
-    AbdEvidence evidence = new AbdEvidence();
+    final AbdEvidence evidence = new AbdEvidence();
 
-    AbdProcedure procedure = new AbdProcedure();
+    final AbdProcedure procedure = new AbdProcedure();
     procedure.setCode(TEST_CODE);
     procedure.setCodeSystem(TEST_CODESYSTEM);
     procedure.setPerformedDate(TEST_DATE);
@@ -58,10 +59,10 @@ class AbdResponseTest {
     evidence.setMedications(Collections.singletonList(medication));
     evidence.setBloodPressures(Collections.singletonList(bloodPressure));
 
-    AbdResponse resp1 = new AbdResponse();
-    AbdResponse resp2 = new AbdResponse(claim);
-    AbdResponse resp3 = new AbdResponse(claim, evidence);
-    AbdResponse resp4 = new AbdResponse(claim, TEST_TEXT);
+    final AbdResponse resp1 = new AbdResponse();
+    final AbdResponse resp2 = new AbdResponse(claim);
+    final AbdResponse resp3 = new AbdResponse(claim, evidence);
+    final AbdResponse resp4 = new AbdResponse(claim, TEST_TEXT);
 
     assertNull(resp1.getDiagnosticCode());
     assertNull(resp1.getVeteranIcn());
