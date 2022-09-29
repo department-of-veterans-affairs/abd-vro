@@ -110,6 +110,7 @@ services:
       - db-init
       - assess-claim-dc7101
       - assess-claim-dc6602
+      - assess-claim-dc6510
       - pdf-generator
     networks:
       - internal
@@ -118,6 +119,21 @@ services:
 
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
+    environment:
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+    security_opt:
+
+      - no-new-privileges:true
+    depends_on:
+      vro-api-rabbit-mq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
+  assess-claim-dc6510:
+    image: va/abd_vro-assessclaimdc6510:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}

@@ -15,7 +15,7 @@ def on_request_callback(channel, method, properties, body):
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message: {properties.correlation_id}")
     try:
-        response = main.assess_asthma(message)
+        response = main.assess_sinusitis(message)
     except:
         response = {"status": "ERROR", "evidence": {}, "calculated": {}}
 

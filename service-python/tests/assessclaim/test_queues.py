@@ -7,10 +7,11 @@ from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc7101.src.lib import queues as q7101
 from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
-
+from assessclaimdc6510.src.lib import queues as q6510
+from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 
 @pytest.mark.parametrize(
-    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101")]
+    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101"), (q6510, "6510")]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
     channel = Mock(autospec=True, create=True)
@@ -40,6 +41,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
     [
         (q6602, "6602", {"evidence": "some medical data body"}, main6602),
         (q7101, "7101", {"evidence": "some medical data body"}, main7101),
+        (q6510, "6510", {"evidence": "some medical data body"}, main6510),
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):

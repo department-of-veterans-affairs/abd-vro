@@ -55,6 +55,7 @@ ext {
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
+                     ':service-python:assessclaimdc6510',
                      ':service-python:pdfgenerator',
                      ':service-data-access',
                      ':db-init']

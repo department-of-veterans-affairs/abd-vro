@@ -6,7 +6,7 @@ from . import condition
 from typing import Dict
 
 
-def assess_asthma(event: Dict):
+def assess_sinusitis(event: Dict):
     """
     Take a request that includes hypertension related data, and return a response
 
