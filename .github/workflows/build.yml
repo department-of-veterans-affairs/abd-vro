@@ -6,6 +6,12 @@ on:
     branches:
       - "*"
 
+  # Workaround for Dependabot PRs
+  # See https://github.com/dependabot/dependabot-core/issues/3253
+  pull_request_target:
+    branches:
+      - "dependabot/**"
+
   # Trigger when called by another GitHub Action
   workflow_call:
     secrets:
