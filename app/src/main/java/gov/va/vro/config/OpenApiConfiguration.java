@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 @Slf4j
@@ -58,6 +59,11 @@ public class OpenApiConfiguration {
     gov.va.vro.config.propmodel.Contact contact = info.getContact();
     gov.va.vro.config.propmodel.License license = info.getLicense();
 
+    List<Server> servers =
+        openApi.getServers().stream()
+            .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
+            .collect(Collectors.toList());
+
     OpenAPI config =
         new OpenAPI()
             .info(
@@ -67,7 +73,7 @@ public class OpenApiConfiguration {
                     .version(info.getVersion())
                     .license(new License().name(license.getName()).url(license.getUrl()))
                     .contact(new Contact().name(contact.getName()).email(contact.getEmail())))
-            .servers(Arrays.asList(new Server().url(serverUrl)))
+            .servers(servers)
             .addSecurityItem(
                 new SecurityRequirement()
                     .addList("bearer-jwt", Arrays.asList("read", "write"))

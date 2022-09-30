@@ -157,6 +157,16 @@ vro:
       license:
         name: CCO 1.0
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
+    servers:
+      -
+        description: "Server"
+        url: "/"
+      -
+        description: "Dev Server"
+        url: "https://dev.lighthouse.va.gov/abd-vro/"
+      -
+        description: "QA Server"
+        url: "https://qa.lighthouse.va.gov/abd-vro/"
 
 starter:
   openapi:
