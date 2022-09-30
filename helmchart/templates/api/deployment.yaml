@@ -152,7 +152,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.api.secretName }}
-                  key: {{ .Values.apo.vroNonProdKey }}
+                  key: {{ .Values.api.vroNonProdKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
