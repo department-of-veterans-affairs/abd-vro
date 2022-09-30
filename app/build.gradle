@@ -16,6 +16,7 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
+    implementation 'org.scala-lang:scala-library:2.12.17'
 
     implementation project(':api')
     implementation project(':controller')
@@ -46,6 +47,12 @@ dependencies {
 
     docker project(':db-init')
 }
+
+// Disable tasks associated with Gatling
+project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
+project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
+project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
+project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
@@ -108,3 +115,5 @@ tasks.named('lintDockerfile').configure {
 tasks.named('dockerComposeUp').configure {
     dependsOn ':db-init:docker'
 }
+
+
