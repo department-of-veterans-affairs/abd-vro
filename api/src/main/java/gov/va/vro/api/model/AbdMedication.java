@@ -19,6 +19,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private String description;
   private int refills;
   private Boolean conditionRelated;
+  private String suggestedCategory;
   private String duration;
 
   @Schema(example = "1950-04-05T23:00:00Z")
