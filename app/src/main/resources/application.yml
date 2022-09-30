@@ -3,6 +3,8 @@ info:
     name: abd_vro
     description: Virtual Regional Office API
 
+debug: true
+
 # API Auth
 apiauth:
   hdr-key-name: X-API-Key
@@ -142,6 +144,19 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
+
+vro:
+  openapi:
+    info:
+      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
+      description: APIs to improve benefit delivery services
+      version: v2
+      contact:
+        name: D (Yoom) Lam
+        email: "dung.lam1@va.gov"
+      license:
+        name: CCO 1.0
+        url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
 
 starter:
   openapi:

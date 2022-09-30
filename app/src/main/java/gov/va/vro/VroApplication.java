@@ -1,21 +1,17 @@
 package gov.va.vro;
 
 import gov.va.starter.boot.openapi.config.OpenApiConfiguration;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.servers.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 @Slf4j
 @SpringBootConfiguration
+@ConfigurationPropertiesScan(basePackages = {"gov.va.vro.config"})
 @EnableAutoConfiguration(exclude = {OpenApiConfiguration.class})
 @ComponentScan(
     basePackages = {"gov.va.vro", "gov.va.starter.boot"},
@@ -24,6 +20,7 @@ import org.springframework.context.annotation.FilterType;
           type = FilterType.ASSIGNABLE_TYPE,
           value = {OpenApiConfiguration.class})
     })
+/*
 @OpenAPIDefinition(
     info =
         @Info(
@@ -45,6 +42,7 @@ import org.springframework.context.annotation.FilterType;
       @SecurityRequirement(name = "basicAuth"),
       @SecurityRequirement(name = "bearerToken")
     })
+ */
 public class VroApplication {
   public static void main(String[] args) {
     new SpringApplication(VroApplication.class).run(args);
