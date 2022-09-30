@@ -140,6 +140,7 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
+    enabled: ${VRO_NON_PROD:false}
 
 vro:
   openapi:
