@@ -3,8 +3,6 @@ info:
     name: abd_vro
     description: Virtual Regional Office API
 
-debug: true
-
 # API Auth
 apiauth:
   hdr-key-name: X-API-Key
@@ -74,8 +72,6 @@ server:
   servlet:
     session:
       timeout: 60000
-
-
 
 log4j2:
   formatMsgNoLookups: true
@@ -150,7 +146,7 @@ vro:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
       description: APIs to improve benefit delivery services
-      version: v2
+      version: v1
       contact:
         name: D (Yoom) Lam
         email: "dung.lam1@va.gov"
@@ -163,24 +159,12 @@ vro:
         url: "/"
       -
         description: "Dev Server"
-        url: "https://dev.lighthouse.va.gov/abd-vro/"
+        url: "https://dev.lighthouse.va.gov/abd-vro"
       -
         description: "QA Server"
-        url: "https://qa.lighthouse.va.gov/abd-vro/"
+        url: "https://qa.lighthouse.va.gov/abd-vro"
 
 starter:
-  openapi:
-    authUrl: https://iam.va.gov/whoami
-    default-oauth-security-scheme: true
-    default-jwt-bearer-security-scheme: true
-    license: CCO 1.0
-    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-    description: APIs to improve benefit delivery services
-    version: v1
-    licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
-    contactEmail: dung.lam1@va.gov
-    contactName: D (Yoom) Lam
-    serverUrl: ${STARTER_OPENAPI_SERVERURL:/}
   boot:
     kafka-lifecycle-notifier:
       enabled: false
@@ -191,13 +175,6 @@ starter:
       consumer:
         topic.name: example-entity-lifecycle
         level.concurrency: 1
-
-# opa:
-#   filter:
-#     enabled: true
-#     document-path: authz
-#     instance: http://opa:8181
-#     endpoints-whitelist: /swagger*/**,/v3/api-docs/**,/liveness,/readiness,/health/**
 
 spring.config.import: >
   conf-camel.yml,

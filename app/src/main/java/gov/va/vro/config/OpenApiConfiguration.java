@@ -1,7 +1,5 @@
 package gov.va.vro.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.starter.boot.openapi.spi.CustomSchemaProvider;
 import gov.va.starter.boot.openapi.spi.CustomSecuritySchemeProvider;
 import gov.va.vro.config.propmodel.Info;
 import gov.va.vro.config.propmodel.OpenApi;
@@ -14,28 +12,17 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 
 @Slf4j
 @OpenAPIDefinition
 @Configuration
 public class OpenApiConfiguration {
-  @Value("${serverUrl:http://localhost:8080}")
-  private String serverUrl;
-
-  @Value("${oauthUrl:http://idp.va.gov/}")
-  private String oauthUrl;
-
-  @Autowired(required = false)
-  private List<CustomSchemaProvider> schemaProviders;
-
   @Autowired(required = false)
   private List<CustomSecuritySchemeProvider> securitySchemeProviders;
 
@@ -48,12 +35,6 @@ public class OpenApiConfiguration {
    */
   @Bean
   public OpenAPI customOpenApi() {
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      log.info(mapper.writeValueAsString(props));
-    } catch (Exception e) {
-    }
-
     OpenApi openApi = props.getOpenApi();
     Info info = openApi.getInfo();
     gov.va.vro.config.propmodel.Contact contact = info.getContact();
@@ -80,19 +61,7 @@ public class OpenApiConfiguration {
                     .addList("oauth2", Arrays.asList("read", "write")));
 
     config = configureSecuritySchemes(config);
-    config = configureSchemas(config);
     return config;
-  }
-
-  @PostConstruct
-  public void xxxx() {
-    ObjectMapper mapper = new ObjectMapper();
-    log.info("****************************");
-    try {
-      log.info(mapper.writeValueAsString(props));
-    } catch (Exception e) {
-      log.info(e.getMessage());
-    }
   }
 
   /**
@@ -113,29 +82,6 @@ public class OpenApiConfiguration {
     } else {
       log.warn("No SecuritySchemeProviders defined.");
     }
-    return config;
-  }
-
-  /**
-   * Configure OpenAPI Schemas.
-   *
-   * @param config current OpenAPI config object
-   * @return OpenAPI config object
-   */
-  protected OpenAPI configureSchemas(OpenAPI config) {
-    if (null != schemaProviders && schemaProviders.size() > 0) {
-      Components schemas = new Components();
-      schemaProviders.stream()
-          .forEach(
-              p -> {
-                log.info("Adding Schema [{}]", p.getName());
-                schemas.addSchemas(p.getName(), p.create());
-              });
-      config.components(schemas);
-    } else {
-      log.info("No SchemaProviders defined.");
-    }
-
     return config;
   }
 }
