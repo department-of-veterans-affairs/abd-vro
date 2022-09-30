@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,13 @@ public class OpenApiConfiguration {
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
             .collect(Collectors.toList());
 
+    final List<Tag> tags =
+        Arrays.asList(
+            new Tag().name("Health Assessment"),
+            new Tag().name("Pdf Generation"),
+            new Tag().name("Full Health Assessment"),
+            new Tag().name("Claim Metrics"));
+
     OpenAPI config =
         new OpenAPI()
             .info(
@@ -58,7 +66,8 @@ public class OpenApiConfiguration {
             .addSecurityItem(
                 new SecurityRequirement()
                     .addList("bearer-jwt", Arrays.asList("read", "write"))
-                    .addList("oauth2", Arrays.asList("read", "write")));
+                    .addList("oauth2", Arrays.asList("read", "write")))
+            .tags(tags);
 
     config = configureSecuritySchemes(config);
     return config;
