@@ -106,6 +106,10 @@ afterEvaluate {
 
         dependsOn 'dockerPrepare'
     }
+
+    tasks.named('spectralLint').configure {
+        dependsOn 'forkedSpringBootStop'
+    }
 }
 
 tasks.named('lintDockerfile').configure {
