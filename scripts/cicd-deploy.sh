@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
+ENV=$(tr '[:upper:]' '[:lower:]' <<< "$1")
 
 #verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ]

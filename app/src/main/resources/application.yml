@@ -78,7 +78,7 @@ log4j2:
 
 spring:
   application:
-    name: "starter-api"
+    name: "abd-vro"
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -93,38 +93,6 @@ spring:
   http:
     encoding:
       force: true
-  kafka:
-    bootstrap-servers: "localhost:9092"
-    topic.name: default-kafka-topic
-    replication.factor: 1
-    partition.number: 1
-    consumer:
-      auto-offset-reset: earliest
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      group-id: starter
-      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-      value-deserializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonDeserializer
-      level.concurrency: 1
-      properties:
-        spring.json.trusted.packages: gov.va.starter.*
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
-    producer:
-      # This means the leader will wait for the full set of in-sync replicas to acknowledge
-      # the record. This guarantees that the record will not be lost as long as at least one
-      # in-sync replica remains alive. This is the strongest available guarantee.
-      # This is equivalent to the acks=-1 setting. For an eventing architecture this should be
-      # our default setting - no need for extremely high speed compromises here.
-      acks: all
-      batch-size: 1048576
-      buffer-memory: 2097152
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      compression-type: lz4
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-      value-serializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonSerializer
-      properties:
-        max.in.flight.requests.per.connection: 2
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
 
 opentracing:
   zipkin:
@@ -164,18 +132,6 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
-
-starter:
-  boot:
-    kafka-lifecycle-notifier:
-      enabled: false
-      producer:
-        topic.name: example-entity-lifecycle
-        replication.factor: 1
-        partition.number: 1
-      consumer:
-        topic.name: example-entity-lifecycle
-        level.concurrency: 1
 
 spring.config.import: >
   conf-camel.yml,
