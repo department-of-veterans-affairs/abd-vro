@@ -14,7 +14,7 @@ echo cluster "${cluster}"
 cluster_name=$(echo "${cluster}" | jq .name | tr -d '"')
 echo cluster_name "$cluster_name"
 service_account_name=default
-token_name=$(kubectl --kubeconfig ${kubeconfig} -n $namespace -o json get sa $service_account_name | jq '.secrets[0].name' | tr -d '"')
+token_name=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get sa $service_account_name | jq '.secrets[0].name' | tr -d '"')
 echo token_name "$token_name"
 token=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get secret "$token_name" | jq '.data.token' | tr -d '"' | base64 -d)
 echo token "$token"
