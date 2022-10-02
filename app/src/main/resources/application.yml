@@ -125,7 +125,7 @@ vro:
     servers:
       -
         description: "Server"
-        url: "/"
+        url: ${STARTER_OPENAPI_SERVERURL:/}
       -
         description: "Dev Server"
         url: "https://dev.lighthouse.va.gov/abd-vro"
