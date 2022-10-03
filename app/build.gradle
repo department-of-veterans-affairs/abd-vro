@@ -16,7 +16,7 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
-    implementation 'org.scala-lang:scala-library:2.12.17'
+    implementation 'org.scala-lang:scala-library:2.13.9'
 
     implementation project(':api')
     implementation project(':controller')
@@ -105,6 +105,10 @@ afterEvaluate {
         dependsOn 'jacocoTestCoverageVerification'
 
         dependsOn 'dockerPrepare'
+    }
+
+    tasks.named('spectralLint').configure {
+        dependsOn 'forkedSpringBootStop'
     }
 }
 
