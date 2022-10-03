@@ -1,0 +1,16 @@
+package gov.va.vro.api.requests;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
+@Schema(
+    name = "MASClaimDetailsResponse",
+    description = "Indicate that the request information has been collected")
+public class MasClaimResponse {
+
+  private String id;
+  private String message;
+}
