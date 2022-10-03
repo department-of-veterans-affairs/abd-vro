@@ -1,5 +1,5 @@
 med_dict = {
-    ["Anti-Inflammatory", "Bronchodilator", "Corticosteroid", "Immuno-Suppressive"]: [
+    "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive": [
         "advair diskus",
         "advair hfa",
         "airduo digihaler",
@@ -15,7 +15,7 @@ med_dict = {
         "ryaltris",
         "flonase sensimist",
     ],
-    ["Anti-Inflammatory", "Corticosteroid", "Immuno-Suppressive"]: [
+    "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive": [
         "medrol",
         "millipred",
         "rayos",
@@ -38,10 +38,10 @@ med_dict = {
         "beconase",
         "fluticasone furoate",
     ],
-    ["Anti-Inflammatory", "Immuno-Suppressive"]: [
+    "Anti-Inflammatory/Immuno-Suppressive": [
         "cinqair",
     ],
-    ["Anti-Inflammatory", "Bronchodilator"]: [
+    "Anti-Inflammatory/Bronchodilator": [
         "serevent diskus",
         "singulair",
         "salmeterol",
@@ -54,7 +54,7 @@ med_dict = {
         "vilanterol",
         "zileuton",
     ],
-    ["Bronchodilator", "Used in Respiratory Failure"]: [
+    "Bronchodilator/Used in Respiratory Failure": [
         "adrenalin",
         "metaproterenol",
         "epinephrine",
@@ -62,14 +62,14 @@ med_dict = {
         "albuterol",
         "levalbuterol",
     ],
-    ["Corticosteroid", "Immuno-Suppressive"]: [
+    "Corticosteroid/Immuno-Suppressive": [
         "deltasone",
         "armonair",
         "ciclesonide",
         "omnaris",
         "zetonna",
     ],
-    ["Bronchodilator"]: [
+    "Bronchodilator": [
         "epipen jr",
         "auvi-q",
         "symjepi",
@@ -81,7 +81,7 @@ med_dict = {
         "spiriva respimat",
         "umeclidinium",
     ],
-    ["Anti-Inflammatory"]: [
+    "Anti-Inflammatory": [
         "accolate",
         "dupixent",
         "fasenra",
