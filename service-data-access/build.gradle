@@ -62,11 +62,11 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
 
     integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
-    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.4'
     integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
     integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
-    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.3'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.4'
     integrationTestImplementation 'org.testcontainers:rabbitmq:1.17.3'
     integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.2'
     integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.2'
