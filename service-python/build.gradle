@@ -7,38 +7,17 @@ plugins {
 
 python {
     installVirtualenv = true
+}
 
-    pip 'redis:4.3.4'
-    pip 'boto3:1.23.3'
-    pip 'click:8.1.2'
-    pip 'Flask:2.1.1'
-    pip 'flake8:4.0.1'
-    pip 'importlib-metadata:4.11.3'
-    pip 'itsdangerous:2.1.2'
-    pip 'isort:5.10.1'
-    pip 'Jinja2:3.1.1'
-    pip 'MarkupSafe:2.1.1'
-    pip 'pika:1.2.1'
-    pip 'pdfkit:1.0.0'
-    pip 'pytest:7.1.2'
-    pip 'pytest-cov:3.0.0'
-    pip 'python-dateutil:2.8.2'
-    pip 'pytz:2022.1'
-    pip 'redis:4.3.4'
-    pip 'requests:2.28.1'
-    pip 'Werkzeug:2.1.1'
-    pip 'zipp:3.8.0'
-
-    pip 'cerberus:1.3.4'
-    pip 'python-util:1.2.1'
-    pip 'python-dotenv:0.20.0'
-    pip 'six:1.16.0'
-
+def requirements = tasks.register("requirements", PythonTask) {
+    module = 'pip'
+    command = "install -r requirements.txt"
 }
 
 def pyisort = tasks.register("pyisort", PythonTask) {
     module = 'isort'
     command = ". --check --skip tests"
+    dependsOn requirements
 }
 
 def pyflake8 = tasks.register("pyflake8", PythonTask) {
