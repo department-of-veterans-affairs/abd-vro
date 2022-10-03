@@ -100,6 +100,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
+        dependsOn ':service-python:pytest'
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
