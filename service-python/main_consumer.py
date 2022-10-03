@@ -26,7 +26,8 @@ class RabbitMQConsumer:
         self.setup_queues()
 
     def __del__(self):
-        self.connection.close()
+        if self.connection:
+            self.connection.close()
 
     def _create_connection(self):
         credentials = pika.PlainCredentials(self.config["username"], self.config["password"])
@@ -43,18 +44,25 @@ class RabbitMQConsumer:
         queue_setup(channel)
         self.channel = channel
 
-
+# This file will get copied to the docker image's root folder(src) when being built
+# When run, it attempts to create a pika.BlockingConnection() with the settings in CONSUMER_CONFIG
+# There are 2 retry levels for the consumer. The first being in _create_connection() which is based on retry_limit
+# The other being when the app crashes which is based on timeout
+# If it fails, it will try to delete any existing connection and the reference to the instantiated class
+# since the retry loop will recreate it
 if __name__ == "__main__":
 
     start_timer = None
     current_timer = None
 
     while(True):
+        consumer = None
         try:
             consumer = RabbitMQConsumer(CONSUMER_CONFIG)
 
             consumer.channel.start_consuming()
         except Exception:
+            del consumer
             if start_timer is None:
                 start_timer = time()
                 current_timer = 0
