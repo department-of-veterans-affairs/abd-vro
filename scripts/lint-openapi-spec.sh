@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function docker_container_wait {
-until [ "$(docker inspect -f {{.State.Health.Status}} "docker_abd_vro_1")" == "healthy" ]; do
+until [ "$(docker inspect -f '{{.State.Health.Status}}' "docker_abd_vro_1")" == "healthy" ]; do
     echo "Waiting for Docker container to be available..."
     sleep 1
 done

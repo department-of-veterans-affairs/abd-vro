@@ -148,6 +148,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.schemaKey }}
+            - name: VRO_NON_PROD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret }}
+                  key: {{ .Values.api.vroNonProdKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
