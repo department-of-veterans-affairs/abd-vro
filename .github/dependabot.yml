@@ -4,12 +4,17 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+registries:
+  # Needed for Dependabot-created PRs to retrieve jars from the VA's repo in order to build
+  # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Dependabot
+  # Set in https://github.com/department-of-veterans-affairs/abd-vro/settings/secrets/dependabot
+  maven-github:
+    type: maven-repository
+    url: https://maven.pkg.github.com/octocat
+    username: octocat
+    password: ${{secrets.ACCESS_TOKEN}}
 updates:
   - package-ecosystem: "github-actions"
-    # Needed for Dependabot-created PRs to retrieve jars from the VA's repo in order to build
-    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Dependabot
-    # Set in https://github.com/department-of-veterans-affairs/abd-vro/settings/secrets/dependabot
-    password: ${{secrets.ACCESS_TOKEN}}
     # Workflow files are expected in the relative location `.github/workflows`
     directory: "/"
     # Raise pull requests for updates against this branch
@@ -18,14 +23,12 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "gradle"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "pip"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/"
     target-branch: "develop"
     schedule:
@@ -33,49 +36,42 @@ updates:
 
   # For Docker ecosystem, we must specify each file because Dependabot doesn't recursive search
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/app/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/postgres/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/db-init/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/service-data-access/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/service-python/pdfgenerator/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/service-python/assessclaimdc6602/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    password: ${{secrets.ACCESS_TOKEN}}
     directory: "/service-python/assessclaimdc7101/src/docker"
     target-branch: "develop"
     schedule:
