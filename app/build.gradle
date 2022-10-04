@@ -43,7 +43,7 @@ dependencies {
     testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
     testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
     //This version is compatible with current spring version: 5.3.8
-    testImplementation 'org.apache.camel:camel-test-spring-junit5:3.18.2'
+    testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
 
     docker project(':db-init')
 }
@@ -100,6 +100,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
+        dependsOn ':service-python:pytest'
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
