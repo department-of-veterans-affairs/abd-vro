@@ -89,24 +89,24 @@ class FhirClientTest {
           .getBundle(domain, TEST_PATIENT, DEFAULT_PAGE + 1, DEFAULT_SIZE);
     }
   }
-  //
-  //  @Test
-  //  public void testGetMedicalEvidence() {
-  //    AbdClaim testClaim = new AbdClaim();
-  //    testClaim.setClaimSubmissionId(TEST_CLAIM_ID);
-  //    testClaim.setDiagnosticCode(TEST_MEDICATION_REQUEST);
-  //    testClaim.setVeteranIcn(TEST_PATIENT);
-  //    try {
-  //      mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
-  //      AbdEvidence evidence = client.getMedicalEvidence(testClaim);
-  //      assertNotNull(evidence);
-  //      assertTrue(evidence.getMedications().size() > 0);
-  //      assertEquals(evidence.getMedications().size(), medicationBundle.getEntry().size());
-  //    } catch (Exception e) {
-  //      log.error("testGetMedicalEvidence error: {}", e.getMessage(), e);
-  //      fail("testGetMedicalEvidence");
-  //    }
-  //  }
+
+  @Test
+  public void testGetMedicalEvidence() {
+    AbdClaim testClaim = new AbdClaim();
+    testClaim.setClaimSubmissionId(TEST_CLAIM_ID);
+    testClaim.setDiagnosticCode(TEST_MEDICATION_REQUEST);
+    testClaim.setVeteranIcn(TEST_PATIENT);
+    try {
+      mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
+      AbdEvidence evidence = client.getMedicalEvidence(testClaim);
+      assertNotNull(evidence);
+      assertTrue(evidence.getMedications().size() > 0);
+      assertEquals(evidence.getMedications().size(), medicationBundle.getEntry().size());
+    } catch (Exception e) {
+      log.error("testGetMedicalEvidence error: {}", e.getMessage(), e);
+      fail("testGetMedicalEvidence");
+    }
+  }
 
   @Test
   public void testGetBloodPressure() {
