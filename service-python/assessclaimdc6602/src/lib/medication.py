@@ -23,9 +23,19 @@ def categorize_med(medication_display):
     return medication_category
 
 
-def medication_required(request_body):
+def identify_relevant_med(medication_display):
+    relevant = "false"
+    for keyword in codesets.medication_codesets.asthma_medications:
+        if keyword in medication_display.lower():
+            relevant = "true"
+            break
+    return relevant
+
+
+def medication_required(request_body, include_category=False):
     """
     Determine if there is the veteran requires continuous medication for hypertension
+    :param include_category:
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes
@@ -38,14 +48,14 @@ def medication_required(request_body):
     veterans_medication = request_body["evidence"]["medications"]
     for medication in veterans_medication:
         if medication["status"].lower() == "active":
-            medication["conditionRelated"] = "false"
             medication_display = medication["description"]
-            category = categorize_med(medication_display)
-            medication["suggestedCategory"] = category
-            if category:
-                medication["conditionRelated"] = "true"
+            medication["asthmaRelevant"] = identify_relevant_med(medication_display)
+            if include_category:
+                category = categorize_med(medication_display)
+                medication["suggestedCategory"] = category
+            if medication["asthmaRelevant"]:
                 relevant_medications.append(medication)
-            else:
+            elif not medication["asthmaRelevant"]:
                 other_medications.append(medication)
 
     relevant_medications = sorted(
