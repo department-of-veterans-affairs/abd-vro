@@ -30,13 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -48,11 +43,9 @@ import java.util.function.Function;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @CamelSpringBootTest
-class VroControllerTest extends BaseIntegrationTest {
+class VroControllerTest extends BaseControllerTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-
-  @Autowired private TestRestTemplate testRestTemplate;
 
   @Autowired private ClaimRepository claimRepository;
 
@@ -317,22 +310,6 @@ class VroControllerTest extends BaseIntegrationTest {
   @SneakyThrows
   private String toJsonString(Object o) {
     return objectMapper.writeValueAsString(o);
-  }
-
-  private <I, O> ResponseEntity<O> post(String url, I request, Class<O> responseType) {
-    return exchange(url, request, HttpMethod.POST, responseType);
-  }
-
-  private <I, O> ResponseEntity<O> get(String url, I request, Class<O> responseType) {
-    return exchange(url, request, HttpMethod.GET, responseType);
-  }
-
-  private <I, O> ResponseEntity<O> exchange(
-      String url, I request, HttpMethod method, Class<O> responseType) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("X-API-Key", "test-key-01");
-    var httpEntity = new HttpEntity<>(request, headers);
-    return testRestTemplate.exchange(url, method, httpEntity, responseType);
   }
 
   @SneakyThrows
