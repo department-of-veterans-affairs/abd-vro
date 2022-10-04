@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.model.AbdEvidence;
 import gov.va.vro.api.model.VeteranInfo;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
@@ -15,6 +14,7 @@ import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.exception.ClaimProcessingError;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.FunctionProcessor;

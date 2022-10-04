@@ -88,5 +88,5 @@ include ':service-python:pdfgenerator'
 include ':service-data-access'
 include ':test-data-factory'
 include 'service:db'
-
+include 'domain'
 

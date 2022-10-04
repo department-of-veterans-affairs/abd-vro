@@ -1,6 +1,7 @@
 package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.va.vro.model.AbdEvidence;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
