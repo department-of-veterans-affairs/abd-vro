@@ -22,7 +22,7 @@ def assess_asthma(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications,
+                    "medications": active_medications["medications"],
                     "conditions": active_conditions,
                 },
                 "evidenceSummary": {

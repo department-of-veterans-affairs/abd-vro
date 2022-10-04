@@ -111,6 +111,7 @@ services:
       - db-init
       - assess-claim-dc7101
       - assess-claim-dc6602
+      - assess-claim-dc6602v2
       - pdf-generator
     networks:
       - internal
@@ -137,6 +138,24 @@ services:
 
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
+    environment:
+      RABBITMQ_PORT: 5672
+      RABBITMQ_RETRY_LIMIT: 3
+      RABBITMQ_TIMEOUT: 10800
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      vro-api-rabbit-mq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: on-failure:5
+
+  assess-claim-dc6602v2:
+    image: va/abd_vro-assessclaimdc6602v2:latest
     environment:
       RABBITMQ_PORT: 5672
       RABBITMQ_RETRY_LIMIT: 3
