@@ -41,7 +41,7 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void notifyVROAutomatedClaimDetails_invalidRequest() {
+  void notifyAutomatedClaimDetails_invalidRequest() {
     MasClaimDetailsRequest request =
         MasClaimDetailsRequest.builder().dob("2002-12-12").collectionsId("123").build();
 
@@ -51,7 +51,7 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void notifyVROAutomatedClaimDetails_validRequest() {
+  void notifyAutomatedClaimDetails_validRequest() {
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
     veteranIdentifiers.setEdipn("X");
     veteranIdentifiers.setParticipantId("X");
