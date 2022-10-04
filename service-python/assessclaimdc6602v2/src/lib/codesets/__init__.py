@@ -1,2 +1,1 @@
-from . import medication_codesets
-from . import condition_codesets
+from . import condition_codesets, medication_codesets

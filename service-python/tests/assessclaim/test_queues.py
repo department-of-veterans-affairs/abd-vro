@@ -69,9 +69,9 @@ def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
             queue.on_request_callback(channel, method, properties, body_formatted)
 
     assert (
-        f" [x] health-assess.{diagnosticCode}: Received message."
+        f" [x] {diagnosticCode}: Received message."
         in caplog.text
     )
     assert (
-        f" [x] health-assess.{diagnosticCode}: Message sent." in caplog.text
+        f" [x] {diagnosticCode}: Message sent." in caplog.text
     )
