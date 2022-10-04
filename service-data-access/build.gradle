@@ -52,9 +52,9 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.0.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
-    testImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.2'
-    testImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.2'
-    testImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.2'
+    testImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+    testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+    testImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     testImplementation 'org.skyscreamer:jsonassert:1.5.1'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
 
@@ -65,9 +65,9 @@ dependencies {
     integrationTestImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
     integrationTestImplementation "org.testcontainers:rabbitmq:${testcontainers_version}"
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.18.2'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-rabbitmq-starter:3.18.2'
-    integrationTestImplementation 'org.apache.camel.springboot:camel-jackson-starter:3.18.2'
+    integrationTestImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+    integrationTestImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+    integrationTestImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
 
