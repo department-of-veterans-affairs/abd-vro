@@ -2,6 +2,7 @@ package gov.va.vro.api.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +17,15 @@ public class ClaimDetailConditions {
   private String name;
 
   @NotBlank(message = "Diagnostic Code is required")
-  private String diagnosticcode;
+  @JsonProperty("diagnosticcode")
+  private String diagnosticCode;
 
-  private String disabilityactiontype;
-  private String disabilityclassificationcode;
-  private String rateddisabilityid;
+  @JsonProperty("disabilityactiontype")
+  private String disabilityActionType;
+
+  @JsonProperty("disabilityclassificationcode")
+  private String disabilityClassificationCode;
+
+  @JsonProperty("rateddisabilityid")
+  private String ratedDisabilityId;
 }

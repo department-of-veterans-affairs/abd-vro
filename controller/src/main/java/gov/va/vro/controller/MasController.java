@@ -1,7 +1,7 @@
 package gov.va.vro.controller;
 
 import gov.va.vro.api.requests.MasClaimDetailsRequest;
-import gov.va.vro.api.requests.MasClaimResponse;
+import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.api.resources.MasResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ public class MasController implements MasResource {
   @Override
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       MasClaimDetailsRequest request) {
-    log.info("Received MAS request with collection ID {}", request.getCollectionsid());
+    log.info("Received MAS request with collection ID {}", request.getCollectionsId());
     // TODO: generate unique correlation ID
     String correlationId = "123";
     // TODO: Poll periodically to check for more details
