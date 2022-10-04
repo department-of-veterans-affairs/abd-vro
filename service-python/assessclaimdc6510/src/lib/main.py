@@ -24,13 +24,16 @@ def assess_sinusitis(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications,
+                    "medications": active_medications["medications"],
                     "conditions": conditions
-                }
+                },
+                "evidenceSummary": {
+                    "relevantMedCount": active_medications["relevantMedCount"],
+                    "totalMedCount": active_medications["totalMedCount"],
+                },
             }
         )
     else:
-        logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body

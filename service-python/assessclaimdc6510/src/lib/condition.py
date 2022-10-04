@@ -17,6 +17,7 @@ def conditions_calculation(request_body):
             condition_code = condition["code"]
             if condition_code in condition_codesets.sinusitis:
                 relevant_conditions.append(condition)
+                break
             elif condition_code in condition_codesets.rhinosinusitis:
                 relevant_conditions.append(condition)
 
