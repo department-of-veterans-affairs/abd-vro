@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Getter
 @Schema(name = "MASClaimDetailsRequest", description = "Initiate a MAS request")
-public class MASClaimDetailsRequest {
+public class MasClaimDetailsRequest {
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")

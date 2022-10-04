@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import gov.va.vro.api.model.mas.ClaimDetail;
 import gov.va.vro.api.model.mas.ClaimDetailConditions;
 import gov.va.vro.api.model.mas.VeteranIdentifiers;
-import gov.va.vro.api.requests.MASClaimDetailsRequest;
+import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.requests.MasClaimResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +18,8 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void notifyVROAutomatedClaimDetails_invalidRequest() {
-    MASClaimDetailsRequest request =
-        MASClaimDetailsRequest.builder().dob("2002-12-12").collectionsid("123").build();
+    MasClaimDetailsRequest request =
+        MasClaimDetailsRequest.builder().dob("2002-12-12").collectionsid("123").build();
 
     var responseEntity =
         post("/v1/notifyVROAutomatedClaimDetails", request, MasClaimResponse.class);
@@ -39,8 +39,8 @@ public class MasControllerTest extends BaseControllerTest {
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setConditions(conditions);
 
-    MASClaimDetailsRequest request =
-        MASClaimDetailsRequest.builder()
+    MasClaimDetailsRequest request =
+        MasClaimDetailsRequest.builder()
             .dob("2002-12-12")
             .collectionsid("123")
             .firstname("Rick")

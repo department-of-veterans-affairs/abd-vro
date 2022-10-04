@@ -1,6 +1,6 @@
 package gov.va.vro.controller;
 
-import gov.va.vro.api.requests.MASClaimDetailsRequest;
+import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.requests.MasClaimResponse;
 import gov.va.vro.api.resources.MasResource;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MasController implements MasResource {
 
   @Override
-  public ResponseEntity<MasClaimResponse> notifyVROAutomatedClaimDetails(
-      MASClaimDetailsRequest request) {
+  public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
+      MasClaimDetailsRequest request) {
     log.info("Received MAS request with collection ID {}", request.getCollectionsid());
     // TODO: generate unique correlation ID
     String correlationId = "123";
