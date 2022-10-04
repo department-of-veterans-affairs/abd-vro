@@ -1,4 +1,4 @@
-from . import codesets
+from .codesets import condition_codesets
 
 
 def conditions_calculation(request_body):
@@ -15,9 +15,9 @@ def conditions_calculation(request_body):
     for condition in veterans_conditions:
         if condition["status"].lower() == "active":
             condition_code = condition["code"]
-            if condition_code in codesets.condition_codesets.asthma_conditions:
+            if condition_code in condition_codesets.asthma_conditions:
                 relevant_conditions.append(condition)
-            elif condition_code in codesets.condition_codesets.persistent_asthma:
+            elif condition_code in condition_codesets.persistent_asthma:
                 relevant_conditions.append(condition)
 
     return relevant_conditions

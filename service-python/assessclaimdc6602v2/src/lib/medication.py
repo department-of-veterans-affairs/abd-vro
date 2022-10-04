@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from . import codesets
+from .codesets import medication_codesets
 
 
 def categorize_med(medication_display):
@@ -10,7 +10,7 @@ def categorize_med(medication_display):
     :param medication_display: medication text
     :return: list
     """
-    medication_dict = codesets.medication_codesets.med_dict
+    medication_dict = medication_codesets.med_dict
     medication_category = []
     for category_id in list(medication_dict.keys()):
         if medication_category:
