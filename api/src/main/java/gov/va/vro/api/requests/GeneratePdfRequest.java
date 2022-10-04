@@ -1,7 +1,7 @@
 package gov.va.vro.api.requests;
 
-import gov.va.vro.api.model.AbdEvidence;
-import gov.va.vro.api.model.VeteranInfo;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
