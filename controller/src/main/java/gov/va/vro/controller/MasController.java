@@ -1,8 +1,8 @@
 package gov.va.vro.controller;
 
 import gov.va.vro.api.requests.MasClaimDetailsRequest;
-import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.api.resources.MasResource;
+import gov.va.vro.api.responses.MasClaimResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
