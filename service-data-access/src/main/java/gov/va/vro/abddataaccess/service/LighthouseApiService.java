@@ -55,46 +55,6 @@ public class LighthouseApiService {
     }
   }
 
-  public enum Scope {
-    OBSERVATION("launch patient/Observation.read"),
-    MEDICATION_REQUEST("launch patient/MedicationRequest.read"),
-    CONDITION("launch patient/Condition.read"),
-    PROCEDURE("launch patient/Procedure.read"),
-    UNKNOWN("");
-
-    private final String scope;
-
-    Scope(String scope) {
-      this.scope = scope;
-    }
-
-    public String getScope() {
-      return scope;
-    }
-
-    /**
-     * Gets the Scope for a given AbdDomain.
-     *
-     * @param domain an {@link AbdDomain}.
-     * @return a Scope.
-     */
-    public static Scope getScope(AbdDomain domain) {
-      log.info("Getting scope for domain {}", domain.name());
-      return switch (domain) {
-        case MEDICATION:
-          yield MEDICATION_REQUEST;
-        case BLOOD_PRESSURE:
-          yield OBSERVATION;
-        case CONDITION:
-          yield CONDITION;
-        case PROCEDURE:
-          yield PROCEDURE;
-        default:
-          yield null;
-      };
-    }
-  }
-
   private static final String PATIENT_CODING = "{\"patient\":\"%s\"}";
 
   @Autowired private LighthouseProperties lhProps;
@@ -110,7 +70,7 @@ public class LighthouseApiService {
    * @throws AbdException when error occurs.
    */
   public String getLighthouseToken(AbdDomain domain, String patientIcn) throws AbdException {
-    String scope = getLighthouseScope(domain);
+    String scope = domain.getScope();
     LighthouseTokenMessage tokenMessage = getToken(patientIcn, scope);
     return "Bearer " + tokenMessage.getAccessToken();
   }
@@ -209,9 +169,5 @@ public class LighthouseApiService {
     requestBody.add("launch", launchCode);
     requestBody.add("scope", scope);
     return new HttpEntity<>(requestBody, headers);
-  }
-
-  private String getLighthouseScope(AbdDomain domain) {
-    return Scope.getScope(domain).getScope();
   }
 }
