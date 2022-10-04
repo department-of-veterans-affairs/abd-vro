@@ -44,6 +44,7 @@ class RabbitMQConsumer:
         queue_setup(channel)
         self.channel = channel
 
+
 # This file will get copied to the docker image's root folder(src) when being built
 # When run, it attempts to create a pika.BlockingConnection() with the settings in CONSUMER_CONFIG
 # There are 2 retry levels for the consumer. The first being in _create_connection() which is based on retry_limit
