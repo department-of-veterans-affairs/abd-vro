@@ -17,6 +17,8 @@ dependencies {
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
     implementation 'org.scala-lang:scala-library:2.13.9'
+    // force gatling to use updated scala-library without vulnerability
+    gatling 'org.scala-lang:scala-library:2.13.9'
 
     implementation project(':api')
     implementation project(':controller')
