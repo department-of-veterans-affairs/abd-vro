@@ -22,6 +22,7 @@ dependencies {
     gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
     zinc "org.scala-lang:scala-library:${scala_version}"
 
+    implementation project(':domain')
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
