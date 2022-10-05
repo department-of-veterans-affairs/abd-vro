@@ -17,6 +17,8 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
 
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+
   private static final String PDF_EXCHANGE = "pdf-generator";
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
   private static final String FETCH_PDF_QUEUE = "fetch-pdf";
@@ -61,6 +63,12 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private void configureRouteFetchPdf() {
     from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
+  }
+
+  private void configureAutomatedClaim() {
+    from(ENDPOINT_AUTOMATED_CLAIM)
+        .routeId("automated-claim")
+        .to("rabbitmq:mas-notification-exchange?routingKey=mas-notification");
   }
 
   private String pdfRoute(String queueName) {

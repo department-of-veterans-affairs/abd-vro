@@ -8,6 +8,7 @@ import gov.va.vro.model.mas.ClaimDetail;
 import gov.va.vro.model.mas.ClaimDetailConditions;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +18,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Disabled
 public class MasControllerTest extends BaseControllerTest {
 
   @Test
