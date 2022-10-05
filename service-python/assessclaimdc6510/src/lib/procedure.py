@@ -1,4 +1,4 @@
-from codesets import procedure_codesets
+from .codesets import procedure_codesets
 
 
 def procedures_calculation(request_body):
@@ -11,9 +11,9 @@ def procedures_calculation(request_body):
     """
     relevant_procedures = []
 
-    veterans_procedures = request_body["evidence"]["procedures"]
+    veterans_procedures = request_body["evidence"]["procedure"]
     for procedure in veterans_procedures:
-        if procedure["status"].lower() == "active":
+        if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
             procedure_code = procedure["code"]
             if procedure_code in procedure_codesets.surgery:
                 relevant_procedures.append(procedure)

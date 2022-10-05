@@ -1,8 +1,8 @@
-import logging
 
 from . import utils
 from . import medication
 from . import condition
+from . import procedure
 from typing import Dict
 
 
@@ -21,11 +21,13 @@ def assess_sinusitis(event: Dict):
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
         conditions = condition.conditions_calculation(event)
+        procedures = procedure.procedures_calculation(event)
         response_body.update(
             {
                 "evidence": {
                     "medications": active_medications["medications"],
-                    "conditions": conditions
+                    "conditions": conditions,
+                    "procedure": procedures
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],

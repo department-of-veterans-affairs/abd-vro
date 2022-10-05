@@ -28,7 +28,7 @@ def validate_request_body(request_body):
                             "dosageInstructions": {
                                 "type": "list",
                                 "nullable": True,
-                                "schema": {"type": "string", "default": ""},
+                                "schema": {"type": "string"},
                             },
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
@@ -42,6 +42,32 @@ def validate_request_body(request_body):
                         },
                     },
                 },
+                "procedure": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "code_system": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performed_date": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
+                            },
+                        },
+                    },
+                },
                 "conditions": {
                     "required": True,
                     "type": "list",
@@ -51,10 +77,8 @@ def validate_request_body(request_body):
                             "code": {"type": "string", "required": True},
                             "status": {
                                 "type": "string",
-                                "required": True
                             },
-                            "text": {"type": "string",
-                                     "required": True},
+                            "text": {"type": "string"},
                             "onsetDate": {
                                 "type": "string",
                             },

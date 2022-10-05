@@ -1,5 +1,5 @@
 from datetime import datetime
-from codesets import medication_codesets
+from .codesets import medication_codesets
 
 
 def medication_required(request_body):

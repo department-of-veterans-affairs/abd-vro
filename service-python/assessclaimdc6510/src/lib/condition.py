@@ -1,4 +1,4 @@
-from codesets import condition_codesets
+from .codesets import condition_codesets
 
 
 def conditions_calculation(request_body):
@@ -13,7 +13,7 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     for condition in veterans_conditions:
-        if condition["status"].lower() == "active":
+        if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
             if condition_code in condition_codesets.sinusitis:
                 relevant_conditions.append(condition)

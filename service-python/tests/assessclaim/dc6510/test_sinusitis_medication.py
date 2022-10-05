@@ -11,7 +11,7 @@ from assessclaimdc6510.src.lib import medication
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Albuterol inhaler",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
@@ -22,9 +22,9 @@ from assessclaimdc6510.src.lib import medication
             {
                 "medications": [
                     {
-                        "asthmaRelevant": "true",
+                        "conditionRelated": "true",
                         "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol inhaler",
+                        "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
                     }
                 ],
@@ -38,7 +38,7 @@ from assessclaimdc6510.src.lib import medication
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Albuterol",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
@@ -49,9 +49,9 @@ from assessclaimdc6510.src.lib import medication
             {
                 "medications": [
                     {
-                        "asthmaRelevant": "true",
+                        "conditionRelated": "true",
                         "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol",
+                        "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
                     }
                 ],
@@ -76,7 +76,7 @@ from assessclaimdc6510.src.lib import medication
             {
                 "medications": [
                     {
-                        "asthmaRelevant": "false",
+                        "conditionRelated": "false",
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",
@@ -92,7 +92,7 @@ from assessclaimdc6510.src.lib import medication
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Albuterol",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         },
@@ -108,13 +108,13 @@ from assessclaimdc6510.src.lib import medication
             {
                 "medications": [
                     {
-                        "asthmaRelevant": "true",
+                        "conditionRelated": "true",
                         "authoredOn": "1950-04-06T04:00:00Z",
-                        "description": "Albuterol",
+                        "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
                     },
                     {
-                        "asthmaRelevant": "false",
+                        "conditionRelated": "false",
                         "authoredOn": "1952-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",

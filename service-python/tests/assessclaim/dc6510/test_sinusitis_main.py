@@ -10,11 +10,13 @@ from assessclaimdc6510.src.lib import main
                 "evidence": {
                     "medications": [
                         {
-                            "description": "Prednisone",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -24,10 +26,12 @@ from assessclaimdc6510.src.lib import main
                         {
                             "conditionRelated": "true",
                             "authoredOn": "1952-04-06T04:00:00Z",
-                            "description": "Prednisone",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
             },
@@ -38,11 +42,13 @@ from assessclaimdc6510.src.lib import main
                 "evidence": {
                     "medications": [
                         {
-                            "description": "predniSONE 1 MG Oral Tablet",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -52,10 +58,12 @@ from assessclaimdc6510.src.lib import main
                         {
                             "conditionRelated": "true",
                             "authoredOn": "1952-04-06T04:00:00Z",
-                            "description": "predniSONE 1 MG Oral Tablet",
+                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                             "status": "active",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
             },
@@ -70,7 +78,9 @@ from assessclaimdc6510.src.lib import main
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -83,7 +93,9 @@ from assessclaimdc6510.src.lib import main
                             "description": "Advil",
                             "status": "active",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedure": []
                 },
                 "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
             },
