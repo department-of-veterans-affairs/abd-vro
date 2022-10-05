@@ -2,13 +2,13 @@ name: Publish QA images
 
 on:
   push:
-    tags: [ qa.* ]
+    tags: [qa.*]
   # Allow manual triggering
   workflow_dispatch:
 
   workflow_call:
     secrets:
-      DEV_KUBE_CONFIG: 
+      DEV_KUBE_CONFIG:
         required: true
 
 env:
@@ -31,7 +31,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.ACCESS_TOKEN }}
-        
+
       - name: Generate kubeconfig
         run: |
           mkdir ~/.kube
@@ -42,4 +42,3 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
           ./promote-and-deploy.sh qa ${COMMIT_SHA:0:7}
-    
