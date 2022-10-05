@@ -20,7 +20,7 @@ tasks.dockerPrepare.configure {
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml:1.30") with module("org.yaml:snakeyaml:1.33")
+        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
     }
 }
 
