@@ -7,73 +7,75 @@ from assessclaimdc6602v2.src.lib import main
     "request_body, response",
     [
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "Prednisone",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "Prednisone",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [],
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {'evidence': {'conditions': [],
-                          'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                                           'conditionRelated': 'true',
-                                                           'description': 'Prednisone',
-                                                           'status': 'active',
-                                                           'suggestedCategory': ['Anti-Inflammatory/Corticosteroid/Immuno-Suppressive']}]},
-             'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
+                {'evidence': {'conditions': [],
+                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
+                                               'conditionRelated': 'true',
+                                               'description': 'Prednisone',
+                                               'status': 'active',
+                                               'suggestedCategory': [
+                                                   'Anti-Inflammatory/Corticosteroid/Immuno-Suppressive']}]},
+                 'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "predniSONE 1 MG Oral Tablet",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "predniSONE 1 MG Oral Tablet",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [],
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {'evidence': {'conditions': [],
-                          'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                                           'conditionRelated': 'true',
-                                                           'description': 'predniSONE 1 MG '
-                                                                          'Oral Tablet',
-                                                           'status': 'active',
-                                                           'suggestedCategory': ['Anti-Inflammatory/Corticosteroid/Immuno-Suppressive']}]},
-             'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
+                {'evidence': {'conditions': [],
+                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
+                                               'conditionRelated': 'true',
+                                               'description': 'predniSONE 1 MG '
+                                                              'Oral Tablet',
+                                               'status': 'active',
+                                               'suggestedCategory': [
+                                                   'Anti-Inflammatory/Corticosteroid/Immuno-Suppressive']}]},
+                 'evidenceSummary': {'relevantMedCount': 1, 'totalMedCount': 1}},
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "Advil",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "Advil",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [],
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {'evidence': {'conditions': [],
-                          'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                                           'conditionRelated': 'false',
-                                                           'description': 'Advil',
-                                                           'status': 'active',
-                                                           'suggestedCategory': []}]},
-             'evidenceSummary': {'relevantMedCount': 0, 'totalMedCount': 1}},
+                {'evidence': {'conditions': [],
+                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
+                                               'conditionRelated': 'false',
+                                               'description': 'Advil',
+                                               'status': 'active',
+                                               'suggestedCategory': []}]},
+                 'evidenceSummary': {'relevantMedCount': 0, 'totalMedCount': 1}},
         ),
     ],
 )
