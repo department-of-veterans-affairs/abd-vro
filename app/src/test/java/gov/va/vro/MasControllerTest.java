@@ -2,11 +2,11 @@ package gov.va.vro;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.api.model.mas.ClaimDetail;
-import gov.va.vro.api.model.mas.ClaimDetailConditions;
-import gov.va.vro.api.model.mas.VeteranIdentifiers;
 import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.model.mas.ClaimDetail;
+import gov.va.vro.model.mas.ClaimDetailConditions;
+import gov.va.vro.model.mas.VeteranIdentifiers;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

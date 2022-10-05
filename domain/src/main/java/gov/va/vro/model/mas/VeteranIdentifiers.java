@@ -1,4 +1,4 @@
-package gov.va.vro.api.model.mas;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
