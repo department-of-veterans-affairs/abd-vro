@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MasController implements MasResource {
 
+  /**
+   * Initiate MAS integration
+   */
   @Override
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       MasClaimDetailsRequest request) {
