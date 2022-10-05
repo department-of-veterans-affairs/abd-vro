@@ -1,7 +1,7 @@
 package gov.va.vro.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import gov.va.vro.api.model.AbdEvidence;
+import gov.va.vro.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
