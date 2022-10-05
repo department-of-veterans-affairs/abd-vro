@@ -6,4 +6,4 @@ exec java -jar \
   -Djava.security.egd=file:/dev/./urandom \
   $JAVA_PROFILE \
   $JAVA_OPTS \
-  starter-java.jar
+  vro-app.jar

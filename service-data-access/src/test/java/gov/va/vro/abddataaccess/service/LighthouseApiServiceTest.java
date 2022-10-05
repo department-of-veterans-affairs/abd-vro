@@ -101,10 +101,8 @@ class LighthouseApiServiceTest {
   @Test
   public void testScope() {
     for (AbdDomain domain : AbdDomain.values()) {
-      LighthouseApiService.Scope scope = LighthouseApiService.Scope.getScope(domain);
-      log.info(scope.getScope());
-      assertTrue(scope.getScope().startsWith("launch patient"));
+      log.info(domain.getScope());
+      assertTrue(domain.getScope().startsWith("launch patient"));
     }
-    assertTrue(LighthouseApiService.Scope.UNKNOWN.getScope().isEmpty());
   }
 }
