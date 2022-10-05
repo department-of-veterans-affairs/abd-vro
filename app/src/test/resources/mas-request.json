@@ -1,0 +1,20 @@
+{
+  "dob": "2002-12-12",
+  "firstname": "Rick",
+  "lastname": "Smith",
+  "gender": null,
+  "collectionsid": "123",
+  "veteranidentifiers": {
+    "icn": "X",
+    "ssn": "X",
+    "veteranfileid": "X",
+    "edipn": "X",
+    "participantid": "X"
+  },
+  "claimdetail": {
+    "claimsubmissionsource": "VA.GOV",
+    "conditions": {
+      "diagnosticcode": "1233"
+    }
+  }
+}

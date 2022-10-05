@@ -1,0 +1,15 @@
+plugins {
+    id 'starter.std.java.library-spring-conventions'
+}
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+    }
+}
+
+dependencies {
+    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+}
+

@@ -1,3 +1,4 @@
+
 buildscript {
     dependencies {
         classpath "gov.va.starter:plugins:${starter_boot_version}"
@@ -122,4 +123,3 @@ tasks.register('resetloop') {
     dependsOn dockermaintainerclean
     dependsOn restartloop
 }
-
