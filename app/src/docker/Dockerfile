@@ -10,7 +10,7 @@ RUN mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat && chmod +
 COPY ${JAR_FILE} vro-app.jar
 EXPOSE 8081
 
-RUN apk --no-cache add curl
+RUN apk --no-cache add curl=7.83.1-r3
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 
 RUN adduser --no-create-home --disabled-password docker
