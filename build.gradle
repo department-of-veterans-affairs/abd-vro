@@ -92,10 +92,6 @@ scmVersion {
     // doc: Version / Decorating
 //    versionCreator { version, position -> ... } // creates version visible for Gradle from raw version and current position in scm
 //    versionCreator 'versionWithBranch' // use one of predefined version creators
-//    branchVersionCreator = [ // use different creator per branch
-//                             'main/.*': 'default',
-//                             'feature/.*': 'versionWithBranch'
-//    ]
 
     versionIncrementer 'incrementPatch'
 
@@ -106,7 +102,7 @@ scmVersion {
     }
 }
 
-allprojects {
+subprojects {
     project.version = scmVersion.version
 }
 
