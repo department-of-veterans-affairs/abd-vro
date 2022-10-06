@@ -19,7 +19,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: efs-sc #This is where to set the storage class name from the table above
+  storageClassName: efs-sc
+  
   resources:
     requests:
       storage: 5Gi
