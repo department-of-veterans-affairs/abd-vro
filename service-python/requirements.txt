@@ -1,0 +1,3 @@
+-r assessclaimdc6602/src/requirements.txt
+-r assessclaimdc7101/src/requirements.txt
+-r pdfgenerator/src/requirements.txt

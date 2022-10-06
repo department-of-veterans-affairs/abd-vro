@@ -11,4 +11,6 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
 
     implementation "gov.va.starter:exceptions"
+
+    implementation project(':domain')
 }

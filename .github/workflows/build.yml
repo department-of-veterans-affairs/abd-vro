@@ -3,14 +3,8 @@ name: Build
 on:
   # Trigger on all pull requests
   pull_request:
-    branches-ignore:
-      - "dependabot/**"
-
-  # Workaround for Dependabot PRs
-  # See https://github.com/dependabot/dependabot-core/issues/3253
-  pull_request_target:
     branches:
-      - "dependabot/**"
+      - "*"
 
   # Trigger when called by another GitHub Action
   workflow_call:
@@ -45,12 +39,6 @@ jobs:
       - name: "Build and check Java code"
         # `check` runs hadolint and shellcheck
         run: ./gradlew build check
-
-      - name: "Python: Format Check and Lint"
-        run: isort . --check && flake8
-
-      - name: "Python: Run Tests and Code Coverage Check"
-        run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
 
   build-docker-images:
     runs-on: ubuntu-latest

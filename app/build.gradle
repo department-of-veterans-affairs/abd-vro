@@ -16,8 +16,13 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
-    implementation 'org.scala-lang:scala-library:2.13.9'
+    implementation "org.scala-lang:scala-library:${scala_version}"
+    // force gatling and zinc to use updated scala-library without vulnerability
+    gatling "org.scala-lang:scala-library:${scala_version}"
+    gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
+    zinc "org.scala-lang:scala-library:${scala_version}"
 
+    implementation project(':domain')
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
@@ -40,10 +45,10 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2_version}"
     implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
-    testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
-    testImplementation 'org.testcontainers:postgresql:1.17.3'
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
+    testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
     //This version is compatible with current spring version: 5.3.8
-    testImplementation 'org.apache.camel:camel-test-spring-junit5:3.18.2'
+    testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
 
     docker project(':db-init')
 }
@@ -56,7 +61,7 @@ project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
     }
 }
 
@@ -100,6 +105,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
+        dependsOn ':service-python:pytest'
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
