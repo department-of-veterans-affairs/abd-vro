@@ -40,12 +40,6 @@ jobs:
         # `check` runs hadolint and shellcheck
         run: ./gradlew build check
 
-      - name: "Python: Format Check and Lint"
-        run: isort . --check --skip tests && flake8
-
-      - name: "Python: Run Tests and Code Coverage Check"
-        run: cd service-python && python -m pytest --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc
-
   build-docker-images:
     runs-on: ubuntu-latest
     steps:
