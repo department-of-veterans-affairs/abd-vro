@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Slf4j
 @SpringBootConfiguration
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.FilterType;
     excludeFilters = {
       @ComponentScan.Filter(
           type = FilterType.ASSIGNABLE_TYPE,
-          value = {OpenApiConfiguration.class})
+          value = {OpenApiConfiguration.class, WebSecurityConfigurerAdapter.class})
     })
 public class VroApplication {
   public static void main(String[] args) {
