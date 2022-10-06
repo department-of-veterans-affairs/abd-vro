@@ -51,13 +51,13 @@ def validate_request_body(request_body):
                                 "type": "string",
                                 "required": True
                             },
-                            "code_system": {
+                            "codeSystem": {
                                 "type": "string"
                             },
-                            "text": {
+                            "description": {
                                 "type": "string"
                             },
-                            "performed_date": {
+                            "performedDate": {
                                 "type": "string"
                             },
                             "status": {
