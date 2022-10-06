@@ -26,12 +26,14 @@ def assess_sinusitis(event: Dict):
             {
                 "evidence": {
                     "medications": active_medications["medications"],
-                    "conditions": conditions,
-                    "procedure": procedures
+                    "conditions": conditions["conditions"],
+                    "procedures": procedures
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],
                     "totalMedCount": active_medications["totalMedCount"],
+                    "relevantConditionsCount": conditions["relevantConditionsCount"],
+                    "totalConditionsCount": conditions["totalConditionsCount"]
                 },
             }
         )

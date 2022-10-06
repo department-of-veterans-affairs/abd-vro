@@ -9,16 +9,22 @@ def conditions_calculation(request_body):
     :return: response body indicating success or failure with additional attributes
     :rtype: dict
     """
+    response = {}
     relevant_conditions = []
 
     veterans_conditions = request_body["evidence"]["conditions"]
+    total_conditions_count = len(veterans_conditions)
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
             if condition_code in condition_codesets.sinusitis:
                 relevant_conditions.append(condition)
-                break
+                continue
             elif condition_code in condition_codesets.rhinosinusitis:
                 relevant_conditions.append(condition)
 
-    return relevant_conditions
+    response["conditions"] = relevant_conditions
+    response["relevantConditionsCount"] = len(relevant_conditions)
+    response["totalConditionsCount"] = total_conditions_count
+
+    return response

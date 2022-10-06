@@ -6,99 +6,111 @@ from assessclaimdc6510.src.lib import main
     "request_body, response",
     [
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [],
+                        "procedures": []
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "conditionRelated": "true",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
-                            "status": "active",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "conditionRelated": "true",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
+                                "status": "active",
+                            }
+                        ],
+                        "conditions": [],
+                        "procedures": []
+                    },
+                    "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
                 },
-                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
-            },
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [],
+                        "procedures": []
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "conditionRelated": "true",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                            "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
-                            "status": "active",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "conditionRelated": "true",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
+                                "status": "active",
+                            }
+                        ],
+                        "conditions": [],
+                        "procedures": []
+                    },
+                    "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
                 },
-                "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
-            },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "description": "Advil",
-                            "status": "active",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "Advil",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            }
+                        ],
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
+                                        "code": "35923002",
+                                        "status": "Active"},
+                                       {"text": "Chronic maxillary sinusitis",
+                                        "code": "J32.0",
+                                        "status": "Active"}],
+                        "procedures": [
+                        ]
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
-                "date_of_claim": "2021-11-09",
-            },
-            {
-                "evidence": {
-                    "medications": [
-                        {
-                            "conditionRelated": "false",
-                            "authoredOn": "1952-04-06T04:00:00Z",
-                            "description": "Advil",
-                            "status": "active",
-                        }
-                    ],
-                    "conditions": [],
-                    "procedure": []
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "conditionRelated": "false",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "description": "Advil",
+                                "status": "active",
+                            }
+                        ],
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
+                                        "code": "35923002",
+                                        "status": "Active"},
+                                       {"text": "Chronic maxillary sinusitis",
+                                        "code": "J32.0",
+                                        "status": "Active"},
+                                       ],
+                        "procedures": []
+                    },
+                    "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
                 },
-                "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
-            },
         ),
     ],
 )

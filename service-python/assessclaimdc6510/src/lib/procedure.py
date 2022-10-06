@@ -11,7 +11,7 @@ def procedures_calculation(request_body):
     """
     relevant_procedures = []
 
-    veterans_procedures = request_body["evidence"]["procedure"]
+    veterans_procedures = request_body["evidence"]["procedures"]
     for procedure in veterans_procedures:
         if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
             procedure_code = procedure["code"]

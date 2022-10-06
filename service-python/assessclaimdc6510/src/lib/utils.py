@@ -42,7 +42,7 @@ def validate_request_body(request_body):
                         },
                     },
                 },
-                "procedure": {
+                "procedures": {
                     "type": "list",
                     "schema": {
                         "type": "dict",
