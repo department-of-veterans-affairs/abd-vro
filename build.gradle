@@ -88,11 +88,20 @@ scmVersion {
 //        separator = '-' // separator between version and suffix
 //    }
 
-    // doc: Version / Decorating
-//    versionCreator { version, position -> ... } // creates version visible for Gradle from raw version and current position in scm
-    versionCreator 'versionWithBranch' // use one of predefined version creators
-
     versionIncrementer 'incrementPatch'
+    // To override, run one of these:
+    //   ./gradlew release -Prelease.versionIncrementer=incrementMinor
+    //   ./gradlew release -Prelease.versionIncrementer=incrementMajor
+
+    hooks {
+        pre("fileUpdate", [file: "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
+                           pattern: {v,p -> /version = "v.*"/},
+                           replacement: {v, p -> "version = \"v$v\""}])
+        pre("fileUpdate", [file: "helmchart/Chart.yaml",
+                           pattern: {v,p -> /appVersion: .*/},
+                           replacement: {v, p -> "appVersion: $v"}])
+        pre("commit")
+    }
 
     checks { // Pre-release checks
         uncommittedChanges = true // permanently disable uncommitted changes check
