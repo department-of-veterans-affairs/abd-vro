@@ -1,5 +1,6 @@
 package gov.va.vro;
 
+import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,9 +9,14 @@ import gov.va.vro.model.mas.ClaimDetail;
 import gov.va.vro.model.mas.ClaimDetailConditions;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.model.mas.VeteranIdentifiers;
+import gov.va.vro.service.provider.camel.FunctionProcessor;
+import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Disabled;
+import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -18,8 +24,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Disabled
 public class MasControllerTest extends BaseControllerTest {
+
+  @EndpointInject("mock:mas-notification")
+  private MockEndpoint mockMasNotificationEndpoint;
+
+  @Autowired protected CamelContext camelContext;
 
   @Test
   @SneakyThrows
@@ -31,7 +41,7 @@ public class MasControllerTest extends BaseControllerTest {
     assertEquals("Rick", request.getFirstName());
     assertEquals("Smith", request.getLastName());
     assertEquals("123", request.getCollectionsId());
-    assertEquals("2002-12-12", request.getDob());
+    assertEquals("2002-12-12", request.getDateOfBirth());
 
     assertEquals("X", request.getVeteranIdentifiers().getEdipn());
     assertEquals("X", request.getVeteranIdentifiers().getVeteranFileId());
@@ -45,7 +55,7 @@ public class MasControllerTest extends BaseControllerTest {
   @Test
   void notifyAutomatedClaimDetails_invalidRequest() {
     MasClaimDetailsPayload request =
-        MasClaimDetailsPayload.builder().dob("2002-12-12").collectionsId("123").build();
+        MasClaimDetailsPayload.builder().dateOfBirth("2002-12-12").collectionsId("123").build();
 
     var responseEntity =
         post("/v1/notifyVROAutomatedClaimDetails", request, MasClaimResponse.class);
@@ -53,7 +63,20 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void notifyAutomatedClaimDetails_validRequest() {
+  void notifyAutomatedClaimDetails_validRequest() throws Exception {
+
+    adviceWith(
+        camelContext,
+        "mas-claim-notification",
+        route ->
+            route
+                .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_MAS)
+                .skipSendToOriginalEndpoint()
+                .to("mock:mas-notification"));
+    // The mock endpoint returns a valid response
+    mockMasNotificationEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.<MasClaimDetailsPayload, String>fromFunction(claim -> "hi"));
+
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
     veteranIdentifiers.setEdipn("X");
     veteranIdentifiers.setParticipantId("X");
@@ -67,7 +90,7 @@ public class MasControllerTest extends BaseControllerTest {
 
     MasClaimDetailsPayload request =
         MasClaimDetailsPayload.builder()
-            .dob("2002-12-12")
+            .dateOfBirth("2002-12-12")
             .collectionsId("123")
             .firstName("Rick")
             .lastName("Smith")

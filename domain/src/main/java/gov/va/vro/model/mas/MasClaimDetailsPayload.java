@@ -22,7 +22,8 @@ public class MasClaimDetailsPayload {
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
-  private String dob;
+  @JsonProperty("dob")
+  private String dateOfBirth;
 
   @NotBlank(message = "First Name cannot be empty")
   @Schema(description = "Veteran First  Name", example = "Rick")

@@ -1,11 +1,12 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.service.provider.MasPollingService;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
 
 /** Defines primary routes. */
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
+
+  public static final String ENDPOINT_MAS =
+      "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification";
 
   public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
@@ -26,6 +30,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private static final String FETCH_PDF_QUEUE = "fetch-pdf";
 
   private final SaveToDbService saveToDbService;
+
+  private final MasPollingService masPollingService;
 
   @Override
   public void configure() {
@@ -69,17 +75,15 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private void configureAutomatedClaim() {
     from(ENDPOINT_AUTOMATED_CLAIM)
-        .routeId("automated-claim")
-        .to("rabbitmq:mas-notification-exchange?routingKey=mas-notification");
+        .routeId("mas-claim-notification")
+        .delay(2000) // TODO configure
+        .to(ENDPOINT_MAS);
 
-    from("rabbitmq:mas-notification-exchange?routingKey=mas-notification")
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) {
-                log.info("******" + exchange.getMessage());
-              }
-            });
+    from(ENDPOINT_MAS)
+        .routeId("mas-claim-processing")
+        .unmarshal(new JacksonDataFormat(MasClaimDetailsPayload.class))
+        .process(FunctionProcessor.fromFunction(masPollingService::poll))
+        .log("MAS response: ${body}");
   }
 
   private String pdfRoute(String queueName) {
