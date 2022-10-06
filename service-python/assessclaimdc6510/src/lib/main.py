@@ -1,9 +1,7 @@
 
-from . import utils
-from . import medication
-from . import condition
-from . import procedure
 from typing import Dict
+
+from . import condition, medication, procedure, utils
 
 
 def assess_sinusitis(event: Dict):

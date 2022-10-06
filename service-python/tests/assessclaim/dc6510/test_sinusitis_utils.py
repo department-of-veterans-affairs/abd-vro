@@ -1,4 +1,5 @@
 import pytest
+
 from assessclaimdc6510.src.lib import utils
 
 
@@ -15,8 +16,17 @@ from assessclaimdc6510.src.lib import utils
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
                     ],
-                    "conditions": [],
-                    "procedures": []
+                    "conditions": [{"text": "Chronic maxillary sinusitis",
+                                    "code": "35923002",
+                                    "status": "active"},
+                                   {"text": "Chronic maxillary sinusitis",
+                                    "code": "J32.0",
+                                    "status": "active"}],
+                    "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
+                                            "dilation); sphenoid "
+                                            "sinus ostium",
+                                    "code": "31297",
+                                    "status": "completed"}]
                 },
                 "date_of_claim": "2021-11-09",
             },

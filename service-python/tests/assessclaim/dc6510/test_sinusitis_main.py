@@ -1,4 +1,5 @@
 import pytest
+
 from assessclaimdc6510.src.lib import main
 
 
@@ -89,10 +90,10 @@ from assessclaimdc6510.src.lib import main
                                 "authoredOn": "1952-04-06T04:00:00Z",
                             }
                         ],
-                        "conditions": [{"description": "Chronic maxillary sinusitis",
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
                                         "status": "active"},
-                                       {"description": "Chronic maxillary sinusitis",
+                                       {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
                                         "status": "active"}],
                         "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
@@ -114,7 +115,7 @@ from assessclaimdc6510.src.lib import main
                                 "status": "active",
                             }
                         ],
-                        "conditions": [{"description": "Chronic maxillary sinusitis",
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
                                         "status": "active"},
                                        {"text": "Chronic maxillary sinusitis",

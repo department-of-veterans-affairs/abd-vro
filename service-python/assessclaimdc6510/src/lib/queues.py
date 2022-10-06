@@ -1,25 +1,24 @@
-from .settings import queue_config
-from . import main
-
-import pika
 import json
 import logging
+
+import pika
+
+from . import main
+from .settings import queue_config
 
 EXCHANGE = queue_config["exchange_name"]
 SERVICE_QUEUE = queue_config["service_queue_name"]
 
 
 def on_request_callback(channel, method, properties, body):
-
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message.")
     try:
         response = main.assess_sinusitis(message)
-        logging.info(message)
-        logging.info(json.dumps(response))
-    except:
-        response = {"status": "ERROR", "evidence": {}, "calculated": {}}
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
 
     channel.basic_publish(
         exchange=EXCHANGE,
@@ -31,7 +30,6 @@ def on_request_callback(channel, method, properties, body):
 
 
 def queue_setup(channel):
-
     channel.exchange_declare(
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )
@@ -45,4 +43,3 @@ def queue_setup(channel):
     logging.info(
         f" [*] Waiting for data for queue: {SERVICE_QUEUE}. To exit press CTRL+C"
     )
-

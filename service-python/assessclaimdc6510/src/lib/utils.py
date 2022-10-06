@@ -54,7 +54,7 @@ def validate_request_body(request_body):
                             "codeSystem": {
                                 "type": "string"
                             },
-                            "description": {
+                            "text": {
                                 "type": "string"
                             },
                             "performedDate": {
