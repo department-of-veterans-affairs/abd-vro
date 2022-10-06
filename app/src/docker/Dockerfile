@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre-alpine
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 WORKDIR /project
@@ -9,6 +9,6 @@ EXPOSE 8081
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
-RUN useradd --no-create-home someuser
-USER someuser
+RUN adduser --no-create-home --disabled-password docker
+USER docker
 CMD ["sh", "entrypoint.sh"]
