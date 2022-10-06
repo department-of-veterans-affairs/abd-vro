@@ -1,8 +1,8 @@
 package gov.va.vro.controller;
 
-import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.resources.MasResource;
 import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,12 @@ public class MasController implements MasResource {
   /** Initiate MAS integration */
   @Override
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
-      MasClaimDetailsRequest request) {
-    log.info("Received MAS request with collection ID {}", request.getCollectionsId());
+      MasClaimDetailsPayload payload) {
+    log.info("Received MAS request with collection ID {}", payload.getCollectionsId());
     // TODO: generate unique correlation ID
     String correlationId = "123";
     // TODO: Poll periodically to check for more details
-    camelEntrance.notifyAutomatedClaim();
+    camelEntrance.notifyAutomatedClaim(payload);
     // TODO: Collect evidence, maybe call Lighthouse, maybe generate PDF
     MasClaimResponse response =
         MasClaimResponse.builder().id(correlationId).message("Received").build();

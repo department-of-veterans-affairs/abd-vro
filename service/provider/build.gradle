@@ -34,4 +34,6 @@ dependencies {
     // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
     // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+
+    implementation project(':domain')
 }

@@ -3,10 +3,10 @@ package gov.va.vro;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.model.mas.ClaimDetail;
 import gov.va.vro.model.mas.ClaimDetailConditions;
+import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Disabled;
@@ -27,7 +27,7 @@ public class MasControllerTest extends BaseControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     var request =
         objectMapper.readValue(
-            new ClassPathResource("mas-request.json").getFile(), MasClaimDetailsRequest.class);
+            new ClassPathResource("mas-request.json").getFile(), MasClaimDetailsPayload.class);
     assertEquals("Rick", request.getFirstName());
     assertEquals("Smith", request.getLastName());
     assertEquals("123", request.getCollectionsId());
@@ -44,8 +44,8 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void notifyAutomatedClaimDetails_invalidRequest() {
-    MasClaimDetailsRequest request =
-        MasClaimDetailsRequest.builder().dob("2002-12-12").collectionsId("123").build();
+    MasClaimDetailsPayload request =
+        MasClaimDetailsPayload.builder().dob("2002-12-12").collectionsId("123").build();
 
     var responseEntity =
         post("/v1/notifyVROAutomatedClaimDetails", request, MasClaimResponse.class);
@@ -65,8 +65,8 @@ public class MasControllerTest extends BaseControllerTest {
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setConditions(conditions);
 
-    MasClaimDetailsRequest request =
-        MasClaimDetailsRequest.builder()
+    MasClaimDetailsPayload request =
+        MasClaimDetailsPayload.builder()
             .dob("2002-12-12")
             .collectionsId("123")
             .firstName("Rick")

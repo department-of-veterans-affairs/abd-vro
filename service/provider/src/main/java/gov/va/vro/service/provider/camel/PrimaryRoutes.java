@@ -3,6 +3,8 @@ package gov.va.vro.service.provider.camel;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +31,9 @@ public class PrimaryRoutes extends RouteBuilder {
   public void configure() {
     configureRouteClaimSubmit();
     configureRouteClaimSubmitForFull();
-
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
+    configureAutomatedClaim();
   }
 
   private void configureRouteClaimSubmit() {
@@ -69,6 +71,15 @@ public class PrimaryRoutes extends RouteBuilder {
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId("automated-claim")
         .to("rabbitmq:mas-notification-exchange?routingKey=mas-notification");
+
+    from("rabbitmq:mas-notification-exchange?routingKey=mas-notification")
+        .process(
+            new Processor() {
+              @Override
+              public void process(Exchange exchange) {
+                log.info("******" + exchange.getMessage());
+              }
+            });
   }
 
   private String pdfRoute(String queueName) {
