@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.stream.Collectors;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("integrationTest")
 class FhirClientTest {
   @Autowired private FhirClient client;
 
