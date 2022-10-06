@@ -1,0 +1,141 @@
+name: Publish qa images
+
+on:
+  push:
+    branches: [ qa ]
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+  workflow_call:
+    secrets:
+      DEV_KUBE_CONFIG: 
+        required: true
+
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  COMMIT_SHA: ${{ github.sha }}
+  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
+
+jobs:
+  call-build-workflow:
+    uses: ./.github/workflows/build.yml
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+  publish-image:
+    # only run this job in the abd-vro repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    needs: call-build-workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Build Docker images
+        run: |
+          ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.14.1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Tag images
+        run: |
+          # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
+          docker pull rabbitmq:3
+          docker tag rabbitmq:3 \
+            "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+
+          # Tag qa images for non-prod testing
+          docker tag va/abd_vro-app \
+            "ghcr.io/${{ github.repository }}/qa_vro-app:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-app \
+            "ghcr.io/${{ github.repository }}/qa_vro-app:latest"
+          docker tag va/abd_vro-postgres \
+            "ghcr.io/${{ github.repository }}/qa_vro-postgres:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-postgres \
+            "ghcr.io/${{ github.repository }}/qa_vro-postgres:latest"
+          docker tag va/abd_vro-db-init \
+            "ghcr.io/${{ github.repository }}/qa_vro-db-init:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-db-init \
+            "ghcr.io/${{ github.repository }}/qa_vro-db-init:latest"
+          docker tag va/abd_vro-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc7101 \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest"
+          docker tag va/abd_vro-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-assessclaimdc6602 \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest"
+          docker tag va/abd_vro-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-pdfgenerator \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest"
+          docker tag va/abd_vro-service-data-access \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7}"
+          docker tag va/abd_vro-service-data-access \
+            "ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest"
+      - name: Check images
+        run: |
+          docker image list
+      - name: Push images
+        run: |
+          # Reminder to also add new images to build.yml and .github/secrel/config.yml
+
+          # Push the following images to work around https://www.docker.com/increase-rate-limits/
+          docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+
+          # Pushes qa images for non-prod testing
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-postgres
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-app
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-db-init
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602
+          docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-data-access
+
+      - name: Cleanup images
+        run: |
+          # Reminder to also add new images to build.yml and .github/secrel/config.yml
+
+          # Push the following images to work around https://www.docker.com/increase-rate-limits/
+          docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+
+          # Pushes qa images for non-prod testing
+          docker rmi ghcr.io/${{ github.repository }}/qa_vro-postgres:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-app:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-db-init:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-data-access:${COMMIT_SHA:0:7} \
+                     ghcr.io/${{ github.repository }}/qa_vro-postgres:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-app:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-db-init:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest \
+                     ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest
+      
+      - name: Generate kubeconfig
+        run: |
+          mkdir ~/.kube
+          echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Push to QA (CD)
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          ./deploy-app.sh qa ${COMMIT_SHA:0:7}
+
