@@ -5,8 +5,18 @@ package gov.va.vro.abddataaccess.service;
  * assessment.
  */
 public enum AbdDomain {
-  MEDICATION,
-  BLOOD_PRESSURE,
-  PROCEDURE,
-  CONDITION;
+  MEDICATION("launch patient/MedicationRequest.read"),
+  BLOOD_PRESSURE("launch patient/Observation.read"),
+  PROCEDURE("launch patient/Procedure.read"),
+  CONDITION("launch patient/Condition.read");
+
+  private final String scope;
+
+  AbdDomain(String scope) {
+    this.scope = scope;
+  }
+
+  public String getScope() {
+    return scope;
+  }
 }

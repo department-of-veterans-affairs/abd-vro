@@ -1,0 +1,33 @@
+import ru.vyarus.gradle.plugin.python.task.PythonTask
+
+
+plugins {
+    id('ru.vyarus.use-python') version "2.3.0"
+}
+
+python {
+    installVirtualenv = true
+}
+
+def requirements = tasks.register("requirements", PythonTask) {
+    module = 'pip'
+    command = "install -r requirements.txt"
+}
+
+def pyisort = tasks.register("pyisort", PythonTask) {
+    module = 'isort'
+    command = ". --check --skip tests"
+    dependsOn requirements
+}
+
+def pyflake8 = tasks.register("pyflake8", PythonTask) {
+    module = 'flake8'
+    command = "."
+    dependsOn pyisort
+}
+
+tasks.register("pytest", PythonTask) {
+    module = 'pytest'
+    command = "--cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc"
+    dependsOn pyflake8
+}

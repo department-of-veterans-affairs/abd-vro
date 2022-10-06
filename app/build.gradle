@@ -16,8 +16,13 @@ dependencies {
     implementation "org.springframework:spring-webmvc:${spring_framework_version}"
     implementation "org.springframework:spring-beans:${spring_framework_version}"
     implementation "io.github.classgraph:classgraph:${class_graph_version}"
-    implementation 'org.scala-lang:scala-library:2.13.9'
+    implementation "org.scala-lang:scala-library:${scala_version}"
+    // force gatling and zinc to use updated scala-library without vulnerability
+    gatling "org.scala-lang:scala-library:${scala_version}"
+    gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
+    zinc "org.scala-lang:scala-library:${scala_version}"
 
+    implementation project(':domain')
     implementation project(':api')
     implementation project(':controller')
     implementation project(':persistence:model')
@@ -30,6 +35,10 @@ dependencies {
     implementation 'gov.va.starter:error-handling'
     implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
+
+    // override vulnerable jackson version
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc1'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -100,6 +109,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
+        dependsOn ':service-python:pytest'
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'

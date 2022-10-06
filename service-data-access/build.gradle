@@ -11,7 +11,6 @@ plugins {
 }
 
 
-group = 'gov.va'
 version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
 
@@ -21,7 +20,7 @@ tasks.dockerPrepare.configure {
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml:1.30") with module("org.yaml:snakeyaml:1.33")
+        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
     }
 }
 
@@ -36,8 +35,8 @@ dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc1'
     implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
     implementation 'org.springframework:spring-web:5.3.23'
     implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.1'

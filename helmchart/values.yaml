@@ -85,9 +85,12 @@ resources:
       cpu: 10m
       memory: 256Mi
   mq:
+    requests:
+      cpu: 150m
+      memory: 512Mi
     limits:
-      cpu: 10m
-      memory: 256Mi
+      cpu: 1000m
+      memory: 1024Mi
 
 service:
   api:
