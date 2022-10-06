@@ -16,6 +16,8 @@ def on_request_callback(channel, method, properties, body):
     logging.info(f" [x] {binding_key}: Received message.")
     try:
         response = main.assess_sinusitis(message)
+        logging.info(message)
+        logging.info(json.dumps(response))
     except:
         response = {"status": "ERROR", "evidence": {}, "calculated": {}}
 
