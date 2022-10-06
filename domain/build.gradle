@@ -11,5 +11,8 @@ configurations.all {
 dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
+    // override starter-bom to use versions without vulnerabilities
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
 }
 
