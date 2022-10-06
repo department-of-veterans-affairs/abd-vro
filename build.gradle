@@ -24,7 +24,6 @@ plugins {
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
 
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
-    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
@@ -40,6 +39,7 @@ plugins {
     id("starter.java.versions-conventions") version "${starter_boot_version}"
     id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
     id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
+    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
 }
 
 ext {
@@ -61,6 +61,54 @@ ext {
                      ':db-init']
 }
 
+
+scmVersion {
+    repository {
+        type = 'git' // type of repository
+        directory = project.rootProject.file('./') // repository location
+        remote = 'origin' // remote name
+
+//        customKey = getEnvOrDefault('GIT_AUTH_KEY', "customKeyDefault")
+//        customKeyPassword = getEnvOrDefault('GIT_SECRET_KEY', "secretKeyDefault") // key password
+    }
+
+    // never connect to remote
+    localOnly = true
+    useHighestVersion = true
+    sanitizeVersion = true
+
+    tag { // version tag name
+        prefix = 'v'
+        versionSeparator = '' // separator between prefix and version number
+        // set different prefix per branch
+        branchPrefix = [ 'qa.*' : 'qa.' ]
+    }
+
+    nextVersion {
+        suffix = 'SNAPSHOT' // tag suffix
+        separator = '-' // separator between version and suffix
+    }
+
+    // doc: Version / Decorating
+//    versionCreator { version, position -> ... } // creates version visible for Gradle from raw version and current position in scm
+//    versionCreator 'versionWithBranch' // use one of predefined version creators
+//    branchVersionCreator = [ // use different creator per branch
+//                             'main/.*': 'default',
+//                             'feature/.*': 'versionWithBranch'
+//    ]
+
+    versionIncrementer 'incrementPatch'
+
+    checks { // Pre-release checks
+        uncommittedChanges = true // permanently disable uncommitted changes check
+        aheadOfRemote = false // permanently disable ahead of remote check
+        snapshotDependencies = true // ensure no components depend on snapshot releases
+    }
+}
+
+allprojects {
+    project.version = scmVersion.version
+}
 
 // Support pre-commit hooks, need spotlessCheck and spotlessApply
 def spotlessCheck = tasks.register('spotlessCheck') {
