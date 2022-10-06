@@ -2,6 +2,7 @@ package gov.va.vro;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.model.mas.ClaimDetail;
