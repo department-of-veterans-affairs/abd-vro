@@ -36,10 +36,6 @@ dependencies {
     implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
 
-    // override vulnerable jackson version
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc1'
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -65,7 +61,7 @@ project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
     }
 }
 
