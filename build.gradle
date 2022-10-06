@@ -63,35 +63,9 @@ ext {
 
 
 scmVersion {
-    repository {
-        type = 'git' // type of repository
-        directory = project.rootProject.file('./') // repository location
-        remote = 'origin' // remote name
-
-//        customKey = getEnvOrDefault('GIT_AUTH_KEY', "customKeyDefault")
-//        customKeyPassword = getEnvOrDefault('GIT_SECRET_KEY', "secretKeyDefault") // key password
-    }
-
     // never connect to remote
     localOnly = true
     useHighestVersion = true
-
-    tag { // version tag name
-        prefix = 'v'
-        versionSeparator = '' // separator between prefix and version number
-        // set different prefix per branch
-        branchPrefix = [ 'qa.*' : 'qa.' ]
-    }
-
-    nextVersion {
-        suffix = 'beta' // tag suffix
-        separator = '-' // separator between version and suffix
-    }
-
-    versionIncrementer 'incrementPatch'
-    // To override, run one of these:
-    //   ./gradlew release -Prelease.versionIncrementer=incrementMinor
-    //   ./gradlew release -Prelease.versionIncrementer=incrementMajor
 
     hooks {
         pre("fileUpdate", [file: "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
@@ -102,15 +76,10 @@ scmVersion {
                            replacement: {v, p -> "appVersion: $v"}])
         pre("commit")
     }
-
-    checks { // Pre-release checks
-        uncommittedChanges = true // permanently disable uncommitted changes check
-        aheadOfRemote = false // permanently disable ahead of remote check
-        snapshotDependencies = true // ensure no components depend on snapshot releases
-    }
 }
 
 allprojects {
+    // https://axion-release-plugin.readthedocs.io/en/latest/configuration/basic_usage
     project.version = scmVersion.version
 }
 
