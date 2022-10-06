@@ -83,10 +83,10 @@ scmVersion {
         branchPrefix = [ 'qa.*' : 'qa.' ]
     }
 
-//    nextVersion {
-//        suffix = 'SNAPSHOT' // tag suffix
-//        separator = '-' // separator between version and suffix
-//    }
+    nextVersion {
+        suffix = 'beta' // tag suffix
+        separator = '-' // separator between version and suffix
+    }
 
     versionIncrementer 'incrementPatch'
     // To override, run one of these:
