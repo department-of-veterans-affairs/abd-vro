@@ -23,7 +23,8 @@ class RabbitMQConsumer:
     def __init__(self, config):
         self.config = config
         self.connection = self._create_connection()
-        self.setup_queues()
+        if self.connection:
+            self.setup_queues()
 
     def __del__(self):
         if self.connection:
@@ -38,6 +39,7 @@ class RabbitMQConsumer:
             except Exception:
                 logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s ({i + 1}/{self.config['retry_limit']})")
                 sleep(30)
+        return None
 
     def setup_queues(self):
         channel = self.connection.channel()
@@ -60,8 +62,8 @@ if __name__ == "__main__":
         consumer = None
         try:
             consumer = RabbitMQConsumer(CONSUMER_CONFIG)
-
-            consumer.channel.start_consuming()
+            if consumer.channel:
+                consumer.channel.start_consuming()
         except Exception:
             del consumer
             if start_timer is None:
