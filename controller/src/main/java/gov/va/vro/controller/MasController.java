@@ -21,13 +21,9 @@ public class MasController implements MasResource {
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       MasClaimDetailsPayload payload) {
     log.info("Received MAS request with collection ID {}", payload.getCollectionsId());
-    // TODO: generate unique correlation ID
-    String correlationId = "123";
-    // TODO: Poll periodically to check for more details
-    camelEntrance.notifyAutomatedClaim(payload);
-    // TODO: Collect evidence, maybe call Lighthouse, maybe generate PDF
+    String message = camelEntrance.notifyAutomatedClaim(payload);
     MasClaimResponse response =
-        MasClaimResponse.builder().id(correlationId).message("Received").build();
+        MasClaimResponse.builder().id(payload.getCollectionsId()).message(message).build();
     return ResponseEntity.ok(response);
   }
 }

@@ -16,14 +16,15 @@ import org.springframework.stereotype.Component;
 public class PrimaryRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS =
-      "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification";
+      "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
 
   public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+  // TODO: should be async
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
@@ -40,6 +41,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     configureAutomatedClaim();
+    configureProcessAutomatedClaim();
   }
 
   private void configureRouteClaimSubmit() {
@@ -78,7 +80,9 @@ public class PrimaryRoutes extends RouteBuilder {
         .routeId("mas-claim-notification")
         .delay(2000) // TODO configure
         .to(ENDPOINT_MAS);
+  }
 
+  private void configureProcessAutomatedClaim() {
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasClaimDetailsPayload.class))

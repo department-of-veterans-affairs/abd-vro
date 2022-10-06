@@ -39,7 +39,8 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
-  public void notifyAutomatedClaim(MasClaimDetailsPayload payload) {
-    producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_AUTOMATED_CLAIM, payload);
+  public String notifyAutomatedClaim(MasClaimDetailsPayload payload) {
+    return producerTemplate.requestBody(
+        PrimaryRoutes.ENDPOINT_AUTOMATED_CLAIM, payload, String.class);
   }
 }

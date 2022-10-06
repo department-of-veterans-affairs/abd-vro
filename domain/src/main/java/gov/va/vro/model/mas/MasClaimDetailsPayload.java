@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +13,6 @@ import javax.validation.constraints.NotNull;
 
 @Builder
 @Getter
-@Setter
 @Schema(name = "MASClaimDetailsRequest", description = "Initiate a MAS request")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
