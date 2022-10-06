@@ -36,7 +36,9 @@ from assessclaimdc6510.src.lib import main
                     "evidenceSummary": {"relevantConditionsCount": 0,
                                         "relevantMedCount": 1,
                                         "totalConditionsCount": 0,
-                                        "totalMedCount": 1},
+                                        "totalMedCount": 1,
+                                        "relevantProceduresCount": 0,
+                                        "totalProceduresCount": 0},
                 },
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -71,7 +73,9 @@ from assessclaimdc6510.src.lib import main
                     "evidenceSummary": {"relevantConditionsCount": 0,
                                         "relevantMedCount": 1,
                                         "totalConditionsCount": 0,
-                                        "totalMedCount": 1},
+                                        "totalMedCount": 1,
+                                        "relevantProceduresCount": 0,
+                                        "totalProceduresCount": 0},
                 },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
@@ -87,11 +91,15 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "Active"},
+                                        "status": "active"},
                                        {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
-                                        "status": "Active"}],
-                        "procedures": [
+                                        "status": "active"}],
+                        "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
+                                                "dilation); sphenoid "
+                                                "sinus ostium",
+                                        "code": "31297",
+                                        "status": "completed"}
                         ]
                     },
                     "date_of_claim": "2021-11-09",
@@ -108,17 +116,23 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "Active"},
+                                        "status": "active"},
                                        {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
-                                        "status": "Active"},
+                                        "status": "active"},
                                        ],
-                        "procedures": []
+                        "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
+                                                "dilation); sphenoid "
+                                                "sinus ostium",
+                                        "code": "31297",
+                                        "status": "completed"}]
                     },
                     "evidenceSummary": {"relevantConditionsCount": 2,
                                         "relevantMedCount": 0,
                                         "totalConditionsCount": 2,
-                                        "totalMedCount": 1},
+                                        "totalMedCount": 1,
+                                        "relevantProceduresCount": 1,
+                                        "totalProceduresCount": 1},
                 },
         ),
     ],

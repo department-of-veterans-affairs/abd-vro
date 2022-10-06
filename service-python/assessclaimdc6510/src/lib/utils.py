@@ -58,8 +58,7 @@ def validate_request_body(request_body):
                                 "type": "string"
                             },
                             "performed_date": {
-                                "type": "string",
-                                "required": True
+                                "type": "string"
                             },
                             "status": {
                                 "type": "string",
