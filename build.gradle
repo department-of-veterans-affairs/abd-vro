@@ -75,7 +75,6 @@ scmVersion {
     // never connect to remote
     localOnly = true
     useHighestVersion = true
-    sanitizeVersion = true
 
     tag { // version tag name
         prefix = 'v'
@@ -84,14 +83,14 @@ scmVersion {
         branchPrefix = [ 'qa.*' : 'qa.' ]
     }
 
-    nextVersion {
-        suffix = 'SNAPSHOT' // tag suffix
-        separator = '-' // separator between version and suffix
-    }
+//    nextVersion {
+//        suffix = 'SNAPSHOT' // tag suffix
+//        separator = '-' // separator between version and suffix
+//    }
 
     // doc: Version / Decorating
 //    versionCreator { version, position -> ... } // creates version visible for Gradle from raw version and current position in scm
-//    versionCreator 'versionWithBranch' // use one of predefined version creators
+    versionCreator 'versionWithBranch' // use one of predefined version creators
 
     versionIncrementer 'incrementPatch'
 
@@ -102,7 +101,7 @@ scmVersion {
     }
 }
 
-subprojects {
+allprojects {
     project.version = scmVersion.version
 }
 
