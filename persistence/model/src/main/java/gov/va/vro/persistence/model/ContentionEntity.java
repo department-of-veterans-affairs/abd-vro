@@ -3,12 +3,13 @@ package gov.va.vro.persistence.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -25,18 +26,12 @@ public class ContentionEntity extends BaseEntity {
 
   @NotNull private String diagnosticCode;
 
-  @OneToMany(
-      mappedBy = "contention",
-      fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+  @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "contention",
-      fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+  @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
   /***
@@ -50,13 +45,22 @@ public class ContentionEntity extends BaseEntity {
     this.diagnosticCode = diagnosticCode;
   }
 
-  /***
-   * <p>Summary.</p>
-   *
-   * @param evidenceCount evidence count
-   *
-   * @return return value
-   */
+  //  /***
+  //   * <p>Summary.</p>
+  //   *
+  //   * @param evidenceCount evidence count
+  //   *
+  //   * @return return value
+  //   */
+  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
+    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
+    assessmentResult.setEvidenceCount(ar.getEvidenceCount());
+    assessmentResult.setContention(this);
+    assessmentResult.setEvidenceCountSummary(ar.getEvidenceCountSummary());
+    assessmentResults.add(assessmentResult);
+    return assessmentResult;
+  }
+
   public AssessmentResultEntity addAssessmentResult(int evidenceCount) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
     assessmentResult.setEvidenceCount(evidenceCount);

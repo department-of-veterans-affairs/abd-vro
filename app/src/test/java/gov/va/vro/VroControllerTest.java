@@ -209,9 +209,13 @@ class VroControllerTest extends BaseIntegrationTest {
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
+    // ensure that the assessment results are in the claim
     Optional<ClaimEntity> claimEntityOptional =
         claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
     assertTrue(claimEntityOptional.isPresent());
+    ClaimEntity claim = claimEntityOptional.get();
+    assertNotNull(claim.getContentions().get(0).getAssessmentResults());
+    assertEquals(2, claim.getContentions().get(0).getAssessmentResults().size());
   }
 
   @Test
