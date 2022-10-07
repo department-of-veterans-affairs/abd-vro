@@ -8,5 +8,5 @@ dependencies {
 
     implementation project(':domain')
 
-    implementation "gov.va.starter:exceptions"
+    // implementation "gov.va.starter:exceptions"
 }
