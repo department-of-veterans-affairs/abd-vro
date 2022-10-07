@@ -53,7 +53,9 @@ from assessclaimdc6510.src.lib import main
                                 "authoredOn": "1952-04-06T04:00:00Z",
                             }
                         ],
-                        "conditions": [],
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
+                                        "code": "35923002",
+                                        "status": "active"}],
                         "procedures": []
                     },
                     "date_of_claim": "2021-11-09",
@@ -68,18 +70,19 @@ from assessclaimdc6510.src.lib import main
                                 "status": "active",
                             }
                         ],
-                        "conditions": [],
+                        "conditions": [{"text": "Chronic maxillary sinusitis",
+                                        "code": "35923002",
+                                        "status": "active"}],
                         "procedures": []
                     },
-                    "evidenceSummary": {"relevantConditionsCount": 0,
+                    "evidenceSummary": {"relevantConditionsCount": 1,
                                         "relevantMedCount": 1,
-                                        "totalConditionsCount": 0,
+                                        "totalConditionsCount": 1,
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
                 },
         ),
-        # calculator feild mild-persistent-asthma-or-greater is True
         (
                 {
                     "evidence": {
