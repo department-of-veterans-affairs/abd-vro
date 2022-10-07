@@ -11,16 +11,13 @@ dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
-    // override starter-bom
-    implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-    implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-    implementation "org.springframework:spring-beans:${spring_framework_version}"
-    implementation "io.github.classgraph:classgraph:${class_graph_version}"
-    implementation "org.scala-lang:scala-library:${scala_version}"
-    // force gatling and zinc to use updated scala-library without vulnerability
-    gatling "org.scala-lang:scala-library:${scala_version}"
-    gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
-    zinc "org.scala-lang:scala-library:${scala_version}"
+    // constrain gatling and zinc to use updated scala-library without vulnerability
+    constraints {
+        implementation "org.scala-lang:scala-library:${scala_version}"
+        gatling "org.scala-lang:scala-library:${scala_version}"
+        gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
+        zinc "org.scala-lang:scala-library:${scala_version}"
+    }
 
     implementation project(':domain')
     implementation project(':api')
@@ -58,12 +55,6 @@ project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
 project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
 project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
 project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
-    }
-}
 
 application {
     // Define the main class for the application.
