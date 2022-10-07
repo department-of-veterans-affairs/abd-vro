@@ -46,8 +46,8 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'rootfs'
-          format: 'sarif'
-          output: 'trivy-rootfs-results.sarif'
+#          format: 'sarif'
+#          output: 'trivy-rootfs-results.sarif'
           severity: 'CRITICAL,HIGH'
 # Alerts aren't consistent with SecRel scan alerts,
 # so prevent PR check from failing by not uploading results for now.
