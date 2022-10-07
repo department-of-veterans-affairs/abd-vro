@@ -11,7 +11,6 @@ plugins {
 }
 
 
-version = '0.0.1-SNAPSHOT'
 description = 'Automated Benefit Delivery Data Access Service'
 
 tasks.dockerPrepare.configure {
@@ -20,7 +19,7 @@ tasks.dockerPrepare.configure {
 
 configurations.all {
     resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml:1.30") using module("org.yaml:snakeyaml:1.33")
+        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
     }
 }
 
@@ -32,11 +31,8 @@ sourceSets {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc1'
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
     implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
     implementation 'org.springframework:spring-web:5.3.23'
     implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.1'
@@ -45,20 +41,23 @@ dependencies {
     }
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.projectlombok:lombok:1.18.24'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'com.auth0:java-jwt:4.0.0'
+    // Needed?
+    // implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
+    // implementation 'com.auth0:java-jwt:4.0.0'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
-    testImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
     testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
-    testImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
-    testImplementation 'org.skyscreamer:jsonassert:1.5.1'
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
+    // Needed?
+    // testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
+    // testImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+    // testImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+    // Needed?
+    // testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+    // testImplementation 'org.skyscreamer:jsonassert:1.5.1'
+    // testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
 
     integrationTestImplementation "org.testcontainers:testcontainers:${testcontainers_version}"
     integrationTestImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
