@@ -36,7 +36,8 @@ class RabbitMQConsumer:
             try:
                 parameters = pika.ConnectionParameters(host=self.config["host"], port=self.config["port"], credentials=credentials)
                 return pika.BlockingConnection(parameters)
-            except Exception:
+            except Exception as e:
+                logging.warning(e, exc_info=True)
                 logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s ({i + 1}/{self.config['retry_limit']})")
                 sleep(30)
         return None
@@ -64,7 +65,7 @@ if __name__ == "__main__":
             consumer = RabbitMQConsumer(CONSUMER_CONFIG)
             if consumer.channel:
                 consumer.channel.start_consuming()
-        except Exception:
+        except Exception as e:
             del consumer
             if start_timer is None:
                 start_timer = time()
@@ -72,6 +73,7 @@ if __name__ == "__main__":
             else:
                 current_timer = time() - start_timer
             if current_timer < CONSUMER_CONFIG["timeout"]:
+                logging.warning(e, exc_info=True)
                 logging.warning("Connection was closed. Retrying...")
                 continue
             else:
