@@ -49,11 +49,13 @@ jobs:
           format: 'sarif'
           output: 'trivy-rootfs-results.sarif'
           severity: 'CRITICAL,HIGH'
-      - name: Upload rootfs results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-rootfs-results.sarif'
-          category: trivy-rootfs
+# Alerts aren't consistent with SecRel scan alerts,
+# so prevent PR check from failing by not uploading results for now.
+#      - name: Upload rootfs results to GitHub Security tab
+#        uses: github/codeql-action/upload-sarif@v2
+#        with:
+#          sarif_file: 'trivy-rootfs-results.sarif'
+#          category: trivy-rootfs
 
 # Trivy's image scan shows duplicate alerts as the rootfs scan
 # Disabling for now since SecRel does image scans
