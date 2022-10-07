@@ -7,31 +7,30 @@ plugins {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
-    // override starter-bom
-    implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-    implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-
-    implementation "gov.va.starter:exceptions"
     implementation project(':persistence:model')
     implementation project(':service:spi')
-    implementation 'gov.va.starter:test-data'
+
+    // Needed?
+    // implementation "gov.va.starter:exceptions"
+    // implementation 'gov.va.starter:test-data'
+
+    implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // Apache Camel
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
     implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
     implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
+    // Needed?
+    // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+    // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
+    // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
+
     // Needed to send POST to external API
     implementation "org.apache.camel.springboot:camel-http-starter:${camel_version}"
 
     // To fix jackson error: Java 8 date/time type `java.time.Instant` not supported by default
     // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
     // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }
