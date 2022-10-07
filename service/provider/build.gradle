@@ -7,9 +7,6 @@ plugins {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
     implementation project(':persistence:model')
     implementation project(':service:spi')
 

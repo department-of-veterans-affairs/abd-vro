@@ -31,9 +31,6 @@ sourceSets {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
     implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
     implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
     implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'

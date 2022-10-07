@@ -72,7 +72,11 @@ allprojects {
 
 subprojects {
     apply plugin: "java"
+    apply plugin: 'starter.java.config-conventions'
     dependencies {
+        annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+        checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
         // constrain starter-bom transitive dependencies to use versions without vulnerabilities
         constraints {
             implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"

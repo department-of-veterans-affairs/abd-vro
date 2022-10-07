@@ -8,9 +8,6 @@ plugins {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
     // constrain gatling and zinc to use updated scala-library without vulnerability
     constraints {
         implementation "org.scala-lang:scala-library:${scala_version}"
