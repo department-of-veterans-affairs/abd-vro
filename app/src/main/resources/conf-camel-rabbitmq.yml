@@ -3,3 +3,6 @@ message-queue:
   port: 5672
   user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
   password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
+mas-processing-initial-delay: 2000
+mas-processing-subsequent-delay: 1000

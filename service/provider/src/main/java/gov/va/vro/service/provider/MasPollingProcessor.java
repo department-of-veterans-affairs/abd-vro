@@ -3,18 +3,23 @@ package gov.va.vro.service.provider;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
-public class MasPollingService {
+public class MasPollingProcessor implements Processor {
 
   private final CamelEntrance camelEntrance;
+  private final MasDelays masDelays;
 
-  public String poll(MasClaimDetailsPayload payload) {
+  @Override
+  public void process(Exchange exchange) {
+    var payload = exchange.getMessage().getBody(MasClaimDetailsPayload.class);
     log.info("Checking collection status for collection {}.", payload.getCollectionsId());
     // call pcCheckCollectionStatus
     boolean ready = checkCollectionStatus(payload.getCollectionsId());
@@ -23,14 +28,11 @@ public class MasPollingService {
       // call pcQueryCollectionAnnots
       // execute unspecified business logic
       // if a decision is made, call pcOrderExam
-      return "processed automated claim request";
     } else {
       log.info("Collection {} is not ready. Requeueing...", payload.getCollectionsId());
       // re-request after some time
-      // TODO: figure out async
-      new Thread(() -> camelEntrance.notifyAutomatedClaim(payload)).start();
+      camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingSubsequentDelay());
     }
-    return "not ready";
   }
 
   private boolean checkCollectionStatus(String collectionsId) {

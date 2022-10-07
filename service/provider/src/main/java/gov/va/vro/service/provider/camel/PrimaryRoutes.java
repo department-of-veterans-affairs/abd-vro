@@ -1,10 +1,11 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
-import gov.va.vro.service.provider.MasPollingService;
+import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,9 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
 
-  // TODO: should be async
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+
+  public static final String MAS_DELAY_PARAM = "masDelay";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
@@ -32,7 +34,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final SaveToDbService saveToDbService;
 
-  private final MasPollingService masPollingService;
+  private final MasPollingProcessor masPollingProcessor;
 
   @Override
   public void configure() {
@@ -41,7 +43,6 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     configureAutomatedClaim();
-    configureProcessAutomatedClaim();
   }
 
   private void configureRouteClaimSubmit() {
@@ -78,15 +79,15 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureAutomatedClaim() {
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId("mas-claim-notification")
-        .delay(2000) // TODO configure
+        .delay(header(MAS_DELAY_PARAM))
+        .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
-  }
 
-  private void configureProcessAutomatedClaim() {
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasClaimDetailsPayload.class))
-        .process(FunctionProcessor.fromFunction(masPollingService::poll))
+        .process(masPollingProcessor)
+        .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
   }
 

@@ -37,7 +37,7 @@ public class MasClaimDetailsPayload {
   private String gender;
 
   @NotBlank(message = "Collections ID empty")
-  @Schema(description = "Collections ID")
+  @Schema(description = "Collections ID", example = "999")
   @JsonProperty("collectionsid")
   private String collectionsId;
 
