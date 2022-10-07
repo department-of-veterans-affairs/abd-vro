@@ -21,10 +21,6 @@ public class AssessmentResult {
   @JsonInclude
   private String diagnosticCode;
 
-  @Schema(description = "Medical evidence supporting assessment")
-  @JsonInclude
-  private AbdEvidence evidence;
-
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
