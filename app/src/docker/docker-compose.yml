@@ -101,6 +101,7 @@ services:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      VRO_NON_PROD: "$VRO_NON_PROD"
     security_opt:
       - no-new-privileges:true
     depends_on:
