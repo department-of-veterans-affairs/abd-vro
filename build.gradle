@@ -48,7 +48,7 @@ allprojects {
     gradleLint {
         alwaysRun = false
         reportFormat = 'text'
-        rules  = [
+        rules = [
                 'unused-dependency',
                 'dependency-parentheses',
                 'archaic-wrapper',
@@ -66,6 +66,18 @@ allprojects {
             if (name.startsWith("incrementalScalaAnalysis")) {
                 extendsFrom = []
             }
+        }
+    }
+}
+
+subprojects {
+    apply plugin:  "java"
+    dependencies {
+        // override starter-bom to use versions without vulnerabilities
+        constraints {
+            implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+            implementation "org.springframework:spring-webmvc:${spring_framework_version}"
+            implementation "org.yaml:snakeyaml:1.33"
         }
     }
 }
