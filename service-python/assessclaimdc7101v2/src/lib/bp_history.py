@@ -8,20 +8,22 @@ def history_of_diastolic_bp(request_body):
     :rtype: dict
     """
 
-    diastolic_history_calculation = {
+    calculation = {
         "success": True
     }
+
     bp_readings = request_body["evidence"]["bp_readings"]
     bp_readings_length = len(bp_readings)
-    diastolic_history_calculation["totalBpReadings"] = bp_readings_length
+    diastolic_history_calculation = {"totalBpReadings": bp_readings_length}
     readings_greater_or_equal_to_one_hundred = 0
 
     if bp_readings_length > 0:
         for reading in bp_readings:
             if reading["diastolic"]["value"] >= 100:
                 readings_greater_or_equal_to_one_hundred += 1
-        diastolic_history_calculation["diastolic_bp_predominantly_100_or_more"] = True if readings_greater_or_equal_to_one_hundred / bp_readings_length >=.5 else False
+        calculation["diastolic_bp_predominantly_100_or_more"] = True if readings_greater_or_equal_to_one_hundred / bp_readings_length >=.5 else False
     else:
-        diastolic_history_calculation["success"] = False
+        calculation["success"] = False
 
+    diastolic_history_calculation["calculated"] = calculation
     return diastolic_history_calculation

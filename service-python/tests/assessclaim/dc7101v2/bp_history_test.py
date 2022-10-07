@@ -1,5 +1,5 @@
 import pytest
-from assessclaimdc7101.src.lib import bp_history
+from assessclaimdc7101v2.src.lib import bp_history
 
 
 @pytest.mark.parametrize(
@@ -7,33 +7,30 @@ from assessclaimdc7101.src.lib import bp_history
     [
         # 0 readings
         (
-            {"evidence": 
-                {
-                    "bp_readings": []
-                }
-            
-            },
-                {
-                    "success": False
-                }
+                {"evidence":
+                    {
+                        "bp_readings": []
+                    }
+
+                },
+                {'calculated': {'success': False}, 'totalBpReadings': 0}
         ),
         # 1 reading test case that passes
         (
                 {
                     "evidence": {
-                    "bp_readings": [
-                        {
-                            "diastolic": {"value": 100},
-                            "systolic": {"value": 180},
-                            "date": "2021-11-01"
-                        },
-                    ]
+                        "bp_readings": [
+                            {
+                                "diastolic": {"value": 100},
+                                "systolic": {"value": 180},
+                                "date": "2021-11-01"
+                            },
+                        ]
                     }
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": True,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': True,
+                                'success': True},
+                 'totalBpReadings': 1}
         ),
         # 1 reading test case that fails
         (
@@ -49,10 +46,9 @@ from assessclaimdc7101.src.lib import bp_history
                         ]
                     }
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": False,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': False,
+                                'success': True},
+                 'totalBpReadings': 1}
         ),
         # 2 reading test case that passes
         (
@@ -71,12 +67,11 @@ from assessclaimdc7101.src.lib import bp_history
                                 "date": "2021-09-01"
                             }
                         ]
-                }
+                    }
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": True,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': True,
+                                'success': True},
+                 'totalBpReadings': 2}
         ),
         # 2 reading test case that fails
         (
@@ -96,40 +91,38 @@ from assessclaimdc7101.src.lib import bp_history
                         ]
                     }
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": False,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': False,
+                                'success': True},
+                 'totalBpReadings': 2}
         ),
         # 3 reading test case that passes
         (
                 {
-                    "evidence": 
-                    {
+                    "evidence":
+                        {
 
-                        "bp_readings": [
-                            {
-                                "diastolic": {"value": 101},
-                                "systolic": {"value": 180},
-                                "date": "2021-11-01"
-                            },
-                            {
-                                "diastolic": {"value": 90},
-                                "systolic": {"value": 200},
-                                "date": "2021-09-01"
-                            },
-                            {
-                                "diastolic": {"value": 115},
-                                "systolic": {"value": 200},
-                                "date": "2021-09-02"
-                            }
-                        ]
-                    }
+                            "bp_readings": [
+                                {
+                                    "diastolic": {"value": 101},
+                                    "systolic": {"value": 180},
+                                    "date": "2021-11-01"
+                                },
+                                {
+                                    "diastolic": {"value": 90},
+                                    "systolic": {"value": 200},
+                                    "date": "2021-09-01"
+                                },
+                                {
+                                    "diastolic": {"value": 115},
+                                    "systolic": {"value": 200},
+                                    "date": "2021-09-02"
+                                }
+                            ]
+                        }
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": True,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': True,
+                                'success': True},
+                 'totalBpReadings': 3}
         ),
         # 3 reading test case that fails
         (
@@ -153,12 +146,11 @@ from assessclaimdc7101.src.lib import bp_history
                             }
                         ]
                     }
-                    
+
                 },
-                {
-                    "diastolic_bp_predominantly_100_or_more": False,
-                    "success": True
-                }
+                {'calculated': {'diastolic_bp_predominantly_100_or_more': False,
+                                'success': True},
+                 'totalBpReadings': 3}
         ),
     ],
 )

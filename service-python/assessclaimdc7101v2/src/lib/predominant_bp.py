@@ -132,7 +132,7 @@ def sufficient_to_autopopulate (request_body):
     :rtype: dict
     """
 
-    predominance_calculation = {}
+    calculation = {}
 
     if "date_of_claim" in request_body:
         date_of_claim = request_body["date_of_claim"]
@@ -146,15 +146,18 @@ def sufficient_to_autopopulate (request_body):
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             valid_bp_readings.append(reading)
-    predominance_calculation["recentBpReadings"] = len(valid_bp_readings)
+    predominance_calculation = {"recentBpReadings": len(valid_bp_readings)}
     if len(valid_bp_readings) <= 1 or not bp_readings_meet_date_specs(date_of_claim, valid_bp_readings):
-        predominance_calculation["success"] = False
+        calculation["success"] = False
+        predominance_calculation["calculated"] = calculation
         return predominance_calculation
 
     elif len(valid_bp_readings) > 1 and bp_readings_meet_date_specs(date_of_claim, valid_bp_readings):
         results = calculate_predominant_readings(valid_bp_readings)
-        predominance_calculation["success"] = True
-        predominance_calculation["predominant_diastolic_reading"] = results["diastolic_value"]
-        predominance_calculation["predominant_systolic_reading"] = results["systolic_value"]
+        calculation["success"] = True
+        calculation["predominant_diastolic_reading"] = results["diastolic_value"]
+        calculation["predominant_systolic_reading"] = results["systolic_value"]
+
+    predominance_calculation["calculated"] = calculation
 
     return predominance_calculation

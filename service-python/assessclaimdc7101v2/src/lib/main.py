@@ -34,12 +34,13 @@ def assess_hypertension(event: Dict):
                 "evidenceSummary": {
                     "relevantMedCount": relevant_medication["relevantMedCount"],
                     "totalMedCount": relevant_medication["totalMedCount"],
-                    "totalBpReadings": predominance_calculation["totalBpReadings"],
-                    "recentBpReadings": diastolic_history_calculation["recentBpReadings"],
+                    "totalBpReadings": diastolic_history_calculation["totalBpReadings"],
+                    "recentBpReadings": predominance_calculation["recentBpReadings"],
                 },
                 "calculated": {
-                    "predominance_calculation": predominance_calculation,
-                    "diastolic_history_calculation": diastolic_history_calculation,
+                    "predominance_calculation": predominance_calculation["calculated"],
+                    "diastolic_history_calculation":
+                        diastolic_history_calculation["calculated"],
                 }
             })
     else:

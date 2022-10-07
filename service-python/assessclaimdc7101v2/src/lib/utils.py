@@ -49,7 +49,8 @@ def validate_request_body(request_body):
                         "type": "dict",
                         "schema": {
                             "authoredOn": {
-                                "type": "string"
+                                "type": "string",
+                                "required": True
                             },
                             "status": {
                                 "type": "string",
