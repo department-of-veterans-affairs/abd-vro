@@ -24,7 +24,6 @@ plugins {
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
 
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
-    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
@@ -40,6 +39,7 @@ plugins {
     id("starter.java.versions-conventions") version "${starter_boot_version}"
     id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
     id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
+    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
 }
 
 ext {
@@ -61,6 +61,27 @@ ext {
                      ':db-init']
 }
 
+
+scmVersion {
+    // never connect to remote
+    localOnly = true
+    useHighestVersion = true
+
+    hooks {
+        pre("fileUpdate", [file: "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
+                           pattern: {v,p -> /version = "v.*"/},
+                           replacement: {v, p -> "version = \"v$v\""}])
+        pre("fileUpdate", [file: "helmchart/Chart.yaml",
+                           pattern: {v,p -> /appVersion: .*/},
+                           replacement: {v, p -> "appVersion: $v"}])
+        pre("commit")
+    }
+}
+
+allprojects {
+    // https://axion-release-plugin.readthedocs.io/en/latest/configuration/basic_usage
+    project.version = scmVersion.version
+}
 
 // Support pre-commit hooks, need spotlessCheck and spotlessApply
 def spotlessCheck = tasks.register('spotlessCheck') {
