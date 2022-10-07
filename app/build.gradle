@@ -8,19 +8,13 @@ plugins {
 }
 
 dependencies {
-    annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-    checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-
-    // override starter-bom
-    implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-    implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-    implementation "org.springframework:spring-beans:${spring_framework_version}"
-    implementation "io.github.classgraph:classgraph:${class_graph_version}"
-    implementation "org.scala-lang:scala-library:${scala_version}"
-    // force gatling and zinc to use updated scala-library without vulnerability
-    gatling "org.scala-lang:scala-library:${scala_version}"
-    gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
-    zinc "org.scala-lang:scala-library:${scala_version}"
+    // constrain gatling and zinc to use updated scala-library without vulnerability
+    constraints {
+        implementation "org.scala-lang:scala-library:${scala_version}"
+        gatling "org.scala-lang:scala-library:${scala_version}"
+        gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
+        zinc "org.scala-lang:scala-library:${scala_version}"
+    }
 
     implementation project(':domain')
     implementation project(':api')
@@ -30,11 +24,12 @@ dependencies {
     implementation project(':service:spi')
     implementation project(':service:db')
 
-    implementation 'gov.va.starter:health'
-    implementation 'gov.va.starter:tracing'
-    implementation 'gov.va.starter:error-handling'
-    implementation 'gov.va.starter:exceptions'
     implementation 'gov.va.starter:open-api'
+    // Needed?
+    // implementation 'gov.va.starter:health'
+    // implementation 'gov.va.starter:tracing'
+    // implementation 'gov.va.starter:error-handling'
+    // implementation 'gov.va.starter:exceptions'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -42,12 +37,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    testRuntimeOnly "com.h2database:h2:${h2_version}"
-    implementation "org.postgresql:postgresql:${postgresql_version}"
+    // Needed?
+    // implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
-    testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-    testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
-    //This version is compatible with current spring version: 5.3.8
+
+    testRuntimeOnly "com.h2database:h2:${h2_version}"
+    // Needed?
+    // testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
+    // testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
+
+    // This version is compatible with current spring version: 5.3.8
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
 
     docker project(':db-init')
@@ -58,12 +57,6 @@ project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
 project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
 project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
 project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
-    }
-}
 
 application {
     // Define the main class for the application.
@@ -125,5 +118,3 @@ tasks.named('lintDockerfile').configure {
 tasks.named('dockerComposeUp').configure {
     dependsOn ':db-init:docker'
 }
-
-
