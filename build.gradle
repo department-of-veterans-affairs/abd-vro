@@ -71,7 +71,7 @@ allprojects {
 }
 
 subprojects {
-    apply plugin:  "java"
+    apply plugin: "java"
     dependencies {
         // constrain starter-bom to use versions without vulnerabilities
         constraints {
