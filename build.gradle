@@ -48,14 +48,19 @@ allprojects {
     gradleLint {
         alwaysRun = false
         reportFormat = 'text'
-        rules = [
-                'unused-dependency',
-                'dependency-parentheses',
-                'archaic-wrapper',
-                'all-nebula-renames'
-                ]
+        // https://github.com/nebula-plugins/gradle-lint-plugin/wiki
+        rules = [ 'unused-dependency' ]
         // criticalRules will fail the build in the event of a violation
-        criticalRules = []
+        criticalRules = [
+                        'minimum-dependency-version',
+                        'overridden-dependency-version',
+                        'unused-exclude-by-dep',
+                        'unused-exclude-by-conf',
+                        'dependency-parentheses',
+                        'duplicate-dependency-class',
+                        'archaic-wrapper',
+                        'all-nebula-renames'
+                        ]
     }
 
     afterEvaluate {
