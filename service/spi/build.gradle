@@ -6,8 +6,7 @@ dependencies {
     annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
     checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
+    implementation project(':domain')
 
     implementation "gov.va.starter:exceptions"
-
-    implementation project(':domain')
 }
