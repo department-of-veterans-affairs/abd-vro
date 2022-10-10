@@ -2,7 +2,6 @@ package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.starter.boot.exception.RequestValidationException;
-import gov.va.vro.api.model.AssessmentResult;
 import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
@@ -52,7 +51,7 @@ public class VroController implements VroResource {
 
   private final FetchClaimsService fetchClaimsService;
 
-  private final  SaveToDbService saveToDbService;
+  private final SaveToDbService saveToDbService;
 
   private final ClaimMetricsService claimMetricsService;
 
@@ -172,14 +171,6 @@ public class VroController implements VroResource {
 
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
-      gov.va.vro.service.spi.model.AssessmentResult ar = new gov.va.vro.service.spi.model.AssessmentResult();
-      String evidenceSummary = response.getEvidenceSummary().toString();
-      ar.setEvidenceSummary(evidenceSummary);
-      try{
-        saveToDbService.insertAssessmentResult(ar);
-      }catch(Exception e){
-        log.error("Error saving evidence summary to db.");
-      }
 
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
