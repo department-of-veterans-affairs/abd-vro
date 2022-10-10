@@ -5,7 +5,7 @@ flake8==4.0.1
 importlib-metadata==4.11.3
 itsdangerous==2.1.2
 isort==5.10.1
-Jinja2==3.1.1
+Jinja2==3.1.2
 MarkupSafe==2.1.1
 pika==1.2.1
 pdfkit==1.0.0
