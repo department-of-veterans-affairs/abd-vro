@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("integrationTest")
 @Testcontainers
 @ContextConfiguration(initializers = AbdApplicationIt.Initializer.class)
 @Slf4j
@@ -46,7 +46,7 @@ public class AbdApplicationIt {
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
       val values =
           TestPropertyValues.of(
-              "spring.rabbitmq.host=" + rabbitMqContainer.getContainerIpAddress(),
+              "spring.rabbitmq.host=" + rabbitMqContainer.getHost(),
               "spring.rabbitmq.port=" + rabbitMqContainer.getMappedPort(5672));
       values.applyTo(configurableApplicationContext);
     }
@@ -64,7 +64,7 @@ public class AbdApplicationIt {
                   + "?queue=claim-submit"
                   + "&routingKey=code.7101"
                   + "&hostname="
-                  + rabbitMqContainer.getContainerIpAddress()
+                  + rabbitMqContainer.getHost()
                   + "&portNumber="
                   + rabbitMqContainer.getMappedPort(5672);
 

@@ -85,9 +85,12 @@ resources:
       cpu: 10m
       memory: 256Mi
   mq:
+    requests:
+      cpu: 150m
+      memory: 512Mi
     limits:
-      cpu: 10m
-      memory: 256Mi
+      cpu: 1000m
+      memory: 1024Mi
 
 service:
   api:
@@ -149,6 +152,7 @@ api:
   apiKeySecret: api
   apiKey01: apiKey01
   apiKey02: apiKey02
+  vroNonProdKey: vroNonProd
 
 postgres:
   dbName: vro

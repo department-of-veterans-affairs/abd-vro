@@ -73,14 +73,12 @@ server:
     session:
       timeout: 60000
 
-
-
 log4j2:
   formatMsgNoLookups: true
 
 spring:
   application:
-    name: "starter-api"
+    name: "abd-vro"
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -95,38 +93,6 @@ spring:
   http:
     encoding:
       force: true
-  kafka:
-    bootstrap-servers: "localhost:9092"
-    topic.name: default-kafka-topic
-    replication.factor: 1
-    partition.number: 1
-    consumer:
-      auto-offset-reset: earliest
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      group-id: starter
-      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-      value-deserializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonDeserializer
-      level.concurrency: 1
-      properties:
-        spring.json.trusted.packages: gov.va.starter.*
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
-    producer:
-      # This means the leader will wait for the full set of in-sync replicas to acknowledge
-      # the record. This guarantees that the record will not be lost as long as at least one
-      # in-sync replica remains alive. This is the strongest available guarantee.
-      # This is equivalent to the acks=-1 setting. For an eventing architecture this should be
-      # our default setting - no need for extremely high speed compromises here.
-      acks: all
-      batch-size: 1048576
-      buffer-memory: 2097152
-      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
-      compression-type: lz4
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-      value-serializer: gov.va.starter.boot.kafkaconnectors.serde.CustomJsonSerializer
-      properties:
-        max.in.flight.requests.per.connection: 2
-        spring.json.value.default.type: gov.va.starter.boot.notifier.lifecycle.entity.model.EntityLifecycleNotification
 
 opentracing:
   zipkin:
@@ -135,44 +101,37 @@ opentracing:
 
 springdoc:
   writer-with-default-pretty-printer: true
-  show-actuator: true
+  show-actuator: false
   packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
 
   swagger-ui:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
+    enabled: ${VRO_NON_PROD:false}
 
-starter:
+vro:
   openapi:
-    authUrl: https://iam.va.gov/whoami
-    default-oauth-security-scheme: true
-    default-jwt-bearer-security-scheme: true
-    license: CCO 1.0
-    title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-    description: APIs to improve benefit delivery services
-    version: v1
-    licenseUrl: https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md
-    contactEmail: dung.lam1@va.gov
-    contactName: D (Yoom) Lam
-    serverUrl: ${STARTER_OPENAPI_SERVERURL:/}
-  boot:
-    kafka-lifecycle-notifier:
-      enabled: false
-      producer:
-        topic.name: example-entity-lifecycle
-        replication.factor: 1
-        partition.number: 1
-      consumer:
-        topic.name: example-entity-lifecycle
-        level.concurrency: 1
-
-# opa:
-#   filter:
-#     enabled: true
-#     document-path: authz
-#     instance: http://opa:8181
-#     endpoints-whitelist: /swagger*/**,/v3/api-docs/**,/liveness,/readiness,/health/**
+    info:
+      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
+      description: APIs to improve benefit delivery services
+      version: v1
+      contact:
+        name: D (Yoom) Lam
+        email: "dung.lam1@va.gov"
+      license:
+        name: CCO 1.0
+        url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
+    servers:
+      -
+        description: "Server"
+        url: ${STARTER_OPENAPI_SERVERURL:/}
+      -
+        description: "Dev Server"
+        url: "https://dev.lighthouse.va.gov/abd-vro"
+      -
+        description: "QA Server"
+        url: "https://qa.lighthouse.va.gov/abd-vro"
 
 spring.config.import: >
   conf-camel.yml,

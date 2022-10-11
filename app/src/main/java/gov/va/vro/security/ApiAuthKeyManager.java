@@ -33,6 +33,7 @@ public class ApiAuthKeyManager implements AuthenticationManager {
     String principal = (String) authentication.getPrincipal();
 
     if (!apiAuthKeys.getKeys().contains(principal)) {
+      log.info("Tried to access with invalid key, {}", principal);
       throw new BadCredentialsException("Invalid API Key.");
     } else {
       authentication.setAuthenticated(true);
