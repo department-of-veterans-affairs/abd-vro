@@ -73,6 +73,7 @@ dependencyResolutionManagement {
 rootProject.name = 'abd_vro'
 include ':api'
 include ':app'
+include ':console'
 include ':controller'
 include ':docs'
 include ':db-init'
