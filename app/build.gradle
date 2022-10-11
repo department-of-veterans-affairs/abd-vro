@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     // Needed?
     // implementation "org.postgresql:postgresql:${postgresql_version}"
