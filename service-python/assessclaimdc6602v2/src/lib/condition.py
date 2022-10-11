@@ -13,7 +13,7 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     for condition in veterans_conditions:
-        if condition["status"].lower() == "active":
+        if condition["status"].lower() in ["active", "relapse", "recurrence"]:
             condition_code = condition["code"]
             if condition_code in condition_codesets.asthma_conditions:
                 relevant_conditions.append(condition)
