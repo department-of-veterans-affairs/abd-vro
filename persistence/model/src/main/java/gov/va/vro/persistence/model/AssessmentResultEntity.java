@@ -1,8 +1,11 @@
 package gov.va.vro.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,4 +22,11 @@ public class AssessmentResultEntity extends BaseEntity {
   // number of evidence data points found to support fast tracking the claim
   @Min(0)
   private int evidenceCount;
+
+  @ElementCollection private Map<String, String> evidenceCountSummary;
+
+  @JsonAnySetter
+  void setEvidenceCountSummary(String key, String value) {
+    evidenceCountSummary.put(key, value);
+  }
 }
