@@ -40,7 +40,7 @@ public class MasControllerTest extends BaseControllerTest {
             new ClassPathResource("mas-request.json").getFile(), MasClaimDetailsPayload.class);
     assertEquals("Rick", request.getFirstName());
     assertEquals("Smith", request.getLastName());
-    assertEquals("123", request.getCollectionsId());
+    assertEquals("123", request.getCollectionId());
     assertEquals("2002-12-12", request.getDateOfBirth());
 
     assertEquals("X", request.getVeteranIdentifiers().getEdipn());
@@ -55,7 +55,7 @@ public class MasControllerTest extends BaseControllerTest {
   @Test
   void notifyAutomatedClaimDetails_invalidRequest() {
     MasClaimDetailsPayload request =
-        MasClaimDetailsPayload.builder().dateOfBirth("2002-12-12").collectionsId("123").build();
+        MasClaimDetailsPayload.builder().dateOfBirth("2002-12-12").collectionId("123").build();
 
     var responseEntity =
         post("/v1/notifyVROAutomatedClaimDetails", request, MasClaimResponse.class);
@@ -91,7 +91,7 @@ public class MasControllerTest extends BaseControllerTest {
     MasClaimDetailsPayload request =
         MasClaimDetailsPayload.builder()
             .dateOfBirth("2002-12-12")
-            .collectionsId("123")
+            .collectionId("123")
             .firstName("Rick")
             .lastName("Smith")
             .veteranIdentifiers(veteranIdentifiers)

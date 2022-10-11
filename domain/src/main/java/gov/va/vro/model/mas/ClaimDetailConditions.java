@@ -17,15 +17,11 @@ public class ClaimDetailConditions {
   private String name;
 
   @NotBlank(message = "Diagnostic Code is required")
-  @JsonProperty("diagnosticcode")
   private String diagnosticCode;
 
-  @JsonProperty("disabilityactiontype")
   private String disabilityActionType;
 
-  @JsonProperty("disabilityclassificationcode")
   private String disabilityClassificationCode;
 
-  @JsonProperty("rateddisabilityid")
   private String ratedDisabilityId;
 }

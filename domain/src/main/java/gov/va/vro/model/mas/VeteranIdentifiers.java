@@ -21,13 +21,11 @@ public class VeteranIdentifiers {
   private String ssn;
 
   @NotBlank(message = "Veteran File ID is required")
-  @JsonProperty("veteranfileid")
   private String veteranFileId;
 
   @NotBlank(message = "EDIPN is required")
   private String edipn;
 
   @NotBlank(message = "Participant ID is required")
-  @JsonProperty("participantid")
   private String participantId;
 }

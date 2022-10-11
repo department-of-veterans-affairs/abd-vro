@@ -23,11 +23,11 @@ public class MasController implements MasResource {
   @Override
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       MasClaimDetailsPayload payload) {
-    log.info("Received MAS request with collection ID {}", payload.getCollectionsId());
+    log.info("Received MAS request with collection ID {}", payload.getCollectionId());
     camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingInitialDelay());
     MasClaimResponse response =
         MasClaimResponse.builder()
-            .id(payload.getCollectionsId())
+            .id(payload.getCollectionId())
             .message("Message Received")
             .build();
     return ResponseEntity.ok(response);

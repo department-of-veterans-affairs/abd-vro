@@ -25,31 +25,26 @@ public class MasClaimDetailsPayload {
 
   @NotBlank(message = "First Name cannot be empty")
   @Schema(description = "Veteran First  Name", example = "Rick")
-  @JsonProperty("firstname")
   private String firstName;
 
   @NotBlank(message = "Last Name cannot be empty")
   @Schema(description = "Veteran Last  Name", example = "Smith")
-  @JsonProperty("lastname")
   private String lastName;
 
   @Schema(description = "Veteran Gender")
   private String gender;
 
-  @NotBlank(message = "Collections ID empty")
-  @Schema(description = "Collections ID", example = "999")
-  @JsonProperty("collectionsid")
-  private String collectionsId;
+  @NotBlank(message = "Collection ID empty")
+  @Schema(description = "Collection ID", example = "999")
+  private String collectionId;
 
   @NotNull
   @Valid
   @Schema(description = "Veteran Identifiers")
-  @JsonProperty("veteranidentifiers")
   private VeteranIdentifiers veteranIdentifiers;
 
   @NotNull
   @Valid
   @Schema(description = "Details of the Claim")
-  @JsonProperty("claimdetail")
   private ClaimDetail claimDetail;
 }

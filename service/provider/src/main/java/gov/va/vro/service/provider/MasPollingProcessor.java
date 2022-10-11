@@ -20,16 +20,17 @@ public class MasPollingProcessor implements Processor {
   @Override
   public void process(Exchange exchange) {
     var payload = exchange.getMessage().getBody(MasClaimDetailsPayload.class);
-    log.info("Checking collection status for collection {}.", payload.getCollectionsId());
+    log.info("Checking collection status for collection {}.", payload.getCollectionId());
     // call pcCheckCollectionStatus
-    boolean ready = checkCollectionStatus(payload.getCollectionsId());
+    boolean ready = checkCollectionStatus(payload.getCollectionId());
     if (ready) {
-      log.info("Collection {} is ready for processing.", payload.getCollectionsId());
+      log.info("Collection {} is ready for processing.", payload.getCollectionId());
       // call pcQueryCollectionAnnots
-      // execute unspecified business logic
+      // call Lighthouse
+      // Combine results and call PDF generation
       // if a decision is made, call pcOrderExam
     } else {
-      log.info("Collection {} is not ready. Requeueing...", payload.getCollectionsId());
+      log.info("Collection {} is not ready. Requeueing...", payload.getCollectionId());
       // re-request after some time
       camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingSubsequentDelay());
     }
