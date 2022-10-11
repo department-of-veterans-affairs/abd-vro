@@ -190,3 +190,35 @@ services:
     networks:
       - internal
 
+  vro-console:
+    image: va/abd_vro-console:latest
+    stdin_open: true
+    tty: true
+    environment:
+      POSTGRES_HOST: vro-api-postgres-service
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
+      POSTGRES_SCHEMA: claims
+      JAVA_PROFILE: "-Dspring.profiles.include=compose"
+      # TODO: move these RabbitMQ configurations into a reusable yaml block
+      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      VRO_NON_PROD: "$VRO_NON_PROD"
+#      DB_URL: jdbc:postgresql://vro-api-postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}
+#      # DB_USER: ${POSTGRES_ADMIN_USER}
+#      # DB_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+#      DB_SCHEMA: ${POSTGRES_SCHEMA}
+#      # DB_PLACEHOLDERS_USERNAME: ${POSTGRES_USER}
+#      DB_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
+#      DB_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
+#      # DB_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      vro-api-rabbit-mq-service:
+        condition: service_healthy
+    networks:
+      - internal
