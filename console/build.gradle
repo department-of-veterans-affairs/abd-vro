@@ -1,24 +1,22 @@
 plugins {
-    id 'io.gatling.gradle' version "${gatling_plugin_version}" apply false
-    id 'starter.std.java.application-conventions'
-//	id 'org.springframework.boot' version '2.7.4'
-//	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'starter.std.java.library-spring-conventions'
+	// Needed for bootRun task
+	id 'org.springframework.boot'
 	id 'groovy'
 }
 
 ext {
-//	set('springShellVersion', "2.1.2")
 //	set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
-//	implementation 'me.bazhenov.groovy-shell:groovy-shell-server:2.2.3'
+    implementation project(':domain')
+
 	implementation 'org.codehaus.groovy:groovy-groovysh'
 //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.19.0'
+	implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 	implementation 'org.codehaus.groovy:groovy'
-// Prevent Spring Shell from starting	implementation 'org.springframework.shell:spring-shell-starter'
 
 //	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -27,13 +25,12 @@ dependencies {
 
 //dependencyManagement {
 //	imports {
-//		mavenBom "org.springframework.shell:spring-shell-dependencies:${springShellVersion}"
 //		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
 //	}
 //}
 
 bootRun {
-	//	needed when using `g bootRun`
+	// Needed when running task `bootRun`
     standardInput = System.in
 }
 tasks.named('test') {
