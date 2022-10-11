@@ -50,7 +50,6 @@ dependencies {
 
     // This version is compatible with current spring version: 5.3.8
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-    testImplementation "org.slf4j:slf4j-simple:2.0.3"
 
     docker project(':db-init')
 }
