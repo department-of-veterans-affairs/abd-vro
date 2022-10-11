@@ -1,8 +1,7 @@
-package gov.va.vro.api.model.mas;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,13 +20,11 @@ public class VeteranIdentifiers {
   private String ssn;
 
   @NotBlank(message = "Veteran File ID is required")
-  @JsonProperty("veteranfileid")
   private String veteranFileId;
 
   @NotBlank(message = "EDIPN is required")
   private String edipn;
 
   @NotBlank(message = "Participant ID is required")
-  @JsonProperty("participantid")
   private String participantId;
 }

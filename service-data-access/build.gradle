@@ -33,7 +33,7 @@ sourceSets {
 dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
     implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
-    implementation 'org.springframework.boot:spring-boot-starter-amqp:2.7.4'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework:spring-web:5.3.23'
     implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.2'
     implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.1.2') {
