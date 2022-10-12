@@ -24,13 +24,13 @@ plugins {
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
 
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
-    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
     id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
     id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
     id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
+    id 'nebula.lint' version '17.7.0' apply false
     id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
     id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
     id("starter.java.build-utils-property-conventions") version "${starter_boot_version}"
@@ -40,6 +40,58 @@ plugins {
     id("starter.java.versions-conventions") version "${starter_boot_version}"
     id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
     id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
+    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
+}
+
+allprojects {
+    apply plugin: 'nebula.lint'
+    gradleLint {
+        alwaysRun = false
+        reportFormat = 'text'
+        // https://github.com/nebula-plugins/gradle-lint-plugin/wiki
+        rules = [ 'unused-dependency' ]
+        // criticalRules will fail the build in the event of a violation
+        criticalRules = [
+                        'minimum-dependency-version',
+                        'overridden-dependency-version',
+                        'unused-exclude-by-dep',
+                        'unused-exclude-by-conf',
+                        'dependency-parentheses',
+                        'duplicate-dependency-class',
+                        'archaic-wrapper',
+                        'all-nebula-renames'
+                        ]
+    }
+
+    afterEvaluate {
+        // Workaround for gradleLint failure
+        // https://github.com/nebula-plugins/gradle-lint-plugin/issues/336#issuecomment-844989277
+        // https://github.com/gradle/gradle/issues/6854
+        configurations.all {
+            if (name.startsWith("incrementalScalaAnalysis")) {
+                extendsFrom = []
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: 'starter.java.config-conventions'
+    dependencies {
+        annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+        checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+
+        // constrain starter-bom transitive dependencies to use versions without vulnerabilities
+        constraints {
+            implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+            implementation "org.springframework:spring-webmvc:${spring_framework_version}"
+            implementation "org.springframework:spring-beans:${spring_framework_version}"
+            implementation "io.github.classgraph:classgraph:${class_graph_version}"
+            implementation "com.squareup.okhttp3:okhttp:4.10.0"
+            implementation "org.yaml:snakeyaml:1.33"
+        }
+    }
 }
 
 ext {
@@ -61,6 +113,27 @@ ext {
                      ':db-init']
 }
 
+
+scmVersion {
+    // never connect to remote
+    localOnly = true
+    useHighestVersion = true
+
+    hooks {
+        pre("fileUpdate", [file: "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
+                           pattern: {v,p -> /version = "v.*"/},
+                           replacement: {v, p -> "version = \"v$v\""}])
+        pre("fileUpdate", [file: "helmchart/Chart.yaml",
+                           pattern: {v,p -> /appVersion: .*/},
+                           replacement: {v, p -> "appVersion: $v"}])
+        pre("commit")
+    }
+}
+
+allprojects {
+    // https://axion-release-plugin.readthedocs.io/en/latest/configuration/basic_usage
+    project.version = scmVersion.version
+}
 
 // Support pre-commit hooks, need spotlessCheck and spotlessApply
 def spotlessCheck = tasks.register('spotlessCheck') {
