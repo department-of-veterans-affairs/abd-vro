@@ -3,6 +3,7 @@ package gov.va.vro.service.provider.camel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.rabbitmq.client.ConnectionFactory;
+import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CamelConfiguration {
   private final MessageQueueProperties messageQueueProps;
 
   private static final Set<Class> dtoClasses =
-      Sets.newHashSet(Claim.class, GeneratePdfPayload.class);
+      Sets.newHashSet(Claim.class, GeneratePdfPayload.class, MasClaimDetailsPayload.class);
   private final ObjectMapper mapper;
 
   @Bean
