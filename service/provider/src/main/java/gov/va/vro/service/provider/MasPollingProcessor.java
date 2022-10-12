@@ -32,10 +32,16 @@ public class MasPollingProcessor implements Processor {
       boolean ready = checkCollectionStatus(payload.getCollectionId());
       if (ready) {
         log.info("Collection {} is ready for processing.", payload.getCollectionId());
-        // call pcQueryCollectionAnnots
-        // call Lighthouse
-        // Combine results and call PDF generation
-        // if a decision is made, call pcOrderExam
+        // TODO:
+        // 1. call pcQueryCollectionAnnots
+        // 2. call Lighthouse
+        // 3. evaluate pcQueryCollectionAnnots and lighthouse result
+        //    boolean isEvidenceFound = evaluateMedicalEvidence(MasCollectionAnnotations, LightHousePatientMedicalInfo);
+        //    if (!isEvidenceFound) {
+        //         call masService.orderExam(payload.getCollectionId());
+        //         update queue to wait for order status.
+        //    } else { do step 4.}
+        // 4. Combine results and call PDF generation
       } else {
         log.info("Collection {} is not ready. Requeueing...", payload.getCollectionId());
         // re-request after some time
