@@ -3,6 +3,7 @@ package gov.va.vro.controller;
 import gov.va.vro.api.resources.MasResource;
 import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.model.mas.MasOrderingStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasDelays;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,17 @@ public class MasController implements MasResource {
       MasClaimDetailsPayload payload) {
     log.info("Received MAS request with collection ID {}", payload.getCollectionId());
     camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingInitialDelay());
+    MasClaimResponse response =
+        MasClaimResponse.builder()
+            .id(payload.getCollectionId())
+            .message("Message Received")
+            .build();
+    return ResponseEntity.ok(response);
+  }
+
+  @Override
+  public ResponseEntity<MasClaimResponse> examOrderingStatus(MasOrderingStatusPayload payload) {
+    // TODO: call route
     MasClaimResponse response =
         MasClaimResponse.builder()
             .id(payload.getCollectionId())

@@ -2,6 +2,7 @@ package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.model.mas.MasOrderingStatusPayload;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,4 +62,36 @@ public interface MasResource {
           @Valid
           @RequestBody
           MasClaimDetailsPayload request);
+
+  @Operation(
+      summary = "MAS Exam Ordering Status",
+      description = "Request Ordering Status for an exam")
+  @PostMapping("/examOrderingStatus")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Data Access Server Error",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "No evidence found",
+            content = @Content(mediaType = "application/json"))
+      })
+  @Timed(value = "exam-ordering-status")
+  @Tag(name = "MAS Exam Ordering Status")
+  ResponseEntity<MasClaimResponse> examOrderingStatus(
+      @Parameter(
+              description = "Request Exam ordering status",
+              required = true,
+              schema = @Schema(implementation = MasOrderingStatusPayload.class))
+          @Valid
+          @RequestBody
+          MasOrderingStatusPayload payload);
 }

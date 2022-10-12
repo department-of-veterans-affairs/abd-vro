@@ -34,7 +34,7 @@ public class MasClaimDetailsPayload {
   @Schema(description = "Veteran Gender")
   private String gender;
 
-  @NotBlank(message = "Collection ID empty")
+  @NotBlank(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
   private String collectionId;
 
