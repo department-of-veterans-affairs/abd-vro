@@ -1,20 +1,20 @@
 {
   "dob": "2002-12-12",
-  "firstname": "Rick",
-  "lastname": "Smith",
+  "firstName": "Rick",
+  "lastName": "Smith",
   "gender": null,
-  "collectionsid": "123",
-  "veteranidentifiers": {
+  "collectionId": "123",
+  "veteranIdentifiers": {
     "icn": "X",
     "ssn": "X",
-    "veteranfileid": "X",
+    "veteranFileId": "X",
     "edipn": "X",
-    "participantid": "X"
+    "participantId": "X"
   },
-  "claimdetail": {
-    "claimsubmissionsource": "VA.GOV",
+  "claimDetail": {
+    "claimSubmissionSource": "VA.GOV",
     "conditions": {
-      "diagnosticcode": "1233"
+      "diagnosticCode": "1233"
     }
   }
 }
