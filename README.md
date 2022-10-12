@@ -58,7 +58,7 @@ Before you run this application locally, you will need to make sure you have all
 - [spectral][12]
 - [shellcheck][9]
 
-> Use the [Mac OS Guide][4] to make sure you have all the above dependencies available in your local environment. No need to clone the starterkit repo, use `./scripts/mac-dev-tools.sh` included here.
+> Use the [Mac OS Guide][4] to make sure you have all the above dependencies available in your local environment. No need to clone the starterkit repo, use `./scripts/mac-dev-tools.sh` included in this repo.
 > Otherwise, refer to the [Other Operating Systems Guide][5].
 
 You will also need to have a GitHub personal access token with the `read:packages` permission exported in your local shell.
