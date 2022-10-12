@@ -60,6 +60,7 @@ class VroConsoleShell {
 
 	def createGroovysh(Binding binding = null){
 		IO io = new IO(System.in, System.out, System.err);
+		io.setVerbosity(IO.Verbosity.DEBUG)
 
 		// workaround so that `java -jar ...` works
         Preferences.put(PackageHelper.IMPORT_COMPLETION_PREFERENCE_KEY, "true")
