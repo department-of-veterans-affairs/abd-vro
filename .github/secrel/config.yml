@@ -34,9 +34,6 @@ images:
 - name: vro-service-assessclaimdc7101
   context: "./service-python/assessclaimdc7101/src"
   path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
-- name: vro-service-assessclaimdc6510
-  context: "./service-python/assessclaimdc6510/src"
-  path: "./service-python/assessclaimdc6510/src/docker/Dockerfile"
 - name: vro-service-assessclaimdc6602
   context: "./service-python/assessclaimdc6602/src"
   path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
