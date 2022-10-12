@@ -59,7 +59,7 @@ if __name__ == "__main__":
     start_timer = None
     current_timer = None
 
-    while(True):
+    while True:
         consumer = None
         try:
             consumer = RabbitMQConsumer(CONSUMER_CONFIG)
