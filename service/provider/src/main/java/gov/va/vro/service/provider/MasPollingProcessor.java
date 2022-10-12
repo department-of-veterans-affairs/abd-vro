@@ -36,7 +36,8 @@ public class MasPollingProcessor implements Processor {
         // 1. call pcQueryCollectionAnnots
         // 2. call Lighthouse
         // 3. evaluate pcQueryCollectionAnnots and lighthouse result
-        //    boolean isEvidenceFound = evaluateMedicalEvidence(MasCollectionAnnotations, LightHousePatientMedicalInfo);
+        //    boolean isEvidenceFound = evaluateMedicalEvidence(MasCollectionAnnotations,
+        // LightHousePatientMedicalInfo);
         //    if (!isEvidenceFound) {
         //         call masService.orderExam(payload.getCollectionId());
         //         update queue to wait for order status.
