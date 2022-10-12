@@ -1,0 +1,26 @@
+[
+  {
+    "vtrnFileId": 1,
+    "creationDate": "string",
+    "documents": [
+      {
+        "efolderversionrefid": 1,
+        "condition": "string",
+        "annotations": [
+          {
+            "annotType": "string",
+            "pageNum": "string",
+            "annotName": "string",
+            "annotVal": "string",
+            "spellCheckVal": "string",
+            "observationDate": "string",
+            "start": 1,
+            "end": 1,
+            "acdPrefName": "string",
+            "relevant": true
+          }
+        ]
+      }
+    ]
+  }
+]

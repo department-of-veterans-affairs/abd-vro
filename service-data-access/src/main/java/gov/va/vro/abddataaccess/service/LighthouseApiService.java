@@ -2,7 +2,7 @@ package gov.va.vro.abddataaccess.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
-import gov.va.vro.abddataaccess.exception.AbdException;
+import gov.va.vro.abddataaccess.exception.LightHouseException;
 import gov.va.vro.abddataaccess.model.LighthouseTokenMessage;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,11 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Security;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
@@ -67,9 +63,9 @@ public class LighthouseApiService {
    * @param domain the domain data to be retrieved from the Lighthouse FHIR API.
    * @param patientIcn the patient ICN.
    * @return a token.
-   * @throws AbdException when error occurs.
+   * @throws LightHouseException when error occurs.
    */
-  public String getLighthouseToken(AbdDomain domain, String patientIcn) throws AbdException {
+  public String getLighthouseToken(AbdDomain domain, String patientIcn) throws LightHouseException {
     String scope = domain.getScope();
     LighthouseTokenMessage tokenMessage = getToken(patientIcn, scope);
     return "Bearer " + tokenMessage.getAccessToken();
@@ -86,7 +82,7 @@ public class LighthouseApiService {
     return Base64.getEncoder().encodeToString(patientString.getBytes());
   }
 
-  private String getCcgAssertion(String assertionUrl, String clientId) throws AbdException {
+  private String getCcgAssertion(String assertionUrl, String clientId) throws LightHouseException {
     try {
       InputStream inputStream = new ByteArrayInputStream(lhProps.getPemkey().getBytes());
       final PemReader pemReader = new PemReader(new InputStreamReader(inputStream));
@@ -116,14 +112,15 @@ public class LighthouseApiService {
         | NoSuchProviderException
         | InvalidKeySpecException e) {
       log.error("Failed to create assertion for VA Lighthouse API. {}", e.getMessage(), e);
-      throw new AbdException("Failed to create signing key for VA Lighthouse API.", e);
+      throw new LightHouseException("Failed to create signing key for VA Lighthouse API.", e);
     } catch (NullPointerException e) {
       log.error("Failed to find a valid key for VA Lighthouse API. {}", e.getMessage(), e);
-      throw new AbdException("Cannot find a valid key for Lighthouse access.", e);
+      throw new LightHouseException("Cannot find a valid key for Lighthouse access.", e);
     }
   }
 
-  private LighthouseTokenMessage getToken(String patientIcn, String scope) throws AbdException {
+  private LighthouseTokenMessage getToken(String patientIcn, String scope)
+      throws LightHouseException {
     String assertion = getCcgAssertion(lhProps.getAssertionurl(), lhProps.getClientId());
     String result = getToken(assertion, patientIcn, scope);
     ObjectMapper mapper = new ObjectMapper();
@@ -131,16 +128,17 @@ public class LighthouseApiService {
       return mapper.readValue(result, LighthouseTokenMessage.class);
     } catch (IOException e) {
       log.error("Failed to parse lighthouse token message.", e);
-      throw new AbdException("Failed to parse lighthouse token message.", e);
+      throw new LightHouseException("Failed to parse lighthouse token message.", e);
     }
   }
 
-  private String getToken(String assertion, String patientIcn, String scope) throws AbdException {
+  private String getToken(String assertion, String patientIcn, String scope)
+      throws LightHouseException {
     return getToken(lhProps.getTokenurl(), assertion, patientIcn, scope);
   }
 
   private String getToken(String tokenUtl, String assertion, String patientIcn, String scope)
-      throws AbdException {
+      throws LightHouseException {
     log.info("get httpEntity for token. tokenurl={}\n, scope={}", tokenUtl, scope);
     HttpEntity<MultiValueMap<String, String>> httpEntity =
         getLighthouseTokenRequestEntity(assertion, patientIcn, scope);
@@ -151,7 +149,7 @@ public class LighthouseApiService {
       return tokenResp.getBody();
     } catch (RestClientException e) {
       log.error("Failed to get Lighthouse token.", e);
-      throw new AbdException("Failed to get Lighthouse token.", e);
+      throw new LightHouseException("Failed to get Lighthouse token.", e);
     }
   }
 
