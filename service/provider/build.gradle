@@ -21,6 +21,7 @@ dependencies {
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
     implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
     implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+    implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     // Needed?
     // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
@@ -33,4 +34,6 @@ dependencies {
     // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
     // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
     runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation project(':domain')
+
 }
