@@ -98,11 +98,6 @@ task integrationTest(type: Test) {
     }
 }
 
-docker {
-    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
-}
-
 bootJar {
     manifest {
         attributes(

@@ -102,10 +102,13 @@ subprojects {
             }
             if (tasks.findByName('bootJar')) {
                 docker {
-                    // files needed by Dockerfile
-                    files "build/libs/${bootJar.archiveFileName.get()}"
-                    // ARGs used by Dockerfile
-                    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+                    // Typical files needed by Dockerfile
+                    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+
+                    // Typical ARGs used by Dockerfile
+                    if(buildArgs.isEmpty()) {
+                        buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
+                    }
                 }
             }
         }
