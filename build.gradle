@@ -92,6 +92,14 @@ subprojects {
             implementation "org.yaml:snakeyaml:1.33"
         }
     }
+
+    afterEvaluate {
+        if (tasks.findByName('docker')) {
+            docker {
+                noCache false
+            }
+        }
+    }
 }
 
 ext {
