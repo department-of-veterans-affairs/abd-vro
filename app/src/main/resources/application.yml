@@ -116,7 +116,7 @@ vro:
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-      description: APIs to improve benefit delivery services
+      description: This API provides functionality to improve benefit delivery to Veterans using health data.
       version: v1
       contact:
         name: D (Yoom) Lam
