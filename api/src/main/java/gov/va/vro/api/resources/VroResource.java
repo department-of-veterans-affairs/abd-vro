@@ -6,10 +6,8 @@ import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
-import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,44 +37,6 @@ import javax.validation.Valid;
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface VroResource {
-  @Operation(
-      summary = "Health data assessment",
-      description = "Provides health data assessment for the claim")
-  @PostMapping("/health-data-assessment")
-  @ResponseStatus(HttpStatus.CREATED)
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No evidence found",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    examples =
-                        @ExampleObject(
-                            value = "{claimSubmissionId: 1234, message = No evidence found}")))
-      })
-  @Timed(value = "health-data-assessment")
-  @Tag(name = "Health Assessment")
-  ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
-      @Parameter(
-              description = "Claim for which health data assessment requested",
-              required = true,
-              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
-          @Valid
-          @RequestBody
-          HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException;
-
   @Operation(
       summary = "Evidence pdf generation launch",
       description =
@@ -170,30 +130,6 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException;
-
-  @Operation(
-      summary = "Gets all claims stored in vro database.",
-      description =
-          "Retrieves all claims from vro db and displays claimSubmissionId,"
-              + " veteran ICN, and contention diagnostic codes.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Fetch Claims Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @GetMapping("/fetch-claims")
-  @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "fetch-claims")
-  @Tag(name = "Claim Metrics")
-  ResponseEntity<FetchClaimsResponse> fetchClaims()
       throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
