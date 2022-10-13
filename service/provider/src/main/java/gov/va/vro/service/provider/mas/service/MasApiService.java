@@ -45,7 +45,7 @@ public class MasApiService {
       HttpEntity<String> httpEntity = new HttpEntity<>(headers);
       String url = MAS_URL + COLLECTION_STATUS;
       UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(new URI(url));
-      uriBuilder.queryParam("Collection Identifiers", collectionIds);
+      uriBuilder.queryParam("collectionIds", collectionIds);
       log.info("Call {} to get MAS collection status.", uriBuilder.toUriString());
       ResponseEntity<String> status =
           restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, httpEntity, String.class);
