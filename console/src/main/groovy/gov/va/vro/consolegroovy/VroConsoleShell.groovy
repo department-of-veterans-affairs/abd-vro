@@ -41,16 +41,15 @@ class VroConsoleShell {
 		def userDir = System.getProperty("user.dir")
 		System.out.println("Working Directory = " + userDir);
 
-		def shell=createGroovysh(getBindings())
+		def shell=createGroovysh(getBinding())
 		shell.register(new PrintJson(shell, objectMapper))
 
 		shell.run("");
 		println 'Exiting'
 	}
 
-	def getBindings(){
+	def getBinding(){
 		new Binding([
-			shell: this,
 			claimsT: claimRepository,
 			vetT: veteranRepository,
 			camel: camelContext,

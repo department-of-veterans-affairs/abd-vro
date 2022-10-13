@@ -26,6 +26,9 @@ class PrintJson extends CommandSupport {
         log.debug "args: ${args}"
         args.collect({
             def varObj = variables.get(it)
+            // in case `it` is executable
+            if (varObj==null) varObj = shell.execute(it)
+
             if (varObj==null) return "null"
 
             ObjectWriter writer = writerForObjectMemoized(varObj)
