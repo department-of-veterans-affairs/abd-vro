@@ -71,6 +71,10 @@ tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar)
 }
 
+docker {
+    noCache false
+}
+
 bootJar {
     manifest {
         attributes(
