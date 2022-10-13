@@ -14,7 +14,7 @@ def on_request_callback(channel, method, properties, body):
 
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
-    logging.info(f" [x] {binding_key}: Received message: {properties.correlation_id}")
+    logging.info(f" [x] {binding_key}: Received message.")
 
     try:
         response = main.assess_hypertension(message)
@@ -28,7 +28,7 @@ def on_request_callback(channel, method, properties, body):
         properties=pika.BasicProperties(correlation_id=properties.correlation_id),
         body=json.dumps(response),
     )
-    logging.info(f" [x] {binding_key}: Message sent to: {properties.reply_to}")
+    logging.info(f" [x] {binding_key}: Message sent.")
 
 
 def queue_setup(channel):
@@ -39,7 +39,7 @@ def queue_setup(channel):
     channel.queue_declare(queue=SERVICE_QUEUE)
     channel.queue_bind(queue=SERVICE_QUEUE, exchange=EXCHANGE)
 
-    channel.basic_qos(prefetch_count=1)
+    channel.basic_qos(prefetch_count=250)
     channel.basic_consume(
         queue=SERVICE_QUEUE, on_message_callback=on_request_callback, auto_ack=True
     )

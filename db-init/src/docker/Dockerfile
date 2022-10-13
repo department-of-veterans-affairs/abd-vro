@@ -1,10 +1,13 @@
-FROM flyway/flyway:9.2.3
+FROM flyway/flyway:9.3.1-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
+
+RUN apk update && apk --no-cache add expat=2.4.9-r0
+
 COPY database /flyway/sql
 COPY flyway.conf /flyway/conf
+
 HEALTHCHECK NONE
 
-RUN useradd --no-create-home docker
+RUN adduser --no-create-home --disabled-password docker
 USER docker
-
 CMD [ "migrate", "-X" ]

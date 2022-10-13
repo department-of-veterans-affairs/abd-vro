@@ -27,6 +27,8 @@ spec:
         - name: pg-isready
           image: postgres
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: POSTGRES_ADMIN_USER
               valueFrom:
                 secretKeyRef:
@@ -52,6 +54,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
           imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: FLYWAY_URL
               valueFrom:
                 secretKeyRef:
@@ -111,6 +115,8 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: apiAuthKey01
               valueFrom:
                 secretKeyRef:
@@ -148,6 +154,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.schemaKey }}
+            - name: VRO_NON_PROD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret }}
+                  key: {{ .Values.api.vroNonProdKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
@@ -167,6 +178,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -190,6 +203,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -213,6 +228,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
           imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -243,6 +260,8 @@ spec:
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceDataAccess.imageName }}:{{ .Values.images.serviceDataAccess.tag }}
           imagePullPolicy: {{ .Values.images.serviceDataAccess.imagePullPolicy }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME

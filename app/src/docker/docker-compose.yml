@@ -28,7 +28,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-    restart: on-failure:5
 
   vro-api-redis-service:
     image: redis
@@ -39,7 +38,6 @@ services:
       - internal
     ports:
       - "6379:6379"
-    restart: on-failure:5
     command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
   vro-api-postgres-service:
@@ -62,7 +60,6 @@ services:
       - external
     ports:
       - "5432:5432"
-    restart: on-failure:5
 
   db-init:
     image: va/abd_vro-db-init:latest
@@ -81,7 +78,6 @@ services:
       FLYWAY_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
       FLYWAY_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
       FLYWAY_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
-    restart: on-failure:5
 
   abd_vro:
     image: va/abd_vro-app:latest
@@ -96,11 +92,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
       POSTGRES_SCHEMA: claims
+      ENV: ${ENV}
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       # TODO: move these RabbitMQ configurations into a reusable yaml block
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      VRO_NON_PROD: "$VRO_NON_PROD"
     security_opt:
       - no-new-privileges:true
     depends_on:
@@ -114,11 +112,13 @@ services:
     networks:
       - internal
       - external
-    restart: on-failure:5
 
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     environment:
+      RABBITMQ_PORT: 5672
+      RABBITMQ_RETRY_LIMIT: 3
+      RABBITMQ_TIMEOUT: 10800
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
@@ -134,6 +134,9 @@ services:
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     environment:
+      RABBITMQ_PORT: 5672
+      RABBITMQ_RETRY_LIMIT: 3
+      RABBITMQ_TIMEOUT: 10800
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
@@ -144,11 +147,13 @@ services:
         condition: service_healthy
     networks:
       - internal
-    restart: on-failure:5
 
   pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     environment:
+      RABBITMQ_PORT: 5672
+      RABBITMQ_RETRY_LIMIT: 3
+      RABBITMQ_TIMEOUT: 10800
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
@@ -163,7 +168,6 @@ services:
         condition: service_healthy
     networks:
       - internal
-    restart: on-failure:5
 
   service-data-access:
     image: va/abd_vro-service-data-access:latest
@@ -183,4 +187,4 @@ services:
         condition: service_healthy
     networks:
       - internal
-    restart: on-failure:5
+

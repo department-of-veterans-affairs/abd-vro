@@ -24,6 +24,8 @@ jobs:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
   publish-image:
+    # only run this job in the abd-vro repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:

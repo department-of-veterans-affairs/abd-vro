@@ -3,6 +3,7 @@ import logging
 from unittest.mock import Mock, patch
 
 import pytest
+
 from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc7101.src.lib import queues as q7101
@@ -23,14 +24,14 @@ def test_queue_setup(queue, service_queue_name, caplog):
         durable=True,
         auto_delete=True,
     )
-    channel.queue_declare.assert_called_with(queue=service_queue_name)
+    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}")
     channel.queue_bind.assert_called_with(
-        queue=service_queue_name, exchange="health-assess-exchange"
+        queue=f"health-assess.{service_queue_name}", exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: {service_queue_name}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: health-assess.{service_queue_name}. To exit press CTRL+C"
         in caplog.text
     )
 
@@ -58,13 +59,12 @@ def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
             f"assessclaimdc{diagnosticCode}.src.lib.main.{main.__name__}",
             return_value=True,
         ):
-
             queue.on_request_callback(channel, method, properties, body_formatted)
 
     assert (
-        f" [x] {diagnosticCode}: Received message: {properties.correlation_id}"
+        f" [x] {diagnosticCode}: Received message."
         in caplog.text
     )
     assert (
-        f" [x] {diagnosticCode}: Message sent to: {properties.reply_to}" in caplog.text
+        f" [x] {diagnosticCode}: Message sent." in caplog.text
     )

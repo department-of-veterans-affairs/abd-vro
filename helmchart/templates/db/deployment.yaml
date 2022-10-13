@@ -17,6 +17,8 @@ spec:
         - name: postgres-db
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
           env:
+            - name: ENV
+              value: {{ .Values.environment }}
             - name: POSTGRES_SUPER_DB
               valueFrom:
                 secretKeyRef:
