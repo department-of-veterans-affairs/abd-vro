@@ -46,14 +46,10 @@ public interface MasResource {
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No evidence found",
-            content = @Content(mediaType = "application/json"))
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "mas-claim-request")
-  @Tag(name = "MAS Claim Request")
+  @Tag(name = "MAS Integration")
   ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       @Parameter(
               description = "Request for a MAS Claim",
@@ -78,14 +74,10 @@ public interface MasResource {
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No evidence found",
-            content = @Content(mediaType = "application/json"))
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "exam-ordering-status")
-  @Tag(name = "MAS Exam Ordering Status")
+  @Tag(name = "MAS Integration")
   ResponseEntity<MasClaimResponse> examOrderingStatus(
       @Parameter(
               description = "Request Exam ordering status",
