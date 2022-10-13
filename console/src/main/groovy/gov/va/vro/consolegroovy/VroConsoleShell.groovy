@@ -17,53 +17,53 @@ import org.springframework.stereotype.Service
 
 @Service
 class VroConsoleShell {
-	@Autowired
-	CamelContext camelContext;
+  @Autowired
+  CamelContext camelContext
 
-	@Autowired
-	ObjectMapper objectMapper;
+  @Autowired
+  ObjectMapper objectMapper
 
-	@Autowired
-	ProducerTemplate producerTemplate;
+  @Autowired
+  ProducerTemplate producerTemplate
 
-	@Autowired
-	ClaimRepository claimRepository;
+  @Autowired
+  ClaimRepository claimRepository
 
-	@Autowired
-	VeteranRepository veteranRepository
+  @Autowired
+  VeteranRepository veteranRepository
 
-	String submitSeda() {
-		return producerTemplate.requestBody("seda:foo", "Hello", String.class);
-	}
+  String submitSeda() {
+    return producerTemplate.requestBody("seda:foo", "Hello", String.class)
+  }
 
-	@EventListener(ApplicationReadyEvent.class)
-	void startShell() {
-		def userDir = System.getProperty("user.dir")
-		System.out.println("Working Directory = " + userDir);
+  @EventListener(ApplicationReadyEvent.class)
+  void startShell() {
+    def userDir = System.getProperty("user.dir")
+    System.out.println("Working Directory = " + userDir)
 
-		def shell=createGroovysh(getBinding())
-		shell.register(new PrintJson(shell, objectMapper))
+    def shell = createGroovysh(getBinding())
+    shell.register(new PrintJson(shell, objectMapper))
 
-		shell.run("");
-		println 'Exiting'
-	}
+    shell.run("")
+    println 'Exiting'
+  }
 
-	def getBinding(){
-		new Binding([
-			claimsT: claimRepository,
-			vetT: veteranRepository,
-			camel: camelContext,
-			pt: producerTemplate
-		])
-	}
+  def getBinding() {
+    new Binding([
+        claimsT: claimRepository,
+        vetT   : veteranRepository,
+        camel  : camelContext,
+        pt     : producerTemplate
+    ])
+  }
 
-	def createGroovysh(Binding binding = null){
-		IO io = new IO(System.in, System.out, System.err);
-		// io.setVerbosity(IO.Verbosity.DEBUG)
+  def createGroovysh(Binding binding = null) {
+    IO io = new IO(System.in, System.out, System.err)
+    // io.setVerbosity(IO.Verbosity.DEBUG)
 
-		// workaround so that `java -jar ...` works
-        Preferences.put(PackageHelper.IMPORT_COMPLETION_PREFERENCE_KEY, "true")
+    // workaround so that `java -jar ...` works
+    Preferences.put(PackageHelper.IMPORT_COMPLETION_PREFERENCE_KEY, "true")
 
-		new Groovysh(binding, io)
-	}
+    new Groovysh(binding, io)
+  }
 }

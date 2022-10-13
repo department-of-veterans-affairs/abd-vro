@@ -12,17 +12,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @Configuration
 @EnableJpaRepositories("gov.va.vro.persistence.repository")
 @EntityScan("gov.va.vro.persistence.model")
-//@EnableJpaRepositories("gov.va.vro.model")
-//@EntityScan("gov.va.vro.model")
 class VroConsoleConfig {
 
-    @Autowired
-    CamelContext camelContext;
+  @Autowired
+  CamelContext camelContext
 
-    @Bean
-    ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper;
-    }
+  @Bean
+  ObjectMapper objectMapper() {
+    ObjectMapper objectMapper = new ObjectMapper()
+    objectMapper.registerModule(new JavaTimeModule())
+    objectMapper
+  }
 }

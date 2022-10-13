@@ -13,68 +13,68 @@ import org.apache.groovy.groovysh.Groovysh
 //@CompileStatic
 class PrintJson extends CommandSupport {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper
 
-    protected PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
-        super(shell, 'printJson', 'pj')
-        // TODO: add Command description, usage, etc.
+  protected PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
+    super(shell, 'printJson', 'pj')
+    // TODO: add Command description, usage, etc.
 
-        this.objectMapper = objectMapper
+    this.objectMapper = objectMapper
+  }
+
+  Object execute(List args) {
+    log.debug "args: ${args}"
+    args.collect({
+      def varObj = variables.get(it)
+      // in case `it` is executable
+      if (varObj == null) varObj = shell.execute(it)
+
+      if (varObj == null) return "null"
+
+      ObjectWriter writer = writerForObjectMemoized(varObj)
+      writer.writeValueAsString(varObj)
+    }).join('\n')
+  }
+
+  def mapperForObject = {
+    switch (it) {
+      case ClaimEntity: return configureClaimJsonMapper(objectMapper)
+      case ContentionEntity: return configureContentionJsonMapper(objectMapper)
+      default: return configureDefaultJsonMapper(objectMapper)
     }
+  }
 
-    Object execute(List args) {
-        log.debug "args: ${args}"
-        args.collect({
-            def varObj = variables.get(it)
-            // in case `it` is executable
-            if (varObj==null) varObj = shell.execute(it)
+  def writerForObject = {
+    log.debug "Creating writer of object: ${it.class}"
+    mapperForObject(it).writerWithDefaultPrettyPrinter()
+  }
+  def writerForObjectMemoized = writerForObject.memoize()
 
-            if (varObj==null) return "null"
+  def configureDefaultJsonMapper(ObjectMapper mapper) {
+    // ignore certain fields to prevent recursion
+    mapper.addMixIn(AssessmentResultEntity, IgnoreFieldContentionMixin)
+    mapper.addMixIn(EvidenceSummaryDocumentEntity, IgnoreFieldContentionMixin)
+    mapper
+  }
 
-            ObjectWriter writer = writerForObjectMemoized(varObj)
-            writer.writeValueAsString(varObj)
-        }).join('\n')
-    }
+  def configureClaimJsonMapper(ObjectMapper mapper) {
+    // ignore certain fields to prevent recursion
+    mapper.addMixIn(ContentionEntity, IgnoreFieldClaimMixin)
+    configureDefaultJsonMapper(mapper)
+  }
 
-    def mapperForObject = {
-        switch(it){
-            case ClaimEntity: return configureClaimJsonMapper(objectMapper)
-            case ContentionEntity: return configureContentionJsonMapper(objectMapper)
-            default: return configureDefaultJsonMapper(objectMapper)
-        }
-    }
+  def configureContentionJsonMapper(ObjectMapper mapper) {
+    // ignore certain fields to prevent recursion
+    mapper.addMixIn(ClaimEntity, IgnoreFieldContentionsMixin)
+    configureDefaultJsonMapper(mapper)
+  }
 
-    def writerForObject = {
-        log.debug "Creating writer of object: ${it.class}"
-        mapperForObject(it).writerWithDefaultPrettyPrinter()
-    }
-    def writerForObjectMemoized = writerForObject.memoize()
+  @JsonIgnoreProperties(['claim'])
+  static class IgnoreFieldClaimMixin {}
 
-    def configureDefaultJsonMapper(ObjectMapper mapper){
-        // ignore certain fields to prevent recursion
-        mapper.addMixIn(AssessmentResultEntity, IgnoreFieldContentionMixin);
-        mapper.addMixIn(EvidenceSummaryDocumentEntity, IgnoreFieldContentionMixin);
-        mapper
-    }
+  @JsonIgnoreProperties(['contention'])
+  static class IgnoreFieldContentionMixin {}
 
-    def configureClaimJsonMapper(ObjectMapper mapper){
-        // ignore certain fields to prevent recursion
-        mapper.addMixIn(ContentionEntity, IgnoreFieldClaimMixin);
-        configureDefaultJsonMapper(mapper)
-    }
-
-    def configureContentionJsonMapper(ObjectMapper mapper){
-        // ignore certain fields to prevent recursion
-        mapper.addMixIn(ClaimEntity, IgnoreFieldContentionsMixin);
-        configureDefaultJsonMapper(mapper)
-    }
-
-    @JsonIgnoreProperties(['claim'])
-    static class IgnoreFieldClaimMixin { }
-
-    @JsonIgnoreProperties(['contention'])
-    static class IgnoreFieldContentionMixin { }
-
-    @JsonIgnoreProperties(['contentions'])
-    static class IgnoreFieldContentionsMixin { }
+  @JsonIgnoreProperties(['contentions'])
+  static class IgnoreFieldContentionsMixin {}
 }
