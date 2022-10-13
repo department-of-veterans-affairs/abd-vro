@@ -193,6 +193,7 @@ services:
 
   vro-console:
     image: va/abd_vro-console:latest
+    profiles: ["debug"]
     stdin_open: true
     tty: true
     environment:
@@ -203,7 +204,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
       POSTGRES_SCHEMA: claims
-      JAVA_PROFILE: "-Dspring.profiles.include=compose"
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
@@ -211,6 +211,8 @@ services:
     security_opt:
       - no-new-privileges:true
     depends_on:
+      vro-api-postgres-service:
+        condition: service_started
       vro-api-rabbit-mq-service:
         condition: service_healthy
     networks:
