@@ -103,7 +103,8 @@ from assessclaimdc6510.src.lib import main
                                                 "dilation); sphenoid "
                                                 "sinus ostium",
                                         "code": "31297",
-                                        "status": "completed"}
+                                        "status": "completed",
+                                        "performedDate": "2010-2-22"}
                                        ]
                     },
                     "date_of_claim": "2021-11-09",
@@ -128,7 +129,9 @@ from assessclaimdc6510.src.lib import main
                         "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
                                                 "dilation); sphenoid sinus ostium",
                                         "code": "31297",
-                                        "status": "completed"}]
+                                        "status": "completed",
+                                        "performedDate": "2010-2-22"},
+                                       ]
                     },
                     "evidenceSummary": {"relevantConditionsCount": 2,
                                         "relevantMedCount": 0,

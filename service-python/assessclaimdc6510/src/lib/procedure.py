@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .codesets import procedure_codesets
 
 
@@ -11,6 +13,7 @@ def procedures_calculation(request_body):
     """
     response = {}
     relevant_procedures = []
+    radical_surgery_procedure = []
 
     veterans_procedures = request_body["evidence"]["procedures"]
     procedures_count = len(veterans_procedures)
@@ -19,6 +22,17 @@ def procedures_calculation(request_body):
             procedure_code = procedure["code"]
             if procedure_code in procedure_codesets.surgery:
                 relevant_procedures.append(procedure)
+            elif procedure_code in procedure_codesets.radical_surgery:
+                radical_surgery_procedure.append(procedure)
+                relevant_procedures.append(procedure)
+
+    # sort by date
+        relevant_procedures = sorted(
+            relevant_procedures,
+            key=lambda i: datetime.strptime(i["performedDate"], "%Y-%m-%d").date(),
+            reverse=True,
+        )
+    # put radical surgery first
 
     response["procedures"] = relevant_procedures
     response["relevantProceduresCount"] = len(relevant_procedures)

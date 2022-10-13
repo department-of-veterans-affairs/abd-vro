@@ -11,7 +11,7 @@ RUN apk update && apk --no-cache add expat=2.4.9-r0
 RUN adduser --disabled-password docker
 USER docker
 
-WORKDIR /home/docker
+WORKDIR /home/docker/
 
 COPY --chown=docker:docker . /home/docker/
 

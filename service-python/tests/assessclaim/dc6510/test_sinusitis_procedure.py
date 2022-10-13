@@ -13,7 +13,12 @@ from assessclaimdc6510.src.lib import procedure
                             {"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon dilation); sphenoid "
                                      "sinus ostium",
                              "code": "31297",
-                             "status": "completed"}
+                             "status": "completed",
+                             "performedDate": "2010-03-22"},
+                            {"text": "Anesthesia for procedures on nose and accessory sinuses; radical surgery",
+                             "code": "00162",
+                             "status": "completed",
+                             "performedDate": "2010-2-22"}
                         ],
                         "date_of_claim": "2021-11-09",
                     }
@@ -23,10 +28,15 @@ from assessclaimdc6510.src.lib import procedure
                         {"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon dilation); sphenoid "
                                  "sinus ostium",
                          "code": "31297",
-                         "status": "completed"}
+                         "status": "completed",
+                         "performedDate": "2010-03-22"},
+                        {"text": "Anesthesia for procedures on nose and accessory sinuses; radical surgery",
+                         "code": "00162",
+                         "status": "completed",
+                         "performedDate": "2010-2-22"}
                     ],
-                    "relevantProceduresCount": 1,
-                    "totalProceduresCount": 1,
+                    "relevantProceduresCount": 2,
+                    "totalProceduresCount": 2,
                 },
         ),
         (
@@ -36,10 +46,12 @@ from assessclaimdc6510.src.lib import procedure
                             {"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon dilation); sphenoid "
                                      "sinus ostium",
                              "code": "31297",
-                             "status": "completed"},
+                             "status": "completed",
+                             "performedDate": "2010-2-22"},
                             {"text": "Thoracoscopy, surgical; with partial pulmonary decortication",
                              "code": "32651",
-                             "status": "completed"}
+                             "status": "completed",
+                             "performedDate": "2010-2-22"}
                         ],
                         "date_of_claim": "2021-11-09",
                     }
@@ -49,7 +61,8 @@ from assessclaimdc6510.src.lib import procedure
                         {"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon dilation); sphenoid "
                                  "sinus ostium",
                          "code": "31297",
-                         "status": "completed"}
+                         "status": "completed",
+                         "performedDate": "2010-2-22"}
                     ],
                     "relevantProceduresCount": 1,
                     "totalProceduresCount": 2,
