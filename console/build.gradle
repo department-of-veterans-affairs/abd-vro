@@ -1,10 +1,10 @@
 plugins {
-    id 'starter.std.java.library-spring-conventions'
-	// Needed for bootRun task
-	id 'org.springframework.boot'
-	// Needed for tasks docker and dockerRun
-    id 'starter.java.container-conventions'
-	id 'groovy'
+  id 'starter.std.java.library-spring-conventions'
+  // Needed for bootRun task
+  id 'org.springframework.boot'
+  // Needed for tasks docker and dockerRun
+  id 'starter.java.container-conventions'
+  id 'groovy'
 }
 
 ext {
@@ -12,25 +12,25 @@ ext {
 }
 
 dependencies {
-	// To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
-	// in order to convert ClaimEntity.createdAt into JSON.
-    // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
-    // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-    runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+  // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+  // in order to convert ClaimEntity.createdAt into JSON.
+  // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
+  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 
-    implementation project(':domain')
-	implementation project(':persistence:model')
-	implementation project(':service:provider')
+  implementation project(':domain')
+  implementation project(':persistence:model')
+  implementation project(':service:provider')
 
-	implementation 'org.codehaus.groovy:groovy'
-	implementation 'org.codehaus.groovy:groovy-json'
-	implementation 'org.codehaus.groovy:groovy-groovysh'
-	implementation 'jline:jline:2.14.6' // Needed to add custom Groovysh commands
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.codehaus.groovy:groovy'
+  implementation 'org.codehaus.groovy:groovy-json'
+  implementation 'org.codehaus.groovy:groovy-groovysh'
+  implementation 'jline:jline:2.14.6' // Needed to add custom Groovysh commands
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
-    runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
 //	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -40,14 +40,14 @@ dependencies {
 }
 
 configurations {
-    integrationTestImplementation.extendsFrom implementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+  integrationTestImplementation.extendsFrom implementation
+  integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 docker {
-    files "src/docker/groovysh.rc"
+  files "src/docker/groovysh.rc"
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+  useJUnitPlatform()
 }
