@@ -10,4 +10,4 @@ COPY groovysh.rc .
 RUN adduser --disabled-password docker
 USER docker
 RUN mkdir "$HOME/.groovy" && ln -s /project/groovysh.rc "$HOME/.groovy/"
-CMD java -jar vro-console.jar
+CMD ["java", "-jar", "vro-console.jar"]
