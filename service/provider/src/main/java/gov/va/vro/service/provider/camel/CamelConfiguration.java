@@ -21,8 +21,8 @@ import java.util.Set;
 
 @Slf4j
 @Configuration
-@EnableJpaRepositories({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
-@EntityScan({"gov.va.vro.model", "gov.va.starter.example.persistence.model"})
+@EnableJpaRepositories({"gov.va.vro.model"})
+@EntityScan({"gov.va.vro.model"})
 @RequiredArgsConstructor
 public class CamelConfiguration {
   private final CamelContext camelContext;
