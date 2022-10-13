@@ -8,11 +8,9 @@ import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.DevResource;
 import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
-import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.services.ClaimMetricsService;
 import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +29,9 @@ import java.util.stream.Collectors;
 public class DevController implements DevResource {
 
   private final CamelEntrance camelEntrance;
-  private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
   private final FetchClaimsService fetchClaimsService;
-
-  private final ClaimMetricsService claimMetricsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 

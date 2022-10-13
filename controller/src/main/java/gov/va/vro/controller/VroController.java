@@ -18,7 +18,6 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
-import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +42,6 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
-
-  private final FetchClaimsService fetchClaimsService;
 
   private final ClaimMetricsService claimMetricsService;
 
