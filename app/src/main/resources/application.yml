@@ -79,6 +79,8 @@ log4j2:
 spring:
   application:
     name: "abd-vro"
+  profiles:
+    active: ${ENV:default}
   servlet:
     multipart:
       maxFileSize: 25MB
