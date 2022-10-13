@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,23 +49,26 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       String diagnosticCode)
       throws NoSuchFieldException {
     ClaimEntity claimEntity = claimRepository.findById(id).orElse(null);
-    if (claimEntity == null)
+    if (claimEntity == null) {
       throw new NoSuchFieldException("Could not match claim ID {" + id.toString() + "} in DB.");
-    AssessmentResult resp = new AssessmentResult();
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    Map<String, Object> evidence = new HashMap<>();
     try {
-      resp = new ObjectMapper().readValue(assessmentResult, AssessmentResult.class);
+      evidence = mapper.readValue(assessmentResult, Map.class);
     } catch (Exception e) {
-      log.error("Could not map evidenceSummary to AssessmentResult object" + e.getMessage());
+      log.error("Could not map assessmentResult");
+    }
+    Map summary = (Map) evidence.getOrDefault("evidenceSummary", null);
+    int count = 0;
+    if (summary != null) {
+      for (Object value : summary.values()) {
+        count += (Integer) value;
+      }
     }
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
-    try {
-      ObjectMapper om = new ObjectMapper();
-      Map<String, String> map = om.convertValue(resp.getEvidenceCountSummary(), Map.class);
-      assessmentResultEntity.setEvidenceCountSummary(map);
-      assessmentResultEntity.setEvidenceCount(resp.getEvidenceCountSummary().size());
-    } catch (Exception e) {
-      log.error("No evidence returned from full-health-assessment.");
-    }
+    assessmentResultEntity.setEvidenceCount(count);
+    assessmentResultEntity.setEvidenceCountSummary(summary);
     for (ContentionEntity contention : claimEntity.getContentions()) {
       if ((contention.getDiagnosticCode().equals(diagnosticCode))
           && (contention.getClaim().getId() == id)) {
@@ -80,6 +84,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         log.error(msg);
       }
     }
+    AssessmentResult resp = new AssessmentResult();
+    resp.setEvidenceSummary(assessmentResultEntity.getEvidenceCountSummary());
+    resp.setEvidenceCount(assessmentResultEntity.getEvidenceCount());
+    resp.setVeteranIcn(veteranIcn);
+    resp.setDiagnosticCode(diagnosticCode);
     return resp;
   }
 

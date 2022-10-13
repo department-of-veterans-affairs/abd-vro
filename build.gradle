@@ -81,6 +81,7 @@ subprojects {
     dependencies {
         annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
         checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+        implementation 'com.vladmihalcea:hibernate-types-52:2.19.2'
 
         // constrain starter-bom transitive dependencies to use versions without vulnerabilities
         constraints {

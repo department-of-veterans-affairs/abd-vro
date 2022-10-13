@@ -6,10 +6,8 @@ import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-
 import org.apache.camel.ExchangePattern;
-
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
@@ -69,6 +67,11 @@ public class PrimaryRoutes extends RouteBuilder {
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
+        .setProperty("id", simple("${body.recordId}"))
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("veteranIcn", simple("${body.veteranIcn}"))
+        .setProperty("claimSubmissionId", simple("${body.claimSubmissionId}"))
+        .setProperty("idType", simple("${body.idType}"))
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))

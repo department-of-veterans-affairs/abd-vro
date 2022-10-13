@@ -1,13 +1,13 @@
 package gov.va.vro.service.spi.model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Map;
-import javax.validation.constraints.Min;
 
 @Getter
 @Setter
@@ -15,14 +15,23 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 public class AssessmentResult {
 
-  // number of evidence data points found to support fast tracking the claim
-  @Min(0)
+  @Schema(description = "Veteran ICN")
+  @JsonInclude
+  private String veteranIcn;
+
+  @Schema(description = "Contention diagnostic code")
+  @JsonInclude
+  private String diagnosticCode;
+
+  @Schema(description = "Error message in the case of an error")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private String errorMessage;
+
+  @Schema(description = "Sum of evidence summary totals.")
+  @JsonInclude
   private int evidenceCount;
 
-  private Map<String, Object> evidenceCountSummary;
-
-  @JsonAnySetter
-  void setEvidenceCountSummary(String key, Object value) {
-    evidenceCountSummary.put(key, value);
-  }
+  @Schema(description = "Summary of evidence counts")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Map<String, String> evidenceSummary;
 }
