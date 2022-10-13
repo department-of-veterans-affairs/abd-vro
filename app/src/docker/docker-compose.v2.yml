@@ -7,7 +7,7 @@ networks:
 services:
   assess-claim-dc6510:
     image: va/abd_vro-assessclaimdc6510:latest
-    build: ../../../service-python/assessclaimdc6510/src/docker/.
+    build: ../../../service-python/assessclaimdc6510/src/.
     environment:
       RABBITMQ_PORT: 5672
       RABBITMQ_RETRY_LIMIT: 3
