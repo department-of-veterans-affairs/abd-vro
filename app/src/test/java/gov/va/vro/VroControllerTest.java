@@ -21,7 +21,6 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
-import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.builder.Builder;

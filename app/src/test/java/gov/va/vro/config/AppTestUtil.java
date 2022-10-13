@@ -6,6 +6,7 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 
+/** Common utility methods used by the app tests. */
 public class AppTestUtil {
   private final ObjectMapper mapper = new ObjectMapper();
 

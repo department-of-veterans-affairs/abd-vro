@@ -5,16 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
-import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.spi.model.Claim;
-import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
