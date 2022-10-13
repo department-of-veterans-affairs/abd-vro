@@ -44,24 +44,19 @@ configurations {
     integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
-//dependencyManagement {
-//	imports {
-//		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
-//	}
-//}
-
 docker {
-    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh", "src/docker/groovysh.rc"
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
-	noCache false
+    files "build/libs/${bootJar.archiveFileName.get()}", "src/docker/groovysh.rc"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
 }
 dockerRun {
 	arguments '--rm', '-it'
 }
+
 bootRun {
 	// Needed when running task `bootRun`
     standardInput = System.in
 }
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
