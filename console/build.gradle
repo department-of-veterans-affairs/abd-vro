@@ -47,14 +47,6 @@ configurations {
 docker {
     files "src/docker/groovysh.rc"
 }
-dockerRun {
-	arguments '--rm', '-it'
-}
-
-bootRun {
-	// Needed when running task `bootRun`
-    standardInput = System.in
-}
 
 tasks.named('test') {
 	useJUnitPlatform()
