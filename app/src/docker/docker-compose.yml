@@ -107,6 +107,7 @@ services:
       - vro-api-rabbit-mq-service
       - vro-api-redis-service
       - db-init
+# app should be able to start without the microservice containers
 #      - assess-claim-dc7101
 #      - assess-claim-dc6602
 #      - pdf-generator
