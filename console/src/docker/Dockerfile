@@ -1,6 +1,4 @@
 FROM eclipse-temurin:17-jre-alpine
-LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
-
 RUN apk update && apk --no-cache add expat=2.4.9-r0
 
 ARG JAR_FILE

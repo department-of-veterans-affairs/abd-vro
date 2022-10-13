@@ -45,8 +45,7 @@ configurations {
 }
 
 docker {
-    files "build/libs/${bootJar.archiveFileName.get()}", "src/docker/groovysh.rc"
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+    files "src/docker/groovysh.rc"
 }
 dockerRun {
 	arguments '--rm', '-it'

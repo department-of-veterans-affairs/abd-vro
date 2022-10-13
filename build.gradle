@@ -96,7 +96,17 @@ subprojects {
     afterEvaluate {
         if (tasks.findByName('docker')) {
             docker {
+                // Use cached image; only recreate if different
                 noCache false
+                labels(['org.opencontainers.image.source':'https://github.com/department-of-veterans-affairs/abd-vro'])
+            }
+            if (tasks.findByName('bootJar')) {
+                docker {
+                    // files needed by Dockerfile
+                    files "build/libs/${bootJar.archiveFileName.get()}"
+                    // ARGs used by Dockerfile
+                    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+                }
             }
         }
     }
