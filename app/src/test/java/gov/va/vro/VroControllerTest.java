@@ -12,11 +12,12 @@ import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.config.AppTestConfig;
+import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
@@ -42,17 +44,13 @@ import java.util.function.Function;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Import(AppTestConfig.class)
 @CamelSpringBootTest
 class VroControllerTest extends BaseControllerTest {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
-
-  @Autowired private ClaimRepository claimRepository;
+  @Autowired private AppTestUtil util;
 
   @Autowired protected CamelContext camelContext;
-
-  @EndpointInject("mock:claim-submit")
-  private MockEndpoint mockSubmitClaimEndpoint;
 
   @EndpointInject("mock:claim-submit-full")
   private MockEndpoint mockFullHealthEndpoint;
@@ -96,7 +94,7 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit-full"));
     // The mock endpoint returns a valid response
     mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, true)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -153,7 +151,7 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit-full"));
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
+        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -220,26 +218,9 @@ class VroControllerTest extends BaseControllerTest {
 
     mockFetchPdfEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.fromFunction(
-            (Function<Object, Object>) o -> toJsonString(fetchPdfResponse)));
+            (Function<Object, Object>) o -> util.toJsonString(fetchPdfResponse)));
 
     var response = get("/v1/evidence-pdf/1234", null, String.class);
     assertNotNull(response);
-  }
-
-  @SneakyThrows
-  private String toJsonString(Object o) {
-    return objectMapper.writeValueAsString(o);
-  }
-
-  @SneakyThrows
-  private String claimToResponse(Claim claim, boolean evidence) {
-    var response = new HealthDataAssessmentResponse();
-    response.setDiagnosticCode(claim.getDiagnosticCode());
-    response.setVeteranIcn(claim.getVeteranIcn());
-    response.setErrorMessage("I am not a real endpoint.");
-    if (evidence) {
-      response.setEvidence(new AbdEvidence());
-    }
-    return objectMapper.writeValueAsString(response);
   }
 }

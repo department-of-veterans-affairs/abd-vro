@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
@@ -21,9 +21,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,26 +33,12 @@ import java.util.Optional;
 @CamelSpringBootTest
 class DevControllerTest extends BaseControllerTest {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
-
-  @Autowired private ClaimRepository claimRepository;
+  @Autowired private AppTestUtil util;
 
   @Autowired protected CamelContext camelContext;
 
   @EndpointInject("mock:claim-submit")
   private MockEndpoint mockSubmitClaimEndpoint;
-
-  @EndpointInject("mock:claim-submit-full")
-  private MockEndpoint mockFullHealthEndpoint;
-
-  @EndpointInject("mock:generate-pdf")
-  private MockEndpoint mockGeneratePdfEndpoint;
-
-  @EndpointInject("mock:fetch-pdf")
-  private MockEndpoint mockFetchPdfEndpoint;
-
-  @Value("classpath:test-data/pdf-generator-input-01.json")
-  private Resource pdfGeneratorInput01;
 
   @Test
   @DirtiesContext
@@ -75,7 +59,7 @@ class DevControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit"));
     // The mock endpoint returns a valid response
     mockSubmitClaimEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, true)));
+        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, true)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -122,7 +106,7 @@ class DevControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit"));
 
     mockSubmitClaimEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> claimToResponse(claim, false)));
+        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -135,17 +119,5 @@ class DevControllerTest extends BaseControllerTest {
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
-  }
-
-  @SneakyThrows
-  private String claimToResponse(Claim claim, boolean evidence) {
-    var response = new HealthDataAssessmentResponse();
-    response.setDiagnosticCode(claim.getDiagnosticCode());
-    response.setVeteranIcn(claim.getVeteranIcn());
-    response.setErrorMessage("I am not a real endpoint.");
-    if (evidence) {
-      response.setEvidence(new AbdEvidence());
-    }
-    return objectMapper.writeValueAsString(response);
   }
 }
