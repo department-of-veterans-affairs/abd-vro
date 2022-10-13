@@ -7,10 +7,11 @@ import gov.va.vro.persistence.model.AssessmentResultEntity
 import gov.va.vro.persistence.model.ClaimEntity
 import gov.va.vro.persistence.model.ContentionEntity
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity
+import groovy.transform.CompileStatic
 import org.apache.groovy.groovysh.CommandSupport
 import org.apache.groovy.groovysh.Groovysh
 
-//@CompileStatic
+@CompileStatic
 class PrintJson extends CommandSupport {
 
   private final ObjectMapper objectMapper
@@ -22,10 +23,10 @@ class PrintJson extends CommandSupport {
     this.objectMapper = objectMapper
   }
 
-  Object execute(List args) {
+  Object execute(final List<String> args) {
     log.debug "args: ${args}"
-    args.collect({
-      def varObj = variables.get(it)
+    args.collect({ String it ->
+      Object varObj = variables.get(it)
       // in case `it` is executable
       if (varObj == null) varObj = shell.execute(it)
 
@@ -36,34 +37,32 @@ class PrintJson extends CommandSupport {
     }).join('\n')
   }
 
-  def mapperForObject = {
+  private Closure<ObjectMapper> mapperForObject = { Object it ->
     switch (it) {
       case ClaimEntity: return configureClaimJsonMapper(objectMapper)
       case ContentionEntity: return configureContentionJsonMapper(objectMapper)
       default: return configureDefaultJsonMapper(objectMapper)
     }
   }
-
-  def writerForObject = {
+  private Closure<ObjectWriter> writerForObjectMemoized = { Object it ->
     log.debug "Creating writer of object: ${it.class}"
-    mapperForObject(it).writerWithDefaultPrettyPrinter()
-  }
-  def writerForObjectMemoized = writerForObject.memoize()
+    return mapperForObject(it).writerWithDefaultPrettyPrinter()
+  }.memoize()
 
-  def configureDefaultJsonMapper(ObjectMapper mapper) {
+  ObjectMapper configureDefaultJsonMapper(ObjectMapper mapper) {
     // ignore certain fields to prevent recursion
     mapper.addMixIn(AssessmentResultEntity, IgnoreFieldContentionMixin)
     mapper.addMixIn(EvidenceSummaryDocumentEntity, IgnoreFieldContentionMixin)
     mapper
   }
 
-  def configureClaimJsonMapper(ObjectMapper mapper) {
+  ObjectMapper configureClaimJsonMapper(ObjectMapper mapper) {
     // ignore certain fields to prevent recursion
     mapper.addMixIn(ContentionEntity, IgnoreFieldClaimMixin)
     configureDefaultJsonMapper(mapper)
   }
 
-  def configureContentionJsonMapper(ObjectMapper mapper) {
+  ObjectMapper configureContentionJsonMapper(ObjectMapper mapper) {
     // ignore certain fields to prevent recursion
     mapper.addMixIn(ClaimEntity, IgnoreFieldContentionsMixin)
     configureDefaultJsonMapper(mapper)
