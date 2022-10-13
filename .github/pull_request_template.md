@@ -15,5 +15,5 @@ Associated tickets or Slack threads:
 - Step 2[^secrel]
 
 
-[^1]: [Pull-Requests guidelines](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Pull-Requests). If PR is significant, update [Current Software State](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Current-Software-State) and [Roadmap](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Roadmap) wiki pages
-[^secrel]: To check if a PR will succeed in the SecRel workflow, [test PRs in the SecRel pipeline](https://github.com/department-of-veterans-affairs/abd-vro-internal/wiki/Secure-Release-process#to-test-prs-in-the-secrel-pipeline)
+[^1]: [Pull-Requests guidelines](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Pull-Requests). If PR is significant, update [Current Software State](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Current-Software-State) wiki page.
+[^secrel]: To check if a PR will succeed in the SecRel workflow, [test PRs in the SecRel pipeline](https://github.com/department-of-veterans-affairs/abd-vro-internal/wiki/Secure-Release-process#to-test-prs-in-the-secrel-pipeline).
