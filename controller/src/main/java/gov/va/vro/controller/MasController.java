@@ -21,7 +21,7 @@ public class MasController implements MasResource {
 
   private final MasDelays masDelays;
 
-  /** Initiate MAS integration */
+  /** Initiate MAS integration. */
   @Override
   public ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
       MasClaimDetailsPayload payload) {
