@@ -19,10 +19,10 @@ def procedures_calculation(request_body):
     procedures_count = len(veterans_procedures)
     for procedure in veterans_procedures:
         if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
-            procedure_code = procedure["code"]
-            if procedure_code in procedure_codesets.surgery:
+            procedure_text = procedure["text"]
+            if procedure_text in procedure_codesets.surgery:
                 relevant_procedures.append(procedure)
-            elif procedure_code in procedure_codesets.radical_surgery:
+            elif procedure_text in procedure_codesets.radical_surgery:
                 radical_surgery_procedure.append(procedure)
                 relevant_procedures.append(procedure)
 
