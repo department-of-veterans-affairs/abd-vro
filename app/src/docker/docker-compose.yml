@@ -93,6 +93,7 @@ services:
       POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
       POSTGRES_SCHEMA: claims
       ENV: ${ENV}
+      # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       # TODO: move these RabbitMQ configurations into a reusable yaml block
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
@@ -106,9 +107,10 @@ services:
       - vro-api-rabbit-mq-service
       - vro-api-redis-service
       - db-init
-      - assess-claim-dc7101
-      - assess-claim-dc6602
-      - pdf-generator
+# app should be able to start without the microservice containers
+#      - assess-claim-dc7101
+#      - assess-claim-dc6602
+#      - pdf-generator
     networks:
       - internal
       - external
