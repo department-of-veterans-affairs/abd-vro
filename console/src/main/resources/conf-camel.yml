@@ -1,8 +1,8 @@
 # https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
 
-vro:
-  context_path: "/vro"
-  camel_rest_api.enable: true
+#vro:
+#  context_path: "/vro"
+#  camel_rest_api.enable: true
 
 # See https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-DisablingJMX
 # camel.springboot.jmx-enabled = false
