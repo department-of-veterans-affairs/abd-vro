@@ -50,17 +50,17 @@ class VroConsoleShell {
 
 	def getBindings(){
 		new Binding([
-			camel: camelContext,
-			pt: producerTemplate,
-			me: this,
+			shell: this,
 			claimsT: claimRepository,
-			vetT: veteranRepository
+			vetT: veteranRepository,
+			camel: camelContext,
+			pt: producerTemplate
 		])
 	}
 
 	def createGroovysh(Binding binding = null){
 		IO io = new IO(System.in, System.out, System.err);
-		io.setVerbosity(IO.Verbosity.DEBUG)
+		// io.setVerbosity(IO.Verbosity.DEBUG)
 
 		// workaround so that `java -jar ...` works
         Preferences.put(PackageHelper.IMPORT_COMPLETION_PREFERENCE_KEY, "true")

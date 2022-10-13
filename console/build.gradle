@@ -51,7 +51,7 @@ configurations {
 //}
 
 docker {
-    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh", "src/docker/groovysh.rc"
     buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
 	noCache false
 }

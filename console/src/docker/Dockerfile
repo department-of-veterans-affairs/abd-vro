@@ -10,7 +10,9 @@ WORKDIR /project
 COPY ${ENTRYPOINT_FILE} entrypoint.sh
 RUN chmod +x entrypoint.sh
 COPY ${JAR_FILE} vro-console.jar
+COPY groovysh.rc .
 
 RUN adduser --disabled-password docker
 USER docker
+RUN mkdir "$HOME/.groovy" && ln -s /project/groovysh.rc "$HOME/.groovy/"
 CMD ["sh", "entrypoint.sh"]
