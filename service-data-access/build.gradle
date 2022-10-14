@@ -38,10 +38,6 @@ dependencies {
     implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.1.2') {
         exclude group: 'xalan', module: 'xalan'
     }
-    // constrain hapi-fhir transitive dependencies to use versions without vulnerabilities
-    constraints {
-        implementation 'org.apache.commons:commons-text:1.10.0'
-    }
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.projectlombok:lombok:1.18.24'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
