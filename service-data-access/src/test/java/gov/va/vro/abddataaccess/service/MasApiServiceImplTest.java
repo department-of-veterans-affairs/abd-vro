@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import gov.va.vro.abddataaccess.model.MasCollectionAnnotation;
 import gov.va.vro.abddataaccess.model.MasCollectionStatus;
+import gov.va.vro.abddataaccess.model.MasDocument;
 import gov.va.vro.abddataaccess.model.MasOrderExam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -137,7 +138,15 @@ class MasApiServiceImplTest {
     try {
       setupMockMasGetAnnotation();
       List<MasCollectionAnnotation> resp = service.queryCollectionAnnots(TEST_ID);
-      assertFalse(resp.isEmpty());
+      assertEquals(1, resp.size());
+      MasCollectionAnnotation collectionAnnotation = resp.get(0);
+      assertTrue(collectionAnnotation.getVtrnFileId() > 0);
+      assertFalse(collectionAnnotation.getCreationDate().isEmpty());
+      assertEquals(1, collectionAnnotation.getDocuments().size());
+      MasDocument document = collectionAnnotation.getDocuments().get(0);
+      assertTrue(document.getEfolderversionrefid() > 0);
+      assertFalse(document.getCondition().isEmpty());
+      assertEquals(1, document.getAnnotations().size());
     } catch (Exception e) {
       log.error("testQueryCollectionAnnots failed.", e);
       fail("testQueryCollectionAnnots");
