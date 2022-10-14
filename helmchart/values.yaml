@@ -37,18 +37,24 @@ images:
     imageName: redis
     tag: latest
     imagePullPolicy: Always
-  db:
-    imageName: dev_vro-postgres
-    tag: 0b9c9c4
   mq:
     imageName: vro-rabbitmq
     tag: 3
+# Replace the following image list with the snippet produced by image-names.sh
   app:
     imageName: dev_vro-app
     tag: 0b9c9c4
     imagePullPolicy: Always
+  db:
+    imageName: dev_vro-postgres
+    tag: 0b9c9c4
+    imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
+    tag: 0b9c9c4
+    imagePullPolicy: Always
+  serviceDataAccess:
+    imageName: dev_vro-service-data-access
     tag: 0b9c9c4
     imagePullPolicy: Always
   pdfGenerator:
@@ -63,11 +69,7 @@ images:
     imageName: dev_vro-service-assessclaimdc6602
     tag: 0b9c9c4
     imagePullPolicy: Always
-  serviceDataAccess:
-    imageName: dev_vro-service-data-access
-    tag: 0b9c9c4
-    imagePullPolicy: Always
-    
+
 resources:
   api:
     requests:
