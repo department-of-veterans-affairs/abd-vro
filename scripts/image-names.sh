@@ -7,20 +7,20 @@
 #       help us migrate to get consistency
 
 gradle_folder() {
-  case $1 in
+  case "$1" in
     pdfgenerator|assessclaim*) echo "./service-python/$1";;
     *) echo "./$1";;
   esac
 }
 
 gradle_image_name() {
-  case $1 in
+  case "$1" in
     *) echo "va/abd_vro-$1";;
   esac
 }
 
 helm_image_key() {
-  case $1 in
+  case "$1" in
     redis) echo "$1";;
     postgres) echo "db";;
     rabbitmq) echo "mq";;
@@ -43,54 +43,53 @@ nonprod_image_name() {
 }
 
 secrel_image_name() {
-  case $1 in
+  case "$1" in
     pdfgenerator|assessclaim*) echo "vro-service-$1";;
     *) echo "vro-$1";;
   esac
 }
 
 secrel_dockerfile() {
-  case $1 in
+  case "$1" in
     pdfgenerator) echo "`gradle_folder $1`/src/docker/Dockerfile";;
     *) echo "`gradle_folder $1`/src/docker/Dockerfile";;
   esac
 }
 
 secrel_docker_context() {
-  case $1 in
+  case "$1" in
     pdfgenerator|assessclaim*) echo "./service-python/$1/src";;
     app|*) echo "./$1/src/main/resources";;
   esac
 }
 
 some_name() {
-  case $1 in
+  case "$1" in
     *) echo "$1_${FUNCNAME[0]}";;
   esac
 }
 
 OTHER_IMAGS=(redis rabbitmq)
 IMAGES=( app postgres db-init service-data-access pdfgenerator assessclaimdc7101 assessclaimdc6602)
-echo "count: ${IMAGES[#]}"
-
+echo
+echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in ${!IMAGES[@]}; do
-  echo "[$INDEX] : ${IMAGES[$INDEX]}"
+  echo "[$INDEX]: ${IMAGES[$INDEX]}"
 done
-
+echo
 echo "=== Verifying folders and files"
+{
 for IMG in ${IMAGES[@]}; do
   echo "--- $IMG"
-  # echo "`gradle_image_name $IMG`"
-  # echo "`nonprod_image_name $IMG`"
   ls `gradle_folder $IMG`/build.gradle
-  # echo "- name: `secrel_image_name $IMG`"
-  # echo `secrel_docker_context $IMG`
   ls `secrel_dockerfile $IMG`
-  # echo "- helm: `helm_image_key $IMG`"
   echo
 done
+} >> /dev/null
 
 SRC_FILE=scripts/image_vars.src
+echo
+echo "=== Overwriting $SRC_FILE"
 {
   VAR_PREFIXES=()
   for IMG in ${IMAGES[@]}; do
@@ -143,3 +142,29 @@ echo
     echo
   done
 } > "$SRC_FILE"
+
+images_for_secrel_config_yml(){
+  echo
+  echo "=== The following can be pasted into .github/secrel/config.yml"
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  echo "- name: `getVarValue ${PREFIX} _IMG`
+  context: \"`getVarValue ${PREFIX} _DOCKER_CONTEXT`\"
+  path: \"`getVarValue ${PREFIX} _DOCKERFILE`\""
+done
+}
+
+images_for_helmchart_values_yaml(){
+  local _ENV=$1
+  echo
+  echo "=== The following can be pasted into helmchart/values.yaml"
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  echo "  `getVarValue ${PREFIX} _HELM_KEY`:
+    imageName: ${_ENV}_`getVarValue ${PREFIX} _IMG`
+    tag: 0b9c9c4
+    imagePullPolicy: Always"
+done
+}
+
+source "$SRC_FILE"
+images_for_secrel_config_yml
+images_for_helmchart_values_yaml dev
