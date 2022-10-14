@@ -54,7 +54,6 @@ public class MasPollingProcessor implements Processor {
   }
 
   private boolean checkCollectionStatus(String collectionsId) throws MasException {
-    // return new Random().nextBoolean();
     try {
       int masCollectionId = Integer.parseInt(collectionsId);
       List<MasCollectionStatus> statusList =
