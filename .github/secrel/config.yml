@@ -16,6 +16,7 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
 images:
+# Replace the following image list with the snippet produced by image-names.sh
 - name: vro-app
   context: "./app/src/main/resources"
   path: "./app/src/docker/Dockerfile"
