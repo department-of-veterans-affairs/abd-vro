@@ -60,11 +60,11 @@ jobs:
           # Tag dev images for non-prod testing
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             GRADLE_IMG_TAG=`getVarValue ${PREFIX} _GRADLE_IMG`
-            DEV_IMG_TAG=dev_`getVarValue ${PREFIX} _IMG`
-            echo "Tagging image '$GRADLE_IMG_TAG' as '$DEV_IMG_TAG'"
+            DEV_IMG=dev_$(getVarValue ${PREFIX} _IMG)
+            echo "Tagging image '$GRADLE_IMG_TAG' as '$DEV_IMG'"
 
-            docker tag "$GRADLE_IMG_TAG" "ghcr.io/${{ github.repository }}/${DEV_IMG_TAG}:${COMMIT_SHA:0:7}"
-            docker tag "$GRADLE_IMG_TAG" "ghcr.io/${{ github.repository }}/${DEV_IMG_TAG}:latest"
+            docker tag "$GRADLE_IMG_TAG" "ghcr.io/${{ github.repository }}/${DEV_IMG}:${COMMIT_SHA:0:7}"
+            docker tag "$GRADLE_IMG_TAG" "ghcr.io/${{ github.repository }}/${DEV_IMG}:latest"
           done
       - name: Check images
         run: |
@@ -80,9 +80,9 @@ jobs:
 
           # Pushes dev images for non-prod testing
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            DEV_IMG_TAG=dev_`getVarValue ${PREFIX} _IMG`
-            echo "Pushing image '$DEV_IMG_TAG'"
-            docker push -a "ghcr.io/${{ github.repository }}/${DEV_IMG_TAG}"
+            DEV_IMG=dev_$(getVarValue ${PREFIX} _IMG)
+            echo "Pushing image '$DEV_IMG'"
+            docker push -a "ghcr.io/${{ github.repository }}/${DEV_IMG}"
           done
       - name: Cleanup images
         run: |
@@ -90,10 +90,10 @@ jobs:
 
           # Clean up dev images locally
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            DEV_IMG_TAG=dev_`getVarValue ${PREFIX} _IMG`
-            echo "Clean up image with tags '$DEV_IMG_TAG:${COMMIT_SHA:0:7}' and '${DEV_IMG_TAG}:latest'"
-            docker rmi "ghcr.io/${{ github.repository }}/${DEV_IMG_TAG}:${COMMIT_SHA:0:7}" \
-                       "ghcr.io/${{ github.repository }}/${DEV_IMG_TAG}:latest"
+            DEV_IMG=dev_$(getVarValue ${PREFIX} _IMG)
+            echo "Clean up image with tags '$DEV_IMG:${COMMIT_SHA:0:7}' and '${DEV_IMG}:latest'"
+            docker rmi "ghcr.io/${{ github.repository }}/${DEV_IMG}:${COMMIT_SHA:0:7}" \
+                       "ghcr.io/${{ github.repository }}/${DEV_IMG}:latest"
           done
       - name: Generate kubeconfig
         run: |
