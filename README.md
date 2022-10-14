@@ -58,7 +58,7 @@ Before you run this application locally, you will need to make sure you have all
 - [spectral][12]
 - [shellcheck][9]
 
-> Use the [Mac OS Guide][4] to make sure you have all the above dependencies available in your local environment.
+> Use the [Mac OS Guide][4] to make sure you have all the above dependencies available in your local environment. No need to clone the starterkit repo, use `./scripts/mac-dev-tools.sh` included in this repo.
 > Otherwise, refer to the [Other Operating Systems Guide][5].
 
 You will also need to have a GitHub personal access token with the `read:packages` permission exported in your local shell.
@@ -70,6 +70,8 @@ When you have your token, make sure it is available in your local shell by runni
 ```bash
 export GITHUB_ACCESS_TOKEN=<replace-with-token-from-github>
 ```
+
+You will also need to be added to the [VA-ABD-RRD GitHub team][15].
 
 ### Running the Application
 
@@ -238,7 +240,7 @@ To see how each of these tiers is used by default, take a look at the [Project S
 
 [1]: https://github.com/department-of-veterans-affairs/lighthouse-di-starterkit-java
 [2]: https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/explore-features/
-[4]: https://github.com/department-of-veterans-affairs/lighthouse-di-starterkit-java/blob/main/docs/developing-on-mac.md
+[4]: https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/developing-on-mac/
 [5]: https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/developing-on-other-os/
 [6]: https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/developing-on-mac/
 [7]: https://docs.docker.com/get-docker/
@@ -249,3 +251,4 @@ To see how each of these tiers is used by default, take a look at the [Project S
 [12]: https://meta.stoplight.io/docs/spectral/ZG9jOjYyMDc0Mw-installation
 [13]: https://github.com/department-of-veterans-affairs/lighthouse-di-starterkit-java/blob/main/docs/project-structure.md
 [14]: https://github.com/department-of-veterans-affairs/lighthouse-di-starterkit-java/blob/main/docs/development-guide.md
+[15]: https://github.com/orgs/department-of-veterans-affairs/teams/va-abd-rrd/members

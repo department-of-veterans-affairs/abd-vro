@@ -1,7 +1,7 @@
 package gov.va.vro.api.resources;
 
-import gov.va.vro.api.requests.MasClaimDetailsRequest;
 import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,8 +57,8 @@ public interface MasResource {
       @Parameter(
               description = "Request for a MAS Claim",
               required = true,
-              schema = @Schema(implementation = MasClaimDetailsRequest.class))
+              schema = @Schema(implementation = MasClaimDetailsPayload.class))
           @Valid
           @RequestBody
-          MasClaimDetailsRequest request);
+          MasClaimDetailsPayload request);
 }
