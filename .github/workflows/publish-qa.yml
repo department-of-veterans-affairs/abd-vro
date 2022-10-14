@@ -1,4 +1,4 @@
-name: Publish qa images
+name: Publish QA images
 
 on:
   push:
@@ -94,14 +94,21 @@ jobs:
 
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+          sleep 60
 
           # Pushes qa images for non-prod testing
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-postgres
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-app
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-db-init
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-pdfgenerator
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602
+          sleep 60
           docker push -a ghcr.io/${{ github.repository }}/qa_vro-service-data-access
 
       - name: Cleanup images
