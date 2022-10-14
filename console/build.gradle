@@ -45,7 +45,7 @@ configurations {
 }
 
 docker {
-  files "src/docker/groovysh.rc"
+  files "src/main/resources/groovysh.rc"
 }
 
 tasks.named('test') {
