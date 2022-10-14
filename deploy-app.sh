@@ -30,6 +30,7 @@ fi
 : "${HELM_APP_NAME:=abd-vro}"
 helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
 
+source scripts/image_vars.src
 generateImageArgs(){
   local _ENV=$1
   local _IMAGE_TAG=$2
