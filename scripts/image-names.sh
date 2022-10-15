@@ -21,14 +21,12 @@ gradle_image_name() {
 
 helm_image_key() {
   case "$1" in
-    redis) echo "$1";;
     postgres) echo "db";;
-    rabbitmq) echo "mq";;
     db-init) echo "dbInit";;
-    service-data-access) echo "serviceDataAccess";;
-    pdfgenerator) echo "pdfGenerator";;
-    assessclaimdc7101) echo "serviceAssessClaimDC7101";;
-    assessclaimdc6602) echo "serviceAssessClaimDC6602";;
+    service-data-access) echo "serviceDataAccess";;      # TODO: rename to svcLighthouseApi
+    pdfgenerator) echo "pdfGenerator";;                  # TODO: rename to svcPdfGenerator
+    assessclaimdc7101) echo "serviceAssessClaimDC7101";; # TODO: rename to svcAssessorDc7101
+    assessclaimdc6602) echo "serviceAssessClaimDC6602";; # TODO: rename to svcAssessorDc6602
     app|*) echo "$1";;
   esac
 }
@@ -51,7 +49,6 @@ secrel_image_name() {
 
 secrel_dockerfile() {
   case "$1" in
-    pdfgenerator) echo "`gradle_folder $1`/src/docker/Dockerfile";;
     *) echo "`gradle_folder $1`/src/docker/Dockerfile";;
   esac
 }
@@ -63,13 +60,8 @@ secrel_docker_context() {
   esac
 }
 
-some_name() {
-  case "$1" in
-    *) echo "$1_${FUNCNAME[0]}";;
-  esac
-}
-
-OTHER_IMAGS=(redis rabbitmq)
+# These names should match directory names
+# TODO: rename service-data-access to service-lighthouse-api
 IMAGES=( app postgres db-init service-data-access pdfgenerator assessclaimdc7101 assessclaimdc6602)
 echo
 echo "=== ${#IMAGES[@]} VRO images"
@@ -134,7 +126,6 @@ echo
     echo "export ${PREFIX}_GRADLE_IMG=\"`gradle_image_name $IMG`\""
     echo "export ${PREFIX}_IMG=\"`secrel_image_name $IMG`\""
 
-    echo "# export ${PREFIX}_SECREL_IMG=\"`secrel_image_name $IMG`\""
     echo "export ${PREFIX}_DOCKERFILE=\"`secrel_dockerfile $IMG`\""
     echo "export ${PREFIX}_DOCKER_CONTEXT=\"`secrel_docker_context $IMG`\""
 
