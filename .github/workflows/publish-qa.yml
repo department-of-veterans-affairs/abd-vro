@@ -1,4 +1,4 @@
-name: Publish qa images
+name: Publish QA images
 
 on:
   push:

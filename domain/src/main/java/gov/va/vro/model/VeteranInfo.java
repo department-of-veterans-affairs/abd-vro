@@ -11,18 +11,18 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VeteranInfo {
-  @Schema(example = "Joe")
+  @Schema(description = "Veteran first name", example = "Joe")
   private String first;
 
-  @Schema(example = "M")
+  @Schema(description = "Veteran middle initial", example = "M")
   private String middle;
 
-  @Schema(example = "Doe")
+  @Schema(description = "Veteran last name", example = "Doe")
   private String last;
 
-  @Schema(example = "Jr")
+  @Schema(description = "Veteran name suffix", example = "Jr")
   private String suffix;
 
-  @Schema(example = "01/04/1971")
+  @Schema(description = "Veteran date of birth", example = "01/04/1971")
   private String birthdate;
 }

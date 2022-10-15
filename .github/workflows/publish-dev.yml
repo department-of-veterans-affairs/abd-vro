@@ -2,7 +2,7 @@ name: Publish dev images
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ develop ]
 
   # Allow manual triggering
   workflow_dispatch:
