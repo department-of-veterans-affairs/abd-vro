@@ -114,7 +114,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
       POSTGRES_SCHEMA: claims
-      ENV: ${ENV}
+      ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
       VRO_NON_PROD: "$VRO_NON_PROD"
