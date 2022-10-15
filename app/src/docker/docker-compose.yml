@@ -127,7 +127,7 @@ services:
       - internal
       - external
 
-  svc-assess-claim-dc7101:
+  svc-assessor-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     <<: *common-security-opt
     environment:
@@ -139,7 +139,7 @@ services:
     networks:
       - internal
 
-  svc-assess-claim-dc6602:
+  svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
     environment:
