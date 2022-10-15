@@ -7,6 +7,26 @@ networks:
 volumes:
   pgdata:
 
+# Reusable blocks
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+x-redis-placeholder-vars: &redis-placeholder-vars
+  REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
+  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
+  RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+
+x-rabbitmq-client-vars: &rabbitmq-client-vars
+  RABBITMQ_PORT: 5672
+  RABBITMQ_RETRY_LIMIT: 3
+  RABBITMQ_TIMEOUT: 10800
+
+x-common-security-opt: &common-security-opt
+  security_opt:
+    - no-new-privileges:true
+
 services:
 
   vro-api-rabbit-mq-service:
@@ -81,11 +101,13 @@ services:
 
   abd_vro:
     image: va/abd_vro-app:latest
+    <<: *common-security-opt
     hostname: abd_vro
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
+      <<: *rabbitmq-placeholder-vars
       POSTGRES_HOST: vro-api-postgres-service
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -95,13 +117,7 @@ services:
       ENV: ${ENV}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
-      # TODO: move these RabbitMQ configurations into a reusable yaml block
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
       VRO_NON_PROD: "$VRO_NON_PROD"
-    security_opt:
-      - no-new-privileges:true
     depends_on:
       - vro-api-postgres-service
       - vro-api-rabbit-mq-service
@@ -117,16 +133,10 @@ services:
 
   assess-claim-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-    security_opt:
-
-      - no-new-privileges:true
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
       vro-api-rabbit-mq-service:
         condition: service_healthy
@@ -135,15 +145,10 @@ services:
 
   assess-claim-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-    security_opt:
-      - no-new-privileges:true
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
       vro-api-rabbit-mq-service:
         condition: service_healthy
@@ -152,17 +157,11 @@ services:
 
   pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
-      REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
-    security_opt:
-      - no-new-privileges:true
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
       vro-api-redis-service:
         condition: service_started
@@ -173,17 +172,14 @@ services:
 
   service-data-access:
     image: va/abd_vro-service-data-access:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      <<: *rabbitmq-placeholder-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
       LH_ASSERTION_URL: ${LH_ASSERTION_URL}
       LH_TOKEN_URL: ${LH_TOKEN_URL}
       LH_FHIR_URL: ${LH_FHIR_URL}
-    security_opt:
-      - no-new-privileges:true
     depends_on:
       vro-api-rabbit-mq-service:
         condition: service_healthy
