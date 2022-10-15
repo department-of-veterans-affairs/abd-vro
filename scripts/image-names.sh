@@ -135,27 +135,44 @@ echo
 } > "$SRC_FILE"
 
 images_for_secrel_config_yml(){
-  echo
-  echo "=== The following can be pasted into .github/secrel/config.yml"
+  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+# The following image list is updated by image-names.sh'
 for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
   echo "- name: `getVarValue ${PREFIX} _IMG`
   context: \"`getVarValue ${PREFIX} _DOCKER_CONTEXT`\"
   path: \"`getVarValue ${PREFIX} _DOCKERFILE`\""
 done
+echo '# END image-names.sh replacement block (do not modify this line)'
 }
 
 images_for_helmchart_values_yaml(){
   local _ENV=$1
-  echo
-  echo "=== The following can be pasted into helmchart/values.yaml"
+  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+# The following image list is updated by image-names.sh'
 for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
   echo "  `getVarValue ${PREFIX} _HELM_KEY`:
     imageName: ${_ENV}_`getVarValue ${PREFIX} _IMG`
     tag: 0b9c9c4
     imagePullPolicy: Always"
 done
+echo '# END image-names.sh replacement block (do not modify this line)'
 }
 
 source "$SRC_FILE"
-images_for_secrel_config_yml
-images_for_helmchart_values_yaml dev
+SEC_CONFIG_IMAGES=`images_for_secrel_config_yml`
+VALUES_YML_IMAGES=`images_for_helmchart_values_yaml dev`
+
+if which sed > /dev/null; then
+  echo "=== Updating images in .github/secrel/config.yml"
+  sed -i "" -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' .github/secrel/config.yml <<< "$SEC_CONFIG_IMAGES"
+
+  echo "=== Updating images in helmchart/values.yaml"
+  sed -i "" -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' helmchart/values.yaml <<< "$VALUES_YML_IMAGES"
+else
+  echo
+  echo "=== Paste the following into .github/secrel/config.yml"
+  echo "$SEC_CONFIG_IMAGES"
+  echo
+  echo "=== Paste the following into helmchart/values.yaml"
+  echo "$VALUES_YML_IMAGES"
+fi
