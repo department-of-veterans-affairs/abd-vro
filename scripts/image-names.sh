@@ -163,11 +163,17 @@ SEC_CONFIG_IMAGES=`images_for_secrel_config_yml`
 VALUES_YML_IMAGES=`images_for_helmchart_values_yaml dev`
 
 if which sed > /dev/null; then
-  echo "=== Updating images in .github/secrel/config.yml"
-  sed -i "" -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' .github/secrel/config.yml <<< "$SEC_CONFIG_IMAGES"
+  echo "=== Writing images to .github/secrel/config-updated.yml"
+  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
+    .github/secrel/config.yml <<< "$SEC_CONFIG_IMAGES" > .github/secrel/config-updated.yml
+  echo "Differences:"
+  diff .github/secrel/config.yml .github/secrel/config-updated.yml
 
-  echo "=== Updating images in helmchart/values.yaml"
-  sed -i "" -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' helmchart/values.yaml <<< "$VALUES_YML_IMAGES"
+  echo "=== Writing images to helmchart/values-updated.yaml"
+  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
+    helmchart/values.yaml <<< "$VALUES_YML_IMAGES" > helmchart/values-updated.yaml
+  echo "Differences:"
+  diff helmchart/values.yaml helmchart/values-updated.yaml
 else
   echo
   echo "=== Paste the following into .github/secrel/config.yml"
