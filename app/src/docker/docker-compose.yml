@@ -112,7 +112,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://postgres-service:5432/vro
+      POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
       POSTGRES_SCHEMA: claims
       ENV: ${ENV}
       # Cause application-compose.yml to be used
@@ -166,7 +166,7 @@ services:
     networks:
       - internal
 
-  service-data-access:
+  svc-data-access:
     image: va/abd_vro-service-data-access:latest
     <<: *common-security-opt
     environment:
