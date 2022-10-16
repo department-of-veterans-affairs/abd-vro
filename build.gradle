@@ -79,26 +79,27 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "java"
-    apply plugin: 'starter.java.config-conventions'
-    dependencies {
-        // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
-        annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-        // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
-        checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+    pluginManager.withPlugin('java') {
+        apply plugin: 'starter.java.config-conventions'
+        dependencies {
+            // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
+            annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+            // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
+            checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
 
-        // constrain transitive dependencies to use versions without vulnerabilities
-        constraints {
-            // for starter-bom
-            implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-            implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-            implementation "org.springframework:spring-beans:${spring_framework_version}"
-            implementation "io.github.classgraph:classgraph:${class_graph_version}"
-            implementation "com.squareup.okhttp3:okhttp:4.10.0"
-            implementation "org.yaml:snakeyaml:1.33"
+            // constrain transitive dependencies to use versions without vulnerabilities
+            constraints {
+                // for starter-bom
+                implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+                implementation "org.springframework:spring-webmvc:${spring_framework_version}"
+                implementation "org.springframework:spring-beans:${spring_framework_version}"
+                implementation "io.github.classgraph:classgraph:${class_graph_version}"
+                implementation "com.squareup.okhttp3:okhttp:4.10.0"
+                implementation "org.yaml:snakeyaml:1.33"
 
-            // for mockserver-netty and hapi-fhir
-            implementation 'org.apache.commons:commons-text:1.10.0'
+                // for mockserver-netty and hapi-fhir
+                implementation 'org.apache.commons:commons-text:1.10.0'
+            }
         }
     }
 }
