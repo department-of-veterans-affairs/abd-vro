@@ -35,21 +35,9 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
     testRuntimeOnly "com.h2database:h2:${h2_version}"
-    // Needed?
-    // testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-    // testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
-
-    // This version is compatible with current spring version: 5.3.8
 
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-
-    docker project(':db-init')
 }
-
-//application {
-//    // Define the main class for the application.
-//    mainClass = 'gov.va.vro.VroApplication'
-//}
 
 bootJar {
     manifest {
@@ -92,12 +80,3 @@ afterEvaluate {
         dependsOn 'forkedSpringBootStop'
     }
 }
-
-tasks.named('lintDockerfile').configure {
-    ext.targets = ["src/docker/Dockerfile"]
-}
-
-//Needed? this rebuilds the db-init docker image every time dockerComposeUp is run
-//tasks.named('dockerComposeUp').configure {
-//    dependsOn ':db-init:docker'
-//}

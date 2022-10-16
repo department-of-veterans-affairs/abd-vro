@@ -14,7 +14,6 @@ buildscript {
     }
 }
 
-
 plugins {
     // Set versions for these plugins (but don't apply) so we don't have to specify the version later
     id("org.ajoberstar.grgit") version "${grgit_version}" apply false
@@ -116,11 +115,11 @@ ext {
                    ':service:spi',
                    ':service-data-access']
     dockerModules = [':app',
+                     ':db-init',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':service-data-access',
-                     ':db-init']
+                     ':service-data-access']
 }
 
 // Used by `release` task to create a new version
