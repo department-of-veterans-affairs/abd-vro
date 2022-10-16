@@ -1,0 +1,18 @@
+/**
+ * Provides docker container settings
+ * Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.container-spring-conventions.gradle
+ */
+
+plugins {
+    id 'org.springframework.boot'
+    id 'local.java.container-conventions'
+}
+
+docker {
+    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
+}
+
+dockerRun {
+    env 'JAVA_PROFILE': '-Dspring.profiles.include=docker'
+}
