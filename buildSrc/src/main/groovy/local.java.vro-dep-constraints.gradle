@@ -1,6 +1,7 @@
 /**
- * This plugin is used to specify versions of transitive dependencies to address
- * security vulnerability alerts.
+ * This plugin is used to specify versions of transitive dependencies to address security vulnerability alerts.
+ * If more formality is desired, convert this into a Platform -- https://docs.gradle.org/current/userguide/platforms.html#sub:platforms-vs-catalog
+ *   - This would result in creating another Gradle module/subfolder, which seems unnecessary at this point.
  */
 plugins {
     id 'java'
