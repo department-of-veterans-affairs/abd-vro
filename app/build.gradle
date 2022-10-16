@@ -88,8 +88,6 @@ openApi {
 }
 
 afterEvaluate {
-    tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
-
     tasks.named('forkedSpringBootRun').configure {
         dependsOn 'bootStartScripts'
         dependsOn 'checkstyleIntegrationTest'
@@ -102,7 +100,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
-        dependsOn ':service-python:pytest'
+        // dependsOn ':service-python:pytest' // slows down `:app:build` task
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
