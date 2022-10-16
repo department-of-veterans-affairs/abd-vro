@@ -67,10 +67,6 @@ application {
     mainClass = 'gov.va.vro.VroApplication'
 }
 
-tasks.dockerPrepare.configure {
-    dependsOn(tasks.bootJar)
-}
-
 bootJar {
     manifest {
         attributes(

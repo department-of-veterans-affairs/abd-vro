@@ -110,6 +110,10 @@ subprojects {
                         buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
                     }
                 }
+
+                tasks.dockerPrepare.configure {
+                    dependsOn(tasks.bootJar)
+                }
             }
         }
     }

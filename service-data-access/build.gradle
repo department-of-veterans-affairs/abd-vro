@@ -12,10 +12,6 @@ plugins {
 
 description = 'Automated Benefit Delivery Data Access Service'
 
-tasks.dockerPrepare.configure {
-    dependsOn(tasks.bootJar.name)
-}
-
 configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
