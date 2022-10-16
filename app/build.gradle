@@ -1,5 +1,3 @@
-import java.text.SimpleDateFormat
-
 plugins {
     id 'local.std.java.application-conventions'
     id 'starter.java.config-conventions'
@@ -37,16 +35,6 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2_version}"
 
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-}
-
-bootJar {
-    manifest {
-        attributes(
-                'Application-Version': "${project.version}",
-                'Start-Class': 'gov.va.vro.VroApplication',
-                'Application-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
-        )
-    }
 }
 
 openApi {

@@ -91,15 +91,3 @@ task integrationTest(type: Test) {
         executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
     }
 }
-
-bootJar {
-    manifest {
-        attributes(
-                'Application-Version': "${project.version}",
-                'Start-Class': 'gov.va.vro.abddataaccess.AbdApplication',
-                'Application-Git-Commit': '${gitRevision}',
-                'Application-Git-Branch-Name': '${gitBranchName}',
-                'Application-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
-        )
-    }
-}

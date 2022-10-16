@@ -20,3 +20,12 @@ dockerRun {
 tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar)
 }
+
+bootJar {
+    manifest {
+        attributes(
+                'Application-Version': "${project.version}",
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
+        )
+    }
+}
