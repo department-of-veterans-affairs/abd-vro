@@ -22,7 +22,7 @@ docker {
     name "${dockerRegistry}/${rootProject.name}-${project.name}"
     tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
     tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
-    noCache true
+    noCache false // Use image caches; only recreate if different
     dockerfile file('src/docker/Dockerfile')
 }
 

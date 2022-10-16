@@ -96,14 +96,6 @@ subprojects {
             implementation 'org.apache.commons:commons-text:1.10.0'
         }
     }
-
-    afterEvaluate {
-        if (tasks.findByName('docker')) {
-            docker {
-                noCache false
-            }
-        }
-    }
 }
 
 ext {

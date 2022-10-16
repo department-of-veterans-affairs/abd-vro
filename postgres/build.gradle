@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id 'starter.java.container-conventions'
+    id 'local.java.container-conventions'
     id 'starter.java.build-utils-conventions'
 }
 
