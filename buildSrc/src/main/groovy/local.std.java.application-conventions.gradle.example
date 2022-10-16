@@ -12,9 +12,13 @@ plugins {
     id 'starter.java.build-javatarget-conventions'
     id 'starter.java.build-springboot-conventions'
     id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-openapi-conventions'
+    id 'starter.java.deps-spring-config-conventions'
+    id 'starter.java.deps-springdoc-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.lint-checkstyle-conventions'
+    id 'starter.java.lint-spectral-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
@@ -25,6 +29,8 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-bootjar-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 }
 
 dependencies {
