@@ -98,7 +98,7 @@ subprojects {
             docker {
                 // Use cached image; only recreate if different
                 noCache false
-                labels(['org.opencontainers.image.source':'https://github.com/department-of-veterans-affairs/abd-vro'])
+                labels(['gov.va.vro.builder':'gradle'])
             }
             if (tasks.findByName('bootJar')) {
                 docker {
