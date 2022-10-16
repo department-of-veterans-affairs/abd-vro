@@ -16,3 +16,7 @@ docker {
 dockerRun {
     env 'JAVA_PROFILE': '-Dspring.profiles.include=docker'
 }
+
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar)
+}

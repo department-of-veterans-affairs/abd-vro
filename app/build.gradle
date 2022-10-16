@@ -1,22 +1,12 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
-    id 'starter.std.java.application-conventions'
+    id 'local.std.java.application-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'
 }
 
 dependencies {
-    // constrain gatling and zinc to use updated scala-library without vulnerability
-    constraints {
-        implementation "org.scala-lang:scala-library:${scala_version}"
-        gatling "org.scala-lang:scala-library:${scala_version}"
-        gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
-        zinc "org.scala-lang:scala-library:${scala_version}"
-    }
-
-
     implementation project(':domain')
     implementation project(':api')
     implementation project(':controller')
@@ -56,20 +46,10 @@ dependencies {
     docker project(':db-init')
 }
 
-// Disable tasks associated with Gatling
-project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
-project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
-project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
-project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
-
-application {
-    // Define the main class for the application.
-    mainClass = 'gov.va.vro.VroApplication'
-}
-
-tasks.dockerPrepare.configure {
-    dependsOn(tasks.bootJar)
-}
+//application {
+//    // Define the main class for the application.
+//    mainClass = 'gov.va.vro.VroApplication'
+//}
 
 bootJar {
     manifest {
