@@ -7,5 +7,7 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-core'
     implementation 'gov.va.starter:exceptions'
+
+    implementation project(':domain')
 }
 

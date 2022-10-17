@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** Configure queue delays */
+/** Configure queue delays. */
 @Configuration
 public class DelayConfig {
 

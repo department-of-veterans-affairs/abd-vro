@@ -17,7 +17,7 @@ jobs:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: Tornado Pipeline
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v2.3.0-rc1
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v2.3.0
     with:
       config-file: .github/secrel/config.yml
     secrets: inherit
