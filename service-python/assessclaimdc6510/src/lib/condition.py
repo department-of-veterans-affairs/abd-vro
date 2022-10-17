@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from .codesets import condition_codesets
 from dateutil.relativedelta import relativedelta
+
+from .codesets import condition_codesets
 
 
 def conditions_calculation(request_body):
