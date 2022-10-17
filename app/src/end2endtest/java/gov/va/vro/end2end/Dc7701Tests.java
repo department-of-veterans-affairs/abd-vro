@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.BodyInserters;
+
+import java.time.Duration;
 
 @Slf4j
 public class Dc7701Tests {
@@ -20,10 +22,9 @@ public class Dc7701Tests {
   */
   @Test
   public void positive01() {
-    /*
     HealthDataAssessmentRequest req = new HealthDataAssessmentRequest();
     req.setClaimSubmissionId("7001");
-    req.setVeteranIcn("9000682");
+    req.setVeteranIcn("1012666073V986297");
     req.setDiagnosticCode("7101");
 
     String result =
@@ -31,9 +32,11 @@ public class Dc7701Tests {
             .baseUrl("http://localhost:8080/v1")
             .defaultHeader("X-API-KEY", "test-key-01")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .responseTimeout(Duration.ofMillis(10000))
             .build()
             .post()
             .uri("/full-health-data-assessment")
+            .body(BodyInserters.fromValue(req))
             .exchange()
             .expectStatus()
             .isCreated()
@@ -42,7 +45,6 @@ public class Dc7701Tests {
             .getResponseBody();
 
     log.info(result);
-    */
     /*
      */
     /*
