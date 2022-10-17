@@ -91,3 +91,8 @@ task integrationTest(type: Test) {
         executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
     }
 }
+
+docker {
+    // TODO: remove this line after renaming the image
+    name "${dockerRegistry}/${rootProject.name}-service-data-access"
+}
