@@ -28,8 +28,8 @@ images:
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
 - name: vro-service-data-access
-  context: "./service-data-access/src/main/resources"
-  path: "./service-data-access/src/docker/Dockerfile"
+  context: "./svc-lighthouse-api/src/main/resources"
+  path: "./svc-lighthouse-api/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
   context: "./service-python/pdfgenerator/src"
   path: "./service-python/pdfgenerator/src/docker/Dockerfile"
