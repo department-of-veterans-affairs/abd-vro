@@ -172,7 +172,7 @@ services:
     networks:
       - internal
 
-  service-data-access:
+  svc-lighthouse-api:
     image: va/abd_vro-service-data-access:latest
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
