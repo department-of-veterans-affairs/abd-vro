@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.ClaimDetail;
 import gov.va.vro.model.mas.ClaimDetailConditions;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.model.mas.VeteranIdentifiers;
-import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
