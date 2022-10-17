@@ -64,6 +64,7 @@ dependencies {
     // end to end dependencies
     end2endtestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
     end2endtestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
+    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
 
     docker project(':db-init')
 }

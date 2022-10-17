@@ -3,23 +3,27 @@ package gov.va.vro.end2end;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Slf4j
 public class Dc7701Tests {
   @Test
-  public void positive01() {
+  public void positive01() throws Exception {
     HealthDataAssessmentRequest req = new HealthDataAssessmentRequest();
     req.setClaimSubmissionId("7001");
     req.setVeteranIcn("1012666073V986297");
     req.setDiagnosticCode("7101");
 
-    String result =
+    String actual =
         WebTestClient.bindToServer()
             .baseUrl("http://localhost:8080/v1")
             .defaultHeader("X-API-KEY", "test-key-01")
@@ -36,6 +40,9 @@ public class Dc7701Tests {
             .returnResult()
             .getResponseBody();
 
-    log.info(result);
+    InputStream stream = this.getClass().getResourceAsStream("/test-7701-01/assessment.json");
+    String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 }
