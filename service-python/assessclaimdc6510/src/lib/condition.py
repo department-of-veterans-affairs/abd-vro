@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from .codesets import condition_codesets
+from dateutil.relativedelta import relativedelta
 
 
 def conditions_calculation(request_body):
@@ -14,17 +17,24 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     total_conditions_count = len(veterans_conditions)
+    date_of_claim = datetime.strptime(request_body["date_of_claim"], "%Y-%m-%d").date()
+    constant_sinusitis = "false"
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
-            if condition_code in condition_codesets.sinusitis:
+            if condition_code in condition_codesets.sinusitis or condition_code in condition_codesets.rhinosinusitis:
                 relevant_conditions.append(condition)
-                continue
-            elif condition_code in condition_codesets.rhinosinusitis:
-                relevant_conditions.append(condition)
+                if datetime.strptime(condition["onsetDate"], "%Y-%m-%d").date() >= date_of_claim - relativedelta(
+                        months=3):
+                    constant_sinusitis = "true"
 
-    response["conditions"] = relevant_conditions
-    response["relevantConditionsCount"] = len(relevant_conditions)
-    response["totalConditionsCount"] = total_conditions_count
+    response.update(
+        {
+            "conditions": relevant_conditions,
+            "relevantConditionsCount": len(relevant_conditions),
+            "totalConditionsCount": total_conditions_count,
+            "constantSinusitis": constant_sinusitis
+        }
+    )
 
     return response

@@ -12,19 +12,22 @@ from assessclaimdc6510.src.lib import condition
                         "conditions": [
                             {"text": "Chronic maxillary sinusitis",
                              "code": "35923002",
-                             "status": "active"}
+                             "status": "active",
+                             "onsetDate": "2021-11-01"}
                         ],
-                        "date_of_claim": "2021-11-09",
-                    }
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
                 {
                     "conditions": [
                         {
                             "text": "Chronic maxillary sinusitis",
                             "code": "35923002",
-                            "status": "active"
+                            "status": "active",
+                            "onsetDate": "2021-11-01"
                         }
                     ],
+                    "constantSinusitis": "true",
                     "relevantConditionsCount": 1,
                     "totalConditionsCount": 1,
                 },
@@ -35,16 +38,18 @@ from assessclaimdc6510.src.lib import condition
                         "conditions": [
                             {"text": "Asthma",
                              "code": "J45",
-                             "status": "active"}
+                             "status": "active",
+                             "onsetDate": "2021-11-01"}
                         ],
-                        "date_of_claim": "2021-11-09",
-                    }
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
                 {
                     "conditions": [
                     ],
                     "relevantConditionsCount": 0,
                     "totalConditionsCount": 1,
+                    "constantSinusitis": "false",
                 },
         ),
         (
@@ -53,22 +58,26 @@ from assessclaimdc6510.src.lib import condition
                         "conditions": [
                             {"text": "Chronic maxillary sinusitis",
                              "code": "35923002",
-                             "status": "active"},
+                             "status": "active",
+                             "onsetDate": "2021-11-01"},
                             {"text": "Asthma",
                              "code": "J45",
-                             "status": "active"},
+                             "status": "active",
+                             "onsetDate": "2021-11-01"},
                         ],
-                        "date_of_claim": "2021-11-09",
-                    }
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
                 {
                     "conditions": [
                         {"text": "Chronic maxillary sinusitis",
                          "code": "35923002",
-                         "status": "active"}
+                         "status": "active",
+                         "onsetDate": "2021-11-01"}
                     ],
                     "relevantConditionsCount": 1,
                     "totalConditionsCount": 2,
+                    "constantSinusitis": "true"
                 },
         ),
         (
@@ -77,25 +86,30 @@ from assessclaimdc6510.src.lib import condition
                         "conditions": [
                             {"text": "Chronic maxillary sinusitis",
                              "code": "35923002",
-                             "status": "active"},
+                             "status": "active",
+                             "onsetDate": "2021-11-01"},
                             {"text": "Chronic maxillary sinusitis",
                              "code": "J32.0",
-                             "status": "active"},
-                        ],
-                        "date_of_claim": "2021-11-09",
-                    }
+                             "status": "active",
+                             "onsetDate": "2021-11-01"},
+                        ]
+                    },
+                    "date_of_claim": "2021-11-09",
                 },
                 {
                     "conditions": [
                         {"text": "Chronic maxillary sinusitis",
                          "code": "35923002",
-                         "status": "active"},
+                         "status": "active",
+                         "onsetDate": "2021-11-01"},
                         {"text": "Chronic maxillary sinusitis",
                          "code": "J32.0",
-                         "status": "active"},
+                         "status": "active",
+                         "onsetDate": "2021-11-01"},
                     ],
                     "relevantConditionsCount": 2,
                     "totalConditionsCount": 2,
+                    "constantSinusitis": "true"
                 },
         ),
     ],

@@ -40,7 +40,10 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                },
+                    "calculated": {"constantSinusitis": "false",
+                                   "multipleSurgery": "false",
+                                   "radicalSurgery": "false"},
+                }
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -55,7 +58,8 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "active"}],
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"}],
                         "procedures": []
                     },
                     "date_of_claim": "2021-11-09",
@@ -72,7 +76,8 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "active"}],
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"}],
                         "procedures": []
                     },
                     "evidenceSummary": {"relevantConditionsCount": 1,
@@ -81,6 +86,9 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
+                    "calculated": {"constantSinusitis": "true",
+                                   "multipleSurgery": "false",
+                                   "radicalSurgery": "false"},
                 },
         ),
         (
@@ -95,10 +103,12 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "active"},
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"},
                                        {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
-                                        "status": "active"}],
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"}],
                         "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
                                                 "dilation); sphenoid "
                                                 "sinus ostium",
@@ -121,10 +131,12 @@ from assessclaimdc6510.src.lib import main
                         ],
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
-                                        "status": "active"},
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"},
                                        {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
-                                        "status": "active"},
+                                        "status": "active",
+                                        "onsetDate": "2021-11-01"},
                                        ],
                         "procedures": [{"text": "Nasal/sinus endoscopy, surgical, with dilation (eg, balloon "
                                                 "dilation); sphenoid sinus ostium",
@@ -139,6 +151,9 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 1,
                                         "totalProceduresCount": 1},
+                    "calculated": {"constantSinusitis": "true",
+                                   "multipleSurgery": "false",
+                                   "radicalSurgery": "false"},
                 },
         ),
     ],

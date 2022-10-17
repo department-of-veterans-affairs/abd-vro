@@ -13,7 +13,9 @@ def procedures_calculation(request_body):
     """
     response = {}
     relevant_procedures = []
-    radical_surgery_procedure = []
+    radical_procedures = []
+    radical_surgery_procedure = "false"
+    multiple_surgery = "false"
 
     veterans_procedures = request_body["evidence"]["procedures"]
     procedures_count = len(veterans_procedures)
@@ -23,19 +25,26 @@ def procedures_calculation(request_body):
             if procedure_text in procedure_codesets.surgery:
                 relevant_procedures.append(procedure)
             elif procedure_text in procedure_codesets.radical_surgery:
-                radical_surgery_procedure.append(procedure)
-                relevant_procedures.append(procedure)
+                radical_surgery_procedure = "true"
+                radical_procedures.append(procedure)
 
-    # sort by date
-        relevant_procedures = sorted(
-            relevant_procedures,
-            key=lambda i: datetime.strptime(i["performedDate"], "%Y-%m-%d").date(),
-            reverse=True,
-        )
-    # put radical surgery first
+    if len(relevant_procedures) >= 2:
+        multiple_surgery = "true"
 
-    response["procedures"] = relevant_procedures
-    response["relevantProceduresCount"] = len(relevant_procedures)
-    response["totalProceduresCount"] = procedures_count
+    relevant_procedures.extend(radical_procedures)
+
+    relevant_procedures = sorted(
+        relevant_procedures,
+        key=lambda i: datetime.strptime(i["performedDate"], "%Y-%m-%d").date(),
+        reverse=True,
+    )
+
+    response.update({
+        "procedures": relevant_procedures,
+        "relevantProceduresCount": len(relevant_procedures),
+        "totalProceduresCount": procedures_count,
+        "radicalSurgery": radical_surgery_procedure,
+        "multipleSurgery": multiple_surgery
+    })
 
     return response

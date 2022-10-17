@@ -37,6 +37,8 @@ from assessclaimdc6510.src.lib import procedure
                     ],
                     "relevantProceduresCount": 2,
                     "totalProceduresCount": 2,
+                    "radicalSurgery": "true",
+                    "multipleSurgery": "false"
                 },
         ),
         (
@@ -64,8 +66,10 @@ from assessclaimdc6510.src.lib import procedure
                          "status": "completed",
                          "performedDate": "2010-2-22"}
                     ],
+                    "radicalSurgery": "false",
                     "relevantProceduresCount": 1,
                     "totalProceduresCount": 2,
+                    "multipleSurgery": "false"
                 },
         ),
     ],
