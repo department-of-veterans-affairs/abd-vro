@@ -27,7 +27,7 @@ from assessclaimdc6510.src.lib import condition
                             "onsetDate": "2021-11-01"
                         }
                     ],
-                    "constantSinusitis": "true",
+                    "constantSinusitis": "false",
                     "relevantConditionsCount": 1,
                     "totalConditionsCount": 1,
                 },
@@ -66,7 +66,7 @@ from assessclaimdc6510.src.lib import condition
                              "onsetDate": "2021-11-01"},
                         ],
                     },
-                    "date_of_claim": "2021-11-09",
+                    "date_of_claim": "2022-06-09",
                 },
                 {
                     "conditions": [
@@ -109,7 +109,7 @@ from assessclaimdc6510.src.lib import condition
                     ],
                     "relevantConditionsCount": 2,
                     "totalConditionsCount": 2,
-                    "constantSinusitis": "true"
+                    "constantSinusitis": "false"
                 },
         ),
     ],

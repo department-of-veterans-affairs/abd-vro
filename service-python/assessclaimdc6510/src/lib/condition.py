@@ -25,7 +25,7 @@ def conditions_calculation(request_body):
             condition_code = condition["code"]
             if condition_code in condition_codesets.sinusitis or condition_code in condition_codesets.rhinosinusitis:
                 relevant_conditions.append(condition)
-                if datetime.strptime(condition["onsetDate"], "%Y-%m-%d").date() >= date_of_claim - relativedelta(
+                if datetime.strptime(condition["onsetDate"], "%Y-%m-%d").date() <= date_of_claim - relativedelta(
                         months=3):
                     constant_sinusitis = "true"
 

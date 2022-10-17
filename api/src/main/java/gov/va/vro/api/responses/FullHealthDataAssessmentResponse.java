@@ -33,6 +33,10 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Map<String, Object> evidenceSummary;
 
+  @Schema(description = "Calculated evidence fields")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Map<String, Object> calculated;
+
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;

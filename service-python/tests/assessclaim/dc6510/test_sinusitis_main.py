@@ -59,10 +59,10 @@ from assessclaimdc6510.src.lib import main
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
                                         "status": "active",
-                                        "onsetDate": "2021-11-01"}],
+                                        "onsetDate": "2020-11-01"}],
                         "procedures": []
                     },
-                    "date_of_claim": "2021-11-09",
+                    "date_of_claim": "2021-06-09",
                 },
                 {
                     "evidence": {
@@ -77,7 +77,7 @@ from assessclaimdc6510.src.lib import main
                         "conditions": [{"text": "Chronic maxillary sinusitis",
                                         "code": "35923002",
                                         "status": "active",
-                                        "onsetDate": "2021-11-01"}],
+                                        "onsetDate": "2020-11-01"}],
                         "procedures": []
                     },
                     "evidenceSummary": {"relevantConditionsCount": 1,
@@ -88,7 +88,8 @@ from assessclaimdc6510.src.lib import main
                                         "totalProceduresCount": 0},
                     "calculated": {"constantSinusitis": "true",
                                    "multipleSurgery": "false",
-                                   "radicalSurgery": "false"},
+                                   "radicalSurgery": "false",
+                                   },
                 },
         ),
         (
@@ -151,7 +152,7 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 1,
                                         "totalProceduresCount": 1},
-                    "calculated": {"constantSinusitis": "true",
+                    "calculated": {"constantSinusitis": "false",
                                    "multipleSurgery": "false",
                                    "radicalSurgery": "false"},
                 },
