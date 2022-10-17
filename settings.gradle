@@ -85,7 +85,7 @@ include ':service-python'
 include ':service-python:assessclaimdc7101'
 include ':service-python:assessclaimdc6602'
 include ':service-python:pdfgenerator'
-include ':service-lighthouse-api'
+include ':svc-lighthouse-api'
 include ':service:db'
 include ':domain'
 

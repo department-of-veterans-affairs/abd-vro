@@ -116,12 +116,12 @@ ext {
                    ':persistence:model',
                    ':service:provider',
                    ':service:spi',
-                   ':service-lighthouse-api']
+                   ':svc-lighthouse-api']
     dockerModules = [':app',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':service-lighthouse-api',
+                     ':svc-lighthouse-api',
                      ':db-init']
 }
 
