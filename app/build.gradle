@@ -7,24 +7,6 @@ plugins {
     id 'starter.java.build-utils-conventions'
     id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
-/*
-configurations {
-    end2endtest {
-        description = 'End to end test dependencies'
-    }
-}
-
-sourceSets {
-    end2endtest {
-        java {
-            srcDir 'src/end2endtest/java'
-        }
-        resources {
-            srcDir 'src/end2end/resources'
-        }
-    }
-}
-*/
 
 testSets {
     end2endtest
@@ -148,19 +130,6 @@ afterEvaluate {
 tasks.named('lintDockerfile').configure {
     ext.targets = ["src/docker/Dockerfile"]
 }
-
-/*
-tasks.register('end2endtest', Test) {
-    description = 'Runs the end to end test.'
-    group = 'verification'
-
-    useJUnitPlatform()
-
-    testClassesDirs = sourceSets.end2endtest.output.classesDirs
-    classpath = sourceSets.end2endtest.runtimeClasspath
-}
-*/
-
 
 //Needed? this rebuilds the db-init docker image every time dockerComposeUp is run
 //tasks.named('dockerComposeUp').configure {

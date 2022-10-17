@@ -12,14 +12,6 @@ import java.time.Duration;
 
 @Slf4j
 public class Dc7701Tests {
-  /*
-  WebClient client =
-      WebClient.builder()
-          .baseUrl("http://localhost:8080/v1")
-          .defaultHeader("X-API-KEY", "test-key-01")
-          .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-          .build();
-  */
   @Test
   public void positive01() {
     HealthDataAssessmentRequest req = new HealthDataAssessmentRequest();
@@ -45,17 +37,5 @@ public class Dc7701Tests {
             .getResponseBody();
 
     log.info(result);
-    /*
-     */
-    /*
-    WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec = client.post();
-
-    WebClient.RequestBodySpec bodySpec = uriSpec.uri("/full-health-data-assessment");
-    WebClient.RequestHeadersSpec headerSpec = bodySpec.body(BodyInserters.fromValue(req));
-
-    WebClient.ResponseSpec responseSpec = headerSpec.retrieve();
-
-    responseSpec.
-    */
   }
 }
