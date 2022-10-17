@@ -3,16 +3,9 @@
  */
 
 plugins {
-    id 'starter.java.container-conventions'
-    id 'starter.java.build-utils-conventions'
+    id 'local.java.container-conventions'
 }
 
 docker {
     copySpec.from("src/main/resources").into(".")
 }
-
-dockerRun {
-    image "${dockerRegistry}/${rootProject.name}-postgres"
-}
-
-
