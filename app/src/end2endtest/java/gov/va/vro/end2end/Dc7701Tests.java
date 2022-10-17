@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
-import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -16,12 +17,14 @@ import java.time.Duration;
 
 @Slf4j
 public class Dc7701Tests {
+  private ObjectMapper mapper = new ObjectMapper();
+
   @Test
   public void positive01() throws Exception {
-    HealthDataAssessmentRequest req = new HealthDataAssessmentRequest();
-    req.setClaimSubmissionId("7001");
-    req.setVeteranIcn("1012666073V986297");
-    req.setDiagnosticCode("7101");
+    ObjectNode req = mapper.createObjectNode();
+    req.put("claimSubmissionId", "7001");
+    req.put("veteranIcn", "1012666073V986297");
+    req.put("diagnosticCode", "7101");
 
     String actual =
         WebTestClient.bindToServer()
@@ -32,7 +35,7 @@ public class Dc7701Tests {
             .build()
             .post()
             .uri("/full-health-data-assessment")
-            .body(BodyInserters.fromValue(req))
+            .body(BodyInserters.fromValue(req.toString()))
             .exchange()
             .expectStatus()
             .isCreated()
@@ -44,5 +47,13 @@ public class Dc7701Tests {
     String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
 
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+
+
+
+
+
   }
+
+
+
 }
