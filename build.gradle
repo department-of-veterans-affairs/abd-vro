@@ -106,13 +106,13 @@ ext {
                    ':persistence:model',
                    ':service:provider',
                    ':service:spi',
-                   ':service-data-access']
+                   ':svc-lighthouse-api']
     dockerModules = [':app',
                      ':db-init',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':service-data-access']
+                     ':svc-lighthouse-api']
 }
 
 // Used by `release` task to create a new version
