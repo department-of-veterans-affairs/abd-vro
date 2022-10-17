@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation project(':persistence:model')
     implementation project(':service:spi')
-    implementation project(':shared:lib-camel-connector')
+    api project(':shared:lib-camel-connector')
 
     // Needed?
     // implementation "gov.va.starter:exceptions"
