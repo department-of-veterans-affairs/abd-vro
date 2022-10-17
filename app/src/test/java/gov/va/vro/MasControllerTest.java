@@ -30,6 +30,7 @@ public class MasControllerTest extends BaseControllerTest {
   private MockEndpoint mockMasNotificationEndpoint;
 
   @Autowired protected CamelContext camelContext;
+
   @Test
   @SneakyThrows
   void testJsonConversion() {

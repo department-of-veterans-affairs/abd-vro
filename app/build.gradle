@@ -119,6 +119,7 @@ tasks.named('lintDockerfile').configure {
     ext.targets = ["src/docker/Dockerfile"]
 }
 
-tasks.named('dockerComposeUp').configure {
-    dependsOn ':db-init:docker'
-}
+//Needed? this rebuilds the db-init docker image every time dockerComposeUp is run
+//tasks.named('dockerComposeUp').configure {
+//    dependsOn ':db-init:docker'
+//}

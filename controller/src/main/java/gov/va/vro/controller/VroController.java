@@ -9,18 +9,15 @@ import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
-import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
-import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +33,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -48,40 +43,9 @@ public class VroController implements VroResource {
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
 
-  private final FetchClaimsService fetchClaimsService;
-
   private final ClaimMetricsService claimMetricsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-
-  @Override
-  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
-      HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException {
-    log.info(
-        "Getting health assessment for claim {} and veteran icn {}",
-        claim.getClaimSubmissionId(),
-        claim.getVeteranIcn());
-    try {
-      Claim model = postClaimRequestMapper.toModel(claim);
-      String responseAsString = camelEntrance.submitClaim(model);
-
-      HealthDataAssessmentResponse response =
-          objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
-      if (response.getEvidence() == null) {
-        throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
-      }
-      log.info("Returning health assessment for: {}", response.getVeteranIcn());
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } catch (ClaimProcessingException cpe) {
-      throw cpe;
-    } catch (Exception ex) {
-      log.error("Error in health assessment", ex);
-      throw new ClaimProcessingException(
-          claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
-    }
-  }
 
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
@@ -182,24 +146,6 @@ public class VroController implements VroResource {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
           claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
-    }
-  }
-
-  @Override
-  public ResponseEntity<FetchClaimsResponse> fetchClaims() {
-
-    try {
-
-      List<Claim> claimList = fetchClaimsService.fetchClaims();
-      List<ClaimInfo> claims =
-          claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
-      FetchClaimsResponse response = new FetchClaimsResponse(claims, "Success");
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (Exception e) {
-      FetchClaimsResponse failure = new FetchClaimsResponse();
-      failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
-      log.error("Could not fetch claims from the DB.", e);
-      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
