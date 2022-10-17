@@ -13,18 +13,16 @@ import javax.validation.constraints.NotBlank;
 @Schema(name = "MASExamOrderingStatusRequest", description = "Initiate a MAS request")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasOrderingStatusPayload {
+public class MasExamOrderStatusPayload {
 
   @NotBlank(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
-  private String collectionId;
+  private int collectionId;
 
+  @NotBlank(message = "Colletion Status is required")
   @Schema(description = "Collection Status", example = "DRAFT")
   private String collectionStatus;
 
-  @Schema(
-      description = "Exam order timestamp",
-      example =
-          "225-63-70T34:63:40.566614908642876440526533774826377332727118627060130905913+84:54")
+  @Schema(description = "Exam order timestamp", example = "2018-11-04T17:45:61Z")
   private String examOrderDateTime;
 }

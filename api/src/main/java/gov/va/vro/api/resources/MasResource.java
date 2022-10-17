@@ -1,8 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.MasClaimResponse;
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
-import gov.va.vro.model.mas.MasOrderingStatusPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +34,7 @@ public interface MasResource {
       summary = "MAS Claim Request",
       description =
           "Receives an initial request for a MAS claim and starts collecting the evidence")
-  @PostMapping("/notifyVROAutomatedClaimDetails")
+  @PostMapping("/automatedClaim")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
       value = {
@@ -48,16 +48,16 @@ public interface MasResource {
             description = "Data Access Server Error",
             content = @Content(schema = @Schema(hidden = true)))
       })
-  @Timed(value = "mas-claim-request")
+  @Timed(value = "mas-automated-claim")
   @Tag(name = "MAS Integration")
-  ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
+  ResponseEntity<MasClaimResponse> automatedClaim(
       @Parameter(
-              description = "Request for a MAS Claim",
+              description = "Request a MAS Automated Claim",
               required = true,
-              schema = @Schema(implementation = MasClaimDetailsPayload.class))
+              schema = @Schema(implementation = MasAutomatedClaimPayload.class))
           @Valid
           @RequestBody
-          MasClaimDetailsPayload request);
+          MasAutomatedClaimPayload request);
 
   @Operation(
       summary = "MAS Exam Ordering Status",
@@ -82,8 +82,8 @@ public interface MasResource {
       @Parameter(
               description = "Request Exam ordering status",
               required = true,
-              schema = @Schema(implementation = MasOrderingStatusPayload.class))
+              schema = @Schema(implementation = MasExamOrderStatusPayload.class))
           @Valid
           @RequestBody
-          MasOrderingStatusPayload payload);
+          MasExamOrderStatusPayload payload);
 }
