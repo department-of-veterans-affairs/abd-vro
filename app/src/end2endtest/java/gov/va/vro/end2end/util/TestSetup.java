@@ -3,7 +3,6 @@ package gov.va.vro.end2end.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.swagger.util.Json;
 import lombok.Getter;
 
 import java.io.InputStream;
@@ -24,7 +23,6 @@ public class TestSetup {
       );
   final static private AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
 
-
   private String assessment;
   private String veteranInfo;
 
@@ -44,7 +42,7 @@ public class TestSetup {
     return assessmentNode.get("diagnosticCode").asText();
   }
 
-  public String getAssessmentInput() {
+  public String getAssessmentRequest() {
     String veteranIcn = assessmentNode.get("veteranIcn").asText();
 
     ObjectNode result = mapper.createObjectNode();
@@ -55,7 +53,7 @@ public class TestSetup {
     return result.toString();
   }
 
-  public String getGeneratePdfInput() {
+  public String getGeneratePdfRequest() {
     JsonNode evidence = assessmentNode.get("evidence");
 
     ObjectNode result = mapper.createObjectNode();
