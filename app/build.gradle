@@ -50,33 +50,6 @@ dependencies {
     end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
     end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
     end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
-
-    docker project(':db-init')
-}
-
-// Disable tasks associated with Gatling
-project.gradle.startParameter.excludedTaskNames.add('compileGatlingJava')
-project.gradle.startParameter.excludedTaskNames.add('compileGatlingScala')
-project.gradle.startParameter.excludedTaskNames.add('processGatlingResources')
-project.gradle.startParameter.excludedTaskNames.add('checkstyleGatling')
-
-application {
-    // Define the main class for the application.
-    mainClass = 'gov.va.vro.VroApplication'
-}
-
-tasks.dockerPrepare.configure {
-    dependsOn(tasks.bootJar)
-}
-
-bootJar {
-    manifest {
-        attributes(
-                'Application-Version': "${project.version}",
-                'Start-Class': 'gov.va.vro.VroApplication',
-                'Application-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
-        )
-    }
 }
 
 openApi {
