@@ -12,6 +12,7 @@ import java.time.Duration;
 @Getter
 @Setter
 public class RestHelper {
+  static final private long DEFAULT_TIMEOUT = 15000;
   private String apiKey;
 
   public String getAssessment(TestSetup setup) throws Exception {
@@ -22,7 +23,7 @@ public class RestHelper {
             .baseUrl("http://localhost:8080/v1")
             .defaultHeader("X-API-KEY", apiKey)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
+            .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
             .build()
             .post()
             .uri("/full-health-data-assessment")
@@ -45,7 +46,7 @@ public class RestHelper {
             .baseUrl("http://localhost:8080/v1")
             .defaultHeader("X-API-KEY", apiKey)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
+            .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
             .build()
             .post()
             .uri("/evidence-pdf")
@@ -68,7 +69,7 @@ public class RestHelper {
             .baseUrl("http://localhost:8080/v1")
             .defaultHeader("X-API-KEY", apiKey)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
+            .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
             .build()
             .get()
             .uri(uriBuilder -> uriBuilder
