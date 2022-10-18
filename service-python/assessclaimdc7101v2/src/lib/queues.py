@@ -15,7 +15,7 @@ def on_request_callback(channel, method, properties, body):
 	binding_key = method.routing_key
 	message = json.loads(body.decode('utf-8'))
 	logging.info(f" [x] {binding_key}: Received message.")
-
+	logging.info(json.dumps(message))
 	try:
 		response = main.assess_hypertension(message)
 	except:
@@ -28,6 +28,7 @@ def on_request_callback(channel, method, properties, body):
 		body=json.dumps(response)
 	)
 	logging.info(f" [x] {binding_key}: Message sent to.")
+	logging.info(json.dumps(response))
 
 
 def queue_setup(channel):
