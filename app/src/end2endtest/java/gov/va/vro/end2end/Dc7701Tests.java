@@ -36,29 +36,8 @@ public class Dc7701Tests {
     String pdfGenExpected = setup.getGeneratePdfResponse();
     JSONAssert.assertEquals(pdfGenExpected, pdfGenActual, JSONCompareMode.STRICT);
 
-    String cd = setup.getContentDisposition();
-
-    byte[] actualBytes =
-        WebTestClient.bindToServer()
-            .baseUrl("http://localhost:8080/v1")
-            .defaultHeader("X-API-KEY", "test-key-01")
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
-            .build()
-            .get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/evidence-pdf/7001")
-                .build())
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .expectHeader()
-            .valueEquals("Content-Disposition", cd)
-            .expectBody()
-            .returnResult()
-            .getResponseBody();
-
-    PdfText pdfText = PdfText.getInstance(actualBytes);
+    byte[] pdf = helper.getPdf(setup);
+    PdfText pdfText = PdfText.getInstance(pdf);
 
     JsonNode bpReadings = setup.getBpReadingsNode();
     assertTrue(bpReadings.isArray());;

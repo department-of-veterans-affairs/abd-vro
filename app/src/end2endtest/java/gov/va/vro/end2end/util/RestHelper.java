@@ -59,4 +59,30 @@ public class RestHelper {
 
     return result;
   }
+
+  public byte[] getPdf(TestSetup setup) {
+    String cd = setup.getContentDisposition();
+
+    byte[] result =
+        WebTestClient.bindToServer()
+            .baseUrl("http://localhost:8080/v1")
+            .defaultHeader("X-API-KEY", apiKey)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .responseTimeout(Duration.ofMillis(10000))
+            .build()
+            .get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/evidence-pdf/7001")
+                .build())
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .valueEquals("Content-Disposition", cd)
+            .expectBody()
+            .returnResult()
+            .getResponseBody();
+
+    return result;
+  }
 }
