@@ -36,4 +36,27 @@ public class RestHelper {
 
     return result;
   }
+
+  public String generatePdf(TestSetup setup) throws Exception {
+    String pdfGenInput = setup.getGeneratePdfInput();
+
+    String result =
+        WebTestClient.bindToServer()
+            .baseUrl("http://localhost:8080/v1")
+            .defaultHeader("X-API-KEY", apiKey)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .responseTimeout(Duration.ofMillis(10000))
+            .build()
+            .post()
+            .uri("/evidence-pdf")
+            .body(BodyInserters.fromValue(pdfGenInput))
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectBody(String.class)
+            .returnResult()
+            .getResponseBody();
+
+    return result;
+  }
 }

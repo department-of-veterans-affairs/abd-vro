@@ -36,48 +36,13 @@ public class Dc7701Tests {
     RestHelper helper = new RestHelper();
     helper.setApiKey("test-key-01");
 
-    String actual = helper.getAssessment(setup);
-    String expected = setup.getAssessment();
+    String actualAssess = helper.getAssessment(setup);
+    String expectedAssess = setup.getAssessment();
+    JSONAssert.assertEquals(expectedAssess, actualAssess, JSONCompareMode.STRICT);
 
-    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-  }
-
-  @Test
-  public void pdf() throws Exception {
-    InputStream stream = this.getClass().getResourceAsStream("/test-7701-01/assessment.json");
-    String assessment = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-
-    InputStream streamvi = this.getClass().getResourceAsStream("/test-7701-01/veteranInfo.json");
-    String veteranInfo = new String(streamvi.readAllBytes(), StandardCharsets.UTF_8);
-
-    ObjectNode req = mapper.createObjectNode();
-    req.put("claimSubmissionId", "7001");
-    req.put("diagnosticCode", "7101");
-    req.set("veteranInfo", mapper.readTree(veteranInfo));
-    req.set("evidence",  mapper.readTree(assessment).get("evidence"));
-
-    String actual =
-        WebTestClient.bindToServer()
-            .baseUrl("http://localhost:8080/v1")
-            .defaultHeader("X-API-KEY", "test-key-01")
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
-            .build()
-            .post()
-            .uri("/evidence-pdf")
-            .body(BodyInserters.fromValue(req.toString()))
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .expectBody(String.class)
-            .returnResult()
-            .getResponseBody();
-
-    ObjectNode expectedNode = mapper.createObjectNode();
-    expectedNode.put("claimSubmissionId", "7001");
-    expectedNode.put("status", "COMPLETE");
-
-    JSONAssert.assertEquals(expectedNode.toString(), actual, JSONCompareMode.STRICT);
+    String pdfGenActual = helper.generatePdf(setup);
+    String pdfGenExpected = setup.getGeneratePdfResponse();
+    JSONAssert.assertEquals(pdfGenExpected, pdfGenActual, JSONCompareMode.STRICT);
   }
 
   @Test
