@@ -45,7 +45,7 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/service-data-access/src/docker"
+    directory: "/svc-lighthouse-api/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
