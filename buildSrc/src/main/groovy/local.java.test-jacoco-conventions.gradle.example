@@ -10,8 +10,8 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 jacoco {
-    toolVersion = jacoco_version
-    reportsDirectory = file("$buildDir/jacoco")
+    toolVersion = jacoco_tool_version
+    reportsDir = file("$buildDir/jacoco")
 }
 
 test {
@@ -29,7 +29,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
         }))
     }
 
@@ -45,12 +45,9 @@ jacocoTestCoverageVerification {
             }
             afterEvaluate {
                 classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
                 }))
             }
         }
     }
 }
-
-
-

@@ -14,15 +14,14 @@ buildscript {
     }
 }
 
-
 plugins {
+    // Set versions for these plugins (but don't apply) so we don't have to specify the version later
     id("org.ajoberstar.grgit") version "${grgit_version}" apply false
     id("org.springframework.boot") version "${spring_boot_version}" apply false
     id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
     id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
     id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
-
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
@@ -30,9 +29,14 @@ plugins {
     id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
     id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
     id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
-    id 'nebula.lint' version '17.7.0' apply false
     id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
+
+    // Apply these
     id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
+    id('nebula.lint') version '17.7.0'
+    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
+    // VA's starter plugins
+    // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
     id("starter.java.build-utils-property-conventions") version "${starter_boot_version}"
     id("starter.java.build-utils-task-conventions") version "${starter_boot_version}"
     id("starter.java.release-conventions") version "${starter_boot_version}"
@@ -40,7 +44,6 @@ plugins {
     id("starter.java.versions-conventions") version "${starter_boot_version}"
     id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
     id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
-    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
 }
 
 allprojects {
@@ -76,33 +79,21 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "java"
-    apply plugin: 'starter.java.config-conventions'
-    dependencies {
-        annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-        checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-        implementation 'com.vladmihalcea:hibernate-types-52:2.19.2'
 
-        // constrain transitive dependencies to use versions without vulnerabilities
-        constraints {
-            // for starter-bom
-            implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-            implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-            implementation "org.springframework:spring-beans:${spring_framework_version}"
-            implementation "io.github.classgraph:classgraph:${class_graph_version}"
-            implementation "com.squareup.okhttp3:okhttp:4.10.0"
-            implementation "org.yaml:snakeyaml:1.33"
+    pluginManager.withPlugin('java') {
+        // Constrains transitive dependencies to use versions without vulnerabilities
+        // buildSrc/src/main/groovy/local.java.vro-dep-constraints.gradle
+        apply plugin: 'local.java.vro-dep-constraints'
 
-            // for mockserver-netty and hapi-fhir
-            implementation 'org.apache.commons:commons-text:1.10.0'
-        }
-    }
-
-    afterEvaluate {
-        if (tasks.findByName('docker')) {
-            docker {
-                noCache false
-            }
+        // Defines springBom, annotationBom, and checkstyleRules
+        // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.config-conventions.gradle
+        apply plugin: 'starter.java.config-conventions'
+        dependencies {
+            // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
+            annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+            // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
+            checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+            implementation 'com.vladmihalcea:hibernate-types-55:2.20.0'
         }
     }
 }
@@ -115,18 +106,19 @@ ext {
                    ':api',
                    ':controller',
                    ':persistence:model',
+                   ':shared:lib-camel-connector',
                    ':service:provider',
                    ':service:spi',
-                   ':service-data-access']
+                   ':svc-lighthouse-api']
     dockerModules = [':app',
+                     ':db-init',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':service-data-access',
-                     ':db-init']
+                     ':svc-lighthouse-api']
 }
 
-
+// Used by `release` task to create a new version
 scmVersion {
     // never connect to remote
     localOnly = true
