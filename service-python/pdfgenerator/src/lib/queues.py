@@ -64,11 +64,11 @@ def on_fetch_callback(channel, method, properties, body):
 def queue_setup(channel):
     channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
     # Generate PDF Queue
-    channel.queue_declare(queue=GENERATE_QUEUE)
+    channel.queue_declare(queue=GENERATE_QUEUE, durable=True, auto_delete=True)
     channel.queue_bind(queue=GENERATE_QUEUE, exchange=EXCHANGE)
     channel.basic_consume(queue=GENERATE_QUEUE, on_message_callback=on_generate_callback, auto_ack=True)
     # Fetch PDF Queue
-    channel.queue_declare(queue=FETCH_QUEUE)
+    channel.queue_declare(queue=FETCH_QUEUE, durable=True, auto_delete=True)
     channel.queue_bind(queue=FETCH_QUEUE, exchange=EXCHANGE)
     channel.basic_consume(queue=FETCH_QUEUE, on_message_callback=on_fetch_callback, auto_ack=True)
     logging.info(f" [*] Waiting for data for queue: {GENERATE_QUEUE}. To exit press CTRL+C")
