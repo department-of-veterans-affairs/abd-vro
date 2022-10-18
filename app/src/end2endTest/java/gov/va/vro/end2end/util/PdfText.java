@@ -1,6 +1,7 @@
 package gov.va.vro.end2end.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -17,16 +18,12 @@ public class PdfText {
     this.pdfText = pdfText;
   }
 
-  private int findOccurrence(String target) {
-    return (pdfText.length() - pdfText.replace(target, "").length()) / target.length();
-  }
-
   public int countBpReadings() {
-    return findOccurrence("Blood pressure:");
+    return StringUtils.countMatches(pdfText, "Blood pressure:");
   }
 
   public int countMedications() {
-    return findOccurrence("Prescribed on:");
+    return StringUtils.countMatches(pdfText, "Prescribed on:");
   }
 
   /**
