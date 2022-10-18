@@ -38,6 +38,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    // https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-55
+    implementation 'com.vladmihalcea:hibernate-types-55:2.20.0'
+
 
     // Needed?
     // implementation "org.postgresql:postgresql:${postgresql_version}"
