@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.end2end.util.PdfText;
 import gov.va.vro.end2end.util.RestHelper;
 import gov.va.vro.end2end.util.TestSetup;
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-public class Dc7701Tests {
+public class VroV1Tests {
   private void testAssessment(TestSetup setup, RestHelper helper) throws Exception {
     String actual = helper.getAssessment(setup);
     String expected = setup.getAssessment();
@@ -48,7 +47,7 @@ public class Dc7701Tests {
   }
 
   @Test
-  public void positiveCase01() throws Exception {
+  public void positive7701Case01() throws Exception {
     TestSetup setup = TestSetup.getInstance("test-7701-01", "7001");
 
     RestHelper helper = new RestHelper();
