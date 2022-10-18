@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import gov.va.vro.end2end.util.PdfText;
+import gov.va.vro.end2end.util.RestHelper;
 import gov.va.vro.end2end.util.TestSetup;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -32,29 +33,11 @@ public class Dc7701Tests {
   public void positive01() throws Exception {
     TestSetup setup = TestSetup.getInstance("test-7701-01", "7001");
 
-    String input = setup.getAssessmentInput();
+    RestHelper helper = new RestHelper();
+    helper.setApiKey("test-key-01");
 
-    String actual =
-        WebTestClient.bindToServer()
-            .baseUrl("http://localhost:8080/v1")
-            .defaultHeader("X-API-KEY", "test-key-01")
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .responseTimeout(Duration.ofMillis(10000))
-            .build()
-            .post()
-            .uri("/full-health-data-assessment")
-            .body(BodyInserters.fromValue(input))
-            .exchange()
-            .expectStatus()
-            .isCreated()
-            .expectBody(String.class)
-            .returnResult()
-            .getResponseBody();
-
+    String actual = helper.getAssessment(setup);
     String expected = setup.getAssessment();
-
-    // InputStream stream = this.getClass().getResourceAsStream("/test-7701-01/assessment.json");
-    // String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
 
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }

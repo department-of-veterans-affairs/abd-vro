@@ -26,7 +26,7 @@ public class PdfText {
   }
 
   public boolean hasVeteranInfo(JsonNode veteranInfo) {
-    // Assume all exists for now. That is how tst data is set up.
+    // Assume all exists for now. That is how test data is set up.
     String first = veteranInfo.get("first").asText();
     String middle = veteranInfo.get("middle").asText();
     String last = veteranInfo.get("last").asText();
