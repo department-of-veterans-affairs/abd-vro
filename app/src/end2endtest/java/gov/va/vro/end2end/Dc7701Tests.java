@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import gov.va.vro.end2end.util.PdfText;
+import gov.va.vro.end2end.util.TestSetup;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -29,10 +30,9 @@ public class Dc7701Tests {
 
   @Test
   public void positive01() throws Exception {
-    ObjectNode req = mapper.createObjectNode();
-    req.put("claimSubmissionId", "7001");
-    req.put("veteranIcn", "1012666073V986297");
-    req.put("diagnosticCode", "7101");
+    TestSetup setup = TestSetup.getInstance("test-7701-01", "7001");
+
+    String input = setup.getAssessmentInput();
 
     String actual =
         WebTestClient.bindToServer()
@@ -43,7 +43,7 @@ public class Dc7701Tests {
             .build()
             .post()
             .uri("/full-health-data-assessment")
-            .body(BodyInserters.fromValue(req.toString()))
+            .body(BodyInserters.fromValue(input))
             .exchange()
             .expectStatus()
             .isCreated()
@@ -51,8 +51,10 @@ public class Dc7701Tests {
             .returnResult()
             .getResponseBody();
 
-    InputStream stream = this.getClass().getResourceAsStream("/test-7701-01/assessment.json");
-    String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    String expected = setup.getAssessment();
+
+    // InputStream stream = this.getClass().getResourceAsStream("/test-7701-01/assessment.json");
+    // String expected = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
 
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
