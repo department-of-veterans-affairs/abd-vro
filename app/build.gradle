@@ -1,8 +1,5 @@
-import java.text.SimpleDateFormat
-
 plugins {
-    id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
-    id 'starter.std.java.application-conventions'
+    id 'local.std.java.application-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'
     id 'org.unbroken-dome.test-sets' version '4.0.0'
@@ -17,14 +14,6 @@ tasks.named("end2endTest") {
 }
 
 dependencies {
-    // constrain gatling and zinc to use updated scala-library without vulnerability
-    constraints {
-        implementation "org.scala-lang:scala-library:${scala_version}"
-        gatling "org.scala-lang:scala-library:${scala_version}"
-        gatlingImplementation "org.scala-lang:scala-library:${scala_version}"
-        zinc "org.scala-lang:scala-library:${scala_version}"
-    }
-
     implementation project(':domain')
     implementation project(':api')
     implementation project(':controller')
@@ -53,11 +42,6 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
     testRuntimeOnly "com.h2database:h2:${h2_version}"
-    // Needed?
-    // testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-    // testImplementation "org.testcontainers:postgresql:${testcontainers_version}"
-
-    // This version is compatible with current spring version: 5.3.8
 
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
 
@@ -102,8 +86,6 @@ openApi {
 }
 
 afterEvaluate {
-    tasks.getByName('spotlessCheck').dependsOn(tasks.getByName('spotlessApply'))
-
     tasks.named('forkedSpringBootRun').configure {
         dependsOn 'bootStartScripts'
         dependsOn 'checkstyleIntegrationTest'
@@ -116,7 +98,7 @@ afterEvaluate {
         dependsOn 'spotlessJava'
         dependsOn 'startScripts'
         dependsOn 'test'
-        dependsOn ':service-python:pytest'
+        // dependsOn ':service-python:pytest' // slows down `:app:build` task
 
         dependsOn 'jacocoTestReport'
         dependsOn 'jacocoTestCoverageVerification'
@@ -128,12 +110,3 @@ afterEvaluate {
         dependsOn 'forkedSpringBootStop'
     }
 }
-
-tasks.named('lintDockerfile').configure {
-    ext.targets = ["src/docker/Dockerfile"]
-}
-
-//Needed? this rebuilds the db-init docker image every time dockerComposeUp is run
-//tasks.named('dockerComposeUp').configure {
-//    dependsOn ':db-init:docker'
-//}
