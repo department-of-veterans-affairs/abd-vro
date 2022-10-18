@@ -9,10 +9,10 @@ plugins {
 }
 
 testSets {
-    end2endtest
+    end2endTest
 }
 
-tasks.named("end2endtest") {
+tasks.named("end2endTest") {
     useJUnitPlatform()
 }
 
@@ -62,12 +62,10 @@ dependencies {
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
 
     // end to end dependencies
-    end2endtestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-    end2endtestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
-    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-    end2endtestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
+    end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+    end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
+    end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+    end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
 
     docker project(':db-init')
 }
