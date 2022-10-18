@@ -65,6 +65,9 @@ dependencies {
     end2endtestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
     end2endtestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
     end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+    end2endtestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+    end2endtestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
 
     docker project(':db-init')
 }
