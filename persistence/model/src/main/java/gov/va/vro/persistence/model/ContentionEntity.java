@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,7 +25,11 @@ public class ContentionEntity extends BaseEntity {
 
   @NotNull private String diagnosticCode;
 
-  @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "contention",
+      fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
 
   @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)

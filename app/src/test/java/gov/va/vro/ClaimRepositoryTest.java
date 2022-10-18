@@ -3,11 +3,15 @@ package gov.va.vro;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.constraints.AssertTrue;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class ClaimRepositoryTest extends BaseIntegrationTest {
 
@@ -20,11 +24,20 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     assertNotNull(veteran.getUpdatedAt());
 
     ContentionEntity contention1 = new ContentionEntity("c1");
-    contention1.addAssessmentResult(2);
+    AssessmentResultEntity ar = new AssessmentResultEntity();
+    Map<String, String> evidence = new HashMap<>();
+    evidence.put("medicationsCount", "10");
+    ar.setEvidenceCountSummary(evidence);
+    contention1.addAssessmentResult(ar);
     contention1.addEvidenceSummaryDocument("doc1", 1);
     contention1.addEvidenceSummaryDocument("doc2", 2);
     ContentionEntity contention2 = new ContentionEntity("c2");
-    contention2.addAssessmentResult(1);
+    Map<String, String> evidence2 = new HashMap<>();
+    AssessmentResultEntity ar2 = new AssessmentResultEntity();
+    evidence2.put("medicationsCount", "10");
+    ar2.setEvidenceCountSummary(evidence2);
+    ar2.setEvidenceCount(1);
+    contention2.addAssessmentResult(ar2);
     contention2.addAssessmentResult(2);
     var claim = TestDataSupplier.createClaim("123", "type", veteran);
     claim.addContention(contention1);

@@ -1,6 +1,5 @@
 package gov.va.vro.persistence.model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,9 +29,4 @@ public class AssessmentResultEntity extends BaseEntity {
   @Type(type = "json")
   @Column(columnDefinition = "jsonb")
   private Map<String, String> evidenceCountSummary;
-
-  @JsonAnySetter
-  void setEvidenceCountSummary(String key, String value) {
-    evidenceCountSummary.put(key, value);
-  }
 }
