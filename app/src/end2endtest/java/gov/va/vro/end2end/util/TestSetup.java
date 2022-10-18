@@ -8,6 +8,9 @@ import lombok.Getter;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public class TestSetup {
@@ -57,6 +60,25 @@ public class TestSetup {
     result.put("status", "COMPLETE");
 
     return result.toString();
+  }
+
+  public JsonNode getBpReadingsNode() {
+    JsonNode evidence = assessmentNode.get("evidence");
+    return evidence.get("bp_readings");
+  }
+
+  public JsonNode getMedicationsNode() {
+    JsonNode evidence = assessmentNode.get("evidence");
+    return evidence.get("medications");
+  }
+
+  public String getContentDisposition() {
+    Instant instant = Instant.now();
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
+    String date = dtf.format(instant);
+
+    String filename = "VAMC_" + "Hypertension" + "_Rapid_Decision_Evidence--" + date + ".pdf";
+    return "attachment; filename=\"" + filename + "\"";
   }
 
   public static TestSetup getInstance(String resourceDir, String claimSubmissionId) throws Exception {
