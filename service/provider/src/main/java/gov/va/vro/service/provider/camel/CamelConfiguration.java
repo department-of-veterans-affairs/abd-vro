@@ -1,8 +1,9 @@
-package gov.va.vro.camel;
+package gov.va.vro.service.provider.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
-import com.rabbitmq.client.ConnectionFactory;
+import gov.va.vro.camel.CamelDtoConverter;
+import gov.va.vro.camel.CamelUtils;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -27,8 +28,6 @@ import java.util.Set;
 public class CamelConfiguration {
   private final CamelContext camelContext;
   private final CamelUtils camelUtils;
-
-  private final MessageQueueProperties messageQueueProps;
 
   private static final Set<Class> dtoClasses =
       Sets.newHashSet(Claim.class, GeneratePdfPayload.class, MasClaimDetailsPayload.class);
@@ -70,15 +69,5 @@ public class CamelConfiguration {
         });
 
     return converter;
-  }
-
-  @Bean
-  ConnectionFactory rabbitmqConnectionFactory() {
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost(messageQueueProps.getHost());
-    factory.setPort(messageQueueProps.getPort());
-    factory.setUsername(messageQueueProps.getUser());
-    factory.setPassword(messageQueueProps.getPassword());
-    return factory;
   }
 }
