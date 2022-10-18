@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.MasClaimDetailsPayload;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
