@@ -21,7 +21,7 @@ public class VroV1Tests {
   private void testPdfGeneration(TestSetup setup, RestHelper helper) throws Exception {
     String actual = helper.generatePdf(setup);
     String expected = setup.getGeneratePdfResponse();
-    JSONAssert.assertEquals(expected,actual, JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   private void testGeneratedPdf(TestSetup setup, RestHelper helper) throws Exception {

@@ -14,14 +14,18 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This class drives end-to-end tests based on two gold files in a resource directory. The file
+ * assessment.json is the expected response from the server for assessment. The file
+ * veteranInfo.json provides the veteran information needed for pdf generation.
+ */
 @Getter
 public class TestSetup {
-  final static private Map<String, String> diagnosticCodeToName =
+  private static final Map<String, String> diagnosticCodeToName =
       Map.ofEntries(
           new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
-          new AbstractMap.SimpleEntry<>("6602", "Asthma")
-      );
-  final static private AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
+          new AbstractMap.SimpleEntry<>("6602", "Asthma"));
+  private static final AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
 
   private String assessment;
   private String veteranInfo;
@@ -42,6 +46,11 @@ public class TestSetup {
     return assessmentNode.get("diagnosticCode").asText();
   }
 
+  /**
+   * Provides assessment request for server.
+   *
+   * @return json assessment request
+   */
   public String getAssessmentRequest() {
     String veteranIcn = assessmentNode.get("veteranIcn").asText();
 
@@ -53,6 +62,11 @@ public class TestSetup {
     return result.toString();
   }
 
+  /**
+   * Provides generate pdf request for server.
+   *
+   * @return json generate pdf request
+   */
   public String getGeneratePdfRequest() {
     JsonNode evidence = assessmentNode.get("evidence");
 
@@ -60,11 +74,16 @@ public class TestSetup {
     result.put("claimSubmissionId", claimSubmissionId);
     result.put("diagnosticCode", getDiagnosticCode());
     result.set("veteranInfo", veteranInfoNode);
-    result.set("evidence",  evidence);
+    result.set("evidence", evidence);
 
     return result.toString();
   }
 
+  /**
+   * Returns expected json generate pdf response.
+   *
+   * @return expected json request
+   */
   public String getGeneratePdfResponse() {
     ObjectNode result = mapper.createObjectNode();
     result.put("claimSubmissionId", claimSubmissionId);
@@ -83,6 +102,11 @@ public class TestSetup {
     return evidence.get("medications");
   }
 
+  /**
+   * Returns expected content disposition header.
+   *
+   * @return expectred content disposition header
+   */
   public String getContentDisposition() {
     Instant instant = Instant.now();
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
@@ -94,6 +118,13 @@ public class TestSetup {
     return "attachment; filename=\"" + filename + "\"";
   }
 
+  /**
+   * Constructs a new test set up based on gold files in the resource directory.
+   *
+   * @param resourceDir resource directory
+   * @return newed TestSetup
+   * @throws Exception any error to fail the test
+   */
   public static TestSetup getInstance(String resourceDir) throws Exception {
     TestSetup result = new TestSetup();
 

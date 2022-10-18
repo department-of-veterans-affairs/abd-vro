@@ -12,7 +12,7 @@ import java.time.Duration;
 @Getter
 @Setter
 public class RestHelper {
-  static final private long DEFAULT_TIMEOUT = 15000;
+  private static final long DEFAULT_TIMEOUT = 15000;
   private String apiKey;
 
   private WebTestClient buildClient() {
@@ -24,10 +24,18 @@ public class RestHelper {
         .build();
   }
 
+  /**
+   * Generates the health assessment.
+   *
+   * @param setup test settings
+   * @return health assessment response
+   * @throws Exception any error to fail the test
+   */
   public String getAssessment(TestSetup setup) throws Exception {
     String req = setup.getAssessmentRequest();
 
-    String result = buildClient()
+    String result =
+        buildClient()
             .post()
             .uri("/full-health-data-assessment")
             .body(BodyInserters.fromValue(req))
@@ -41,10 +49,18 @@ public class RestHelper {
     return result;
   }
 
+  /**
+   * Generates the evidence pdf.
+   *
+   * @param setup test settings
+   * @return generate pdf response
+   * @throws Exception any error to fail the test
+   */
   public String generatePdf(TestSetup setup) throws Exception {
     String req = setup.getGeneratePdfRequest();
 
-    String result = buildClient()
+    String result =
+        buildClient()
             .post()
             .uri("/evidence-pdf")
             .body(BodyInserters.fromValue(req))
@@ -58,15 +74,20 @@ public class RestHelper {
     return result;
   }
 
+  /**
+   * Gets the evidence pdf as a byte array.
+   *
+   * @param setup test settings
+   * @return evidence pdf as byte array
+   */
   public byte[] getPdf(TestSetup setup) {
     String cd = setup.getContentDisposition();
     String claimSubmissionId = setup.getClaimSubmissionId();
 
-    byte[] result =buildClient()
+    byte[] result =
+        buildClient()
             .get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/evidence-pdf/" + claimSubmissionId)
-                .build())
+            .uri(uriBuilder -> uriBuilder.path("/evidence-pdf/" + claimSubmissionId).build())
             .exchange()
             .expectStatus()
             .isOk()
