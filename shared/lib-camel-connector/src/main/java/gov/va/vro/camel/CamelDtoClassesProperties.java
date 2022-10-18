@@ -24,9 +24,15 @@ public class CamelDtoClassesProperties {
               try {
                 return Class.forName(classname);
               } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new StringToClassException(e);
               }
             })
         .collect(Collectors.toUnmodifiableList());
+  }
+
+  static class StringToClassException extends RuntimeException {
+    public StringToClassException(Exception e) {
+      super(e);
+    }
   }
 }
