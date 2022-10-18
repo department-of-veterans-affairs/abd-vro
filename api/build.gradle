@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':domain')
+    implementation project(':shared:domain')
 
     implementation 'io.micrometer:micrometer-core'
     implementation 'gov.va.starter:exceptions'
