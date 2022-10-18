@@ -10,13 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class MessageQueueConfiguration {
-  //  private final CamelContext camelContext;
-  //  private final CamelUtils camelUtils;
-
   private final MessageQueueProperties messageQueueProps;
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
+    log.info("ConnectionFactory: connecting to {}", messageQueueProps.getHost());
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(messageQueueProps.getHost());
     factory.setPort(messageQueueProps.getPort());

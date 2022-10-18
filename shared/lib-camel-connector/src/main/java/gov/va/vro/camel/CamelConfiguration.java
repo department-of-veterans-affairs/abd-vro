@@ -1,37 +1,26 @@
-package gov.va.vro.service.provider.camel;
+package gov.va.vro.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
-import gov.va.vro.camel.CamelDtoConverter;
-import gov.va.vro.camel.CamelUtils;
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
-import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.seda.SedaComponent;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableJpaRepositories({"gov.va.vro.model"})
-@EntityScan({"gov.va.vro.model"})
 @RequiredArgsConstructor
 public class CamelConfiguration {
   private final CamelContext camelContext;
   private final CamelUtils camelUtils;
-
-  private static final Set<Class> dtoClasses =
-      Sets.newHashSet(Claim.class, GeneratePdfPayload.class, MasClaimDetailsPayload.class);
   private final ObjectMapper mapper;
+  private final CamelDtoClassesProperties camelDtoClassesProperties;
 
   @Bean
   CamelContextConfiguration contextConfiguration() {
@@ -44,7 +33,8 @@ public class CamelConfiguration {
 
       @Override
       public void afterApplicationStart(CamelContext camelContext) {
-        registerTypeConverters();
+        List<Class> dtoClasses = camelDtoClassesProperties.getActualDtoClasses();
+        registerTypeConverters(dtoClasses);
 
         log.info(
             camelContext.getEndpoints().size()
@@ -55,19 +45,26 @@ public class CamelConfiguration {
     };
   }
 
-  // TODO: replace with Auto-configured TypeConverter
-  // https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-Auto-configuredTypeConverter
-  @Bean
-  CamelDtoConverter registerTypeConverters() {
-    CamelDtoConverter converter = new CamelDtoConverter(dtoClasses, mapper);
+  void registerTypeConverters(Collection<Class> dtoClasses) {
+    CamelDtoConverter dtoConverter = new CamelDtoConverter(dtoClasses, mapper);
 
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();
     dtoClasses.forEach(
         clazz -> {
-          registry.addTypeConverter(clazz, byte[].class, converter);
-          registry.addTypeConverter(byte[].class, clazz, converter);
+          log.info("Registering CamelDtoConverter for: {}", clazz);
+          registry.addTypeConverter(clazz, byte[].class, dtoConverter);
+          registry.addTypeConverter(byte[].class, clazz, dtoConverter);
         });
 
-    return converter;
+    /*
+    ((CoreTypeConverterRegistry) registry)
+        .getTypeMappings()
+        .forEach(
+            (fromClass, toClass, converter) -> {
+                System.err.println(fromClass.getName()+" -> "+toClass.getName()+" : "+converter.getClass());
+            });
+    //        System.err.println("\n+++++++ " + registry.lookup(Claim.class, byte[].class));
+    //        System.err.println("\n+++++++ " + registry.lookup(byte[].class, Claim.class));
+    */
   }
 }

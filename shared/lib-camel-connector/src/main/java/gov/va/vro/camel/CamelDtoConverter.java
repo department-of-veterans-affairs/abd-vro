@@ -27,8 +27,6 @@ public class CamelDtoConverter extends TypeConverterSupport {
   private final ObjectReader reader;
 
   /***
-   * <p>Summary.</p>
-   *
    * @param dtoClasses DTO Classes
    * @param mapper mapper
    */
@@ -44,7 +42,6 @@ public class CamelDtoConverter extends TypeConverterSupport {
   public <T> T convertTo(Class<T> targetClass, Exchange exchange, Object value)
       throws TypeConversionException {
     try {
-      log.info("class: {}, targetClass: {}", value.getClass(), targetClass);
       if (dtoClasses.contains(value.getClass())) {
         if (targetClass == byte[].class) {
           return (T) toByteArray(value);
