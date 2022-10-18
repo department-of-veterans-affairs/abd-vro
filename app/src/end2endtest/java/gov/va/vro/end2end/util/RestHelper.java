@@ -63,6 +63,7 @@ public class RestHelper {
 
   public byte[] getPdf(TestSetup setup) {
     String cd = setup.getContentDisposition();
+    String claimSubmissionId = setup.getClaimSubmissionId();
 
     byte[] result =
         WebTestClient.bindToServer()
@@ -73,7 +74,7 @@ public class RestHelper {
             .build()
             .get()
             .uri(uriBuilder -> uriBuilder
-                .path("/evidence-pdf/7001")
+                .path("/evidence-pdf/" + claimSubmissionId)
                 .build())
             .exchange()
             .expectStatus()

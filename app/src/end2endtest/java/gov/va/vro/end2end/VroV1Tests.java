@@ -29,8 +29,12 @@ public class VroV1Tests {
     PdfText pdfText = PdfText.getInstance(pdf);
 
     JsonNode bpReadings = setup.getBpReadingsNode();
-    assertTrue(bpReadings.isArray());
-    assertEquals(bpReadings.size(), pdfText.countBpReadings());
+    if (bpReadings != null) {
+      assertTrue(bpReadings.isArray());
+      assertEquals(bpReadings.size(), pdfText.countBpReadings());
+    } else {
+      assertEquals(0, pdfText.countBpReadings());
+    }
 
     JsonNode meds = setup.getMedicationsNode();
     assertTrue(meds.isArray());
@@ -47,8 +51,18 @@ public class VroV1Tests {
   }
 
   @Test
-  public void positive7701Case01() throws Exception {
-    TestSetup setup = TestSetup.getInstance("test-7701-01", "7001");
+  public void positive7101Case01() throws Exception {
+    TestSetup setup = TestSetup.getInstance("test-7101-01");
+
+    RestHelper helper = new RestHelper();
+    helper.setApiKey("test-key-01");
+
+    testEnd2End(setup, helper);
+  }
+
+  @Test
+  public void positive6602Case01() throws Exception {
+    TestSetup setup = TestSetup.getInstance("test-6602-01");
 
     RestHelper helper = new RestHelper();
     helper.setApiKey("test-key-01");

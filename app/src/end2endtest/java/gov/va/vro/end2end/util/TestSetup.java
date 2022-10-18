@@ -11,9 +11,20 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class TestSetup {
+  final static private Map<String, String> diagnosticCodeToName =
+      Map.ofEntries(
+          new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
+          new AbstractMap.SimpleEntry<>("6602", "Asthma")
+      );
+  final static private AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
+
+
   private String assessment;
   private String veteranInfo;
 
@@ -29,25 +40,27 @@ public class TestSetup {
     return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
   }
 
+  public String getDiagnosticCode() {
+    return assessmentNode.get("diagnosticCode").asText();
+  }
+
   public String getAssessmentInput() {
     String veteranIcn = assessmentNode.get("veteranIcn").asText();
-    String diagnosticCode = assessmentNode.get("diagnosticCode").asText();
 
     ObjectNode result = mapper.createObjectNode();
     result.put("claimSubmissionId", claimSubmissionId);
     result.put("veteranIcn", veteranIcn);
-    result.put("diagnosticCode", diagnosticCode);
+    result.put("diagnosticCode", getDiagnosticCode());
 
     return result.toString();
   }
 
   public String getGeneratePdfInput() {
-    String diagnosticCode = assessmentNode.get("diagnosticCode").asText();
     JsonNode evidence = assessmentNode.get("evidence");
 
     ObjectNode result = mapper.createObjectNode();
     result.put("claimSubmissionId", claimSubmissionId);
-    result.put("diagnosticCode", diagnosticCode);
+    result.put("diagnosticCode", getDiagnosticCode());
     result.set("veteranInfo", veteranInfoNode);
     result.set("evidence",  evidence);
 
@@ -76,12 +89,14 @@ public class TestSetup {
     Instant instant = Instant.now();
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
     String date = dtf.format(instant);
+    String diagnosticCode = getDiagnosticCode();
+    String dcName = diagnosticCodeToName.get(diagnosticCode);
 
-    String filename = "VAMC_" + "Hypertension" + "_Rapid_Decision_Evidence--" + date + ".pdf";
+    String filename = "VAMC_" + dcName + "_Rapid_Decision_Evidence--" + date + ".pdf";
     return "attachment; filename=\"" + filename + "\"";
   }
 
-  public static TestSetup getInstance(String resourceDir, String claimSubmissionId) throws Exception {
+  public static TestSetup getInstance(String resourceDir) throws Exception {
     TestSetup result = new TestSetup();
 
     String assessmentPath = String.format("/%s/assessment.json", resourceDir);
@@ -92,7 +107,8 @@ public class TestSetup {
     result.veteranInfo = result.getResource(veteranInfoPath);
     result.veteranInfoNode = result.mapper.readTree(result.veteranInfo);
 
-    result.claimSubmissionId = claimSubmissionId;
+    int counterValue = claimSubmissionCounter.incrementAndGet();
+    result.claimSubmissionId = String.valueOf(counterValue);
 
     return result;
   }
