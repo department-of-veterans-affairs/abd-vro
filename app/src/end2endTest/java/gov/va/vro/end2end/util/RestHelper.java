@@ -13,12 +13,16 @@ import java.time.Duration;
 @Setter
 public class RestHelper {
   private static final long DEFAULT_TIMEOUT = 15000;
+  private static final String BASE_URL = "http://localhost:8080/v1";
+  private static final String API_KEY = "X-API-KEY";
+  private static final String ASSESSMENT_END_POINT = "/full-health-data-assessment";
+  private static final String PDF_END_POINT = "/evidence-pdf";
   private String apiKey;
 
   private WebTestClient buildClient() {
     return WebTestClient.bindToServer()
-        .baseUrl("http://localhost:8080/v1")
-        .defaultHeader("X-API-KEY", apiKey)
+        .baseUrl(BASE_URL)
+        .defaultHeader(API_KEY, apiKey)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
         .build();
@@ -37,7 +41,7 @@ public class RestHelper {
     String result =
         buildClient()
             .post()
-            .uri("/full-health-data-assessment")
+            .uri(ASSESSMENT_END_POINT)
             .body(BodyInserters.fromValue(req))
             .exchange()
             .expectStatus()
@@ -62,7 +66,7 @@ public class RestHelper {
     String result =
         buildClient()
             .post()
-            .uri("/evidence-pdf")
+            .uri(PDF_END_POINT)
             .body(BodyInserters.fromValue(req))
             .exchange()
             .expectStatus()
@@ -87,12 +91,12 @@ public class RestHelper {
     byte[] result =
         buildClient()
             .get()
-            .uri(uriBuilder -> uriBuilder.path("/evidence-pdf/" + claimSubmissionId).build())
+            .uri(uriBuilder -> uriBuilder.path(PDF_END_POINT + "/" + claimSubmissionId).build())
             .exchange()
             .expectStatus()
             .isOk()
             .expectHeader()
-            .valueEquals("Content-Disposition", cd)
+            .valueEquals(HttpHeaders.CONTENT_DISPOSITION, cd)
             .expectBody()
             .returnResult()
             .getResponseBody();
