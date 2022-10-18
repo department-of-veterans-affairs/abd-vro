@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -39,7 +39,7 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
-  public void notifyAutomatedClaim(MasClaimDetailsPayload payload, long delay) {
+  public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay) {
     producerTemplate.sendBodyAndHeader(
         PrimaryRoutes.ENDPOINT_AUTOMATED_CLAIM, payload, PrimaryRoutes.MAS_DELAY_PARAM, delay);
   }

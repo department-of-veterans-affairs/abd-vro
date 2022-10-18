@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.camel;
+package gov.va.vro.camel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,6 @@ public class CamelDtoConverter extends TypeConverterSupport {
   public <T> T convertTo(Class<T> targetClass, Exchange exchange, Object value)
       throws TypeConversionException {
     try {
-      log.info("class: {}, targetClass: {}", value.getClass(), targetClass);
       if (dtoClasses.contains(value.getClass())) {
         if (targetClass == byte[].class) {
           return (T) toByteArray(value);
