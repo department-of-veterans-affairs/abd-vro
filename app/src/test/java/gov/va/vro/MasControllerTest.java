@@ -42,7 +42,6 @@ public class MasControllerTest extends BaseControllerTest {
     assertEquals("Smith", request.getLastName());
     assertEquals("123", request.getCollectionId());
     assertEquals("2002-12-12", request.getDateOfBirth());
-
     assertEquals("X", request.getVeteranIdentifiers().getEdipn());
     assertEquals("X", request.getVeteranIdentifiers().getVeteranFileId());
     assertEquals("X", request.getVeteranIdentifiers().getParticipantId());
@@ -56,7 +55,6 @@ public class MasControllerTest extends BaseControllerTest {
   void notifyAutomatedClaimDetails_invalidRequest() {
     MasClaimDetailsPayload request =
         MasClaimDetailsPayload.builder().dateOfBirth("2002-12-12").collectionId("123").build();
-
     var responseEntity =
         post("/v1/notifyVROAutomatedClaimDetails", request, MasClaimResponse.class);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -76,7 +74,6 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<MasClaimDetailsPayload, String>fromFunction(claim -> "hi"));
-
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
     veteranIdentifiers.setEdipn("X");
     veteranIdentifiers.setParticipantId("X");
