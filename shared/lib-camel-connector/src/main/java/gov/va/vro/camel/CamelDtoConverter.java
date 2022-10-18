@@ -27,6 +27,8 @@ public class CamelDtoConverter extends TypeConverterSupport {
   private final ObjectReader reader;
 
   /***
+   * <p>Summary.</p>
+   *
    * @param dtoClasses DTO Classes
    * @param mapper mapper
    */

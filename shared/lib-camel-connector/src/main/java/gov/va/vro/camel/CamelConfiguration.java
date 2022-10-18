@@ -61,7 +61,8 @@ public class CamelConfiguration {
         .getTypeMappings()
         .forEach(
             (fromClass, toClass, converter) -> {
-                System.err.println(fromClass.getName()+" -> "+toClass.getName()+" : "+converter.getClass());
+                System.err.println(fromClass.getName()+
+                  " -> "+toClass.getName()+" : "+converter.getClass());
             });
     //        System.err.println("\n+++++++ " + registry.lookup(Claim.class, byte[].class));
     //        System.err.println("\n+++++++ " + registry.lookup(byte[].class, Claim.class));
