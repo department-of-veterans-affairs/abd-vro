@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -19,7 +19,7 @@ public class MasPollingProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    var payload = exchange.getMessage().getBody(MasClaimDetailsPayload.class);
+    var payload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
     log.info("Checking collection status for collection {}.", payload.getCollectionId());
     // call pcCheckCollectionStatus
     boolean ready = checkCollectionStatus(payload.getCollectionId());
@@ -36,7 +36,7 @@ public class MasPollingProcessor implements Processor {
     }
   }
 
-  private boolean checkCollectionStatus(String collectionsId) {
+  private boolean checkCollectionStatus(int collectionId) {
     return new Random().nextBoolean();
   }
 }
