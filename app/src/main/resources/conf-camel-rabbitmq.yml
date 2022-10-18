@@ -3,3 +3,14 @@ message-queue:
   port: 5672
   user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
   password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
+mas-processing-initial-delay: "${MAS_PROCESSING_INITIAL_DELAY:2000}"
+mas-processing-subsequent-delay: "${MAS_PROCESSING_SUBSEQUENT_DELAY:1000}"
+
+# Spring's RabbitHealthIndicator needs a connection to RabbitMQ:
+spring:
+  rabbitmq:
+    host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
+    port: 5672
+    user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"

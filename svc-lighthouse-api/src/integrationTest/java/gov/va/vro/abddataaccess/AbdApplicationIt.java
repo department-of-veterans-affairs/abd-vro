@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("integrationTest")
 @Testcontainers
 @ContextConfiguration(initializers = AbdApplicationIt.Initializer.class)
 @Slf4j
