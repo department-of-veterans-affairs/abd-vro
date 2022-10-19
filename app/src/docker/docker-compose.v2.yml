@@ -12,13 +12,13 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_RETRY_LIMIT: 3
       RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
+      RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
     security_opt:
       - no-new-privileges:true
     depends_on:
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal

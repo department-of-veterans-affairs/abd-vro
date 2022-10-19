@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +86,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
-        .unmarshal(new JacksonDataFormat(MasClaimDetailsPayload.class))
+        .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
