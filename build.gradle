@@ -104,6 +104,7 @@ ext {
                    ':api',
                    ':controller',
                    ':persistence:model',
+                   ':shared:lib-camel-connector',
                    ':service:provider',
                    ':service:spi',
                    ':svc-lighthouse-api']

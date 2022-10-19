@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Schema(name = "MASClaimDetailsRequest", description = "Initiate a MAS request")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasClaimDetailsPayload {
+public class MasAutomatedClaimPayload {
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
@@ -34,9 +34,9 @@ public class MasClaimDetailsPayload {
   @Schema(description = "Veteran Gender")
   private String gender;
 
-  @NotBlank(message = "Collection ID empty")
+  @NotNull(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
-  private String collectionId;
+  private Integer collectionId;
 
   @NotNull
   @Valid
