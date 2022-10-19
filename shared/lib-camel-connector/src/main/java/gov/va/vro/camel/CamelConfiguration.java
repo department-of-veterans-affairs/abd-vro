@@ -38,8 +38,7 @@ public class CamelConfiguration {
           List<Class> dtoClasses = camelDtoClassesProperties.getActualDtoClasses();
           registerTypeConverters(dtoClasses);
         } catch (IOException e) {
-          e.printStackTrace();
-          log.error("Check the vro.camel.dto-classes property");
+          log.error("Check the vro.camel.dto-classes property", e);
         }
 
         log.info(

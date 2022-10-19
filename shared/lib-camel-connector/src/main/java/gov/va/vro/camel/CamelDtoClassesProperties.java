@@ -44,8 +44,7 @@ public class CamelDtoClassesProperties {
                 try {
                   return Arrays.asList(Class.forName(classname));
                 } catch (ClassNotFoundException e) {
-                  e.printStackTrace();
-                  log.error("Check the dto-classes in conf-camel.yml");
+                  log.error("Check the dto-classes in conf-camel.yml", e);
                   return null;
                 }
               }
@@ -92,8 +91,7 @@ public class CamelDtoClassesProperties {
       MetadataReader reader = readerFactory.getMetadataReader(resource);
       return ClassUtils.forName(reader.getClassMetadata().getClassName(), loader);
     } catch (Exception ex) {
-      log.error("Could not load class: {}", resource);
-      ex.printStackTrace();
+      log.error("Could not load class: "+resource, ex);
       return null;
     }
   }
