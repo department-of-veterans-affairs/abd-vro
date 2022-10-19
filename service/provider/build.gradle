@@ -30,4 +30,6 @@ dependencies {
 
     implementation project(':domain')
 
+    //TODO:
+    implementation 'org.jodd:jodd-bean:5.1.6'
 }

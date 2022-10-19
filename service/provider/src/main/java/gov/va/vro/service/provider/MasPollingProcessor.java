@@ -1,13 +1,13 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.event.EventType;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.aspect.Audited;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
-
-import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +20,14 @@ public class MasPollingProcessor implements Processor {
   @Override
   public void process(Exchange exchange) {
     var payload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
+    process(payload);
+  }
+
+  @Audited(
+      eventType = EventType.AUTOMATED_CLAIM,
+      payloadClass = MasAutomatedClaimPayload.class,
+      idProperty = "collectionId")
+  public void process(MasAutomatedClaimPayload payload) {
     log.info("Checking collection status for collection {}.", payload.getCollectionId());
     // call pcCheckCollectionStatus
     boolean ready = checkCollectionStatus(payload.getCollectionId());
@@ -37,6 +45,6 @@ public class MasPollingProcessor implements Processor {
   }
 
   private boolean checkCollectionStatus(int collectionId) {
-    return new Random().nextBoolean();
+    return true;
   }
 }
