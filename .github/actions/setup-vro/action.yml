@@ -23,5 +23,4 @@ runs:
     - name: "Install Python dependencies"
       shell: bash
       run: |
-        pip install -r service-python/assessclaimdc7101/src/requirements.txt
-        pip install -r service-python/pdfgenerator/src/requirements.txt
+        pip install -r service-python/requirements.txt
