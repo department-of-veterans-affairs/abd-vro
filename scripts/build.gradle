@@ -1,8 +1,10 @@
 plugins {
-    id 'starter.std.java.shell-conventions'
+    id 'local.java.lint-shellcheck-conventions'
 }
 
 shellcheck {
-    // don't specify the absolute path so that it can work in GH Actions and locally
-    shellcheckBinary = 'shellcheck'
+    sourceFiles = fileTree(".") {
+        include("*.sh", "*.src")
+    }
+    additionalArguments = "--external-sources"
 }
