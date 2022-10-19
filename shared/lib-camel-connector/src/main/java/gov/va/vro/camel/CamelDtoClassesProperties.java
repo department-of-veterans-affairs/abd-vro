@@ -91,7 +91,7 @@ public class CamelDtoClassesProperties {
       MetadataReader reader = readerFactory.getMetadataReader(resource);
       return ClassUtils.forName(reader.getClassMetadata().getClassName(), loader);
     } catch (Exception ex) {
-      log.error("Could not load class: "+resource, ex);
+      log.error("Could not load class: " + resource, ex);
       return null;
     }
   }
