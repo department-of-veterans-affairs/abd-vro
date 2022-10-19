@@ -37,7 +37,7 @@ def medication_required(request_body):
 
     veterans_medication = request_body["evidence"]["medications"]
     for medication in veterans_medication:
-        if medication["status"].lower() in ["active", "on-hold", "complete", "stopped"]:
+        if medication["status"].lower() in ["active", "on-hold", "completed", "stopped", "unknown"]:
             medication["conditionRelated"] = "false"
             medication_display = medication["description"]
             category = categorize_med(medication_display)
