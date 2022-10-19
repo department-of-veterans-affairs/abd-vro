@@ -168,7 +168,7 @@ done
 echo '# END image-names.sh replacement block (do not modify this line)'
 }
 
-# shellcheck source=/dev/null
+# shellcheck source=image_vars.src
 source "$SRC_FILE"
 SEC_CONFIG_IMAGES=$(images_for_secrel_config_yml)
 VALUES_YML_IMAGES=$(images_for_helmchart_values_yaml dev)
