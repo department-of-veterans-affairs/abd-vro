@@ -27,6 +27,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
   private final ClaimMapper mapper;
+  private final ObjectMapper objMapper;
 
   @Override
   public Claim insertClaim(Claim claim) {
@@ -48,18 +49,25 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       String idType,
       String diagnosticCode)
       throws NoSuchFieldException {
-    ClaimEntity claimEntity = claimRepository.findById(id).orElse(null);
-    if (claimEntity == null) {
-      throw new NoSuchFieldException("Could not match claim ID {" + id.toString() + "} in DB.");
-    }
-    ObjectMapper mapper = new ObjectMapper();
+    ClaimEntity claimEntity =
+        claimRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new NoSuchFieldException(
+                        "Could not match claim ID {" + id.toString() + "} in DB."));
     Map<String, Object> evidence = new HashMap<>();
     try {
-      evidence = mapper.readValue(assessmentResult, Map.class);
+      evidence = objMapper.readValue(assessmentResult, Map.class);
+      if (evidence.isEmpty()) {
+        throw new NoSuchFieldException("Could not map assesmentResult, evidence summary is null.");
+      }
     } catch (Exception e) {
-      log.error("Could not map assessmentResult");
+      log.error("Could not map assesmentResult, evidence summary is null.");
     }
-    Map summary = (Map) evidence.getOrDefault("evidenceSummary", null);
+    Map<String, Object> defaultEvidence = new HashMap<>();
+    defaultEvidence.put("medicationsCount", 0);
+    Map summary = (Map) evidence.getOrDefault("evidenceSummary", defaultEvidence);
     int count = 0;
     if (summary != null) {
       for (Object value : summary.values()) {
@@ -69,26 +77,34 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCount(count);
     assessmentResultEntity.setEvidenceCountSummary(summary);
-    for (ContentionEntity contention : claimEntity.getContentions()) {
-      if ((contention.getDiagnosticCode().equals(diagnosticCode))
-          && (contention.getClaim().getId() == id)) {
-        for (AssessmentResultEntity ar : contention.getAssessmentResults())
-          if (ar.getContention().getId() == contention.getId()) {
-            log.info("Assessment result already populated, continuing.");
-            break;
-          }
-        contention.addAssessmentResult(assessmentResultEntity);
-        claimRepository.save(claimEntity);
-      } else {
-        String msg = "Could not match contention with diagnosticCode and claimId";
-        log.error(msg);
+    ContentionEntity contention = findContention(claimEntity, diagnosticCode);
+    for (AssessmentResultEntity ar : contention.getAssessmentResults()) {
+      if (ar.getContention().getId() == contention.getId()) {
+        log.info("Assessment result already populated, continuing.");
+        break;
       }
     }
+    contention.addAssessmentResult(assessmentResultEntity);
+    claimRepository.save(claimEntity);
     AssessmentResult resp = new AssessmentResult();
     resp.setEvidenceSummary(assessmentResultEntity.getEvidenceCountSummary());
     resp.setEvidenceCount(assessmentResultEntity.getEvidenceCount());
     resp.setVeteranIcn(veteranIcn);
     resp.setDiagnosticCode(diagnosticCode);
+    return resp;
+  }
+
+  private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode)
+      throws NoSuchFieldException {
+    ContentionEntity resp = new ContentionEntity();
+    for (ContentionEntity contention : claim.getContentions()) {
+      if (contention.getDiagnosticCode().equals(diagnosticCode)) {
+        resp = contention;
+      } else {
+        log.error("Could not find match contention with diagnostic code.");
+        throw new NoSuchFieldException("Could not find match contention with diagnostic code.");
+      }
+    }
     return resp;
   }
 

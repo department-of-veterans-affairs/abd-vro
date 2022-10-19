@@ -93,7 +93,7 @@ subprojects {
             annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
             // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
             checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-            implementation 'com.vladmihalcea:hibernate-types-55:2.20.0'
+            implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
         }
     }
 }
