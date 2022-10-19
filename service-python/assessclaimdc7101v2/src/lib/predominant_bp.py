@@ -155,8 +155,8 @@ def sufficient_to_autopopulate (request_body):
     elif len(valid_bp_readings) > 1 and bp_readings_meet_date_specs(date_of_claim, valid_bp_readings):
         results = calculate_predominant_readings(valid_bp_readings)
         calculation["success"] = True
-        calculation["predominant_diastolic_reading"] = results["diastolic_value"]
-        calculation["predominant_systolic_reading"] = results["systolic_value"]
+        calculation["predominantDiastolicReading"] = results["diastolic_value"]
+        calculation["predominantSystolicReading"] = results["systolic_value"]
 
     predominance_calculation["calculated"] = calculation
 

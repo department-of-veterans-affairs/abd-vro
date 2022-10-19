@@ -26,7 +26,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
         durable=True,
         auto_delete=True,
     )
-    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}")
+    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}", durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
         queue=f"health-assess.{service_queue_name}", exchange="health-assess-exchange"
     )
