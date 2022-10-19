@@ -32,7 +32,11 @@ public class ContentionEntity extends BaseEntity {
       orphanRemoval = true)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
 
-  @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "contention",
+      // fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
   /***
