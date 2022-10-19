@@ -15,7 +15,7 @@ runs:
     - uses: ./.github/actions/install-java-tools
 
     - name: "Install Python"
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: "3.9"
         cache: "pip"
