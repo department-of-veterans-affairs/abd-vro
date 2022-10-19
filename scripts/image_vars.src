@@ -3,9 +3,9 @@
 # These variables are used in GitHub Actions and deploy scripts.
 
 # Array of VRO images
-VRO_IMAGES_ARR=( app postgres db-init service-data-access pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+VRO_IMAGES_ARR=( app postgres db-init svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="app postgres db-init service-data-access pdfgenerator assessclaimdc7101 assessclaimdc6602"
+export VRO_IMAGES="app postgres db-init svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Array of variable prefixes
 VAR_PREFIXES_ARR=( app db dbInit serviceDataAccess pdfGenerator serviceAssessClaimDC7101 serviceAssessClaimDC6602 )
@@ -51,11 +51,11 @@ export dbInit_DOCKERFILE="./db-init/src/docker/Dockerfile"
 export dbInit_DOCKER_CONTEXT="./db-init/src/main/resources"
 export dbInit_HELM_KEY="dbInit"
 
-# --- service-data-access in folder ./service-data-access
+# --- svc-lighthouse-api in folder ./svc-lighthouse-api
 export serviceDataAccess_GRADLE_IMG="va/abd_vro-service-data-access"
 export serviceDataAccess_IMG="vro-service-data-access"
-export serviceDataAccess_DOCKERFILE="./service-data-access/src/docker/Dockerfile"
-export serviceDataAccess_DOCKER_CONTEXT="./service-data-access/src/main/resources"
+export serviceDataAccess_DOCKERFILE="./svc-lighthouse-api/src/docker/Dockerfile"
+export serviceDataAccess_DOCKER_CONTEXT="./svc-lighthouse-api/src/main/resources"
 export serviceDataAccess_HELM_KEY="serviceDataAccess"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
