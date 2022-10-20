@@ -15,4 +15,5 @@ public class AuditEvent {
   private Class<?> payloadType;
   @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
   private Throwable exception;
+  private String routeId;
 }

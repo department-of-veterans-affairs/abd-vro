@@ -50,9 +50,10 @@ public class PrimaryRoutes extends RouteBuilder {
     onException(ConnectException.class)
         .process(
             exchange -> {
-              Exception exception = (Exception) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
-              // TODO audit exception
-              // System.out.println(exception);
+              Throwable exception = (Throwable) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
+              var message = exchange.getMessage();
+              var body = message.getBody();
+              auditProcessor.logException(body, exception, exchange.getFromRouteId());
             });
 
     configureRouteClaimSubmit();

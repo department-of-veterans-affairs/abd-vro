@@ -9,6 +9,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -45,6 +47,6 @@ public class MasPollingProcessor implements Processor {
   }
 
   private boolean checkCollectionStatus(int collectionId) {
-    return true;
+    return new Random().nextBoolean();
   }
 }

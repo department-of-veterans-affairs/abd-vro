@@ -90,16 +90,25 @@ public interface AuditableObject {
 
 ```
 
+Exceptions can be globally handled by registering a camel exception handler:
+
+```java
+onException(ConnectException.class)
+        .process(
+            exchange -> {
+              Throwable exception = (Throwable) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
+              var message = exchange.getMessage();
+              var body = message.getBody();
+              auditProcessor.logException(body, exception, exchange.getFromRouteId());
+            });
+```
+
+
 This approach adresses all the issues with the first approach: 
 It is robust under refactoring, it does not require Spring Beans,
 and it addresses event at the endpoint level rather than the method level.
 
-There are still a couple of minor issues:
-
-### Issue 1
-Event processing must be injected explicitly, thus making the route definitions a bit more complicated.
+There only slight drawback is that 
+event processing must be injected explicitly, thus making the route definitions a bit more complicated.
 It does however give us the ability to log events exactly where they are needed.
 
-### Issue 2
-It is a bit harder to extract the event Id when an exception occurs
-(working on a solution).

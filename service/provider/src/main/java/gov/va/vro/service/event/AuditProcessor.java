@@ -30,6 +30,23 @@ public class AuditProcessor {
     return o;
   }
 
+  public void logException(Object o, Throwable t, String routeId) {
+    if (!(o instanceof AuditableObject)) {
+      // object cannot be audited
+      return;
+    }
+    AuditableObject auditableObject = (AuditableObject) o;
+    AuditEvent event =
+        AuditEvent.builder()
+            .eventId(auditableObject.getEventId())
+            .payloadType(auditableObject.getClass())
+            .eventType(EventType.EXCEPTION)
+            .exception(t)
+            .routeId(routeId)
+            .build();
+    eventService.logEvent(event);
+  }
+
   public FunctionProcessor<Object, Object> eventProcessor(
       EventType eventType, EventProcessingType eventProcessingType) {
     return FunctionProcessor.fromFunction(
