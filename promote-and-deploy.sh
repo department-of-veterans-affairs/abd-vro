@@ -28,47 +28,39 @@ then
 else
   COMMIT_SHA=latest
 fi
+
 echo PROCESSING FOR $COMMIT_SHA
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-app:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-postgres:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-db-init:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc7101:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc6602:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-pdfgenerator:${COMMIT_SHA}"
-docker pull "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-data-access:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-app:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-app:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-postgres:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-postgres:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-db-init:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-db-init:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc7101:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc7101:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc6602:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc6602:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-pdfgenerator:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-pdfgenerator:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-data-access:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-data-access:${COMMIT_SHA}"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-app:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-app:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-postgres:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-postgres:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-db-init:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-db-init:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc7101:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc7101:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-assessclaimdc6602:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc6602:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-pdfgenerator:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-pdfgenerator:latest"
-docker tag "ghcr.io/${github_repository}/${PREV_ENV}_vro-service-data-access:${COMMIT_SHA}" "ghcr.io/${github_repository}/${ENV}_vro-service-data-access:latest"
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-postgres
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-app
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-service-pdfgenerator
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-db-init
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc7101
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc6602
-docker push -a ghcr.io/${github_repository}/${ENV}_vro-service-data-access
-docker rmi ghcr.io/${github_repository}/${ENV}_vro-postgres:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-app:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-service-pdfgenerator:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc7101:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc6602:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-db-init:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-service-data-access:${COMMIT_SHA} \
-            ghcr.io/${github_repository}/${ENV}_vro-postgres:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-app:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-db-init:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-service-pdfgenerator:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc7101:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-service-assessclaimdc6602:latest \
-            ghcr.io/${github_repository}/${ENV}_vro-service-data-access:latest 
+source scripts/image_vars.src
+
+# Pull previous image (e.g., DEV)
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  PREV_NAME=${PREV_ENV}_$(getVarValue ${PREFIX} _IMG)
+  echo "Pulling previous image 'PREV_NAME'"
+  docker pull "ghcr.io/${github_repository}/${PREV_NAME}:${COMMIT_SHA}"
+done
+
+# Promote images for non-prod testing (e.g., DEV to QA)
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  PREV_NAME=${PREV_ENV}_$(getVarValue ${PREFIX} _IMG)
+  IMAGE_NAME=${ENV}_$(getVarValue ${PREFIX} _IMG)
+  echo "Promoting image '$PREV_NAME' to '$IMAGE_NAME'"
+  docker tag "ghcr.io/${github_repository}/${PREV_NAME}:${COMMIT_SHA}" "ghcr.io/${github_repository}/${IMAGE_NAME}:${COMMIT_SHA}"
+  docker tag "ghcr.io/${github_repository}/${PREV_NAME}:${COMMIT_SHA}" "ghcr.io/${github_repository}/${IMAGE_NAME}:latest"
+done
+
+# Push images for non-prod testing (e.g., pushes DEV `latest`)
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  IMAGE_NAME=${ENV}_$(getVarValue ${PREFIX} _IMG)
+  echo "Pushing image '$IMAGE_NAME'"
+  docker push -a "ghcr.io/${github_repository}/${IMAGE_NAME}"
+done
+
+# Clean up images locally
+for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+  IMAGE_NAME=${ENV}_$(getVarValue ${PREFIX} _IMG)
+  echo "Clean up image with tags '$IMAGE_NAME:${COMMIT_SHA:0:7}' and '${IMAGE_NAME}:latest'"
+  docker rmi "ghcr.io/${github_repository}/${IMAGE_NAME}:${COMMIT_SHA:0:7}" \
+             "ghcr.io/${github_repository}/${IMAGE_NAME}:latest"
+done
+
 ./deploy-app.sh ${ENV} ${COMMIT_SHA}

@@ -1,7 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.MasClaimResponse;
-import gov.va.vro.model.mas.MasClaimDetailsPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +34,7 @@ public interface MasResource {
       summary = "MAS Claim Request",
       description =
           "Receives an initial request for a MAS claim and starts collecting the evidence")
-  @PostMapping("/notifyVROAutomatedClaimDetails")
+  @PostMapping("/automatedClaim")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
       value = {
@@ -45,20 +46,44 @@ public interface MasResource {
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No evidence found",
-            content = @Content(mediaType = "application/json"))
+            content = @Content(schema = @Schema(hidden = true)))
       })
-  @Timed(value = "mas-claim-request")
-  @Tag(name = "MAS Claim Request")
-  ResponseEntity<MasClaimResponse> notifyAutomatedClaimDetails(
+  @Timed(value = "mas-automated-claim")
+  @Tag(name = "MAS Integration")
+  ResponseEntity<MasClaimResponse> automatedClaim(
       @Parameter(
-              description = "Request for a MAS Claim",
+              description = "Request a MAS Automated Claim",
               required = true,
-              schema = @Schema(implementation = MasClaimDetailsPayload.class))
+              schema = @Schema(implementation = MasAutomatedClaimPayload.class))
           @Valid
           @RequestBody
-          MasClaimDetailsPayload request);
+          MasAutomatedClaimPayload request);
+
+  @Operation(
+      summary = "MAS Exam Ordering Status",
+      description = "Request Ordering Status for an exam")
+  @PostMapping("/examOrderingStatus")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Data Access Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "exam-ordering-status")
+  @Tag(name = "MAS Integration")
+  ResponseEntity<MasClaimResponse> examOrderingStatus(
+      @Parameter(
+              description = "Request Exam ordering status",
+              required = true,
+              schema = @Schema(implementation = MasExamOrderStatusPayload.class))
+          @Valid
+          @RequestBody
+          MasExamOrderStatusPayload payload);
 }
