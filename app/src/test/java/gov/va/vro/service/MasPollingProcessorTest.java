@@ -16,8 +16,7 @@ public class MasPollingProcessorTest extends BaseIntegrationTest {
 
   @Autowired MasPollingProcessor masPollingProcessor;
 
-  @Autowired
-  ListEventService listEventService;
+  @Autowired ListEventService listEventService;
 
   @Test
   void test() {
