@@ -52,7 +52,7 @@ public class PrimaryRoutes extends RouteBuilder {
             exchange -> {
               Exception exception = (Exception) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
               // TODO audit exception
-              System.out.println(exception);
+              // System.out.println(exception);
             });
 
     configureRouteClaimSubmit();
