@@ -1,6 +1,8 @@
 package gov.va.vro.service.aspect;
 
 import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.event.EventProcessingType;
+import gov.va.vro.model.event.EventType;
 import jodd.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,7 +14,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.time.ZonedDateTime;
 
 @Aspect
 @Slf4j
@@ -26,7 +27,7 @@ public class AuditEventAspect {
   @SneakyThrows
   public Object logAuditEvent(ProceedingJoinPoint joinPoint) {
     Audited annotation = getAuditedAnnotation(joinPoint);
-    var eventType = annotation.eventType();
+    var eventProcessingType = annotation.eventType();
     var payLoadClass = annotation.payloadClass();
     var idProperty = annotation.idProperty();
 
@@ -38,27 +39,14 @@ public class AuditEventAspect {
 
     String processName = getClassAndMethodName(joinPoint);
 
-    var startEvent =
-        AuditEvent.builder()
-            .eventId(eventId)
-            .eventType(eventType)
-            .eventTime(ZonedDateTime.now())
-            .qualifier(payLoadClass.getSimpleName())
-            .message("Entering " + processName)
-            .build();
+    AuditEvent startEvent =
+        getAuditEvent(eventProcessingType, payLoadClass, eventId, EventType.ENTERING);
     eventLog.logEvent(startEvent);
     log.info("Entering " + processName);
     try {
       Object value = joinPoint.proceed();
       log.info("Exiting " + joinPoint.getSignature());
-      var endEvent =
-          AuditEvent.builder()
-              .eventId(eventId)
-              .eventType(eventType)
-              .eventTime(ZonedDateTime.now())
-              .qualifier(payLoadClass.getSimpleName())
-              .message("Exiting " + processName)
-              .build();
+      var endEvent = getAuditEvent(eventProcessingType, payLoadClass, eventId, EventType.EXITING);
       eventLog.logEvent(endEvent);
       return value;
     } catch (Throwable t) {
@@ -66,6 +54,30 @@ public class AuditEventAspect {
       log.info("Exception " + t.getMessage());
       throw t;
     }
+  }
+
+  private static AuditEvent getExceptionEvent(
+      EventProcessingType eventProcessingType, Class<?> payLoadClass, String eventId, Throwable t) {
+    return AuditEvent.builder()
+        .eventId(eventId)
+        .eventType(EventType.EXCEPTION)
+        .processingType(eventProcessingType)
+        .payloadType(payLoadClass)
+        .exception(t)
+        .build();
+  }
+
+  private static AuditEvent getAuditEvent(
+      EventProcessingType eventProcessingType,
+      Class<?> payLoadClass,
+      String eventId,
+      EventType eventType) {
+    return AuditEvent.builder()
+        .eventId(eventId)
+        .eventType(eventType)
+        .processingType(eventProcessingType)
+        .payloadType(payLoadClass)
+        .build();
   }
 
   private String getClassAndMethodName(ProceedingJoinPoint joinPoint) {

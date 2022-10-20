@@ -1,6 +1,6 @@
 package gov.va.vro.service.aspect;
 
-import gov.va.vro.model.event.EventType;
+import gov.va.vro.model.event.EventProcessingType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Audited {
 
-  EventType eventType();
+  EventProcessingType eventType();
 
   /**
    * Class property that supplies the ID field

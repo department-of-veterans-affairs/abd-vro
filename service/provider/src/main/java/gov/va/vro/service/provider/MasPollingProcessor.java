@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.event.EventType;
+import gov.va.vro.model.event.EventProcessingType;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.aspect.Audited;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class MasPollingProcessor implements Processor {
   }
 
   @Audited(
-      eventType = EventType.AUTOMATED_CLAIM,
+      eventType = EventProcessingType.AUTOMATED_CLAIM,
       payloadClass = MasAutomatedClaimPayload.class,
       idProperty = "collectionId")
   public void process(MasAutomatedClaimPayload payload) {
