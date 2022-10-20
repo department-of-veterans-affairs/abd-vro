@@ -7,6 +7,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':shared:domain')
     implementation project(':persistence:model')
     implementation project(':service:spi')
     api project(':shared:lib-camel-connector')
@@ -27,7 +28,4 @@ dependencies {
     // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
-
-    implementation project(':domain')
-
 }
