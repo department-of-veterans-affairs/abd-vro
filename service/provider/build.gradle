@@ -28,4 +28,7 @@ dependencies {
     // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
+
+    //TODO
+    implementation 'org.jodd:jodd-bean:5.1.6'
 }

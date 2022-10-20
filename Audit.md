@@ -5,6 +5,8 @@
 AOP operates at the method level and injects advice before or after 
 a method is called, as well as when an exception occurs.
 
+To enable event logging on a method, the method has to be annotated thus:
+
 ```java
 @Audited(
       eventType = EventProcessingType.AUTOMATED_CLAIM,
@@ -18,8 +20,12 @@ Each annotated method must provide some parameters to characterize the event:
 - Payload class: The object that is being audited
 - id Property: The property in the Payload Class that identifies the object and consequently the event.
 
+Advice is added to all methods with this annotation on the pointcut definition:
 
 ```java
+public class AuditEventAspect {
+    
+
   @Around(value = "@annotation(gov.va.vro.service.event.Audited)")
   public Object logAuditEvent(ProceedingJoinPoint joinPoint) {
         // extract event information
@@ -27,13 +33,16 @@ Each annotated method must provide some parameters to characterize the event:
         }
 ```
 
+The above class is responsible for extracting the event information and transmitting an event.
+
+
 There are some problems with this approach:
 
-### Problem 1 
+### Issue 1 
 It is somewhat brittle. If the name of the property identifying the event changes, or the annotation is moved, the code will stop working. 
-### Problem 2
-@Audited objects must be Spring beans. This will not work for beans that are not managed by Spring 
-### Problem 3
+### Issue 2
+@Audited objects must be Spring beans. This will not work for beans that are not managed by Spring. 
+### Issue 3
 This problem is more significant: 
 Because we are using camel we often call rabbitmq endpoints without the interventions of any java beans. 
 This means that there are no bean to add advice to. 
@@ -45,14 +54,14 @@ from("entrypoint")
         .to("rabbitmq:queue1")
         .to("rabbitmq:queue2");
 ```
-The above route does calls two services via queues. 
-We want to record these calls, but there are not Java Beans involved that we can attach advice to.
+The above route calls two services via queues. 
+We want to record these calls, but there are no Java Beans involved that we can attach advice to.
 In order to make this work, we would have to add some beans before every route.
 
 ## Approach 2: Explicit Route Definition
 
 Based on the considerations described above, 
-it appears that event generation should not occur on the method level but rather at the endpoint level.
+it appears that event generation should not occur at the method level but rather at the endpoint level.
 In this approach we interleave explicit event generation before and after calling routes:
 
 ```java
@@ -68,6 +77,8 @@ In this approach we interleave explicit event generation before and after callin
         .log("MAS response: ${body}");
 ```
 
+The auditProcessor bean injected above is responsible for providing a processor that will generate and transmit the event.
+
 We still need a mechanism to extract the event identifier from the payloads.
 Instead of relying on reflection, we require that auditable payloads implement an Auditable interface like this:
 
@@ -79,11 +90,16 @@ public interface AuditableObject {
 
 ```
 
-This approach also has a couple of drawbacks:
+This approach adresses all the issues with the first approach: 
+It is robust under refactoring, it does not require Spring Beans,
+and it addresses event at the endpoint level rather than the method level.
 
-### Problem 1
-Event processing must be injected explicitly, thus making the route definitions a bit more complicated
+There are still a couple of minor issues:
 
-### Problem 2
+### Issue 1
+Event processing must be injected explicitly, thus making the route definitions a bit more complicated.
+It does however give us the ability to log events exactly where they are needed.
+
+### Issue 2
 It is a bit harder to extract the event Id when an exception occurs
 (working on a solution).
