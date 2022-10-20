@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface EventService {
 
-    void logEvent(AuditEvent event);
+  void logEvent(AuditEvent event);
 
-    List<AuditEvent> getEvents(String eventId);
+  List<AuditEvent> getEvents(String eventId);
 }
