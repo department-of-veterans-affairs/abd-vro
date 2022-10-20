@@ -1,9 +1,6 @@
 plugins {
+  id 'local.java.container-spring-conventions'
   id 'starter.std.java.library-spring-conventions'
-  // Needed for bootRun task
-  id 'org.springframework.boot'
-  // Needed for tasks docker and dockerRun
-  id 'starter.java.container-conventions'
   id 'groovy'
 }
 
@@ -32,17 +29,18 @@ dependencies {
 
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
-//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+// TODO: add integration tests
 //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
 //        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
 //    }
 //	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
 }
 
-configurations {
-  integrationTestImplementation.extendsFrom implementation
-  integrationTestRuntimeOnly.extendsFrom runtimeOnly
-}
+// TODO: add integration tests
+//configurations {
+//  integrationTestImplementation.extendsFrom implementation
+//  integrationTestRuntimeOnly.extendsFrom runtimeOnly
+//}
 
 docker {
   files "src/main/resources/groovysh.rc"

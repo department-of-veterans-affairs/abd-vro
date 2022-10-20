@@ -186,7 +186,7 @@ services:
     networks:
       - internal
 
-  vro-console:
+  console:
     image: va/abd_vro-console:latest
     <<: *common-security-opt
     profiles: ["debug"]
@@ -198,9 +198,9 @@ services:
       <<: *rabbitmq-placeholder-vars
       <<: *postgres-vars
     depends_on:
-      vro-api-postgres-service:
+      postgres-service:
         condition: service_started
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
