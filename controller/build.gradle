@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':domain')
+    implementation project(':shared:domain')
     implementation project(':api')
     implementation project(':service:provider')
     implementation project(':service:spi')
