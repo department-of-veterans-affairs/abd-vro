@@ -2,7 +2,6 @@ package gov.va.vro.service.provider.camel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangeProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import java.util.Map;
  * attributes. https://camel.apache.org/components/3.11.x/eips/dynamicRouter-eip.html.
  */
 @Slf4j
-@Component
 public class SlipClaimSubmitRouter {
 
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;

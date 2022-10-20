@@ -1,7 +1,10 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.event.EventProcessingType;
+import gov.va.vro.model.event.EventType;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.event.AuditProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SaveToDbService saveToDbService;
 
   private final MasPollingProcessor masPollingProcessor;
+
+  private final AuditProcessor auditProcessor;
 
   @Override
   public void configure() {
@@ -82,12 +87,18 @@ public class PrimaryRoutes extends RouteBuilder {
         .routeId("mas-claim-notification")
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
+        .process(
+            auditProcessor.eventProcessor(EventType.ENTERING, EventProcessingType.AUTOMATED_CLAIM))
         .to(ENDPOINT_MAS);
 
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
+        .process(
+            auditProcessor.eventProcessor(EventType.ENTERING, EventProcessingType.AUTOMATED_CLAIM))
         .process(masPollingProcessor)
+        .process(
+            auditProcessor.eventProcessor(EventType.EXITING, EventProcessingType.AUTOMATED_CLAIM))
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
   }
