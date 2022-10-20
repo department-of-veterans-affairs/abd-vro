@@ -12,7 +12,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
                "localhost"))
 channel = connection.channel()
 
-channel.queue_declare(queue=QUEUE_NAME)
+channel.queue_declare(queue=QUEUE_NAME, durable=True, auto_delete=True)
 
 code = "7101"
 

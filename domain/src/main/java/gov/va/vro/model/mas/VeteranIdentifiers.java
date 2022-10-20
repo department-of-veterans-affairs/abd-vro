@@ -2,6 +2,7 @@ package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class VeteranIdentifiers {
   @NotBlank(message = "ICN is required")
   private String icn;
 
+  @Schema(description = "Social Security Number", example = "111-11-1111")
   @NotBlank(message = "SSN is required")
   private String ssn;
 
