@@ -107,13 +107,15 @@ ext {
                    ':shared:lib-camel-connector',
                    ':service:provider',
                    ':service:spi',
-                   ':svc-lighthouse-api']
+                   ':svc-lighthouse-api',
+                   ':console']
     dockerModules = [':app',
                      ':db-init',
                      ':service-python:assessclaimdc7101',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':svc-lighthouse-api']
+                     ':svc-lighthouse-api',
+                     ':console']
 }
 
 // Used by `release` task to create a new version
