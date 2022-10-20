@@ -9,10 +9,13 @@ import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
+
+import java.net.ConnectException;
 
 /** Defines primary routes. */
 @Slf4j
@@ -44,6 +47,14 @@ public class PrimaryRoutes extends RouteBuilder {
 
   @Override
   public void configure() {
+    onException(ConnectException.class)
+        .process(
+            exchange -> {
+              Exception exception = (Exception) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
+              // TODO audit exception
+              System.out.println(exception);
+            });
+
     configureRouteClaimSubmit();
     configureRouteClaimSubmitForFull();
     configureRouteGeneratePdf();
@@ -83,6 +94,7 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureAutomatedClaim() {
+
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId("mas-claim-notification")
         .delay(header(MAS_DELAY_PARAM))
