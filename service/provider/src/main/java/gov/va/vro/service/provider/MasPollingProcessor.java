@@ -2,7 +2,7 @@ package gov.va.vro.service.provider;
 
 import gov.va.vro.model.event.EventProcessingType;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.service.aspect.Audited;
+import gov.va.vro.service.event.Audited;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;

@@ -1,4 +1,4 @@
-package gov.va.vro.service.aspect;
+package gov.va.vro.service.event;
 
 import gov.va.vro.model.event.EventProcessingType;
 

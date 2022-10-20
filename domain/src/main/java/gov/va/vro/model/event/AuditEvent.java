@@ -13,7 +13,6 @@ public class AuditEvent {
   private EventProcessingType processingType;
   private EventType eventType;
   private Class<?> payloadType;
-  @Builder.Default
-  private ZonedDateTime eventTime = ZonedDateTime.now();
+  @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
   private Throwable exception;
 }

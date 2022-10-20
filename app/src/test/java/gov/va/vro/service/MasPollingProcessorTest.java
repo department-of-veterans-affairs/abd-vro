@@ -7,7 +7,7 @@ import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.model.event.EventProcessingType;
 import gov.va.vro.model.event.EventType;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.service.aspect.EventLog;
+import gov.va.vro.service.event.ListEventService;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,15 @@ public class MasPollingProcessorTest extends BaseIntegrationTest {
 
   @Autowired MasPollingProcessor masPollingProcessor;
 
-  @Autowired EventLog eventLog;
+  @Autowired
+  ListEventService listEventService;
 
   @Test
   void test() {
     var payload = MasAutomatedClaimPayload.builder().collectionId(123).build();
     masPollingProcessor.process(payload);
 
-    var events = eventLog.getEvents();
+    var events = listEventService.getEvents("123");
     assertEquals(2, events.size());
     var startEvent = events.get(0);
     assertEquals("123", startEvent.getEventId());

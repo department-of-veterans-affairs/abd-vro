@@ -1,4 +1,4 @@
-package gov.va.vro.service.aspect;
+package gov.va.vro.service.event;
 
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.EventProcessingType;
@@ -21,9 +21,9 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public class AuditEventAspect {
 
-  private final EventLog eventLog;
+  private final EventService eventService;
 
-  @Around(value = "@annotation(gov.va.vro.service.aspect.Audited)")
+  @Around(value = "@annotation(gov.va.vro.service.event.Audited)")
   @SneakyThrows
   public Object logAuditEvent(ProceedingJoinPoint joinPoint) {
     Audited annotation = getAuditedAnnotation(joinPoint);
@@ -33,25 +33,24 @@ public class AuditEventAspect {
 
     String eventId = resolveId(joinPoint, payLoadClass, idProperty);
     if (eventId == null) {
-      log.warn("Cannot extract event id");
+      log.warn("Cannot extract event id. No message will be logged.");
       return joinPoint.proceed();
     }
 
-    String processName = getClassAndMethodName(joinPoint);
-
     AuditEvent startEvent =
         getAuditEvent(eventProcessingType, payLoadClass, eventId, EventType.ENTERING);
-    eventLog.logEvent(startEvent);
-    log.info("Entering " + processName);
+    eventService.logEvent(startEvent);
+    log.debug("Entering " + joinPoint.getSignature());
     try {
       Object value = joinPoint.proceed();
-      log.info("Exiting " + joinPoint.getSignature());
+      log.debug("Exiting " + joinPoint.getSignature());
       var endEvent = getAuditEvent(eventProcessingType, payLoadClass, eventId, EventType.EXITING);
-      eventLog.logEvent(endEvent);
+      eventService.logEvent(endEvent);
       return value;
     } catch (Throwable t) {
-      // TODO event
-      log.info("Exception " + t.getMessage());
+      log.debug("Exception " + t.getMessage());
+      eventService.logEvent(
+          getExceptionEvent(EventProcessingType.AUTOMATED_CLAIM, payLoadClass, eventId, t));
       throw t;
     }
   }
@@ -78,12 +77,6 @@ public class AuditEventAspect {
         .processingType(eventProcessingType)
         .payloadType(payLoadClass)
         .build();
-  }
-
-  private String getClassAndMethodName(ProceedingJoinPoint joinPoint) {
-    MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-    Method method = signature.getMethod();
-    return String.format("%s.%s", method.getDeclaringClass().getName(), method.getName());
   }
 
   private String resolveId(
