@@ -39,7 +39,7 @@ jobs:
 
       - name: "Build the code"
         # `unit tests are run in another workflow
-        run: ./gradlew build -X test
+        run: ./gradlew build -x test
 
       - name: "Build the images"
         # `unit tests are run in another workflow
