@@ -38,8 +38,16 @@ jobs:
         uses: ./.github/actions/setup-vro
 
       - name: "Build the code"
-        # `check` runs hadolint and shellcheck
-        run: ./gradlew devloop
+        # `unit tests are run in another workflow
+        run: ./gradlew build -X test
+
+      - name: "Build the images"
+        # `unit tests are run in another workflow
+        run: ./gradlew docker
+
+      - name: "Start the containers"
+        # `unit tests are run in another workflow
+        run: ./gradlew :app:dockerComposeUp
 
       - name: "Build the code"
         # `check` runs hadolint and shellcheck
