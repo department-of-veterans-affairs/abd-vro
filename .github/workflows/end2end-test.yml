@@ -42,13 +42,16 @@ jobs:
         run: ./gradlew build -x test
 
       - name: "Build the images"
-        # `unit tests are run in another workflow
         run: ./gradlew docker
 
       - name: "Start the containers"
-        # `unit tests are run in another workflow
         run: ./gradlew :app:dockerComposeUp
 
-      - name: "Build the code"
-        # `check` runs hadolint and shellcheck
+      - name: "RUn the end to and tests"
         run: ./gradlew end2EndTest
+
+      - name: "Clean docker container and images"
+        run: ./gradlew dockerclean
+
+      - name: "Clean docker volumes"
+        run: ./gradlew dockermaintainerclean
