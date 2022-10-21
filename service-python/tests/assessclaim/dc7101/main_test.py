@@ -54,7 +54,7 @@ from assessclaimdc7101.src.lib import main
                         }
                     ],
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             {
                 "evidence": {
@@ -150,7 +150,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                     "medications": [],
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
                 "diagnosticCode": "7101",
             },
             # Blood pressue readings don't meet date specs
@@ -170,7 +170,7 @@ from assessclaimdc7101.src.lib import main
                     "bp_readings": [],
                     "medications": [],
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
                 "diagnosticCode": "7101",
             },
             {
@@ -267,7 +267,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                     "medications": [{"description": 11}],
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             {
                 "errorMessage": "error validating request message data",

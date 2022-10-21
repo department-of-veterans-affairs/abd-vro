@@ -12,66 +12,35 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "date_of_claim": {"type": "string"},
+        "dateOfClaim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "evidence": {
             "type": "dict",
             "schema": {
-                "condition": {
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {
-                                "type": "string",
-                                "required": True
-                            },
-                            "status": {
-                                "type": "string",
-                                "required": True
-                            },
-                            "text": {
-                                "type": "string"
-                            },
-                            "onset_date": {
-                                "type": "string",
-                            },
-                            "abatement_date": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
                 "medications": {
                     "required": True,
                     "type": "list",
                     "schema": {
                         "type": "dict",
                         "schema": {
-                            "authoredOn": {
-                                "type": "string",
-                                "required": True
-                            },
-                            "status": {
-                                "type": "string",
-                            },
+                            "authoredOn": {"type": "string", "required": True},
+                            "status": {"type": "string", "required": True},
                             "dosageInstructions": {
                                 "type": "list",
-                                "schema": {"type": "string"}
+                                "nullable": True,
+                                "schema": {"type": "string", "default": ""},
                             },
-                            "route": {"type": "string"},
+                            "route": {"type": "string", "nullable": True},
                             "refills": {},
-                            "duration": {"type": "string"},
-                            "description": {
-                                "type": "string",
-                                "required": True
-                            },
+                            "duration": {"type": "string", "nullable": True},
+                            "description": {"type": "string", "required": True},
                             "notes": {
                                 "type": "list",
-                                "schema": {"type": "string"}
-                            }
-                        }
-                    }
+                                "nullable": True,
+                                "schema": {"type": "string"},
+                            },
+                        },
+                    },
                 },
                 "bp_readings": {
                     "required": True,
@@ -83,36 +52,31 @@ def validate_request_body(request_body):
                                 "type": "dict",
                                 "required": True,
                                 "schema": {
-                                    "value": {
-                                        "type": "number",
-                                        "required": True
-                                    },
+                                    "value": {"type": "number", "required": True},
                                     "code": {"type": "string"},
                                     "display": {"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
+                                    "unit": {"type": "string"},
+                                },
                             },
                             "systolic": {
                                 "type": "dict",
                                 "required": True,
                                 "schema": {
-                                    "value": {
-                                        "type": "number",
-                                        "required": True
-                                    },
+                                    "value": {"type": "number", "required": True},
                                     "code": {"type": "string"},
                                     "display": {"type": "string"},
-                                    "unit": {"type": "string"}
-                                }
+                                    "unit": {"type": "string"},
+                                },
                             },
                             "date": {"type": "string"},
-                            "practitioner": {"type": "string"},
-                            "organization": {"type": "string"}
-                        }
-                    }
+                            "practitioner": {"type": "string", "nullable": True},
+                            "organization": {"type": "string", "nullable": True},
+                        },
+                    },
                 },
-                "procedure": {
+                "conditions": {
                     "type": "list",
+                    "required": True,
                     "schema": {
                         "type": "dict",
                         "schema": {
@@ -120,20 +84,20 @@ def validate_request_body(request_body):
                                 "type": "string",
                                 "required": True
                             },
-                            "code_system": {
-                                "type": "string"
-                            },
-                            "text": {
-                                "type": "string"
-                            },
-                            "performed_date": {
-                                "type": "string",
-                                "required": True
-                            },
                             "status": {
                                 "type": "string",
                                 "required": True
                             },
+                            "text": {
+                                "type": "string"
+                            },
+                            "onsetDate": {
+                                "type": "string",
+                            },
+                            "abatementDate": {
+                                "type": "string",
+                                "nullable": True
+                            }
                         }
                     }
                 }

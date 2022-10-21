@@ -1,10 +1,11 @@
-
+import logging
+from datetime import date
 from typing import Dict
 
-from . import bp_history
 from . import continuous_medication
-from . import predominant_bp
+from . import bp_calculator
 from . import utils
+from . import conditions
 
 
 def assess_hypertension(event: Dict):
@@ -19,29 +20,39 @@ def assess_hypertension(event: Dict):
 
     validation_results = utils.validate_request_body(event)
     response_body = {}
+    if "dateOfClaim" not in event:
+        event["dateOfClaim"] = str(date.today())
 
     if validation_results["is_valid"]:
-        predominance_calculation = predominant_bp.sufficient_to_autopopulate(event)
-        diastolic_history_calculation = bp_history.history_of_diastolic_bp(event)
-        relevant_medication = continuous_medication.continuous_medication_required(event)
+        bp_calculation = bp_calculator.sufficient_for_fast_track(event)
+        relevant_medications = continuous_medication.continuous_medication_required(event)
+        relevant_conditions = conditions.conditions_calculation(event)
+        sufficient = None
+        if relevant_conditions["conditions"]:
+            sufficient = False
+            if bp_calculation["recentBpReadings"] >= 2:
+                sufficient = True
+        elif bp_calculation["recentElevatedBpReadings"] >= 2:
+            sufficient = True
 
         response_body.update(
             {
                 "evidence": {
-                    "medications": relevant_medication["medications"],
-                    "bp_readings": event["evidence"]["bp_readings"]
+                    "medications": relevant_medications["medications"],
+                    "bp_readings": event["evidence"]["bp_readings"],
+                    "conditions": relevant_conditions["conditions"]
                 },
                 "evidenceSummary": {
-                    "relevantMedCount": relevant_medication["relevantMedCount"],
-                    "totalMedCount": relevant_medication["totalMedCount"],
-                    "totalBpReadings": diastolic_history_calculation["totalBpReadings"],
-                    "recentBpReadings": predominance_calculation["recentBpReadings"],
+                    "relevantMedCount": relevant_medications["relevantMedCount"],
+                    "totalMedCount": relevant_medications["totalMedCount"],
+                    "totalBpReadings": bp_calculation["totalBpReadings"],
+                    "recentBpReadings": bp_calculation["recentBpReadings"],
+                    "recentElevatedBpReadings": bp_calculation["recentElevatedBpReadings"],
+                    "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
+                    "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
-                "calculated": {
-                    "predominance_calculation": predominance_calculation["calculated"],
-                    "diastolic_history_calculation":
-                        diastolic_history_calculation["calculated"],
-                }
+                "sufficientForFastTracking": sufficient,
+                "dateOfClaim": event["dateOfClaim"]
             })
     else:
         response_body["errorMessage"] = "error validating request message data"

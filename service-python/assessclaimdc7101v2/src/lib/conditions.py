@@ -1,4 +1,4 @@
-from .codesets import condition_codesets
+from .codesets import hypertension_conditions
 
 
 def conditions_calculation(request_body):
@@ -13,18 +13,17 @@ def conditions_calculation(request_body):
     relevant_conditions = []
 
     veterans_conditions = request_body["evidence"]["conditions"]
-    total_conditions_count = len(veterans_conditions)
+
     for condition in veterans_conditions:
-        if condition["status"].lower() in ["active", "recurrence", "relapse"]:
+        if condition["status"].lower() in ["active", "relapse", "recurrence"]:
             condition_code = condition["code"]
-            if condition_code in condition_codesets.sinusitis:
-                relevant_conditions.append(condition)
-                continue
-            elif condition_code in condition_codesets.rhinosinusitis:
+            if condition_code in hypertension_conditions.conditions:
                 relevant_conditions.append(condition)
 
-    response["conditions"] = relevant_conditions
-    response["relevantConditionsCount"] = len(relevant_conditions)
-    response["totalConditionsCount"] = total_conditions_count
-
+    response.update({
+        "conditions": relevant_conditions,
+        "totalConditionsCount": len(veterans_conditions),
+        "relevantConditionsCount": len(relevant_conditions)
+        }
+    )
     return response

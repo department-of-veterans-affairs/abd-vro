@@ -62,7 +62,6 @@ jobs:
           snyk-image pdfgenerator service-python/pdfgenerator
           snyk-image assessclaimdc7101 service-python/assessclaimdc7101
           snyk-image assessclaimdc6602 service-python/assessclaimdc6602
-          snyk-image assessclaimdc6510 service-python/assessclaimdc6510
 
           if [ "$FAILED_IMAGES" ]; then
             echo "Failed images:$FAILED_IMAGES"

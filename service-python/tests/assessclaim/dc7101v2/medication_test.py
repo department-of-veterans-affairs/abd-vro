@@ -13,7 +13,7 @@ from assessclaimdc7101v2.src.lib import continuous_medication
                         "medications": [{"description": "Benazepril",
                                          "status": "active",
                                          "authoredOn": "1950-04-06T04:00:00Z", }],
-                        'date_of_claim': '2021-11-09',
+                        'dateOfClaim': '2021-11-09',
                     }
                 },
                 {"medications": [{"description": "Benazepril",
@@ -32,7 +32,7 @@ from assessclaimdc7101v2.src.lib import continuous_medication
                                          "status": "active",
                                          "conditionRelated": "true",
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
-                        'date_of_claim': '2021-11-09',
+                        'dateOfClaim': '2021-11-09',
                     }
                 },
                 {"medications": [{"description": "Benazepril",
@@ -51,7 +51,7 @@ from assessclaimdc7101v2.src.lib import continuous_medication
                         "medications": [{"description": "Advil",
                                          "status": "active",
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
-                        'date_of_claim': '2021-11-09',
+                        'dateOfClaim': '2021-11-09',
                     }
                 },
                 {"medications": [{"description": "Advil",
@@ -72,7 +72,7 @@ from assessclaimdc7101v2.src.lib import continuous_medication
                                         {"description": "Advil",
                                          "status": "active",
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
-                        'date_of_claim': '2021-11-09',
+                        'dateOfClaim': '2021-11-09',
                     }
                 },
                 {"medications": [{"description": "Benazepril",
