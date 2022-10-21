@@ -36,7 +36,7 @@ public class FullHealthDataAssessmentResponse {
   @Schema(description = "Decision based on available data")
   private Boolean sufficientForFastTracking;
 
-  @Schema(description = "Decision based on available data")
+  @Schema(description = "Date of claim or date of processing if not provided")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String dateOfClaim;
 
