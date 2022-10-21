@@ -65,21 +65,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     Map summary = (Map) evidence.getOrDefault("evidenceSummary", defaultEvidence);
     Object code = evidence.get("diagnosticCode");
     String dcode = (String) code;
-    int count = 0;
-    if (summary != null) {
-      for (Object value : summary.values()) {
-        count += (Integer) value;
-      }
-    }
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
-    assessmentResultEntity.setEvidenceCount(count);
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
     AssessmentResult resp = new AssessmentResult();
     resp.setEvidenceSummary(assessmentResultEntity.getEvidenceCountSummary());
-    resp.setEvidenceCount(assessmentResultEntity.getEvidenceCount());
     resp.setVeteranIcn(veteranIcn);
     resp.setDiagnosticCode(diagnosticCode);
     return resp;

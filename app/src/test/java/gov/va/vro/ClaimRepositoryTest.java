@@ -27,7 +27,6 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
     ar.setEvidenceCountSummary(evidence);
-    ar.setEvidenceCount(10);
     contention1.addAssessmentResult(ar);
     contention1.addEvidenceSummaryDocument("doc1", 1);
     contention1.addEvidenceSummaryDocument("doc2", 2);
@@ -37,7 +36,6 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     AssessmentResultEntity ar2 = new AssessmentResultEntity();
     evidence2.put("medicationsCount", "10");
     ar2.setEvidenceCountSummary(evidence2);
-    ar2.setEvidenceCount(10);
     contention2.addAssessmentResult(ar2);
     contention2.addAssessmentResult(2);
 

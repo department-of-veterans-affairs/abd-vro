@@ -59,7 +59,6 @@ public class ContentionEntity extends BaseEntity {
    */
   public AssessmentResultEntity addAssessmentResult(int evidenceCount) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
-    assessmentResult.setEvidenceCount(evidenceCount);
     assessmentResult.setContention(this);
     assessmentResults.add(assessmentResult);
     return assessmentResult;
@@ -67,7 +66,6 @@ public class ContentionEntity extends BaseEntity {
 
   public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
-    assessmentResult.setEvidenceCount(ar.getEvidenceCount());
     assessmentResult.setContention(this);
     assessmentResult.setEvidenceCountSummary(ar.getEvidenceCountSummary());
     assessmentResults.add(assessmentResult);

@@ -27,10 +27,6 @@ public class AssessmentResult {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
 
-  @Schema(description = "Sum of evidence summary totals.")
-  @JsonInclude
-  private int evidenceCount;
-
   @Schema(description = "Summary of evidence counts")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Map<String, String> evidenceSummary;
