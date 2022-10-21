@@ -71,9 +71,6 @@ public class PrimaryRoutes extends RouteBuilder {
         .setProperty("id", simple("${body.recordId}"))
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("veteranIcn", simple("${body.veteranIcn}"))
-        .setProperty("claimSubmissionId", simple("${body.claimSubmissionId}"))
-        .setProperty("idType", simple("${body.idType}"))
-        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
         .convertBodyTo(String.class)
@@ -84,11 +81,9 @@ public class PrimaryRoutes extends RouteBuilder {
                 String response = (String) exchange.getIn().getBody();
                 String icn = (String) exchange.getProperty("veteranIcn");
                 UUID id = (UUID) exchange.getProperty("id");
-                String claimSubmissionId = (String) exchange.getProperty("claimSubmissionId");
-                String idType = (String) exchange.getProperty("idType");
                 String diagnosticCode = (String) exchange.getProperty("diagnosticCode");
                 saveToDbService.insertAssessmentResult(
-                    id, response, icn, claimSubmissionId, idType, diagnosticCode);
+                    id, response, icn, diagnosticCode);
               }
             });
   }

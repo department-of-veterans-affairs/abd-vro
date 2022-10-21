@@ -12,8 +12,6 @@ public interface SaveToDbService {
       UUID id,
       String assessmentResult,
       String veteranIcn,
-      String claimSubmissionId,
-      String idType,
       String diagnosticCode)
       throws NoSuchFieldException;
 }

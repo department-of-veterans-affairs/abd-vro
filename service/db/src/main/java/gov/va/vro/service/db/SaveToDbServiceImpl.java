@@ -45,8 +45,6 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       UUID id,
       String assessmentResult,
       String veteranIcn,
-      String claimSubmissionId,
-      String idType,
       String diagnosticCode)
       throws NoSuchFieldException {
     ClaimEntity claimEntity =
@@ -78,12 +76,6 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     assessmentResultEntity.setEvidenceCount(count);
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
-    for (AssessmentResultEntity ar : contention.getAssessmentResults()) {
-      if (ar.getContention().getId() == contention.getId()) {
-        log.info("Assessment result already populated, continuing.");
-        break;
-      }
-    }
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
     AssessmentResult resp = new AssessmentResult();
