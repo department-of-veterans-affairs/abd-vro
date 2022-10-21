@@ -82,8 +82,7 @@ public class PrimaryRoutes extends RouteBuilder {
                 String icn = (String) exchange.getProperty("veteranIcn");
                 UUID id = (UUID) exchange.getProperty("id");
                 String diagnosticCode = (String) exchange.getProperty("diagnosticCode");
-                saveToDbService.insertAssessmentResult(
-                    id, response, icn, diagnosticCode);
+                saveToDbService.insertAssessmentResult(id, response, icn, diagnosticCode);
               }
             });
   }

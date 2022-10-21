@@ -42,10 +42,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public AssessmentResult insertAssessmentResult(
-      UUID id,
-      String assessmentResult,
-      String veteranIcn,
-      String diagnosticCode)
+      UUID id, String assessmentResult, String veteranIcn, String diagnosticCode)
       throws NoSuchFieldException {
     ClaimEntity claimEntity =
         claimRepository
@@ -66,6 +63,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     Map<String, Object> defaultEvidence = new HashMap<>();
     defaultEvidence.put("medicationsCount", 0);
     Map summary = (Map) evidence.getOrDefault("evidenceSummary", defaultEvidence);
+    Object code = evidence.get("diagnosticCode");
+    String dcode = (String) code;
     int count = 0;
     if (summary != null) {
       for (Object value : summary.values()) {

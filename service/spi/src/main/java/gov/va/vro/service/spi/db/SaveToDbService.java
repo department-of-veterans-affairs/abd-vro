@@ -9,9 +9,6 @@ public interface SaveToDbService {
   Claim insertClaim(Claim claim);
 
   AssessmentResult insertAssessmentResult(
-      UUID id,
-      String assessmentResult,
-      String veteranIcn,
-      String diagnosticCode)
+      UUID id, String assessmentResult, String veteranIcn, String diagnosticCode)
       throws NoSuchFieldException;
 }
