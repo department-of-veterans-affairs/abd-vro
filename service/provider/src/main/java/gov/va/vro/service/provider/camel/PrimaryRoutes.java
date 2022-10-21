@@ -2,10 +2,12 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -37,8 +39,11 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final MasPollingProcessor masPollingProcessor;
 
+  private final AuditEventProcessor auditEventProcessor;
+
   @Override
   public void configure() {
+    configureExceptionHandling();
     configureRouteClaimSubmit();
     configureRouteClaimSubmitForFull();
     configureRouteGeneratePdf();
@@ -94,5 +99,16 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private String pdfRoute(String queueName) {
     return String.format("rabbitmq:%s?routingKey=%s", PDF_EXCHANGE, queueName);
+  }
+
+  private void configureExceptionHandling() {
+    onException(Throwable.class)
+        .process(
+            exchange -> {
+              Throwable exception = (Throwable) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
+              var message = exchange.getMessage();
+              var body = message.getBody();
+              auditEventProcessor.logException(body, exception, exchange.getFromRouteId());
+            });
   }
 }
