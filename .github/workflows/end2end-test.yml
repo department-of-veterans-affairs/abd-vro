@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew :app:dockerComposeUp
 
       - name: "RUn the end to and tests"
-        run: ./gradlew end2EndTest
+        run: ./gradlew end2EndTest --info
 
       - name: "Clean docker container and images"
         run: ./gradlew dockerclean
