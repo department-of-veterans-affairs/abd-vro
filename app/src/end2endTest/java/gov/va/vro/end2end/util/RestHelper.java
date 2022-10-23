@@ -1,15 +1,11 @@
 package gov.va.vro.end2end.util;
 
-import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollChannelOption;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
-import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 
@@ -24,17 +20,7 @@ public class RestHelper {
   private String apiKey;
 
   private WebTestClient buildClient() {
-    HttpClient client =
-        HttpClient.create()
-            .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
-            .option(ChannelOption.SO_KEEPALIVE, true)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-            .option(EpollChannelOption.TCP_KEEPIDLE, 60)
-            .option(EpollChannelOption.TCP_KEEPINTVL, 60)
-            .option(EpollChannelOption.TCP_KEEPCNT, 8)
-            .compress(true);
-
-    return WebTestClient.bindToServer(new ReactorClientHttpConnector(client))
+    return WebTestClient.bindToServer()
         .baseUrl(BASE_URL)
         .defaultHeader(API_KEY, apiKey)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
