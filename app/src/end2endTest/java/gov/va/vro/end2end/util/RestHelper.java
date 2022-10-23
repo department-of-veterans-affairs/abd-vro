@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.netty.http.client.HttpClient;
@@ -30,9 +31,10 @@ public class RestHelper {
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
             .option(EpollChannelOption.TCP_KEEPIDLE, 60)
             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
-            .option(EpollChannelOption.TCP_KEEPCNT, 8);
+            .option(EpollChannelOption.TCP_KEEPCNT, 8)
+            .compress(true);
 
-    return WebTestClient.bindToServer()
+    return WebTestClient.bindToServer(new ReactorClientHttpConnector(client))
         .baseUrl(BASE_URL)
         .defaultHeader(API_KEY, apiKey)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
