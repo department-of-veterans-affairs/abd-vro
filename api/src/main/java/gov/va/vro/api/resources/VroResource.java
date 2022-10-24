@@ -46,7 +46,7 @@ public interface VroResource {
   @PostMapping("/evidence-pdf")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
