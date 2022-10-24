@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /** Temporary class until proper service is implemented */
 @Service
 @Slf4j
-public class DummyEventService implements EventService {
+public class LoggingEventService implements EventService {
 
   @Override
   public void logEvent(AuditEvent event) {

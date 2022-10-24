@@ -37,6 +37,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final SaveToDbService saveToDbService;
 
+  private final SlipClaimSubmitRouter claimSubmitRouter;
   private final MasPollingProcessor masPollingProcessor;
 
   private final AuditEventProcessor auditEventProcessor;
@@ -70,8 +71,8 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"));
+        .routingSlip(method(claimSubmitRouter, "routeClaimSubmit"))
+        .routingSlip(method(claimSubmitRouter, "routeClaimSubmitFull"));
   }
 
   private void configureRouteGeneratePdf() {
@@ -85,13 +86,21 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureAutomatedClaim() {
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId("mas-claim-notification")
+        .process(
+            auditEventProcessor.event(
+                "mas-claim-notification",
+                "Setting a delay before staring Automated claim processing."))
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
+        .process(
+            auditEventProcessor.event("mas-claim-notification", "Calling endpoint " + ENDPOINT_MAS))
         .to(ENDPOINT_MAS);
 
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
+        .process(
+            auditEventProcessor.event("mas-claim-processing", "Entering endpoint " + ENDPOINT_MAS))
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");

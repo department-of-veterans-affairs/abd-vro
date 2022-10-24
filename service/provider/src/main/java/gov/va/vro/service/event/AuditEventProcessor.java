@@ -13,7 +13,7 @@ public class AuditEventProcessor {
 
   private final EventService eventService;
 
-  public Object logEvent(Object o, String routeId) {
+  public Object logEvent(Object o, String routeId, String message) {
     if (!(o instanceof Auditable auditableObject)) {
       // object cannot be audited
       return o;
@@ -23,6 +23,7 @@ public class AuditEventProcessor {
             .eventId(auditableObject.getEventId())
             .payloadType(auditableObject.getClass())
             .routeId(routeId)
+            .message(message)
             .build();
     eventService.logEvent(event);
     return o;
@@ -43,10 +44,16 @@ public class AuditEventProcessor {
     eventService.logEvent(event);
   }
 
-  public FunctionProcessor<Object, Object> eventProcessor(String routeId) {
+  /**
+   * Create a Camel processor that logs an event
+   *
+   * @param routeId the id of the route
+   * @param message a message to report with the event
+   */
+  public FunctionProcessor<Object, Object> event(String routeId, String message) {
     return FunctionProcessor.fromFunction(
         payload -> {
-          logEvent(payload, routeId);
+          logEvent(payload, routeId, message);
           return payload;
         });
   }
