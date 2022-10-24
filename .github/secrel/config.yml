@@ -51,6 +51,3 @@ images:
 python:
   requirements:
     - ./service-python/requirements.txt
-    - ./service-python/pdfgenerator/src/requirements.txt
-    - ./service-python/assessclaimdc6602/src/requirements.txt
-    - ./service-python/assessclaimdc7101/src/requirements.txt
