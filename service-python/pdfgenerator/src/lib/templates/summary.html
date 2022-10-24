@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <title>{{pdf_title}}</title>
+
+  <style>
+    body {
+      font-family: serif;
+      padding: 10px;
+    }
+    a {
+      text-decoration: none;
+    }
+    h1 {
+      font-size: 45px;
+    }
+    h2 {
+      font-size: 22px;
+    }
+    h3 {
+      font-size: 16px;
+    }
+    h4 {
+      margin-top: 12;
+    }
+    /* table {
+      width: 150;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 5px;
+      border-width: 0;
+      border-style: hidden !important;
+      background-color: #fff1d2;
+      vertical-align: top;
+    } */
+  </style>
+
+</head>
+
+<body>
+  <div class="row">
+    <div class="col-3">
+      <img src="https://via.placeholder.com/250x75" alt="Logo Placeholder">
+    </div>
+  </div>
+  <h3 class="text-center">Evidence Review Summary</h3>
+  <div class="row">
+    <div class="col-4 offset-4">
+      <table class="table table-bordered border-dark">
+        <tr>
+          <th>Veteran's Name:</th>
+          <td>Ms. Test A. Veteran</td>
+        </tr>
+        <tr>
+          <th>VA File Number:</th>
+          <td>0000000000</td>
+        </tr>
+        <tr>
+          <th>Date of evidence review:</th>
+          <td>Oct 20, 2022</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p>
+        <b>Claims Processors:</b> The Evidence Review Summary is intended to be used as a tool to efficiently identify documents in the Veteran’s VBMS eFolder to support identifying possible military service related to presumptive conditions (if applicable to the contention(s)) and possible evaluation criteria.
+      </p>
+      <p>
+        <b>Notice(s)</b><br>
+        In certain circumstances, Automation may be unable to download all relevant documents. Please consider the potential for unreviewed evidence contained in the documents listed in the Relevant Documents Unavailable for Automated Review table found at the end of this summary, as well as the totality of the Veteran's record.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-bordered border-dark">
+        <thead>
+          <tr>
+            <th colspan="6" class="text-center">Schedular Evidence For Hypertension</th>
+          </tr>
+          <tr>
+            <th>Key Terms</th>
+            <th>Observation Date</th>
+            <th>VBMS Receipt Date</th>
+            <th>Document</th>
+            <th>Page Number(s)</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Furosemide 40mg</td>
+            <td>8/25/2022</td>
+            <td>7/15/2022</td>
+            <td>VAMC Record Medication</td>
+            <td>20, 21</td>
+            <td>{5B3F0A7-3526-4B3F-AK16-5022047B07}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-bordered border-dark">
+        <thead>
+          <tr>
+            <th colspan="6" class="text-center">Other Medical Evidence For Hypertension</th>
+          </tr>
+          <tr>
+            <th>Key Terms</th>
+            <th>Observation Date</th>
+            <th>VBMS Receipt Date</th>
+            <th>Document</th>
+            <th>Page Number(s)</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Furosemide 40mg</td>
+            <td>8/25/2022</td>
+            <td>7/15/2022</td>
+            <td>VAMC Record Medication</td>
+            <td>20, 21</td>
+            <td>{5B3F0A7-3526-4B3F-AK16-5022047B07}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-bordered border-dark">
+        <thead>
+          <tr>
+            <th colspan="6" class="text-center">Relevant Documents Unavailable for Automated Review</th>
+          </tr>
+          <tr>
+            <th>Document</th>
+            <th>VBMS Receipt Date</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VAMC Record Medication</td>
+            <td>8/25/2022</td>
+            <td>{5B3F0A7-3526-4B3F-AK16-5022047B07}</td>
+          </tr>
+          <tr>
+            <td colspan="3">All selected documents completed automated review.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <h3 class="text-center">End of Evidence Review Summary</h3>
+  {% block body %}{% endblock %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

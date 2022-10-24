@@ -22,8 +22,9 @@ class PDFGenerator:
         # Starting date from when the data is fetched. Mainly to be used to display a range Ex: (start_date) to (timestamp)
         filled_variables["start_date"] = datetime.now() - relativedelta(years=1)
         filled_variables["timestamp"] = pytz.utc.localize(datetime.now())
-        for medication_info in filled_variables["evidence"]["medications"]:
-            medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
+        if "evidence" in filled_variables:
+            for medication_info in filled_variables["evidence"]["medications"]:
+                medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
         return filled_variables
 
     def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False) -> str:
