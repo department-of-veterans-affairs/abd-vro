@@ -1,0 +1,66 @@
+package gov.va.vro.end2end.util;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.io.RandomAccessBuffer;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
+/**
+ * This class represents the text of the evidence pdf as extracted by Apache PDFBox. It is used for
+ * sanity checks for now until a more sophisticated parser extracts all data.
+ */
+public class PdfText {
+  private String pdfText;
+
+  public PdfText(String pdfText) {
+    this.pdfText = pdfText;
+  }
+
+  public int countBpReadings() {
+    return StringUtils.countMatches(pdfText, "Blood pressure:");
+  }
+
+  public int countMedications() {
+    return StringUtils.countMatches(pdfText, "Prescribed on:");
+  }
+
+  /**
+   * Checks if the veteran full name is the document.
+   *
+   * @param veteranInfo veteran demographics spec
+   * @return if the pdf text has veteran full name
+   */
+  public boolean hasVeteranInfo(JsonNode veteranInfo) {
+    // Assume all exists for now. That is how test data is set up.
+    String first = veteranInfo.get("first").asText();
+    String middle = veteranInfo.get("middle").asText();
+    String last = veteranInfo.get("last").asText();
+    String suffix = veteranInfo.get("suffix").asText();
+
+    String searchValue = String.format("%s %s %s %s", first, middle, last, suffix);
+
+    return pdfText.indexOf(searchValue) > -1;
+  }
+
+  /**
+   * Extracts text from the pdf file and caches for later use.
+   *
+   * @param pdfContent the evidence pdf file as byte array
+   * @return newed PDFText
+   * @throws Exception any error to fail the test
+   */
+  public static PdfText getInstance(byte[] pdfContent) throws Exception {
+    RandomAccessBuffer buffer = new RandomAccessBuffer(pdfContent);
+    PDFParser parser = new PDFParser(buffer);
+    parser.parse();
+
+    PDDocument document = parser.getPDDocument();
+
+    PDFTextStripper stripper = new PDFTextStripper();
+    stripper.setSortByPosition(true);
+    String text = stripper.getText(document);
+    return new PdfText(text);
+  }
+}
