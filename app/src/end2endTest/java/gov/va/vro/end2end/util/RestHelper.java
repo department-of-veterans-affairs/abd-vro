@@ -23,6 +23,7 @@ public class RestHelper {
     String rtEnv = SystemUtils.getEnvironmentVariable("VRO_E2E_RESPONSE_TIMEOUT", "20000");
     responseTimeout = Long.parseLong(rtEnv);
   }
+
   private String apiKey;
 
   private WebTestClient buildClient() {
