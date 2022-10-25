@@ -95,6 +95,23 @@ spring:
   http:
     encoding:
       force: true
+  security:
+    oauth2:
+      client:
+        provider:
+          mas:
+            uri: ${mas-api-auth-token-uri:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
+        registration:
+          mas:
+            client-id: ${mas-api-auth-clientID:vro_dev}
+            client-secret: ${mas-api-auth-client-secret:a526870c-9013-4d5b-80e7-1850cabf770d}
+            scope: ${mas-api-auth-scope:openid}
+            grant-type: client_credentials
+masAPIProvider:
+  baseURL: ${mas-api-bas-url:https://viccs-api-dev.ibm-intelligent-automation.com/mas/pca/api/dev}
+  collectionAnnotsPath: ${mas-collection-annots-path:/pcQueryCollectionAnnots}
+  collectionStatusPath: ${mas-collection-status-path:/pcCheckCollectionStatus}
+  createExamOrderPath: ${mas-create-exam-order-path:/pcCreateExamOrdering}
 
 opentracing:
   zipkin:
