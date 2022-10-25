@@ -1,7 +1,7 @@
 import ru.vyarus.gradle.plugin.python.task.PythonTask
 
 plugins {
-    id('ru.vyarus.use-python') version "2.3.0"
+    id('ru.vyarus.use-python') version "3.0.0"
 }
 
 python {
