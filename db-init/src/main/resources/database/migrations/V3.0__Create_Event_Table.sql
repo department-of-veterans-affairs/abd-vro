@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS audit_event (
     id uuid DEFAULT uuid_generate_v4 () NOT NULL,
-    event_id VARCHAR NOT NULL UNIQUE,
+    event_id VARCHAR NOT NULL,
     route_id VARCHAR,
-    payload_type VARCHAR,
+    payload_type VARCHAR NOT NULL,
     exception VARCHAR,
     message VARCHAR,
     event_time timestamp NOT NULL,
