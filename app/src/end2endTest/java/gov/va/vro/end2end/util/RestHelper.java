@@ -2,6 +2,7 @@ package gov.va.vro.end2end.util;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -12,11 +13,16 @@ import java.time.Duration;
 @Getter
 @Setter
 public class RestHelper {
-  private static final long DEFAULT_TIMEOUT = 15000;
   private static final String BASE_URL = "http://localhost:8080/v1";
   private static final String API_KEY = "X-API-KEY";
   private static final String ASSESSMENT_END_POINT = "/full-health-data-assessment";
   private static final String PDF_END_POINT = "/evidence-pdf";
+  private static final long responseTimeout;
+
+  static {
+    String rtEnv = SystemUtils.getEnvironmentVariable("VRO_E2E_RESPONSE_TIMEOUT", "20000");
+    responseTimeout = Long.parseLong(rtEnv);
+  }
   private String apiKey;
 
   private WebTestClient buildClient() {
@@ -24,7 +30,7 @@ public class RestHelper {
         .baseUrl(BASE_URL)
         .defaultHeader(API_KEY, apiKey)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .responseTimeout(Duration.ofMillis(DEFAULT_TIMEOUT))
+        .responseTimeout(Duration.ofMillis(responseTimeout))
         .build();
   }
 
