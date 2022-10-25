@@ -141,7 +141,6 @@ public class FhirClient {
   }
 
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
-    log.info("Extract patient medication entries. number of entries: {}", entries.size());
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
@@ -215,9 +214,8 @@ public class FhirClient {
           hasNextPage = false;
         }
       } while (hasNextPage);
-      if (!records.isEmpty()) {
-        result.put(domain, records);
-      }
+      log.info("Retrieved {} entries for {}", records.size(), domain.toString());
+      result.put(domain, records);
     }
     return result;
   }
