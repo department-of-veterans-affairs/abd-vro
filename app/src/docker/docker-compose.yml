@@ -9,6 +9,14 @@ volumes:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+x-postgres-vars: &postgres-vars
+  POSTGRES_HOST: postgres-service
+  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: claims
+
 x-redis-placeholder-vars: &redis-placeholder-vars
   REDIS_PLACEHOLDERS_HOST: redis-service
   REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
@@ -77,6 +85,7 @@ services:
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
+# This external access to the DB is enabled only for non-production environments.
       - external
     ports:
       - "5432:5432"
@@ -108,12 +117,7 @@ services:
       - "8081:8081"
     environment:
       <<: *rabbitmq-placeholder-vars
-      POSTGRES_HOST: postgres-service
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
-      POSTGRES_SCHEMA: claims
+      <<: *postgres-vars
       ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
@@ -182,3 +186,21 @@ services:
     networks:
       - internal
 
+  console:
+    image: va/abd_vro-console:latest
+    <<: *common-security-opt
+    profiles: ["debug"]
+    # stdin and tty are needed for user interaction
+    stdin_open: true
+    tty: true
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *postgres-vars
+    depends_on:
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
