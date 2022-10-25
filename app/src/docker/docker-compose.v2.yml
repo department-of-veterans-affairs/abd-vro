@@ -5,7 +5,7 @@ networks:
   external:
 
 services:
-  assess-claim-dc7101v2:
+  svc-assessor-dc7101v2:
     image: va/abd_vro-assessclaimdc7101v2:latest
     build: ../../../service-python/assessclaimdc7101v2/src/.
     security_opt:
