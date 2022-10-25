@@ -3,7 +3,7 @@ package gov.va.vro.service.event;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
-import gov.va.vro.service.spi.audit.EventService;
+import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuditEventProcessor {
 
-  private final EventService eventService;
+  private final AuditEventService auditEventService;
 
   public Object logEvent(Object o, String routeId, String message) {
     if (!(o instanceof Auditable auditableObject)) {
@@ -25,7 +25,7 @@ public class AuditEventProcessor {
             .routeId(routeId)
             .message(message)
             .build();
-    eventService.logEvent(event);
+    auditEventService.logEvent(event);
     return o;
   }
 
@@ -38,10 +38,10 @@ public class AuditEventProcessor {
         AuditEvent.builder()
             .eventId(auditableObject.getEventId())
             .payloadType(auditableObject.getClass())
-            .exception(t)
+            .throwable(t)
             .routeId(routeId)
             .build();
-    eventService.logEvent(event);
+    auditEventService.logEvent(event);
   }
 
   /**

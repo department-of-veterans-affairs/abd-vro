@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS audit_event (
     event_id VARCHAR NOT NULL,
     route_id VARCHAR,
     payload_type VARCHAR NOT NULL,
-    exception VARCHAR,
+    throwable TEXT,
     message VARCHAR,
     event_time timestamp NOT NULL,
     PRIMARY KEY(id)

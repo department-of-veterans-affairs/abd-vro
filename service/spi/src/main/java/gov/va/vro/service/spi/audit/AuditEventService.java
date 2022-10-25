@@ -2,7 +2,7 @@ package gov.va.vro.service.spi.audit;
 
 import gov.va.vro.model.event.AuditEvent;
 
-public interface EventService {
+public interface AuditEventService {
 
-  void logEvent(AuditEvent event);
+  void logEvent(AuditEvent auditEvent);
 }

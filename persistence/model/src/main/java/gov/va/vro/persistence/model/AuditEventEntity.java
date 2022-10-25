@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -20,10 +21,10 @@ public class AuditEventEntity {
   @Column(columnDefinition = "BINARY(16)")
   private UUID id;
 
-  private String eventId;
+  @NotNull private String eventId;
   private String routeId;
-  private Class<?> payloadType;
-  private Throwable exception;
+  @NotNull private String payloadType;
+  private String throwable;
   private String message;
-  private ZonedDateTime eventTime = ZonedDateTime.now();
+  @NotNull private ZonedDateTime eventTime = ZonedDateTime.now();
 }
