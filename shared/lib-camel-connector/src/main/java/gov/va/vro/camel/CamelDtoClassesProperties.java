@@ -49,6 +49,7 @@ public class CamelDtoClassesProperties {
                 }
               }
             })
+        .filter(Objects::nonNull)
         .flatMap(Collection::stream)
         .collect(Collectors.toUnmodifiableList());
   }
