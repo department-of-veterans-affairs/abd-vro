@@ -7,8 +7,8 @@ import gov.va.vro.model.*;
 import gov.va.vro.service.provider.MasApiProps;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.model.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -27,6 +27,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MasCollectionAnnotsApiService {
   private static final String BP_CONDITION = "Hypertension";
   private static final String ASTHMA_CONDITION = "Asthma";
@@ -39,13 +40,19 @@ public class MasCollectionAnnotsApiService {
   private static final String CLIENT_REGISTRATION_ID = "masAuthProvider";
   private static final String PRINCIPAL_NAME = "MAS Service";
 
-  private AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager;
+  private final AuthorizedClientServiceOAuth2AuthorizedClientManager
+      authorizedClientServiceAndManager;
 
-  @Autowired
-  public void setMasAuthorizedClientServiceAndManager(
-      AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager) {
-    this.authorizedClientServiceAndManager = authorizedClientServiceAndManager;
+  public AuthorizedClientServiceOAuth2AuthorizedClientManager
+      getAuthorizedClientServiceAndManager() {
+    return authorizedClientServiceAndManager;
   }
+
+  //  @Autowired
+  //  public void setMasAuthorizedClientServiceAndManager(
+  //      AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager) {
+  //    this.authorizedClientServiceAndManager = authorizedClientServiceAndManager;
+  //  }
 
   /*
   private MasAuthToken masAuthToken;

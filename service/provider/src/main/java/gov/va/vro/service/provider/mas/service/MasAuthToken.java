@@ -1,17 +1,15 @@
 package gov.va.vro.service.provider.mas.service;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Getter
-@Component("masAuthToken")
+// @Getter
+// @Component("masAuthToken")
 public class MasAuthToken {
 
   private static final String CLIENT_REGISTRATION_ID = "masAuthProvider";
