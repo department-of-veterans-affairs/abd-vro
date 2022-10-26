@@ -5,6 +5,8 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
+  <meta name="pdfkit-footer-font-size" content="8"/>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -32,18 +34,57 @@
     h4 {
       margin-top: 12;
     }
-    /* table {
-      width: 150;
-      border-collapse: collapse;
+    .toc-list, .toc-list ul {
+      list-style-type: none;
     }
 
-    td {
-      padding: 5px;
-      border-width: 0;
-      border-style: hidden !important;
-      background-color: #fff1d2;
-      vertical-align: top;
-    } */
+    .toc-list {
+      padding: 0;
+    }
+
+    .toc-list ol {
+      padding-inline-start: 2ch;
+    }
+
+    .toc-list li > a {
+      text-decoration: none;
+      display: grid;
+      grid-template-columns: auto max-content;
+      align-items: end;
+    }
+
+    .toc-list li > a > .page {
+      text-align: right;
+    }
+
+    .toc-list li > a > .title {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .toc-list li > a .leaders::after {
+      position: absolute;
+      padding-left: .25ch;
+      content: " . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . "
+          ". . . . . . . . . . . . . . . . . . . . . . . ";
+      text-align: right;
+    }
+
+    .toc-list > li > a {
+      font-weight: bold;
+      margin-block-start: 1em;
+    }
+
+    .toc-list li > a > .page {
+      min-width: 2ch;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
   </style>
 
 </head>
@@ -51,7 +92,6 @@
 <body>
   <div class="row">
     <div class="col-3">
-      <img src="https://via.placeholder.com/250x75" alt="Logo Placeholder">
     </div>
   </div>
   <h3 class="text-center">Evidence Review Summary</h3>
@@ -86,7 +126,40 @@
   </div>
   <div class="row">
     <div class="col">
-      <table class="table table-bordered border-dark">
+      <h2><b>Table of Contents</b></h2>
+      <ul class="toc-list" role="list">
+        <li>
+          <a href="#schedular-evidence">
+            <span class="title">Schedular Evidence<span class="leaders" aria-hidden="true"></span></span>
+            <span class="page">1</span>
+          </a>
+          <!-- <ul role="list">
+            <li>
+              <a href="#link_to_heading">
+                <span class="title">Chapter or subsection title<span class="leaders" aria-hidden="true"></span></span>
+                <span class="page">1</span>
+              </a>
+            </li>
+          </ul> -->
+        </li>
+        <li>
+          <a href="#other-medical-evidence">
+            <span class="title">Other Medical Evidence<span class="leaders" aria-hidden="true"></span></span>
+            <span class="page">1</span>
+          </a>
+        </li>
+        <li>
+          <a href="#unavailable-automated-review">
+            <span class="title">Relevant Documents Unavailable for Automated Review<span class="leaders" aria-hidden="true"></span></span>
+            <span class="page">1</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="schedular-evidence" class="table table-bordered border-dark">
         <thead>
           <tr>
             <th colspan="6" class="text-center">Schedular Evidence For Hypertension</th>
@@ -115,7 +188,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <table class="table table-bordered border-dark">
+      <table id="other-medical-evidence" class="table table-bordered border-dark">
         <thead>
           <tr>
             <th colspan="6" class="text-center">Other Medical Evidence For Hypertension</th>
@@ -144,7 +217,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <table class="table table-bordered border-dark">
+      <table id="unavailable-automated-review" class="table table-bordered border-dark">
         <thead>
           <tr>
             <th colspan="6" class="text-center">Relevant Documents Unavailable for Automated Review</th>
