@@ -11,7 +11,6 @@ dependencies {
     // include jdbc tracing here since we are assuming for this version we are using JDBC SQL
     // implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-// https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-55
     implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
     testRuntimeOnly "com.h2database:h2:${h2_version}"
 }

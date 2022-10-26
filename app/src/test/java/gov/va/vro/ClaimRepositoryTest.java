@@ -37,7 +37,6 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     evidence2.put("medicationsCount", "10");
     ar2.setEvidenceCountSummary(evidence2);
     contention2.addAssessmentResult(ar2);
-    contention2.addAssessmentResult(2);
 
     var claim = TestDataSupplier.createClaim("123", "type", veteran);
     claim.addContention(contention1);
@@ -68,7 +67,7 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
         .filter(contention -> "c2".equals(contention.getDiagnosticCode()))
         .findAny()
         .ifPresentOrElse(
-            contention -> assertEquals(2, contention2.getAssessmentResults().size()),
+            contention -> assertEquals(1, contention2.getAssessmentResults().size()),
             Assertions::fail);
     contentions.stream()
         .filter(contention -> "c2".equals(contention.getDiagnosticCode()))

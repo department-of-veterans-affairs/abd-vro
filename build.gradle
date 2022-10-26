@@ -79,7 +79,6 @@ allprojects {
 }
 
 subprojects {
-
     pluginManager.withPlugin('java') {
         // Constrains transitive dependencies to use versions without vulnerabilities
         // buildSrc/src/main/groovy/local.java.vro-dep-constraints.gradle
