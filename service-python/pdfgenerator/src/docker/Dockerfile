@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add expat
+RUN apk update && apk --no-cache add expat=2.5.0-r0
 
 RUN adduser --disabled-password docker
 USER docker
