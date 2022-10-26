@@ -7,6 +7,10 @@ import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Camel-oriented processor responsible for capturing audit events and forwarding them to the
+ * AuditEventService
+ */
 @Component
 @RequiredArgsConstructor
 public class AuditEventProcessor {

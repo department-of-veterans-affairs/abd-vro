@@ -38,6 +38,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SaveToDbService saveToDbService;
 
   private final SlipClaimSubmitRouter claimSubmitRouter;
+
   private final MasPollingProcessor masPollingProcessor;
 
   private final AuditEventProcessor auditEventProcessor;
