@@ -1,5 +1,8 @@
 package gov.va.vro.service.provider.mas.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** @author warren @Date 10/12/22 */
 public enum MasStatus {
   INPROGRESS("inProgress"),
@@ -10,6 +13,18 @@ public enum MasStatus {
 
   private final String status;
 
+  private static final Map<String, MasStatus> lookup = new HashMap<String, MasStatus>();
+
+  static {
+    for (MasStatus d : MasStatus.values()) {
+      lookup.put(d.getStatus(), d);
+    }
+  }
+
+  public static MasStatus getMasStatus(String status) {
+    return lookup.get(status) == null ? UNKNOWN : lookup.get(status);
+  }
+
   MasStatus(String status) {
     this.status = status;
   }
@@ -18,7 +33,7 @@ public enum MasStatus {
     return status;
   }
 
-  public MasStatus getMasStatus(String status) {
+  public static MasStatus getMasStatus1(String status) {
     for (MasStatus s : MasStatus.values()) {
       if (status.equals(s.getStatus())) {
         return s;

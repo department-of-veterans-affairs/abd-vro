@@ -1,8 +1,17 @@
 package gov.va.vro.service.provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.mas.MasException;
-import gov.va.vro.service.provider.mas.service.MasCollectionAnnotsApiService;
+import gov.va.vro.service.provider.mas.model.GeneratePdfResponse;
+import gov.va.vro.service.provider.mas.model.MasCollectionAnnotation;
+import gov.va.vro.service.provider.mas.model.MasCollectionStatus;
+import gov.va.vro.service.provider.mas.model.MasStatus;
+import gov.va.vro.service.provider.mas.service.MasApiService;
+import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,47 +19,122 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class MasPollingProcessor implements Processor {
-
   private final CamelEntrance camelEntrance;
   private final MasDelays masDelays;
-
-  private final MasCollectionAnnotsApiService masCollectionAnnotsApiService;
+  private final MasApiService masCollectionAnnotsApiService;
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {
     var payload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
-    log.info("Checking collection status for collection {}.", payload.getCollectionId());
 
+    log.info("Checking collection status for collection {}.", payload.getCollectionId());
+    boolean isCollectionReady = false;
     try {
-      var result = masCollectionAnnotsApiService.getCollectionAnnots(payload.getCollectionId());
-      log.info("RAJESH: " + result);
-    } catch (MasException masException) {
-      throw masException;
+      List<Integer> collectionIds = new ArrayList<Integer>();
+      collectionIds.add(payload.getCollectionId());
+      var response = masCollectionAnnotsApiService.getMasCollectionStatus(collectionIds);
+      log.info("Collection Status Response : response Size: " + response.size());
+      for (MasCollectionStatus masCollectionStatus : response) {
+        log.info(
+            "Collection Status Response : Collection ID  {} ",
+            masCollectionStatus.getCollectionsId());
+        log.info(
+            "Collection Status Response : Collection Status {} ",
+            masCollectionStatus.getCollectionStatus());
+        if ((MasStatus.PROCESSED)
+            .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
+          isCollectionReady = true;
+        }
+      }
+    } catch (Exception e) {
+      log.error("Error in calling collection Status API ", e);
+      throw new MasException(e.getMessage(), e);
     }
 
-    // call pcCheckCollectionStatus
-    boolean ready = checkCollectionStatus(payload.getCollectionId());
-    if (ready) {
-      log.info("Collection {} is ready for processing.", payload.getCollectionId());
+    if (isCollectionReady) {
       // call pcQueryCollectionAnnots
       // call Lighthouse
       // Combine results and call PDF generation
       // if a decision is made, call pcOrderExam
+      try {
+        log.info(
+            "Collection {} is ready for processing, calling collection annotation service ",
+            payload.getCollectionId());
+        var response = masCollectionAnnotsApiService.getCollectionAnnots(payload.getCollectionId());
+        for (MasCollectionAnnotation masCollectionAnnotation : response) {
+          log.info(
+              "Collection Annotation Response : Collection ID  {}",
+              masCollectionAnnotation.getCollectionsId());
+          log.info(
+              "Collection Status Response : Veteran FileId  {}  ",
+              masCollectionAnnotation.getVtrnFileId());
+
+          MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
+          AbdEvidence abdEvidence =
+              masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
+
+          log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
+          log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
+          log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
+          GeneratePdfResponse generatePdfResponse = generatePdf(payload, abdEvidence);
+          log.info("PDF Response : {}", generatePdfResponse.toString());
+          break;
+        }
+      } catch (Exception e) {
+        log.error("Error in calling collection Annotation API ", e);
+        throw new MasException(e.getMessage(), e);
+      }
     } else {
-      log.info("Collection {} is not ready. Requeueing...", payload.getCollectionId());
+      log.info("Collection {} is not ready. Requeue..ing...", payload.getCollectionId());
       // re-request after some time
       camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingSubsequentDelay());
     }
   }
 
-  private boolean checkCollectionStatus(int collectionId) {
-    return new Random().nextBoolean();
+  public GeneratePdfResponse generatePdf(
+      MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence) throws MasException {
+
+    GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
+    generatePdfPayload.setEvidence(abdEvidence);
+    generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
+    generatePdfPayload.setDiagnosticCode(
+        claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
+    VeteranInfo veteranInfo = new VeteranInfo();
+    veteranInfo.setFirst(claimPayload.getFirstName());
+    veteranInfo.setLast(claimPayload.getLastName());
+    veteranInfo.setMiddle("");
+    veteranInfo.setBirthdate(claimPayload.getDateOfBirth());
+    generatePdfPayload.setVeteranInfo(veteranInfo);
+    log.info(
+        "Generating pdf for claim: {} and diagnostic code {}",
+        generatePdfPayload.getClaimSubmissionId(),
+        generatePdfPayload.getDiagnosticCode());
+    try {
+      log.info(generatePdfPayload.toString());
+      String response = camelEntrance.generatePdf(generatePdfPayload);
+      log.info(response.toString());
+      GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
+      log.info(pdfResponse.toString());
+      log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
+      if (pdfResponse.getStatus().equals("ERROR")) {
+        log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
+        throw new Exception(
+            "RESPONSE from generatePdf returned error reason: " + pdfResponse.getReason());
+      } else {
+        return pdfResponse;
+      }
+    } catch (Exception e) {
+      log.error("Error in generate pdf", e);
+      throw new MasException(e.getMessage(), e);
+    }
   }
 }
