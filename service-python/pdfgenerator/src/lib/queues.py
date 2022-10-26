@@ -37,7 +37,7 @@ def on_generate_callback(channel, method, properties, body):
         response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
     except Exception as e:
         logging.error(e, exc_info=True)
-        response = {"claimSubmissionId": claim_id, "status": "ERROR", "errors": str(e)}
+        response = {"claimSubmissionId": claim_id, "status": "ERROR", "reason": str(e)}
     channel.basic_publish(exchange=EXCHANGE, routing_key=properties.reply_to, properties=pika.BasicProperties(correlation_id=properties.correlation_id), body=json.dumps(response))
 
 
