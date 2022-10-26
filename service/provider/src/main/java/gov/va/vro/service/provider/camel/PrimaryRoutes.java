@@ -4,6 +4,7 @@ import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -12,8 +13,6 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 /** Defines primary routes. */
 @Slf4j
@@ -68,9 +67,8 @@ public class PrimaryRoutes extends RouteBuilder {
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
-        .setProperty("id", simple("${body.recordId}"))
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("veteranIcn", simple("${body.veteranIcn}"))
+        .setProperty("claim", simple("${body}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
         .convertBodyTo(String.class)
@@ -78,11 +76,9 @@ public class PrimaryRoutes extends RouteBuilder {
             new Processor() {
               @Override
               public void process(Exchange exchange) throws Exception {
-                String response = (String) exchange.getIn().getBody();
-                String icn = (String) exchange.getProperty("veteranIcn");
-                UUID id = (UUID) exchange.getProperty("id");
-                String diagnosticCode = (String) exchange.getProperty("diagnosticCode");
-                saveToDbService.insertAssessmentResult(id, response, icn, diagnosticCode);
+                Claim claim = (Claim) exchange.getProperty("claim");
+                String evidence = (String) exchange.getIn().getBody();
+                saveToDbService.insertAssessmentResult(claim, evidence);
               }
             });
   }
