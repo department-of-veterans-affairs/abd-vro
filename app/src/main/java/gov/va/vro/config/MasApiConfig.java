@@ -12,8 +12,10 @@ public class MasApiConfig {
   @Bean
   MasApiProps masApiConfigLoad(
       @Value("${masAPIProvider.baseURL}") String baseUrl,
+      @Value("${masAPIProvider.collectionStatusPath}") String collectionStatusPath,
       @Value("${masAPIProvider.collectionAnnotsPath}") String collectionAnnotsPath,
       @Value("${masAPIProvider.createExamOrderPath}") String createExamOrderPath) {
-    return new MasApiProps(baseUrl, collectionAnnotsPath, createExamOrderPath);
+    return new MasApiProps(
+        baseUrl, collectionStatusPath, collectionAnnotsPath, createExamOrderPath);
   }
 }
