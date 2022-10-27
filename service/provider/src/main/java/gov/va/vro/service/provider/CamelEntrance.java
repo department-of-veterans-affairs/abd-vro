@@ -46,6 +46,7 @@ public class CamelEntrance {
   }
 
   public String examOrderingStatus(MasExamOrderStatusPayload payload) {
+    producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
     return "Message Received";
   }
 }

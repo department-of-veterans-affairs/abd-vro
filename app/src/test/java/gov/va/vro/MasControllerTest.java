@@ -6,10 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasClaimResponse;
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.mas.ClaimCondition;
-import gov.va.vro.model.mas.ClaimDetail;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.VeteranIdentifiers;
+import gov.va.vro.model.mas.*;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import lombok.SneakyThrows;
@@ -23,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -102,6 +100,14 @@ public class MasControllerTest extends BaseControllerTest {
     post("/v1/automatedClaim", request, MasClaimResponse.class);
     Mockito.verify(auditEventProcessor)
         .logException(Mockito.any(Object.class), Mockito.any(Throwable.class), Mockito.anyString());
+  }
+
+  @Test
+  void orderExamStatus() {
+    var payload =
+        MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
+    ResponseEntity<String> response = post("/v1/examOrderingStatus", payload, String.class);
+    System.out.println(response.getBody());
   }
 
   private static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {

@@ -19,29 +19,24 @@ public class AuditEventProcessor {
 
   private final AuditEventService auditEventService;
 
-  public Object logEvent(Object o, String routeId, String message) {
-    if (!(o instanceof Auditable auditableObject)) {
-      // object cannot be audited
-      return o;
-    }
+  private Auditable logEvent(Auditable auditableObject, String routeId, String message) {
     AuditEvent event = builder(auditableObject, routeId).message(message).build();
     auditEventService.logEvent(event);
-    return o;
+    return auditableObject;
   }
 
-  public Object logEvent(
-      Object o, String routeId, String message, Function<Auditable, String> detailsExtractor) {
-    if (!(o instanceof Auditable auditableObject)) {
-      // object cannot be audited
-      return o;
-    }
+  private Auditable logEvent(
+      Auditable auditableObject,
+      String routeId,
+      String message,
+      Function<Auditable, String> detailsExtractor) {
     AuditEvent event =
         builder(auditableObject, routeId)
             .message(message)
             .details(detailsExtractor.apply(auditableObject))
             .build();
     auditEventService.logEvent(event);
-    return o;
+    return auditableObject;
   }
 
   public void logException(Object o, Throwable t, String routeId) {
@@ -66,10 +61,26 @@ public class AuditEventProcessor {
    * @param routeId the id of the route
    * @param message a message to report with the event
    */
-  public FunctionProcessor<Object, Object> event(String routeId, String message) {
+  public FunctionProcessor<Auditable, Auditable> event(String routeId, String message) {
     return FunctionProcessor.fromFunction(
         payload -> {
           logEvent(payload, routeId, message);
+          return payload;
+        });
+  }
+
+  /**
+   * Create a Camel processor that logs an event
+   *
+   * @param routeId the id of the route
+   * @param message a message to report with the event
+   * @param detailsExtractor a converter that extracts relevant details from the Auditable object
+   */
+  public FunctionProcessor<Auditable, Auditable> event(
+      String routeId, String message, Function<Auditable, String> detailsExtractor) {
+    return FunctionProcessor.fromFunction(
+        payload -> {
+          logEvent(payload, routeId, message, detailsExtractor);
           return payload;
         });
   }
