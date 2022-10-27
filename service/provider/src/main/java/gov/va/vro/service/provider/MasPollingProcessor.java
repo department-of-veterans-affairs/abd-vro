@@ -3,12 +3,12 @@ package gov.va.vro.service.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.GeneratePdfResp;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.mas.MasCollectionStatus;
+import gov.va.vro.model.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
-import gov.va.vro.service.provider.mas.model.GeneratePdfResp;
-import gov.va.vro.service.provider.mas.model.MasCollectionAnnotation;
-import gov.va.vro.service.provider.mas.model.MasCollectionStatus;
-import gov.va.vro.service.provider.mas.model.MasStatus;
 import gov.va.vro.service.provider.mas.service.MasApiService;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -34,6 +34,8 @@ public class MasPollingProcessor implements Processor {
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {
+
+    // TODO : Remove the extraneous log statements
     var claimPayload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
 
     boolean isCollectionReady = checkCollectionStatus(claimPayload);
