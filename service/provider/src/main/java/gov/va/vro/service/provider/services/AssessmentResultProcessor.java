@@ -17,10 +17,10 @@ public class AssessmentResultProcessor implements Processor {
   private final SaveToDbService saveToDbService;
 
   @Override
-  public void process(Exchange exchange) throws Exception {
+  public void process(Exchange exchange) throws IllegalArgumentException {
     UUID claimId = (UUID) exchange.getProperty("claim-id");
     String diagnosticCode = (String) exchange.getProperty("diagnosticCode");
-    String evidence = (String) exchange.getIn().getBody();
+    String evidence = exchange.getIn().getBody(String.class);
     saveToDbService.insertAssessmentResult(claimId, evidence, diagnosticCode);
   }
 }

@@ -76,8 +76,9 @@ public class PrimaryRoutes extends RouteBuilder {
         .setProperty("claim-id", simple("${body.recordId}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
-        .convertBodyTo(String.class)
-        .process(assessmentResultProcessor);
+        .process(assessmentResultProcessor)
+        .onException(IllegalArgumentException.class)
+        .continued(true);
   }
 
   private void configureRouteGeneratePdf() {

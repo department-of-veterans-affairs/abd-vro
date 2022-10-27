@@ -8,5 +8,5 @@ public interface SaveToDbService {
   Claim insertClaim(Claim claim);
 
   void insertAssessmentResult(UUID claimId, String evidence, String diagnosticCode)
-      throws NoSuchFieldException;
+      throws IllegalArgumentException;
 }

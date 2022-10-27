@@ -40,29 +40,28 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void insertAssessmentResult(UUID claimId, String evidence, String diagnosticCode)
-      throws NoSuchFieldException {
-
+  public void insertAssessmentResult(UUID claimId, String evidenceResponse, String diagnosticCode)
+      throws IllegalArgumentException {
     ClaimEntity claimEntity =
         claimRepository
             .findById(claimId)
             .orElseThrow(
                 () ->
-                    new NoSuchFieldException(
+                    new IllegalArgumentException(
                         "Could not match claim ID {" + claimId.toString() + "} in DB."));
-    Map<String, Object> evidenceSummary = new HashMap<>();
+    Map<String, Object> evidence = new HashMap<>();
     try {
-      evidenceSummary = objMapper.readValue(evidence, Map.class);
-      if (evidenceSummary.isEmpty()) {
-        throw new NoSuchFieldException("Could not map assessment result evidence summary");
+      evidence = objMapper.readValue(evidenceResponse, Map.class);
+      if (evidence.isEmpty()) {
+        log.error(
+            "Could not insert evidence summary into assessment result: evidenceSummary was empty.");
+        evidence.put("evidenceSummary", "Could not insert evidence summary into assessment result");
       }
     } catch (Exception e) {
-      log.error("Could not map assessment result evidence summary");
-      return;
+      log.error("Could not map evidence summary into assessment result.");
+      evidence.put("evidenceSummary", "Could not insert evidence summary into assessment result");
     }
-    Map<String, Object> defaultEvidence = new HashMap<>();
-    defaultEvidence.put("evidenceNotAvailable", 0);
-    Map summary = (Map) evidenceSummary.getOrDefault("evidenceSummary", defaultEvidence);
+    Map summary = (Map) evidence.get("evidenceSummary");
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
@@ -70,15 +69,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimRepository.save(claimEntity);
   }
 
-  private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode)
-      throws NoSuchFieldException {
+  private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode) {
     ContentionEntity resp = new ContentionEntity();
     for (ContentionEntity contention : claim.getContentions()) {
       if (contention.getDiagnosticCode().equals(diagnosticCode)) {
         resp = contention;
       } else {
         log.error("Could not find match contention with diagnostic code.");
-        throw new NoSuchFieldException("Could not find match contention with diagnostic code.");
       }
     }
     return resp;
