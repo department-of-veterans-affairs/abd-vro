@@ -1,10 +1,10 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
 import gov.va.vro.model.*;
-import gov.va.vro.service.provider.mas.model.MasAnnotType;
-import gov.va.vro.service.provider.mas.model.MasAnnotation;
-import gov.va.vro.service.provider.mas.model.MasCollectionAnnotation;
-import gov.va.vro.service.provider.mas.model.MasDocument;
+import gov.va.vro.model.mas.MasAnnotType;
+import gov.va.vro.model.mas.MasAnnotation;
+import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.mas.MasDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
