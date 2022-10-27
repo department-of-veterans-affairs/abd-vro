@@ -2,9 +2,9 @@ package gov.va.vro.service.provider.mas.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.mas.*;
 import gov.va.vro.service.provider.MasApiProps;
 import gov.va.vro.service.provider.mas.MasException;
-import gov.va.vro.service.provider.mas.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -31,7 +31,7 @@ public class MasApiService {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
       List<MasCollectionStatusReq> masCollectionStatusReqList =
-          new ArrayList<MasCollectionStatusReq>(collectionIds.size());
+          new ArrayList<MasCollectionStatusReq>();
       for (Integer collectionId : collectionIds) {
         MasCollectionStatusReq masCollectionStatusReq = new MasCollectionStatusReq();
         masCollectionStatusReq.setCollectionsId(collectionId);
@@ -125,13 +125,5 @@ public class MasApiService {
       throw new MasException(e.getMessage(), e);
     }
     return masHttpHeaders;
-  }
-
-  public RestTemplate getRestTemplate() {
-    return restTemplate;
-  }
-
-  public MasAuthToken getMasAuthToken() {
-    return masAuthToken;
   }
 }
