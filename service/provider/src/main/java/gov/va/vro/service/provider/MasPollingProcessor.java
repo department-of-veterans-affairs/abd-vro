@@ -34,13 +34,30 @@ public class MasPollingProcessor implements Processor {
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {
-    var payload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
+    var claimPayload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
 
-    log.info("Checking collection status for collection {}.", payload.getCollectionId());
+    boolean isCollectionReady = checkCollectionStatus(claimPayload);
+
+    if (isCollectionReady) {
+      AbdEvidence abdEvidence = getCollectionAnnots(claimPayload);
+      // call Lighthouse
+      // Combine results and call PDF generation
+      GeneratePdfResponse generatePdfResponse = generatePdf(claimPayload, abdEvidence);
+      // call pcOrderExam in the absence of evidence
+    } else {
+      log.info("Collection {} is not ready. Requeue..ing...", claimPayload.getCollectionId());
+      // re-request after some time
+      camelEntrance.notifyAutomatedClaim(claimPayload, masDelays.getMasProcessingSubsequentDelay());
+    }
+  }
+
+  public boolean checkCollectionStatus(MasAutomatedClaimPayload claimPayload) throws MasException {
+
+    log.info("Checking collection status for collection {}.", claimPayload.getCollectionId());
     boolean isCollectionReady = false;
     try {
       List<Integer> collectionIds = new ArrayList<Integer>();
-      collectionIds.add(payload.getCollectionId());
+      collectionIds.add(claimPayload.getCollectionId());
       var response = masCollectionAnnotsApiService.getMasCollectionStatus(collectionIds);
       log.info("Collection Status Response : response Size: " + response.size());
       for (MasCollectionStatus masCollectionStatus : response) {
@@ -59,45 +76,40 @@ public class MasPollingProcessor implements Processor {
       log.error("Error in calling collection Status API ", e);
       throw new MasException(e.getMessage(), e);
     }
+    return isCollectionReady;
+  }
 
-    if (isCollectionReady) {
-      // call pcQueryCollectionAnnots
-      // call Lighthouse
-      // Combine results and call PDF generation
-      // if a decision is made, call pcOrderExam
-      try {
+  public AbdEvidence getCollectionAnnots(MasAutomatedClaimPayload claimPayload)
+      throws MasException {
+
+    log.info(
+        "Collection {} is ready for processing, calling collection annotation service ",
+        claimPayload.getCollectionId());
+    AbdEvidence abdEvidence = new AbdEvidence();
+    try {
+      var response =
+          masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
+      for (MasCollectionAnnotation masCollectionAnnotation : response) {
         log.info(
-            "Collection {} is ready for processing, calling collection annotation service ",
-            payload.getCollectionId());
-        var response = masCollectionAnnotsApiService.getCollectionAnnots(payload.getCollectionId());
-        for (MasCollectionAnnotation masCollectionAnnotation : response) {
-          log.info(
-              "Collection Annotation Response : Collection ID  {}",
-              masCollectionAnnotation.getCollectionsId());
-          log.info(
-              "Collection Status Response : Veteran FileId  {}  ",
-              masCollectionAnnotation.getVtrnFileId());
+            "Collection Annotation Response : Collection ID  {}",
+            masCollectionAnnotation.getCollectionsId());
+        log.info(
+            "Collection Status Response : Veteran FileId  {}  ",
+            masCollectionAnnotation.getVtrnFileId());
 
-          MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
-          AbdEvidence abdEvidence =
-              masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
+        MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
+        abdEvidence = masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
 
-          log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
-          log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
-          log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
-          GeneratePdfResponse generatePdfResponse = generatePdf(payload, abdEvidence);
-          log.info("PDF Response : {}", generatePdfResponse.toString());
-          break;
-        }
-      } catch (Exception e) {
-        log.error("Error in calling collection Annotation API ", e);
-        throw new MasException(e.getMessage(), e);
+        log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
+        log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
+        log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
+        break;
       }
-    } else {
-      log.info("Collection {} is not ready. Requeue..ing...", payload.getCollectionId());
-      // re-request after some time
-      camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingSubsequentDelay());
+    } catch (Exception e) {
+      log.error("Error in calling collection Status API ", e);
+      throw new MasException(e.getMessage(), e);
     }
+    return abdEvidence;
   }
 
   public GeneratePdfResponse generatePdf(
