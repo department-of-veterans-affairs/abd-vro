@@ -128,6 +128,31 @@ class VroControllerTest extends BaseControllerTest {
   @Test
   @DirtiesContext
   void fullHealthAssessmentMissingEvidence() throws Exception {
+    adviceWith(
+        camelContext,
+        "claim-submit",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:claim-submit-exchange"
+                        + "?queue=claim-submit"
+                        + "&routingKey=code.7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit"));
+    // Mock secondary process endpoint
+    adviceWith(
+        camelContext,
+        "claim-submit-full",
+        route ->
+            route
+                .interceptSendToEndpoint(
+                    "rabbitmq:health-assess-exchange"
+                        + "?routingKey=health-assess.7101&requestTimeout=60000")
+                .skipSendToOriginalEndpoint()
+                .to("mock:claim-submit-full"));
+
+    mockFullHealthEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");
