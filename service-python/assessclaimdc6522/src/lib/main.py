@@ -1,9 +1,9 @@
 from typing import Dict
 
-from . import condition, medication, utils
+from . import medication, utils
 
 
-def assess_asthma(event: Dict):
+def assess_rhinitis(event: Dict):
     """
     Take a request that includes asthma related data, and return a filtered response
 
@@ -17,13 +17,11 @@ def assess_asthma(event: Dict):
 
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
-        active_conditions = condition.conditions_calculation(event)
 
         response_body.update(
             {
                 "evidence": {
                     "medications": active_medications["medications"],
-                    "conditions": active_conditions,
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],

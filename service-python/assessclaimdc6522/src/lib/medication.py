@@ -1,23 +1,21 @@
 from datetime import datetime
-
-from .codesets import medication_codesets
+from .codesets import rhinitis_medication
 
 
 def categorize_med(medication_display):
     """
     Return the category that a medication belongs to. If it does not belong to any, return an empty list.
-
     :param medication_display: medication text
     :return: list
     """
-    medication_dict = medication_codesets.med_dict
+    medication_dict = rhinitis_medication.rhinitis_med
     medication_category = []
     for category_id in list(medication_dict.keys()):
         if medication_category:
             # most general category has been identified
             break
         for medication in medication_dict[category_id]:
-            if medication in medication_display.lower():
+            if medication.lower() in medication_display.lower():
                 medication_category.append(category_id)
                 break
     return medication_category

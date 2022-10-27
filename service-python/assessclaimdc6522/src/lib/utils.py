@@ -28,7 +28,7 @@ def validate_request_body(request_body):
                             "dosageInstructions": {
                                 "type": "list",
                                 "nullable": True,
-                                "schema": {"type": "string"},
+                                "schema": {"type": "string", "default": ""},
                             },
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
@@ -41,28 +41,7 @@ def validate_request_body(request_body):
                             },
                         },
                     },
-                },
-                "conditions": {
-                    "required": True,
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {"type": "string", "required": True},
-                            "status": {
-                                "type": "string",
-                            },
-                            "text": {"type": "string"},
-                            "onsetDate": {
-                                "type": "string",
-                            },
-                            "abatementDate": {
-                                "type": "string",
-                                "nullable": True,
-                            },
-                        },
-                    },
-                },
+                }
             },
         },
     }

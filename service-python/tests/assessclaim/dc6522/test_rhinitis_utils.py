@@ -1,6 +1,6 @@
 import pytest
 
-from assessclaimdc6602v2.src.lib import utils
+from assessclaimdc6522.src.lib import utils
 
 
 @pytest.mark.parametrize(
@@ -15,8 +15,7 @@ from assessclaimdc6602v2.src.lib import utils
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ],
-                    "conditions": [],
+                    ]
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -32,8 +31,7 @@ from assessclaimdc6602v2.src.lib import utils
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ],
-                    "conditions": [],
+                    ]
                 },
                 "date_of_claim": 20211109,
             },
@@ -59,7 +57,7 @@ def test_validate_request_body(request_body, result_is_valid, errors):
     :type date_of_claim: string
     :param bp_readings: list of blood pressure readings
     :type bp_readings: list
-    :param result: boolean describing whether the blood pressure readings meet the specifications
+    :param result: boolean describing whether or not the blood pressure readings meet the specifications
     :type result: bool
     """
     result = utils.validate_request_body(request_body)

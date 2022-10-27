@@ -5,9 +5,9 @@ networks:
   external:
 
 services:
-  assess-claim-dc6602v2:
-    image: va/abd_vro-assessclaimdc6602v2:latest
-    build: ../../../service-python/assessclaimdc6602v2/src/.
+  scv-asssess-rhiinitis:
+    image: va/abd_vro-rhinitis:latest
+    build: ../../../service-python/rhinitis/src/.
     environment:
       RABBITMQ_PORT: 5672
       RABBITMQ_RETRY_LIMIT: 3
@@ -23,4 +23,3 @@ services:
     networks:
       - internal
     restart: on-failure:5
-

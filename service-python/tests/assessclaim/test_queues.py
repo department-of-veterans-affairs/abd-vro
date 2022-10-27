@@ -6,8 +6,8 @@ import pytest
 
 from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
-from assessclaimdc6602v2.src.lib import queues as q6602v2
-from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
+from assessclaimdc6522.src.lib import queues as q6522
+from assessclaimdc6522.src.lib.main import assess_rhinitis as main6522
 from assessclaimdc7101.src.lib import queues as q7101
 from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
 
@@ -16,7 +16,7 @@ from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
     "queue, service_queue_name", [
         (q6602, "health-assess.6602"),
         (q7101, "health-assess.7101"),
-        (q6602v2, "health-assess.6602v2")
+        (q6522, "health-assess.6522")
     ]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
@@ -30,7 +30,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
         durable=True,
         auto_delete=True,
     )
-    channel.queue_declare.assert_called_with(queue=service_queue_name)
+    channel.queue_declare.assert_called_with(queue=service_queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
         queue=service_queue_name, exchange="health-assess-exchange"
     )
@@ -47,7 +47,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
     [
         (q6602, "6602", {"evidence": "some medical data body"}, main6602),
         (q7101, "7101", {"evidence": "some medical data body"}, main7101),
-        (q6602v2, "6602v2", {"evidence": "some medical data body"}, main6602v2),
+        (q6522, "6522", {"evidence": "some medical data body"}, main6522),
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):

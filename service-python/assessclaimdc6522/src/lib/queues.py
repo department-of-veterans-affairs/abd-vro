@@ -15,7 +15,7 @@ def on_request_callback(channel, method, properties, body):
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message.")
     try:
-        response = main.assess_asthma(message)
+        response = main.assess_rhinitis(message)
     except Exception as e:
         logging.error(e, exc_info=True)
         response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
