@@ -63,7 +63,7 @@ public class MasControllerTest extends BaseControllerTest {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
     var responseEntity = post("/v1/automatedClaim", request, MasClaimResponse.class);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
   @Test
