@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Builder
 @Getter
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasExamOrderStatusPayload {
 
-  @NotBlank(message = "Collection ID cannot be empty")
+  @NotNull(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
   private int collectionId;
 
