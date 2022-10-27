@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class GeneratePdfResponse {
+public class GeneratePdfResp {
 
   @NotBlank private String claimSubmissionId;
   private String status;
