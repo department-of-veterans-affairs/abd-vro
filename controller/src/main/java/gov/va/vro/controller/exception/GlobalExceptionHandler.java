@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ClaimProcessingError> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException exception) {
+    log.error("Validation error", exception);
     final StringBuffer errors = new StringBuffer();
     for (final FieldError error : exception.getBindingResult().getFieldErrors()) {
       if (!errors.isEmpty()) {
@@ -29,6 +30,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
+    log.error("Unexpected error", exception);
     ClaimProcessingError cpe =
         new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
     return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
