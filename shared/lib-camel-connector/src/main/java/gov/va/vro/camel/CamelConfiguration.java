@@ -10,6 +10,7 @@ import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,8 +34,12 @@ public class CamelConfiguration {
 
       @Override
       public void afterApplicationStart(CamelContext camelContext) {
-        List<Class> dtoClasses = camelDtoClassesProperties.getActualDtoClasses();
-        registerTypeConverters(dtoClasses);
+        try {
+          List<Class> dtoClasses = camelDtoClassesProperties.getActualDtoClasses();
+          registerTypeConverters(dtoClasses);
+        } catch (IOException e) {
+          log.error("Check the vro.camel.dto-classes property", e);
+        }
 
         log.info(
             camelContext.getEndpoints().size()
