@@ -34,6 +34,7 @@ public class FullHealthDataAssessmentResponse {
   private Map<String, Object> evidenceSummary;
 
   @Schema(description = "Decision based on available data")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Boolean sufficientForFastTracking;
 
   @Schema(description = "Date of claim or date of processing if not provided")
