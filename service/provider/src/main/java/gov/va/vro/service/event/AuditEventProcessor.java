@@ -7,6 +7,8 @@ import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 /**
  * Camel-oriented processor responsible for capturing audit events and forwarding them to the
  * AuditEventService
@@ -22,12 +24,21 @@ public class AuditEventProcessor {
       // object cannot be audited
       return o;
     }
+    AuditEvent event = builder(auditableObject, routeId).message(message).build();
+    auditEventService.logEvent(event);
+    return o;
+  }
+
+  public Object logEvent(
+      Object o, String routeId, String message, Function<Auditable, String> detailsExtractor) {
+    if (!(o instanceof Auditable auditableObject)) {
+      // object cannot be audited
+      return o;
+    }
     AuditEvent event =
-        AuditEvent.builder()
-            .eventId(auditableObject.getEventId())
-            .payloadType(auditableObject.getClass())
-            .routeId(routeId)
+        builder(auditableObject, routeId)
             .message(message)
+            .details(detailsExtractor.apply(auditableObject))
             .build();
     auditEventService.logEvent(event);
     return o;
@@ -38,14 +49,15 @@ public class AuditEventProcessor {
       // object cannot be audited
       return;
     }
-    AuditEvent event =
-        AuditEvent.builder()
-            .eventId(auditableObject.getEventId())
-            .payloadType(auditableObject.getClass())
-            .throwable(t)
-            .routeId(routeId)
-            .build();
+    AuditEvent event = builder(auditableObject, routeId).throwable(t).build();
     auditEventService.logEvent(event);
+  }
+
+  private AuditEvent.AuditEventBuilder builder(Auditable auditableObject, String routeId) {
+    return AuditEvent.builder()
+        .eventId(auditableObject.getEventId())
+        .payloadType(auditableObject.getClass())
+        .routeId(routeId);
   }
 
   /**

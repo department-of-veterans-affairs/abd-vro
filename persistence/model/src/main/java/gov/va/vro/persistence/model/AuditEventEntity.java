@@ -26,5 +26,6 @@ public class AuditEventEntity {
   @NotNull private String payloadType;
   private String throwable;
   private String message;
+  private String details;
   @NotNull private ZonedDateTime eventTime = ZonedDateTime.now();
 }

@@ -16,5 +16,6 @@ public class AuditEvent {
   private Class<?> payloadType;
   private Throwable throwable;
   private String message;
+  private String details;
   @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
 }

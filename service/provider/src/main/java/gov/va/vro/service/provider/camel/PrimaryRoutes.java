@@ -29,6 +29,8 @@ public class PrimaryRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
 
+  public static final String ENDPOINT_EXAM_ORDERING_STATUS = "direct:exam-ordering-status";
+
   public static final String MAS_DELAY_PARAM = "masDelay";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
@@ -106,6 +108,11 @@ public class PrimaryRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
   }
+
+  //  private void configureExamOrderingStatus() {
+  //    from(ENDPOINT_EXAM_ORDERING_STATUS)
+  //            .process(auditEventProcessor.event());
+  //  }
 
   private String pdfRoute(String queueName) {
     return String.format("rabbitmq:%s?routingKey=%s", PDF_EXCHANGE, queueName);

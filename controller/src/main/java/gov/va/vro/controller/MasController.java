@@ -25,7 +25,7 @@ public class MasController implements MasResource {
   /** Initiate MAS integration. */
   @Override
   public ResponseEntity<MasClaimResponse> automatedClaim(MasAutomatedClaimPayload payload) {
-    log.info("Received MAS request with collection ID {}", payload.getCollectionId());
+    log.info("Received MAS automated claim request with collection ID {}", payload.getCollectionId());
     camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingInitialDelay());
     MasClaimResponse response =
         MasClaimResponse.builder()
@@ -37,11 +37,12 @@ public class MasController implements MasResource {
 
   @Override
   public ResponseEntity<MasClaimResponse> examOrderingStatus(MasExamOrderStatusPayload payload) {
-    // TODO: call route
+    log.info("Received MAS order statues request with collection ID {}", payload.getCollectionId());
+    String message = camelEntrance.examOrderingStatus(payload);
     MasClaimResponse response =
         MasClaimResponse.builder()
             .id(Integer.toString(payload.getCollectionId()))
-            .message("Message Received")
+            .message(message)
             .build();
     return ResponseEntity.ok(response);
   }

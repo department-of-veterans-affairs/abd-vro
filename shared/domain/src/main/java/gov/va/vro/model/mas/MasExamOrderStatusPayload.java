@@ -19,7 +19,7 @@ public class MasExamOrderStatusPayload {
   @Schema(description = "Collection ID", example = "999")
   private int collectionId;
 
-  @NotBlank(message = "Colletion Status is required")
+  @NotBlank(message = "Collection Status is required")
   @Schema(description = "Collection Status", example = "DRAFT")
   private String collectionStatus;
 
