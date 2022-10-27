@@ -18,13 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Configuration
 public class MasOauth2Config {
-  // Create the masAuthProvider client registration
-
-  //  scope: openid
-  //  grant_type : client_credentials
-  //  client_id : vro_dev
-  //  client_secret : a526870c-9013-4d5b-80e7-1850cabf770d
-  //  uri : https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
+  // Created the MAS Authorization Provider Client Registration
   @Bean
   ClientRegistration masAuthProviderClientRegistration(
       @Value("${spring.security.oauth2.client.provider.mas.uri}") String tokenUri,
