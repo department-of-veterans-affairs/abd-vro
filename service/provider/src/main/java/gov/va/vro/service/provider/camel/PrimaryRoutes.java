@@ -3,13 +3,11 @@ package gov.va.vro.service.provider.camel;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
@@ -40,6 +38,8 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final MasPollingProcessor masPollingProcessor;
 
+  private final AssessmentResultProcessor assessmentResultProcessor;
+
   @Override
   public void configure() {
     configureRouteClaimSubmit();
@@ -68,19 +68,11 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("claim", simple("${body}"))
+        .setProperty("claim-id", simple("${body.recordId}"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
         .convertBodyTo(String.class)
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) throws Exception {
-                Claim claim = (Claim) exchange.getProperty("claim");
-                String evidence = (String) exchange.getIn().getBody();
-                saveToDbService.insertAssessmentResult(claim, evidence);
-              }
-            });
+        .process(assessmentResultProcessor);
   }
 
   private void configureRouteGeneratePdf() {

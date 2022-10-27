@@ -9,7 +9,6 @@ import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
-import gov.va.vro.service.spi.model.AssessmentResult;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,20 +40,17 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public AssessmentResult insertAssessmentResult(Claim claim, String evidence)
+  public void insertAssessmentResult(UUID claimId, String evidence, String diagnosticCode)
       throws NoSuchFieldException {
 
     ClaimEntity claimEntity =
         claimRepository
-            .findById(claim.getRecordId())
+            .findById(claimId)
             .orElseThrow(
                 () ->
                     new NoSuchFieldException(
-                        "Could not match claim ID {"
-                            + claim.getRecordId().toString()
-                            + "} in DB."));
+                        "Could not match claim ID {" + claimId.toString() + "} in DB."));
     Map<String, Object> evidenceSummary = new HashMap<>();
-    AssessmentResult resp = new AssessmentResult();
     try {
       evidenceSummary = objMapper.readValue(evidence, Map.class);
       if (evidenceSummary.isEmpty()) {
@@ -61,21 +58,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       }
     } catch (Exception e) {
       log.error("Could not map assessment result evidence summary");
-      resp.setErrorMessage("Could not map assessment result evidence summary");
-      return resp;
+      return;
     }
     Map<String, Object> defaultEvidence = new HashMap<>();
-    defaultEvidence.put("medicationsCount", 0);
+    defaultEvidence.put("evidenceNotAvailable", 0);
     Map summary = (Map) evidenceSummary.getOrDefault("evidenceSummary", defaultEvidence);
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
-    ContentionEntity contention = findContention(claimEntity, claim.getDiagnosticCode());
+    ContentionEntity contention = findContention(claimEntity, diagnosticCode);
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
-    resp.setEvidenceSummary(assessmentResultEntity.getEvidenceCountSummary());
-    resp.setVeteranIcn(claim.getVeteranIcn());
-    resp.setDiagnosticCode(claim.getDiagnosticCode());
-    return resp;
   }
 
   private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode)
