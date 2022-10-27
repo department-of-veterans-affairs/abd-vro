@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.mas.model;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,13 +13,16 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasDocument {
-  @JsonProperty("eFolderVersionRefId")
-  private String efolderversionrefid;
+public class MasCollectionAnnotation {
+  @JsonProperty("collectionsId")
+  private int collectionsId;
 
-  @JsonProperty("condition")
-  private String condition;
+  @JsonProperty("vtrnFileId")
+  private String vtrnFileId;
 
-  @JsonProperty("annotations")
-  private List<MasAnnotation> annotations;
+  @JsonProperty("creationDate")
+  private String creationDate;
+
+  @JsonProperty("documents")
+  private List<MasDocument> documents;
 }

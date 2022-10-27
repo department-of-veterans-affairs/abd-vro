@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.mas.model;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
+/** @author warren @Date 10/11/22 */
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasCollectionStatusReq {
+public class MasOrderExamReq {
+  @JsonProperty("conditions")
+  private List<MasOrderExamConditions> conditions;
+
   @JsonProperty("collectionsId")
-  private int collectionsId;
+  private Integer collectionsId;
 }

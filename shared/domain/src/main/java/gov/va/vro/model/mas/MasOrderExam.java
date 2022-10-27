@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.mas.model;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,10 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasOrderExamConditions {
-  @JsonProperty("contentionText")
-  private String contentionText;
-
-  @JsonProperty("conditionCode")
-  private String conditionCode;
+public class MasOrderExam {
+  @JsonProperty("response")
+  private String response;
 }

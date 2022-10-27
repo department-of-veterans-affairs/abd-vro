@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.mas.model;
+package gov.va.vro.model.mas;
 
 /**
  * Represents medical data domains used in decision rules in Automated Benefit Delivery health

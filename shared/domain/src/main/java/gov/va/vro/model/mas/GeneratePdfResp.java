@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.mas.model;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
