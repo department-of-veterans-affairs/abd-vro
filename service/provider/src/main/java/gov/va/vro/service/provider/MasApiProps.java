@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class MasApiProps {
 
   private final String baseURL;
+  private final String collectionStatusPath;
   private final String collectionAnnotsPath;
   private final String createExamOrderPath;
 }
