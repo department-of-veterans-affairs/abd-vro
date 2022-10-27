@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MasCollectionStatus {
-  private int collectionId;
+  private int collectionsId;
   private String collectionStatus;
 }
