@@ -41,10 +41,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter claimSubmitRouter;
   private final MasPollingProcessor masPollingProcessor;
 
-
   private final AssessmentResultProcessor assessmentResultProcessor;
   private final AuditEventProcessor auditEventProcessor;
-
 
   @Override
   public void configure() {
