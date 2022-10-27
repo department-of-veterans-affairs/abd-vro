@@ -108,7 +108,7 @@ spring:
             scope: ${mas-api-auth-scope:openid}
             grant-type: client_credentials
 masAPIProvider:
-  baseURL: ${mas-api-bas-url:https://viccs-api-dev.ibm-intelligent-automation.com/mas/pca/api/dev}
+  baseURL: ${mas-api-bas-url:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}
   collectionAnnotsPath: ${mas-collection-annots-path:/pcQueryCollectionAnnots}
   collectionStatusPath: ${mas-collection-status-path:/pcCheckCollectionStatus}
   createExamOrderPath: ${mas-create-exam-order-path:/pcCreateExamOrdering}
