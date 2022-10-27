@@ -87,6 +87,29 @@ public class MasApiService {
     }
   }
 
+  public String orderExam(MasOrderExamReq masOrderExamReq) throws MasException {
+    try {
+      String url = masApiProps.getBaseURL() + masApiProps.getCreateExamOrderPath();
+      HttpHeaders headers = getMasHttpHeaders();
+
+      HttpEntity<MasOrderExamReq> httpEntity = new HttpEntity<>(masOrderExamReq, headers);
+
+      ResponseEntity<String> masResponse =
+          restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+
+      String masReturn = masResponse.getBody();
+
+      // Replace with the actual response contract when available
+      // ObjectMapper mapper = new ObjectMapper();
+      // return mapper.readValue(masReturn, new TypeReference<List<MasOrderExam>>() {});
+
+      return masReturn;
+    } catch (RestClientException e) {
+      log.error("Failed to order exam", e);
+      throw new MasException(e.getMessage(), e);
+    }
+  }
+
   public HttpHeaders getMasHttpHeaders() throws MasException {
     HttpHeaders masHttpHeaders;
     try {
