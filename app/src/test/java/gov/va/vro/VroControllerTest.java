@@ -126,6 +126,7 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
+  @DirtiesContext
   void fullHealthAssessmentMissingEvidence() throws Exception {
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
