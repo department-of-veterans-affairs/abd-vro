@@ -5,7 +5,7 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.mas.MasException;
-import gov.va.vro.service.provider.mas.model.GeneratePdfResponse;
+import gov.va.vro.service.provider.mas.model.GeneratePdfResp;
 import gov.va.vro.service.provider.mas.model.MasCollectionAnnotation;
 import gov.va.vro.service.provider.mas.model.MasCollectionStatus;
 import gov.va.vro.service.provider.mas.model.MasStatus;
@@ -42,7 +42,7 @@ public class MasPollingProcessor implements Processor {
       AbdEvidence abdEvidence = getCollectionAnnots(claimPayload);
       // call Lighthouse
       // Combine results and call PDF generation
-      GeneratePdfResponse generatePdfResponse = generatePdf(claimPayload, abdEvidence);
+      GeneratePdfResp generatePdfResp = generatePdf(claimPayload, abdEvidence);
       // call pcOrderExam in the absence of evidence
     } else {
       log.info("Collection {} is not ready. Requeue..ing...", claimPayload.getCollectionId());
@@ -112,8 +112,8 @@ public class MasPollingProcessor implements Processor {
     return abdEvidence;
   }
 
-  public GeneratePdfResponse generatePdf(
-      MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence) throws MasException {
+  public GeneratePdfResp generatePdf(MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence)
+      throws MasException {
 
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(abdEvidence);
@@ -134,7 +134,7 @@ public class MasPollingProcessor implements Processor {
       log.info(generatePdfPayload.toString());
       String response = camelEntrance.generatePdf(generatePdfPayload);
       log.info(response.toString());
-      GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
+      GeneratePdfResp pdfResponse = objectMapper.readValue(response, GeneratePdfResp.class);
       log.info(pdfResponse.toString());
       log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
       if (pdfResponse.getStatus().equals("ERROR")) {
