@@ -49,8 +49,10 @@ public class MasOauth2Config {
     return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
   }
 
-  // Create the authorized client manager and service manager using the
-  // beans created and configured above
+  /**
+   * Create the authorized client manager and service manager using the beans created and configured
+   * above
+   */
   @Bean
   public AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager(
       ClientRegistrationRepository clientRegistrationRepository,
