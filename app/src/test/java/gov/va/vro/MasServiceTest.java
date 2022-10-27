@@ -19,11 +19,12 @@ public class MasServiceTest extends BaseControllerTest {
 
   @Autowired ClientRegistrationRepository clientRegistrationRepository;
 
+  @Autowired MasAuthToken masAuthToken;
   @Autowired MasOauth2Config masOauth2Config;
 
   @Test
   void testService() {
-    assertNotNull(masCollectionAnnotsApiService.getAuthorizedClientServiceAndManager());
+    assertNotNull(masAuthToken.getAuthorizedClientServiceAndManager());
     System.out.println(masOauth2Config);
   }
 }
