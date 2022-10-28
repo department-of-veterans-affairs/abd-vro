@@ -6,10 +6,8 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import com.tngtech.archunit.library.GeneralCodingRules;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class GeneralCodingRulesTest {
   private final String packageName = "gov.va.vro";
   private final JavaClasses classes =
