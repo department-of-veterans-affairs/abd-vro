@@ -1,0 +1,22 @@
+package gov.va.vro.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Map;
+
+@Getter
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AbdEvidenceWithSummary {
+
+  @Schema(description = "List of AbdEvidence")
+  private AbdEvidence evidence;
+
+  @Schema(description = "List of evidence counts")
+  private Map<String, Object> evidenceSummary;
+}

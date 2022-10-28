@@ -1,6 +1,7 @@
 package gov.va.vro.service.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,28 +40,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void insertAssessmentResult(UUID claimId, String evidenceResponse, String diagnosticCode)
-      throws IllegalArgumentException {
-    ClaimEntity claimEntity =
-        claimRepository
-            .findById(claimId)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Could not match claim ID {" + claimId.toString() + "} in DB."));
-    Map<String, Object> evidence = new HashMap<>();
-    try {
-      evidence = objMapper.readValue(evidenceResponse, Map.class);
-      if (evidence.isEmpty()) {
-        log.error(
-            "Could not insert evidence summary into assessment result: evidenceSummary was empty.");
-        evidence.put("evidenceSummary", "Could not insert evidence summary into assessment result");
-      }
-    } catch (Exception e) {
-      log.error("Could not map evidence summary into assessment result.");
-      evidence.put("evidenceSummary", "Could not insert evidence summary into assessment result");
+  public void insertAssessmentResult(
+      UUID claimId, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
+    ClaimEntity errorClaim = new ClaimEntity();
+    errorClaim.setIncomingStatus("ERROR");
+    ClaimEntity claimEntity = claimRepository.findById(claimId).orElse(errorClaim);
+    if (claimEntity.getIncomingStatus().equals("ERROR")) {
+      log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
+      return;
     }
-    Map summary = (Map) evidence.get("evidenceSummary");
+    Map summary = evidenceResponse.getEvidenceSummary();
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
