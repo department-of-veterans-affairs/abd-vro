@@ -17,3 +17,8 @@ spec:
         host: {{ .Chart.Name }}
         port:
           number: 8080
+    headers:
+      response:
+          remove:
+          - Server
+    
