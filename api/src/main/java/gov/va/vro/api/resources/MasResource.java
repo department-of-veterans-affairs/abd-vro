@@ -1,6 +1,6 @@
 package gov.va.vro.api.resources;
 
-import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import io.micrometer.core.annotation.Timed;
@@ -50,7 +50,7 @@ public interface MasResource {
       })
   @Timed(value = "mas-automated-claim")
   @Tag(name = "MAS Integration")
-  ResponseEntity<MasClaimResponse> automatedClaim(
+  ResponseEntity<MasResponse> automatedClaim(
       @Parameter(
               description = "Request a MAS Automated Claim",
               required = true,
@@ -78,7 +78,7 @@ public interface MasResource {
       })
   @Timed(value = "exam-ordering-status")
   @Tag(name = "MAS Integration")
-  ResponseEntity<MasClaimResponse> examOrderingStatus(
+  ResponseEntity<MasResponse> examOrderingStatus(
       @Parameter(
               description = "Request Exam ordering status",
               required = true,

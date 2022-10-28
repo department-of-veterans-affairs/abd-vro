@@ -28,4 +28,9 @@ dependencies {
     // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
     // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
+
+    //MAS oAuth2 webclient libs
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+    implementation "org.springframework.security:spring-security-oauth2-client:${oauth2_client}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 }
