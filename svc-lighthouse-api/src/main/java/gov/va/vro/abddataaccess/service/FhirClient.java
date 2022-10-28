@@ -83,7 +83,8 @@ public class FhirClient {
               "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
           new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}),
           new AbstractMap.SimpleEntry<>(
-              "6602v2", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}));
+              "6522",
+              new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION, AbdDomain.PROCEDURE}));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(

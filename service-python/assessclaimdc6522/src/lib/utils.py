@@ -4,7 +4,6 @@ from cerberus import Validator
 def validate_request_body(request_body):
     """
     Validates that the request body conforms to the expected data format
-
     :param request_body: request body converted from json
     :type request_body: dict
     :return: dict with boolean result showing if request is valid and if not, any applicable errors
@@ -28,7 +27,7 @@ def validate_request_body(request_body):
                             "dosageInstructions": {
                                 "type": "list",
                                 "nullable": True,
-                                "schema": {"type": "string", "default": ""},
+                                "schema": {"type": "string"},
                             },
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
@@ -41,7 +40,53 @@ def validate_request_body(request_body):
                             },
                         },
                     },
-                }
+                },
+                "procedures": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "codeSystem": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
+                            },
+                        },
+                    },
+                },
+                "conditions": {
+                    "required": True,
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {"type": "string", "required": True},
+                            "status": {
+                                "type": "string",
+                            },
+                            "text": {"type": "string"},
+                            "onsetDate": {
+                                "type": "string",
+                            },
+                            "abatementDate": {
+                                "type": "string",
+                                "nullable": True,
+                            },
+                        },
+                    },
+                },
             },
         },
     }

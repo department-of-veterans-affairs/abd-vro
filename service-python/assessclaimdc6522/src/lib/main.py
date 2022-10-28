@@ -1,6 +1,6 @@
 from typing import Dict
 
-from . import medication, utils
+from . import medication, utils, conditions, procedure
 
 
 def assess_rhinitis(event: Dict):
@@ -17,15 +17,24 @@ def assess_rhinitis(event: Dict):
 
     if validation_results["is_valid"]:
         active_medications = medication.medication_required(event)
+        relevant_conditions = conditions.conditions_calculation(event)
+        procedures = procedure.procedures_calculation(event)
 
         response_body.update(
             {
                 "evidence": {
                     "medications": active_medications["medications"],
+                    "conditions": relevant_conditions["conditions"],
+                    "procedures": procedures["procedures"]
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],
                     "totalMedCount": active_medications["totalMedCount"],
+                    "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
+                    "totalConditionsCount": relevant_conditions["totalConditionsCount"],
+                    "diagnosticCodes": relevant_conditions["diagnosticCodes"],
+                    "relevantProceduresCount": procedures["relevantProceduresCount"],
+                    "totalProceduresCount": procedures["totalProceduresCount"],
                 },
             }
         )

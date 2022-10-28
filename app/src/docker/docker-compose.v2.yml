@@ -5,9 +5,9 @@ networks:
   external:
 
 services:
-  scv-asssess-rhiinitis:
-    image: va/abd_vro-rhinitis:latest
-    build: ../../../service-python/rhinitis/src/.
+  scv-assess-dc6522:
+    image: va/abd_vro-assessclaimdc6522:latest
+    build: ../../../service-python/assessclaimdc6522/src/.
     environment:
       RABBITMQ_PORT: 5672
       RABBITMQ_RETRY_LIMIT: 3
