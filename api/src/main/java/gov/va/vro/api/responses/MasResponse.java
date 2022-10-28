@@ -9,7 +9,7 @@ import lombok.Getter;
 @Schema(
     name = "MASClaimDetailsResponse",
     description = "Indicate that the request information has been collected")
-public class MasClaimResponse {
+public class MasResponse {
 
   private String id;
   private String message;
