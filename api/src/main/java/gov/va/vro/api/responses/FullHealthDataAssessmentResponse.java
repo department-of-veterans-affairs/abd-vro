@@ -41,7 +41,6 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String dateOfClaim;
 
-  @Schema(description = "Date of claim or date of processing if not provided")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String disabilityActionType;
 
