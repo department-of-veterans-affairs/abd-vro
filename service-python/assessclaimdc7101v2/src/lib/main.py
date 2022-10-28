@@ -28,12 +28,16 @@ def assess_hypertension(event: Dict):
         relevant_medications = continuous_medication.continuous_medication_required(event)
         relevant_conditions = conditions.conditions_calculation(event)
         sufficient = None
-        if relevant_conditions["conditions"]:
-            sufficient = False
-            if bp_calculation["recentBpReadings"] >= 2:
+        if event["disabilityActionType"] == "INCREASE":
+            if len(bp_calculation["bp_readings"]) >= 4:
                 sufficient = True
-        elif bp_calculation["recentElevatedBpReadings"] >= 2:
-            sufficient = True
+        elif event["disabilityActionType"] == "NEW":
+            if relevant_conditions["conditions"]:
+                sufficient = False
+                if bp_calculation["recentBpReadings"] >= 2:
+                    sufficient = True
+            elif bp_calculation["recentElevatedBpReadings"] >= 2:
+                sufficient = True
 
         response_body.update(
             {
@@ -52,7 +56,8 @@ def assess_hypertension(event: Dict):
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
                 "sufficientForFastTracking": sufficient,
-                "dateOfClaim": event["dateOfClaim"]
+                "dateOfClaim": event["dateOfClaim"],
+                "disabilityActionType": event["disabilityActionType"],
             })
     else:
         response_body["errorMessage"] = "error validating request message data"
