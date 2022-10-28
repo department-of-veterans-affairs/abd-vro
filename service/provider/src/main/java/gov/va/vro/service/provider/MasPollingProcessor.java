@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
@@ -141,12 +142,13 @@ public class MasPollingProcessor implements Processor {
       log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
       if (pdfResponse.getStatus().equals("ERROR")) {
         log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
-        throw new Exception(
-            "RESPONSE from generatePdf returned error reason: " + pdfResponse.getReason());
+        String errMsg =
+            "RESPONSE from generatePdf returned error reason: " + pdfResponse.getReason();
+        throw new MasException(errMsg, new MasException());
       } else {
         return pdfResponse;
       }
-    } catch (Exception e) {
+    } catch (MasException | JsonProcessingException e) {
       log.error("Error in generate pdf", e);
       throw new MasException(e.getMessage(), e);
     }
