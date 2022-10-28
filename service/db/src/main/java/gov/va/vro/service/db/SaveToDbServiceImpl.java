@@ -42,14 +42,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void insertAssessmentResult(
       UUID claimId, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
-    ClaimEntity errorClaim = new ClaimEntity();
-    errorClaim.setIncomingStatus("ERROR");
-    ClaimEntity claimEntity = claimRepository.findById(claimId).orElse(errorClaim);
-    if (claimEntity.getIncomingStatus().equals("ERROR")) {
+    ClaimEntity claimEntity = claimRepository.findById(claimId).orElse(null);
+    if (claimEntity == null) {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
     }
     Map summary = evidenceResponse.getEvidenceSummary();
+    if (summary == null) {
+      log.warn("Evidence Summary is empty in insertAssessmentResult, exiting.");
+      return;
+    }
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);

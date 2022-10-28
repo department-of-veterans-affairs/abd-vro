@@ -22,13 +22,18 @@ public class AssessmentResultProcessor implements Processor {
   @Override
   public void process(Exchange exchange) throws JsonProcessingException {
     UUID claimId = exchange.getProperty("claim-id", UUID.class);
+    if (claimId == null) {
+      log.warn("Claim Id was empty, exiting");
+      return;
+    }
     String diagnosticCode = exchange.getProperty("diagnosticCode", String.class);
+    if (diagnosticCode == null) {
+      log.warn("Diagnostic Code was empty, exiting.");
+      return;
+    }
     String responseBody = exchange.getIn().getBody(String.class);
-    if (claimId == null || diagnosticCode == null || responseBody == null) {
-      if (claimId == null) log.warn("Claim Id was empty, exiting");
-      if (diagnosticCode == null) log.warn("Diagnostic Code was empty, exiting.");
-      if (responseBody == null)
-        log.warn("Evidence response from claim-submit-full was empty, exiting");
+    if (responseBody == null) {
+      log.warn("Evidence Summary was empty, exiting");
       return;
     }
     ObjectMapper mapper = new ObjectMapper();

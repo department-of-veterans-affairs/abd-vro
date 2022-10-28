@@ -14,9 +14,9 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AbdEvidenceWithSummary {
 
-  @Schema(description = "List of AbdEvidence")
+  @Schema(description = "Medical Evidence")
   private AbdEvidence evidence;
 
-  @Schema(description = "List of evidence counts")
+  @Schema(description = "Evidence Counts")
   private Map<String, Object> evidenceSummary;
 }

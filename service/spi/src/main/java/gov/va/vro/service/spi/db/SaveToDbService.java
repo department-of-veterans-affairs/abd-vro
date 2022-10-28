@@ -8,6 +8,5 @@ import java.util.UUID;
 public interface SaveToDbService {
   Claim insertClaim(Claim claim);
 
-  void insertAssessmentResult(UUID claimId, AbdEvidenceWithSummary evidence, String diagnosticCode)
-      throws IllegalArgumentException;
+  void insertAssessmentResult(UUID claimId, AbdEvidenceWithSummary evidence, String diagnosticCode);
 }
