@@ -25,6 +25,5 @@ public class MasServiceTest extends BaseControllerTest {
   @Test
   void testService() {
     assertNotNull(masAuthToken.getAuthorizedClientServiceAndManager());
-    System.out.println(masOauth2Config);
   }
 }
