@@ -103,8 +103,8 @@ spring:
             uri: ${mas-api-auth-token-uri:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
         registration:
           mas:
-            client-id: ${mas-api-auth-clientID:vro_dev}
-            client-secret: ${mas-api-auth-client-secret:a526870c-9013-4d5b-80e7-1850cabf770d}
+            client-id: ${mas-api-auth-clientID:placeholder-id}
+            client-secret: ${mas-api-auth-client-secret:placeholder-secret}
             scope: ${mas-api-auth-scope:openid}
             grant-type: client_credentials
 masAPIProvider:
