@@ -47,11 +47,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
     }
-    Map summary = evidenceResponse.getEvidenceSummary();
-    if (summary == null) {
+    if (evidenceResponse.getEvidenceSummary() == null) {
       log.warn("Evidence Summary is empty in insertAssessmentResult, exiting.");
       return;
     }
+    Map summary = evidenceResponse.getEvidenceSummary();
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
