@@ -67,8 +67,7 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .wireTap(wireTapTopicFor("claim-submitted"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-    ;
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
   private String wireTapTopicFor(String tapName) {
