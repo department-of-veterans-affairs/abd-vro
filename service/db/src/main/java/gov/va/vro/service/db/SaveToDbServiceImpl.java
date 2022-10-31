@@ -55,6 +55,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
+    if (contention == null) {
+      log.warn("Could not match contention with diagnostic code");
+      return;
+    }
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
   }
@@ -64,8 +68,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     for (ContentionEntity contention : claim.getContentions()) {
       if (contention.getDiagnosticCode().equals(diagnosticCode)) {
         resp = contention;
-      } else {
-        log.error("Could not find match contention with diagnostic code.");
+        return resp;
       }
     }
     return resp;
