@@ -22,5 +22,4 @@ services:
         condition: service_healthy
     networks:
       - internal
-    restart: on-failure:5
 

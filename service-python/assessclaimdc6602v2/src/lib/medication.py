@@ -25,7 +25,7 @@ def categorize_med(medication_display):
 
 def medication_required(request_body):
     """
-    Determine if there is the veteran requires continuous medication for hypertension
+    Determine if there is the veteran requires continuous medication for asthma
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes

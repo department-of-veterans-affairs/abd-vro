@@ -23,11 +23,13 @@ def assess_asthma(event: Dict):
             {
                 "evidence": {
                     "medications": active_medications["medications"],
-                    "conditions": active_conditions,
+                    "conditions": active_conditions["conditions"],
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],
                     "totalMedCount": active_medications["totalMedCount"],
+                    "relevantConditionsCount": active_conditions["relevantConditionsCount"],
+                    "totalConditionsCount": active_conditions["totalConditionsCount"],
                 },
             }
         )

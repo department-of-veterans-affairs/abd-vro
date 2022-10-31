@@ -16,7 +16,7 @@ from assessclaimdc6602v2.src.lib import condition
                 },
                 "date_of_claim": "2021-11-09",
             },
-            [],
+            {"conditions": [], "relevantConditionsCount": 0, "totalConditionsCount": 0},
         ),
         (
             {
@@ -29,7 +29,9 @@ from assessclaimdc6602v2.src.lib import condition
                 },
                 "date_of_claim": "2021-11-09",
             },
-            [{"text": "Asthma", "code": "195967001", "status": "Active"}],
+            {"conditions": [{"code": "195967001", "status": "Active", "text": "Asthma"}],
+             "relevantConditionsCount": 1,
+             "totalConditionsCount": 1},
         ),
         (
             {
@@ -46,7 +48,11 @@ from assessclaimdc6602v2.src.lib import condition
                 },
                 "date_of_claim": "2021-11-09",
             },
-            [{"text": "Eosinophilic asthma", "code": "J82.83", "status": "Active"}],
+            {"conditions": [{"code": "J82.83",
+                             "status": "Active",
+                             "text": "Eosinophilic asthma"}],
+             "relevantConditionsCount": 1,
+             "totalConditionsCount": 1}
         ),
     ],
 )
