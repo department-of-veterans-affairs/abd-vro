@@ -14,8 +14,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -34,12 +34,8 @@ public class MasApiService {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
       List<MasCollectionStatusReq> masCollectionStatusReqList =
-              new ArrayList<>();
-      for (Integer collectionId : collectionIds) {
-        MasCollectionStatusReq masCollectionStatusReq = new MasCollectionStatusReq();
-        masCollectionStatusReq.setCollectionsId(collectionId);
-        masCollectionStatusReqList.add(masCollectionStatusReq);
-      }
+          collectionIds.stream().map(this::statusRequest).collect(Collectors.toList());
+
       HttpEntity<MasCollectionStatusReq> httpEntity =
           new HttpEntity<>(masCollectionStatusReqList.get(0), headers);
 
@@ -56,6 +52,12 @@ public class MasApiService {
       log.error("Failed to get collection status.", e);
       throw new MasException(e.getMessage(), e);
     }
+  }
+
+  private MasCollectionStatusReq statusRequest(int collectionId) {
+    MasCollectionStatusReq masCollectionStatusReq = new MasCollectionStatusReq();
+    masCollectionStatusReq.setCollectionsId(collectionId);
+    return masCollectionStatusReq;
   }
 
   public List<MasCollectionAnnotation> getCollectionAnnots(Integer collectionId)
