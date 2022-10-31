@@ -19,21 +19,20 @@ class WireTap extends CommandSupport {
   }
 
   Object execute(final List<String> args) {
-    log.debug "args: ${args}"
+    log.warn "args: ${args}"
     args.collect({ String it ->
-      Object varObj = variables.get(it)
-      // in case `it` is executable
-      if (varObj == null) varObj = shell.execute(it)
-
-      if (varObj == null) return "null"
-
-      subscribeToTopic(it)
-    }).join('\n')
+      String varObj = variables.get(it)
+      if (varObj == null)
+        subscribeToTopic(it)
+      else
+        subscribeToTopic(varObj)
+    })
   }
 
-  void subscribeToTopic(String wireTapName){
+  String subscribeToTopic(String wireTapName){
     RoutesBuilder routeBuilder=new WireTapRoute(wireTapName)
     camelContext.addRoutes(routeBuilder)
+    "tap-${wireTapName}"
   }
 
   class WireTapRoute extends RouteBuilder {
