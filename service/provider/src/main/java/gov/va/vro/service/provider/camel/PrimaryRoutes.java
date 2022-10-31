@@ -124,7 +124,7 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private String pdfRoute(String queueName) {
-    return String.format("rabbitmq:%s?routingKey=%s", PDF_EXCHANGE, queueName);
+    return String.format("rabbitmq:%s?routingKey=%s&queue=%s", PDF_EXCHANGE, queueName, queueName);
   }
 
   private void configureExceptionHandling() {
