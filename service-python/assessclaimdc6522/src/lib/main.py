@@ -1,6 +1,6 @@
 from typing import Dict
 
-from . import medication, utils, conditions, procedure
+from . import conditions, medication, procedure, utils
 
 
 def assess_rhinitis(event: Dict):

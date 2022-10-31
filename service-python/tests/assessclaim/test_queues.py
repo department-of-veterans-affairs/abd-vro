@@ -4,10 +4,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from assessclaimdc6602.src.lib import queues as q6602
-from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc6522.src.lib import queues as q6522
 from assessclaimdc6522.src.lib.main import assess_rhinitis as main6522
+from assessclaimdc6602.src.lib import queues as q6602
+from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc7101.src.lib import queues as q7101
 from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
 
