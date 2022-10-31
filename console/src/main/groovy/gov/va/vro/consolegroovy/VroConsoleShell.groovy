@@ -2,6 +2,7 @@ package gov.va.vro.consolegroovy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import gov.va.vro.consolegroovy.commands.PrintJson
+import gov.va.vro.consolegroovy.commands.WireTap
 import gov.va.vro.persistence.repository.ClaimRepository
 import gov.va.vro.persistence.repository.VeteranRepository
 import org.apache.camel.CamelContext
@@ -43,6 +44,7 @@ class VroConsoleShell {
 
     def shell = createGroovysh(getBinding())
     shell.register(new PrintJson(shell, objectMapper))
+    shell.register(new WireTap(shell, camelContext))
 
     shell.run("")
     println 'Exiting'
