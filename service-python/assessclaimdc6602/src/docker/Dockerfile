@@ -10,7 +10,7 @@ RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker
 COPY . /home/docker/
 RUN adduser --disabled-password docker && chown -R 777:777 /home/docker/
 WORKDIR /home/docker
-RUN pip install --no-cache-dir --user -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 USER docker
 CMD ["python", "-u", "main_consumer.py"]
 #https://stackoverflow.com/a/55954143
