@@ -34,57 +34,6 @@
     h4 {
       margin-top: 12;
     }
-    .toc-list, .toc-list ul {
-      list-style-type: none;
-    }
-
-    .toc-list {
-      padding: 0;
-    }
-
-    .toc-list ol {
-      padding-inline-start: 2ch;
-    }
-
-    .toc-list li > a {
-      text-decoration: none;
-      display: grid;
-      grid-template-columns: auto max-content;
-      align-items: end;
-    }
-
-    .toc-list li > a > .page {
-      text-align: right;
-    }
-
-    .toc-list li > a > .title {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .toc-list li > a .leaders::after {
-      position: absolute;
-      padding-left: .25ch;
-      content: " . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . "
-          ". . . . . . . . . . . . . . . . . . . . . . . ";
-      text-align: right;
-    }
-
-    .toc-list > li > a {
-      font-weight: bold;
-      margin-block-start: 1em;
-    }
-
-    .toc-list li > a > .page {
-      min-width: 2ch;
-      font-variant-numeric: tabular-nums;
-      text-align: right;
-    }
   </style>
 
 </head>
@@ -94,7 +43,7 @@
     <div class="col-3">
     </div>
   </div>
-  <h3 class="text-center">Evidence Review Summary</h3>
+  <h3 class="text-center">&zwnj;Evidence Review Summary</h3>
   <div class="row">
     <div class="col-4 offset-4">
       <table class="table table-bordered border-dark">
@@ -126,35 +75,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <h2><b>Table of Contents</b></h2>
-      <ul class="toc-list" role="list">
-        <li>
-          <a href="#schedular-evidence">
-            <span class="title">Schedular Evidence<span class="leaders" aria-hidden="true"></span></span>
-            <span class="page">1</span>
-          </a>
-          <!-- <ul role="list">
-            <li>
-              <a href="#link_to_heading">
-                <span class="title">Chapter or subsection title<span class="leaders" aria-hidden="true"></span></span>
-                <span class="page">1</span>
-              </a>
-            </li>
-          </ul> -->
-        </li>
-        <li>
-          <a href="#other-medical-evidence">
-            <span class="title">Other Medical Evidence<span class="leaders" aria-hidden="true"></span></span>
-            <span class="page">1</span>
-          </a>
-        </li>
-        <li>
-          <a href="#unavailable-automated-review">
-            <span class="title">Relevant Documents Unavailable for Automated Review<span class="leaders" aria-hidden="true"></span></span>
-            <span class="page">1</span>
-          </a>
-        </li>
-      </ul>
+      <h2 class="mb-4 text-center"><b>Condition: Hypertension</b></h2>
     </div>
   </div>
   <div class="row">
@@ -162,7 +83,7 @@
       <table id="schedular-evidence" class="table table-bordered border-dark">
         <thead>
           <tr>
-            <th colspan="6" class="text-center">Schedular Evidence For Hypertension</th>
+            <th colspan="6" class="text-center"><h3 class="m-0"><b>Schedular Evidence For Hypertension</b></h3></th>
           </tr>
           <tr>
             <th>Key Terms</th>
@@ -191,7 +112,7 @@
       <table id="other-medical-evidence" class="table table-bordered border-dark">
         <thead>
           <tr>
-            <th colspan="6" class="text-center">Other Medical Evidence For Hypertension</th>
+            <th colspan="6" class="text-center"><h3 class="m-0"><b>Other Medical Evidence For Hypertension</b></h3></th>
           </tr>
           <tr>
             <th>Key Terms</th>
@@ -220,7 +141,7 @@
       <table id="unavailable-automated-review" class="table table-bordered border-dark">
         <thead>
           <tr>
-            <th colspan="6" class="text-center">Relevant Documents Unavailable for Automated Review</th>
+            <th colspan="6" class="text-center"><h3 class="m-0"><b>Relevant Documents Unavailable for Automated Review</b></h3></th>
           </tr>
           <tr>
             <th>Document</th>
@@ -241,7 +162,7 @@
       </table>
     </div>
   </div>
-  <h3 class="text-center">End of Evidence Review Summary</h3>
+  <h3 class="text-center">&zwnj;End of Evidence Review Summary</h3>
   {% block body %}{% endblock %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

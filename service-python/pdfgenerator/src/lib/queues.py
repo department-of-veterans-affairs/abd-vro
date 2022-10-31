@@ -30,7 +30,7 @@ def on_generate_callback(channel, method, properties, body):
         variables = pdf_generator.generate_template_variables(diagnosis_name, message)
         # logging.info(f"Variables: {variables}")
         template = pdf_generator.generate_template_file(diagnosis_name, variables)
-        pdf = pdf_generator.generate_pdf_from_string(template)
+        pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template)
         redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
         redis_client.save_data(f"{claim_id}_type", diagnosis_name)
         logging.info("Saved PDF")

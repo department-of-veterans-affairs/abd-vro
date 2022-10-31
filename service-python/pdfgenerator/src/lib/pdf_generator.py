@@ -27,8 +27,8 @@ class PDFGenerator:
                 medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
         return filled_variables
 
-    def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False) -> str:
-        loader_path = "pdfgenerator.src.lib" if test_mode else "lib"
+    def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False, loader="pdfgenerator.src.lib") -> str:
+        loader_path = loader if test_mode else "lib"
         jinja_env = Environment(
             loader=PackageLoader(loader_path),
             autoescape=select_autoescape()
@@ -38,5 +38,10 @@ class PDFGenerator:
 
         return generated_html
 
-    def generate_pdf_from_string(self, html: str) -> bytes or bool:
-        return pdfkit.from_string(html, False, options=self.options)
+    def generate_pdf_from_string(self, template_name: str, html: str) -> bytes or bool:
+        toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/toc.xsl")
+        if os.path.isfile(toc_file_path):
+            toc = {'xsl-style-sheet': toc_file_path}
+            return pdfkit.from_string(html, 'test.pdf', options=self.options, toc=toc, verbose=True)
+        else:
+            return pdfkit.from_string(html, False, options=self.options, verbose=True)
