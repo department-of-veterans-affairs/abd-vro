@@ -25,7 +25,7 @@ spec:
         - name: {{ .Values.name }}-ghcr
       initContainers:
         - name: pg-isready
-          image: postgres
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
           env:
             - name: ENV
               value: {{ .Values.environment }}
