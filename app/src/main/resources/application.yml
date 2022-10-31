@@ -113,6 +113,11 @@ masAPIProvider:
   collectionStatusPath: ${mas-collection-status-path:/pcCheckCollectionStatus}
   createExamOrderPath: ${mas-create-exam-order-path:/pcCreateExamOrdering}
 
+bip:
+  baseURL: ${bip-claim-api-url:https://}
+  secret: ${bip-api-secret:secret}
+  clientId: ${bip-api-client-id:clientid}
+
 opentracing:
   zipkin:
     enabled: false
