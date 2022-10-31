@@ -67,7 +67,16 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .wireTap(wireTapTopicFor("claim-submitted"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
+    ;
+  }
+
+  private String wireTapTopicFor(String tapName) {
+    // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
+    // Create the queue but don't bind it to the exchange so that messages don't accumulate.
+    return String.format(
+        "rabbitmq:tap-%s?exchangeType=topic&queue=tap-%s-not-used&skipQueueBind=true",
+        tapName, tapName);
   }
 
   private String wireTapTopicFor(String tapName) {
