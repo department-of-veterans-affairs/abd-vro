@@ -4,12 +4,9 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.responses.MasClaimResponse;
+import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.mas.ClaimCondition;
-import gov.va.vro.model.mas.ClaimDetail;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.VeteranIdentifiers;
+import gov.va.vro.model.mas.*;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import lombok.SneakyThrows;
@@ -23,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -62,8 +60,8 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimD_invalidRequest() {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
-    var responseEntity = post("/v1/automatedClaim", request, MasClaimResponse.class);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
   @Test
@@ -82,7 +80,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasNotificationEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<MasAutomatedClaimPayload, String>fromFunction(claim -> "hi"));
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    var responseEntity = post("/v1/automatedClaim", request, MasClaimResponse.class);
+    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
 
@@ -99,9 +97,19 @@ public class MasControllerTest extends BaseControllerTest {
         .end();
 
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    post("/v1/automatedClaim", request, MasClaimResponse.class);
+    post("/v1/automatedClaim", request, MasResponse.class);
     Mockito.verify(auditEventProcessor)
         .logException(Mockito.any(Object.class), Mockito.any(Throwable.class), Mockito.anyString());
+  }
+
+  @Test
+  void orderExamStatus() {
+    var payload =
+        MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
+    ResponseEntity<MasResponse> response =
+        post("/v1/examOrderingStatus", payload, MasResponse.class);
+    assertEquals("123", response.getBody().getId());
+    assertEquals("Received", response.getBody().getMessage());
   }
 
   private static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
