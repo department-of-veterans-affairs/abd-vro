@@ -64,7 +64,17 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
+        .wireTap(wireTapTopicFor("claim-submitted"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
+    ;
+  }
+
+  private String wireTapTopicFor(String tapName) {
+    // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
+    // Create the queue but don't bind it to the exchange so that messages don't accumulate.
+    return String.format(
+        "rabbitmq:tap-%s?exchangeType=topic&queue=tap-%s-not-used&skipQueueBind=true",
+        tapName, tapName);
   }
 
   private void configureRouteClaimSubmitForFull() {
@@ -80,7 +90,10 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteGeneratePdf() {
-    from(ENDPOINT_GENERATE_PDF).routeId("generate-pdf").to(pdfRoute(GENERATE_PDF_QUEUE));
+    from(ENDPOINT_GENERATE_PDF)
+        .routeId("generate-pdf")
+        .wireTap(wireTapTopicFor("generate-pdf"))
+        .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 
   private void configureRouteFetchPdf() {
@@ -120,7 +133,7 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private String pdfRoute(String queueName) {
-    return String.format("rabbitmq:%s?routingKey=%s", PDF_EXCHANGE, queueName);
+    return String.format("rabbitmq:%s?routingKey=%s&queue=%s", PDF_EXCHANGE, queueName, queueName);
   }
 
   private void configureExceptionHandling() {
