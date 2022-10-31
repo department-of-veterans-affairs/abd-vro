@@ -15,7 +15,9 @@ from assessclaimdc6522.src.lib import utils
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedures": []
                 },
                 "date_of_claim": "2021-11-09",
             },
@@ -31,7 +33,9 @@ from assessclaimdc6522.src.lib import utils
                             "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
-                    ]
+                    ],
+                    "conditions": [],
+                    "procedures": []
                 },
                 "date_of_claim": 20211109,
             },

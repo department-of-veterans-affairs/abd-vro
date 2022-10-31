@@ -15,29 +15,28 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     total_conditions_count = len(veterans_conditions)
-    diagnostic_codes = []
+    diagnostic_codes = set()
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
             if condition_code in rhinitis_conditions.rhinitis_conditions_list:
                 relevant_conditions.append(condition)
-            if condition_code in rhinitis_conditions.granulomatous_rhinitis:
-                # The codes in this set may indicate a condition evaluated under the diagnostic code 6524, the same
-                # codes may indicate allergic or vasomotor rhinitis which is why they are included in both code sets
-                diagnostic_codes.append("6524")
+                diagnostic_codes.add("6522")
+            elif condition_code in rhinitis_conditions.granulomatous_rhinitis:
+                relevant_conditions.append(condition)
+                diagnostic_codes.add("6524")
             elif condition_code in rhinitis_conditions.rhinoscleroma:
                 relevant_conditions.append(condition)
-                diagnostic_codes.append("6523")
+                diagnostic_codes.add("6523")
             elif condition_code in rhinitis_conditions.nasal_polyps:
                 relevant_conditions.append(condition)
-                diagnostic_codes.append("6522")
 
     response.update(
         {
             "conditions": relevant_conditions,
             "relevantConditionsCount": len(relevant_conditions),
             "totalConditionsCount": total_conditions_count,
-            "diagnosticCodes": diagnostic_codes
+            "diagnosticCodes": list(diagnostic_codes)
         }
     )
 
