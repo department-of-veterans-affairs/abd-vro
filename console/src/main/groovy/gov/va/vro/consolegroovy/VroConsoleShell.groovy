@@ -33,10 +33,10 @@ class VroConsoleShell {
   VeteranRepository veteranRepository
 
   String submitSeda() {
-    return producerTemplate.requestBody("seda:foo", "Hello", String.class)
+    return producerTemplate.requestBody("seda:foo", "Hello", String)
   }
 
-  @EventListener(ApplicationReadyEvent.class)
+  @EventListener(ApplicationReadyEvent)
   void startShell() {
     def userDir = System.getProperty("user.dir")
     System.out.println("Working Directory = " + userDir)
