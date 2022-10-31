@@ -18,7 +18,7 @@ services:
     environment:
       RABBITMQ_HOST: "vro-api-rabbit-mq-service"
     networks:
-      - central
+      - internal
   dc6602:
     build:
       context: ../dc6602/src/.
@@ -26,7 +26,7 @@ services:
     environment:
       RABBITMQ_HOST: "vro-api-rabbit-mq-service"
     networks:
-      - central
+      - internal
 
 networks:
   internal:

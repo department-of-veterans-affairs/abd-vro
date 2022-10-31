@@ -1,5 +1,6 @@
 package gov.va.vro.controller.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.api.model.ClaimProcessingException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClaimProcessingError {
 
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String claimSubmissionId;
+
   private String message;
 
   public ClaimProcessingError(ClaimProcessingException exception) {
