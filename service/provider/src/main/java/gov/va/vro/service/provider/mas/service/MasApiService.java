@@ -21,6 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MasApiService {
+
+  private final ObjectMapper mapper = new ObjectMapper();
+
   private final RestTemplate restTemplate;
   private final MasAuthToken masAuthToken;
   private final MasApiProps masApiProps;
@@ -31,7 +34,7 @@ public class MasApiService {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
       List<MasCollectionStatusReq> masCollectionStatusReqList =
-          new ArrayList<MasCollectionStatusReq>();
+              new ArrayList<>();
       for (Integer collectionId : collectionIds) {
         MasCollectionStatusReq masCollectionStatusReq = new MasCollectionStatusReq();
         masCollectionStatusReq.setCollectionsId(collectionId);
@@ -46,10 +49,9 @@ public class MasApiService {
       log.info("MAS Collection Status Response {}.", masResponse);
 
       String masReturn = masResponse.getBody();
-      ObjectMapper mapper = new ObjectMapper();
 
       log.info("MAS Collection Status Response body {}.", masReturn);
-      return mapper.readValue(masReturn, new TypeReference<List<MasCollectionStatus>>() {});
+      return mapper.readValue(masReturn, new TypeReference<>() {});
     } catch (RestClientException | IOException e) {
       log.error("Failed to get collection status.", e);
       throw new MasException(e.getMessage(), e);
@@ -71,16 +73,7 @@ public class MasApiService {
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
       String masReturn = masResponse.getBody();
-      ObjectMapper mapper = new ObjectMapper();
-      return mapper.readValue(masReturn, new TypeReference<List<MasCollectionAnnotation>>() {});
-      /*
-            String masResponseBody = masResponse.getBody();
-            JsonFactory jsonFactory = new JsonFactory();
-            ObjectMapper mapper = new ObjectMapper(jsonFactory);
-            JsonNode rootNode = mapper.readTree(masResponseBody);
-
-            return mapper.convertValue(rootNode.get(0), MasCollectionAnnotation.class);
-      */
+      return mapper.readValue(masReturn, new TypeReference<>() {});
     } catch (RestClientException | IOException e) {
       log.error("Failed to get collection annotations.", e);
       throw new MasException(e.getMessage(), e);
@@ -97,20 +90,18 @@ public class MasApiService {
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
-      String masReturn = masResponse.getBody();
-
-      // Replace with the actual response contract when available
+      // TODO: Replace with the actual response contract when available
       // ObjectMapper mapper = new ObjectMapper();
       // return mapper.readValue(masReturn, new TypeReference<List<MasOrderExam>>() {});
 
-      return masReturn;
+      return masResponse.getBody();
     } catch (RestClientException e) {
       log.error("Failed to order exam", e);
       throw new MasException(e.getMessage(), e);
     }
   }
 
-  public HttpHeaders getMasHttpHeaders() throws MasException {
+  private HttpHeaders getMasHttpHeaders() throws MasException {
     HttpHeaders masHttpHeaders;
     try {
       // Get the MAS API Auth(JWT) Token
