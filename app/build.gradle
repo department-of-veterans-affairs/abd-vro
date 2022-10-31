@@ -37,6 +37,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+    //MAS oAuth2 webclient libs
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+    implementation "org.springframework.security:spring-security-oauth2-client:${oauth2_client}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+
     // Needed?
     // implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"

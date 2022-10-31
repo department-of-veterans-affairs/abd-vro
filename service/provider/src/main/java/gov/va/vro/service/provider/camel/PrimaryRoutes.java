@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -29,6 +30,8 @@ public class PrimaryRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
 
+  public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
+
   public static final String MAS_DELAY_PARAM = "masDelay";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
@@ -50,6 +53,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     configureAutomatedClaim();
+    configureOrderExamStatus();
   }
 
   private void configureRouteClaimSubmit() {
@@ -104,6 +108,15 @@ public class PrimaryRoutes extends RouteBuilder {
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
+  }
+
+  private void configureOrderExamStatus() {
+    String routeId = "exam-order-status";
+    from(ENDPOINT_EXAM_ORDER_STATUS)
+        .routeId(routeId)
+        .process(
+            auditEventProcessor.event(
+                routeId, "Entering endpoint " + ENDPOINT_EXAM_ORDER_STATUS, new JsonConverter()));
   }
 
   private String pdfRoute(String queueName) {
