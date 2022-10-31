@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,11 +48,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
     }
-    if (evidenceResponse.getEvidenceSummary() == null) {
-      log.warn("Evidence Summary is empty in insertAssessmentResult, exiting.");
+    Map<String, String> summary = convertMap(evidenceResponse.getEvidenceSummary());
+    if (summary == null || summary.isEmpty()) {
+      log.warn("Evidence Summary is empty, exiting.");
       return;
     }
-    Map summary = evidenceResponse.getEvidenceSummary();
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
@@ -63,15 +64,27 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimRepository.save(claimEntity);
   }
 
-  private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode) {
-    ContentionEntity resp = new ContentionEntity();
-    for (ContentionEntity contention : claim.getContentions()) {
-      if (contention.getDiagnosticCode().equals(diagnosticCode)) {
-        resp = contention;
-        return resp;
+  private Map<String, String> convertMap(Map<String, Object> summary) {
+    if (summary == null) {
+      return null;
+    }
+    Map<String, String> result = new HashMap<>();
+    for (Map.Entry<String, Object> entry : summary.entrySet()) {
+      Object value = entry.getValue();
+      if (value != null) {
+        result.put(entry.getKey(), value.toString());
       }
     }
-    return resp;
+    return result;
+  }
+
+  private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode) {
+    for (ContentionEntity contention : claim.getContentions()) {
+      if (contention.getDiagnosticCode().equals(diagnosticCode)) {
+        return contention;
+      }
+    }
+    return null;
   }
 
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
