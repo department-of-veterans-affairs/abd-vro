@@ -50,6 +50,7 @@ images:
 
 languages:
   python:
+    version: 3.9
     requirements:
       - ./service-python/pdfgenerator/src/requirements.txt
       - ./service-python/assessclaimdc6602/src/requirements.txt
