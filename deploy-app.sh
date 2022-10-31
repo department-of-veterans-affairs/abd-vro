@@ -28,32 +28,31 @@ else
 fi
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
-
-source scripts/image_vars.src
-generateImageArgs(){
-  local _ENV=$1
-  local _IMAGE_TAG=$2
-  for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-    local HELM_KEY=`getVarValue ${PREFIX} _HELM_KEY`
-    local IMAGE_NAME=${_ENV}_`getVarValue ${PREFIX} _IMG`
-    echo "--set-string images.$HELM_KEY.tag=\"${_IMAGE_TAG}\" "
-    echo "--set-string images.$HELM_KEY.imageName=${IMAGE_NAME} "
-  done
-}
-VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
-
+helm del $HELM_APP_NAME -n ${TEAMNAME}-${ENV}
 helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string environment="${ENV}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.redis.tag="latest"\
+              --set-string environment=${ENV} \
+              --set-string images.app.tag=${IMAGE_TAG} \
+              --set-string images.redis.tag=latest \
+              --set-string images.db.tag=${IMAGE_TAG} \
+              --set-string images.mq.tag="3" \
+              --set-string images.dbInit.tag=${IMAGE_TAG} \
+              --set-string images.pdfGenerator.tag=${IMAGE_TAG} \
+              --set-string images.serviceAssessClaimDC7101.tag=${IMAGE_TAG} \
+              --set-string images.serviceAssessClaimDC6602.tag=${IMAGE_TAG} \
+              --set-string images.serviceDataAccess.tag=${IMAGE_TAG} \
+              --set-string info.version=${IMAGE_TAG} \
+              --set-string info.git_hash=${GIT_SHA} \
+              --set-string info.deploy_env=${ENV} \
+              --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
+              --set-string images.app.imageName=${ENV}_vro-app \
               --set-string images.redis.imageName=redis \
-              --set-string images.mq.tag="3"\
+              --set-string images.db.imageName=${ENV}_vro-postgres \
               --set-string images.mq.imageName=vro-rabbitmq \
-              ${VRO_IMAGE_ARGS} \
+              --set-string images.dbInit.imageName=${ENV}_vro-db-init \
+              --set-string images.pdfGenerator.imageName=${ENV}_vro-service-pdfgenerator \
+              --set-string images.serviceAssessClaimDC7101.imageName=${ENV}_vro-service-assessclaimdc7101 \
+              --set-string images.serviceAssessClaimDC6602.imageName=${ENV}_vro-service-assessclaimdc6602 \
+              --set-string images.serviceDataAccess.imageName=${ENV}_vro-service-data-access \
               --debug \
-              -n "${TEAMNAME}-${ENV}" #--dry-run
-              #-f "helmchart/${ENV}".yaml
+              -n ${TEAMNAME}-"${ENV}" #--dry-run
+              #-f helmchart/"${ENV}".yaml
