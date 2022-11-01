@@ -32,8 +32,6 @@ def on_generate_callback(channel, method, properties, body):
         template = pdf_generator.generate_template_file(diagnosis_name, variables)
         pdf = pdf_generator.generate_pdf_from_string(template)
         redis_client.save_hash_data(f"claim-{claim_id}", mapping={"pdf": base64.b64encode(pdf).decode("ascii"), "type": diagnosis_name})
-        # redis_client.save_hash_data(claim_id, "pdf", base64.b64encode(pdf).decode("ascii"))
-        # redis_client.save_hash_data(claim_id, "type", diagnosis_name)
         logging.info("Saved PDF")
         response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
     except Exception as e:
