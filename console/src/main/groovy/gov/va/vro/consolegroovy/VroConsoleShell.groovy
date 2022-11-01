@@ -38,6 +38,15 @@ class VroConsoleShell {
   @Autowired
   VeteranRepository veteranRepository
 
+  @Autowired
+  LettuceConnectionFactory lettuceConnectionFactory;
+
+  def redisConnection(){
+    RedisClient redisClient = lettuceConnectionFactory.getNativeClient()
+    StatefulRedisConnection<String, String> connection = redisClient.connect()
+    RedisCommands<String, String> syncRedisCommands = connection.sync()
+  }
+
   String submitSeda() {
     return producerTemplate.requestBody("seda:foo", "Hello", String)
   }
@@ -59,20 +68,9 @@ class VroConsoleShell {
     println 'Exiting'
   }
 
-  @Autowired
-  LettuceConnectionFactory redisConnFactory;
-
-  def redis(){
-    RedisClient redisClient = RedisClient.create("redis://vro_redis_password@redis-service:6379/")
-//        redisConnFactory.getNativeClient()
-    StatefulRedisConnection<String, String> connection = redisClient.connect()
-    RedisCommands<String, String> syncRedisCommands = connection.sync()
-    syncRedisCommands
-  }
-
   def getBinding() {
     new Binding([
-        redis: redis(),
+        redis: redisConnection(),
         claimsT: claimRepository,
         vetT   : veteranRepository,
         camel  : camelContext,
