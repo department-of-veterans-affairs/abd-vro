@@ -5,6 +5,9 @@ import gov.va.vro.consolegroovy.commands.PrintJson
 import gov.va.vro.consolegroovy.commands.WireTap
 import gov.va.vro.persistence.repository.ClaimRepository
 import gov.va.vro.persistence.repository.VeteranRepository
+import io.lettuce.core.RedisClient
+import io.lettuce.core.api.StatefulRedisConnection
+import io.lettuce.core.api.sync.RedisCommands
 import org.apache.camel.CamelContext
 import org.apache.camel.Exchange
 import org.apache.camel.ProducerTemplate
@@ -15,6 +18,7 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -55,8 +59,20 @@ class VroConsoleShell {
     println 'Exiting'
   }
 
+  @Autowired
+  LettuceConnectionFactory redisConnFactory;
+
+  def redis(){
+    RedisClient redisClient = RedisClient.create("redis://vro_redis_password@redis-service:6379/")
+//        redisConnFactory.getNativeClient()
+    StatefulRedisConnection<String, String> connection = redisClient.connect()
+    RedisCommands<String, String> syncRedisCommands = connection.sync()
+    syncRedisCommands
+  }
+
   def getBinding() {
     new Binding([
+        redis: redis(),
         claimsT: claimRepository,
         vetT   : veteranRepository,
         camel  : camelContext,
