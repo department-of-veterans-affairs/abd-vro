@@ -1,12 +1,14 @@
 package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,13 @@ public class MasCollectionService {
     return false;
   }
 
-  public AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
+  public GeneratePdfPayload collectAnnotations(MasAutomatedClaimPayload claimPayload)
+      throws MasException {
+    var evidence = getCollectionAnnotations(claimPayload);
+    return getGeneratePdfPayload(claimPayload, evidence);
+  }
+
+  private AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
       throws MasException {
 
     log.info(
@@ -78,5 +86,25 @@ public class MasCollectionService {
       throw new MasException(e.getMessage(), e);
     }
     return abdEvidence;
+  }
+
+  private static GeneratePdfPayload getGeneratePdfPayload(
+      MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence) {
+    GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
+    generatePdfPayload.setEvidence(abdEvidence);
+    generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
+    generatePdfPayload.setDiagnosticCode(
+        claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
+    VeteranInfo veteranInfo = new VeteranInfo();
+    veteranInfo.setFirst(claimPayload.getFirstName());
+    veteranInfo.setLast(claimPayload.getLastName());
+    veteranInfo.setMiddle("");
+    veteranInfo.setBirthdate(claimPayload.getDateOfBirth());
+    generatePdfPayload.setVeteranInfo(veteranInfo);
+    log.info(
+        "Generating pdf for claim: {} and diagnostic code {}",
+        generatePdfPayload.getClaimSubmissionId(),
+        generatePdfPayload.getDiagnosticCode());
+    return generatePdfPayload;
   }
 }
