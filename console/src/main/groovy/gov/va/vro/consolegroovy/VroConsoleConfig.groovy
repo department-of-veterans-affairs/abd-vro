@@ -30,7 +30,7 @@ class VroConsoleConfig {
 
   // https://stackoverflow.com/questions/37402717/camel-redis-automatically-prepends-string-to-key
   // https://dzone.com/articles/using-redis-spring
-  @Bean("redisTemplate")
+  @Bean
   RedisTemplate<String, Object> redisTemplate() {
     RedisTemplate<String, Object> template = new RedisTemplate<>()
     template.setConnectionFactory(lettuceConnectionFactory())
