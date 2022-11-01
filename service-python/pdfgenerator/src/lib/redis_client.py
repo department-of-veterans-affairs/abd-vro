@@ -32,7 +32,7 @@ class RedisClient:
     def get_data(self, key):
         return self.client.get(key)
 
-    def save_hash_data(self, name, key, value, mapping=None, items=None):
+    def save_hash_data(self, name, key=None, value=None, mapping=None, items=None):
         self.client.hset(name, key, value, mapping, items)
         self.client.expire(name, self.config["expiration"])
 
