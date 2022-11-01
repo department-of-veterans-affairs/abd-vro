@@ -5,6 +5,7 @@ import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter claimSubmitRouter;
   private final MasPollingProcessor masPollingProcessor;
 
+  private final AssessmentResultProcessor assessmentResultProcessor;
   private final AuditEventProcessor auditEventProcessor;
 
   @Override
@@ -75,8 +77,10 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(claimSubmitRouter, "routeClaimSubmit"))
-        .routingSlip(method(claimSubmitRouter, "routeClaimSubmitFull"));
+        .setProperty("claim-id", simple("${body.recordId}"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
+        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
+        .process(assessmentResultProcessor);
   }
 
   private void configureRouteGeneratePdf() {
