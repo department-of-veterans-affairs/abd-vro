@@ -22,7 +22,7 @@ class WireTap extends CommandSupport {
   }
 
   Object execute(final List<String> args) {
-    log.warn "args: ${args}"
+    log.debug "args: ${args}"
     args.collect({ String it ->
       String varObj = variables.get(it)
       if (varObj == null)
