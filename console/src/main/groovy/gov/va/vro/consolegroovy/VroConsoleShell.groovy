@@ -39,7 +39,7 @@ class VroConsoleShell {
   VeteranRepository veteranRepository
 
   @Autowired
-  LettuceConnectionFactory lettuceConnectionFactory;
+  LettuceConnectionFactory lettuceConnectionFactory
 
   def redisConnection(){
     RedisClient redisClient = lettuceConnectionFactory.getNativeClient()

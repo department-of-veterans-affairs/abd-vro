@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate
 class VroConsoleConfig {
 
   @Autowired
-  RedisProperties redisProperties;
+  RedisProperties redisProperties
 
   @Bean
   LettuceConnectionFactory lettuceConnectionFactory() {
@@ -24,14 +24,14 @@ class VroConsoleConfig {
     config.database = redisProperties.database
     config.username = redisProperties.username
     config.password = redisProperties.password
-    return new LettuceConnectionFactory(config)
+    new LettuceConnectionFactory(config)
   }
 
   @Bean
   RedisTemplate<String, Object> redisTemplate() {
-    RedisTemplate<String, Object> template = new RedisTemplate<>();
-    template.setConnectionFactory(lettuceConnectionFactory());
+    RedisTemplate<String, Object> template = new RedisTemplate<>()
+    template.setConnectionFactory(lettuceConnectionFactory())
     // template.setValueSerializer(new GenericToStringSerializer<Object>(Object))
-    return template;
+    template
   }
 }
