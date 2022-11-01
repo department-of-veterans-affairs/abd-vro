@@ -25,6 +25,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
+
+  public static final String MAS_RETRY_PARAM = "masRetryCount";
+
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
   private final MasPollingProcessor masPollingProcessor;

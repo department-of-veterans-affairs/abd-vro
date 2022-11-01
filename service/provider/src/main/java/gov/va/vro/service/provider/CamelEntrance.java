@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * Used to programmatically inject messages into a Camel endpoint. AKA an entrance ramp onto a Camel
  * route. Intended to be used by Controller classes to initiate routing requests.
@@ -42,12 +44,15 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
-  public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay) {
-    producerTemplate.sendBodyAndHeader(
+  public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay, int retryCount) {
+    producerTemplate.sendBodyAndHeaders(
         MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM,
         payload,
-        MasIntegrationRoutes.MAS_DELAY_PARAM,
-        delay);
+        Map.of(
+            MasIntegrationRoutes.MAS_DELAY_PARAM,
+            delay,
+            MasIntegrationRoutes.MAS_RETRY_PARAM,
+            retryCount));
   }
 
   public String examOrderingStatus(MasExamOrderStatusPayload payload) {
