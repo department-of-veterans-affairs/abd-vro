@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 
 @Service
@@ -47,6 +48,9 @@ class VroConsoleShell {
     RedisCommands<String, String> syncRedisCommands = connection.sync()
   }
 
+  @Autowired
+  RedisTemplate<String, Object> redisTemplate
+
   String submitSeda() {
     return producerTemplate.requestBody("seda:foo", "Hello", String)
   }
@@ -71,6 +75,7 @@ class VroConsoleShell {
   def getBinding() {
     new Binding([
         redis: redisConnection(),
+        redisT: redisTemplate,
         claimsT: claimRepository,
         vetT   : veteranRepository,
         camel  : camelContext,

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
 @EnableJpaRepositories("gov.va.vro.persistence.repository")
@@ -27,11 +28,16 @@ class VroConsoleConfig {
     new LettuceConnectionFactory(config)
   }
 
-  @Bean
+  // https://stackoverflow.com/questions/37402717/camel-redis-automatically-prepends-string-to-key
+  // https://dzone.com/articles/using-redis-spring
+  @Bean("redisTemplate")
   RedisTemplate<String, Object> redisTemplate() {
     RedisTemplate<String, Object> template = new RedisTemplate<>()
     template.setConnectionFactory(lettuceConnectionFactory())
-    // template.setValueSerializer(new GenericToStringSerializer<Object>(Object))
+    template.setDefaultSerializer(new StringRedisSerializer())
+    // template.setKeySerializer(new StringRedisSerializer());
+    // template.setHashKeySerializer(new StringRedisSerializer());
+    // template.afterPropertiesSet()
     template
   }
 }
