@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.mas.GeneratePdfResp;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -12,15 +13,18 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.ProducerTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
+// TODO: Turn this into a Slip router  or conditional
 public class MasPollingProcessor implements Processor {
   private final CamelEntrance camelEntrance;
   private final MasDelays masDelays;
   private final MasCollectionService masCollectionService;
+  private final ProducerTemplate producerTemplate;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -33,9 +37,11 @@ public class MasPollingProcessor implements Processor {
         masCollectionService.checkCollectionStatus(claimPayload.getCollectionId());
 
     if (isCollectionReady) {
-      // call Lighthouse
+      // TODO:  call Lighthouse
       // Combine results and call PDF generation
-      GeneratePdfPayload generatePdfPayload = masCollectionService.collectAnnotations(claimPayload);
+      GeneratePdfPayload generatePdfPayload =
+          producerTemplate.requestBody(
+              MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, claimPayload, GeneratePdfPayload.class);
       GeneratePdfResp generatePdfResp = generatePdf(generatePdfPayload);
       // TODO: call pcOrderExam in the absence of evidence
     } else {
@@ -44,6 +50,8 @@ public class MasPollingProcessor implements Processor {
       camelEntrance.notifyAutomatedClaim(claimPayload, masDelays.getMasProcessingSubsequentDelay());
     }
   }
+
+  // TODO: move to a separate route
 
   public GeneratePdfResp generatePdf(GeneratePdfPayload generatePdfPayload) throws MasException {
 

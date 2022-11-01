@@ -4,9 +4,11 @@ import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
@@ -23,29 +25,32 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
+  public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
   private final MasPollingProcessor masPollingProcessor;
 
   private final AuditEventProcessor auditEventProcessor;
+
+  private final MasCollectionService masCollectionService;
 
   @Override
   public void configure() {
     configureExceptionHandling();
     configureAutomatedClaim();
     configureOrderExamStatus();
+    configureMasProcessing();
   }
 
   private void configureAutomatedClaim() {
+    String routeId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
-        .routeId("mas-claim-notification")
+        .routeId(routeId)
         .process(
             auditEventProcessor.event(
-                "mas-claim-notification",
-                "Setting a delay before staring Automated claim processing."))
+                routeId, "Setting a delay before staring Automated claim processing."))
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
-        .process(
-            auditEventProcessor.event("mas-claim-notification", "Calling endpoint " + ENDPOINT_MAS))
+        .process(auditEventProcessor.event(routeId, "Calling endpoint " + ENDPOINT_MAS))
         .to(ENDPOINT_MAS);
 
     from(ENDPOINT_MAS)
@@ -65,6 +70,21 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             auditEventProcessor.event(
                 routeId, "Entering endpoint " + ENDPOINT_EXAM_ORDER_STATUS, new JsonConverter()));
+  }
+
+  private void configureMasProcessing() {
+    String routeId = "mas-processing";
+    from(ENDPOINT_MAS_PROCESSING)
+        .routeId(routeId)
+        .process(
+            new Processor() {
+              @Override
+              public void process(Exchange exchange) throws Exception {
+                MasAutomatedClaimPayload payload =
+                    exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
+                masCollectionService.collectAnnotations(payload);
+              }
+            });
   }
 
   private void configureExceptionHandling() {
