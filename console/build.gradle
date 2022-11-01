@@ -15,10 +15,17 @@ dependencies {
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
   runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 
-  implementation project(':shared:domain')
+  // Needed to access DB Entity records
   implementation project(':persistence:model')
-  implementation project(':service:provider')
 
+  // Needed to deserialize objects passed in MQ messages
+  implementation project(':shared:domain')
+  implementation project(':service:spi')
+
+  // To connect to Camel
+  implementation project(':shared:lib-camel-connector')
+
+  // Groovy REPL shell
   implementation 'org.codehaus.groovy:groovy'
   implementation 'org.codehaus.groovy:groovy-json'
   implementation 'org.codehaus.groovy:groovy-groovysh'
