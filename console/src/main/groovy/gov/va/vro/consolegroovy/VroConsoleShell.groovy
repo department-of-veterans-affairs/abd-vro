@@ -6,6 +6,7 @@ import gov.va.vro.consolegroovy.commands.WireTap
 import gov.va.vro.persistence.repository.ClaimRepository
 import gov.va.vro.persistence.repository.VeteranRepository
 import org.apache.camel.CamelContext
+import org.apache.camel.Exchange
 import org.apache.camel.ProducerTemplate
 import org.apache.groovy.groovysh.Groovysh
 import org.apache.groovy.groovysh.util.PackageHelper
@@ -40,11 +41,15 @@ class VroConsoleShell {
   @EventListener(ApplicationReadyEvent)
   void startShell() {
     def userDir = System.getProperty("user.dir")
-    System.out.println("Working Directory = " + userDir)
+    println("Working Directory = " + userDir)
 
     def shell = createGroovysh(getBinding())
     shell.register(new PrintJson(shell, objectMapper))
     shell.register(new WireTap(shell, camelContext))
+
+    // Don't limit the log message length since WireTap prints out the message body
+    // https://camel.apache.org/manual/faq/how-do-i-set-the-max-chars-when-debug-logging-messages-in-camel.html
+    camelContext.globalOptions.put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0")
 
     shell.run("")
     println 'Exiting'
