@@ -78,14 +78,6 @@ public class PrimaryRoutes extends RouteBuilder {
         tapName, tapName);
   }
 
-  private String wireTapTopicFor(String tapName) {
-    // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
-    // Create the queue but don't bind it to the exchange so that messages don't accumulate.
-    return String.format(
-        "rabbitmq:tap-%s?exchangeType=topic&queue=tap-%s-not-used&skipQueueBind=true",
-        tapName, tapName);
-  }
-
   private void configureRouteClaimSubmitForFull() {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM_FULL)
