@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
@@ -8,7 +9,6 @@ import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
@@ -63,6 +63,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("MAS response: ${body}");
   }
 
+  private void configureMasProcessing() {
+    String routeId = "mas-processing";
+    from(ENDPOINT_MAS_PROCESSING)
+        .routeId(routeId)
+        .process(auditEventProcessor.event(routeId, "Calling Collect Annotations"))
+        // Call Mas API to collect annotations
+        .process(FunctionProcessor.fromFunction(masCollectionService::collectAnnotations))
+        // TODO:  call Lighthouse
+        .process(auditEventProcessor.event(routeId, "Completed Collect Annotations"))
+        // TODO: call pcOrderExam in the absence of evidence
+        // Generate PDF
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
+  }
+
   private void configureOrderExamStatus() {
     String routeId = "exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
@@ -70,21 +84,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             auditEventProcessor.event(
                 routeId, "Entering endpoint " + ENDPOINT_EXAM_ORDER_STATUS, new JsonConverter()));
-  }
-
-  private void configureMasProcessing() {
-    String routeId = "mas-processing";
-    from(ENDPOINT_MAS_PROCESSING)
-        .routeId(routeId)
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) throws Exception {
-                MasAutomatedClaimPayload payload =
-                    exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
-                masCollectionService.collectAnnotations(payload);
-              }
-            });
   }
 
   private void configureExceptionHandling() {

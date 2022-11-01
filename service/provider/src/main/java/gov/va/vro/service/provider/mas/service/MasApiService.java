@@ -15,12 +15,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MasApiService {
+public class MasApiService implements IMasApiService {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -28,13 +27,14 @@ public class MasApiService {
   private final MasAuthToken masAuthToken;
   private final MasApiProps masApiProps;
 
+  @Override
   public List<MasCollectionStatus> getMasCollectionStatus(List<Integer> collectionIds)
       throws MasException {
     try {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
       List<MasCollectionStatusReq> masCollectionStatusReqList =
-          collectionIds.stream().map(this::statusRequest).collect(Collectors.toList());
+          collectionIds.stream().map(this::statusRequest).toList();
 
       HttpEntity<MasCollectionStatusReq> httpEntity =
           new HttpEntity<>(masCollectionStatusReqList.get(0), headers);
@@ -60,6 +60,7 @@ public class MasApiService {
     return masCollectionStatusReq;
   }
 
+  @Override
   public List<MasCollectionAnnotation> getCollectionAnnots(Integer collectionId)
       throws MasException {
     try {
@@ -82,6 +83,7 @@ public class MasApiService {
     }
   }
 
+  @Override
   public String orderExam(MasOrderExamReq masOrderExamReq) throws MasException {
     try {
       String url = masApiProps.getBaseURL() + masApiProps.getCreateExamOrderPath();

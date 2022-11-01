@@ -10,6 +10,7 @@ import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class MasCollectionService {
 
-  private final MasApiService masCollectionAnnotsApiService;
+  private final IMasApiService masCollectionAnnotsApiService;
 
   public boolean checkCollectionStatus(int collectionId) throws MasException {
 
@@ -49,8 +50,8 @@ public class MasCollectionService {
     return false;
   }
 
-  public GeneratePdfPayload collectAnnotations(MasAutomatedClaimPayload claimPayload)
-      throws MasException {
+  @SneakyThrows
+  public GeneratePdfPayload collectAnnotations(MasAutomatedClaimPayload claimPayload) {
     var evidence = getCollectionAnnotations(claimPayload);
     return getGeneratePdfPayload(claimPayload, evidence);
   }

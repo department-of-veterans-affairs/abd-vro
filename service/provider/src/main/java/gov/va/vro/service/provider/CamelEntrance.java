@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.mas.GeneratePdfResp;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -52,5 +53,12 @@ public class CamelEntrance {
   public String examOrderingStatus(MasExamOrderStatusPayload payload) {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
     return "Message Received";
+  }
+
+  public GeneratePdfResp processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    return producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING,
+        masAutomatedClaimPayload,
+        GeneratePdfResp.class);
   }
 }
