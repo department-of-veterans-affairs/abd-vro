@@ -1,6 +1,7 @@
 package gov.va.vro;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,13 +13,13 @@ import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.config.AppTestConfig;
 import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.CamelContext;
@@ -38,6 +39,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -125,7 +127,7 @@ class VroControllerTest extends BaseControllerTest {
 
   @Test
   @DirtiesContext
-  void fullClaimSubmit_missing_evidence() throws Exception {
+  void fullHealthAssessmentMissingEvidence() throws Exception {
     adviceWith(
         camelContext,
         "claim-submit",
@@ -151,7 +153,6 @@ class VroControllerTest extends BaseControllerTest {
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
-
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");
@@ -164,6 +165,25 @@ class VroControllerTest extends BaseControllerTest {
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  }
+
+  @Test
+  void fullHealthAssessmentInvalidInput() throws Exception {
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setVeteranIcn("icn");
+
+    var responseEntity =
+        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    var claimProcessingError = responseEntity.getBody();
+    assertNotNull(claimProcessingError);
+    String[] actual = claimProcessingError.getMessage().split("\n");
+    Arrays.sort(actual);
+    String[] expected = {
+      "claimSubmissionId: Claim submission id cannot be empty",
+      "diagnosticCode: Diagnostic code cannot be empty"
+    };
+    assertArrayEquals(expected, actual);
   }
 
   @Test
@@ -191,13 +211,14 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void generatePdf_invalid_input() {
+  void generatePdfInvalidInput() {
     var generatePdf = new GeneratePdfRequest();
     generatePdf.setClaimSubmissionId("1234");
     generatePdf.setVeteranInfo(new VeteranInfo());
     generatePdf.setEvidence(new AbdEvidence());
-    var response = post("/v1/evidence-pdf", generatePdf, Object.class);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    var response = post("/v1/evidence-pdf", generatePdf, ClaimProcessingError.class);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(response.getBody().getMessage(), "diagnosticCode: must not be blank");
   }
 
   @Test

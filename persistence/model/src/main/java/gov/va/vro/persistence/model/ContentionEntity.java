@@ -27,7 +27,7 @@ public class ContentionEntity extends BaseEntity {
 
   @OneToMany(
       mappedBy = "contention",
-      fetch = FetchType.LAZY,
+      fetch = FetchType.EAGER,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
@@ -50,17 +50,10 @@ public class ContentionEntity extends BaseEntity {
     this.diagnosticCode = diagnosticCode;
   }
 
-  /***
-   * <p>Summary.</p>
-   *
-   * @param evidenceCount evidence count
-   *
-   * @return return value
-   */
-  public AssessmentResultEntity addAssessmentResult(int evidenceCount) {
+  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
-    assessmentResult.setEvidenceCount(evidenceCount);
     assessmentResult.setContention(this);
+    assessmentResult.setEvidenceCountSummary(ar.getEvidenceCountSummary());
     assessmentResults.add(assessmentResult);
     return assessmentResult;
   }

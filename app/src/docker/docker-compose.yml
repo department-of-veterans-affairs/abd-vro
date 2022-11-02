@@ -7,16 +7,44 @@ networks:
 volumes:
   pgdata:
 
+# Reusable blocks
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+x-postgres-vars: &postgres-vars
+  POSTGRES_HOST: postgres-service
+  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: claims
+
+x-redis-placeholder-vars: &redis-placeholder-vars
+  REDIS_PLACEHOLDERS_HOST: redis-service
+  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
+  RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
+  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+
+x-rabbitmq-client-vars: &rabbitmq-client-vars
+  RABBITMQ_PORT: 5672
+  RABBITMQ_RETRY_LIMIT: 3
+  RABBITMQ_TIMEOUT: 10800
+
+x-common-security-opt: &common-security-opt
+  security_opt:
+    - no-new-privileges:true
+
 services:
 
-  vro-api-rabbit-mq-service:
+  rabbitmq-service:
     image: rabbitmq:3-management
+    hostname: rabbitmq-service
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
       timeout: 3s
       retries: 30
-    hostname: vro-api-rabbit-mq-service
     expose:
       - "5672"
       - "15672"
@@ -29,9 +57,9 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
-  vro-api-redis-service:
+  redis-service:
     image: redis
-    hostname: vro-api-redis-service
+    hostname: redis-service
     expose:
       - "6379"
     networks:
@@ -40,9 +68,9 @@ services:
       - "6379:6379"
     command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
-  vro-api-postgres-service:
+  postgres-service:
     image: va/abd_vro-postgres
-    hostname: vro-api-postgres-service
+    hostname: postgres-service
     expose:
       - "5432"
     environment:
@@ -57,6 +85,7 @@ services:
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
+# This external access to the DB is enabled only for non-production environments.
       - external
     ports:
       - "5432:5432"
@@ -64,11 +93,11 @@ services:
   db-init:
     image: va/abd_vro-db-init:latest
     depends_on:
-      - vro-api-postgres-service
+      - postgres-service
     networks:
       - internal
     environment:
-      FLYWAY_URL: jdbc:postgresql://vro-api-postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_ADMIN_USER}&password=${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_ADMIN_USER}&password=${POSTGRES_ADMIN_PASSWORD}
       FLYWAY_USER: ${POSTGRES_ADMIN_USER}
       FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
@@ -79,114 +108,99 @@ services:
       FLYWAY_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
       FLYWAY_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
 
-  abd_vro:
+  app:
     image: va/abd_vro-app:latest
-    hostname: abd_vro
+    <<: *common-security-opt
+    hostname: app
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
-      POSTGRES_HOST: vro-api-postgres-service
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_URL: ${POSTGRES_URL} #jdbc:postgresql://vro-api-postgres-service:5432/vro
-      POSTGRES_SCHEMA: claims
-      ENV: ${ENV}
+      <<: *rabbitmq-placeholder-vars
+      <<: *postgres-vars
+      ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
-      # TODO: move these RabbitMQ configurations into a reusable yaml block
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
       VRO_NON_PROD: "$VRO_NON_PROD"
-    security_opt:
-      - no-new-privileges:true
     depends_on:
-      - vro-api-postgres-service
-      - vro-api-rabbit-mq-service
-      - vro-api-redis-service
+      - postgres-service
+      - rabbitmq-service
+      - redis-service
       - db-init
-# app should be able to start without the microservice containers
-#      - assess-claim-dc7101
-#      - assess-claim-dc6602
-#      - pdf-generator
     networks:
       - internal
       - external
 
-  assess-claim-dc7101:
+  svc-assessor-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-    security_opt:
-
-      - no-new-privileges:true
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
 
-  assess-claim-dc6602:
+  svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-    security_opt:
-      - no-new-privileges:true
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
 
-  pdf-generator:
+  svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PORT: 5672
-      RABBITMQ_RETRY_LIMIT: 3
-      RABBITMQ_TIMEOUT: 10800
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
-      REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
-    security_opt:
-      - no-new-privileges:true
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
     depends_on:
-      vro-api-redis-service:
+      redis-service:
         condition: service_started
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
 
-  service-data-access:
+  svc-lighthouse-api:
     image: va/abd_vro-service-data-access:latest
+    <<: *common-security-opt
     environment:
-      RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+      <<: *rabbitmq-placeholder-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
       LH_ASSERTION_URL: ${LH_ASSERTION_URL}
       LH_TOKEN_URL: ${LH_TOKEN_URL}
       LH_FHIR_URL: ${LH_FHIR_URL}
-    security_opt:
-      - no-new-privileges:true
     depends_on:
-      vro-api-rabbit-mq-service:
+      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
 
+  console:
+    image: va/abd_vro-console:latest
+    <<: *common-security-opt
+    profiles: ["debug"]
+    # stdin and tty are needed for user interaction
+    stdin_open: true
+    tty: true
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *postgres-vars
+    depends_on:
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal

@@ -33,7 +33,7 @@ def queue_setup(channel):
     channel.exchange_declare(
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )
-    channel.queue_declare(queue=SERVICE_QUEUE)
+    channel.queue_declare(queue=SERVICE_QUEUE, durable=True, auto_delete=True)
     channel.queue_bind(queue=SERVICE_QUEUE, exchange=EXCHANGE)
 
     channel.basic_qos(prefetch_count=250)
