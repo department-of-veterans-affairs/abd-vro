@@ -89,7 +89,7 @@ public class MasCollectionService {
     return abdEvidence;
   }
 
-  private static GeneratePdfPayload getGeneratePdfPayload(
+  public static GeneratePdfPayload getGeneratePdfPayload(
       MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence) {
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(abdEvidence);
