@@ -53,12 +53,12 @@ jobs:
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
 
-      - name: "Sleep 25 seconds"
+      - name: "Sleep 60 seconds"
         # it appears app container is not immediately ready
-        run: sleep 25
+        run: sleep 60
 
       - name: "Run the end to and tests"
-        run: ./gradlew end2EndTest --info
+        run: ./gradlew :app:end2EndTest --info
 
       - name: "Clean docker container and images"
         run: ./gradlew dockerclean
