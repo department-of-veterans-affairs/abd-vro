@@ -35,9 +35,6 @@ class VroConsoleConfig {
     RedisTemplate<String, Object> template = new RedisTemplate<>()
     template.setConnectionFactory(lettuceConnectionFactory())
     template.setDefaultSerializer(new StringRedisSerializer())
-    // template.setKeySerializer(new StringRedisSerializer());
-    // template.setHashKeySerializer(new StringRedisSerializer());
-    // template.afterPropertiesSet()
     template
   }
 }
