@@ -29,7 +29,15 @@ public class BipApiService {
     private final RestTemplate restTemplate;
     private final BipApiProps bipApiProps;
 
-    public boolean updateClaimStatus(String claimId, String statusCode) throws BipException {
+    /**
+     * Updates claim status.
+     *
+     * @param claimId claim ID for the claim to be updated
+     * @param statusCode the new status.
+     * @return a list of messages.
+     * @throws BipException error occurs
+     */
+    public BipUpdateClaimStatusResponse updateClaimStatus(String claimId, String statusCode) throws BipException {
         try {
             String url = bipApiProps.getBaseURL() + String.format(UPDATE_CLAIM_STATUS, claimId);
             HttpHeaders headers = getBipHeader();
@@ -41,7 +49,12 @@ public class BipApiService {
             ObjectMapper mapper = new ObjectMapper();
             BipUpdateClaimStatusResponse resp = mapper.readValue(bipResponse.getBody(),
                     BipUpdateClaimStatusResponse.class);
-            return true;
+            return resp;
+            // TODO: The BIP claim API response is processed here based on the spec.
+            // However, testing result for the endpoint in BIP dev swagger page got
+            // different return. No message was returned in the message body with a
+            // status code of 200, or 500 error. When we get further information from
+            // BIP, revisit this.
         } catch (RestClientException | JsonProcessingException e) {
             log.error("failed to update status to {} for claim {}.", statusCode, claimId, e);
             throw new BipException(e.getMessage(), e);
@@ -52,7 +65,7 @@ public class BipApiService {
         try {
             HttpHeaders bipHttpHeaders = new HttpHeaders();
             bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
-            // TODO: set authorization header
+            // TODO: set authorization header when we get the credentials.
 
             return bipHttpHeaders;
         } catch (Exception e) {

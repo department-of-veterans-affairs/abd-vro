@@ -114,7 +114,7 @@ masAPIProvider:
   createExamOrderPath: ${mas-create-exam-order-path:/pcCreateExamOrdering}
 
 bip:
-  baseURL: ${bip-claim-api-url:https://}
+  baseURL: ${bip-claim-api-url:https://bip-claim.va.gov}
   secret: ${bip-api-secret:secret}
   clientId: ${bip-api-client-id:clientid}
 
