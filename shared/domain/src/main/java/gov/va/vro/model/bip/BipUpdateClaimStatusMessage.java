@@ -1,5 +1,4 @@
-package gov.va.vro.service.provider.bip.data;
-
+package gov.va.vro.model.bip;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Data
 public class BipUpdateClaimStatusMessage {
-    private String severity;
-    private String test;
-    private String key;
-    private int status;
-    private String timestamp;
+  private String severity;
+  private String test;
+  private String key;
+  private int status;
+  private String timestamp;
 }

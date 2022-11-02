@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.bip.data;
+package gov.va.vro.model.bip;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Data
-public class BipUpdateClaimStatusResponse {
-    private List<BipUpdateClaimStatusMessage> messages;
+public class BipUpdateClaimStatusResp {
+  private List<BipUpdateClaimStatusMessage> messages;
 }

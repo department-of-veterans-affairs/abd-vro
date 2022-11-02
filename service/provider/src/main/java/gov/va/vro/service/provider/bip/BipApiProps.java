@@ -12,9 +12,9 @@ import lombok.Setter;
 @Setter
 public class BipApiProps {
 
-    private String baseURL;
+  private String baseURL;
 
-    private String secret;
+  private String secret;
 
-    private String clientId;
+  private String clientId;
 }
