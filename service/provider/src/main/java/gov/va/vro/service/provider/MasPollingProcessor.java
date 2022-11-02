@@ -2,6 +2,7 @@ package gov.va.vro.service.provider;
 
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,8 +24,7 @@ public class MasPollingProcessor implements Processor {
   public void process(Exchange exchange) {
     int retryCounts = (int) exchange.getMessage().getHeader(MasIntegrationRoutes.MAS_RETRY_PARAM);
     if (retryCounts == 0) {
-      log.warn("MAS Processing did not complete. Maximum reties exceeded");
-      return;
+      throw new MasException("MAS Processing did not complete. Maximum reties exceeded");
     }
 
     var claimPayload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);

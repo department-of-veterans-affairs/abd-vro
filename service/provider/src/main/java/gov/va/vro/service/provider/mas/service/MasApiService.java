@@ -22,7 +22,6 @@ import java.util.List;
 public class MasApiService implements IMasApiService {
 
   private final ObjectMapper mapper = new ObjectMapper();
-
   private final RestTemplate restTemplate;
   private final MasAuthToken masAuthToken;
   private final MasApiProps masApiProps;
