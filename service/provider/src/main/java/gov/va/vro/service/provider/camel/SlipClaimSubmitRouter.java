@@ -1,10 +1,8 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.spi.model.Claim;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ExchangeProperties;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * Used by ClaimProcessorRoute to dynamically route claim to endpoints depending on claim
@@ -15,22 +13,15 @@ import java.util.Map;
 public class SlipClaimSubmitRouter {
 
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
-  public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
   /**
    * Computes endpoint where claim should be routed next.
    *
-   * @param body the message body
-   * @param props the exchange properties where we can store state between invocations
+   * @param claim the message body
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
-  public String routeClaimSubmit(Object body, @ExchangeProperties Map<String, Object> props) {
-    Object diagnosticCodeObj = props.get("diagnosticCode");
-    if (diagnosticCodeObj == null) {
-      log.error(NO_DIAGNOSTIC_CODE_ERROR);
-      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
-    }
-    String diagnosticCode = diagnosticCodeObj.toString();
+  public String routeClaimSubmit(Claim claim) {
+    String diagnosticCode = claim.getDiagnosticCode();
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
@@ -43,17 +34,11 @@ public class SlipClaimSubmitRouter {
   /**
    * Computes endpoint where health data should be routed next.
    *
-   * @param body the message body
-   * @param props the exchange properties where we can store state between invocations
+   * @param claim the message body
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
-  public String routeClaimSubmitFull(Object body, @ExchangeProperties Map<String, Object> props) {
-    Object diagnosticCodeObj = props.get("diagnosticCode");
-    if (diagnosticCodeObj == null) {
-      log.error(NO_DIAGNOSTIC_CODE_ERROR);
-      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
-    }
-    String diagnosticCode = diagnosticCodeObj.toString();
+  public String routeHealthAssess(Claim claim) {
+    String diagnosticCode = claim.getDiagnosticCode();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
