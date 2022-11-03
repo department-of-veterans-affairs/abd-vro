@@ -53,4 +53,8 @@ public class MasAutomatedClaimPayload implements Auditable {
   public String getEventId() {
     return Integer.toString(collectionId);
   }
+
+  public String getDiagnosticCode() {
+    return claimDetail.getConditions().getDiagnosticCode();
+  }
 }

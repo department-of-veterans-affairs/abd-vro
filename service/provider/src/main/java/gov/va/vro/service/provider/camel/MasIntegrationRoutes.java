@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -82,15 +81,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String collectEvidenceEndpoint = "direct:collect-evidence";
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .to(collectEvidenceEndpoint); // collect evidence from lighthouse and MAS
     // TODO: call "health assess" service based on condition
-    // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
-    // Call Mas API to collect annotations
-    // TODO .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
+    // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"));
     // TODO: call pcOrderExam in the absence of evidence
     // TODO: Call claim status update
+    // TODO .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
     // TODO:  .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
-
     // TODO upload PDF
 
     from(collectEvidenceEndpoint)
@@ -102,7 +100,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end() // end multicast
         .process( // combine evidence
             FunctionProcessor.fromFunction(
-                (Function<List<AbdEvidence>, AbdEvidence>)
+                (Function<List<HealthDataAssessment>, HealthDataAssessment>)
                     abdEvidences ->
                         MasCollectionService.combineEvidence(
                             abdEvidences.get(0), abdEvidences.get(1))));
@@ -120,8 +118,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
                             .veteranIcn(payload.getVeteranIdentifiers().getIcn())
                             .build()))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
-        .process(FunctionProcessor.fromFunction(HealthDataAssessment::getEvidence));
+        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
   }
 
   private void configureOrderExamStatus() {

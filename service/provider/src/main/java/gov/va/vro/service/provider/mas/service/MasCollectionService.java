@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -10,7 +11,6 @@ import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -52,12 +52,7 @@ public class MasCollectionService {
     return false;
   }
 
-  @SneakyThrows
-  public AbdEvidence collectAnnotations(MasAutomatedClaimPayload claimPayload) {
-    return getCollectionAnnotations(claimPayload);
-  }
-
-  private AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
+  public HealthDataAssessment collectAnnotations(MasAutomatedClaimPayload claimPayload)
       throws MasException {
 
     log.info(
@@ -84,11 +79,19 @@ public class MasCollectionService {
     log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
     log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
 
-    return abdEvidence;
+    HealthDataAssessment healthDataAssessment = new HealthDataAssessment();
+    healthDataAssessment.setDiagnosticCode(claimPayload.getDiagnosticCode());
+    healthDataAssessment.setEvidence(abdEvidence);
+    healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIdentifiers().getIcn());
+    healthDataAssessment.setDisabilityActionType(
+        claimPayload.getClaimDetail().getConditions().getDisabilityActionType());
+    return healthDataAssessment;
   }
 
-  public static AbdEvidence combineEvidence(
-      AbdEvidence lighthouseEvidence, AbdEvidence masApiEvidence) {
+  public static HealthDataAssessment combineEvidence(
+      HealthDataAssessment lighthouseAssessment, HealthDataAssessment masApiAssessment) {
+    AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
+    AbdEvidence masApiEvidence = masApiAssessment.getEvidence();
     // for now, we just add up the lists
     AbdEvidence compositeEvidence = new AbdEvidence();
     compositeEvidence.setBloodPressures(
@@ -99,7 +102,8 @@ public class MasCollectionService {
         merge(lighthouseEvidence.getMedications(), masApiEvidence.getMedications()));
     compositeEvidence.setProcedures(
         merge(lighthouseEvidence.getProcedures(), masApiEvidence.getProcedures()));
-    return compositeEvidence;
+    lighthouseAssessment.setEvidence(compositeEvidence);
+    return lighthouseAssessment;
   }
 
   private static <T> List<T> merge(List<T> list1, List<T> list2) {
