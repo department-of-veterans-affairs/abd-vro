@@ -1,0 +1,32 @@
+medications = {
+    "Abraxane",
+    "capecitabine",
+    "Xeloda"
+    "cisplatin",
+    "docetaxel",
+    "Docefrez"
+    "Taxotere",
+    "erlotinib",
+    "Tarceva",
+    "everolimus",
+    "Zortress",
+    "Afinitor",
+    "fluorouracil",
+    "Adrucil",
+    "gemcitabine",
+    "Infugem",
+    "irinotecan",
+    "Onivyde",
+    "lanreotide",
+    "mitomycin",
+    "octreotide",
+    "Mycapssa"
+    "Sandostatin",
+    "Bynfezia",
+    "Lynparza",
+    "olaparib",
+    "oxaliplatin",
+    "paclitaxel",
+    "sunitinib",
+    "sutent",
+}
