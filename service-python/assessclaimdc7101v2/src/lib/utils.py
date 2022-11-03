@@ -14,6 +14,9 @@ def validate_request_body(request_body):
         "veteranIcn": {"type": "string"},
         "dateOfClaim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
+        "disabilityActionType": {"type": "string", "required": True},
+        "disabilityClassificationCode": {"type": "string"},
+        "ratedDisabilityId": {"type": "string"},
         "evidence": {
             "type": "dict",
             "schema": {
@@ -74,9 +77,39 @@ def validate_request_body(request_body):
                         },
                     },
                 },
-            },
-        },
+                "conditions": {
+                    "type": "list",
+                    "required": True,
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "onsetDate": {
+                                "type": "string",
+                            },
+                            "abatementDate": {
+                                "type": "string",
+                                "nullable": True
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     v = Validator(schema)
 
-    return {"is_valid": v.validate(request_body), "errors": v.errors}
+    return {
+        "is_valid": v.validate(request_body),
+        "errors": v.errors
+    }
