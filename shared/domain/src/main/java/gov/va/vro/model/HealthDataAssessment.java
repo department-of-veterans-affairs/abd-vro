@@ -27,5 +27,4 @@ public class HealthDataAssessment {
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
-
 }
