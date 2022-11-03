@@ -37,11 +37,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
-
+    implementation "org.springframework.security:spring-security-core:${spring_security_version}"
+    implementation "org.springframework.security:spring-security-config:${spring_security_version}"
+    implementation "org.springframework.security:spring-security-web:${spring_security_version}"
 
     //MAS oAuth2 webclient libs
     implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
-    implementation "org.springframework.security:spring-security-oauth2-client:${oauth2_client}"
+    implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
     implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
     // Needed?

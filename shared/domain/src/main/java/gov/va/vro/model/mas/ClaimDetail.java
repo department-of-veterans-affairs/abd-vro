@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClaimDetail {
 
+  @Schema(description = "Claim ID", example = "1234")
   private String benefitClaimId;
 
   @Schema(description = "Claim submission timestamp", example = "2018-11-04T17:45:61Z")
