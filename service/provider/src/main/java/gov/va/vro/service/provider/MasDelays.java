@@ -10,4 +10,6 @@ public class MasDelays {
   private final long masProcessingInitialDelay;
 
   private final long masProcessingSubsequentDelay;
+
+  private final int masRetryCount;
 }

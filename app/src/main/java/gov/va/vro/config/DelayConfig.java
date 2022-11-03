@@ -12,7 +12,8 @@ public class DelayConfig {
   @Bean
   MasDelays masDelays(
       @Value("${mas-processing-initial-delay}") long masProcessingInitialDelay,
-      @Value("${mas-processing-subsequent-delay}") long masProcessingSubsequentDelay) {
-    return new MasDelays(masProcessingInitialDelay, masProcessingSubsequentDelay);
+      @Value("${mas-processing-subsequent-delay}") long masProcessingSubsequentDelay,
+      @Value("${mas-processing-retry-count}") int masRetryCount) {
+    return new MasDelays(masProcessingInitialDelay, masProcessingSubsequentDelay, masRetryCount);
   }
 }
