@@ -49,6 +49,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+    implementation "org.springframework.security:spring-security-core:${spring_security_version}"
+    implementation "org.springframework.security:spring-security-config:${spring_security_version}"
+    implementation "org.springframework.security:spring-security-web:${spring_security_version}"
+
     // Needed?
     // implementation "org.postgresql:postgresql:${postgresql_version}"
     runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
