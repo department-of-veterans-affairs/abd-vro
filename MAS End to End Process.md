@@ -4,6 +4,6 @@
 4. Call Julian service using abdevidence and claimCondition.disabilityActionType
 5. Julian service returns summary (flag)
 6. Enhance response with Veteran info (for GeneratePDF)
-7Call generate PDF
+7. Call generate PDF
 8. --> If no evidence, call pcOrderExam
 9. Call claimStatusUpdate 

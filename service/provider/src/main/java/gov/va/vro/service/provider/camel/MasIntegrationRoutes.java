@@ -73,9 +73,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(auditEventProcessor.event(routeId, "Calling Collect Annotations"))
         // Call Mas API to collect annotations
         .process(FunctionProcessor.fromFunction(masCollectionService::collectAnnotations))
-        // TODO:  call Lighthouse
+        // TODO:  call Lighthouse and combine evidence
+        // TODO: call "assess claim" service based on condition
+        .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
         .process(auditEventProcessor.event(routeId, "Completed Collect Annotations"))
+        // TODO: Call Generate PDF
         // TODO: call pcOrderExam in the absence of evidence
+        // TODO: Call claim status update
         // Generate PDF
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
   }

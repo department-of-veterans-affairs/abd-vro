@@ -51,9 +51,8 @@ public class MasCollectionService {
   }
 
   @SneakyThrows
-  public GeneratePdfPayload collectAnnotations(MasAutomatedClaimPayload claimPayload) {
-    var evidence = getCollectionAnnotations(claimPayload);
-    return getGeneratePdfPayload(claimPayload, evidence);
+  public MasTransferObject collectAnnotations(MasAutomatedClaimPayload claimPayload) {
+    return new MasTransferObject(claimPayload, getCollectionAnnotations(claimPayload));
   }
 
   private AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
@@ -89,10 +88,10 @@ public class MasCollectionService {
     return abdEvidence;
   }
 
-  public static GeneratePdfPayload getGeneratePdfPayload(
-      MasAutomatedClaimPayload claimPayload, AbdEvidence abdEvidence) {
+  public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject masTransferObject) {
+    MasAutomatedClaimPayload claimPayload = masTransferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
-    generatePdfPayload.setEvidence(abdEvidence);
+    generatePdfPayload.setEvidence(masTransferObject.getEvidence());
     generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
