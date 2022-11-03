@@ -53,9 +53,9 @@ jobs:
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
 
-      - name: "Sleep 60 seconds"
+      - name: "Sleep 180 seconds"
         # it appears app container is not immediately ready
-        run: sleep 60
+        run: sleep 180
 
       - name: "Run the end to and tests"
         run: ./gradlew :app:end2EndTest --info
