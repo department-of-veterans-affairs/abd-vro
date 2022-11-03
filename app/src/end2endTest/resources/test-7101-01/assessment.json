@@ -1,0 +1,134 @@
+{
+  "veteranIcn": "1012666073V986297",
+  "diagnosticCode": "7101",
+  "evidence": {
+    "medications": [
+      {
+        "status": "Active",
+        "description": "ALBUTEROL SO4 90MCG/ACTUAT (CFC-F) INHL,ORAL,6.7GM",
+        "refills": 0,
+        "authoredOn": "2022-03-23T01:43:31Z",
+        "dosageInstructions": [
+          "INHALE 2 PUFFS BY INHALATION FOUR TIMES A DAY AS NEEDED FOR SHORTNESS OF BREATH OR WHEEZING",
+          "As directed by physician."
+        ],
+        "route": ""
+      },
+      {
+        "status": "Active",
+        "description": "MIRTAZAPINE 15MG TAB",
+        "refills": 2,
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "dosageInstructions": [
+          "TAKE ONE TABLET BY MOUTH AT BEDTIME AS NEEDED FOR SLEEP",
+          "As directed by physician."
+        ],
+        "route": "ORAL"
+      },
+      {
+        "status": "Active",
+        "description": "SERTRALINE HCL 100MG TA",
+        "refills": 0,
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "dosageInstructions": [
+          "TAKE ONE TABLET BY MOUTH DAILY FOR ANXIETY, MOOD, AND SLEEP",
+          "As directed by physician."
+        ],
+        "route": ""
+      },
+      {
+        "status": "Active",
+        "description": "Omeprazole 10 MG",
+        "refills": 0,
+        "authoredOn": "2021-04-15T08:00:00Z"
+      },
+      {
+        "status": "Active",
+        "description": "Amlodipine 5 MG Oral Tablet",
+        "refills": 0,
+        "authoredOn": "2020-08-14T08:00:00Z",
+        "dosageInstructions": [
+          "Once Per Day",
+          "Twice Per Day"
+        ],
+        "route": "ORAL"
+      },
+      {
+        "status": "Active",
+        "description": "MOMETASONE FUROATE 200MCG/ACTUAT INHL,ORAL,120D,13GM",
+        "refills": 0,
+        "authoredOn": "2020-03-23T01:43:31Z",
+        "dosageInstructions": [],
+        "route": "INHALATION"
+      },
+      {
+        "status": "Active",
+        "description": "Escitalopram 10 MG",
+        "refills": 0,
+        "authoredOn": "2018-02-03T08:00:00Z",
+        "dosageInstructions": [
+          "Once Per Day"
+        ],
+        "route": "ORAL"
+      }
+    ],
+    "bp_readings": [
+      {
+        "date": "2022-05-20",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 104.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 190.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER"
+      },
+      {
+        "date": "2022-06-20",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 93.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 167.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER"
+      },
+      {
+        "date": "2022-07-20",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 93.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 167.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER"
+      }
+    ]
+  },
+  "evidenceSummary": {
+    "totalBpReadings": 8,
+    "recentBpReadings": 3,
+    "medicationsCount": 7
+  }
+}
