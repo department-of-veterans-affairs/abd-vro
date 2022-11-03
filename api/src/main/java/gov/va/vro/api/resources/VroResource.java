@@ -1,6 +1,5 @@
 package gov.va.vro.api.resources;
 
-import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
@@ -23,6 +22,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +46,11 @@ public interface VroResource {
   @PostMapping("/evidence-pdf")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -66,7 +70,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           GeneratePdfRequest request)
-      throws RequestValidationException, ClaimProcessingException;
+      throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
       summary = "Downloads the generated Evidence PDF",
@@ -78,6 +82,10 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -94,7 +102,7 @@ public interface VroResource {
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
   ResponseEntity<Object> fetchPdf(@PathVariable String claimSubmissionId)
-      throws RequestValidationException, ClaimProcessingException;
+      throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
       summary = "Provides health data assessment",
@@ -107,6 +115,10 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -135,7 +147,7 @@ public interface VroResource {
           @Valid
           @RequestBody
           HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException;
+      throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
       summary = "Retrieves metrics on the previously processed claims",
@@ -145,6 +157,10 @@ public interface VroResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -159,5 +175,5 @@ public interface VroResource {
   @Timed(value = "claim-metrics")
   @Tag(name = "Claim Metrics")
   ResponseEntity<ClaimMetricsResponse> claimMetrics()
-      throws RequestValidationException, ClaimProcessingException, MetricsProcessingException;
+      throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
 }
