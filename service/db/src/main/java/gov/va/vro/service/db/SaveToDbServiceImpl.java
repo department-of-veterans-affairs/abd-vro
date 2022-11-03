@@ -5,6 +5,7 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
@@ -62,6 +63,21 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void insertEvidenceSummaryDocument(
+      String claimSubmissionId, String documentName, String diagnosticCode) {
+    // Need more info to match claim and contentions
+    // ClaimEntity claim = claimRepository.findByClaimSubmissionIdAndIdType(claimSubmissionId,
+    // idType);
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
+    evidenceSummaryDocument.setDocumentName(documentName);
+    // ContentionEntity contention = findContention(claim, diagnosticCode);
+    // Do we need this? -> evidenceSummaryDocument.setEvidenceCount(evidenceCount);
+    // contention.getEvidenceSummaryDocuments().add(evidenceSummaryDocument);
+    // claimRepository.save(claim);
+
   }
 
   private Map<String, String> convertMap(Map<String, Object> summary) {

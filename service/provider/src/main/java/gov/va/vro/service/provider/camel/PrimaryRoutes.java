@@ -6,6 +6,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.services.AssessmentResultProcessor;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private final MasPollingProcessor masPollingProcessor;
 
   private final AssessmentResultProcessor assessmentResultProcessor;
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
   private final AuditEventProcessor auditEventProcessor;
 
   @Override
@@ -88,7 +90,11 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteFetchPdf() {
-    from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
+
+    from(ENDPOINT_FETCH_PDF)
+        .routeId("fetch-pdf")
+        .to(pdfRoute(FETCH_PDF_QUEUE))
+        .process(evidenceSummaryDocumentProcessor);
   }
 
   private void configureAutomatedClaim() {

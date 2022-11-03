@@ -9,4 +9,7 @@ public interface SaveToDbService {
   Claim insertClaim(Claim claim);
 
   void insertAssessmentResult(UUID claimId, AbdEvidenceWithSummary evidence, String diagnosticCode);
+
+  void insertEvidenceSummaryDocument(
+      String claimSubmissionId, String documentName, String diagnosticCode);
 }
