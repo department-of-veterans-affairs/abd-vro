@@ -36,7 +36,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   private String gender;
 
   @NotNull(message = "Collection ID cannot be empty")
-  @Schema(description = "Collection ID", example = "999")
+  @Schema(description = "Collection ID", example = "350")
   private Integer collectionId;
 
   @NotNull
