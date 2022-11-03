@@ -63,30 +63,27 @@ public class MasCollectionService {
     log.info(
         "Collection {} is ready for processing, calling collection annotation service ",
         claimPayload.getCollectionId());
-    AbdEvidence abdEvidence = null;
-    try {
-      var response =
-          masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
-      for (MasCollectionAnnotation masCollectionAnnotation : response) {
-        log.info(
-            "Collection Annotation Response : Collection ID  {}",
-            masCollectionAnnotation.getCollectionsId());
-        log.info(
-            "Collection Status Response : Veteran FileId  {}  ",
-            masCollectionAnnotation.getVtrnFileId());
 
-        MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
-        abdEvidence = masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
-
-        log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
-        log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
-        log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
-        break;
-      }
-    } catch (Exception e) {
-      log.error("Error in calling collection Status API ", e);
-      throw new MasException(e.getMessage(), e);
+    var response =
+        masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
+    if (response.isEmpty()) {
+      throw new MasException(
+          "No annotations found for collection id " + claimPayload.getCollectionId());
     }
+    MasCollectionAnnotation masCollectionAnnotation = response.get(0);
+    log.info(
+        "Collection Annotation Response : Collection ID  {} and Veteran File ID {}",
+        masCollectionAnnotation.getCollectionsId(),
+        masCollectionAnnotation.getVtrnFileId());
+
+    MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
+    AbdEvidence abdEvidence =
+        masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
+
+    log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
+    log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
+    log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
+
     return abdEvidence;
   }
 
