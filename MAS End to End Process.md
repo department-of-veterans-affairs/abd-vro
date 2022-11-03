@@ -7,3 +7,4 @@
 7. Call generate PDF
 8. --> If no evidence, call pcOrderExam
 9. Call claimStatusUpdate 
+10. Upload PDF file (probably using BIP)
