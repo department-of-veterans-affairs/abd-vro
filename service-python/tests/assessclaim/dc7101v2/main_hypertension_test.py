@@ -48,6 +48,7 @@ from assessclaimdc7101v2.src.lib import main
 
                         ],
                         "conditions": [],
+                        "procedures": [],
                         "medications": [{"description": "Capoten",
                                          "status": "active",
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
@@ -85,6 +86,7 @@ from assessclaimdc7101v2.src.lib import main
                                                             "unit": "mm[Hg]",
                                                             "value": 200.0}}],
                               "conditions": [],
+                              "procedures": [],
                               "medications": [{"authoredOn": "1950-04-06T04:00:00Z",
                                                "conditionRelated": "true",
                                                "description": "Capoten",

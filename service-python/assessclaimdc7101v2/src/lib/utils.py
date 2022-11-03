@@ -77,6 +77,31 @@ def validate_request_body(request_body):
                         },
                     },
                 },
+                "procedures": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "codeSystem": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
+                            },
+                        },
+                    },
+                },
                 "conditions": {
                     "type": "list",
                     "required": True,
