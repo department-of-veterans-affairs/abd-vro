@@ -112,6 +112,7 @@ ext {
     dockerModules = [':app',
                      ':db-init',
                      ':service-python:assessclaimdc7101',
+                     ':service-python:assessclaimdc7101v2',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
                      ':svc-lighthouse-api',

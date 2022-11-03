@@ -27,7 +27,8 @@ public class MasController implements MasResource {
   public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimPayload payload) {
     log.info(
         "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
-    camelEntrance.notifyAutomatedClaim(payload, masDelays.getMasProcessingInitialDelay());
+    camelEntrance.notifyAutomatedClaim(
+        payload, masDelays.getMasProcessingInitialDelay(), masDelays.getMasRetryCount());
     MasResponse response =
         MasResponse.builder()
             .id(Integer.toString(payload.getCollectionId()))

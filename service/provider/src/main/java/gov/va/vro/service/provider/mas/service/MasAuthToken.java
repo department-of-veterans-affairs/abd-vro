@@ -44,8 +44,6 @@ public class MasAuthToken {
         authorizedClientServiceAndManager.authorize(authorizeRequest);
 
     // Get the token from the authorized client object
-    OAuth2AccessToken accessToken = Objects.requireNonNull(authorizedClient).getAccessToken();
-
-    return accessToken;
+    return Objects.requireNonNull(authorizedClient).getAccessToken();
   }
 }
