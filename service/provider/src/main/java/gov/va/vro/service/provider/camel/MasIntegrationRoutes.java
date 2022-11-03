@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -13,8 +14,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -72,23 +75,40 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("MAS response: ${body}");
   }
 
+  // TODO: add back event capture
   private void configureMasProcessing() {
     String routeId = "mas-processing";
+    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
+    String collectEvidenceEndpoint = "direct:collect-evidence";
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
-        .process(FunctionProcessor.fromFunction(masCollectionService::collectAnnotations))
-        // TODO: call Lighthouse and combine evidence
-        // .to("direct:lighthouse-claim-submit")
-        // TODO: call "health assess" service based on condition
-        // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
-        // Call Mas API to collect annotations
-        .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-        // TODO: call pcOrderExam in the absence of evidence
-        // TODO: Call claim status update
-        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
+        .to(collectEvidenceEndpoint); // collect evidence from lighthouse and MAS
+    // TODO: call "health assess" service based on condition
+    // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
+    // Call Mas API to collect annotations
+    // TODO .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
+    // TODO: call pcOrderExam in the absence of evidence
+    // TODO: Call claim status update
+    // TODO:  .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
+
     // TODO upload PDF
 
-    from("direct:lighthouse-claim-submit")
+    from(collectEvidenceEndpoint)
+        .routeId("automated-claim-collect-evidence")
+        .multicast(new GroupedBodyAggregationStrategy())
+        .process(
+            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .to(lighthouseEndpoint) // call Lighthouse
+        .end() // end multicast
+        .process( // combine evidence
+            FunctionProcessor.fromFunction(
+                (Function<List<AbdEvidence>, AbdEvidence>)
+                    abdEvidences ->
+                        MasCollectionService.combineEvidence(
+                            abdEvidences.get(0), abdEvidences.get(1))));
+
+    from(lighthouseEndpoint)
+        .routeId("automated-claim-lighthouse")
         .process(
             FunctionProcessor.fromFunction(
                 (Function<MasAutomatedClaimPayload, Claim>)

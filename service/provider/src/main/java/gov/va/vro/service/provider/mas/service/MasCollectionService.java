@@ -14,7 +14,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -51,8 +53,8 @@ public class MasCollectionService {
   }
 
   @SneakyThrows
-  public MasTransferObject collectAnnotations(MasAutomatedClaimPayload claimPayload) {
-    return new MasTransferObject(claimPayload, getCollectionAnnotations(claimPayload));
+  public AbdEvidence collectAnnotations(MasAutomatedClaimPayload claimPayload) {
+    return getCollectionAnnotations(claimPayload);
   }
 
   private AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
@@ -86,6 +88,32 @@ public class MasCollectionService {
       throw new MasException(e.getMessage(), e);
     }
     return abdEvidence;
+  }
+
+  public static AbdEvidence combineEvidence(
+      AbdEvidence lighthouseEvidence, AbdEvidence masApiEvidence) {
+    // for now, we just add up the lists
+    AbdEvidence compositeEvidence = new AbdEvidence();
+    compositeEvidence.setBloodPressures(
+        merge(lighthouseEvidence.getBloodPressures(), masApiEvidence.getBloodPressures()));
+    compositeEvidence.setConditions(
+        merge(lighthouseEvidence.getConditions(), masApiEvidence.getConditions()));
+    compositeEvidence.setMedications(
+        merge(lighthouseEvidence.getMedications(), masApiEvidence.getMedications()));
+    compositeEvidence.setProcedures(
+        merge(lighthouseEvidence.getProcedures(), masApiEvidence.getProcedures()));
+    return compositeEvidence;
+  }
+
+  private static <T> List<T> merge(List<T> list1, List<T> list2) {
+    List<T> result = new ArrayList<>();
+    if (list1 != null) {
+      result.addAll(list1);
+    }
+    if (list2 != null) {
+      result.addAll(list2);
+    }
+    return result;
   }
 
   public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject masTransferObject) {
