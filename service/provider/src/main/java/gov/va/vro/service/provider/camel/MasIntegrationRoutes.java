@@ -1,17 +1,21 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -72,19 +76,32 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-processing";
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
-        .process(auditEventProcessor.event(routeId, "Calling Collect Annotations"))
         .process(FunctionProcessor.fromFunction(masCollectionService::collectAnnotations))
         // TODO: call Lighthouse and combine evidence
-        //   .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        // .to("direct:lighthouse-claim-submit")
         // TODO: call "health assess" service based on condition
         // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
         // Call Mas API to collect annotations
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-        .process(auditEventProcessor.event(routeId, "Completed Collect Annotations"))
         // TODO: call pcOrderExam in the absence of evidence
         // TODO: Call claim status update
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
     // TODO upload PDF
+
+    from("direct:lighthouse-claim-submit")
+        .process(
+            FunctionProcessor.fromFunction(
+                (Function<MasAutomatedClaimPayload, Claim>)
+                    payload ->
+                        Claim.builder()
+                            .claimSubmissionId(payload.getClaimDetail().getBenefitClaimId())
+                            .diagnosticCode(
+                                payload.getClaimDetail().getConditions().getDiagnosticCode())
+                            .veteranIcn(payload.getVeteranIdentifiers().getIcn())
+                            .build()))
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
+        .process(FunctionProcessor.fromFunction(HealthDataAssessment::getEvidence));
   }
 
   private void configureOrderExamStatus() {
