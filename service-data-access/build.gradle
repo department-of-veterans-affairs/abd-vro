@@ -30,7 +30,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
     implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework:spring-web:5.3.23'
