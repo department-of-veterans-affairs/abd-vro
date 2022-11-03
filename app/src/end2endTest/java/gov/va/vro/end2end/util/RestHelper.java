@@ -20,7 +20,7 @@ public class RestHelper {
   private static final long responseTimeout;
 
   static {
-    String rtEnv = SystemUtils.getEnvironmentVariable("VRO_E2E_RESPONSE_TIMEOUT", "20000");
+    String rtEnv = SystemUtils.getEnvironmentVariable("VRO_E2E_RESPONSE_TIMEOUT", "50000");
     responseTimeout = Long.parseLong(rtEnv);
   }
 
