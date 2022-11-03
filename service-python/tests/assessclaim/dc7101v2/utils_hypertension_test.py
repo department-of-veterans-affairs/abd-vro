@@ -38,6 +38,7 @@ from assessclaimdc7101v2.src.lib import utils
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
                     "veteranIcn": "1234567890V123456",
+                    "disabilityActionType": "NEW"
                 },
                 True,
                 {}
@@ -81,7 +82,8 @@ from assessclaimdc7101v2.src.lib import utils
                         "conditions": []
                     },
                     "dateOfClaim": 20211109,
-                    "diagnosticCode": "7101"
+                    "diagnosticCode": "7101",
+                    "disabilityActionType": "NEW"
                 },
                 False,
                 {
@@ -104,7 +106,8 @@ from assessclaimdc7101v2.src.lib import utils
                         ],
                         "medications": [
                             {0: [{'description': ['must be of string type'],
-                                  'authoredOn': ['required field']}]}
+                                  'authoredOn': ['required field'],
+                                  'status': ['required field']}]}
                         ]
                     }],
                     "dateOfClaim": ["must be of string type"],

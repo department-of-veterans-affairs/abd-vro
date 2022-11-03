@@ -53,9 +53,11 @@ from assessclaimdc7101v2.src.lib import main
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
                     },
                     "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "NEW"
                 }
                 ,
                 {"dateOfClaim": "2021-11-09",
+                 "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [{"date": "2021-11-01",
                                                "diastolic": {"code": "8462-4",
                                                              "display": "Diastolic blood "
@@ -94,7 +96,7 @@ from assessclaimdc7101v2.src.lib import main
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 1},
-                 "sufficientForFastTracking": "true"}
+                 "sufficientForFastTracking": True}
         ),
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn"t
         # Note that the inverse can"t happen (where history_of_diastolic_bp fails while sufficient_to_autopopulate doesn"t)
@@ -143,10 +145,12 @@ from assessclaimdc7101v2.src.lib import main
                         "medications": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101"
+                    "diagnosticCode": "7101v2",
+                    "disabilityActionType": "NEW"
                 }
                 ,
                 {"dateOfClaim": "2021-11-09",
+                 "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [{"date": "2020-11-01",
                                                "diastolic": {"code": "8462-4",
                                                              "display": "Diastolic blood "
@@ -182,7 +186,7 @@ from assessclaimdc7101v2.src.lib import main
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 0},
-                 "sufficientForFastTracking": "true"}
+                 "sufficientForFastTracking": True}
         ),
         # Sufficiency and history algos fail
         (
@@ -194,10 +198,12 @@ from assessclaimdc7101v2.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101"
+                    "diagnosticCode": "7101v2",
+                    "disabilityActionType": "NEW"
                 }
                 ,
                 {"dateOfClaim": "2021-11-09",
+                 "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [], "conditions": [], "medications": []},
                  "evidenceSummary": {"recentBpReadings": 0,
                                      "recentElevatedBpReadings": 0,
@@ -206,7 +212,7 @@ from assessclaimdc7101v2.src.lib import main
                                      "totalBpReadings": 0,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 0},
-                 "sufficientForFastTracking": "null"}
+                 "sufficientForFastTracking": None}
         ),
         # Bad data: "diastolic" key is missing in second reading
         (

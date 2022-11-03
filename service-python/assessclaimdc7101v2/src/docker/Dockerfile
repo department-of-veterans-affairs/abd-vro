@@ -6,16 +6,11 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add expat=2.4.9-r0
-
-RUN adduser --disabled-password docker
-USER docker
-
+RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker
+COPY . /home/docker/
+RUN adduser --disabled-password docker && chown -R 777:777 /home/docker/
 WORKDIR /home/docker
-
-COPY --chown=docker:docker . /home/docker/
-
-RUN pip install --no-cache-dir --user -r requirements.txt
-
+RUN pip install --no-cache-dir -r requirements.txt
+USER docker
 CMD ["python", "-u", "main_consumer.py"]
 #https://stackoverflow.com/a/55954143
