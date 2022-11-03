@@ -8,7 +8,7 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.mas.*;
 import gov.va.vro.service.event.AuditEventProcessor;
-import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -72,7 +72,7 @@ public class MasControllerTest extends BaseControllerTest {
             "mas-claim-notification",
             route ->
                 route
-                    .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_MAS)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-notification"))
         .end();
@@ -92,8 +92,8 @@ public class MasControllerTest extends BaseControllerTest {
             "mas-claim-notification",
             route ->
                 route
-                    .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_MAS)
-                    .throwException(new Exception()))
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
+                    .throwException(new Exception("Exception")))
         .end();
 
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();

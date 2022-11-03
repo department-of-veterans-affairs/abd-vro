@@ -5,14 +5,13 @@ package gov.va.vro.service.provider.mas;
  *
  * @author warren @Date 10/5/22
  */
-public class MasException extends Exception {
-  private static final String MAS_ERROR = "VA MAS API access error.";
-
-  public MasException() {
-    super(MAS_ERROR);
-  }
+public class MasException extends RuntimeException {
 
   public MasException(String message, Throwable cause) {
     super(message, cause);
+  }
+
+  public MasException(String message) {
+    super(message);
   }
 }
