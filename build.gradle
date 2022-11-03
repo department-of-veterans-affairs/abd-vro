@@ -116,6 +116,9 @@ ext {
                      ':service-python:pdfgenerator',
                      ':svc-lighthouse-api',
                      ':console']
+    dockerModulesExtension = [
+                    ':service-python:assessclaimdc6602v2'
+    ]
 }
 
 // Used by `release` task to create a new version
