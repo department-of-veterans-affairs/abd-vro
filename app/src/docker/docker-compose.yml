@@ -166,8 +166,7 @@ services:
         condition: service_healthy
     networks:
       - internal
-    profiles:
-      - version_2
+    profiles: ["prototype"]
 
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
