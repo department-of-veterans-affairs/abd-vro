@@ -7,6 +7,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.mas.service.MasTransferObject;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +88,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssessV2"))
+        .setProperty("evidence", simple("${body}"))
+        .routingSlip(
+            method(
+                slipClaimSubmitRouter, "routeHealthAssessV2")) // TODO: call "health assess" service
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process( // TODO: This is to print all the validation errors
             new Processor() {
@@ -95,17 +99,24 @@ public class MasIntegrationRoutes extends RouteBuilder {
               public void process(Exchange exchange) {
                 MasAutomatedClaimPayload claimPayload =
                     (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                Object body = exchange.getMessage().getBody();
-                log.error(body.toString());
+                AbdEvidenceWithSummary evidence =
+                    exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
+                HealthDataAssessment assessment =
+                    (HealthDataAssessment) exchange.getProperty("evidence");
+                if (evidence.getErrorMessage() != null) {
+                  log.error("Health Assessment Failed");
+                }
+                // FAKE IT: Let's pretend Health assessment passed
+                var masTransferObject =
+                    new MasTransferObject(claimPayload, assessment.getEvidence());
+                exchange.getMessage().setBody(masTransferObject);
               }
-            });
-
-    // TODO: call "health assess" service based on condition
-    //
-    // TODO: call pcOrderExam in the absence of evidence
-    // TODO: Call claim status update
-    // TODO .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-    // TODO:  .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
+            })
+        //
+        // TODO: call pcOrderExam in the absence of evidence
+        // TODO: Call claim status update
+        .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
     // TODO upload PDF
 
     from(collectEvidenceEndpoint)

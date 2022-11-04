@@ -12,13 +12,11 @@ import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ExchangeProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -119,12 +117,10 @@ public class MasCollectionService {
     return result;
   }
 
-  public static GeneratePdfPayload getGeneratePdfPayload(
-      HealthDataAssessment dataAssessment, @ExchangeProperties Map<String, Object> props) {
-    // TODO: stuff payload into properties
-    MasAutomatedClaimPayload claimPayload = (MasAutomatedClaimPayload) props.get("claim");
+  public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
+    MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
-    generatePdfPayload.setEvidence(dataAssessment.getEvidence());
+    generatePdfPayload.setEvidence(transferObject.getEvidence());
     generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
