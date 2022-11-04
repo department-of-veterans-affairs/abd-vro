@@ -7,7 +7,6 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,22 +85,23 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        // TODO: Turn into dynamic (slip) route
-        .to("rabbitmq:health-assess-exchange?routingKey=health-assess.7101v2&requestTimeout=600000")
-        .unmarshal()
-        .json()
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssessV2"))
+        .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process( // TODO: This is to print all the validation errors
             new Processor() {
               @Override
-              public void process(Exchange exchange) throws Exception {
+              public void process(Exchange exchange) {
+                MasAutomatedClaimPayload claimPayload =
+                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
                 Object body = exchange.getMessage().getBody();
                 log.error(body.toString());
               }
             });
 
     // TODO: call "health assess" service based on condition
-    // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"));
+    //
     // TODO: call pcOrderExam in the absence of evidence
     // TODO: Call claim status update
     // TODO .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))

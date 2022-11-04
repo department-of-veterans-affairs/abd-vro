@@ -45,17 +45,32 @@ public class SlipClaimSubmitRouter {
    */
   @SneakyThrows
   public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
-    Object diagnosticCodeObj = props.get("diagnosticCode");
-    if (diagnosticCodeObj == null) {
-      log.error(NO_DIAGNOSTIC_CODE_ERROR);
-      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
-    }
-    String diagnosticCode = diagnosticCodeObj.toString();
+    String diagnosticCode = getDiagnosticCode(props);
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
             diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
+  }
+
+  @SneakyThrows
+  public String routeHealthAssessV2(Object body, @ExchangeProperties Map<String, Object> props) {
+    String diagnosticCode = getDiagnosticCode(props);
+    String route =
+        String.format(
+            "rabbitmq:health-assess-exchange?routingKey=health-assess.%sv2&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+    log.info("Routing to {}.", route);
+    return route;
+  }
+
+  private static String getDiagnosticCode(Map<String, Object> props) {
+    Object diagnosticCodeObj = props.get("diagnosticCode");
+    if (diagnosticCodeObj == null) {
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
+    }
+    return diagnosticCodeObj.toString();
   }
 }

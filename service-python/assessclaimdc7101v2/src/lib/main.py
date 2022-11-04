@@ -59,6 +59,6 @@ def assess_hypertension(event: Dict):
                 "disabilityActionType": event["disabilityActionType"],
             })
     else:
-        response_body["errorMessage"] = validation_results
+        response_body["errorMessage"] = "error validating request message data"
 
     return response_body
