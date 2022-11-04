@@ -4,6 +4,11 @@ plugins {
 
 
 dependencies {
+    constraints {
+        // for starter-bom
+        implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+    }
+
     // Needed?
     // implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
     // implementation 'gov.va.starter:test-data'
