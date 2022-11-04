@@ -69,7 +69,6 @@ dependencyResolutionManagement {
     }
 }
 
-
 rootProject.name = 'abd_vro'
 include ':api'
 include ':app'

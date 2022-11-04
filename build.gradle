@@ -117,7 +117,7 @@ ext {
                      ':svc-lighthouse-api',
                      ':console']
     if (project.hasProperty("prototype")) {
-        dockerModules.add(':service-python:assessclaimdc6602v2')
+        dockerModules[3] = ':service-python:assessclaimdc6602v2'
     }
 }
 
