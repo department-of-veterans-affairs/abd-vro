@@ -54,8 +54,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureExceptionHandling();
     configureIntercepts();
     configureAutomatedClaim();
-    configureOrderExamStatus();
     configureMasProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
@@ -74,7 +74,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("MAS response: ${body}");
   }
 
-  // TODO: add back event capture
   private void configureMasProcessing() {
     String routeId = "mas-processing";
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
