@@ -24,6 +24,7 @@ dependencies {
 
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
@@ -32,11 +33,13 @@ dependencies {
   implementation 'org.codehaus.groovy:groovy-json'
   implementation 'org.codehaus.groovy:groovy-groovysh'
   implementation 'jline:jline:2.14.6' // Needed to add custom Groovysh commands
-  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
+  // DB access
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
+
+  // Redis
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 // TODO: add integration tests
 //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
