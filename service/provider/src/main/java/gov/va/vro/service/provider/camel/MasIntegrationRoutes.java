@@ -1,16 +1,19 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.model.*;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
@@ -21,6 +24,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS =
@@ -82,7 +86,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .to(collectEvidenceEndpoint); // collect evidence from lighthouse and MAS
+        .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
+        // TODO: Turn into dynamic (slip) route
+        .to("rabbitmq:health-assess-exchange?routingKey=health-assess.7101v2&requestTimeout=600000")
+        .unmarshal()
+        .json()
+        .process( // TODO: This is to print all the validation errors
+            new Processor() {
+              @Override
+              public void process(Exchange exchange) throws Exception {
+                Object body = exchange.getMessage().getBody();
+                log.error(body.toString());
+              }
+            });
+
     // TODO: call "health assess" service based on condition
     // .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"));
     // TODO: call pcOrderExam in the absence of evidence
