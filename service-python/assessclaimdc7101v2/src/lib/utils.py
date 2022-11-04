@@ -21,13 +21,12 @@ def validate_request_body(request_body):
             "type": "dict",
             "schema": {
                 "medications": {
-                    "required": True,
                     "type": "list",
                     "schema": {
                         "type": "dict",
                         "schema": {
-                            "authoredOn": {"type": "string", "required": True},
-                            "status": {"type": "string", "required": True},
+                            "authoredOn": {"type": "string"},
+                            "status": {"type": "string"},
                             "dosageInstructions": {
                                 "type": "list",
                                 "nullable": True,
@@ -36,7 +35,7 @@ def validate_request_body(request_body):
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
                             "duration": {"type": "string", "nullable": True},
-                            "description": {"type": "string", "required": True},
+                            "description": {"type": "string"},
                             "notes": {
                                 "type": "list",
                                 "nullable": True,
@@ -84,7 +83,6 @@ def validate_request_body(request_body):
                         "schema": {
                             "code": {
                                 "type": "string",
-                                "required": True
                             },
                             "codeSystem": {
                                 "type": "string"
@@ -97,7 +95,6 @@ def validate_request_body(request_body):
                             },
                             "status": {
                                 "type": "string",
-                                "required": True
                             },
                         },
                     },
@@ -114,7 +111,6 @@ def validate_request_body(request_body):
                             },
                             "status": {
                                 "type": "string",
-                                "required": True
                             },
                             "text": {
                                 "type": "string"
@@ -133,6 +129,7 @@ def validate_request_body(request_body):
         }
     }
     v = Validator(schema)
+    v.allow_unknown = True
 
     return {
         "is_valid": v.validate(request_body),

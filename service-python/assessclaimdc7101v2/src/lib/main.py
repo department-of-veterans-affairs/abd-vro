@@ -1,7 +1,7 @@
+import logging
 from datetime import date
 from typing import Dict
 
-from . import continuous_medication
 from . import bp_calculator
 from . import utils
 from . import conditions
@@ -24,7 +24,6 @@ def assess_hypertension(event: Dict):
 
     if validation_results["is_valid"]:
         bp_calculation = bp_calculator.sufficient_for_fast_track(event)
-        relevant_medications = continuous_medication.continuous_medication_required(event)
         relevant_conditions = conditions.conditions_calculation(event)
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -41,13 +40,10 @@ def assess_hypertension(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "medications": relevant_medications["medications"],
                     "bp_readings": event["evidence"]["bp_readings"],
                     "conditions": relevant_conditions["conditions"]
                 },
                 "evidenceSummary": {
-                    "relevantMedCount": relevant_medications["relevantMedCount"],
-                    "totalMedCount": relevant_medications["totalMedCount"],
                     "totalBpReadings": bp_calculation["totalBpReadings"],
                     "recentBpReadings": bp_calculation["recentBpReadings"],
                     "recentElevatedBpReadings": bp_calculation["recentElevatedBpReadings"],
@@ -59,6 +55,7 @@ def assess_hypertension(event: Dict):
                 "disabilityActionType": event["disabilityActionType"],
             })
     else:
+        logging.info(validation_results["errors"])
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body

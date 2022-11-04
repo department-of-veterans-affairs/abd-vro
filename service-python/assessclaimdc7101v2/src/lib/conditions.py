@@ -15,10 +15,9 @@ def conditions_calculation(request_body):
     veterans_conditions = request_body["evidence"]["conditions"]
 
     for condition in veterans_conditions:
-        if condition["status"].lower() in ["active", "relapse", "recurrence"]:
-            condition_code = condition["code"]
-            if condition_code in hypertension_conditions.conditions:
-                relevant_conditions.append(condition)
+        condition_code = condition["code"]
+        if condition_code in hypertension_conditions.conditions:
+            relevant_conditions.append(condition)
 
     response.update({
         "conditions": relevant_conditions,
