@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
+import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.event.AuditEventProcessor;
@@ -51,6 +52,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureExceptionHandling();
+    configureIntercepts();
     configureAutomatedClaim();
     configureOrderExamStatus();
     configureMasProcessing();
@@ -60,19 +62,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(routeId)
-        .process(
-            auditEventProcessor.event(
-                routeId, "Setting a delay before staring Automated claim processing."))
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
-        .process(auditEventProcessor.event(routeId, "Calling endpoint " + ENDPOINT_MAS))
         .to(ENDPOINT_MAS);
 
     from(ENDPOINT_MAS)
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
-        .process(
-            auditEventProcessor.event("mas-claim-processing", "Entering endpoint " + ENDPOINT_MAS))
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS response: ${body}");
@@ -166,6 +162,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
               var message = exchange.getMessage();
               var body = message.getBody();
               auditEventProcessor.logException(body, exception, exchange.getFromRouteId());
+            });
+  }
+
+  private void configureIntercepts() {
+    interceptFrom("*")
+        .process(
+            exchange -> {
+              String routeId = exchange.getFromRouteId();
+              String endpoint = exchange.getFromEndpoint().getEndpointUri();
+              Object body = exchange.getMessage().getBody();
+              if (body instanceof Auditable) {
+                auditEventProcessor.logEvent(
+                    (Auditable) body, routeId, "Received message from endpoint " + endpoint);
+              }
             });
   }
 }
