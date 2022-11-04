@@ -54,8 +54,9 @@ def assess_hypertension(event: Dict):
                 "dateOfClaim": event["dateOfClaim"],
                 "disabilityActionType": event["disabilityActionType"],
             })
+        logging.info("Message processed successfully")
     else:
-        logging.info(validation_results["errors"])
+        logging.info(f"Message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body
