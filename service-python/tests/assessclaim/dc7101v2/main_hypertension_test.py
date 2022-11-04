@@ -48,6 +48,7 @@ from assessclaimdc7101v2.src.lib import main
 
                         ],
                         "conditions": [],
+                        "procedures": [],
                         "medications": [{"description": "Capoten",
                                          "status": "active",
                                          "authoredOn": "1950-04-06T04:00:00Z"}],
@@ -85,17 +86,12 @@ from assessclaimdc7101v2.src.lib import main
                                                             "unit": "mm[Hg]",
                                                             "value": 200.0}}],
                               "conditions": [],
-                              "medications": [{"authoredOn": "1950-04-06T04:00:00Z",
-                                               "conditionRelated": "true",
-                                               "description": "Capoten",
-                                               "status": "active"}]},
+                              },
                  "evidenceSummary": {"recentBpReadings": 2,
                                      "recentElevatedBpReadings": 2,
                                      "relevantConditionsCount": 0,
-                                     "relevantMedCount": 1,
                                      "totalBpReadings": 2,
-                                     "totalConditionsCount": 0,
-                                     "totalMedCount": 1},
+                                     "totalConditionsCount": 0},
                  "sufficientForFastTracking": True}
         ),
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn"t
@@ -177,15 +173,13 @@ from assessclaimdc7101v2.src.lib import main
                                                                        "pressure",
                                                             "unit": "mm[Hg]",
                                                             "value": 200}}],
-                              "conditions": [],
-                              "medications": []},
+                              "conditions": []},
                  "evidenceSummary": {"recentBpReadings": 2,
                                      "recentElevatedBpReadings": 2,
                                      "relevantConditionsCount": 0,
-                                     "relevantMedCount": 0,
                                      "totalBpReadings": 2,
-                                     "totalConditionsCount": 0,
-                                     "totalMedCount": 0},
+                                     "totalConditionsCount": 0
+                                     },
                  "sufficientForFastTracking": True}
         ),
         # Sufficiency and history algos fail
@@ -204,14 +198,12 @@ from assessclaimdc7101v2.src.lib import main
                 ,
                 {"dateOfClaim": "2021-11-09",
                  "disabilityActionType": "NEW",
-                 "evidence": {"bp_readings": [], "conditions": [], "medications": []},
+                 "evidence": {"bp_readings": [], "conditions": []},
                  "evidenceSummary": {"recentBpReadings": 0,
                                      "recentElevatedBpReadings": 0,
                                      "relevantConditionsCount": 0,
-                                     "relevantMedCount": 0,
                                      "totalBpReadings": 0,
-                                     "totalConditionsCount": 0,
-                                     "totalMedCount": 0},
+                                     "totalConditionsCount": 0},
                  "sufficientForFastTracking": None}
         ),
         # Bad data: "diastolic" key is missing in second reading
