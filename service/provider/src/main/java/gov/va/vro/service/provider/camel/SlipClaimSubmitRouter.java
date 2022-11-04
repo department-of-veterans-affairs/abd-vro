@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.spi.model.Claim;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangeProperties;
 import org.springframework.stereotype.Component;
@@ -20,17 +22,11 @@ public class SlipClaimSubmitRouter {
   /**
    * Computes endpoint where claim should be routed next.
    *
-   * @param body the message body
-   * @param props the exchange properties where we can store state between invocations
+   * @param claim the message body
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
-  public String routeClaimSubmit(Object body, @ExchangeProperties Map<String, Object> props) {
-    Object diagnosticCodeObj = props.get("diagnosticCode");
-    if (diagnosticCodeObj == null) {
-      log.error(NO_DIAGNOSTIC_CODE_ERROR);
-      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
-    }
-    String diagnosticCode = diagnosticCodeObj.toString();
+  public String routeClaimSubmit(Claim claim) {
+    String diagnosticCode = claim.getDiagnosticCode();
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
@@ -47,18 +43,34 @@ public class SlipClaimSubmitRouter {
    * @param props the exchange properties where we can store state between invocations
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
-  public String routeClaimSubmitFull(Object body, @ExchangeProperties Map<String, Object> props) {
-    Object diagnosticCodeObj = props.get("diagnosticCode");
-    if (diagnosticCodeObj == null) {
-      log.error(NO_DIAGNOSTIC_CODE_ERROR);
-      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
-    }
-    String diagnosticCode = diagnosticCodeObj.toString();
+  @SneakyThrows
+  public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
+    String diagnosticCode = getDiagnosticCode(props);
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
             diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
+  }
+
+  @SneakyThrows
+  public String routeHealthAssessV2(Object body, @ExchangeProperties Map<String, Object> props) {
+    String diagnosticCode = getDiagnosticCode(props);
+    String route =
+        String.format(
+            "rabbitmq:health-assess-exchange?routingKey=health-assess.%sv2&requestTimeout=%d",
+            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+    log.info("Routing to {}.", route);
+    return route;
+  }
+
+  private static String getDiagnosticCode(Map<String, Object> props) {
+    Object diagnosticCodeObj = props.get("diagnosticCode");
+    if (diagnosticCodeObj == null) {
+      log.error(NO_DIAGNOSTIC_CODE_ERROR);
+      throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
+    }
+    return diagnosticCodeObj.toString();
   }
 }
