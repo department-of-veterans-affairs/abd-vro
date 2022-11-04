@@ -19,7 +19,7 @@ public class AuditEventProcessor {
 
   private final AuditEventService auditEventService;
 
-  private Auditable logEvent(Auditable auditableObject, String routeId, String message) {
+  public Auditable logEvent(Auditable auditableObject, String routeId, String message) {
     AuditEvent event = builder(auditableObject, routeId).message(message).build();
     auditEventService.logEvent(event);
     return auditableObject;
