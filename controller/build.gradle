@@ -10,6 +10,9 @@ dependencies {
     implementation project(':service:spi')
 
     implementation "gov.va.starter:exceptions"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+
     // Needed?
     // implementation 'gov.va.starter:test-data'
     // implementation "gov.va.starter:entity-lifecycle-notifier"
