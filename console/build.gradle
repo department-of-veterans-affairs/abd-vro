@@ -25,6 +25,8 @@ dependencies {
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')
 
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+
   // Groovy REPL shell
   implementation 'org.codehaus.groovy:groovy'
   implementation 'org.codehaus.groovy:groovy-json'
