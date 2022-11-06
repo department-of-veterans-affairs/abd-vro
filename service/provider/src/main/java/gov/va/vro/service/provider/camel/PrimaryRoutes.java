@@ -44,11 +44,11 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM)
         .routeId("claim-submit")
+        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
