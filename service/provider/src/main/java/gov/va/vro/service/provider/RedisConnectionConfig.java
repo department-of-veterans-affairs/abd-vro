@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.redis;
+package gov.va.vro.service.provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
