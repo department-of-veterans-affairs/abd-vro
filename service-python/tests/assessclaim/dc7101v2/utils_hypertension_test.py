@@ -32,7 +32,8 @@ from assessclaimdc7101v2.src.lib import utils
                             ,
                             "medications": [{"description": "Capoten",
                                              "status": "active",
-                                             "authoredOn": "1950-04-06T04:00:00Z"}],
+                                             "authoredOn": "1950-04-06T04:00:00Z",
+                                             "asthmaRelevant": "false"}],
                             "conditions": []
                         },
                     "dateOfClaim": "2021-11-09",
@@ -86,33 +87,16 @@ from assessclaimdc7101v2.src.lib import utils
                     "disabilityActionType": "NEW"
                 },
                 False,
-                {
-                    "evidence": [{
-                        "bp_readings": [
-                            {
-                                0: [
-                                    {
-                                        "systolic": [{"value": ["must be of number type"]}],
-                                        "diastolic": ["required field"]
-                                    }
-                                ],
-                                1: [
-                                    {
-                                        "date": ["must be of string type"],
-                                        "diastolic": [{"value": ["must be of number type"]}]
-                                    }
-                                ]
-                            }
-                        ],
-                        "medications": [
-                            {0: [{'description': ['must be of string type'],
-                                  'authoredOn': ['required field'],
-                                  'status': ['required field']}]}
-                        ]
-                    }],
-                    "dateOfClaim": ["must be of string type"],
-                }
-
+                {'dateOfClaim': ['must be of string type'],
+                 'evidence': [{'bp_readings': [{0: [{'diastolic': ['required field'],
+                                                     'systolic': [{'value': ['must be of '
+                                                                             'number type']}]}],
+                                                1: [{'date': ['must be of string type'],
+                                                     'diastolic': [{'value': ['must be of '
+                                                                              'number '
+                                                                              'type']}]}]}],
+                               'medications': [{0: [{'description': ['must be of string '
+                                                                     'type']}]}]}]}
         ),
     ],
 )
