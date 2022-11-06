@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +10,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 class RedisConnectionConfig {
 
   // Loads properties spring.redis.*
-  @Autowired RedisProperties redisProperties;
+  final RedisProperties redisProperties;
 
   @Bean
   LettuceConnectionFactory lettuceConnectionFactory() {

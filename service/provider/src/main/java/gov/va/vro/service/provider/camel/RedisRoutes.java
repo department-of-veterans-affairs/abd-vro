@@ -52,13 +52,4 @@ class RedisRoutes extends RouteBuilder {
         // hash value as a String b/c redisTemplate's defaultSerializer is StringRedisSerializer
         .setHeader(RedisConstants.VALUE, body().convertToString());
   }
-
-  /* Console commands for testing:
-    config set notify-keyspace-events KA
-    AUTH vro_redis_password
-
-    redis.keys "*"
-    redis.hgetall "tracking-1234"
-    redis.del "tracking-1234"
-  */
 }
