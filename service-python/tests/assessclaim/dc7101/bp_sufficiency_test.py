@@ -32,7 +32,16 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 2}
+                {'bp_readings': [{'date': '2021-11-01',
+                                  'diastolic': {'value': 115},
+                                  'systolic': {'value': 180}},
+                                 {'date': '2021-09-01',
+                                  'diastolic': {'value': 110},
+                                  'systolic': {'value': 200}}],
+                 'oneYearBpReadings': 2,
+                 'recentElevatedBpReadings': 2,
+                 'totalBpReadings': 2,
+                 'twoYearsBpReadings': 2}
         ),
         # 3 reading test case with one out of range date
         (
@@ -64,14 +73,24 @@ from assessclaimdc7101.src.lib import bp_calculator
                             "systolic": {
                                 "value": 210
                             },
-                            "date": "2020-11-08"
+                            "date": "2020-11-09"
                         }
                     ]
                 }
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 3}
+                {'bp_readings': [{'date': '2021-09-01',
+                                  'diastolic': {'value': 110},
+                                  'systolic': {'value': 200}},
+                                 {'date': '2020-11-09',
+                                  'diastolic': {'value': 120},
+                                  'systolic': {'value': 210}}],
+
+                 'oneYearBpReadings': 2,
+                 'recentElevatedBpReadings': 2,
+                 'totalBpReadings': 3,
+                 'twoYearsBpReadings': 2}
         ),
         (
                 {
@@ -146,7 +165,31 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 7, 'recentElevatedBpReadings': 4, 'totalBpReadings': 7}
+                {'bp_readings': [{'date': '2021-10-09',
+                                  'diastolic': {'value': 112},
+                                  'systolic': {'value': 181}},
+                                 {'date': '2021-10-10',
+                                  'diastolic': {'value': 109},
+                                  'systolic': {'value': 181}},
+                                 {'date': '2021-05-13',
+                                  'diastolic': {'value': 113},
+                                  'systolic': {'value': 131}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 101},
+                                  'systolic': {'value': 160}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 104},
+                                  'systolic': {'value': 120}},
+                                 {'date': '2021-10-13',
+                                  'diastolic': {'value': 116},
+                                  'systolic': {'value': 180}},
+                                 {'date': '2021-10-14',
+                                  'diastolic': {'value': 111},
+                                  'systolic': {'value': 155}}],
+                 'oneYearBpReadings': 7,
+                 'recentElevatedBpReadings': 4,
+                 'totalBpReadings': 7,
+                 'twoYearsBpReadings': 7}
         ),
         (
                 {
@@ -212,7 +255,28 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 6, 'recentElevatedBpReadings': 3, 'totalBpReadings': 6}
+                {'bp_readings': [{'date': '2021-10-10',
+                                  'diastolic': {'value': 109},
+                                  'systolic': {'value': 181}},
+                                 {'date': '2021-05-13',
+                                  'diastolic': {'value': 113},
+                                  'systolic': {'value': 131}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 101},
+                                  'systolic': {'value': 160}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 104},
+                                  'systolic': {'value': 120}},
+                                 {'date': '2021-10-13',
+                                  'diastolic': {'value': 116},
+                                  'systolic': {'value': 180}},
+                                 {'date': '2021-10-14',
+                                  'diastolic': {'value': 111},
+                                  'systolic': {'value': 155}}],
+                 'oneYearBpReadings': 6,
+                 'recentElevatedBpReadings': 3,
+                 'totalBpReadings': 6,
+                 'twoYearsBpReadings': 6}
         ),
         (
                 {
@@ -287,7 +351,28 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 7, 'recentElevatedBpReadings': 3, 'totalBpReadings': 7}
+                {'bp_readings': [{'date': '2021-10-10',
+                                  'diastolic': {'value': 109},
+                                  'systolic': {'value': 181}},
+                                 {'date': '2021-05-13',
+                                  'diastolic': {'value': 113},
+                                  'systolic': {'value': 131}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 101},
+                                  'systolic': {'value': 160}},
+                                 {'date': '2021-09-13',
+                                  'diastolic': {'value': 104},
+                                  'systolic': {'value': 120}},
+                                 {'date': '2021-10-13',
+                                  'diastolic': {'value': 116},
+                                  'systolic': {'value': 180}},
+                                 {'date': '2021-10-14',
+                                  'diastolic': {'value': 111},
+                                  'systolic': {'value': 155}}],
+                 'oneYearBpReadings': 6,
+                 'recentElevatedBpReadings': 3,
+                 'totalBpReadings': 7,
+                 'twoYearsBpReadings': 7}
         ),
         (
                 {
@@ -299,7 +384,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
                                     "unit": "mm[Hg]",
-                                    "value": 115
+                                    "value": 90
                                 },
                                 "systolic": {
                                     "code": "8480-6",
@@ -333,7 +418,32 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 2}
+                {'bp_readings': [{'date': '2021-10-01',
+                                  'diastolic': {'code': '8462-4',
+                                                'display': 'Diastolic blood pressure',
+                                                'unit': 'mm[Hg]',
+                                                'value': 90},
+                                  'organization': 'LYONS VA MEDICAL CENTER',
+                                  'practitioner': 'DR. JANE460 DOE922 MD',
+                                  'systolic': {'code': '8480-6',
+                                               'display': 'Systolic blood pressure',
+                                               'unit': 'mm[Hg]',
+                                               'value': 180}},
+                                 {'date': '2021-09-01',
+                                  'diastolic': {'code': '8462-4',
+                                                'display': 'Diastolic blood pressure',
+                                                'unit': 'mm[Hg]',
+                                                'value': 110},
+                                  'organization': 'LYONS VA MEDICAL CENTER',
+                                  'practitioner': 'DR. JANE460 DOE922 MD',
+                                  'systolic': {'code': '8480-6',
+                                               'display': 'Systolic blood pressure',
+                                               'unit': 'mm[Hg]',
+                                               'value': 200}}],
+                 'oneYearBpReadings': 2,
+                 'recentElevatedBpReadings': 1,
+                 'totalBpReadings': 2,
+                 'twoYearsBpReadings': 2}
         ),
         (
                 {
@@ -379,7 +489,32 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 2}
+                {'bp_readings': [{'date': '2021-04-01',
+                                  'diastolic': {'code': '8462-4',
+                                                'display': 'Diastolic blood pressure',
+                                                'unit': 'mm[Hg]',
+                                                'value': 115},
+                                  'organization': 'LYONS VA MEDICAL CENTER',
+                                  'practitioner': 'DR. JANE460 DOE922 MD',
+                                  'systolic': {'code': '8480-6',
+                                               'display': 'Systolic blood pressure',
+                                               'unit': 'mm[Hg]',
+                                               'value': 180}},
+                                 {'date': '2021-10-10',
+                                  'diastolic': {'code': '8462-4',
+                                                'display': 'Diastolic blood pressure',
+                                                'unit': 'mm[Hg]',
+                                                'value': 110},
+                                  'organization': 'LYONS VA MEDICAL CENTER',
+                                  'practitioner': 'DR. JANE460 DOE922 MD',
+                                  'systolic': {'code': '8480-6',
+                                               'display': 'Systolic blood pressure',
+                                               'unit': 'mm[Hg]',
+                                               'value': 200}}],
+                 'oneYearBpReadings': 2,
+                 'recentElevatedBpReadings': 2,
+                 'totalBpReadings': 2,
+                 'twoYearsBpReadings': 2}
         ),
         # 1 reading
         (
@@ -409,7 +544,21 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 1, 'recentElevatedBpReadings': 1, 'totalBpReadings': 1}
+                {'bp_readings': [{'date': '2021-11-01',
+                                  'diastolic': {'code': '8462-4',
+                                                'display': 'Diastolic blood pressure',
+                                                'unit': 'mm[Hg]',
+                                                'value': 115},
+                                  'organization': 'LYONS VA MEDICAL CENTER',
+                                  'practitioner': 'DR. JANE460 DOE922 MD',
+                                  'systolic': {'code': '8480-6',
+                                               'display': 'Systolic blood pressure',
+                                               'unit': 'mm[Hg]',
+                                               'value': 180}}],
+                 'oneYearBpReadings': 1,
+                 'recentElevatedBpReadings': 1,
+                 'totalBpReadings': 1,
+                 'twoYearsBpReadings': 1}
         ),
         # 0 readings
         (
@@ -419,7 +568,11 @@ from assessclaimdc7101.src.lib import bp_calculator
                     },
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 0, 'recentElevatedBpReadings': 0, 'totalBpReadings': 0}
+                {'bp_readings': [],
+                 'oneYearBpReadings': 0,
+                 'recentElevatedBpReadings': 0,
+                 'totalBpReadings': 0,
+                 'twoYearsBpReadings': 0}
         )
     ],
 )

@@ -59,31 +59,29 @@ def assess_sufficiency(event: Dict):
     if "dateOfClaim" not in event:
         event["dateOfClaim"] = str(date.today())
 
-    if validation_results["is_valid"]:
+    if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.sufficient_for_fast_track(event)
         relevant_conditions = conditions.conditions_calculation(event)
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
-            if len(bp_calculation["bp_readings"]) >= 4:
+            if bp_calculation["oneYearBpReadings"] >= 4:
                 sufficient = True
-        elif event["disabilityActionType"] == "NEW":
+        if event["disabilityActionType"] == "NEW":
             if relevant_conditions["conditions"]:
                 sufficient = False
-                if bp_calculation["recentBpReadings"] >= 2:
+                if bp_calculation["twoYearsBpReadings"] >= 2:
                     sufficient = True
-            elif bp_calculation["recentElevatedBpReadings"] >= 2:
+            if bp_calculation["recentElevatedBpReadings"] >= 2:
                 sufficient = True
 
         response_body.update(
             {
                 "evidence": {
-                    "bp_readings": event["evidence"]["bp_readings"],
+                    "bp_readings": bp_calculation["bp_readings"],
                     "conditions": relevant_conditions["conditions"]
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
-                    "recentBpReadings": bp_calculation["recentBpReadings"],
-                    "recentElevatedBpReadings": bp_calculation["recentElevatedBpReadings"],
                     "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
