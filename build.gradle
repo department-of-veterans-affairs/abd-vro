@@ -119,7 +119,7 @@ ext {
                      ':service-python:pdfgenerator',
                      ':svc-lighthouse-api',
                      ':console']
-    if (enablePrototype.toBoolean()) {
+    if (project.hasProperty("enablePrototype")) {
         dockerModules.add(':service-python:assessclaimdc6602v2')
     }
 }
