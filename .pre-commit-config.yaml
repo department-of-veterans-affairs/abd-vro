@@ -12,7 +12,7 @@ exclude: |
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
-    hooks:
+    hooks: # https://github.com/pre-commit/pre-commit-hooks#hooks-available
       - id: trailing-whitespace
       - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
       - id: check-yaml
