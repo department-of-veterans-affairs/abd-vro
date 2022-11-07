@@ -1,5 +1,5 @@
 import pytest
-from assessclaimdc7101v2.src.lib import main
+from assessclaimdc7101.src.lib import main
 
 
 @pytest.mark.parametrize(
@@ -307,6 +307,6 @@ def test_main(request_body, response):
     :param response: response after running data through algorithms
     :type response: dict
     """
-    api_response = main.assess_hypertension(request_body)
+    api_response = main.assess_sufficiency(request_body)
 
     assert api_response == response

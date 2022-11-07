@@ -1,5 +1,5 @@
 import pytest
-from assessclaimdc7101v2.src.lib import bp_calculator
+from assessclaimdc7101.src.lib import bp_calculator
 
 
 @pytest.mark.parametrize(
@@ -34,7 +34,7 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                 },
                 {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 2}
         ),
-        # 2 reading test case with one out of range date
+        # 3 reading test case with one out of range date
         (
 
                 {"evidence": {
@@ -46,7 +46,7 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                             "systolic": {
                                 "value": 180
                             },
-                            "date": "2021-11-01"
+                            "date": "2019-11-01"
                         },
                         {
                             "diastolic": {
@@ -71,10 +71,8 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                     ,
                     "dateOfClaim": "2021-11-09",
                 },
-                {'recentBpReadings': 3, 'recentElevatedBpReadings': 3, 'totalBpReadings': 3}
+                {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 3}
         ),
-        # +2 reading test case with no out of range dates
-        # Total number of readings is odd
         (
                 {
                     "evidence": {
@@ -150,9 +148,6 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                 },
                 {'recentBpReadings': 7, 'recentElevatedBpReadings': 4, 'totalBpReadings': 7}
         ),
-        # +2 reading test case with no out of range dates
-        # This also validates that given an equal number of two categories
-        # the algorithm chooses the higher rating for both categories
         (
                 {
                     "evidence": {
@@ -219,7 +214,6 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                 },
                 {'recentBpReadings': 6, 'recentElevatedBpReadings': 3, 'totalBpReadings': 6}
         ),
-        # +2 reading test case with 1 out of range date (which would change the results if included)
         (
                 {
                     "evidence": {
@@ -295,7 +289,6 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                 },
                 {'recentBpReadings': 7, 'recentElevatedBpReadings': 3, 'totalBpReadings': 7}
         ),
-        # 2 readings, but no reading within 30 days
         (
                 {
                     "evidence": {
@@ -342,7 +335,6 @@ from assessclaimdc7101v2.src.lib import bp_calculator
                 },
                 {'recentBpReadings': 2, 'recentElevatedBpReadings': 2, 'totalBpReadings': 2}
         ),
-        # 2 readings, but no second reading within 180 days
         (
                 {
                     "evidence": {
