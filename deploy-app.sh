@@ -28,22 +28,22 @@ else
 fi
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
+helm del $HELM_APP_NAME -n ${TEAMNAME}-${ENV}
 helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string environment="${ENV}"\
-              --set-string images.app.tag="${IMAGE_TAG}"\
-              --set-string images.redis.tag="latest"\
-              --set-string images.db.tag="${IMAGE_TAG}"\
-              --set-string images.mq.tag="3"\
-              --set-string images.dbInit.tag="${IMAGE_TAG}"\
-              --set-string images.pdfGenerator.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC7101.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC6602.tag="${IMAGE_TAG}"\
-              --set-string images.serviceDataAccess.tag="${IMAGE_TAG}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
+              --set-string environment=${ENV} \
+              --set-string images.app.tag=${IMAGE_TAG} \
+              --set-string images.redis.tag=latest \
+              --set-string images.db.tag=${IMAGE_TAG} \
+              --set-string images.mq.tag="3" \
+              --set-string images.dbInit.tag=${IMAGE_TAG} \
+              --set-string images.pdfGenerator.tag=${IMAGE_TAG} \
+              --set-string images.serviceAssessClaimDC7101.tag=${IMAGE_TAG} \
+              --set-string images.serviceAssessClaimDC6602.tag=${IMAGE_TAG} \
+              --set-string images.serviceDataAccess.tag=${IMAGE_TAG} \
+              --set-string info.version=${IMAGE_TAG} \
+              --set-string info.git_hash=${GIT_SHA} \
+              --set-string info.deploy_env=${ENV} \
+              --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
               --set-string images.app.imageName=${ENV}_vro-app \
               --set-string images.redis.imageName=redis \
               --set-string images.db.imageName=${ENV}_vro-postgres \

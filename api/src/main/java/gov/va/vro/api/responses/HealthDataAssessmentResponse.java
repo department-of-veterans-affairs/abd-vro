@@ -29,6 +29,9 @@ public class HealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String errorMessage;
 
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private String disabilityActionType;
+
   /***
    *<p>Summary.</p>
    *

@@ -1,7 +1,6 @@
 package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
@@ -49,7 +49,7 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
-      throws RequestValidationException, ClaimProcessingException {
+      throws MethodArgumentNotValidException, ClaimProcessingException {
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
         request.getClaimSubmissionId(),
@@ -76,7 +76,7 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<Object> fetchPdf(String claimSubmissionId)
-      throws RequestValidationException, ClaimProcessingException {
+      throws MethodArgumentNotValidException, ClaimProcessingException {
 
     log.info("Fetching pdf for claim: {}", claimSubmissionId);
     try {
@@ -121,7 +121,7 @@ public class VroController implements VroResource {
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException {
+      throws MethodArgumentNotValidException, ClaimProcessingException {
     log.info(
         "Getting full health assessment for claim {} and veteran icn {}",
         claim.getClaimSubmissionId(),

@@ -33,7 +33,7 @@ plugins {
 
     // Apply these
     id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-    id('nebula.lint') version '17.7.0'
+    id('nebula.lint') version '17.7.1'
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
     // VA's starter plugins
     // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
@@ -107,13 +107,16 @@ ext {
                    ':shared:lib-camel-connector',
                    ':service:provider',
                    ':service:spi',
-                   ':svc-lighthouse-api']
+                   ':svc-lighthouse-api',
+                   ':console']
     dockerModules = [':app',
                      ':db-init',
                      ':service-python:assessclaimdc7101',
+                     ':service-python:assessclaimdc7101v2',
                      ':service-python:assessclaimdc6602',
                      ':service-python:pdfgenerator',
-                     ':svc-lighthouse-api']
+                     ':svc-lighthouse-api',
+                     ':console']
 }
 
 // Used by `release` task to create a new version

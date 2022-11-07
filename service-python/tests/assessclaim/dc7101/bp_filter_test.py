@@ -22,7 +22,7 @@ from assessclaimdc7101.src.lib import bp_filter
                         },
                     ]
                 },
-                "date_of_claim": "2021-11-02",
+                "dateOfClaim": "2021-11-02",
             },
             {
                 "bpReadings": [
@@ -52,7 +52,7 @@ from assessclaimdc7101.src.lib import bp_filter
                         },
                     ]
                 },
-                "date_of_claim": "2022-11-02",
+                "dateOfClaim": "2022-11-02",
             },
             {"bpReadings": [], "recentBpReadings": 0, "totalBpReadings": 2},
         ),

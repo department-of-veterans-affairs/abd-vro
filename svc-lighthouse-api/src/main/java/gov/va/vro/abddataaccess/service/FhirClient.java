@@ -85,6 +85,11 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<>(
               "6510",
               new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.PROCEDURE, AbdDomain.CONDITION}));
+          new AbstractMap.SimpleEntry<>(
+              "7101v2",
+              new AbdDomain[] {
+                AbdDomain.MEDICATION, AbdDomain.BLOOD_PRESSURE, AbdDomain.CONDITION
+              }));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -139,7 +144,6 @@ public class FhirClient {
   }
 
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
-    log.info("Extract patient medication entries. number of entries: {}", entries.size());
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
@@ -213,9 +217,8 @@ public class FhirClient {
           hasNextPage = false;
         }
       } while (hasNextPage);
-      if (!records.isEmpty()) {
-        result.put(domain, records);
-      }
+      log.info("Retrieved {} entries for {}", records.size(), domain.toString());
+      result.put(domain, records);
     }
     return result;
   }

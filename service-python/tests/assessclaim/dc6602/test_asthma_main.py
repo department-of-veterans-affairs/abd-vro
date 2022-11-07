@@ -17,7 +17,7 @@ from assessclaimdc6602.src.lib import main
                         }
                     ]
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             {
                 "evidence": {
@@ -45,7 +45,7 @@ from assessclaimdc6602.src.lib import main
                         }
                     ]
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             {
                 "evidence": {
@@ -73,7 +73,7 @@ from assessclaimdc6602.src.lib import main
                         }
                     ]
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             {
                 "evidence": {
