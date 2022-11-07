@@ -54,14 +54,14 @@ allprojects {
     rules = ['unused-dependency']
     // criticalRules will fail the build in the event of a violation
     criticalRules = [
-        'minimum-dependency-version',
-        'overridden-dependency-version',
-        'unused-exclude-by-dep',
-        'unused-exclude-by-conf',
-        'dependency-parentheses',
-        'duplicate-dependency-class',
-        'archaic-wrapper',
-        'all-nebula-renames'
+      'minimum-dependency-version',
+      'overridden-dependency-version',
+      'unused-exclude-by-dep',
+      'unused-exclude-by-conf',
+      'dependency-parentheses',
+      'duplicate-dependency-class',
+      'archaic-wrapper',
+      'all-nebula-renames'
     ]
   }
 
@@ -74,15 +74,14 @@ allprojects {
         extendsFrom = []
       }
     }
+  }
 
-    pluginManager.withPlugin('com.diffplug.spotless') {
-      spotless {
-        groovyGradle {
-          target '*.gradle' // default target of groovyGradle
-          greclipse()
-          indentWithSpaces(2)
-        }
-      }
+  apply plugin: 'com.diffplug.spotless'
+  spotless {
+    // to format build.gradle files consistently
+    groovyGradle {
+      greclipse()
+      indentWithSpaces(2)
     }
   }
 }
@@ -111,23 +110,27 @@ ext {
   // TODO: set back to true; temporarily disable test code coverage enforcement
   jacoco_enforce_violations = false
   jacoco_minimum_coverage = 0.8
-  codeModules = [':app',
-                 ':api',
-                 ':controller',
-                 ':persistence:model',
-                 ':shared:lib-camel-connector',
-                 ':service:provider',
-                 ':service:spi',
-                 ':svc-lighthouse-api',
-                 ':console']
-  dockerModules = [':app',
-                   ':db-init',
-                   ':service-python:assessclaimdc7101',
-                   ':service-python:assessclaimdc7101v2',
-                   ':service-python:assessclaimdc6602',
-                   ':service-python:pdfgenerator',
-                   ':svc-lighthouse-api',
-                   ':console']
+  codeModules = [
+    ':app',
+    ':api',
+    ':controller',
+    ':persistence:model',
+    ':shared:lib-camel-connector',
+    ':service:provider',
+    ':service:spi',
+    ':svc-lighthouse-api',
+    ':console'
+  ]
+  dockerModules = [
+    ':app',
+    ':db-init',
+    ':service-python:assessclaimdc7101',
+    ':service-python:assessclaimdc7101v2',
+    ':service-python:assessclaimdc6602',
+    ':service-python:pdfgenerator',
+    ':svc-lighthouse-api',
+    ':console'
+  ]
 }
 
 // Used by `release` task to create a new version
@@ -138,11 +141,11 @@ scmVersion {
 
   hooks {
     pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
-                       pattern    : { v, p -> /version = "v.*"/ },
-                       replacement: { v, p -> "version = \"v$v\"" }])
+      pattern    : { v, p -> /version = "v.*"/ },
+      replacement: { v, p -> "version = \"v$v\"" }])
     pre("fileUpdate", [file       : "helmchart/Chart.yaml",
-                       pattern    : { v, p -> /appVersion: .*/ },
-                       replacement: { v, p -> "appVersion: $v" }])
+      pattern    : { v, p -> /appVersion: .*/ },
+      replacement: { v, p -> "appVersion: $v" }])
     pre("commit")
   }
 }
@@ -150,17 +153,6 @@ scmVersion {
 allprojects {
   // https://axion-release-plugin.readthedocs.io/en/latest/configuration/basic_usage
   project.version = scmVersion.version
-}
-
-// Support pre-commit hooks, need spotlessCheck and spotlessApply
-def spotlessCheck = tasks.register('spotlessCheck') {
-  def tb = taskBuilder('spotlessCheck')
-  codeModules.each { dependsOn tb(it) }
-}
-
-def spotlessApply = tasks.register('spotlessApply') {
-  def tb = taskBuilder('spotlessApply')
-  codeModules.each { dependsOn tb(it) }
 }
 
 def maintainerclean = tasks.register('maintainerclean') {
