@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -10,11 +11,12 @@ import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -50,48 +52,75 @@ public class MasCollectionService {
     return false;
   }
 
-  @SneakyThrows
-  public MasTransferObject collectAnnotations(MasAutomatedClaimPayload claimPayload) {
-    return new MasTransferObject(claimPayload, getCollectionAnnotations(claimPayload));
-  }
-
-  private AbdEvidence getCollectionAnnotations(MasAutomatedClaimPayload claimPayload)
+  public HealthDataAssessment collectAnnotations(MasAutomatedClaimPayload claimPayload)
       throws MasException {
 
     log.info(
         "Collection {} is ready for processing, calling collection annotation service ",
         claimPayload.getCollectionId());
-    AbdEvidence abdEvidence = null;
-    try {
-      var response =
-          masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
-      for (MasCollectionAnnotation masCollectionAnnotation : response) {
-        log.info(
-            "Collection Annotation Response : Collection ID  {}",
-            masCollectionAnnotation.getCollectionsId());
-        log.info(
-            "Collection Status Response : Veteran FileId  {}  ",
-            masCollectionAnnotation.getVtrnFileId());
 
-        MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
-        abdEvidence = masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
-
-        log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
-        log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
-        log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
-        break;
-      }
-    } catch (Exception e) {
-      log.error("Error in calling collection Status API ", e);
-      throw new MasException(e.getMessage(), e);
+    var response =
+        masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
+    if (response.isEmpty()) {
+      throw new MasException(
+          "No annotations found for collection id " + claimPayload.getCollectionId());
     }
-    return abdEvidence;
+    MasCollectionAnnotation masCollectionAnnotation = response.get(0);
+    log.info(
+        "Collection Annotation Response : Collection ID  {} and Veteran File ID {}",
+        masCollectionAnnotation.getCollectionsId(),
+        masCollectionAnnotation.getVtrnFileId());
+
+    MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
+    AbdEvidence abdEvidence =
+        masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
+
+    log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
+    log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());
+    log.info("AbdEvidence : BP {}  ", abdEvidence.getBloodPressures().size());
+
+    HealthDataAssessment healthDataAssessment = new HealthDataAssessment();
+    healthDataAssessment.setDiagnosticCode(claimPayload.getDiagnosticCode());
+    healthDataAssessment.setEvidence(abdEvidence);
+    healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIdentifiers().getIcn());
+    healthDataAssessment.setDisabilityActionType(
+        claimPayload.getClaimDetail().getConditions().getDisabilityActionType());
+    return healthDataAssessment;
   }
 
-  public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject masTransferObject) {
-    MasAutomatedClaimPayload claimPayload = masTransferObject.getClaimPayload();
+  public static HealthDataAssessment combineEvidence(
+      HealthDataAssessment lighthouseAssessment, HealthDataAssessment masApiAssessment) {
+    AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
+    AbdEvidence masApiEvidence = masApiAssessment.getEvidence();
+    // for now, we just add up the lists
+    AbdEvidence compositeEvidence = new AbdEvidence();
+    compositeEvidence.setBloodPressures(
+        merge(lighthouseEvidence.getBloodPressures(), masApiEvidence.getBloodPressures()));
+    compositeEvidence.setConditions(
+        merge(lighthouseEvidence.getConditions(), masApiEvidence.getConditions()));
+    compositeEvidence.setMedications(
+        merge(lighthouseEvidence.getMedications(), masApiEvidence.getMedications()));
+    compositeEvidence.setProcedures(
+        merge(lighthouseEvidence.getProcedures(), masApiEvidence.getProcedures()));
+    lighthouseAssessment.setEvidence(compositeEvidence);
+    return lighthouseAssessment;
+  }
+
+  private static <T> List<T> merge(List<T> list1, List<T> list2) {
+    List<T> result = new ArrayList<>();
+    if (list1 != null) {
+      result.addAll(list1);
+    }
+    if (list2 != null) {
+      result.addAll(list2);
+    }
+    return result;
+  }
+
+  public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
+    MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
-    generatePdfPayload.setEvidence(masTransferObject.getEvidence());
+    generatePdfPayload.setEvidence(transferObject.getEvidence());
     generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
