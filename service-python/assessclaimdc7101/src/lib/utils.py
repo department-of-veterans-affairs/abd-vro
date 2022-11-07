@@ -101,7 +101,6 @@ def validate_request_body(request_body):
                 },
                 "conditions": {
                     "type": "list",
-                    "required": True,
                     "schema": {
                         "type": "dict",
                         "schema": {
@@ -130,6 +129,5 @@ def validate_request_body(request_body):
     }
     v = Validator(schema)
     v.allow_unknown = True
-
 
     return {"is_valid": v.validate(request_body), "errors": v.errors}
