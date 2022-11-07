@@ -74,12 +74,12 @@ class VroConsoleShell {
 
   def getBinding() {
     new Binding([
-        redis: redisConnection(),
-        redisT: redisTemplate,
-        claimsT: claimRepository,
-        vetT   : veteranRepository,
-        camel  : camelContext,
-        pt     : producerTemplate
+      redis: redisConnection(),
+      redisT: redisTemplate,
+      claimsT: claimRepository,
+      vetT   : veteranRepository,
+      camel  : camelContext,
+      pt     : producerTemplate
     ])
   }
 
