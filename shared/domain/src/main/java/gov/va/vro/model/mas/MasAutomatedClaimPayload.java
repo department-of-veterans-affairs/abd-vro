@@ -36,7 +36,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   private String gender;
 
   @NotNull(message = "Collection ID cannot be empty")
-  @Schema(description = "Collection ID", example = "999")
+  @Schema(description = "Collection ID", example = "350")
   private Integer collectionId;
 
   @NotNull
@@ -52,5 +52,12 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Override
   public String getEventId() {
     return Integer.toString(collectionId);
+  }
+
+  public String getDiagnosticCode() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getDiagnosticCode();
   }
 }

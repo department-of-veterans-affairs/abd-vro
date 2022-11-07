@@ -100,18 +100,18 @@ spring:
       client:
         provider:
           mas:
-            uri: ${mas-api-auth-token-uri:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
+            uri: ${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
         registration:
           mas:
-            client-id: ${mas-api-auth-clientID:placeholder-id}
-            client-secret: ${mas-api-auth-client-secret:placeholder-secret}
-            scope: ${mas-api-auth-scope:openid}
+            client-id: ${MAS_API_AUTH_CLIENTID:placeholder-id}
+            client-secret: ${MAS_API_AUTH_CLIENT_SECRET:placeholder-secret}
+            scope: ${MAS_API_AUTH_SCOPE:openid}
             grant-type: client_credentials
 masAPIProvider:
-  baseURL: ${mas-api-bas-url:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}
-  collectionAnnotsPath: ${mas-collection-annots-path:/pcQueryCollectionAnnots}
-  collectionStatusPath: ${mas-collection-status-path:/pcCheckCollectionStatus}
-  createExamOrderPath: ${mas-create-exam-order-path:/pcCreateExamOrdering}
+  baseURL: ${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}
+  collectionAnnotsPath: ${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}
+  collectionStatusPath: ${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}
+  createExamOrderPath: ${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}
 
 bip:
   baseURL: ${bip-claim-api-url:https://bip-claim.va.gov}
