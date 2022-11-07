@@ -29,7 +29,6 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final AssessmentResultProcessor assessmentResultProcessor;
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
-  private final AuditEventProcessor auditEventProcessor;
 
   @Override
   public void configure() {
