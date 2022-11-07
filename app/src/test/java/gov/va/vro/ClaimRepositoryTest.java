@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +25,19 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
 
     ContentionEntity contention1 = new ContentionEntity("c1");
     AssessmentResultEntity ar = new AssessmentResultEntity();
+    EvidenceSummaryDocumentEntity ev1 = new EvidenceSummaryDocumentEntity();
+    EvidenceSummaryDocumentEntity ev2 = new EvidenceSummaryDocumentEntity();
+    Map<String, String> count = new HashMap<>();
+    count.put("count", "1");
+    ev1.setEvidenceCount(count);
+    count.put("count2", "2");
+    ev2.setEvidenceCount(count);
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
     ar.setEvidenceCountSummary(evidence);
     contention1.addAssessmentResult(ar);
-    contention1.addEvidenceSummaryDocument("doc1", 1);
-    contention1.addEvidenceSummaryDocument("doc2", 2);
+    contention1.addEvidenceSummaryDocument(ev1);
+    contention1.addEvidenceSummaryDocument(ev2);
 
     ContentionEntity contention2 = new ContentionEntity("c2");
     Map<String, String> evidence2 = new HashMap<>();

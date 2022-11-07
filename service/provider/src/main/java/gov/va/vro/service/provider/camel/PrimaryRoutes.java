@@ -76,16 +76,14 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
+        .process(evidenceSummaryDocumentProcessor)
         .wireTap(wireTapTopicFor("generate-pdf"))
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 
   private void configureRouteFetchPdf() {
 
-    from(ENDPOINT_FETCH_PDF)
-        .routeId("fetch-pdf")
-        .to(pdfRoute(FETCH_PDF_QUEUE))
-        .process(evidenceSummaryDocumentProcessor);
+    from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
   }
 
   private String pdfRoute(String queueName) {

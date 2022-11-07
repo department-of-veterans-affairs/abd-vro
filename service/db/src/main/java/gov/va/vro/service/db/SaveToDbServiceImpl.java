@@ -1,6 +1,6 @@
 package gov.va.vro.service.db;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
@@ -12,6 +12,7 @@ import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
   private final ClaimMapper mapper;
-  private final ObjectMapper objMapper;
 
   @Override
   public Claim insertClaim(Claim claim) {
@@ -66,18 +66,38 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void insertEvidenceSummaryDocument(
-      String claimSubmissionId, String documentName, String diagnosticCode) {
-    // Need more info to match claim and contentions
-    // ClaimEntity claim = claimRepository.findByClaimSubmissionIdAndIdType(claimSubmissionId,
-    // idType);
+  public void insertEvidenceSummaryDocument(GeneratePdfPayload request) {
+    ClaimEntity claim =
+        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim by claimSubmissionId, exiting.");
+      return;
+    }
+    AbdEvidence evidence = request.getEvidence();
     EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
+    Map<String, Object> evidenceCount = new HashMap<>();
+    if (request.getDiagnosticCode().equals("7101")) {
+      evidenceCount.put("bloodPressures", evidence.getBloodPressures().size());
+      evidenceCount.put("medications", evidence.getMedications().size());
+      evidenceCount.put("procedures", evidence.getProcedures().size());
+    }
+    if (request.getDiagnosticCode().equals("6602")) {
+      evidenceCount.put("medications", evidence.getMedications().size());
+      evidenceCount.put("procedures", evidence.getProcedures().size());
+    }
+    // what is the document name?
+    String documentName = "documentName";
+    ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
+    Map<String, String> newEvidenceCount = new HashMap<>();
+    newEvidenceCount = convertMap(evidenceCount);
+    evidenceSummaryDocument.setEvidenceCount(newEvidenceCount);
     evidenceSummaryDocument.setDocumentName(documentName);
-    // ContentionEntity contention = findContention(claim, diagnosticCode);
-    // Do we need this? -> evidenceSummaryDocument.setEvidenceCount(evidenceCount);
-    // contention.getEvidenceSummaryDocuments().add(evidenceSummaryDocument);
-    // claimRepository.save(claim);
-
+    if (contention == null) {
+      log.warn("Could not match the contention with the claim and diagnostic code, exiting.");
+      return;
+    }
+    contention.addEvidenceSummaryDocument(evidenceSummaryDocument);
+    claimRepository.save(claim);
   }
 
   private Map<String, String> convertMap(Map<String, Object> summary) {
