@@ -7,9 +7,9 @@ ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 
 WORKDIR /project
-COPY ${ENTRYPOINT_FILE} entrypoint.sh
+COPY build/docker/entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
-COPY ${JAR_FILE} service-data-access.jar
+COPY build/docker/service-data*.jar service-data-access.jar
 
 RUN adduser --no-create-home --disabled-password docker
 USER docker
