@@ -1,39 +1,39 @@
 plugins {
-    id 'starter.std.java.library-spring-conventions'
+  id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {
-    implementation project(':shared:domain')
-    implementation project(':persistence:model')
-    implementation project(':service:spi')
-    api project(':shared:lib-camel-connector')
+  implementation project(':shared:domain')
+  implementation project(':persistence:model')
+  implementation project(':service:spi')
+  api project(':shared:lib-camel-connector')
 
-    // Needed?
-    // implementation "gov.va.starter:exceptions"
-    // implementation 'gov.va.starter:test-data'
+  // Needed?
+  // implementation "gov.va.starter:exceptions"
+  // implementation 'gov.va.starter:test-data'
 
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-    implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+  implementation 'com.google.guava:guava:31.1-jre'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // Apache Camel
-    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+  // Apache Camel
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
 
-    // Redis
-    implementation "org.springframework.boot:spring-boot-starter-data-redis"
-    implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
-    implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
+  // Redis
+  implementation "org.springframework.boot:spring-boot-starter-data-redis"
+  implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
 
-    // Needed?
-    // implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
-    // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
-    // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
-    // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
+  // Needed?
+  // implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+  // implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+  // implementation "org.apache.camel.springboot:camel-servlet-starter:${camel_version}"
+  // implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camel_version}"
 
-    //MAS oAuth2 webclient libs
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
-    implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 }
