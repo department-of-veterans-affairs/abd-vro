@@ -18,7 +18,7 @@ def on_request_callback(channel, method, properties, body):
         response = main.assess_asthma(message)
     except Exception as e:
         logging.error(e, exc_info=True)
-        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}, "errorMessage": str(e)}
+        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
 
     channel.basic_publish(
         exchange=EXCHANGE,
