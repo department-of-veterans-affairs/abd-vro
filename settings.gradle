@@ -91,5 +91,5 @@ include ':service-python:assessclaimdc6602'
 include ':service-python:pdfgenerator'
 include ':svc-lighthouse-api'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
-    include ':service-python:assessclaimdc6602v2'
+  include ':service-python:assessclaimdc6602v2'
 }
