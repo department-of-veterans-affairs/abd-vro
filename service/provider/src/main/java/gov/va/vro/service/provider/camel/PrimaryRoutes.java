@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.service.event.AuditEventProcessor;
 import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -30,6 +29,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private final AssessmentResultProcessor assessmentResultProcessor;
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
   private final AuditEventProcessor auditEventProcessor;
+  private final SlipClaimSubmitRouter slipClaimSubmitRouter;
+
 
   @Override
   public void configure() {
@@ -68,8 +69,8 @@ public class PrimaryRoutes extends RouteBuilder {
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim-id", simple("${body.recordId}"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmitFull"))
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
         .process(assessmentResultProcessor);
   }
 

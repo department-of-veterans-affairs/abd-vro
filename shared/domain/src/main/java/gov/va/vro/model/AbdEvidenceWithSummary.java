@@ -19,4 +19,6 @@ public class AbdEvidenceWithSummary {
 
   @Schema(description = "Evidence Counts")
   private Map<String, Object> evidenceSummary;
+
+  private String errorMessage;
 }
