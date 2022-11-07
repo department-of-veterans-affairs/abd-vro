@@ -28,7 +28,6 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private final AssessmentResultProcessor assessmentResultProcessor;
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
-  private final AuditEventProcessor auditEventProcessor;
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
 
