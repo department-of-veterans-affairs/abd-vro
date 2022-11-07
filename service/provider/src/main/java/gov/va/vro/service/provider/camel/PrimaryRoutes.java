@@ -30,7 +30,6 @@ public class PrimaryRoutes extends RouteBuilder {
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
-
   @Override
   public void configure() {
     configureRouteClaimSubmit();
