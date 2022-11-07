@@ -12,12 +12,12 @@ import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.config.AppTestConfig;
 import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
@@ -113,9 +113,9 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, HealthDataAssessmentResponse.class);
+        post("/v1/full-health-data-assessment", request, HealthDataAssessment.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    HealthDataAssessment response2 = responseEntity2.getBody();
     assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
