@@ -41,6 +41,7 @@ dependencies {
   // Redis
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+  testImplementation 'org.spockframework:spock-core'
   // TODO: add integration tests
   //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
   //        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
