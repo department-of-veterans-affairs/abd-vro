@@ -73,23 +73,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
     }
-    AbdEvidence evidence = request.getEvidence();
-    EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
     Map<String, Object> evidenceCount = new HashMap<>();
-    if (request.getDiagnosticCode().equals("7101")) {
-      evidenceCount.put("bloodPressures", evidence.getBloodPressures().size());
-      evidenceCount.put("medications", evidence.getMedications().size());
-      evidenceCount.put("procedures", evidence.getProcedures().size());
-    }
-    if (request.getDiagnosticCode().equals("6602")) {
-      evidenceCount.put("medications", evidence.getMedications().size());
-      evidenceCount.put("procedures", evidence.getProcedures().size());
-    }
-    // what is the document name?
+    evidenceCount = fillEvidence(request);
     String documentName = "documentName";
     ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
     Map<String, String> newEvidenceCount = new HashMap<>();
     newEvidenceCount = convertMap(evidenceCount);
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
     evidenceSummaryDocument.setEvidenceCount(newEvidenceCount);
     evidenceSummaryDocument.setDocumentName(documentName);
     if (contention == null) {
@@ -98,6 +88,31 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
     contention.addEvidenceSummaryDocument(evidenceSummaryDocument);
     claimRepository.save(claim);
+  }
+
+  private Map<String, Object> fillEvidence(GeneratePdfPayload request) {
+    AbdEvidence evidence = request.getEvidence();
+    Map<String, Object> evidenceCount = new HashMap<>();
+    if (request.getDiagnosticCode().equals("7101")) {
+      if (evidence.getBloodPressures() != null) {
+        evidenceCount.put("bloodPressures", evidence.getBloodPressures().size());
+        if (evidence.getMedications() != null) {
+          evidenceCount.put("medications", evidence.getMedications().size());
+        }
+        if (evidence.getProcedures() != null) {
+          evidenceCount.put("procedures", evidence.getProcedures().size());
+        }
+      }
+    }
+    if (request.getDiagnosticCode().equals("6602")) {
+      if (evidence.getMedications() != null) {
+        evidenceCount.put("medications", evidence.getMedications().size());
+      }
+      if (evidence.getProcedures() != null) {
+        evidenceCount.put("procedures", evidence.getProcedures().size());
+      }
+    }
+    return evidenceCount;
   }
 
   private Map<String, String> convertMap(Map<String, Object> summary) {
