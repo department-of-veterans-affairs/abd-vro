@@ -18,5 +18,3 @@ else
     echo '`pre-commit` not found.  Did you forget to activate your virtualenv?' 1>&2
     exit 1
 fi
-
-isort .
