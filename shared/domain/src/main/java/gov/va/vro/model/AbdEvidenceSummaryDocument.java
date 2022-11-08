@@ -23,7 +23,4 @@ public class AbdEvidenceSummaryDocument {
 
   @Schema(description = "PDF Data")
   private String pdfData;
-
-  @Schema(description = "the disposition")
-  private String disposition;
 }
