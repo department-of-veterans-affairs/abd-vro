@@ -3,9 +3,9 @@
  */
 
 plugins {
-    id 'local.java.container-conventions'
+  id 'local.java.container-conventions'
 }
 
 docker {
-    copySpec.from("src/main/resources").into(".")
+  copySpec.from("src/main/resources").into(".")
 }
