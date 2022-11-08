@@ -58,19 +58,21 @@ def queue_setup(channel):
     channel.exchange_declare(
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )
-    # PDF Service queue
-    channel.queue_declare(queue=SERVICE_QUEUE, durable=True, auto_delete=True)
-    channel.queue_bind(queue=SERVICE_QUEUE, exchange=EXCHANGE)
-    channel.basic_qos(prefetch_count=250)
-    channel.basic_consume(
-        queue=SERVICE_QUEUE, on_message_callback=pdf_evidence_request_callback, auto_ack=True
-    )
+
     # Sufficiency test queue
     channel.queue_declare(queue=SUFFICIENT_QUEUE, durable=True, auto_delete=True)
     channel.queue_bind(queue=SUFFICIENT_QUEUE, exchange=EXCHANGE)
     channel.basic_qos(prefetch_count=250)
     channel.basic_consume(
         queue=SUFFICIENT_QUEUE, on_message_callback=sufficiency_request_callback, auto_ack=True
+    )
+
+    # PDF Service queue
+    channel.queue_declare(queue=SERVICE_QUEUE, durable=True, auto_delete=True)
+    channel.queue_bind(queue=SERVICE_QUEUE, exchange=EXCHANGE)
+    channel.basic_qos(prefetch_count=250)
+    channel.basic_consume(
+        queue=SERVICE_QUEUE, on_message_callback=pdf_evidence_request_callback, auto_ack=True
     )
 
     logging.info(

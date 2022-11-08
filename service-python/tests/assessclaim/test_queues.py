@@ -10,7 +10,7 @@ from assessclaimdc7101.src.lib import queues as q7101
 
 
 @pytest.mark.parametrize(
-    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101v2")]
+    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101")]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
     channel = Mock(autospec=True, create=True)
