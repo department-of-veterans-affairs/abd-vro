@@ -1,5 +1,6 @@
 # Run pre-commit against all files by executing: pre-commit run --all-files
 # Auto-update the config to the latest repos' versions by executing: pre-commit autoupdate
+# Rather than disabling particular hooks (https://pre-commit.com/#temporarily-disabling-hooks), add an `exclude`
 
 # https://pre-commit.com/#regular-expressions
 exclude: >
