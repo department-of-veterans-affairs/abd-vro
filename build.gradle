@@ -131,6 +131,9 @@ ext {
     ':svc-lighthouse-api',
     ':console'
   ]
+  if (project.hasProperty("enablePrototype")) {
+    dockerModules.add(':service-python:assessclaimdc6602v2')
+  }
 }
 
 // Used by `release` task to create a new version
