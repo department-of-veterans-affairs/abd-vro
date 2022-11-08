@@ -14,6 +14,10 @@ repositories {
 }
 
 dependencies {
+    constraints {
+        // for starter-bom
+        runtimeOnly 'org.jetbrains.intellij.plugins:structure-base:3.239'
+    }
+
     implementation  group: 'gradle.plugin.org.jetbrains.intellij.plugins', name: 'gradle-intellij-plugin', version: '0.4.26'
-    runtimeOnly 'org.jetbrains.intellij.plugins:structure-base:3.239'
 }
