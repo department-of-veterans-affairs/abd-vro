@@ -2,12 +2,10 @@
 # Auto-update the config to the latest repos' versions by executing: pre-commit autoupdate
 
 # https://pre-commit.com/#regular-expressions
-exclude: |
+exclude: >
   (?x)^(
-      template/.* |
-      helm/templates/.* |
       app/src/docker/docker-compose.yml
-  )$
+  )
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
