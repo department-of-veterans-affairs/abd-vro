@@ -62,6 +62,10 @@ def assess_sufficiency(event: Dict):
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.sufficient_for_fast_track(event)
         relevant_conditions = conditions.conditions_calculation(event)
+        relevant_medication = continuous_medication.continuous_medication_required(
+            event
+        )
+
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
             if bp_calculation["oneYearBpReadings"] >= 4:
@@ -78,10 +82,11 @@ def assess_sufficiency(event: Dict):
             {
                 "evidence": {
                     "bp_readings": bp_calculation["bp_readings"],
-                    "conditions": relevant_conditions["conditions"]
+                    "medications": relevant_medication["medications"],
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
+                    "recentBpReadings": bp_calculation["oneYearBpReadings"],
                     "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
