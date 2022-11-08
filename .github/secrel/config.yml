@@ -51,6 +51,8 @@ languages:
   java:
     version: 17.0
     build-source: false
+    build-args:
+      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
   python:
     version: 3.9
     requirements:
