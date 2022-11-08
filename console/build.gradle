@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-//	set('testcontainersVersion', "1.17.4")
+  //	set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
@@ -41,11 +41,11 @@ dependencies {
   // Redis
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-// TODO: add integration tests
-//    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-//        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
-//    }
-//	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
+  // TODO: add integration tests
+  //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+  //        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+  //    }
+  //	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
 }
 
 // TODO: add integration tests

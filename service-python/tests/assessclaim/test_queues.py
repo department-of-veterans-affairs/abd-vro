@@ -10,12 +10,16 @@ from assessclaimdc6510.src.lib import queues as q6510
 from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
+from assessclaimdc6602v2.src.lib import queues as q6602v2
+from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
 from assessclaimdc7101.src.lib import queues as q7101
 from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
 
 
 @pytest.mark.parametrize(
-    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101"), (q7101v2, "7101v2"), (q6510, "6510")]
+    "queue, service_queue_name", [
+        (q6602v2, "6602v2"), (q6602, "6602"), (q7101, "7101"), (q7101v2, "7101v2")
+    ]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
     channel = Mock(autospec=True, create=True)
@@ -28,14 +32,16 @@ def test_queue_setup(queue, service_queue_name, caplog):
         durable=True,
         auto_delete=True,
     )
+
     channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}", durable=True, auto_delete=True)
+    channel.queue_declare.assert_called_with(queue=service_queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
-        queue=f"health-assess.{service_queue_name}", exchange="health-assess-exchange"
+        queue=service_queue_name, exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: health-assess.{service_queue_name}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: {service_queue_name}. To exit press CTRL+C"
         in caplog.text
     )
 
@@ -45,6 +51,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
     [
         (q6602, "6602", {"evidence": "some medical data body"}, main6602),
         (q7101, "7101", {"evidence": "some medical data body"}, main7101),
+        (q6602v2, "6602v2", {"evidence": "some medical data body"}, main6602v2),
         (q7101v2, "7101v2", {"evidence": "some medical data body"}, main7101v2),
         (q6510, "6510", {"evidence": "some medical data body"}, main6510),
     ],
