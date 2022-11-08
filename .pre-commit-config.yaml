@@ -8,6 +8,9 @@ exclude: >
       app/src/docker/docker-compose.yml
   )
 
+# https://pre-commit.com/#confining-hooks-to-run-at-certain-stages
+# default_stages: [commit]
+
 repos:
   - repo: meta
     hooks:
@@ -16,15 +19,19 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
     hooks: # https://github.com/pre-commit/pre-commit-hooks#hooks-available
-      - id: trailing-whitespace
-      - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
-      - id: check-yaml
-        stages: [commit]
-        exclude: ^.*helmchart.*$
       - id: check-merge-conflict
-        stages: [commit]
-      - id: check-xml
-        stages: [commit]
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+        exclude: ^scripts/.*\.src$
+      - id: check-yaml
+        exclude: ^.*helmchart.*$
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer # replaces isort
+      - id: trailing-whitespace
 
   # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
   - repo: https://github.com/PyCQA/flake8
@@ -32,12 +39,6 @@ repos:
     hooks:
       - id: flake8
         args: [--max-line-length=255]
-
-  # https://pycqa.github.io/isort/docs/configuration/pre-commit.html
-  - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
 
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.15.0
