@@ -66,19 +66,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void insertEvidenceSummaryDocument(GeneratePdfPayload request) {
+  public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
     ClaimEntity claim =
         claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
     if (claim == null) {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
     }
-    Map<String, Object> evidenceCount = new HashMap<>();
-    evidenceCount = fillEvidence(request);
-    String documentName = "documentName";
+    Map<String, Object> evidenceCount = fillEvidenceCounts(request);
     ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
-    Map<String, String> newEvidenceCount = new HashMap<>();
-    newEvidenceCount = convertMap(evidenceCount);
+    Map<String, String> newEvidenceCount = convertMap(evidenceCount);
     EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
     evidenceSummaryDocument.setEvidenceCount(newEvidenceCount);
     evidenceSummaryDocument.setDocumentName(documentName);
@@ -90,18 +87,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimRepository.save(claim);
   }
 
-  private Map<String, Object> fillEvidence(GeneratePdfPayload request) {
+  private Map<String, Object> fillEvidenceCounts(GeneratePdfPayload request) {
     AbdEvidence evidence = request.getEvidence();
     Map<String, Object> evidenceCount = new HashMap<>();
     if (request.getDiagnosticCode().equals("7101")) {
       if (evidence.getBloodPressures() != null) {
         evidenceCount.put("bloodPressures", evidence.getBloodPressures().size());
-        if (evidence.getMedications() != null) {
-          evidenceCount.put("medications", evidence.getMedications().size());
-        }
-        if (evidence.getProcedures() != null) {
-          evidenceCount.put("procedures", evidence.getProcedures().size());
-        }
+      }
+      if (evidence.getMedications() != null) {
+        evidenceCount.put("medications", evidence.getMedications().size());
+      }
+      if (evidence.getProcedures() != null) {
+        evidenceCount.put("procedures", evidence.getProcedures().size());
       }
     }
     if (request.getDiagnosticCode().equals("6602")) {

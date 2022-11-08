@@ -81,7 +81,6 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteFetchPdf() {
-
     from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
   }
 
