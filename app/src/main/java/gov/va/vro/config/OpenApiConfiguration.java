@@ -52,6 +52,7 @@ public class OpenApiConfiguration {
             new Tag().name("Pdf Generation"),
             new Tag().name("Full Health Assessment"),
             new Tag().name("Claim Metrics"),
+            new Tag().name("BIP Integration"),
             new Tag().name("MAS Integration"));
 
     OpenAPI config =
