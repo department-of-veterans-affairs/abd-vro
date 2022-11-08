@@ -46,6 +46,9 @@ images:
 #    - -Dexample.maven=${{ secrets.example_secret }}
 
 languages:
+  java:
+    version: 17.0
+    build-source: false
   python:
     version: 3.9
     requirements:
