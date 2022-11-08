@@ -18,4 +18,8 @@ public class AuditEvent {
   private String message;
   private String details;
   @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
+
+  public boolean isException() {
+    return throwable != null;
+  }
 }

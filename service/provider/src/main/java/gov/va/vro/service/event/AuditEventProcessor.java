@@ -60,20 +60,6 @@ public class AuditEventProcessor {
    *
    * @param routeId the id of the route
    * @param message a message to report with the event
-   */
-  public FunctionProcessor<Auditable, Auditable> event(String routeId, String message) {
-    return FunctionProcessor.fromFunction(
-        payload -> {
-          logEvent(payload, routeId, message);
-          return payload;
-        });
-  }
-
-  /**
-   * Create a Camel processor that logs an event
-   *
-   * @param routeId the id of the route
-   * @param message a message to report with the event
    * @param detailsExtractor a converter that extracts relevant details from the Auditable object
    */
   public FunctionProcessor<Auditable, Auditable> event(

@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.seda.SedaComponent;
+import org.apache.camel.component.slack.SlackComponent;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,12 +26,18 @@ public class CamelConfiguration {
   private final CamelDtoClassesProperties camelDtoClassesProperties;
 
   @Bean
-  CamelContextConfiguration contextConfiguration() {
+  CamelContextConfiguration contextConfiguration(
+      @Value("${slack.audit.webhook:#{null}}") String slackWebhook) {
     return new CamelContextConfiguration() {
       @Override
       public void beforeApplicationStart(CamelContext context) {
         SedaComponent sedaComponent = context.getComponent("seda", SedaComponent.class);
         sedaComponent.setDefaultBlockWhenFull(true);
+
+        if (slackWebhook != null) {
+          SlackComponent slack = context.getComponent("slack", SlackComponent.class);
+          slack.setWebhookUrl(slackWebhook);
+        }
       }
 
       @Override
