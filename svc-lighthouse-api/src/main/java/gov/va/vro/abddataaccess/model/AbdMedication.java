@@ -16,6 +16,8 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private String description;
   private int refills;
   private Boolean asthmaRelevant;
+  private Boolean conditionRelated;
+  private List<String> suggestedCategory;
   private String duration;
   private String authoredOn;
   private List<String> dosageInstructions;
