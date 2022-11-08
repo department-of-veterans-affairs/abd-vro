@@ -14,5 +14,5 @@ repositories {
 }
 
 dependencies {
-    implementation  group: 'gradle.plugin.org.jetbrains.intellij.plugins', name: 'gradle-intellij-plugin', version: '0.4.26'
+    // implementation  group: 'gradle.plugin.org.jetbrains.intellij.plugins', name: 'gradle-intellij-plugin', version: '0.4.26'
 }
