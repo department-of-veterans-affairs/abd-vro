@@ -16,7 +16,7 @@ public class ClaimCondition {
 
   private String name;
 
-  @Schema(description = "Diagnostic code", example = "1111")
+  @Schema(description = "Diagnostic code", example = "7101")
   @NotBlank(message = "Diagnostic Code is required")
   private String diagnosticCode;
 

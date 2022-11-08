@@ -28,6 +28,13 @@ spring.jpa.properties.hibernate.enable_lazy_load_no_trans: true
 # Addresses warning: GroovyTemplateAutoConfiguration : Cannot find template location
 spring.groovy.template.check-template-location: false
 
+spring.redis:
+  # database index used by the connection factory
+  database: 0
+  host: ${REDIS_PLACEHOLDERS_HOST}
+  port: 6379
+  password: ${REDIS_PLACEHOLDERS_PASSWORD}
+
 #logging:
 #  level:
 #    org.springframework.jdbc.core: INFO # DEBUG

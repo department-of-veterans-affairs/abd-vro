@@ -31,8 +31,7 @@ def on_generate_callback(channel, method, properties, body):
         # logging.info(f"Variables: {variables}")
         template = pdf_generator.generate_template_file(diagnosis_name, variables)
         pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template)
-        redis_client.save_data(claim_id, base64.b64encode(pdf).decode("ascii"))
-        redis_client.save_data(f"{claim_id}_type", diagnosis_name)
+        redis_client.save_hash_data(f"{claim_id}-pdf", mapping={"contents": base64.b64encode(pdf).decode("ascii"), "diagnosis": diagnosis_name})
         logging.info("Saved PDF")
         response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
     except Exception as e:
@@ -47,9 +46,9 @@ def on_fetch_callback(channel, method, properties, body):
         binding_key = method.routing_key
         claim_id = str(body, 'UTF-8')
         logging.info(f" [x] {binding_key}: Received Claim Submission ID: {claim_id}")
-        if redis_client.exists(claim_id):
-            pdf = redis_client.get_data(claim_id)
-            diagnosis_name = redis_client.get_data(f"{claim_id}_type")
+        if redis_client.exists(f"{claim_id}-pdf"):
+            pdf = redis_client.get_hash_data(f"{claim_id}-pdf", "contents")
+            diagnosis_name = redis_client.get_hash_data(f"{claim_id}-pdf", "diagnosis")
             logging.info("Fetched PDF")
             response = {"claimSubmissionId": claim_id, "status": "COMPLETE", "diagnosis": str(diagnosis_name.decode("ascii")), "pdfData": str(pdf.decode("ascii"))}
         else:
