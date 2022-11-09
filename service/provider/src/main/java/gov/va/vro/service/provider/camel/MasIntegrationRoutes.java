@@ -152,17 +152,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.routeId}"))
+        .setProperty("recipientList", simple("seda:audit-event"))
         .to(transform_uri);
 
     interceptFrom("*")
         .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
+        .setProperty("recipientList", constant("seda:audit-event"))
         .to(transform_uri);
 
     from(transform_uri)
         .process(new ExchangeAuditTransformer())
-        .recipientList(constant("seda:audit-event"));
+        .recipientList(exchangeProperty("recipientList"));
 
     from("seda:audit-event")
         .process(
