@@ -24,7 +24,7 @@ snyk:
 images:
 - name: vro-app
   #context: "./app/src/main/resources"
-  context: "./app"
+  context: "."
   path: "./app/src/docker/Dockerfile"
 - name: vro-postgres
   context: "./postgres/src/main/resources"
@@ -34,7 +34,7 @@ images:
   path: "./db-init/src/docker/Dockerfile"
 - name: vro-service-data-access
   #context: "./service-data-access/src/main/resources"
-  context: "./service-data-access"
+  context: "."
   path: "./service-data-access/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
   context: "./service-python/pdfgenerator/src"

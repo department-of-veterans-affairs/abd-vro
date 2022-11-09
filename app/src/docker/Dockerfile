@@ -7,9 +7,9 @@ ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 
 WORKDIR /project
-COPY ${ENTRYPOINT_FILE} entrypoint.sh
+COPY ./app/build/docker/entrypoint.sh entrypoint.sh
 RUN mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat && chmod +x entrypoint.sh
-COPY ${JAR_FILE} vro-app.jar
+COPY ./app/build/docker/app*.jar vro-app.jar
 EXPOSE 8081
 
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
