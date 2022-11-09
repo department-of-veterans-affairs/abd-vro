@@ -179,6 +179,21 @@ services:
       - internal
     profiles: ["prototype"]
 
+  svc-feature-toggle:
+    image: va/abd_vro-featuretoggle:latest
+    <<: *common-security-opt
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      redis-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     <<: *common-security-opt
