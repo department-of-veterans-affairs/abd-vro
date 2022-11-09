@@ -54,25 +54,6 @@ public class ContentionEntity extends BaseEntity {
     return assessmentResult;
   }
 
-  /***
-   * <p>Summary.</p>
-   *
-   * @param documentName document name
-   *
-   * @param evidenceCount evidence count
-   *
-   * @return return value
-   */
-  //  public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
-  //      String documentName, int evidenceCount) {
-  //    EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
-  //    document.setDocumentName(documentName);
-  //    document.setEvidenceCount(evidenceCount);
-  //    document.setContention(this);
-  //    evidenceSummaryDocuments.add(document);
-  //    return document;
-  //  }
-
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
       EvidenceSummaryDocumentEntity request) {
     EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();

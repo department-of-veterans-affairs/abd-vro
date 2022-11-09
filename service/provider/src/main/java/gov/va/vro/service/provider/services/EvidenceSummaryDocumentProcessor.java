@@ -9,6 +9,7 @@ import org.apache.camel.Processor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +18,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class EvidenceSummaryDocumentProcessor implements Processor {
-
   private final SaveToDbService saveToDbService;
-
+  private static final Map<String, String> diagnosisMap = Map.ofEntries(
+          new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
+          new AbstractMap.SimpleEntry<>("6602", "Asthma")
+  );
   @Override
   public void process(Exchange exchange) {
     GeneratePdfPayload response = exchange.getIn().getBody(GeneratePdfPayload.class);
@@ -28,7 +31,7 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
       return;
     }
     String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
-    String diagnosis = StringUtils.capitalize(matchDiagnosticCode(response.getDiagnosticCode()));
+    String diagnosis = matchDiagnosticCode(response.getDiagnosticCode());
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
       return;
@@ -40,9 +43,6 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
   }
 
   private String matchDiagnosticCode(String diagnosticCode) {
-    Map<String, String> diagnosisMap = new HashMap<>();
-    diagnosisMap.put("7101", "hypertension");
-    diagnosisMap.put("6602", "asthma");
     String diagnosis = diagnosisMap.get(diagnosticCode);
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
