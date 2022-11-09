@@ -1,4 +1,4 @@
-package gov.va.vro.api.model.bip;
+package gov.va.vro.model.bip;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

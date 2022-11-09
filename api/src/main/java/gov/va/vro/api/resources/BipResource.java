@@ -1,6 +1,6 @@
 package gov.va.vro.api.resources;
 
-import gov.va.vro.api.model.bip.BipUpdateClaimPayload;
+import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import gov.va.vro.api.responses.BipClaimResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;

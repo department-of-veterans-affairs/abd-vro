@@ -1,6 +1,6 @@
 package gov.va.vro.controller;
 
-import gov.va.vro.api.model.bip.BipUpdateClaimPayload;
+import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.BipClaimResponse;
 import lombok.RequiredArgsConstructor;
