@@ -23,6 +23,10 @@ public class PrimaryRoutes extends RouteBuilder {
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
   private static final String FETCH_PDF_QUEUE = "fetch-pdf";
 
+  // Base names for wiretap endpoints
+  public static final String INCOMING_CLAIM_WIRETAP = "claim-submitted";
+  public static final String GENERATE_PDF_WIRETAP = "generate-pdf";
+
   private final SaveToDbService saveToDbService;
 
   private final AssessmentResultProcessor assessmentResultProcessor;
@@ -40,11 +44,11 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM)
         .routeId("claim-submit")
+        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .wireTap(wireTapTopicFor("claim-submitted"))
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
@@ -60,6 +64,7 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM_FULL)
         .routeId("claim-submit-full")
+        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
@@ -73,7 +78,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
-        .wireTap(wireTapTopicFor("generate-pdf"))
+        .wireTap(wireTapTopicFor(GENERATE_PDF_WIRETAP))
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 
