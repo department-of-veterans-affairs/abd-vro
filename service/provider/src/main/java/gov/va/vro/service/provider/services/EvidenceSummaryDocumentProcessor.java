@@ -6,12 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.AbstractMap;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -19,10 +17,11 @@ import java.util.Map;
 @Slf4j
 public class EvidenceSummaryDocumentProcessor implements Processor {
   private final SaveToDbService saveToDbService;
-  private static final Map<String, String> diagnosisMap = Map.ofEntries(
+  private static final Map<String, String> diagnosisMap =
+      Map.ofEntries(
           new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
-          new AbstractMap.SimpleEntry<>("6602", "Asthma")
-  );
+          new AbstractMap.SimpleEntry<>("6602", "Asthma"));
+
   @Override
   public void process(Exchange exchange) {
     GeneratePdfPayload response = exchange.getIn().getBody(GeneratePdfPayload.class);
