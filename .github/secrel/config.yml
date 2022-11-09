@@ -10,6 +10,12 @@
 #   - -Dexample-build-arg=some-value
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
+
+setup:
+  script: ./build-images.sh
+  env:
+  - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
 snyk:
   java-version: 17
   additional-args:
