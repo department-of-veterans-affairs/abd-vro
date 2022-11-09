@@ -2,8 +2,8 @@ package gov.va.vro.consolegroovy
 //@SpringBootTest
 class ConsoleGroovyApplicationTests {
 
-//	@Test
-	void contextLoads() {
-	}
+  //@Test
+  void contextLoads() {
+  }
 
 }
