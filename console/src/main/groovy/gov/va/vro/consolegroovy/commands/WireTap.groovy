@@ -39,7 +39,7 @@ class WireTap extends CommandSupport {
   }
 
   static class WireTapRoute extends RouteBuilder {
-    final String tapName;
+    final String tapName
 
     WireTapRoute(String wireTapName) {
       this.tapName = wireTapName

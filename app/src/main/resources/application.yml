@@ -155,3 +155,10 @@ vro:
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
+
+spring.redis:
+  # database index used by the connection factory
+  database: 0
+  host: ${REDIS_PLACEHOLDERS_HOST}
+  port: 6379
+  password: ${REDIS_PLACEHOLDERS_PASSWORD}
