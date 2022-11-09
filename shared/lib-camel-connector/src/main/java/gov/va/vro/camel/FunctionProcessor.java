@@ -33,8 +33,4 @@ public class FunctionProcessor<I, O> implements Processor {
   public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function) {
     return new FunctionProcessor<>(function);
   }
-
-  public static Processor exchangeProcessor(Function<Exchange, Object> function) {
-    return exchange -> exchange.getMessage().setBody(function.apply(exchange));
-  }
 }
