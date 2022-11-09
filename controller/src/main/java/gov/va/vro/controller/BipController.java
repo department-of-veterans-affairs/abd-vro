@@ -1,8 +1,8 @@
 package gov.va.vro.controller;
 
-import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.BipClaimResponse;
+import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;

@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * Claimant component of a BIP claim object.
+ * A veteran component in a BIP claim object.
  *
  * @author warren @Date 11/9/22
  */
 @Component
 @RequiredArgsConstructor
 @Data
-public class Claimant {
+public class Veteran {
   private long participantId;
+  private String firstName;
+  private String lastName;
 }

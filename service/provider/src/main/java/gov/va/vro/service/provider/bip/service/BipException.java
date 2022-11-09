@@ -8,6 +8,10 @@ public class BipException extends Exception {
     super(BIP_ERROR);
   }
 
+  public BipException(String message) {
+    super(message);
+  }
+
   public BipException(String message, Throwable cause) {
     super(message, cause);
   }
