@@ -5,6 +5,7 @@ import gov.va.vro.model.*;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasTransferObject;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
+import javax.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +34,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
+
+  public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
 
@@ -46,6 +50,24 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasCollectionService masCollectionService;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
+
+  private final MasConfig masConfig;
+
+  private String auditRecipientList;
+  private String exceptionRecipientList;
+
+  @PostConstruct
+  void setUpRecipients() {
+    auditRecipientList = ENDPOINT_AUDIT_EVENT;
+    exceptionRecipientList =
+        masConfig.getSlackExceptionWebhook() == null
+            ? ENDPOINT_AUDIT_EVENT
+            : String.format(
+                "%s,slack:#%s?webhookUrl=%s",
+                ENDPOINT_AUDIT_EVENT,
+                masConfig.getSlackExceptionChannel(),
+                masConfig.getSlackExceptionWebhook());
+  }
 
   @Override
   public void configure() {
@@ -149,23 +171,28 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureAuditing() {
     String transform_uri = "seda:audit-transform?multipleConsumers=true";
+
+    // Capture exceptions
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.routeId}"))
-        .setProperty("recipientList", simple("seda:audit-event"))
+        .setProperty("recipientList", constant(exceptionRecipientList))
         .to(transform_uri);
 
+    // intercept all MAS routes
     interceptFrom("*")
         .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant("seda:audit-event"))
+        .setProperty("recipientList", constant(auditRecipientList))
         .to(transform_uri);
 
+    // Transform to an AuditEvent and send to recipients
     from(transform_uri)
         .process(new ExchangeAuditTransformer())
         .recipientList(exchangeProperty("recipientList"));
 
+    // persist audit event
     from("seda:audit-event")
         .process(
             exchange -> {
