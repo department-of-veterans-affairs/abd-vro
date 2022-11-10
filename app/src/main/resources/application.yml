@@ -159,10 +159,11 @@ spring.redis:
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
-slack:
-  exception:
-    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
-    channel: "${SLACK_EXCEPTION_CHANNEL}"
+#TODO: These must be supplied
+#slack:
+#  exception:
+#    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
+#    channel: "${SLACK_EXCEPTION_CHANNEL}"
 
 spring.config.import: >
   conf-camel.yml,
