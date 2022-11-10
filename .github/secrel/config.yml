@@ -31,14 +31,17 @@ images:
   context: "./svc-lighthouse-api/src/main/resources"
   path: "./svc-lighthouse-api/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
-  context: "./service-python/pdfgenerator/src"
-  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  folder: "pdfgenerator"
 - name: vro-service-assessclaimdc7101
-  context: "./service-python/assessclaimdc7101/src"
-  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  folder: "assessclaimdc7101"
 - name: vro-service-assessclaimdc6602
-  context: "./service-python/assessclaimdc6602/src"
-  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  folder: "assessclaimdc6602"
 # END image-names.sh replacement block (do not modify this line)
 
 # Remove source block if you're not building sources
