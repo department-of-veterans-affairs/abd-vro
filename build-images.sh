@@ -13,4 +13,4 @@ npm install -g @stoplight/spectral-cli@6.4.0
 sudo apt-get install shellcheck
 which shellcheck
 
-./gradlew build -PGITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+./gradlew build docker -PGITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
