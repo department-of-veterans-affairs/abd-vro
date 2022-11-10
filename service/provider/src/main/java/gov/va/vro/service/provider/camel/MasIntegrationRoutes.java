@@ -111,6 +111,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
             new Processor() {
               @Override
               public void process(Exchange exchange) {
+
                 MasAutomatedClaimPayload claimPayload =
                     (MasAutomatedClaimPayload) exchange.getProperty("claim");
                 AbdEvidenceWithSummary evidence =
@@ -175,7 +176,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Capture exceptions
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
-        .setProperty("originalRouteId", simple("${exchange.routeId}"))
+        .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
         .setProperty("recipientList", constant(exceptionRecipientList))
         .to(transform_uri);
 
