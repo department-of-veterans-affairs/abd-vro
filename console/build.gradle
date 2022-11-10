@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-  //	set('testcontainersVersion', "1.17.4")
+  // set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
@@ -60,4 +60,14 @@ docker {
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+spotless {
+  groovy {
+    //excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
+    // the Groovy Eclipse formatter extends the Java Eclipse formatter,
+    // so it formats Java files by default (unless `excludeJava` is used).
+    greclipse() // has its own section below
+    indentWithSpaces(2)
+  }
 }
