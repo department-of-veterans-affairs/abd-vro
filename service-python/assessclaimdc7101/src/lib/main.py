@@ -2,7 +2,7 @@ import logging
 from typing import Dict
 from datetime import date
 
-from . import bp_filter, continuous_medication, utils, bp_calculator, conditions
+from . import continuous_medication, utils, bp_calculator, conditions
 
 
 def assess_hypertension(event: Dict):
@@ -22,16 +22,16 @@ def assess_hypertension(event: Dict):
         relevant_medication = continuous_medication.continuous_medication_required(
             event
         )
-        bp_readings = bp_filter.bp_recency(event)
+        bp_readings = bp_calculator.bp_reader(event)
         response_body.update(
             {
                 "evidence": {
                     "medications": relevant_medication["medications"],
-                    "bp_readings": bp_readings["bpReadings"],
+                    "bp_readings": bp_readings["oneYearBp"],
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_readings["totalBpReadings"],
-                    "recentBpReadings": bp_readings["recentBpReadings"],
+                    "recentBpReadings": bp_readings["oneYearBpReadings"],
                     "medicationsCount": relevant_medication["medicationsCount"],
                 },
             }
@@ -60,7 +60,7 @@ def assess_sufficiency(event: Dict):
         event["dateOfClaim"] = str(date.today())
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
-        bp_calculation = bp_calculator.sufficient_for_fast_track(event)
+        bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
         relevant_medication = continuous_medication.continuous_medication_required(
             event
@@ -81,12 +81,13 @@ def assess_sufficiency(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "bp_readings": bp_calculation["bp_readings"],
+                    "bp_readings": bp_calculation["twoYearsBp"],
                     "medications": relevant_medication["medications"],
+                    "conditions": relevant_conditions["conditions"]
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
-                    "recentBpReadings": bp_calculation["oneYearBpReadings"],
+                    "recentBpReadings": bp_calculation["twoYearsBpReadings"],
                     "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },

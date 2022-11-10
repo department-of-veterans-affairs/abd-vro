@@ -4,7 +4,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 
 
-def sufficient_for_fast_track(request_body):
+def bp_reader(request_body):
     """
     Determine if there is enough BP data to calculate a predominant reading,
     and if so return the predominant rating
@@ -30,7 +30,8 @@ def sufficient_for_fast_track(request_body):
             if reading["systolic"]["value"] >= 160 and reading["diastolic"]["value"] >= 100:
                 elevated_bp.append(reading)
 
-    predominance_calculation = {"bp_readings": bp_reading_in_past_year,
+    predominance_calculation = {"twoYearsBp": bp_readings_in_past_two_years,
+                                "oneYearBp": bp_reading_in_past_year,
                                 "twoYearsBpReadings": len(bp_readings_in_past_two_years),
                                 "oneYearBpReadings": len(bp_reading_in_past_year),
                                 "recentElevatedBpReadings": len(elevated_bp),
