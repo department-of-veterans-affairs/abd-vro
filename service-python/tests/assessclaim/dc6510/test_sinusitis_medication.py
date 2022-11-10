@@ -17,13 +17,13 @@ from assessclaimdc6510.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
@@ -44,13 +44,13 @@ from assessclaimdc6510.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
@@ -71,13 +71,13 @@ from assessclaimdc6510.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {
                 "medications": [
                     {
-                        "conditionRelated": "false",
+                        "conditionRelated": False,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",
@@ -103,19 +103,19 @@ from assessclaimdc6510.src.lib import medication
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                         "status": "active",
                     },
                     {
-                        "conditionRelated": "false",
+                        "conditionRelated": False,
                         "authoredOn": "1952-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",

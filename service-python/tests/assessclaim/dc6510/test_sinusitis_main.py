@@ -19,13 +19,13 @@ from assessclaimdc6510.src.lib import main
                         "conditions": [],
                         "procedures": []
                     },
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 },
                 {
                     "evidence": {
                         "medications": [
                             {
-                                "conditionRelated": "true",
+                                "conditionRelated": True,
                                 "authoredOn": "1952-04-06T04:00:00Z",
                                 "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                                 "status": "active",
@@ -40,9 +40,9 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": "false",
-                                   "multipleSurgery": "false",
-                                   "radicalSurgery": "false"},
+                    "calculated": {"constantSinusitis": False,
+                                   "multipleSurgery": False,
+                                   "radicalSurgery": False},
                 }
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -62,13 +62,13 @@ from assessclaimdc6510.src.lib import main
                                         "onsetDate": "2020-11-01"}],
                         "procedures": []
                     },
-                    "date_of_claim": "2021-06-09",
+                    "dateOfClaim": "2021-06-09",
                 },
                 {
                     "evidence": {
                         "medications": [
                             {
-                                "conditionRelated": "true",
+                                "conditionRelated": True,
                                 "authoredOn": "1952-04-06T04:00:00Z",
                                 "description": "azithromycin 250 MG Oral Tablet [Zithromax]",
                                 "status": "active",
@@ -86,9 +86,9 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": "true",
-                                   "multipleSurgery": "false",
-                                   "radicalSurgery": "false",
+                    "calculated": {"constantSinusitis": True,
+                                   "multipleSurgery": False,
+                                   "radicalSurgery": False,
                                    },
                 },
         ),
@@ -118,13 +118,13 @@ from assessclaimdc6510.src.lib import main
                                         "performedDate": "2010-2-22"}
                                        ]
                     },
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 },
                 {
                     "evidence": {
                         "medications": [
                             {
-                                "conditionRelated": "false",
+                                "conditionRelated": False,
                                 "authoredOn": "1952-04-06T04:00:00Z",
                                 "description": "Advil",
                                 "status": "active",
@@ -152,9 +152,9 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 1,
                                         "totalProceduresCount": 1},
-                    "calculated": {"constantSinusitis": "false",
-                                   "multipleSurgery": "false",
-                                   "radicalSurgery": "false"},
+                    "calculated": {"constantSinusitis": False,
+                                   "multipleSurgery": False,
+                                   "radicalSurgery": False},
                 },
         ),
     ],

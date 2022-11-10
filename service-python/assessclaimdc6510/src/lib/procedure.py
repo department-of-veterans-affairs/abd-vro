@@ -14,22 +14,22 @@ def procedures_calculation(request_body):
     response = {}
     relevant_procedures = []
     radical_procedures = []
-    radical_surgery_procedure = "false"
-    multiple_surgery = "false"
+    radical_surgery_procedure = False
+    multiple_surgery = False
 
     veterans_procedures = request_body["evidence"]["procedures"]
     procedures_count = len(veterans_procedures)
     for procedure in veterans_procedures:
         if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
-            procedure_text = procedure["text"]
-            if procedure_text in procedure_codesets.surgery:
+            procedure_code = procedure["code"]
+            if procedure_code in procedure_codesets.surgery:
                 relevant_procedures.append(procedure)
-            elif procedure_text in procedure_codesets.radical_surgery:
-                radical_surgery_procedure = "true"
+            elif procedure_code in procedure_codesets.radical_surgery:
+                radical_surgery_procedure = True
                 radical_procedures.append(procedure)
 
     if len(relevant_procedures) >= 2:
-        multiple_surgery = "true"
+        multiple_surgery = True
 
     relevant_procedures.extend(radical_procedures)
 

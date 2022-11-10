@@ -18,8 +18,8 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     total_conditions_count = len(veterans_conditions)
-    date_of_claim = datetime.strptime(request_body["date_of_claim"], "%Y-%m-%d").date()
-    constant_sinusitis = "false"
+    date_of_claim = datetime.strptime(request_body["dateOfClaim"], "%Y-%m-%d").date()
+    constant_sinusitis = False
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
@@ -27,7 +27,7 @@ def conditions_calculation(request_body):
                 relevant_conditions.append(condition)
                 if datetime.strptime(condition["onsetDate"], "%Y-%m-%d").date() <= date_of_claim - relativedelta(
                         months=3):
-                    constant_sinusitis = "true"
+                    constant_sinusitis = True
 
     response.update(
         {

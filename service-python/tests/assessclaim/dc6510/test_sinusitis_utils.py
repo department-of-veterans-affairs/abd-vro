@@ -28,7 +28,7 @@ from assessclaimdc6510.src.lib import utils
                                     "code": "31297",
                                     "status": "completed"}]
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             True,
             {},
@@ -46,7 +46,7 @@ from assessclaimdc6510.src.lib import utils
                     "conditions": [],
                     "procedures": []
                 },
-                "date_of_claim": 20211109,
+                "dateOfClaim": 20211109,
             },
             False,
             {
@@ -57,7 +57,7 @@ from assessclaimdc6510.src.lib import utils
                         ]
                     }
                 ],
-                "date_of_claim": ["must be of string type"],
+                "dateOfClaim": ["must be of string type"],
             },
         ),
     ],
@@ -66,8 +66,8 @@ def test_validate_request_body(request_body, result_is_valid, errors):
     """
     Test function that determines if the blood pressure readings contain a readings that are within 1 month and 6 months of the date of claim
 
-    :param date_of_claim: string representation of the date of claim
-    :type date_of_claim: string
+    :param dateOfClaim: string representation of the date of claim
+    :type dateOfClaim: string
     :param bp_readings: list of blood pressure readings
     :type bp_readings: list
     :param result: boolean describing whether or not the blood pressure readings meet the specifications

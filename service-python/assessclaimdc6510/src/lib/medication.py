@@ -22,12 +22,12 @@ def medication_required(request_body):
             medication_display = medication["description"]
             for keyword in medication_codesets.antibiotics:
                 if keyword in medication_display.lower():
-                    medication["conditionRelated"] = "true"
+                    medication["conditionRelated"] = True
                     relevant_medications.append(medication)
                     flagged = True
                     break
             if not flagged:
-                medication["conditionRelated"] = "false"
+                medication["conditionRelated"] = False
                 other_medications.append(medication)
 
     relevant_medications = sorted(

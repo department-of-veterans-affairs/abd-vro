@@ -155,6 +155,7 @@ services:
         condition: service_healthy
     networks:
       - internal
+
   svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
@@ -169,6 +170,19 @@ services:
 
   svc-assessor-dc6602v2:
     image: va/abd_vro-assessclaimdc6602v2:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
+
+  svc-assessor-dc6510:
+    image: va/abd_vro-assessclaimdc6510:latest
     <<: *common-security-opt
     environment:
       <<: *rabbitmq-placeholder-vars

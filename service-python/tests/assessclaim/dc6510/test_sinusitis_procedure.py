@@ -20,7 +20,7 @@ from assessclaimdc6510.src.lib import procedure
                              "status": "completed",
                              "performedDate": "2010-2-22"}
                         ],
-                        "date_of_claim": "2021-11-09",
+                        "dateOfClaim": "2021-11-09",
                     }
                 },
                 {
@@ -37,8 +37,8 @@ from assessclaimdc6510.src.lib import procedure
                     ],
                     "relevantProceduresCount": 2,
                     "totalProceduresCount": 2,
-                    "radicalSurgery": "true",
-                    "multipleSurgery": "false"
+                    "radicalSurgery": True,
+                    "multipleSurgery": False
                 },
         ),
         (
@@ -55,7 +55,7 @@ from assessclaimdc6510.src.lib import procedure
                              "status": "completed",
                              "performedDate": "2010-2-22"}
                         ],
-                        "date_of_claim": "2021-11-09",
+                        "dateOfClaim": "2021-11-09",
                     }
                 },
                 {
@@ -66,10 +66,10 @@ from assessclaimdc6510.src.lib import procedure
                          "status": "completed",
                          "performedDate": "2010-2-22"}
                     ],
-                    "radicalSurgery": "false",
+                    "radicalSurgery": False,
                     "relevantProceduresCount": 1,
                     "totalProceduresCount": 2,
-                    "multipleSurgery": "false"
+                    "multipleSurgery": False
                 },
         ),
     ],
