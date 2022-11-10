@@ -57,6 +57,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private String exceptionRecipientList;
 
   @PostConstruct
+  /** Setup recipients list for audits */
   void setUpRecipients() {
     auditRecipientList = ENDPOINT_AUDIT_EVENT;
     exceptionRecipientList =
