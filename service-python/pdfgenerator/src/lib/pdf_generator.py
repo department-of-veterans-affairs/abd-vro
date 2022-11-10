@@ -38,10 +38,10 @@ class PDFGenerator:
 
         return generated_html
 
-    def generate_pdf_from_string(self, template_name: str, html: str) -> bytes or bool:
+    def generate_pdf_from_string(self, template_name: str, html: str, output=False) -> bytes or bool:
         toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/toc.xsl")
         if os.path.isfile(toc_file_path):
             toc = {'xsl-style-sheet': toc_file_path}
-            return pdfkit.from_string(html, 'test.pdf', options=self.options, toc=toc, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=True)
         else:
-            return pdfkit.from_string(html, False, options=self.options, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, verbose=True)
