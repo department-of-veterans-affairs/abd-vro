@@ -117,6 +117,7 @@ services:
       - "8081:8081"
     environment:
       <<: *rabbitmq-placeholder-vars
+      <<: *redis-placeholder-vars
       <<: *postgres-vars
       ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
