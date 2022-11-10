@@ -1,9 +1,9 @@
 procedures = {
-    "Professional services for allergen immunotherapy not including provision of allergenic extracts; single injection",
-    "Professional services for allergen immunotherapy not including provision of allergenic extracts; two or more injections",
-    "Professional services for allergen immunotherapy in prescribing physicians office or institution, including provision of allergenic extract; single injection",
-    "Professional services for allergen immunotherapy in prescribing physicians office or institution, including provision of allergenic extract; two or more injections",
-    "Professional services for the supervision of preparation and provision of antigens for allergen immunotherapy, single dose vial(s) (specify number of vials)",
-    "Professional services for the supervision of preparation and provision of antigens for allergen immunotherapy; single or multiple antigens (specify number of doses)",
-    "Unlisted allergy/clinical immunologic service or procedure"
+    "95115",
+    "95117",
+    "95120",
+    "95125",
+    "95144",
+    "95165",
+    "95199"
 }

@@ -14,6 +14,7 @@ from assessclaimdc6522.src.lib import procedure
                             {
                                 "text": "Professional services for allergen immunotherapy not including "
                                         "provision of allergenic extracts; two or more injections",
+                                "code": "95117",
                                 "status": "completed",
                                 "performedDate": "1950-04-06",
                             }
@@ -26,6 +27,7 @@ from assessclaimdc6522.src.lib import procedure
                         {
                             "text": "Professional services for allergen immunotherapy not including "
                                     "provision of allergenic extracts; two or more injections",
+                            "code": "95117",
                             "status": "completed",
                             "performedDate": "1950-04-06",
                         }
@@ -33,6 +35,8 @@ from assessclaimdc6522.src.lib import procedure
                     "relevantProceduresCount": 1,
                     "totalProceduresCount": 1,
                 },
+        ),
+        (
                 {
                     "evidence": {
                         "procedures": [
@@ -58,7 +62,7 @@ from assessclaimdc6522.src.lib import procedure
         ),
     ],
 )
-def test_medication(
+def test_procedures(
         request_body, continuous_medication_required_calculation
 ):
     """

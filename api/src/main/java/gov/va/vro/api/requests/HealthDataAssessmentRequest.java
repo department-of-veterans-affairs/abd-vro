@@ -27,4 +27,7 @@ public class HealthDataAssessmentRequest {
   @NotBlank(message = "Claim submission id cannot be empty")
   @Schema(description = "Claim submission id", example = "1234")
   private String claimSubmissionId;
+
+  @Schema(description = "MAS", example = "NEW")
+  private String disabilityActionType;
 }

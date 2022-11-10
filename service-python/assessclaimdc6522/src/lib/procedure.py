@@ -18,8 +18,8 @@ def procedures_calculation(request_body):
     procedures_count = len(veterans_procedures)
     for procedure in veterans_procedures:
         if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
-            procedure_text = procedure["text"]
-            if procedure_text in rhinitis_procedures.procedures:
+            procedure_code = procedure["code"]
+            if procedure_code in rhinitis_procedures.procedures:
                 relevant_procedures.append(procedure)
 
     relevant_procedures = sorted(

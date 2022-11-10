@@ -1,17 +1,19 @@
 plugins {
-    id 'starter.std.java.library-spring-conventions'
+  id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {
-    implementation project(':shared:domain')
-    implementation project(':persistence:model')
-    implementation project(':service:spi')
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
-    // Needed?
-    // implementation "gov.va.starter:exceptions"
+  implementation project(':shared:domain')
+  implementation project(':persistence:model')
+  implementation project(':service:spi')
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  // Needed?
+  // implementation "gov.va.starter:exceptions"
 
-    testRuntimeOnly "com.h2database:h2:${h2_version}"
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+  testRuntimeOnly "com.h2database:h2:${h2_version}"
 }
 

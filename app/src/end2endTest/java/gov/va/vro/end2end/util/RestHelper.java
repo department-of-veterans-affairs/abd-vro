@@ -2,13 +2,9 @@ package gov.va.vro.end2end.util;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.SystemUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.BodyInserters;
-
-import java.time.Duration;
+import org.junit.jupiter.api.Assertions;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 @Getter
 @Setter
@@ -17,22 +13,16 @@ public class RestHelper {
   private static final String API_KEY = "X-API-KEY";
   private static final String ASSESSMENT_END_POINT = "/full-health-data-assessment";
   private static final String PDF_END_POINT = "/evidence-pdf";
-  private static final long responseTimeout;
 
-  static {
-    String rtEnv = SystemUtils.getEnvironmentVariable("VRO_E2E_RESPONSE_TIMEOUT", "20000");
-    responseTimeout = Long.parseLong(rtEnv);
-  }
+  private RestTemplate restTemplate = new RestTemplate();
 
   private String apiKey;
 
-  private WebTestClient buildClient() {
-    return WebTestClient.bindToServer()
-        .baseUrl(BASE_URL)
-        .defaultHeader(API_KEY, apiKey)
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .responseTimeout(Duration.ofMillis(responseTimeout))
-        .build();
+  private HttpHeaders buildHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set(API_KEY, apiKey);
+    return headers;
   }
 
   /**
@@ -44,20 +34,14 @@ public class RestHelper {
    */
   public String getAssessment(TestSetup setup) throws Exception {
     String req = setup.getAssessmentRequest();
+    HttpHeaders headers = buildHeaders();
+    HttpEntity<String> requestEntity = new HttpEntity<>(req, headers);
+    String url = BASE_URL + ASSESSMENT_END_POINT;
+    ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
-    String result =
-        buildClient()
-            .post()
-            .uri(ASSESSMENT_END_POINT)
-            .body(BodyInserters.fromValue(req))
-            .exchange()
-            .expectStatus()
-            .isCreated()
-            .expectBody(String.class)
-            .returnResult()
-            .getResponseBody();
+    Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-    return result;
+    return response.getBody();
   }
 
   /**
@@ -69,20 +53,14 @@ public class RestHelper {
    */
   public String generatePdf(TestSetup setup) throws Exception {
     String req = setup.getGeneratePdfRequest();
+    HttpHeaders headers = buildHeaders();
+    HttpEntity<String> requestEntity = new HttpEntity<>(req, headers);
+    String url = BASE_URL + PDF_END_POINT;
+    ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
-    String result =
-        buildClient()
-            .post()
-            .uri(PDF_END_POINT)
-            .body(BodyInserters.fromValue(req))
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .expectBody(String.class)
-            .returnResult()
-            .getResponseBody();
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    return result;
+    return response.getBody();
   }
 
   /**
@@ -92,22 +70,22 @@ public class RestHelper {
    * @return evidence pdf as byte array
    */
   public byte[] getPdf(TestSetup setup) {
-    String cd = setup.getContentDisposition();
+    String cd = setup.getContentDispositionFilename();
     String claimSubmissionId = setup.getClaimSubmissionId();
 
-    byte[] result =
-        buildClient()
-            .get()
-            .uri(uriBuilder -> uriBuilder.path(PDF_END_POINT + "/" + claimSubmissionId).build())
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .expectHeader()
-            .valueEquals(HttpHeaders.CONTENT_DISPOSITION, cd)
-            .expectBody()
-            .returnResult()
-            .getResponseBody();
+    HttpHeaders headers = buildHeaders();
+    HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+    String url = BASE_URL + PDF_END_POINT + "/" + claimSubmissionId;
+    ResponseEntity<byte[]> response =
+        restTemplate.exchange(url, HttpMethod.GET, requestEntity, byte[].class);
 
-    return result;
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    HttpHeaders responseHeaders = response.getHeaders();
+    ContentDisposition actualCd = responseHeaders.getContentDisposition();
+    String filename = actualCd.getFilename();
+    Assertions.assertEquals(cd, filename);
+
+    return response.getBody();
   }
 }

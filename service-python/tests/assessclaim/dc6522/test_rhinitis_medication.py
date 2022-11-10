@@ -23,7 +23,7 @@ from assessclaimdc6522.src.lib import medication
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "fexofenadine Oral Tablet [Allegra]",
                         "status": "active",
@@ -51,7 +51,7 @@ from assessclaimdc6522.src.lib import medication
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "pseudoephedrine 45 MG",
                         "status": "active",
@@ -79,7 +79,7 @@ from assessclaimdc6522.src.lib import medication
             {
                 "medications": [
                     {
-                        "conditionRelated": "false",
+                        "conditionRelated": False,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",
@@ -112,14 +112,14 @@ from assessclaimdc6522.src.lib import medication
             {
                 "medications": [
                     {
-                        "conditionRelated": "true",
+                        "conditionRelated": True,
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "diphenhydrAMINE hydrochloride 2.5 MG/ML Oral Solution",
                         "status": "active",
                         "suggestedCategory": ["Antihistimine"]
                     },
                     {
-                        "conditionRelated": "false",
+                        "conditionRelated": False,
                         "authoredOn": "1952-04-06T04:00:00Z",
                         "description": "Advil",
                         "status": "active",

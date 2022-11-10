@@ -1,92 +1,102 @@
 plugins {
-    id 'local.std.java.application-conventions'
-    id 'starter.java.config-conventions'
-    id 'starter.java.build-utils-conventions'
-    id 'org.unbroken-dome.test-sets' version '4.0.0'
+  id 'local.std.java.application-conventions'
+  id 'starter.java.config-conventions'
+  id 'starter.java.build-utils-conventions'
+  id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
 testSets {
-    end2endTest
+  end2endTest
 }
 
 tasks.named("end2endTest") {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 dependencies {
-    implementation project(':shared:domain')
-    implementation project(':api')
-    implementation project(':controller')
-    implementation project(':persistence:model')
-    implementation project(':service:provider')
-    implementation project(':service:spi')
-    implementation project(':service:db')
+  constraints {
+    // for starter-bom
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+  }
 
-    implementation 'gov.va.starter:open-api'
-    // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-    implementation 'gov.va.starter:health'
-    // Not sure if these are needed:
-    implementation 'gov.va.starter:tracing'
-    implementation 'gov.va.starter:error-handling'
-    implementation 'gov.va.starter:exceptions'
+  implementation project(':shared:domain')
+  implementation project(':api')
+  implementation project(':controller')
+  implementation project(':persistence:model')
+  implementation project(':service:provider')
+  implementation project(':service:spi')
+  implementation project(':service:db')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
+  implementation 'gov.va.starter:open-api'
+  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
+  implementation 'gov.va.starter:health'
+  // Not sure if these are needed:
+  implementation 'gov.va.starter:tracing'
+  implementation 'gov.va.starter:error-handling'
+  implementation 'gov.va.starter:exceptions'
 
+  runtimeOnly "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+  testImplementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
-    //MAS oAuth2 webclient libs
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
-    implementation "org.springframework.security:spring-security-oauth2-client:${oauth2_client}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+  implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
+  implementation "org.springframework.security:spring-security-core:${spring_security_version}"
+  implementation "org.springframework.security:spring-security-config:${spring_security_version}"
+  implementation "org.springframework.security:spring-security-web:${spring_security_version}"
 
-    // Needed?
-    // implementation "org.postgresql:postgresql:${postgresql_version}"
-    runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
-    testRuntimeOnly "com.h2database:h2:${h2_version}"
+  // Needed?
+  // implementation "org.postgresql:postgresql:${postgresql_version}"
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
-    testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+  testRuntimeOnly "com.h2database:h2:${h2_version}"
 
-    // end to end dependencies
-    end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-    end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
-    end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-    end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
+  testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+
+  // end to end dependencies
+  end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+  end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
+  end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
 }
 
 openApi {
-    customBootRun {
-        getClasspath().setFrom(sourceSets.test.runtimeClasspath)
-    }
+  customBootRun {
+    getClasspath().setFrom(sourceSets.test.runtimeClasspath)
+  }
 }
 
 afterEvaluate {
-    tasks.named('forkedSpringBootRun').configure {
-        dependsOn 'bootStartScripts'
-        dependsOn 'checkstyleIntegrationTest'
-        dependsOn 'checkstyleMain'
-        dependsOn 'checkstyleTest'
-        dependsOn 'compileIntegrationTestJava'
-        dependsOn 'dockerfileZip'
-        dependsOn 'integrationTest'
-        dependsOn 'jar'
-        dependsOn 'spotlessJava'
-        dependsOn 'startScripts'
-        dependsOn 'test'
-        // dependsOn ':service-python:pytest' // slows down `:app:build` task
+  tasks.named('forkedSpringBootRun').configure {
+    dependsOn 'bootStartScripts'
+    dependsOn 'checkstyleIntegrationTest'
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+    dependsOn 'compileIntegrationTestJava'
+    dependsOn 'dockerfileZip'
+    dependsOn 'integrationTest'
+    dependsOn 'jar'
+    dependsOn 'spotlessJava'
+    dependsOn 'startScripts'
+    dependsOn 'test'
+    // dependsOn ':service-python:pytest' // slows down `:app:build` task
 
-        dependsOn 'jacocoTestReport'
-        dependsOn 'jacocoTestCoverageVerification'
+    dependsOn 'jacocoTestReport'
+    dependsOn 'jacocoTestCoverageVerification'
 
-        dependsOn 'dockerPrepare'
-    }
+    dependsOn 'dockerPrepare'
+  }
 
-    tasks.named('spectralLint').configure {
-        dependsOn 'forkedSpringBootStop'
-    }
+  tasks.named('spectralLint').configure {
+    dependsOn 'forkedSpringBootStop'
+  }
 }

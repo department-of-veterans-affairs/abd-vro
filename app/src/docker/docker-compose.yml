@@ -143,6 +143,17 @@ services:
     networks:
       - internal
 
+  svc-assessor-dc7101v2:
+    image: va/abd_vro-assessclaimdc7101v2:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
   svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
@@ -154,6 +165,32 @@ services:
         condition: service_healthy
     networks:
       - internal
+
+  svc-assessor-dc6602v2:
+    image: va/abd_vro-assessclaimdc6602v2:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
+
+  svc-assessor-dc6522:
+    image: va/abd_vro-assessclaimdc6522:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
 
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest

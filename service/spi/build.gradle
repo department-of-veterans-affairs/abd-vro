@@ -1,8 +1,13 @@
 plugins {
-    id 'starter.std.java.library-spring-conventions'
+  id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {
-    implementation project(':shared:domain')
-    // implementation "gov.va.starter:exceptions"
+  constraints {
+    // for starter-bom
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+  }
+
+  implementation project(':shared:domain')
+  // implementation "gov.va.starter:exceptions"
 }

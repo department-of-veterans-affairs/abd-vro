@@ -22,7 +22,7 @@ from assessclaimdc6522.src.lib import main
                 "date_of_claim": "2021-11-09",
             },
             {"evidence": {"medications": [{"authoredOn": "1952-04-06T04:00:00Z",
-                                           "conditionRelated": "false",
+                                           "conditionRelated": False,
                                            "description": "Prednisone",
                                            "status": "active",
                                            "suggestedCategory": []}],
@@ -54,7 +54,7 @@ from assessclaimdc6522.src.lib import main
                 "date_of_claim": "2021-11-09",
             },
             {"evidence": {"medications": [{"authoredOn": "1952-04-06T04:00:00Z",
-                                           "conditionRelated": "false",
+                                           "conditionRelated": False,
                                            "description": "predniSONE 1 MG Oral Tablet",
                                            "status": "active",
                                            "suggestedCategory": []}],
@@ -92,7 +92,7 @@ from assessclaimdc6522.src.lib import main
                 "evidence": {
                     "medications": [{
                         "authoredOn": "1952-04-06T04:00:00Z",
-                        "conditionRelated": "false",
+                        "conditionRelated": False,
                         "description": "Advil",
                         "status": "active",
                         "suggestedCategory": []},
