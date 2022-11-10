@@ -164,12 +164,6 @@ slack:
     webhook: "${SLACK_EXCEPTION_WEBHOOK}"
     channel: "${SLACK_EXCEPTION_CHANNEL}"
 
-mas:
-  processing:
-    initial-delay: "${MAS_PROCESSING_INITIAL_DELAY:20000}"
-    subsequent-delay: "${MAS_PROCESSING_SUBSEQUENT_DELAY:10000}"
-    retry-count: "${MAS_PROCESSING_RETRY_COUNT:5}"
-
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
