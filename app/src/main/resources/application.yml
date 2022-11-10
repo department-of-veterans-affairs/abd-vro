@@ -136,8 +136,8 @@ vro:
       description: This API provides functionality to improve benefit delivery to Veterans using health data.
       version: v1
       contact:
-        name: D (Yoom) Lam
-        email: "dung.lam1@va.gov"
+        name: Premal Shah
+        email: "premal.shah@va.gov"
       license:
         name: CCO 1.0
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
