@@ -30,17 +30,18 @@ spring:
   http:
     encoding:
       force: true
+
   security:
     oauth2:
       client:
         provider:
           mas:
-            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
+            uri: ${mas-api-auth-token-uri:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
         registration:
           mas:
-            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
-            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
-            scope: "${MAS_API_AUTH_SCOPE:openid}"
+            client-id: ${mas-api-auth-clientID:clientID}
+            client-secret: ${mas-api-auth-client-secret:clientSecret}
+            scope: ${mas-api-auth-scope:openid}
             grant-type: client_credentials
 masAPIProvider:
   baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
