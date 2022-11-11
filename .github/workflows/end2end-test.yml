@@ -39,7 +39,7 @@ env:
   REDIS_PLACEHOLDERS_PASSWORD: vro_redis_password
 
 jobs:
-  build-and-test:
+  end2end-test:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
