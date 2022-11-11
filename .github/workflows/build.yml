@@ -40,7 +40,7 @@ jobs:
         # `check` runs hadolint and shellcheck
         run: ./gradlew build check
 
-      - name: "Upload build reports"
+      - name: "Upload gradle reports"
         uses: actions/upload-artifact@v3
         with:
           name: gradle-build-reports
