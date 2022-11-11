@@ -23,18 +23,14 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
-
-      - name: "Set up VRO build env"
-        uses: ./.github/actions/setup-vro
+      # Run actions/build-images action first to checkout code and set up build env
+      - name: "Build the images"
+        uses: ./.github/actions/build-images
+        with:
+          access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Test code"
         run: ./gradlew check
-
-      - name: "Build Docker images"
-        run: |
-          ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Login to GitHub Container Registry"
         uses: docker/login-action@v2.1.0

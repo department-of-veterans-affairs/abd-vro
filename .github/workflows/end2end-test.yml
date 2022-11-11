@@ -42,14 +42,10 @@ jobs:
   end2end-test:
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
-
-      - name: "Set up VRO build env"
-        uses: ./.github/actions/setup-vro
-
       - name: "Build the images"
-        run: ./gradlew docker
+        uses: ./.github/actions/build-images
+        with:
+          access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
 
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
