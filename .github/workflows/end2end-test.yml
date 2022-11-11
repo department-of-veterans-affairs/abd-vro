@@ -48,10 +48,6 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
-      - name: "Build the code"
-        # unit tests are run in another workflow
-        run: ./gradlew build -x test
-
       - name: "Build the images"
         run: ./gradlew docker
 
