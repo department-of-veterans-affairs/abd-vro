@@ -23,12 +23,15 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-      # Run actions/build-images action first to checkout code and set up build env
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
       - name: "Build the images"
         uses: ./.github/actions/build-images
         with:
           access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
 
+      # Run build-images action to set up build env before testing code
       - name: "Test code"
         run: ./gradlew check
 
