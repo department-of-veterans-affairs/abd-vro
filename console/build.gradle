@@ -5,6 +5,8 @@ plugins {
 }
 
 ext {
+  jacocoExclude = ['**/VroConsoleConfig.*']
+  jacoco_minimum_coverage = 0.3
   // set('testcontainersVersion', "1.17.4")
 }
 
@@ -41,6 +43,8 @@ dependencies {
   // Redis
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+  testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+  testImplementation 'com.h2database:h2'
   testImplementation 'org.spockframework:spock-core'
   // TODO: add integration tests
   //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -57,10 +61,6 @@ dependencies {
 
 docker {
   files "src/main/resources/groovysh.rc"
-}
-
-tasks.named('test') {
-  useJUnitPlatform()
 }
 
 spotless {
