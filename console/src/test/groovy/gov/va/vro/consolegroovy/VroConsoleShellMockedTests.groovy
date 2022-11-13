@@ -18,13 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.spy
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@AutoConfigureTestDatabase
-//@ActiveProfiles("test")
-//@Import(AppTestConfig.class)
-//@CamelSpringBootTest
+
 @ExtendWith(MockitoExtension)
-class ConsoleGroovyApplicationTests {
+class VroConsoleShellMockedTests {
 
   @Mock
   CamelContext camelContext
@@ -72,7 +68,6 @@ class ConsoleGroovyApplicationTests {
     def jsonString = shell.execute('printJson jsonObj')
     assertTrue jsonString.contains('"name" : "John Doe"')
     assertTrue jsonString.contains('"age" : 43')
-
   }
 
   @Test

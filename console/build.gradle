@@ -6,7 +6,7 @@ plugins {
 
 ext {
   jacocoExclude = ['**/VroConsoleConfig.*']
-  jacoco_minimum_coverage = 0.3
+  jacoco_minimum_coverage = 0.7
   // set('testcontainersVersion', "1.17.4")
 }
 

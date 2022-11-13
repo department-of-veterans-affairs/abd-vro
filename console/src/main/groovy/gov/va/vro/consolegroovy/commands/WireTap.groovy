@@ -32,22 +32,24 @@ class WireTap extends CommandSupport {
     })
   }
 
+  Closure<String> wireTapSubscriptionEndpoint = { String tapName ->
+    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()}
+
   String subscribeToTopic(String wireTapName) {
-    RoutesBuilder routeBuilder = new WireTapRoute(wireTapName)
+    String tapEndpoint = wireTapSubscriptionEndpoint(wireTapName)
+    RoutesBuilder routeBuilder = new WireTapRoute(wireTapName, tapEndpoint)
     camelContext.addRoutes(routeBuilder)
     "tap-${wireTapName}"
   }
 
+  @groovy.transform.TupleConstructor
   static class WireTapRoute extends RouteBuilder {
     final String tapName
-
-    WireTapRoute(String wireTapName) {
-      this.tapName = wireTapName
-    }
+    final String tapEndpoint
 
     @Override
     void configure() throws Exception {
-      from("rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}")
+      from(tapEndpoint)
           .routeId("console-${tapName}")
           .process(prettyPrinter)
           .to("log:${tapName}?plain=true")
