@@ -2,41 +2,31 @@ package gov.va.vro.consolegroovy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fppt.jedismock.RedisServer
-import gov.va.vro.persistence.repository.ClaimRepository
-import gov.va.vro.persistence.repository.VeteranRepository
 import io.lettuce.core.RedisClient
-import org.apache.camel.CamelContext
-import org.apache.camel.ProducerTemplate
+import org.apache.groovy.groovysh.Command
 import org.apache.groovy.groovysh.Groovysh
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertTrue
-import static org.mockito.Mockito.doReturn
 
 @ExtendWith(MockitoExtension)
 class VroConsoleShellRedisTests {
-  @Mock
-  CamelContext camelContext
-
-  ObjectMapper objectMapper = new ObjectMapper()
 
   @Mock
-  ProducerTemplate producerTemplate
+  DatabaseConnection db
 
   @Mock
-  ClaimRepository claimRepository
+  CamelConnection camel
 
   @Mock
-  VeteranRepository veteranRepository
+  RedisConnection redis
 
-  @Mock
-  LettuceConnectionFactory lettuceConnectionFactory
+  Closure<List<Command>> vroConsoleCommandsFactory = new VroConsoleConfig().vroConsoleCommandsFactory(new ObjectMapper())
 
   VroConsoleShell consoleShell
   Groovysh shell
@@ -44,11 +34,12 @@ class VroConsoleShellRedisTests {
   @BeforeEach
   void setup() {
     // This binds mock redis server to a random port
-    doReturn(new HashMap()).when(camelContext).getGlobalOptions()
-    consoleShell = new VroConsoleShell(camelContext, objectMapper, producerTemplate, claimRepository, veteranRepository, lettuceConnectionFactory)
-
     RedisServer server = RedisServer.newRedisServer().start()
-    consoleShell.redisClient = RedisClient.create(String.format("redis://%s:%s", server.getHost(), server.getBindPort()));
+
+    RedisConnection redis = new RedisConnection()
+    redis.redisClient = RedisClient.create(String.format("redis://%s:%s", server.getHost(), server.getBindPort()));
+
+    consoleShell = new VroConsoleShell(vroConsoleCommandsFactory, db, camel, redis)
     shell = consoleShell.setupVroShell()
   }
 

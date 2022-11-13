@@ -1,5 +1,10 @@
 package gov.va.vro.consolegroovy
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import gov.va.vro.consolegroovy.commands.PrintJson
+import gov.va.vro.consolegroovy.commands.WireTap
+import org.apache.groovy.groovysh.Command
+import org.apache.groovy.groovysh.Groovysh
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -36,5 +41,18 @@ class VroConsoleConfig {
     template.setConnectionFactory(lettuceConnectionFactory())
     template.setDefaultSerializer(new StringRedisSerializer())
     template
+  }
+
+  @Autowired
+  final ObjectMapper objectMapper
+
+  @Bean
+  Closure<List<Command>> vroConsoleCommandsFactory(ObjectMapper objectMapper){
+    return { Groovysh shell, VroConsoleShell vroShell ->
+      List.of(
+          new PrintJson(shell, objectMapper),
+          new WireTap(shell, vroShell.camel.camelContext)
+      )
+    }
   }
 }

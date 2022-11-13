@@ -1,56 +1,37 @@
 package gov.va.vro.consolegroovy
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import gov.va.vro.persistence.repository.ClaimRepository
-import gov.va.vro.persistence.repository.VeteranRepository
-import io.lettuce.core.api.sync.RedisCommands
-import org.apache.camel.CamelContext
-import org.apache.camel.ProducerTemplate
+import org.apache.groovy.groovysh.Command
 import org.apache.groovy.groovysh.Groovysh
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertTrue
-import static org.mockito.Mockito.doReturn
-import static org.mockito.Mockito.spy
 
 @ExtendWith(MockitoExtension)
 class VroConsoleShellPrintJsonTests {
 
   @Mock
-  CamelContext camelContext
-
-  ObjectMapper objectMapper = new ObjectMapper()
+  DatabaseConnection db
 
   @Mock
-  ProducerTemplate producerTemplate
+  CamelConnection camel
 
   @Mock
-  ClaimRepository claimRepository
+  RedisConnection redis
 
-  @Mock
-  VeteranRepository veteranRepository
-
-  @Mock
-  RedisCommands redisCommands
-
-  @Mock
-  LettuceConnectionFactory lettuceConnectionFactory
+  Closure<List<Command>> vroConsoleCommandsFactory = new VroConsoleConfig().vroConsoleCommandsFactory(new ObjectMapper())
 
   VroConsoleShell consoleShell
   Groovysh shell
 
   @BeforeEach
   void setup(){
-    doReturn(new HashMap()).when(camelContext).getGlobalOptions()
-    consoleShell = spy(new VroConsoleShell(camelContext, objectMapper, producerTemplate, claimRepository, veteranRepository, lettuceConnectionFactory))
-    doReturn(redisCommands).when(consoleShell).redisConnection()
-
+    consoleShell = new VroConsoleShell(vroConsoleCommandsFactory, db, camel, redis)
     shell = consoleShell.setupVroShell()
   }
 

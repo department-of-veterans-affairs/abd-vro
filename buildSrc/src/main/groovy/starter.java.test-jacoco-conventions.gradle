@@ -6,18 +6,22 @@
  */
 
 plugins {
-    id 'java'
-    id 'jacoco'
+  id 'java'
+  id 'jacoco'
+  id 'org.barfuin.gradle.jacocolog'
 }
 
 jacoco {
-    toolVersion = jacoco_tool_version
-    reportsDir = file("$buildDir/jacoco")
+  toolVersion = jacoco_tool_version
+  reportsDir = file("$buildDir/jacoco")
 }
 
 test {
-    finalizedBy jacocoTestReport
-    finalizedBy jacocoTestCoverageVerification
+  finalizedBy jacocoTestReport
+}
+
+check {
+  dependsOn jacocoTestCoverageVerification
 }
 
 ext {

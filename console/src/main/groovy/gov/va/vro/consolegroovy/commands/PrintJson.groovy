@@ -16,7 +16,7 @@ class PrintJson extends CommandSupport {
 
   private final ObjectMapper objectMapper
 
-  protected PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
+  PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
     super(shell, 'printJson', 'pj')
     // TODO: add Command description, usage, etc.
 

@@ -1,16 +1,7 @@
 package gov.va.vro.consolegroovy
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import gov.va.vro.consolegroovy.commands.PrintJson
-import gov.va.vro.consolegroovy.commands.WireTap
-import gov.va.vro.persistence.repository.ClaimRepository
-import gov.va.vro.persistence.repository.VeteranRepository
-import io.lettuce.core.RedisClient
-import io.lettuce.core.api.StatefulRedisConnection
-import io.lettuce.core.api.sync.RedisCommands
-import org.apache.camel.CamelContext
-import org.apache.camel.Exchange
-import org.apache.camel.ProducerTemplate
+
+import org.apache.groovy.groovysh.Command
 import org.apache.groovy.groovysh.Groovysh
 import org.apache.groovy.groovysh.util.PackageHelper
 import org.codehaus.groovy.tools.shell.IO
@@ -18,41 +9,24 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
+
+import javax.annotation.Resource
 
 @Service
 @groovy.transform.TupleConstructor
 class VroConsoleShell {
-  @Autowired
-  CamelContext camelContext
+  @Resource
+  Closure<List<Command>> vroConsoleCommandsFactory
 
   @Autowired
-  ObjectMapper objectMapper
+  final DatabaseConnection db
 
   @Autowired
-  ProducerTemplate producerTemplate
+  final CamelConnection camel
 
   @Autowired
-  ClaimRepository claimRepository
-
-  @Autowired
-  VeteranRepository veteranRepository
-
-  @Autowired
-  LettuceConnectionFactory lettuceConnectionFactory
-
-  RedisClient redisClient
-
-  RedisCommands<String, String> redisConnection(){
-    redisClient = redisClient ?: lettuceConnectionFactory.getNativeClient()
-    StatefulRedisConnection<String, String> connection = redisClient.connect()
-    connection.sync()
-  }
-
-  @Autowired
-  RedisTemplate<String, Object> redisTemplate
+  final RedisConnection redis
 
   @EventListener(ApplicationReadyEvent)
   int startShell() {
@@ -68,24 +42,20 @@ class VroConsoleShell {
 
   Groovysh setupVroShell(){
     def shell = createGroovysh(getBinding())
-    shell.register(new PrintJson(shell, objectMapper))
-    shell.register(new WireTap(shell, camelContext))
-
-    // Don't limit the log message length since WireTap prints out the message body
-    // https://camel.apache.org/manual/faq/how-do-i-set-the-max-chars-when-debug-logging-messages-in-camel.html
-    camelContext.getGlobalOptions().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0")
-
+    vroConsoleCommandsFactory(shell, this).each { Command cmd ->
+      shell.register(cmd)
+    }
     shell
   }
 
   def getBinding() {
     new Binding([
-      redis: redisConnection(),
-      redisT: redisTemplate,
-      claimsT: claimRepository,
-      vetT   : veteranRepository,
-      camel  : camelContext,
-      pt     : producerTemplate
+      redis: redis.redisCommands,
+      redisT: redis.redisTemplate,
+      claimsT: db.claimRepository,
+      vetT   : db.veteranRepository,
+      camel  : camel.camelContext,
+      pt     : camel.producerTemplate
     ])
   }
 
