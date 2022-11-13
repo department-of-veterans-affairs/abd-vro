@@ -47,6 +47,7 @@ class VroConsoleShellPrintJsonTests {
 
   @BeforeEach
   void setup(){
+    doReturn(new HashMap()).when(camelContext).getGlobalOptions()
     consoleShell = spy(new VroConsoleShell(camelContext, objectMapper, producerTemplate, claimRepository, veteranRepository, lettuceConnectionFactory))
     doReturn(redisCommands).when(consoleShell).redisConnection()
 
@@ -78,9 +79,8 @@ class VroConsoleShellPrintJsonTests {
       claim.setClaimSubmissionId('id-123456')
       claim.setIdType('va.gov-Form526Submission')
       """.stripMargin()
-    println createClaim
     shell.execute(createClaim)
-    def claimJsonString = shell.execute('printJson claim')
+    String claimJsonString = shell.execute('printJson claim')
     assertTrue claimJsonString.contains('"claimSubmissionId" : "id-123456"')
     assertTrue claimJsonString.contains('"idType" : "va.gov-Form526Submission"')
     assertTrue claimJsonString.contains('"veteran" : null')
@@ -93,7 +93,7 @@ class VroConsoleShellPrintJsonTests {
       claim.setVeteran(veteran)
       """.stripMargin()
     shell.execute(setVeteran)
-    def claimVetJsonString = shell.execute('printJson claim')
+    String claimVetJsonString = shell.execute('printJson claim')
     assertTrue claimVetJsonString.contains('"veteran" : {')
     assertTrue claimVetJsonString.contains('"icn" : "987654321"')
     assertTrue claimVetJsonString.contains('"participantId" : "333-4444-55555"')
@@ -104,11 +104,11 @@ class VroConsoleShellPrintJsonTests {
       claim.addContention(contention)
       """.stripMargin()
     shell.execute(setContention)
-    def claimContentionJsonString = shell.execute('printJson claim')
+    String claimContentionJsonString = shell.execute('printJson claim')
     assertTrue claimContentionJsonString.contains('"contentions" : [ {')
     assertTrue claimContentionJsonString.contains('"diagnosticCode" : "7101"')
 
-    def contentionJsonString = shell.execute('printJson claim.contentions[0]')
+    String contentionJsonString = shell.execute('printJson claim.contentions[0]')
     assertTrue contentionJsonString.contains('"diagnosticCode" : "7101"')
     assertTrue contentionJsonString.contains('"claim" : {')
     assertTrue contentionJsonString.contains('"claimSubmissionId" : "id-123456"')

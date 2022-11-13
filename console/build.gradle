@@ -6,17 +6,9 @@ plugins {
 
 ext {
   jacocoExclude = ['**/VroConsoleConfig.*']
-  jacoco_minimum_coverage = 0.7
-  // set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
-  // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
-  // in order to convert ClaimEntity.createdAt into JSON.
-  // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
-  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
-
   // Needed to access DB Entity records
   implementation project(':persistence:model')
 
@@ -43,21 +35,15 @@ dependencies {
   // Redis
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-  testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-  testImplementation 'com.h2database:h2'
-  testImplementation 'org.spockframework:spock-core'
-  // TODO: add integration tests
-  //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-  //        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
-  //    }
-  //	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-}
+  testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
+  testImplementation "com.github.fppt:jedis-mock:1.0.5"
 
-// TODO: add integration tests
-//configurations {
-//  integrationTestImplementation.extendsFrom implementation
-//  integrationTestRuntimeOnly.extendsFrom runtimeOnly
-//}
+  // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+  // in order to convert ClaimEntity.createdAt into JSON.
+  // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
+  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+}
 
 docker {
   files "src/main/resources/groovysh.rc"

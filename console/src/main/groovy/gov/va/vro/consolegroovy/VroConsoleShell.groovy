@@ -9,6 +9,7 @@ import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 import org.apache.camel.CamelContext
+import org.apache.camel.Exchange
 import org.apache.camel.ProducerTemplate
 import org.apache.groovy.groovysh.Groovysh
 import org.apache.groovy.groovysh.util.PackageHelper
@@ -42,10 +43,12 @@ class VroConsoleShell {
   @Autowired
   LettuceConnectionFactory lettuceConnectionFactory
 
-  def redisConnection(){
-    RedisClient redisClient = lettuceConnectionFactory.getNativeClient()
+  RedisClient redisClient
+
+  RedisCommands<String, String> redisConnection(){
+    redisClient ?= lettuceConnectionFactory.getNativeClient()
     StatefulRedisConnection<String, String> connection = redisClient.connect()
-    RedisCommands<String, String> syncRedisCommands = connection.sync()
+    connection.sync()
   }
 
   @Autowired
@@ -57,6 +60,7 @@ class VroConsoleShell {
     println("Working Directory = " + userDir)
 
     def shell = setupVroShell()
+
     def returnCode = shell.run("")
     println 'Exiting'
     returnCode
@@ -69,7 +73,8 @@ class VroConsoleShell {
 
     // Don't limit the log message length since WireTap prints out the message body
     // https://camel.apache.org/manual/faq/how-do-i-set-the-max-chars-when-debug-logging-messages-in-camel.html
-    //TODO uncomment    camelContext.globalOptions.put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0")
+    camelContext.getGlobalOptions().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0")
+
     shell
   }
 
