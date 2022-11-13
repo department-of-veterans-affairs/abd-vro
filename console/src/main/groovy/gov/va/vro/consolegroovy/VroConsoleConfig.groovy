@@ -52,7 +52,7 @@ class VroConsoleConfig {
       List.of(
           new PrintJson(shell, objectMapper),
           new WireTap(shell, vroShell.camel.camelContext)
-      )
+          )
     }
   }
 }

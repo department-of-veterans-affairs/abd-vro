@@ -24,5 +24,4 @@ class RedisConnection {
     StatefulRedisConnection<String, String> connection = redisClient.connect()
     connection.sync()
   }
-
 }
