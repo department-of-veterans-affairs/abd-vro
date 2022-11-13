@@ -38,4 +38,5 @@ jobs:
 
       - name: "Run linters and tests"
         # `check` runs hadolint and shellcheck
-        run: ./gradlew check
+        # jacocoTestCoverageVerification checks adequate test coverage
+        run: ./gradlew check jacocoTestCoverageVerification
