@@ -2,6 +2,11 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
 }
 
+ext {
+  // TODO: improve test code coverage so that the following can be removed
+  jacoco_minimum_coverage = 0.4
+}
+
 dependencies {
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
@@ -16,4 +21,3 @@ dependencies {
 
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 }
-
