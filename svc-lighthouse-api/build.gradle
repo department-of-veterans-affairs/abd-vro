@@ -69,17 +69,9 @@ configurations {
   integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
-//jacoco {
-//  toolVersion = jacoco_tool_version
-//  reportsDirectory = file("$buildDir/jacoco")
-//}
-
 test {
   useJUnitPlatform()
   exclude '**/integrationTest'
-  //  finalizedBy jacocoTestReport {
-  //    executionData(file("${project.buildDir}/jacoco/test.exec"))
-  //  }
 }
 
 task integrationTest(type: Test) {

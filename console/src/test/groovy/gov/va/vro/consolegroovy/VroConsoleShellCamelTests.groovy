@@ -54,14 +54,14 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
   @Override
   protected RoutesBuilder createRouteBuilder() {
     new RouteBuilder() {
-      @Override
-      void configure() {
-        from('direct:start')
-            .routeId('claim-submit')
-            .wireTap(wireTapEndpoint)
-            .to('mock:end')
-      }
-    }
+          @Override
+          void configure() {
+            from('direct:start')
+                .routeId('claim-submit')
+                .wireTap(wireTapEndpoint)
+                .to('mock:end')
+          }
+        }
   }
 
   @BeforeEach
@@ -73,7 +73,7 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
 
     shell = consoleShell.setupVroShell()
     WireTap wireTapCommand = shell.findCommand('wireTap')
-    wireTapCommand.wireTapSubscriptionEndpoint = tapName -> wireTapEndpoint
+    wireTapCommand.wireTapSubscriptionEndpoint = { tapName -> wireTapEndpoint }
   }
 
   @Test
@@ -96,7 +96,7 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
   }
 
   void checkAssertions(){
-    AdviceWith.adviceWith(context(), "console-${tapName}", a -> {
+    AdviceWith.adviceWith(context(), "console-${tapName}", { a ->
       a.mockEndpoints("log:claim-submitted?*")
     })
 
@@ -110,7 +110,7 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
     // log:${tapName} receives prettyPrinter output via route:
     // wiretap -> seda:console-${tapName} -> prettyPrinter -> log:${tapName}
     getMockEndpoint("mock:log:claim-submitted").expectedMessageCount(1)
-    getMockEndpoint("mock:log:claim-submitted").whenAnyExchangeReceived(ex -> {
+    getMockEndpoint("mock:log:claim-submitted").whenAnyExchangeReceived({ ex ->
       def logString = ex.getIn().getBody(String)
       // The message contains the original body's content:
       assertTrue(logString.contains('"body": "payload"'))

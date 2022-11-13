@@ -46,7 +46,7 @@ class VroConsoleShell {
   RedisClient redisClient
 
   RedisCommands<String, String> redisConnection(){
-    redisClient ?= lettuceConnectionFactory.getNativeClient()
+    redisClient = redisClient ?: lettuceConnectionFactory.getNativeClient()
     StatefulRedisConnection<String, String> connection = redisClient.connect()
     connection.sync()
   }

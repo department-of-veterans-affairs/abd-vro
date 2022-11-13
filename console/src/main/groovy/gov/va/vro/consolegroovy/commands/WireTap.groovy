@@ -33,7 +33,8 @@ class WireTap extends CommandSupport {
   }
 
   Closure<String> wireTapSubscriptionEndpoint = { String tapName ->
-    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()}
+    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()
+  }
 
   String subscribeToTopic(String wireTapName) {
     String tapEndpoint = wireTapSubscriptionEndpoint(wireTapName)
