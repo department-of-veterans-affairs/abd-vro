@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.spy
 
 @ExtendWith(MockitoExtension)
-class VroConsoleShellMockedTests {
+class VroConsoleShellPrintJsonTests {
 
   @Mock
   CamelContext camelContext

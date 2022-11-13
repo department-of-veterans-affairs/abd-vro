@@ -26,7 +26,6 @@ import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.spy
 
 @ExtendWith(MockitoExtension)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VroConsoleShellCamelTests extends CamelTestSupport {
 
   ObjectMapper objectMapper = new ObjectMapper()
@@ -84,11 +83,19 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
   }
 
   @Test
-  void listenToWireTapTest() {
+  void wireTapTest() {
+    shell.execute("wireTap ${tapName}")
+    checkAssertions()
+  }
+
+  @Test
+  void wireTapVariableTest() {
     shell.execute("tapName = '${tapName}'")
     shell.execute("wireTap tapName")
-    shell.execute("wireTap ${tapName}")
+    checkAssertions()
+  }
 
+  void checkAssertions(){
     AdviceWith.adviceWith(context(), "console-${tapName}", a -> {
       a.mockEndpoints("log:claim-submitted?*")
     })
