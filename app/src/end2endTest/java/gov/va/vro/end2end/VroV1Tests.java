@@ -12,6 +12,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 public class VroV1Tests {
+
   private void testAssessment(TestSetup setup, RestHelper helper) throws Exception {
     String actual = helper.getAssessment(setup);
     String expected = setup.getAssessment();
