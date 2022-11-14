@@ -33,15 +33,18 @@ images:
 - name: vro-service-pdfgenerator
   context: "./service-python"
   path: "./service-python/Dockerfile"
-  folder: "pdfgenerator"
+  args:
+  -  SERVICE_FOLDER=pdfgenerator
 - name: vro-service-assessclaimdc7101
   context: "./service-python"
   path: "./service-python/Dockerfile"
-  folder: "assessclaimdc7101"
+  args:
+  -  SERVICE_FOLDER=assessclaimdc7101
 - name: vro-service-assessclaimdc6602
   context: "./service-python"
   path: "./service-python/Dockerfile"
-  folder: "assessclaimdc6602"
+  args:
+  -  SERVICE_FOLDER=assessclaimdc6602
 # END image-names.sh replacement block (do not modify this line)
 
 # Remove source block if you're not building sources
