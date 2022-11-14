@@ -40,6 +40,12 @@ jobs:
         # `check` runs hadolint and shellcheck
         run: ./gradlew build check
 
+      - name: "Upload gradle reports"
+        uses: actions/upload-artifact@v3
+        with:
+          name: gradle-build-reports
+          path: "**/build/reports/"
+
   build-docker-images:
     runs-on: ubuntu-latest
     steps:
