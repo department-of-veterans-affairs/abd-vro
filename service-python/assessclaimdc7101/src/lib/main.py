@@ -18,6 +18,9 @@ def assess_hypertension(event: Dict):
     validation_results = utils.validate_request_body(event)
     response_body = {}
 
+    if "dateOfClaim" not in event:
+        event["dateOfClaim"] = str(date.today())
+
     if validation_results["is_valid"]:
         relevant_medication = continuous_medication.continuous_medication_required(
             event
