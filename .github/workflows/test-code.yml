@@ -38,5 +38,7 @@ jobs:
 
       - name: "Run linters and tests"
         # `check` runs hadolint and shellcheck
-        # jacocoTestCoverageVerification checks adequate test coverage
-        run: ./gradlew check jacocoTestCoverageVerification
+        # `jacocoLogTestCoverage` logs to console the test coverage stats
+        #   see https://gitlab.com/barfuin/gradle-jacoco-log/-/tree/master#tasks
+        # `jacocoTestCoverageVerification` checks for adequate test coverage
+        run: ./gradlew check jacocoLogTestCoverage jacocoTestCoverageVerification
