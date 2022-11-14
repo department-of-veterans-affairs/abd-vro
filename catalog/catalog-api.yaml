@@ -329,4 +329,3 @@ spec:
               read: Read permissions
               write: Write permissions
               delete: Deletion permissions
-  

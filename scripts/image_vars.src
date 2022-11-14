@@ -81,4 +81,3 @@ export serviceAssessClaimDC6602_IMG="vro-service-assessclaimdc6602"
 export serviceAssessClaimDC6602_DOCKERFILE="./service-python/assessclaimdc6602/src/docker/Dockerfile"
 export serviceAssessClaimDC6602_DOCKER_CONTEXT="./service-python/assessclaimdc6602/src"
 export serviceAssessClaimDC6602_HELM_KEY="serviceAssessClaimDC6602"
-
