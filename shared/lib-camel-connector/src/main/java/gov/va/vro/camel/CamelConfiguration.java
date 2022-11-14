@@ -60,17 +60,5 @@ public class CamelConfiguration {
           registry.addTypeConverter(clazz, byte[].class, dtoConverter);
           registry.addTypeConverter(byte[].class, clazz, dtoConverter);
         });
-
-    /*
-    ((CoreTypeConverterRegistry) registry)
-        .getTypeMappings()
-        .forEach(
-            (fromClass, toClass, converter) -> {
-                System.err.println(fromClass.getName()+
-                  " -> "+toClass.getName()+" : "+converter.getClass());
-            });
-    //        System.err.println("\n+++++++ " + registry.lookup(Claim.class, byte[].class));
-    //        System.err.println("\n+++++++ " + registry.lookup(byte[].class, Claim.class));
-    */
   }
 }

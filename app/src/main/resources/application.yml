@@ -152,13 +152,19 @@ vro:
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
 
-spring.config.import: >
-  conf-camel.yml,
-  conf-camel-rabbitmq.yml
-
 spring.redis:
   # database index used by the connection factory
   database: 0
   host: ${REDIS_PLACEHOLDERS_HOST}
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+#TODO: These must be supplied
+#slack:
+#  exception:
+#    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
+#    channel: "${SLACK_EXCEPTION_CHANNEL}"
+
+spring.config.import: >
+  conf-camel.yml,
+  conf-camel-rabbitmq.yml
