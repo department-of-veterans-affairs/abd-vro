@@ -32,6 +32,10 @@ env:
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
   POSTGRES_SCHEMA: claims
   REDIS_PLACEHOLDERS_PASSWORD: vro_redis_password
+  MAS_API_AUTH_CLIENTID: bogusClientId
+  MAS_API_AUTH_CLIENT_SECRET: bogusClientSecret
+  MAS_API_AUTH_TOKEN_URI: bogusToken
+  MAS_API_AUTH_SCOPE: openid
 
 jobs:
   build-and-test:
