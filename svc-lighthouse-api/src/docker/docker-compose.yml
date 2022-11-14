@@ -28,4 +28,3 @@ services:
       - vro-api-rabbit-mq-service
     networks:
       - internal
-

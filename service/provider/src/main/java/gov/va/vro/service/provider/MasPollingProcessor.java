@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MasPollingProcessor implements Processor {
   private final CamelEntrance camelEntrance;
-  private final MasDelays masDelays;
+  private final MasConfig masDelays;
   private final MasCollectionService masCollectionService;
 
   @Override
@@ -34,7 +34,7 @@ public class MasPollingProcessor implements Processor {
 
     if (isCollectionReady) {
       var response = camelEntrance.processClaim(claimPayload);
-      log.info(response.toString());
+      log.info(response);
     } else {
       log.info("Collection {} is not ready. Requeue..ing...", claimPayload.getCollectionId());
       // re-request after some time
