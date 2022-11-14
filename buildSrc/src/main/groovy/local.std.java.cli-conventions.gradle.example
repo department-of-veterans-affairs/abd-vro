@@ -21,4 +21,3 @@ plugins {
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
 }
-
