@@ -24,7 +24,7 @@ dependencies {
   // Redis
   implementation "org.springframework.boot:spring-boot-starter-data-redis"
   implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
-  // implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
 
   // Needed?
   // implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
