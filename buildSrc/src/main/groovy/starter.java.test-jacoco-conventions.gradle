@@ -18,6 +18,7 @@ jacoco {
 
 test {
   finalizedBy jacocoTestReport
+  // see https://gitlab.com/barfuin/gradle-jacoco-log/-/tree/master#tasks
   finalizedBy jacocoLogTestCoverage
 }
 
