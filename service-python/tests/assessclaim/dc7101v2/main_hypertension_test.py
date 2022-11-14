@@ -55,8 +55,7 @@ from assessclaimdc7101v2.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "disabilityActionType": "NEW"
-                }
-                ,
+                },
                 {"dateOfClaim": "2021-11-09",
                  "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [{"date": "2021-11-01",
@@ -97,7 +96,7 @@ from assessclaimdc7101v2.src.lib import main
         # sufficient_to_autopopulate returns "success": False, but history_of_diastolic_bp doesn"t
         # Note that the inverse can"t happen (where history_of_diastolic_bp fails while sufficient_to_autopopulate doesn"t)
         # because the only way history_of_diastolic_bp can fail is if there are no bp readings, which would cause
-        # sufficient_to_autopopulate to fail as well 
+        # sufficient_to_autopopulate to fail as well
         (
                 {
                     "evidence": {
@@ -143,8 +142,7 @@ from assessclaimdc7101v2.src.lib import main
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101v2",
                     "disabilityActionType": "NEW"
-                }
-                ,
+                },
                 {"dateOfClaim": "2021-11-09",
                  "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [{"date": "2020-11-01",
@@ -194,8 +192,7 @@ from assessclaimdc7101v2.src.lib import main
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101v2",
                     "disabilityActionType": "NEW"
-                }
-                ,
+                },
                 {"dateOfClaim": "2021-11-09",
                  "disabilityActionType": "NEW",
                  "evidence": {"bp_readings": [], "conditions": []},

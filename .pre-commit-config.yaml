@@ -27,6 +27,7 @@ repos:
         exclude: ^.*helmchart.*$
       - id: destroyed-symlinks
       - id: detect-private-key
+        exclude: ^svc-lighthouse-api/.*/testkey\.pem$
       - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
       - id: fix-byte-order-marker
       - id: mixed-line-ending
