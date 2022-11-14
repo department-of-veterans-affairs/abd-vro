@@ -14,4 +14,3 @@ dependencies {
 
     integrationTestRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
-

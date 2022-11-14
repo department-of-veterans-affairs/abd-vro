@@ -26,10 +26,8 @@ from assessclaimdc7101.src.lib import utils
                                     "date": "2021-11-01",
                                     "practitioner": "DR. JANE460 DOE922 MD",
                                     "organization": "LYONS VA MEDICAL CENTER"
-                                }
-                                ,
-                            ]
-                            ,
+                                },
+                            ],
                             "medications": [{"description": "Capoten",
                                              "status": "active",
                                              "authoredOn": "1950-04-06T04:00:00Z",
@@ -77,8 +75,7 @@ from assessclaimdc7101.src.lib import utils
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             },
-                        ]
-                        ,
+                        ],
                         "medications": [{"description": 123}],
                         "conditions": []
                     },
