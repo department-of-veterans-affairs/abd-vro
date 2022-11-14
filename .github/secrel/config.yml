@@ -32,17 +32,17 @@ images:
   path: "./svc-lighthouse-api/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
   context: "./service-python"
-  path: "./service-python/Dockerfile"
+  path: "./service-python/Dockerfile.local"
   args:
   -  SERVICE_FOLDER=pdfgenerator
 - name: vro-service-assessclaimdc7101
   context: "./service-python"
-  path: "./service-python/Dockerfile"
+  path: "./service-python/Dockerfile.local"
   args:
   -  SERVICE_FOLDER=assessclaimdc7101
 - name: vro-service-assessclaimdc6602
   context: "./service-python"
-  path: "./service-python/Dockerfile"
+  path: "./service-python/Dockerfile.local"
   args:
   -  SERVICE_FOLDER=assessclaimdc6602
 # END image-names.sh replacement block (do not modify this line)
