@@ -14,17 +14,26 @@ services:
     networks:
       - internal
 
-  svc-lighthouse-api:
-    image: va/abd_vro-service-data-access:latest
+  redis:
+    image: redis
+    hostname: redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    networks:
+      - internal
 
+  pdfgenerator:
+    container_name: pdfgenerator
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
-      RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-      RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-
+      RABBITMQ_PLACEHOLDERS_USERNAME: guest
+      RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
+      REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
     build:
       dockerfile: ./Dockerfile
-    depends_on:
-      - vro-api-rabbit-mq-service
+    ports:
+      - "5000:5000"
     networks:
       - internal
