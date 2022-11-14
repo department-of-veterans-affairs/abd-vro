@@ -18,6 +18,7 @@ jacoco {
 
 test {
   finalizedBy jacocoTestReport
+  finalizedBy jacocoLogTestCoverage
 }
 
 ext {
