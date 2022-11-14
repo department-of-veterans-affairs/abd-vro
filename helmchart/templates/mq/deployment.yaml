@@ -24,9 +24,9 @@ spec:
         - name: rabbit-mq
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
           #command:
-          #  - chown 
+          #  - chown
           #  - -R
-          #  - 777 
+          #  - 777
           #  - /var/lib/rabbitmq
           env:
             - name: RABBITMQ_DEFAULT_USER

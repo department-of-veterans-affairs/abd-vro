@@ -81,4 +81,3 @@ You can either use the `status` field to check if the PDF is available or if `pd
    - The file name should match the name you used in Step 1. Following that example, it should be called `diabetes.html`
 3. Create a JSON file in `template_variables` that will contain default values for the HTML file in case they are not provided in the RabbitMQ message
     - The file name should match the name you used in Step 1 and 2. Following that example, it should be called `diabetes.json`
-
