@@ -100,19 +100,19 @@ spring:
       client:
         provider:
           mas:
-            uri: ${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}
+            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
         registration:
           mas:
-            client-id: ${MAS_API_AUTH_CLIENTID:placeholder-id}
-            client-secret: ${MAS_API_AUTH_CLIENT_SECRET:placeholder-secret}
-            scope: ${MAS_API_AUTH_SCOPE:openid}
+            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
+            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
+            scope: "${MAS_API_AUTH_SCOPE:openid}"
             grant-type: client_credentials
 masAPIProvider:
-  baseURL: ${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}
-  collectionAnnotsPath: ${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}
-  collectionStatusPath: ${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}
-  createExamOrderPath: ${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}
-
+  baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+  collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
+  collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
+  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+  
 opentracing:
   zipkin:
     enabled: false
@@ -151,6 +151,19 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
+
+spring.redis:
+  # database index used by the connection factory
+  database: 0
+  host: ${REDIS_PLACEHOLDERS_HOST}
+  port: 6379
+  password: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+#TODO: These must be supplied
+#slack:
+#  exception:
+#    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
+#    channel: "${SLACK_EXCEPTION_CHANNEL}"
 
 spring.config.import: >
   conf-camel.yml,
