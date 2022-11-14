@@ -6,4 +6,3 @@ plugins {
     id "com.github.johnrengelman.processes"
     id "org.springdoc.openapi-gradle-plugin"
 }
-
