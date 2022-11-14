@@ -5,7 +5,7 @@ metadata:
   description: Collection of catalog entries for Virtual Regional Office
   links:
     - url: https://github.com/department-of-veterans-affairs/abd-vro/tree/develop/catalog
-      title: Virtual Regional Office 
+      title: Virtual Regional Office
       icon: web
     - url: https://lighthouseva.slack.com/archives/C020ZR4UL8H
       title: lighthouse-bandicoot slack
