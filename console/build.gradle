@@ -26,8 +26,6 @@ dependencies {
   implementation project(':shared:lib-camel-connector')
   implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-
   // Groovy REPL shell
   implementation 'org.codehaus.groovy:groovy'
   implementation 'org.codehaus.groovy:groovy-json'
