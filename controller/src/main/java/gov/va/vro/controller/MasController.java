@@ -5,7 +5,7 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
-import gov.va.vro.service.provider.MasDelays;
+import gov.va.vro.service.provider.MasConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +20,7 @@ public class MasController implements MasResource {
 
   private final CamelEntrance camelEntrance;
 
-  private final MasDelays masDelays;
+  private final MasConfig masConfig;
 
   /** Initiate MAS integration. */
   @Override
@@ -28,7 +28,7 @@ public class MasController implements MasResource {
     log.info(
         "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
     camelEntrance.notifyAutomatedClaim(
-        payload, masDelays.getMasProcessingInitialDelay(), masDelays.getMasRetryCount());
+        payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
     MasResponse response =
         MasResponse.builder()
             .id(Integer.toString(payload.getCollectionId()))
