@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-
   implementation project(':shared:domain')
   implementation project(':persistence:model')
   implementation project(':service:spi')
