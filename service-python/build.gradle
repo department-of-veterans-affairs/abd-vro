@@ -37,7 +37,6 @@ tasks.register("pytest", PythonTask) {
   dependsOn pyflake8
 }
 
-check {
-  // TODO: uncomment after fixes are made
-  // dependsOn pytest
+check{
+  dependsOn pytest
 }
