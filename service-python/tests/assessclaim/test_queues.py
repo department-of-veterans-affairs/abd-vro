@@ -15,6 +15,8 @@ from assessclaimdc7101.src.lib import queues as q7101
     "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101")]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
+
+    queue_name = f"health-assess.{service_queue_name}"
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
         queue.queue_setup(channel=channel)
@@ -26,15 +28,14 @@ def test_queue_setup(queue, service_queue_name, caplog):
         auto_delete=True,
     )
 
-    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}", durable=True, auto_delete=True)
-    channel.queue_declare.assert_called_with(queue=service_queue_name, durable=True, auto_delete=True)
+    channel.queue_declare.assert_called_with(queue=queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
-        queue=service_queue_name, exchange="health-assess-exchange"
+        queue=queue_name, exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: {service_queue_name}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C"
         in caplog.text
     )
 
