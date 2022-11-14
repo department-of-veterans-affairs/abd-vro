@@ -28,7 +28,8 @@ ext {
 jacocoTestReport {
   reports {
     html.enabled true
-    xml.enabled false
+    // Need xml output for task jacocoLogTestCoverage
+    xml.enabled true
     csv.enabled false
   }
 
