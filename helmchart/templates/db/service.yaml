@@ -20,7 +20,7 @@ spec:
   accessModes:
     - ReadWriteMany
   storageClassName: efs-sc
-  
+
   resources:
     requests:
       storage: 5Gi

@@ -14,11 +14,6 @@ tasks.named("end2endTest") {
 }
 
 dependencies {
-  constraints {
-    // for starter-bom
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-  }
-
   implementation project(':shared:domain')
   implementation project(':api')
   implementation project(':controller')
@@ -34,9 +29,6 @@ dependencies {
   implementation 'gov.va.starter:tracing'
   implementation 'gov.va.starter:error-handling'
   implementation 'gov.va.starter:exceptions'
-
-  runtimeOnly "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-  testImplementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
