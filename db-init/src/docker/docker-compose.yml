@@ -31,4 +31,3 @@ services:
       - vro-api-postgres-service
     networks:
       - internal
-
