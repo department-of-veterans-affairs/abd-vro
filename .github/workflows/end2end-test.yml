@@ -57,9 +57,19 @@ jobs:
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
 
-      - name: "Sleep 25 seconds"
-        # it appears app container is not immediately ready
-        run: sleep 25
+      - name: "Sleep 15 seconds"
+        # App container is not immediately ready
+        run: sleep 15
+
+      - name: "Wait for VRO to be ready"
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:8081/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quite after 30 seconds
+          timeout: 30000
 
       - name: "Run the end-to-end tests"
         run: ./gradlew :app:end2EndTest --info
