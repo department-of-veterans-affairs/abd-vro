@@ -1,8 +1,8 @@
 import logging
-from typing import Dict
 from datetime import date
+from typing import Dict
 
-from . import continuous_medication, utils, bp_calculator, conditions
+from . import bp_calculator, conditions, continuous_medication, utils
 
 
 def assess_hypertension(event: Dict):
