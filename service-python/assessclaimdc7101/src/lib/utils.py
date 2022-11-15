@@ -14,17 +14,19 @@ def validate_request_body(request_body):
         "veteranIcn": {"type": "string"},
         "dateOfClaim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
+        "disabilityActionType": {"type": "string"},
+        "disabilityClassificationCode": {"type": "string"},
+        "ratedDisabilityId": {"type": "string"},
         "evidence": {
             "type": "dict",
             "schema": {
                 "medications": {
-                    "required": True,
                     "type": "list",
                     "schema": {
                         "type": "dict",
                         "schema": {
-                            "authoredOn": {"type": "string", "required": True},
-                            "status": {"type": "string", "required": True},
+                            "authoredOn": {"type": "string"},
+                            "status": {"type": "string"},
                             "dosageInstructions": {
                                 "type": "list",
                                 "nullable": True,
@@ -33,7 +35,7 @@ def validate_request_body(request_body):
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
                             "duration": {"type": "string", "nullable": True},
-                            "description": {"type": "string", "required": True},
+                            "description": {"type": "string"},
                             "notes": {
                                 "type": "list",
                                 "nullable": True,
@@ -74,9 +76,58 @@ def validate_request_body(request_body):
                         },
                     },
                 },
-            },
-        },
+                "procedures": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                            },
+                            "codeSystem": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                            },
+                        },
+                    },
+                },
+                "conditions": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "status": {
+                                "type": "string",
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "onsetDate": {
+                                "type": "string",
+                            },
+                            "abatementDate": {
+                                "type": "string",
+                                "nullable": True
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     v = Validator(schema)
+    v.allow_unknown = True
 
     return {"is_valid": v.validate(request_body), "errors": v.errors}
