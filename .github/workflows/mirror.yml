@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main, develop ]
     # Limit to certain PR event types since this action could trigger actions to run in the mirror repo
-    types: [ready_for_review, review_requested]
+    types: [opened, synchronize, reopened, ready_for_review, ready_for_review]
 
   # When changes are pushed to special branches
   push:

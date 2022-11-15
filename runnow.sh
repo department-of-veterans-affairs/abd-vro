@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
 docker pull rabbitmq:3
 docker tag rabbitmq:3 "ghcr.io/department-of-veterans-affairs/abd-vro/vro-rabbitmq:3"

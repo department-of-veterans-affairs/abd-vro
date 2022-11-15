@@ -33,7 +33,7 @@ services:
       REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
     build:
       dockerfile: ./Dockerfile
-    ports: 
+    ports:
       - "5000:5000"
     networks:
       - internal
