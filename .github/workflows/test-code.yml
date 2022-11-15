@@ -1,4 +1,4 @@
-name: Build
+name: Test code
 
 on:
   # Trigger on all pull requests
@@ -19,7 +19,7 @@ env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
-  build-and-test:
+  lint-and-test:
     runs-on: ubuntu-latest
     services:
       rabbitmq:
@@ -36,18 +36,7 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
-      - name: "Build and check Java code"
+      - name: "Run linters and tests"
         # `check` runs hadolint and shellcheck
-        run: ./gradlew build check
-
-  build-docker-images:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
-
-      - name: "Set up VRO build env"
-        uses: ./.github/actions/setup-vro
-
-      - name: "Build Docker images"
-        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+        # jacocoTestCoverageVerification checks adequate test coverage
+        run: ./gradlew check jacocoTestCoverageVerification

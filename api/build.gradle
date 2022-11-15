@@ -3,14 +3,8 @@ plugins {
 }
 
 dependencies {
-  constraints {
-    // for starter-bom
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-  }
-
   implementation project(':shared:domain')
 
   implementation 'io.micrometer:micrometer-core'
   implementation 'gov.va.starter:exceptions'
 }
-

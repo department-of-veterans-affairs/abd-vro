@@ -2,14 +2,14 @@ name: Publish dev images
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ develop ]
 
   # Allow manual triggering
   workflow_dispatch:
 
   workflow_call:
     secrets:
-      DEV_KUBE_CONFIG: 
+      DEV_KUBE_CONFIG:
         required: true
 
 env:
@@ -18,46 +18,37 @@ env:
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
 
 jobs:
-  call-build-workflow:
-    uses: ./.github/workflows/build.yml
-    secrets:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
   publish-image:
     # only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
-    needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Checkout source code
+      - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: Build Docker images
-        run: |
-          ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+      # Run build-images action to set up build env before testing code
+      - name: "Build the images"
+        uses: ./.github/actions/build-images
+        with:
+          access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
 
-      - name: Login to GitHub Container Registry
+      - name: "Test code"
+        run: ./gradlew check
+
+      - name: "Login to GitHub Container Registry"
         uses: docker/login-action@v2.1.0
         with:
           registry: ghcr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: Tag images
+      - name: "Tag images with commit hash and `latest`"
         run: |
           # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
           docker pull rabbitmq:3
           docker tag rabbitmq:3 "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
-          
-          source scripts/image_vars.src
 
-          # Tag dev images for non-prod testing
+          source scripts/image_vars.src
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             GRADLE_IMG_NAME=$(getVarValue ${PREFIX} _GRADLE_IMG)
             IMG_NAME=dev_$(getVarValue ${PREFIX} _IMG)
@@ -66,44 +57,38 @@ jobs:
             docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}"
             docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
-      - name: Check images
+      - name: "Push images to GHCR"
         run: |
-          docker image list
-      - name: Push images
-        run: |
-          # Reminder to also add new images to build.yml and .github/secrel/config.yml
+          # Reminder to also add new images to .github/secrel/config.yml
 
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
-          source scripts/image_vars.src
-
           # Push dev images for non-prod testing
+          source scripts/image_vars.src
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=dev_$(getVarValue ${PREFIX} _IMG)
             echo "Pushing image '$IMG_NAME'"
             docker push -a "ghcr.io/${{ github.repository }}/${IMG_NAME}"
           done
-      - name: Cleanup images
+      - name: "Cleanup images locally"
         run: |
           source scripts/image_vars.src
-
-          # Clean up dev images locally
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=dev_$(getVarValue ${PREFIX} _IMG)
             echo "Clean up image with tags '$IMG_NAME:${COMMIT_SHA:0:7}' and '${IMG_NAME}:latest'"
             docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}" \
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
-      - name: Generate kubeconfig
+
+      - name: "Set up kube config"
         run: |
           mkdir ~/.kube
           echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
-      - name: Push to DEV (for Continuous Delivery)
+      - name: "Deploy to DEV"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
           ./deploy-app.sh dev ${COMMIT_SHA:0:7}
-

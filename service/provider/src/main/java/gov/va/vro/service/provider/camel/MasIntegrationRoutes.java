@@ -2,19 +2,18 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
+import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
-import gov.va.vro.model.event.JsonConverter;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.service.event.AuditEventProcessor;
+import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasTransferObject;
+import gov.va.vro.service.spi.audit.AuditEventService;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.Processor;
+import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
+import javax.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor
@@ -35,6 +35,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
+  public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
+
   public static final String MAS_DELAY_PARAM = "masDelay";
 
   public static final String MAS_RETRY_PARAM = "masRetryCount";
@@ -43,16 +45,34 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final MasPollingProcessor masPollingProcessor;
 
-  private final AuditEventProcessor auditEventProcessor;
+  private final AuditEventService auditEventService;
 
   private final MasCollectionService masCollectionService;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
+  private final MasConfig masConfig;
+
+  private String auditRecipientList;
+  private String exceptionRecipientList;
+
+  @PostConstruct
+  /** Setup recipients list for audits */
+  void setUpRecipients() {
+    auditRecipientList = ENDPOINT_AUDIT_EVENT;
+    exceptionRecipientList =
+        masConfig.getSlackExceptionWebhook() == null
+            ? ENDPOINT_AUDIT_EVENT
+            : String.format(
+                "%s,slack:#%s?webhookUrl=%s",
+                ENDPOINT_AUDIT_EVENT,
+                masConfig.getSlackExceptionChannel(),
+                masConfig.getSlackExceptionWebhook());
+  }
+
   @Override
   public void configure() {
-    configureExceptionHandling();
-    configureIntercepts();
+    configureAuditing();
     configureAutomatedClaim();
     configureMasProcessing();
     configureOrderExamStatus();
@@ -92,6 +112,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
             new Processor() {
               @Override
               public void process(Exchange exchange) {
+
                 MasAutomatedClaimPayload claimPayload =
                     (MasAutomatedClaimPayload) exchange.getProperty("claim");
                 AbdEvidenceWithSummary evidence =
@@ -115,7 +136,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // TODO upload PDF
 
     from(collectEvidenceEndpoint)
-        .routeId("automated-claim-collect-evidence")
+        .routeId("mas-automated-claim-collect-evidence")
         .multicast(new GroupedBodyAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
@@ -129,7 +150,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
                             abdEvidences.get(0), abdEvidences.get(1))));
 
     from(lighthouseEndpoint)
-        .routeId("automated-claim-lighthouse")
+        .routeId("mas-automated-claim-lighthouse")
         .process(
             FunctionProcessor.fromFunction(
                 (Function<MasAutomatedClaimPayload, Claim>)
@@ -145,36 +166,40 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureOrderExamStatus() {
-    String routeId = "exam-order-status";
-    from(ENDPOINT_EXAM_ORDER_STATUS)
-        .routeId(routeId)
-        .process(
-            auditEventProcessor.event(
-                routeId, "Entering endpoint " + ENDPOINT_EXAM_ORDER_STATUS, new JsonConverter()));
+    // This route does not do anything, but an audit event is persisted
+    String routeId = "mas-exam-order-status";
+    from(ENDPOINT_EXAM_ORDER_STATUS).routeId(routeId).log("Invoked " + routeId);
   }
 
-  private void configureExceptionHandling() {
+  private void configureAuditing() {
+    String transform_uri = "seda:audit-transform?multipleConsumers=true";
+
+    // Capture exceptions
     onException(Throwable.class)
-        .process(
-            exchange -> {
-              Throwable exception = (Throwable) exchange.getProperty(Exchange.EXCEPTION_CAUGHT);
-              var message = exchange.getMessage();
-              var body = message.getBody();
-              auditEventProcessor.logException(body, exception, exchange.getFromRouteId());
-            });
-  }
+        .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
+        .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
+        .setProperty("recipientList", constant(exceptionRecipientList))
+        .to(transform_uri);
 
-  private void configureIntercepts() {
+    // intercept all MAS routes
     interceptFrom("*")
+        .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
+        .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
+        .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
+        .setProperty("recipientList", constant(auditRecipientList))
+        .to(transform_uri);
+
+    // Transform to an AuditEvent and send to recipients
+    from(transform_uri)
+        .process(new ExchangeAuditTransformer())
+        .recipientList(exchangeProperty("recipientList"));
+
+    // persist audit event
+    from("seda:audit-event")
         .process(
             exchange -> {
-              String routeId = exchange.getFromRouteId();
-              String endpoint = exchange.getFromEndpoint().getEndpointUri();
-              Object body = exchange.getMessage().getBody();
-              if (body instanceof Auditable) {
-                auditEventProcessor.logEvent(
-                    (Auditable) body, routeId, "Received message from endpoint " + endpoint);
-              }
+              AuditEvent event = exchange.getMessage().getBody(AuditEvent.class);
+              auditEventService.logEvent(event);
             });
   }
 }

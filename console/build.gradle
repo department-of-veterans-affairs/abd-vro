@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-  //	set('testcontainersVersion', "1.17.4")
+  // set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
@@ -25,8 +25,6 @@ dependencies {
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')
   implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
   // Groovy REPL shell
   implementation 'org.codehaus.groovy:groovy'
@@ -60,4 +58,14 @@ docker {
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+spotless {
+  groovy {
+    //excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
+    // the Groovy Eclipse formatter extends the Java Eclipse formatter,
+    // so it formats Java files by default (unless `excludeJava` is used).
+    greclipse() // has its own section below
+    indentWithSpaces(2)
+  }
 }
