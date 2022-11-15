@@ -1,0 +1,17 @@
+name: Build images
+description: Builds VRO's Docker images without testing code
+
+inputs:
+  access_token:
+    description: 'GITHUB_ACCESS_TOKEN'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: "Set up VRO build env"
+      uses: ./.github/actions/setup-vro
+
+    - name: "Build Docker images"
+      shell: bash
+      run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}

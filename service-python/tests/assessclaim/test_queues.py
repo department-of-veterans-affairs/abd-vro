@@ -15,7 +15,6 @@ from assessclaimdc7101.src.lib import queues as q7101
     "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101")]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
-
     queue_name = f"health-assess.{service_queue_name}"
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
