@@ -10,6 +10,12 @@
 #   - -Dexample-build-arg=some-value
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
+
+setup:
+  script: ./build-images.sh
+  env:
+  - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
 snyk:
   java-version: 17
   additional-args:
@@ -17,7 +23,8 @@ snyk:
 
 images:
 - name: vro-app
-  context: "./app/src/main/resources"
+  #context: "./app/src/main/resources"
+  context: "./app/build/docker"
   path: "./app/src/docker/Dockerfile"
 - name: vro-postgres
   context: "./postgres/src/main/resources"
@@ -26,7 +33,8 @@ images:
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
 - name: vro-service-data-access
-  context: "./service-data-access/src/main/resources"
+  #context: "./service-data-access/src/main/resources"
+  context: "./service-data-access/build/docker"
   path: "./service-data-access/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
   context: "./service-python/pdfgenerator/src"
@@ -46,6 +54,11 @@ images:
 #    - -Dexample.maven=${{ secrets.example_secret }}
 
 languages:
+  java:
+    version: 17.0
+    build-source: false
+    build-args:
+      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
   python:
     version: 3.9
     requirements:
