@@ -6,14 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.*;
-import gov.va.vro.service.event.AuditEventProcessor;
-import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +36,7 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Autowired private CamelContext camelContext;
 
-  @Autowired @SpyBean private AuditEventProcessor auditEventProcessor;
+  @Autowired @SpyBean private AuditEventService auditEventService;
 
   @Test
   @SneakyThrows
@@ -72,7 +74,7 @@ public class MasControllerTest extends BaseControllerTest {
             "mas-claim-notification",
             route ->
                 route
-                    .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_MAS)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-notification"))
         .end();
@@ -86,30 +88,38 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void automatedClaim_throwsException() throws Exception {
-
+    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     adviceWith(
             camelContext,
             "mas-claim-notification",
             route ->
                 route
-                    .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_MAS)
-                    .throwException(new Exception()))
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
+                    .throwException(new Exception("Exception")))
         .end();
 
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
     post("/v1/automatedClaim", request, MasResponse.class);
-    Mockito.verify(auditEventProcessor)
-        .logException(Mockito.any(Object.class), Mockito.any(Throwable.class), Mockito.anyString());
+    Mockito.verify(auditEventService, Mockito.atLeastOnce())
+        .logEvent(auditEventArgumentCaptor.capture());
+    var event = auditEventArgumentCaptor.getValue();
+    assertEquals("123", event.getEventId());
+    assertEquals("mas-claim-notification", event.getRouteId());
   }
 
   @Test
   void orderExamStatus() {
+    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
         post("/v1/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
+    Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
+    var event = auditEventArgumentCaptor.getValue();
+    assertEquals("123", event.getEventId());
+    assertEquals("mas-exam-order-status", event.getRouteId());
   }
 
   private static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {

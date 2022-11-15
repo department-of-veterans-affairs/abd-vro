@@ -4,8 +4,6 @@ message-queue:
   user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
   password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
 
-mas-processing-initial-delay: "${MAS_PROCESSING_INITIAL_DELAY:2000}"
-mas-processing-subsequent-delay: "${MAS_PROCESSING_SUBSEQUENT_DELAY:1000}"
 
 # Spring's RabbitHealthIndicator needs a connection to RabbitMQ:
 spring:
@@ -14,3 +12,9 @@ spring:
     port: 5672
     user: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
     password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
+mas:
+  processing:
+    initial-delay: "${MAS_PROCESSING_INITIAL_DELAY:20000}"
+    subsequent-delay: "${MAS_PROCESSING_SUBSEQUENT_DELAY:10000}"
+    retry-count: "${MAS_PROCESSING_RETRY_COUNT:5}"

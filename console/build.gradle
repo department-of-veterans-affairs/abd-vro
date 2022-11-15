@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-//	set('testcontainersVersion', "1.17.4")
+  // set('testcontainersVersion', "1.17.4")
 }
 
 dependencies {
@@ -15,25 +15,35 @@ dependencies {
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
   runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 
-  implementation project(':shared:domain')
+  // Needed to access DB Entity records
   implementation project(':persistence:model')
-  implementation project(':service:provider')
 
+  // Needed to deserialize objects passed in MQ messages
+  implementation project(':shared:domain')
+  implementation project(':service:spi')
+
+  // To connect to Camel
+  implementation project(':shared:lib-camel-connector')
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+
+  // Groovy REPL shell
   implementation 'org.codehaus.groovy:groovy'
   implementation 'org.codehaus.groovy:groovy-json'
   implementation 'org.codehaus.groovy:groovy-groovysh'
   implementation 'jline:jline:2.14.6' // Needed to add custom Groovysh commands
-  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
+  // DB access
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
-// TODO: add integration tests
-//    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-//        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
-//    }
-//	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
+  // Redis
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+  // TODO: add integration tests
+  //    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+  //        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+  //    }
+  //	testImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
 }
 
 // TODO: add integration tests
@@ -48,4 +58,14 @@ docker {
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+spotless {
+  groovy {
+    //excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
+    // the Groovy Eclipse formatter extends the Java Eclipse formatter,
+    // so it formats Java files by default (unless `excludeJava` is used).
+    greclipse() // has its own section below
+    indentWithSpaces(2)
+  }
 }

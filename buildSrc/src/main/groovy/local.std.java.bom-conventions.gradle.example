@@ -8,5 +8,3 @@ plugins {
     id 'starter.java.publish-pom-conventions'
     id 'starter.java.versions-conventions'
 }
-
-

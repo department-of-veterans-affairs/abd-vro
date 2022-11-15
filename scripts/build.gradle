@@ -1,10 +1,10 @@
 plugins {
-    id 'local.java.lint-shellcheck-conventions'
+  id 'local.java.lint-shellcheck-conventions'
 }
 
 shellcheck {
-    sourceFiles = fileTree(".") {
-        include("*.sh", "*.src")
-    }
-    additionalArguments = "--external-sources"
+  sourceFiles = fileTree(".") {
+    include("*.sh", "*.src")
+  }
+  additionalArguments = "--external-sources"
 }

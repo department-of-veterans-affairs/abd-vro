@@ -8,8 +8,8 @@ def bp_recency(request_body):
     response = {}
     valid_bp_readings = []
 
-    if "date_of_claim" in request_body:
-        date_of_claim = request_body["date_of_claim"]
+    if "dateOfClaim" in request_body:
+        date_of_claim = request_body["dateOfClaim"]
     else:
         date_of_claim = str(date.today())
 

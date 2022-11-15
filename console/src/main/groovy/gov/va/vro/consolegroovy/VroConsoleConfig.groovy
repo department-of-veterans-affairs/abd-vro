@@ -1,13 +1,15 @@
 package gov.va.vro.consolegroovy
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import org.apache.camel.CamelContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
 @EnableJpaRepositories("gov.va.vro.persistence.repository")
@@ -15,12 +17,24 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 class VroConsoleConfig {
 
   @Autowired
-  CamelContext camelContext
+  RedisProperties redisProperties
 
   @Bean
-  ObjectMapper objectMapper() {
-    ObjectMapper objectMapper = new ObjectMapper()
-    objectMapper.registerModule(new JavaTimeModule())
-    objectMapper
+  LettuceConnectionFactory lettuceConnectionFactory() {
+    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisProperties.host, redisProperties.port)
+    config.database = redisProperties.database
+    config.username = redisProperties.username
+    config.password = redisProperties.password
+    new LettuceConnectionFactory(config)
+  }
+
+  // https://stackoverflow.com/questions/37402717/camel-redis-automatically-prepends-string-to-key
+  // https://dzone.com/articles/using-redis-spring
+  @Bean
+  RedisTemplate<String, Object> redisTemplate() {
+    RedisTemplate<String, Object> template = new RedisTemplate<>()
+    template.setConnectionFactory(lettuceConnectionFactory())
+    template.setDefaultSerializer(new StringRedisSerializer())
+    template
   }
 }

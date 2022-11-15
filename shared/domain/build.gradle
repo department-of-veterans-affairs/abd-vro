@@ -1,3 +1,3 @@
 plugins {
-    id 'starter.std.java.library-conventions'
+  id 'starter.std.java.library-conventions'
 }
