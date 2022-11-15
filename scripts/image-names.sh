@@ -8,7 +8,7 @@
 
 gradle_folder() {
   case "$1" in
-    pdfgenerator|assessclaim*) echo "./service-python/$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "./service-python/$1";;
     *) echo "./$1";;
   esac
 }
@@ -26,6 +26,7 @@ helm_image_key() {
     db-init) echo "dbInit";;
     svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
     pdfgenerator) echo "pdfGenerator";;                  # TODO: rename to svcPdfGenerator
+    featuretoggle) echo "svcFeatureToggle";;
     assessclaimdc7101) echo "serviceAssessClaimDC7101";; # TODO: rename to svcAssessorDc7101
     assessclaimdc6602) echo "serviceAssessClaimDC6602";; # TODO: rename to svcAssessorDc6602
     app|*) echo "$1";;
@@ -44,7 +45,7 @@ nonprod_image_name() {
 secrel_image_name() {
   case "$1" in
     svc-lighthouse-api) echo "vro-service-data-access";; # TODO: update image name
-    pdfgenerator|assessclaim*) echo "vro-service-$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "vro-service-$1";;
     *) echo "vro-$1";;
   esac
 }
@@ -59,13 +60,13 @@ secrel_dockerfile() {
 secrel_docker_context() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
-    pdfgenerator|assessclaim*) echo "$GRADLE_FOLDER/src";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "$GRADLE_FOLDER/src";;
     app|*) echo "$GRADLE_FOLDER/src/main/resources";;
   esac
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602)
+IMAGES=( app postgres db-init svc-lighthouse-api pdfgenerator featuretoggle assessclaimdc7101 assessclaimdc6602)
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
