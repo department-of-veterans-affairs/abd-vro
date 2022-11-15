@@ -20,4 +20,3 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.versions-conventions'
 }
-

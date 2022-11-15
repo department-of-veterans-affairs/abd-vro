@@ -2,9 +2,7 @@ import logging
 from datetime import date
 from typing import Dict
 
-from . import bp_calculator
-from . import utils
-from . import conditions
+from . import bp_calculator, conditions, utils
 
 
 def assess_hypertension(event: Dict):

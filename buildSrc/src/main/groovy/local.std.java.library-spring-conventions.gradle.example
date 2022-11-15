@@ -7,4 +7,3 @@ plugins {
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'
 }
-

@@ -93,3 +93,4 @@ Currently there are 2 ways to develop/test the PDF service:
 
 1. Run `./gradlew build check docker` to start all containers and run a full test. This can be used for the testing any updates that are made to the endpoints through Swagger but it takes longer due to having to load all the other containers
 2. Run `python pdfgenerator/src/lib/local_pdf_test.py` from the `service-python` directory. This file calls the PDF generator while bypassing all the related RabbitMQ and Redis code. You can alter the `diagnosis_name` and `message` to simulate an endpoint request and to quickly debug any template or PDF issues
+
