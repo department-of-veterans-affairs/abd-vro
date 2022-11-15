@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # print("Variables: ", variables)
     template = pdf_generator.generate_template_file(diagnosis_name, variables, test_mode=True, loader="local_pdf_test")
     # print("Template: ", template)
-    with open("template_test.html", "w") as file:
-      file.write(template)
+    with open("test.html", "w") as file:
+        file.write(template)
     pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template, 'test.pdf')
     # print("PDF: ", pdf)

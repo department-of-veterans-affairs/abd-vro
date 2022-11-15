@@ -8,7 +8,8 @@ pdf_options = {
     "margin-left": "0.5in",
     "encoding": "UTF-8",
     "zoom": "1.1",
-    "print-media-type": None
+    "print-media-type": None,
+    "enable-local-file-access": None,
 }
 
 redis_config = {
