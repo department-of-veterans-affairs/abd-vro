@@ -128,6 +128,7 @@ ext {
     ':service-python:assessclaimdc7101v2',
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
+    ':service-python:featuretoggle',
     ':svc-lighthouse-api',
     ':console'
   ]
