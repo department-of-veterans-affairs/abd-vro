@@ -1,6 +1,6 @@
 from typing import Dict
 from assessclaimcancer import utils
-from assessclaimcancer.src import medication
+from assessclaimcancer.src.lib import medication
 
 
 def assess_asthma(event: Dict):
