@@ -18,25 +18,20 @@ env:
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
 
 jobs:
-  call-build-workflow:
-    uses: ./.github/workflows/build.yml
-    secrets:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
   publish-image:
     # only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Checkout source code
+      - name: "Checkout source code"
         uses: actions/checkout@v3
+
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: "Test code"
+        run: ./gradlew check
 
       - name: Build Docker images
         run: |
@@ -90,7 +85,7 @@ jobs:
           docker image list
       - name: Push images
         run: |
-          # Reminder to also add new images to build.yml and .github/secrel/config.yml
+          # Reminder to also add new images to .github/secrel/config.yml
 
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
@@ -106,8 +101,6 @@ jobs:
 
       - name: Cleanup images
         run: |
-          # Reminder to also add new images to build.yml and .github/secrel/config.yml
-
           # Push the following images to work around https://www.docker.com/increase-rate-limits/
           docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
