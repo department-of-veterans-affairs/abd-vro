@@ -34,6 +34,9 @@ images:
 - name: vro-db-init
   context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
+- name: vro-console
+  context: "./console/src/main/resources"
+  path: "./console/src/docker/Dockerfile"
 - name: vro-service-data-access
   context: "./svc-lighthouse-api/build/docker"
   #context: "./svc-lighthouse-api/src/main/resources"

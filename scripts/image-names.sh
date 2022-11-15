@@ -141,6 +141,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
+  echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
 
