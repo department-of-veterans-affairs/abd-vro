@@ -1,4 +1,4 @@
-medications = {
+medication_keywords = {
     "Abraxane",
     "capecitabine",
     "Xeloda"

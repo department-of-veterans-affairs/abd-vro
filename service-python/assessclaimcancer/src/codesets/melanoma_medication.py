@@ -1,4 +1,4 @@
-med_dict = {"Biologic response modifier": {
+medications = {"Biologic response modifier": {
     "aldesleukin",
     "Proleukin",
     "Pegintron",

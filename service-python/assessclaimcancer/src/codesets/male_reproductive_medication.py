@@ -1,4 +1,4 @@
-medication = {
+medications = {
     "Multiple": {
         "CISplatin",
         "DOCEtaxel",
