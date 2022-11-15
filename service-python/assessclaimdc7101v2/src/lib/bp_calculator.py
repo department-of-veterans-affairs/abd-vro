@@ -1,5 +1,5 @@
 
-from datetime import datetime, date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
