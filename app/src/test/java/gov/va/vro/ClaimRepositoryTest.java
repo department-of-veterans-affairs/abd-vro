@@ -24,20 +24,23 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     assertNotNull(veteran.getUpdatedAt());
 
     ContentionEntity contention1 = new ContentionEntity("c1");
-    AssessmentResultEntity ar = new AssessmentResultEntity();
-    EvidenceSummaryDocumentEntity ev1 = new EvidenceSummaryDocumentEntity();
-    EvidenceSummaryDocumentEntity ev2 = new EvidenceSummaryDocumentEntity();
-    Map<String, String> count = new HashMap<>();
-    count.put("count", "1");
-    ev1.setEvidenceCount(count);
-    count.put("count2", "2");
-    ev2.setEvidenceCount(count);
+    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument1 = new EvidenceSummaryDocumentEntity();
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument2 = new EvidenceSummaryDocumentEntity();
+    Map<String, String> count1 = new HashMap<>();
+    Map<String, String> count2 = new HashMap<>();
+    count1.put("count", "1");
+    evidenceSummaryDocument1.setEvidenceCount(count1);
+    evidenceSummaryDocument1.setDocumentName("documentName1");
+    count2.put("count2", "2");
+    evidenceSummaryDocument2.setEvidenceCount(count2);
+    evidenceSummaryDocument2.setDocumentName("documentName2");
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
-    ar.setEvidenceCountSummary(evidence);
-    contention1.addAssessmentResult(ar);
-    contention1.addEvidenceSummaryDocument(ev1);
-    contention1.addEvidenceSummaryDocument(ev2);
+    assessmentResult.setEvidenceCountSummary(evidence);
+    contention1.addAssessmentResult(assessmentResult);
+    contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
+    contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
 
     ContentionEntity contention2 = new ContentionEntity("c2");
     Map<String, String> evidence2 = new HashMap<>();
@@ -85,5 +88,13 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
                 assertEquals(
                     evidence2, contention2.getAssessmentResults().get(0).getEvidenceCountSummary()),
             Assertions::fail);
+    assertEquals(
+        contention1.getEvidenceSummaryDocuments().get(0).getDocumentName(), "documentName1");
+    assertEquals(contention1.getEvidenceSummaryDocuments().get(0).getEvidenceCount().size(), 1);
+    assertEquals(contention1.getEvidenceSummaryDocuments().get(0).getEvidenceCount(), count1);
+    assertEquals(
+        contention1.getEvidenceSummaryDocuments().get(1).getDocumentName(), "documentName2");
+    assertEquals(contention1.getEvidenceSummaryDocuments().get(1).getEvidenceCount().size(), 1);
+    assertEquals(contention1.getEvidenceSummaryDocuments().get(1).getEvidenceCount(), count2);
   }
 }

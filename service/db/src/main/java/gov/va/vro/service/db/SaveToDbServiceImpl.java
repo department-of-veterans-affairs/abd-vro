@@ -5,7 +5,6 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
@@ -73,41 +72,27 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
     }
-    Map<String, Object> evidenceCount = fillEvidenceCounts(request);
     ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
-    Map<String, String> newEvidenceCount = convertMap(evidenceCount);
-    EvidenceSummaryDocumentEntity evidenceSummaryDocument = new EvidenceSummaryDocumentEntity();
-    evidenceSummaryDocument.setEvidenceCount(newEvidenceCount);
-    evidenceSummaryDocument.setDocumentName(documentName);
     if (contention == null) {
       log.warn("Could not match the contention with the claim and diagnostic code, exiting.");
       return;
     }
-    contention.addEvidenceSummaryDocument(evidenceSummaryDocument);
+    Map<String, String> evidenceCount = fillEvidenceCounts(request);
+    contention.addEvidenceSummaryDocument(evidenceCount, documentName);
     claimRepository.save(claim);
   }
 
-  private Map<String, Object> fillEvidenceCounts(GeneratePdfPayload request) {
+  private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
     AbdEvidence evidence = request.getEvidence();
-    Map<String, Object> evidenceCount = new HashMap<>();
-    if (request.getDiagnosticCode().equals("7101")) {
-      if (evidence.getBloodPressures() != null) {
-        evidenceCount.put("bloodPressures", evidence.getBloodPressures().size());
-      }
-      if (evidence.getMedications() != null) {
-        evidenceCount.put("medications", evidence.getMedications().size());
-      }
-      if (evidence.getProcedures() != null) {
-        evidenceCount.put("procedures", evidence.getProcedures().size());
-      }
+    Map<String, String> evidenceCount = new HashMap<>();
+    if (evidence.getBloodPressures() != null) {
+      evidenceCount.put("totalBpReadings", String.valueOf(evidence.getBloodPressures().size()));
     }
-    if (request.getDiagnosticCode().equals("6602")) {
-      if (evidence.getMedications() != null) {
-        evidenceCount.put("medications", evidence.getMedications().size());
-      }
-      if (evidence.getProcedures() != null) {
-        evidenceCount.put("procedures", evidence.getProcedures().size());
-      }
+    if (evidence.getMedications() != null) {
+      evidenceCount.put("medicationsCount", String.valueOf(evidence.getMedications().size()));
+    }
+    if (evidence.getProcedures() != null) {
+      evidenceCount.put("proceduresCount", String.valueOf(evidence.getProcedures().size()));
     }
     return evidenceCount;
   }

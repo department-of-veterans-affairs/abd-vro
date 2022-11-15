@@ -80,8 +80,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
-        .process(evidenceSummaryDocumentProcessor)
         .wireTap(wireTapTopicFor(GENERATE_PDF_WIRETAP))
+        .process(evidenceSummaryDocumentProcessor)
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 
