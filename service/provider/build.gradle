@@ -12,7 +12,6 @@ dependencies {
   // implementation "gov.va.starter:exceptions"
   // implementation 'gov.va.starter:test-data'
 
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation 'com.google.guava:guava:31.1-jre'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -20,6 +19,7 @@ dependencies {
   implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-slack-starter:${camel_version}"
 
   // Redis
   implementation "org.springframework.boot:spring-boot-starter-data-redis"

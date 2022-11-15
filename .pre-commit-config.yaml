@@ -1,48 +1,55 @@
+# Run pre-commit against all files by executing: pre-commit run --all-files
+# Auto-update the config to the latest repos' versions by executing: pre-commit autoupdate
+# Rather than disabling particular hooks (https://pre-commit.com/#temporarily-disabling-hooks), add an `exclude`
+
+# https://pre-commit.com/#regular-expressions
 exclude: >
   (?x)^(
-      template/* |
-      helm/templates/*
+      app/src/docker/docker-compose.yml
   )
+
+# https://pre-commit.com/#confining-hooks-to-run-at-certain-stages
+# default_stages: [commit]
+
 repos:
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
-    hooks:
-      - id: check-yaml
-        stages: [commit]
-        exclude: ^.*helmchart.*$
+    rev: v4.3.0
+    hooks: # https://github.com/pre-commit/pre-commit-hooks#hooks-available
       - id: check-merge-conflict
-        stages: [commit]
-      - id: check-xml
-        stages: [commit]
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+        exclude: ^scripts/.*\.src$
+      - id: check-yaml
+        exclude: ^.*helmchart.*$
+      - id: destroyed-symlinks
+      - id: detect-private-key
+        exclude: ^svc-lighthouse-api/.*/testkey\.pem$
+      - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer # replaces isort
+      - id: trailing-whitespace
 
-  - repo: https://github.com/jguttman94/pre-commit-gradle
-    rev: v0.2.1
+  # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
+  - repo: https://github.com/PyCQA/flake8
+    rev: 5.0.4
     hooks:
-      - id: gradle-spotless
-        args: ['-w', '-o']
-        stages: [commit, push]
-      - id: gradle-task
-        args: ['test','-w','-o']
-        stages: [push]
+      - id: flake8
+        args: [--max-line-length=255]
 
-  - repo: https://github.com/zahorniak/pre-commit-circleci.git
-    rev: v0.2
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.15.0
     hooks:
-      - id: circleci_validate
-        stages: [commit]
+      - id: gitleaks
 
-  - repo: local
-    hooks:
-      - id: commit-message
-        name: commit-message
-        entry: scripts/commit-message.sh
-        language: script
-        stages: [commit-msg]
-      # - id: verify-generated-proj
-      #   name: verify generated project
-      #   entry: scripts/verify-generated-proj.sh
-      #   language: script
-      #   verbose: true
-      #   always_run: true
-      #   pass_filenames: false
-      #   stages: [commit]
+#  - repo: local
+#    hooks:
+#      - id: commit-message
+#        name: commit-message
+#        entry: scripts/commit-message.sh
+#        language: script
+#        stages: [commit-msg]

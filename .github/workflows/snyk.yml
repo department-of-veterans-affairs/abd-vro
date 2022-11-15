@@ -1,10 +1,11 @@
-name: Snyk scan
+name: VRO's Snyk scan
 
 on:
-  pull_request:
-    branches: [main, develop]
-    # Limit to certain PR event types since this action doesn't need to run for every commit
-    types: [ready_for_review, review_requested]
+# May no longer be useful for PRs since we're now using Synk webhook via the VA account
+#  pull_request:
+#    branches: [main, develop]
+#    # Limit to certain PR event types since this action doesn't need to run for every commit
+#    types: [ready_for_review, review_requested]
 
   # When changes are pushed to special branches
   push:

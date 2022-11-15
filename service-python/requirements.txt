@@ -2,3 +2,4 @@
 -r assessclaimdc7101/src/requirements.txt
 -r assessclaimdc7101v2/src/requirements.txt
 -r pdfgenerator/src/requirements.txt
+-r featuretoggle/src/requirements.txt
