@@ -21,4 +21,6 @@ public class AbdEvidenceWithSummary {
   private Map<String, Object> evidenceSummary;
 
   private String errorMessage;
+
+  private boolean sufficientForFastTracking;
 }
