@@ -1,16 +1,7 @@
 import logging
 import yaml
 from typing import Dict
-
-stream = open('features.yml', 'r')
-data = yaml.load(stream)
-
-features = []
-
-for k, v in data['features'].items():
-  temp = [k, data['features'][k]['enabled']]
-  features.append(temp)
-
+from . import utils
 
 def report_feature_toggles(event: Dict):
     """
@@ -26,7 +17,7 @@ def report_feature_toggles(event: Dict):
 
     response_body.update(
         {
-            "features": features
+            "features": utils.create_features_list()
         })
 
     logging.info("Message processed successfully")

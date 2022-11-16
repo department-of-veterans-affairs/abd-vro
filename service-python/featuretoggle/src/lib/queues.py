@@ -1,8 +1,10 @@
 import json
 import logging
 
-from . import main
+from . import main, utils
+from .redis_client import RedisClient
 from .settings import queue_config
+
 
 EXCHANGE = queue_config["exchange_name"]
 TOGGLE_QUEUE = queue_config["toggle_queue_name"]
@@ -10,12 +12,14 @@ TOGGLE_QUEUE = queue_config["toggle_queue_name"]
 
 def feature_toggle_request_callback(channel, method, properties, body):
 
+    redis_client = RedisClient(redis_config)
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message.")
 
     try:
         response = main.report_feature_toggles(message)
+        redis_client.save_hash_data("features", items=utils.create_features_list())
     except Exception as e:
         logging.error(e, exc_info=True)
         response = {"status": "ERROR", "features": {}}
