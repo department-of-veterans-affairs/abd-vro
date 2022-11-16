@@ -13,7 +13,7 @@ docker {
 }
 
 dockerRun {
-    image "${dockerRegistry}/${rootProject.name}-db-init"
+  image "${dockerRegistry}/${rootProject.name}-db-init"
   env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'vro'),
   'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'vro')}?user=${getEnvOrDefault('DB_ROOT_USER', 'vro_user')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
   'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'vro_user'),
