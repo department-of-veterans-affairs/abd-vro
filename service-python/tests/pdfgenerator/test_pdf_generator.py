@@ -23,6 +23,9 @@ def test_default_template_variables():
     # these variables are only available when the pdf_generator is called so no need to compare
     del generated_variables["timestamp"]
     del generated_variables["start_date"]
+    
+    # reset this field because it gets turned into a datetime object so it wont match
+    generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
 
     assert default_variables == generated_variables
 
@@ -32,7 +35,7 @@ def test_replaced_template_variables():
     template = "asthma"
 
     first_name = "test"
-    rabbitmq_data = {"veteran_info": {"first": first_name}}
+    rabbitmq_data = {"veteran_info": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
@@ -58,7 +61,7 @@ def test_asthma_valid_variables_in_html_file():
     template = "asthma"
 
     first_name = "test"
-    rabbitmq_data = {"veteran_info": {"first": first_name}}
+    rabbitmq_data = {"veteran_info": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
