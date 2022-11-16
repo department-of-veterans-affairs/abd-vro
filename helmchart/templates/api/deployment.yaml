@@ -108,6 +108,7 @@ spec:
                   key: {{ .Values.postgres.passwordKey }}
           resources: {{- toYaml .Values.resources.api | nindent 12 }}
       ephemeralContainers:
+        # are never automatically restarted
         - name: {{ .Values.name }}-console
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag }}
           imagePullPolicy: {{ .Values.images.console.imagePullPolicy }}
@@ -165,13 +166,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret }}
                   key: {{ .Values.api.vroNonProdKey }}
-          resources:
-            requests:
-              cpu: 150m
-              memory: 512Mi
-            limits:
-              cpu: 1000m
-              memory: 1024Mi
       containers:
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
