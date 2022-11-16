@@ -1,6 +1,6 @@
 # NOTE: the name cannot have underscore
 name: abd-vro
-owner: Example
+owner: OCTO
 environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
 cluster: nonprod
 # TODO: How is version used? What should this be set to?
