@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +36,13 @@ public class BipApiService implements IBipApiService {
   private final BipApiProps bipApiProps;
 
   @Override
-  public HashMap<String, String> getClaimDetails(Integer collectionId) throws BipException {
+  public HashMap<String, String> getClaimDetails(Integer claimId) throws BipException {
     try {
       String url = bipApiProps.getBaseURL() + String.format(UPDATE_CLAIM_STATUS, claimId);
       HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
-              restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       HashMap<String, String> resp = new HashMap<>();
       resp.put("status", bipResponse.getStatusCode().name());
       resp.put("message", bipResponse.getBody());
@@ -120,10 +121,10 @@ public class BipApiService implements IBipApiService {
       String url = bipApiProps.getBaseURL() + String.format(CONTENTION, claimId);
       HttpHeaders headers = getBipHeader();
       Map<String, String> requestBody = new HashMap<>();
-      requestBody.put("updatedContentions", Arrays.atList(contension));
+      requestBody.put("updatedContentions", Arrays.asList(contention).toString());
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
       ResponseEntity<String> bipResponse =
-              restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       HashMap<String, String> resp = new HashMap();
       if (HttpStatus.OK.equals(bipResponse.getStatusCode())) {
         resp.put("status", "success");
@@ -131,13 +132,13 @@ public class BipApiService implements IBipApiService {
         return resp;
       } else {
         log.error(
-                "getClaimContentions returned {} for {}. {}",
-                bipResponse.getStatusCode(),
-                claimId,
-                bipResponse.getBody());
+            "getClaimContentions returned {} for {}. {}",
+            bipResponse.getStatusCode(),
+            claimId,
+            bipResponse.getBody());
         throw new BipException(bipResponse.getBody());
       }
-    } catch (RestClientException | JsonProcessingException e) {
+    } catch (RestClientException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
@@ -151,13 +152,13 @@ public class BipApiService implements IBipApiService {
       HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
-              restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       HashMap<String, String> resp = new HashMap<>();
       resp.put("status", bipResponse.getStatusCode().name());
       resp.put("message", bipResponse.getBody());
       return resp;
     } catch (RestClientException e) {
-      log.error("failed to get claim info for claim ID {}.", claimId, e);
+      log.error("failed to get claim info for claim ID {}.", e);
       throw new BipException(e.getMessage(), e);
     }
   }
