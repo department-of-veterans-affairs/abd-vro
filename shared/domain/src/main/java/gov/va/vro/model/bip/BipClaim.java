@@ -16,12 +16,14 @@ public class BipClaim {
   private String phase;
   private String phaseLastChangedDate;
   private String claimLifecycleStatus;
+  private String completedDate;
   private Claimant claimant;
   private Veteran veteran;
   private String receivedDate;
   private String payeeTypeCode;
   private String serviceTypeCode;
   private String programTypeCode;
+  private String endProductCode;
   private String tempStationOfJurisdiction;
   private String claimStationOfJurisdiction;
   private String awardStationOfJurisdiction;

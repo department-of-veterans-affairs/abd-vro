@@ -59,4 +59,3 @@ CREATE TABLE IF NOT EXISTS evidence_summary_document (
         FOREIGN KEY (contention_id)
             REFERENCES contention(id)
 );
-

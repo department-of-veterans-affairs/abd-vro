@@ -1,21 +1,25 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.*;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
 /** @author warren @Date 11/8/22 */
 public interface IBipApiService {
-  HashMap<String, String> getClaimDetails(Integer collectionId) throws BipException;
+  BipClaim getClaimDetails(Integer collectionId) throws BipException;
 
-  HashMap<String, String> updateClaimStatus(Integer collectionId) throws BipException;
+  BipUpdateClaimResp updateClaimStatus(Integer collectionId) throws BipException;
 
   List<ClaimContention> getClaimContentions(Integer claimId) throws BipException;
 
-  HashMap<String, String> updateClaimContention(Integer claimId, ClaimContention contention)
+  BipUpdateClaimResp updateClaimContention(Integer claimId, UpdateContentionReq contention)
       throws BipException;
 
-  HashMap<String, String> uploadEvidence(HashMap<String, Object> uploadEvidenceReq)
+  BipUpdateClaimResp addClaimContention(Integer claimId, CreateContentionReq contention)
       throws BipException;
+
+  HashMap<String, String> uploadEvidence(
+      String fileId, BipFileUploadPayload uploadEvidenceReq, File file) throws BipException;
 }

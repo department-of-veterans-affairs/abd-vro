@@ -9,6 +9,16 @@ volumes:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+x-mas-vars: &mas-vars
+  MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
+  MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
+  MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
+  MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
+  MAS_API_BAS_URL: ${MAS_API_BAS_URL}
+  MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
+  MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
+  MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+  
 x-postgres-vars: &postgres-vars
   POSTGRES_HOST: postgres-service
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
@@ -117,7 +127,9 @@ services:
       - "8081:8081"
     environment:
       <<: *rabbitmq-placeholder-vars
+      <<: *redis-placeholder-vars
       <<: *postgres-vars
+      <<: *mas-vars
       ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
@@ -143,8 +155,8 @@ services:
     networks:
       - internal
 
-  svc-assessor-dc7101v2:
-    image: va/abd_vro-assessclaimdc7101v2:latest
+  svc-assessor-dc6602:
+    image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
     environment:
       <<: *rabbitmq-placeholder-vars
@@ -154,13 +166,30 @@ services:
         condition: service_healthy
     networks:
       - internal
-  svc-assessor-dc6602:
-    image: va/abd_vro-assessclaimdc6602:latest
+
+  svc-assessor-dc6602v2:
+    image: va/abd_vro-assessclaimdc6602v2:latest
     <<: *common-security-opt
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
     depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
+
+  svc-feature-toggle:
+    image: va/abd_vro-featuretoggle:latest
+    <<: *common-security-opt
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      redis-service:
+        condition: service_started
       rabbitmq-service:
         condition: service_healthy
     networks:

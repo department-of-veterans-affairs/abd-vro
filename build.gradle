@@ -125,12 +125,15 @@ ext {
     ':app',
     ':db-init',
     ':service-python:assessclaimdc7101',
-    ':service-python:assessclaimdc7101v2',
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
+    ':service-python:featuretoggle',
     ':svc-lighthouse-api',
     ':console'
   ]
+  if (project.hasProperty("enablePrototype")) {
+    dockerModules.add(':service-python:assessclaimdc6602v2')
+  }
 }
 
 // Used by `release` task to create a new version

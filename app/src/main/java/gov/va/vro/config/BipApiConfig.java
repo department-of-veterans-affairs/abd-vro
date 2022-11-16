@@ -1,6 +1,6 @@
 package gov.va.vro.config;
 
-import gov.va.vro.service.provider.bip.BipApiProps;
+import gov.va.vro.service.provider.BipApiProps;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

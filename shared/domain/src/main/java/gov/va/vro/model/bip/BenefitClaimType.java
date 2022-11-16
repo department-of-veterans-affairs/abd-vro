@@ -16,9 +16,9 @@ public class BenefitClaimType {
   private String name;
   private String code;
   private String attribute_one;
-  private String qttribute_one_text;
+  private String attribute_one_text;
   private String attribute_two;
-  private String qttribute_two_text;
+  private String attribute_two_text;
   private String attribute_three;
   private String attribute_three_text;
 }
