@@ -59,7 +59,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --debug \
               -n ${TEAMNAME}-"${ENV}" #--dry-run
               #-f helmchart/"${ENV}".yaml
-elif [ "${ENV}" == "sandbox" ] || [ "${ENV}" == "prod" ]
+elif [ "${ENV}" == "sandbox" ] || [ "${ENV}" == "prod" ] || [ "${ENV}" == "prod-test" ]
 then
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
