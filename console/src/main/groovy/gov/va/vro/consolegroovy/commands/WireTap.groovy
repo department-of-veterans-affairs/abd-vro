@@ -14,7 +14,7 @@ import org.apache.groovy.groovysh.Groovysh
 class WireTap extends CommandSupport {
   CamelContext camelContext
 
-  protected WireTap(final Groovysh shell, final CamelContext camelContext) {
+  WireTap(final Groovysh shell, final CamelContext camelContext) {
     super(shell, 'wireTap', 'wt')
     // TODO: add Command description, usage, etc.
 
@@ -30,24 +30,31 @@ class WireTap extends CommandSupport {
       else
         subscribeToTopic(varObj)
     })
+
+    // Don't limit the log message length since WireTap prints out the message body
+    // https://camel.apache.org/manual/faq/how-do-i-set-the-max-chars-when-debug-logging-messages-in-camel.html
+    camelContext.getGlobalOptions().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0")
+  }
+
+  Closure<String> wireTapSubscriptionEndpoint = { String tapName ->
+    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()
   }
 
   String subscribeToTopic(String wireTapName) {
-    RoutesBuilder routeBuilder = new WireTapRoute(wireTapName)
+    String tapEndpoint = wireTapSubscriptionEndpoint(wireTapName)
+    RoutesBuilder routeBuilder = new WireTapRoute(wireTapName, tapEndpoint)
     camelContext.addRoutes(routeBuilder)
     "tap-${wireTapName}"
   }
 
+  @groovy.transform.TupleConstructor
   static class WireTapRoute extends RouteBuilder {
     final String tapName
-
-    WireTapRoute(String wireTapName) {
-      this.tapName = wireTapName
-    }
+    final String tapEndpoint
 
     @Override
     void configure() throws Exception {
-      from("rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}")
+      from(tapEndpoint)
           .routeId("console-${tapName}")
           .process(prettyPrinter)
           .to("log:${tapName}?plain=true")
