@@ -45,31 +45,31 @@ images:
 # The following image list is updated by image-names.sh
   app:
     imageName: dev_vro-app
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   db:
     imageName: dev_vro-postgres
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: 0b9c9c4
+    tag: replaceMe
     imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this line)
 
