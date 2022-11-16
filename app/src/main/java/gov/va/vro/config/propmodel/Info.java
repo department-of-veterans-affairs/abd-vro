@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Info {
   private String title = "VRO API";
   private String description = "VRO Description";
-  private String version = "v0.4.0";
+  private String version = "v1.0.0";
 
   private final Contact contact = new Contact();
 
