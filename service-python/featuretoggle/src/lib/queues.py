@@ -7,6 +7,7 @@ from .settings import queue_config
 EXCHANGE = queue_config["exchange_name"]
 TOGGLE_QUEUE = queue_config["toggle_queue_name"]
 
+
 def feature_toggle_request_callback(channel, method, properties, body):
 
     binding_key = method.routing_key
@@ -33,7 +34,7 @@ def queue_setup(channel):
         exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True
     )
 
-    # Sufficiency test queue
+    # Feature toggle queue
     channel.queue_declare(queue=TOGGLE_QUEUE, durable=True, auto_delete=True)
     channel.queue_bind(queue=TOGGLE_QUEUE, exchange=EXCHANGE)
     channel.basic_qos(prefetch_count=250)

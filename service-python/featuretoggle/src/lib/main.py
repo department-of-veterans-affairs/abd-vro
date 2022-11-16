@@ -1,12 +1,16 @@
 import logging
-# import yaml
+import yaml
 from typing import Dict
 
-# stream = open('features.yml', 'r')
-# data = yaml.load(stream)
-#
-# for item in d['features'].items()
-# v['enabled'] for v in d['features'].values()
+stream = open('features.yml', 'r')
+data = yaml.load(stream)
+
+features = []
+
+for k, v in data['features'].items():
+  temp = [k, data['features'][k]['enabled']]
+  features.append(temp)
+
 
 def report_feature_toggles(event: Dict):
     """
@@ -22,7 +26,7 @@ def report_feature_toggles(event: Dict):
 
     response_body.update(
         {
-            "features": {}
+            "features": features
         })
 
     logging.info("Message processed successfully")
