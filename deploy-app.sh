@@ -92,7 +92,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --debug \
               -n ${TEAMNAME}-"${ENV}"
 else
-helm del abd-vro 
+helm del abd-vro
 helm upgrade --install abd-vro helmchart \
               --set-string images.repo=abd-vro-internal \
               --set-string environment="${ENV}"\
@@ -119,5 +119,5 @@ helm upgrade --install abd-vro helmchart \
               --set-string images.serviceAssessClaimDC6602.imageName=vro-service-assessclaimdc6602 \
               --set-string images.serviceDataAccess.imageName=vro-service-data-access \
               --debug
-              
+
 fi

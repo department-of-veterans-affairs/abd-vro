@@ -13,4 +13,3 @@ WORKDIR /home/docker
 RUN pip install --no-cache-dir -r requirements.txt
 USER docker
 CMD ["python", "-u", "main_consumer.py"]
-
