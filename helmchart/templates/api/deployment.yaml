@@ -112,6 +112,8 @@ spec:
         - name: {{ .Values.name }}-console
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag }}
           imagePullPolicy: {{ .Values.images.console.imagePullPolicy }}
+          stdin: true
+          tty: true
           env:
             - name: ENV
               value: {{ .Values.environment }}
