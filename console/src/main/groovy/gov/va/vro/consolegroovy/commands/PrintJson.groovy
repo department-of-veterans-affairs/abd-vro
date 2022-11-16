@@ -16,7 +16,7 @@ class PrintJson extends CommandSupport {
 
   private final ObjectMapper objectMapper
 
-  protected PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
+  PrintJson(final Groovysh shell, ObjectMapper objectMapper) {
     super(shell, 'printJson', 'pj')
     // TODO: add Command description, usage, etc.
 
@@ -32,21 +32,21 @@ class PrintJson extends CommandSupport {
 
       if (varObj == null) return "null"
 
-      ObjectWriter writer = writerForObjectMemoized(varObj)
+      ObjectWriter writer = writerForObjectMemoized(varObj.class)
       writer.writeValueAsString(varObj)
     }).join('\n')
   }
 
-  private Closure<ObjectMapper> mapperForObject = { Object it ->
-    switch (it) {
-      case ClaimEntity: return configureClaimJsonMapper(objectMapper)
-      case ContentionEntity: return configureContentionJsonMapper(objectMapper)
-      default: return configureDefaultJsonMapper(objectMapper)
+  private Closure<ObjectMapper> mapperForObject = { Object clazz ->
+    switch (clazz) {
+      case ClaimEntity: return configureClaimJsonMapper(objectMapper.copy())
+      case ContentionEntity: return configureContentionJsonMapper(objectMapper.copy())
     }
+    configureDefaultJsonMapper(objectMapper.copy())
   }
-  private Closure<ObjectWriter> writerForObjectMemoized = { Object it ->
-    log.debug "Creating writer of object: ${it.class}"
-    return mapperForObject(it).writerWithDefaultPrettyPrinter()
+  private Closure<ObjectWriter> writerForObjectMemoized = { Object clazz ->
+    log.debug "Creating writer of object: ${clazz}"
+    return mapperForObject(clazz).writerWithDefaultPrettyPrinter()
   }.memoize()
 
   ObjectMapper configureDefaultJsonMapper(ObjectMapper mapper) {
