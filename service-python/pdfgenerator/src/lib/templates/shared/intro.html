@@ -81,9 +81,9 @@
   <i>Generated automatically on {{timestamp.strftime('%m/%d/%Y')}} at {{timestamp.strftime('%H:%M %p %Z')}}</i>
   <br /><br />
   
-  <p class="m-0">{{veteran_info.first}} {{veteran_info.middle}} {{veteran_info.last}} {{veteran_info.suffix}}</p>
+  <h1 class="m-0" style="font-size: 21px; margin-top: 24px;">{{veteran_info.first}} {{veteran_info.middle}} {{veteran_info.last}} {{veteran_info.suffix}}</h1>
 
-  <p>DOB: {{veteran_info.birthdate}}</p>
+  <p>DOB: {{veteran_info.birthdate.strftime('%m/%d/%Y')}}</p>
   {% block body %}{% endblock %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
