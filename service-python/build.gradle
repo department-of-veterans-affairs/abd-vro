@@ -33,7 +33,7 @@ def pyflake8 = tasks.register("pyflake8", PythonTask) {
 
 tasks.register("pytest", PythonTask) {
   module = 'pytest'
-  command = "--cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc"
+  command = "--cov-report term-missing --cov=. --cov-fail-under=60 --cov-config=../.coveragerc"
   dependsOn pyflake8
 }
 
