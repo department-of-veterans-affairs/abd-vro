@@ -55,6 +55,9 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Medication administration method", example = "INHALATION ORAL")
   private String route;
 
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
+
   @Override
   public int compareTo(AbdMedication otherMedication) {
     return StringUtils.compare(authoredOn, otherMedication.authoredOn);

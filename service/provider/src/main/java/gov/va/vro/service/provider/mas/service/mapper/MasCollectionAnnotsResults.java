@@ -18,7 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MasCollectionAnnotsResults {
-
+  private static final String DATA_SOURCE = "MAS";
+  private static final String UTC_TM = "T00:00:00Z";
   private static final String BP_CONDITION = "Hypertension";
   private static final String ASTHMA_CONDITION = "Asthma";
   private static final String BP_SYSTOLIC_CODE = "8480-6";
@@ -45,13 +46,14 @@ public class MasCollectionAnnotsResults {
       if (masDocument.getAnnotations() != null) {
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
-              ">>>> Annotation Tpe <<<<<< : {} ",
+              ">>>> Annotation Type <<<<<< : {} ",
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
           MasAnnotType AnnotationType =
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
           switch (AnnotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = new AbdMedication();
+              abdMedication.setDataSource(DATA_SOURCE);
               abdMedication.setStatus(null);
               abdMedication.setNotes(null);
               abdMedication.setDescription(masAnnotation.getAnnotVal().toLowerCase());
@@ -59,9 +61,10 @@ public class MasCollectionAnnotsResults {
               abdMedication.setAsthmaRelevant(null);
               abdMedication.setDuration(null);
               if (masAnnotation.getObservationDate() != null) {
-                abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", ""));
+                abdMedication.setAuthoredOn(
+                    masAnnotation.getObservationDate().replaceAll("Z", "") + UTC_TM);
               } else {
-                abdMedication.setAuthoredOn("9999-12-31");
+                abdMedication.setAuthoredOn("9999-12-31" + UTC_TM);
               }
               abdMedication.setRoute(null);
               abdMedication.setAsthmaRelevant(isConditionAsthma);
@@ -69,11 +72,17 @@ public class MasCollectionAnnotsResults {
             }
             case CONDITION -> {
               AbdCondition abdCondition = new AbdCondition();
+              abdCondition.setDataSource(DATA_SOURCE);
               abdCondition.setCode(masAnnotation.getAnnotVal());
               abdCondition.setText(masAnnotation.getAcdPrefName());
               abdCondition.setStatus(null);
               abdCondition.setAbatementDate(null);
-              abdCondition.setOnsetDate(masAnnotation.getObservationDate());
+              if (masAnnotation.getObservationDate() != null) {
+                abdCondition.setOnsetDate(
+                    masAnnotation.getObservationDate().replaceAll("Z", "") + UTC_TM);
+              } else {
+                abdCondition.setOnsetDate("9999-12-31" + UTC_TM);
+              }
               conditions.add(abdCondition);
             }
             case LABRESULT -> {
@@ -95,6 +104,7 @@ public class MasCollectionAnnotsResults {
                 diastolicReading.setUnit(BP_UNIT);
 
                 AbdBloodPressure abdBloodPressure = new AbdBloodPressure();
+                abdBloodPressure.setDataSource(DATA_SOURCE);
                 abdBloodPressure.setDate(masAnnotation.getObservationDate());
                 abdBloodPressure.setSystolic(systolicReading);
                 abdBloodPressure.setDiastolic(diastolicReading);
