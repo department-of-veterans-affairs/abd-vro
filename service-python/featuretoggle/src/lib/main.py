@@ -1,7 +1,10 @@
 import logging
-import yaml
 from typing import Dict
+
+import yaml
+
 from . import utils
+
 
 def report_feature_toggles(event: Dict):
     """

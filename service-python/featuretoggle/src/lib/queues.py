@@ -5,7 +5,6 @@ from . import main, utils
 from .redis_client import RedisClient
 from .settings import queue_config
 
-
 EXCHANGE = queue_config["exchange_name"]
 TOGGLE_QUEUE = queue_config["toggle_queue_name"]
 
