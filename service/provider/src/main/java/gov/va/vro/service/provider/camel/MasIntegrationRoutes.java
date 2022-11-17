@@ -9,7 +9,7 @@ import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.mas.service.MasTransferObject;
+import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
@@ -116,42 +116,15 @@ public class MasIntegrationRoutes extends RouteBuilder {
             method(
                 slipClaimSubmitRouter, "routeHealthAssessV2")) // TODO: call "health assess" service
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) {
-
-                MasAutomatedClaimPayload claimPayload =
-                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                AbdEvidenceWithSummary evidence =
-                    exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
-                HealthDataAssessment assessment =
-                    (HealthDataAssessment) exchange.getProperty("evidence");
-                if (evidence.getErrorMessage() != null) {
-                  log.error("Health Assessment Failed");
-                } else {
-                  exchange.setProperty(
-                      "sufficientForFastTracking", evidence.isSufficientForFastTracking());
-                  log.info(
-                      " MAS Processing >> Sufficient Evidence >>> "
-                          + evidence.isSufficientForFastTracking());
-                  var masTransferObject =
-                      new MasTransferObject(claimPayload, assessment.getEvidence());
-                  exchange.getMessage().setBody(masTransferObject);
-                }
-              }
-            })
+        .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         // Call pcOrderExam in the absence of evidence
         .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) throws Exception {
-                MasAutomatedClaimPayload claimPayload =
-                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                exchange.getMessage().setBody(claimPayload);
-              }
+            exchange -> {
+              MasAutomatedClaimPayload claimPayload =
+                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
+              exchange.getMessage().setBody(claimPayload);
             })
         .to(orderExamEndpoint); // Call Order Exam;
     // TODO upload PDF
