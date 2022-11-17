@@ -1,0 +1,98 @@
+{
+  "document_type": "hypertension",
+  "veteran_info": {
+    "first": "Allan",
+    "middle": "N",
+    "last": "Butler",
+    "suffix": "",
+    "birthdate": "1953-02-24T00:00:00Z"
+  },
+  "evidence": {
+    "bp_readings": [
+      {
+        "date": "2022-07-15",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 110.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 150.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "JESSE BROWN VA MEDICAL CENTER"
+      }
+    ],
+    "medications": [
+      {
+        "status": "Active",
+        "description": "MIRTAZAPINE 15MG TAB",
+        "refills": 3,
+        "authoredOn": "2022-03-06T00:00:00Z",
+        "dosageInstructions": [
+          "TAKE ONE TABLET BY MOUTH AT BEDTIME AS NEEDED FOR SLEEP",
+          "As directed by physician."
+        ],
+        "route": "ORAL"
+      },
+      {
+        "status": "Active",
+        "description": "DESONIDE 0.05% CREAM,TOP",
+        "refills": 0,
+        "authoredOn": "2022-03-06T00:00:00Z",
+        "dosageInstructions": [
+          "APPLY A SMALL AMOUNT TO AFFECTED AREA TWICE A DAY AS NEEDED - APPLY SPARINGLY TWICE A DAY AS NEEDED FOR ITCHING. DO NOT APPLY FOR MORE THAN 14 CONSECUTIVE DAYS WITHOUT A BREAK",
+          "As directed by physician."
+        ],
+        "route": "TOPICAL"
+      },
+      {
+        "status": "Active",
+        "description": "KETOTIFEN 0.025% SOLN,OPH",
+        "refills": 0,
+        "authoredOn": "2022-03-06T00:00:00Z",
+        "dosageInstructions": [
+          "INSTILL 1 DROP IN BOTH EYES 2 TIMES A DAY AS NEEDED FOR ALLERGY EYE SYMPTOMS",
+          "As directed by physician."
+        ],
+        "route": ""
+      },
+      {
+        "status": "Active",
+        "description": "SERTRALINE HCL 100MG TA",
+        "refills": 0,
+        "authoredOn": "2022-03-06T00:00:00Z",
+        "dosageInstructions": [
+          "As directed by physician."
+        ],
+        "route": ""
+      },
+      {
+        "status": "Active",
+        "description": "SODIUM CHLORIDE 0.65% SOLN,NASAL SPRAY",
+        "refills": 0,
+        "authoredOn": "2022-03-06T00:00:00Z",
+        "dosageInstructions": [
+          "INHALE 1 SPRAY INTO EACH NOSTRIL EVERY 3 HOURS AS NEEDED TO MOISTEN NASAL PASSAGES",
+          "As directed by physician."
+        ],
+        "route": "IV PUSH"
+      },
+      {
+        "status": "Active",
+        "description": "ELETRIPTAN 40MG TAB,PKG,6",
+        "refills": 0,
+        "authoredOn": "2021-10-12T00:00:00Z",
+        "dosageInstructions": [
+          "TAKE ONE-HALF TABLET BY MOUTH AS DIRECTED AT ONSET OF HEADACHE - MAY REPEAT DOSE AFTER 2 HOURS, BUT DO NOT EXCEED 4OMG PER DOSE, OR 80MG PER DAY",
+          "As directed by physician."
+        ],
+        "route": "ORAL"
+      }
+    ]
+  }
+}

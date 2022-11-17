@@ -39,3 +39,21 @@ class PDFGenerator:
 
     def generate_pdf_from_string(self, html: str) -> bytes or bool:
         return pdfkit.from_string(html, False, options=self.options)
+
+
+if __name__ == '__main__':
+    import argparse
+    from . import settings
+    argparser = argparse.ArgumentParser(description='Generate evidence summary PDF from JSON input')
+    argparser.add_argument('input', help='path to input JSON file')
+    argparser.add_argument('-o', '--output', help='path to output PDF', default='output.pdf')
+    args = argparser.parse_args()
+
+    with open(args.input) as input_file:
+        pdf_data = json.load(input_file)
+    generator = PDFGenerator(settings.pdf_options)
+    pdf_vars = generator.generate_template_variables(pdf_data['document_type'], pdf_data)
+    html = generator.generate_template_file(pdf_data['document_type'], pdf_vars)
+    pdf = generator.generate_pdf_from_string(html)
+    with open(args.output, 'wb') as output:
+        output.write(pdf)
