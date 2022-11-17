@@ -1,4 +1,27 @@
----
+#apiVersion: networking.istio.io/v1alpha3
+#kind: EnvoyFilter
+#metadata:
+#  name: remove-server-header
+#  namespace: istio-system
+#spec:
+#  workloadSelector:
+#    labels:
+#      istio: ingressgateway
+#  configPatches:
+#    - applyTo: NETWORK_FILTER
+#      match:
+#        context: GATEWAY
+#        listener:
+#          filterChain:
+#            filter:
+#              name: "envoy.http_connection_manager"
+#      patch:
+#        operation: MERGE
+#        value:
+#          typed_config:
+#            "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+#            server_header_transformation: PASS_THROUGH
+#---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
@@ -17,3 +40,7 @@ spec:
         host: {{ .Chart.Name }}
         port:
           number: 8080
+    headers:
+      response:
+          remove:
+          - Server
