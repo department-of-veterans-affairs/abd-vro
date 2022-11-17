@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.bip.service;
+package gov.va.vro.service.provider.bip;
 
 /** @author warren @Date 10/31/22 */
 public class BipException extends Exception {

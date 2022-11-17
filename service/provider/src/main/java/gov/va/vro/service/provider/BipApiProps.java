@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Properties used in BIP API service.
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
  * @author warren @Date 10/31/22
  */
 @Getter
-@RequiredArgsConstructor
+@Setter
 public class BipApiProps {
 
   private String claimBaseURL;
@@ -24,7 +24,7 @@ public class BipApiProps {
 
   private String evidenceClientId;
 
-  private String stationID;
+  private String stationId;
 
   private String jti;
 
