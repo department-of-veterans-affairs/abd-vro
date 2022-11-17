@@ -22,7 +22,8 @@ spec:
       #      mountPath: /var/lib/rabbitmq
       containers:
         - name: rabbit-mq
-          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
+          #image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
+          image: rabbitmq:3
           #command:
           #  - chown
           #  - -R

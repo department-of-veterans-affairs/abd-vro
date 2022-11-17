@@ -65,4 +65,4 @@ for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
              "ghcr.io/${github_repository}/${IMAGE_NAME}:latest"
 done
 
-./deploy-app.sh ${ENV} ${COMMIT_SHA}
+./scripts/deploy-app.sh ${ENV} ${COMMIT_SHA}
