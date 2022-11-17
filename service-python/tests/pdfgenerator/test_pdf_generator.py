@@ -52,7 +52,7 @@ def test_asthma_generate_html_file():
         template, generated_variables, True
     )
 
-    document_title = "<h3>Asthma Rapid Ready for Decision | Claim for Increase</h3>"
+    document_title = "Asthma Rapid Ready for Decision | Claim for Increase"
     assert document_title in html_file
 
 
@@ -82,6 +82,6 @@ def test_hypertension_generate_html_file():
     )
 
     document_title = (
-        "<h3>Hypertension Rapid Ready for Decision | Claim for Increase</h3>"
+        "Hypertension Rapid Ready for Decision | Claim for Increase"
     )
     assert document_title in html_file
