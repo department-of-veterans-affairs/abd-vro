@@ -1,6 +1,6 @@
 # NOTE: the name cannot have underscore
 name: abd-vro
-owner: OCTO
+owner: VA-OCTO
 environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
 cluster: nonprod
 # TODO: How is version used? What should this be set to?
@@ -45,15 +45,15 @@ images:
 # The following image list is updated by image-names.sh
   app:
     imageName: dev_vro-app
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   db:
     imageName: dev_vro-postgres
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   console:
     imageName: dev_vro-console
@@ -61,19 +61,19 @@ images:
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this line)
 

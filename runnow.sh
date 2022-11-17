@@ -43,4 +43,4 @@ done
 #            "ghcr.io/department-of-veterans-affairs/abd-vro/${IMG_NAME}:latest"
 #done
 #
-#./deploy-app.sh dev aabd181 #${COMMIT_SHA:0:7}
+#./scripts/deploy-app.sh dev aabd181 #${COMMIT_SHA:0:7}
