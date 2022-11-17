@@ -40,8 +40,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     // Create veteran, claim, and contention and save.
     var veteran = TestDataSupplier.createVeteran("X", "Y");
     veteranRepository.save(veteran);
-    ContentionEntity contention = new ContentionEntity("c1");
-    contention.setDiagnosticCode("7101");
+    ContentionEntity contention = new ContentionEntity("7101");
     var claim = TestDataSupplier.createClaim("1234", "type", veteran);
     claim.addContention(contention);
     claim = claimRepository.save(claim);
