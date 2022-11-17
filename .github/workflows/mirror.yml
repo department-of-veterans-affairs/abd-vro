@@ -34,5 +34,6 @@ jobs:
       - uses: yesolutions/mirror-action@master
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
+          GIT_USERNAME: ${{ github.actor }}
           GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIT_SSH_NO_VERIFY_HOST: "true"
