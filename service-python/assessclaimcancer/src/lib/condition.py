@@ -1,6 +1,7 @@
 from datetime import datetime
 from assessclaimcancer.src.lib.codesets import male_reproductive_condition, melanoma_condition, \
-    head_cancer_condition, gyn_cancer_condition, pancreatic_condition, prostate_cancer_condition, neck_condition
+    head_cancer_condition, gyn_cancer_condition, pancreatic_condition, prostate_cancer_condition, neck_condition, \
+    breast_cancer_condition, gi_condition, kidney_cancer_condtion, brain_cancer_condition, respiratory_cancer_condition
 
 conditions_codeset_map = {"head": head_cancer_condition.conditions_dict,
                           "neck": neck_condition.condition_dict,
@@ -8,7 +9,12 @@ conditions_codeset_map = {"head": head_cancer_condition.conditions_dict,
                           "gyn": gyn_cancer_condition.condition_dict,
                           "prostate": prostate_cancer_condition.condition_codes,
                           "melanoma": melanoma_condition.condition_codes,
-                          "pancreatic": pancreatic_condition.condition_codes}
+                          "pancreatic": pancreatic_condition.condition_codes,
+                          "breast": breast_cancer_condition.condition_codes,
+                          "gi": gi_condition.condition_codes,
+                          "kidney": kidney_cancer_condtion.conditions,
+                          "brain": brain_cancer_condition.conditions,
+                          "respiratory": respiratory_cancer_condition.condition_dict}
 
 
 def categorize_condition(condition_code, condition_dict):

@@ -32,11 +32,13 @@ from assessclaimcancer.src.lib import medication
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
+                        "conditionRelated": True
                     },
                     {
                         "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
                         "status": "active",
                         "authoredOn": "1952-04-06T04:00:00Z",
+                        "conditionRelated": True
                     }],
                     "relevantMedCount": 2,
                     "totalMedCount": 2}
@@ -67,13 +69,15 @@ from assessclaimcancer.src.lib import medication
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
-                        'suggestedCategory': 'Multiple'
+                        'suggestedCategory': 'Multiple',
+                        "conditionRelated": True
                     },
                     {
                         "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
                         "status": "active",
                         "authoredOn": "1952-04-06T04:00:00Z",
-                        'suggestedCategory': 'Multiple'
+                        'suggestedCategory': 'Multiple',
+                        "conditionRelated": True
                     }],
                     "relevantMedCount": 2,
                     "totalMedCount": 2}
@@ -104,7 +108,8 @@ from assessclaimcancer.src.lib import medication
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
-                        'suggestedCategory': 'Multiple'
+                        'suggestedCategory': 'Multiple',
+                        "conditionRelated": True
                     }
                 ],
                     "relevantMedCount": 1,
@@ -136,7 +141,8 @@ from assessclaimcancer.src.lib import medication
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "paclitaxel 6 MG/ML",
                         "status": "active",
-                        'suggestedCategory': 'Cervical, Uterine'
+                        'suggestedCategory': 'Cervical, Uterine',
+                        "conditionRelated": True
                     }
                 ],
                     "relevantMedCount": 1,
@@ -168,6 +174,7 @@ from assessclaimcancer.src.lib import medication
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
+                        "conditionRelated": True
                     }
                 ],
                     "relevantMedCount": 1,
@@ -199,6 +206,7 @@ from assessclaimcancer.src.lib import medication
                         "description": "everolimus 0.75 MG",
                         "status": "active",
                         "authoredOn": "1952-04-06T04:00:00Z",
+                        "conditionRelated": True
                     }],
                     "relevantMedCount": 1,
                     "totalMedCount": 2}
@@ -229,7 +237,8 @@ from assessclaimcancer.src.lib import medication
                         "description": "aldesleukin 22000000 UNT [Proleukin]",
                         "status": "active",
                         "authoredOn": "1952-04-06T04:00:00Z",
-                        'suggestedCategory': 'Systemic chemotherapy'
+                        'suggestedCategory': 'Systemic chemotherapy',
+                        "conditionRelated": True
                     }],
                     "relevantMedCount": 1,
                     "totalMedCount": 2}

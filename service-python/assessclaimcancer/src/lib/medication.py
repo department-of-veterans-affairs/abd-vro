@@ -1,17 +1,20 @@
 from datetime import datetime
 from assessclaimcancer.src.lib.codesets import male_reproductive_medication, melanoma_medication, \
-    head_cancer_medication, gyn_cancer_medication, pancreatic_medication, prostate_cancer_medication, neck_medication
+    head_cancer_medication, gyn_cancer_medication, pancreatic_medication, prostate_cancer_medication, neck_medication, \
+    breast_cancer_medication, gi_medication, kidney_cancer_medication, brain_cancer_medication, respiratory_cancer_medication
 
-
-# not one to one with VASRD
-# Head, Neck, Respiratory, GI, Reproductive, Kidney, Brain, Melanoma, Pancreatic, Prostate Cancer
 medication_codeset_map = {"head": head_cancer_medication.medication_keywords,
                           "neck": neck_medication.medications,
                           "male_reproductive": male_reproductive_medication.medications,
                           "gyn": gyn_cancer_medication.medications,
                           "prostate": prostate_cancer_medication.medication_keywords,
                           "melanoma": melanoma_medication.medications,
-                          "pancreatic": pancreatic_medication.medication_keywords}
+                          "pancreatic": pancreatic_medication.medication_keywords,
+                          "breast": breast_cancer_medication.medications,
+                          "gi": gi_medication.medications,
+                          "kidney": kidney_cancer_medication.medications,
+                          "brain": brain_cancer_medication.medications,
+                          "respiratory": respiratory_cancer_medication.medications}
 
 
 def categorize_med(medication_display, medication_dict):
@@ -53,6 +56,7 @@ def medication_match(request_body, cancer_type):
             medication_display = medication["description"]
             medication_category = categorize_med(medication_display, medication_keywords)
             if medication_category:
+                medication["conditionRelated"] = True
                 medication["suggestedCategory"] = medication_category
                 relevant_medications.append(medication)
 
@@ -61,6 +65,7 @@ def medication_match(request_body, cancer_type):
             medication_display = medication["description"]
             for med in [x.lower() for x in medication_keywords]:
                 if med in medication_display.lower():
+                    medication["conditionRelated"] = True
                     relevant_medications.append(medication)
 
     relevant_medications = sorted(

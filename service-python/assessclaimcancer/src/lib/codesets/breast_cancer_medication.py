@@ -1,4 +1,4 @@
-medication_codes = {
+medications = {
     "tamoxifen",
     "Nolvadex",
     "goserelin",

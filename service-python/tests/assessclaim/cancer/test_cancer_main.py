@@ -33,11 +33,13 @@ from assessclaimcancer.src.lib import main
                                 "authoredOn": "1962-04-06T04:00:00Z",
                                 "description": "CISplatin 50 MG",
                                 "status": "active",
+                                "conditionRelated": True
                             },
                             {
                                 "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
                                 "status": "active",
                                 "authoredOn": "1952-04-06T04:00:00Z",
+                                "conditionRelated": True
                             }
                         ],
                         "conditions": [
