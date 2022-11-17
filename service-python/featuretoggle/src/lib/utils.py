@@ -15,7 +15,7 @@ def create_features_list():
     features = []
 
     for k, v in data['features'].items():
-      temp = [k, data['features'][k]['enabled']]
-      features.append(temp)
+        temp = [k, data['features'][k]['enabled']]
+        features.append(temp)
 
     return features

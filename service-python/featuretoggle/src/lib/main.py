@@ -1,8 +1,6 @@
 import logging
 from typing import Dict
 
-import yaml
-
 from . import utils
 
 
