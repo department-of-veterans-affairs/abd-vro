@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Profile("!qa & !sandbox & !prod")
 public class MasController implements MasResource {
 
   private final CamelEntrance camelEntrance;
