@@ -12,11 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -93,55 +89,39 @@ public class MasCollectionService {
     AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
     AbdEvidence masApiEvidence = masApiAssessment.getEvidence();
     // for now, we just add up the lists
-    log.info("combineEvidence >> LH  : " + lighthouseEvidence != null ? "not null" : "null");
-    log.info("combineEvidence >> MAS : " + masApiEvidence != null ? "not null" : "null");
+    log.info("combineEvidence >> LH  : " + ((lighthouseEvidence != null) ? "not null" : "null"));
+    log.info("combineEvidence >> MAS : " + ((masApiEvidence != null) ? "not null" : "null"));
     AbdEvidence compositeEvidence = new AbdEvidence();
     compositeEvidence.setBloodPressures(
         merge(
-                lighthouseEvidence != null ? lighthouseEvidence.getBloodPressures() : null,
-                masApiEvidence != null ? masApiEvidence.getBloodPressures() : null)
-            .stream()
-            .flatMap(s -> Stream.ofNullable(s))
-            .distinct()
-            .collect(Collectors.toList()));
+            lighthouseEvidence != null ? lighthouseEvidence.getBloodPressures() : null,
+            masApiEvidence != null ? masApiEvidence.getBloodPressures() : null));
     compositeEvidence.setConditions(
         merge(
-                lighthouseEvidence != null ? lighthouseEvidence.getConditions() : null,
-                masApiEvidence != null ? masApiEvidence.getConditions() : null)
-            .stream()
-            .flatMap(s -> Stream.ofNullable(s))
-            .distinct()
-            .collect(Collectors.toList()));
+            lighthouseEvidence != null ? lighthouseEvidence.getConditions() : null,
+            masApiEvidence != null ? masApiEvidence.getConditions() : null));
     compositeEvidence.setMedications(
         merge(
-                lighthouseEvidence != null ? lighthouseEvidence.getMedications() : null,
-                masApiEvidence != null ? masApiEvidence.getMedications() : null)
-            .stream()
-            .flatMap(s -> Stream.ofNullable(s))
-            .distinct()
-            .collect(Collectors.toList()));
+            lighthouseEvidence != null ? lighthouseEvidence.getMedications() : null,
+            masApiEvidence != null ? masApiEvidence.getMedications() : null));
     compositeEvidence.setProcedures(
         merge(
-                lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
-                masApiEvidence != null ? masApiEvidence.getProcedures() : null)
-            .stream()
-            .flatMap(s -> Stream.ofNullable(s))
-            .distinct()
-            .collect(Collectors.toList()));
+            lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
+            masApiEvidence != null ? masApiEvidence.getProcedures() : null));
     lighthouseAssessment.setEvidence(compositeEvidence);
 
     return lighthouseAssessment;
   }
 
   private static <T> List<T> merge(List<T> list1, List<T> list2) {
-    List<T> result = new ArrayList<>();
+    Set<T> result = new LinkedHashSet<>();
     if (list1 != null) {
       result.addAll(list1);
     }
     if (list2 != null) {
       result.addAll(list2);
     }
-    return result;
+    return new ArrayList<>(result);
   }
 
   public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
