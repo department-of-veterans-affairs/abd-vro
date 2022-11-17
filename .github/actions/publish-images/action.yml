@@ -1,0 +1,68 @@
+name: Publish images to GHCR
+description: Builds, tags, and publish VRO's Docker images
+
+inputs:
+  access_token:
+    description: 'GITHUB_ACCESS_TOKEN'
+    required: true
+  target_env:
+    description: 'TARGET_ENV like dev or qa'
+    required: true
+  ghcr_username:
+    description: 'GHCR username'
+    required: true
+  ghcr_password:
+    description: 'GHCR password or access token'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # Run build-images action to set up build env before testing code
+    - name: "Build the images"
+      uses: ./.github/actions/build-images
+      with:
+        access_token: ${{ inputs.access_token }}
+
+    - name: "Test code"
+      shell: bash
+      run: ./gradlew check
+
+    - name: "Login to GitHub Container Registry"
+      uses: docker/login-action@v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ inputs.ghcr_username }}
+        password: ${{ inputs.ghcr_password }}
+
+    - name: "Tag and push images using commit hash and `latest`"
+      shell: bash
+      env:
+        COMMIT_SHA: ${{ github.sha }}
+        TARGET_ENV: ${{ inputs.target_env }}
+      run: |
+        set -x
+
+        # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
+        docker pull rabbitmq:3
+        docker tag rabbitmq:3 "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+        docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+
+        source scripts/image_vars.src
+        for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+          GRADLE_IMG_NAME=$(getVarValue ${PREFIX} _GRADLE_IMG)
+          IMG_NAME=${TARGET_ENV}_$(getVarValue ${PREFIX} _IMG)
+
+          IMG_TAG=${COMMIT_SHA:0:7}
+          echo "Tagging image '$GRADLE_IMG_NAME' as '$IMG_NAME:${IMG_TAG}' and 'latest'"
+          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}"
+          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
+
+          echo "Pushing all tags for image '$IMG_NAME'"
+          docker push -a "ghcr.io/${{ github.repository }}/${IMG_NAME}"
+        done
+
+    - name: "List images"
+      shell: bash
+      run: |
+        docker image list

@@ -27,44 +27,18 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      # Run build-images action to set up build env before testing code
-      - name: "Build the images"
-        uses: ./.github/actions/build-images
+      - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
+        uses: ./.github/actions/publish-images
         with:
-          access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
-
-      - name: "Test code"
-        run: ./gradlew check
-
-      - name: "Login to GitHub Container Registry"
-        uses: docker/login-action@v2.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.ACCESS_TOKEN }}
-
-      - name: "Tag and push images using commit hash and `latest`"
-        run: |
-          # Pull and tag these images to work around https://www.docker.com/increase-rate-limits/
-          docker pull rabbitmq:3
-          docker tag rabbitmq:3 "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
-          docker push "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
-
-          source scripts/image_vars.src
-          for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            GRADLE_IMG_NAME=$(getVarValue ${PREFIX} _GRADLE_IMG)
-            IMG_NAME=${{ env.TARGET_ENV }}_$(getVarValue ${PREFIX} _IMG)
-
-            echo "Tagging image '$GRADLE_IMG_NAME' as '$IMG_NAME'"
-            docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}"
-            docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
-
-            echo "Pushing image '$IMG_NAME'"
-            docker push -a "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
-          done
+          target_env: ${{ env.TARGET_ENV }}
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          ghcr_username: ${{ secrets.USERNAME }}
+          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
 
       - name: "Cleanup images locally"
         run: |
+          docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
+
           source scripts/image_vars.src
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=${{ env.TARGET_ENV }}_$(getVarValue ${PREFIX} _IMG)
@@ -78,9 +52,9 @@ jobs:
           mkdir ~/.kube
           echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
-      - name: "Deploy to DEV"
+      - name: "Deploy to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-          ./deploy-app.sh dev ${COMMIT_SHA:0:7}
+          ./deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
