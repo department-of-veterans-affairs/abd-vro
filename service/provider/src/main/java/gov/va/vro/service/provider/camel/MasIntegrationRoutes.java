@@ -8,6 +8,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
-import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -133,17 +134,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(collectEvidenceEndpoint)
         .routeId("mas-automated-claim-collect-evidence")
-        .multicast(new GroupedBodyAggregationStrategy())
+        .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
         .process( // combine evidence
             FunctionProcessor.fromFunction(
-                (Function<List<HealthDataAssessment>, HealthDataAssessment>)
-                    abdEvidences ->
-                        MasCollectionService.combineEvidence(
-                            abdEvidences.get(0), abdEvidences.get(1))));
+                combineExchangesFunction()
+                // combineEvidenceFunction()
+                ));
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
@@ -168,6 +168,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+  }
+
+  private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
+    return exchanges -> {
+      for (Exchange exchange : exchanges) {
+        if (exchange.isFailed()) {
+          throw new MasException(
+              "Failed to collect evidence", exchange.getException(Throwable.class));
+        }
+      }
+      Exchange exchange1 = exchanges.get(0);
+      Exchange exchange2 = exchanges.get(1);
+      var evidence1 = exchange1.getMessage().getBody(HealthDataAssessment.class);
+      var evidence2 = exchange2.getMessage().getBody(HealthDataAssessment.class);
+      return MasCollectionService.combineEvidence(evidence1, evidence2);
+    };
   }
 
   private void configureOrderExamStatus() {

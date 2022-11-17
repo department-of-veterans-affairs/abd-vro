@@ -60,7 +60,7 @@ public class MasCollectionService {
         claimPayload.getCollectionId());
 
     var response =
-        masCollectionAnnotsApiService.getCollectionAnnots(claimPayload.getCollectionId());
+        masCollectionAnnotsApiService.getCollectionAnnotations(claimPayload.getCollectionId());
     if (response.isEmpty()) {
       throw new MasException(
           "No annotations found for collection id " + claimPayload.getCollectionId());
@@ -69,11 +69,11 @@ public class MasCollectionService {
     log.info(
         "Collection Annotation Response : Collection ID  {} and Veteran File ID {}",
         masCollectionAnnotation.getCollectionsId(),
-        masCollectionAnnotation.getVtrnFileId());
+        masCollectionAnnotation.getVeteranFileId());
 
     MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
     AbdEvidence abdEvidence =
-        masCollectionAnnotsResults.mapAnnotsToEvidence(masCollectionAnnotation);
+        masCollectionAnnotsResults.mapAnnotationsToEvidence(masCollectionAnnotation);
 
     log.info("AbdEvidence : Medications {}  ", abdEvidence.getMedications().size());
     log.info("AbdEvidence : Conditions {}  ", abdEvidence.getConditions().size());

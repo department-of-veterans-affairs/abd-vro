@@ -4,6 +4,7 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.event.AuditEvent;
@@ -81,7 +82,7 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<MasAutomatedClaimPayload, String>fromFunction(claim -> "hi"));
-    MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
     var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
@@ -98,7 +99,7 @@ public class MasControllerTest extends BaseControllerTest {
                     .throwException(new Exception("Exception")))
         .end();
 
-    MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
     post("/v1/automatedClaim", request, MasResponse.class);
     Mockito.verify(auditEventService, Mockito.atLeastOnce())
         .logEvent(auditEventArgumentCaptor.capture());
@@ -120,28 +121,5 @@ public class MasControllerTest extends BaseControllerTest {
     var event = auditEventArgumentCaptor.getValue();
     assertEquals("123", event.getEventId());
     assertEquals("mas-exam-order-status", event.getRouteId());
-  }
-
-  private static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
-    veteranIdentifiers.setEdipn("X");
-    veteranIdentifiers.setParticipantId("X");
-    veteranIdentifiers.setIcn("X");
-    veteranIdentifiers.setSsn("X");
-    veteranIdentifiers.setVeteranFileId("X");
-    ClaimCondition conditions = new ClaimCondition();
-    conditions.setDiagnosticCode("1233");
-    ClaimDetail claimDetail = new ClaimDetail();
-    claimDetail.setClaimSubmissionDateTime("123");
-    claimDetail.setConditions(conditions);
-
-    return MasAutomatedClaimPayload.builder()
-        .dateOfBirth("2002-12-12")
-        .collectionId(123)
-        .firstName("Rick")
-        .lastName("Smith")
-        .veteranIdentifiers(veteranIdentifiers)
-        .claimDetail(claimDetail)
-        .build();
   }
 }
