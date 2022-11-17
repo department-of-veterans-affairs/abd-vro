@@ -60,7 +60,7 @@ secrel_docker_context() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
     pdfgenerator|assessclaim*) echo "$GRADLE_FOLDER/src";;
-    app|*) echo "$GRADLE_FOLDER/src/main/resources";;
+    *) echo "$GRADLE_FOLDER/build/docker";;
   esac
 }
 

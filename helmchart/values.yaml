@@ -57,7 +57,7 @@ images:
     imagePullPolicy: Always
   console:
     imageName: dev_vro-console
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access

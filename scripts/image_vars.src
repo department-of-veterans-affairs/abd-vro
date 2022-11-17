@@ -37,35 +37,35 @@ getVarValue(){
 export app_GRADLE_IMG="va/abd_vro-app"
 export app_IMG="vro-app"
 export app_DOCKERFILE="./app/src/docker/Dockerfile"
-export app_DOCKER_CONTEXT="./app/src/main/resources"
+export app_DOCKER_CONTEXT="./app/build/docker"
 export app_HELM_KEY="app"
 
 # --- postgres in folder ./postgres
 export db_GRADLE_IMG="va/abd_vro-postgres"
 export db_IMG="vro-postgres"
 export db_DOCKERFILE="./postgres/src/docker/Dockerfile"
-export db_DOCKER_CONTEXT="./postgres/src/main/resources"
+export db_DOCKER_CONTEXT="./postgres/build/docker"
 export db_HELM_KEY="db"
 
 # --- db-init in folder ./db-init
 export dbInit_GRADLE_IMG="va/abd_vro-db-init"
 export dbInit_IMG="vro-db-init"
 export dbInit_DOCKERFILE="./db-init/src/docker/Dockerfile"
-export dbInit_DOCKER_CONTEXT="./db-init/src/main/resources"
+export dbInit_DOCKER_CONTEXT="./db-init/build/docker"
 export dbInit_HELM_KEY="dbInit"
 
 # --- console in folder ./console
 export console_GRADLE_IMG="va/abd_vro-console"
 export console_IMG="vro-console"
 export console_DOCKERFILE="./console/src/docker/Dockerfile"
-export console_DOCKER_CONTEXT="./console/src/main/resources"
+export console_DOCKER_CONTEXT="./console/build/docker"
 export console_HELM_KEY="console"
 
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
 export serviceDataAccess_GRADLE_IMG="va/abd_vro-service-data-access"
 export serviceDataAccess_IMG="vro-service-data-access"
 export serviceDataAccess_DOCKERFILE="./svc-lighthouse-api/src/docker/Dockerfile"
-export serviceDataAccess_DOCKER_CONTEXT="./svc-lighthouse-api/src/main/resources"
+export serviceDataAccess_DOCKER_CONTEXT="./svc-lighthouse-api/build/docker"
 export serviceDataAccess_HELM_KEY="serviceDataAccess"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
