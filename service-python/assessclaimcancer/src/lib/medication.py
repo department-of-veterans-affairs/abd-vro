@@ -13,6 +13,7 @@ medication_codeset_map = {"head": head_cancer_medication.medication_keywords,
                           "melanoma": melanoma_medication.medications,
                           "pancreatic": pancreatic_medication.medication_keywords}
 
+
 def categorize_med(medication_display, medication_dict):
     """
     Return the category that a medication belongs to. If it does not belong to any, return an empty list.
@@ -21,22 +22,20 @@ def categorize_med(medication_display, medication_dict):
     :param medication_display: medication text
     :return: list
     """
-    medication_category = []
+    medication_category = str()
     for category_id in list(medication_dict.keys()):
-        if medication_category:
-            # most general category has been identified
-            break
         for medication in medication_dict[category_id]:
-            if medication in medication_display.lower():
-                medication_category.append(category_id)
+            if medication.lower() in medication_display.lower():
+                medication_category = category_id
                 break
     return medication_category
 
 
-def medication_match(request_body):
+def medication_match(request_body, cancer_type):
     """
     Determine if there is the veteran requires continuous medication for cancer
 
+    :param cancer_type:
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes
@@ -46,29 +45,31 @@ def medication_match(request_body):
     relevant_medications = []
     date_of_claim = request_body["dateOfClaim"]
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
-    cancer_type = "head"
-    medication_codes = medication_codeset_map[cancer_type]
 
-    if type(medication_codes) == dict:
-        for medication in request_body["evidence"]["medication"]:
+    medication_keywords = medication_codeset_map[cancer_type]
+
+    if type(medication_keywords) == dict:
+        for medication in request_body["evidence"]["medications"]:
             medication_display = medication["description"]
-            if medication["status"].lower() in ["active", "on-hold", "completed", "stopped", "unknown"]:
-                medication_category = categorize_med(medication_display, medication_codes)
+            medication_category = categorize_med(medication_display, medication_keywords)
+            if medication_category:
                 medication["suggestedCategory"] = medication_category
                 relevant_medications.append(medication)
 
-    if type(medication_codes) == list:
-        for medication in request_body["evidence"]["medication"]:
+    if type(medication_keywords) == set:
+        for medication in request_body["evidence"]["medications"]:
             medication_display = medication["description"]
-            if medication["text"].lower() in [x.lower() for x in medication_codes]:
-                if medication in medication_display.lower():
+            for med in [x.lower() for x in medication_keywords]:
+                if med in medication_display.lower():
                     relevant_medications.append(medication)
-
 
     relevant_medications = sorted(
         relevant_medications,
         key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
         reverse=True,
     )
-    response["medications"] = relevant_medications
+    response.update({
+        "medications": relevant_medications,
+        "relevantMedCount": len(relevant_medications),
+        "totalMedCount": len(request_body["evidence"]["medications"])})
     return response

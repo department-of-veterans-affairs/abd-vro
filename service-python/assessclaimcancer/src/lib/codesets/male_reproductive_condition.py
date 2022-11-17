@@ -1,4 +1,4 @@
-condition_codes = {
+condition_dict = {
     "Penile": {
         "109875002",
         "188230001",

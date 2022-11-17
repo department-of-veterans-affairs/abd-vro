@@ -1,5 +1,5 @@
 
-melanoma_diagnosis = {
+condition_codes = {
         "C00",
         "C20",
         "C21",

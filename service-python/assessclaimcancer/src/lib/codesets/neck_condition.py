@@ -1,4 +1,4 @@
-condition_codes = {
+condition_dict = {
     "Bone": {
         "C41.2",
         "C41.9",

@@ -1,30 +1,34 @@
 from datetime import datetime
+from assessclaimcancer.src.lib.codesets import male_reproductive_condition, melanoma_condition, \
+    head_cancer_condition, gyn_cancer_condition, pancreatic_condition, prostate_cancer_condition, neck_condition
 
-snomed_cancer = {187791002,
-                 187792009,
-                 254611009,
-                 255088001,
-                 363418001,
-                 363419009,
-                 372003004,
-                 700423003,
-                 94459006,
-                 1651000119109,
-                 187793004,
-                 372119009,
-                 372142002,
-                 735735001,
-                 93715005,
-                 93843007,
-                 93939009,
-                 94082003,
-                 94460001,
-                 363417006,
-                 371967001
-                 }
+conditions_codeset_map = {"head": head_cancer_condition.conditions_dict,
+                          "neck": neck_condition.condition_dict,
+                          "male_reproductive": male_reproductive_condition.condition_dict,
+                          "gyn": gyn_cancer_condition.condition_dict,
+                          "prostate": prostate_cancer_condition.condition_codes,
+                          "melanoma": melanoma_condition.condition_codes,
+                          "pancreatic": pancreatic_condition.condition_codes}
 
 
-def active_cancer_condition(request_body):
+def categorize_condition(condition_code, condition_dict):
+    """
+    Return the category that a medication belongs to. If it does not belong to any, return an empty list.
+
+    :param medication_dict:
+    :param medication_display: medication text
+    :return: list
+    """
+    condition_category = str()
+    for category_id in list(condition_dict.keys()):
+        for cancer_condition_code in condition_dict[category_id]:
+            if condition_code == cancer_condition_code:
+                condition_category = category_id
+                break
+    return condition_category
+
+
+def active_cancer_condition(request_body, cancer_type):
     """
     Determine if there is an active pancreatic cancer diagnosis
 
@@ -34,16 +38,31 @@ def active_cancer_condition(request_body):
     :rtype: dict
     """
 
-    active_cancer_result = {"success": True, "active_cancer_present": False}
-    date_of_claim = request_body["date_of_claim"]
+    relevant_conditions = []
+    response = {}
+    date_of_claim = request_body["dateOfClaim"]
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
-    for condition in request_body["condition"]:
-        condition_date = datetime.strptime(condition["onset_date"], "%Y-%m-%d").date()
-        if condition["code"] in [str(x) for x in snomed_cancer]:
-            if condition["status"].lower() == "active":
-                active_cancer_result["active_cancer_present"] = True
-            elif (date_of_claim_date - condition_date).days <= 180:
-                active_cancer_result["active_cancer_present"] = True
+    condition_codes = conditions_codeset_map[cancer_type]
 
-    return active_cancer_result
+    if type(condition_codes) == dict:
+        for condition in request_body["evidence"]["conditions"]:
+
+            condition_code = condition["code"]
+            condition_category = categorize_condition(condition_code, condition_codes)
+            if condition_category:
+                condition["suggestedCategory"] = condition_category
+                relevant_conditions.append(condition)
+
+    if type(condition_codes) == set:
+        for condition in request_body["evidence"]["conditions"]:
+            condition_code = condition["code"]
+            for cancer_condition_code in condition_codes:
+                if cancer_condition_code == condition_code:
+                    relevant_conditions.append(condition)
+
+    response.update({"conditions": relevant_conditions,
+                     "conditionsCount": len(request_body["evidence"]["conditions"]),
+                     "relevantConditionsCount": len(relevant_conditions)})
+
+    return response

@@ -1,4 +1,4 @@
-conditions = {
+conditions_dict = {
     "Bone": {
         "C41.0",
         "C41.1",
