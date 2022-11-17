@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
