@@ -8,7 +8,8 @@
         "description": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler",
         "refills": 0,
         "asthmaRelevant": true,
-        "authoredOn": "1952-04-12T04:00:00Z"
+        "authoredOn": "1952-04-12T04:00:00Z",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -19,7 +20,8 @@
         "dosageInstructions": [
           "QID PRN"
         ],
-        "route": "INHALATION ORAL"
+        "route": "INHALATION ORAL",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -34,7 +36,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -49,7 +52,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -64,7 +68,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -79,7 +84,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -94,14 +100,16 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
         "description": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet",
         "refills": 0,
         "asthmaRelevant": false,
-        "authoredOn": "1953-04-26T04:00:00Z"
+        "authoredOn": "1953-04-26T04:00:00Z",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -116,7 +124,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -127,7 +136,8 @@
         "dosageInstructions": [
           "QD"
         ],
-        "route": "ORAL"
+        "route": "ORAL",
+        "dataSource": "LH"
       },
       {
         "status": "Active",
@@ -142,7 +152,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "dataSource": "LH"
       }
     ]
   },
