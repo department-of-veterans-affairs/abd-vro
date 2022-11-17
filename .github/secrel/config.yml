@@ -13,7 +13,7 @@
 
 # Setup script to run before images are built
 setup:
-  script: ./build-images.sh
+  script: ./scripts/build-images.sh
   env:
   - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
