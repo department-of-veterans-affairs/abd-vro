@@ -1,9 +1,8 @@
 package gov.va.vro;
 
-import gov.va.vro.model.mas.ClaimCondition;
-import gov.va.vro.model.mas.ClaimDetail;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.VeteranIdentifiers;
+import gov.va.vro.model.mas.*;
+
+import java.util.Collections;
 
 public class MasTestData {
 
@@ -21,8 +20,9 @@ public class MasTestData {
     ClaimCondition conditions = new ClaimCondition();
     conditions.setDiagnosticCode("1233");
     ClaimDetail claimDetail = new ClaimDetail();
-    claimDetail.setClaimSubmissionDateTime("123");
+    claimDetail.setClaimSubmissionDateTime("2022-02-04");
     claimDetail.setConditions(conditions);
+    claimDetail.setBenefitClaimId("999");
 
     return MasAutomatedClaimPayload.builder()
         .dateOfBirth("2002-12-12")
@@ -32,5 +32,15 @@ public class MasTestData {
         .veteranIdentifiers(veteranIdentifiers)
         .claimDetail(claimDetail)
         .build();
+  }
+
+  public static MasDocument createHypertensionDocument() {
+    var document = new MasDocument();
+    document.setCondition("Hypertension");
+    var annotation = new MasAnnotation();
+    annotation.setAnnotType("Medication");
+    annotation.setAnnotVal("Placebo");
+    document.setAnnotations(Collections.singletonList(annotation));
+    return document;
   }
 }

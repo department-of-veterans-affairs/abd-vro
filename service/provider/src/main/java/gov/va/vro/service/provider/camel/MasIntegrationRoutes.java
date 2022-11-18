@@ -114,9 +114,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
         .setProperty("evidence", simple("${body}"))
-        .routingSlip(
-            method(
-                slipClaimSubmitRouter, "routeHealthAssessV2")) // TODO: call "health assess" service
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
@@ -140,10 +138,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
         .process( // combine evidence
-            FunctionProcessor.fromFunction(
-                combineExchangesFunction()
-                // combineEvidenceFunction()
-                ));
+            FunctionProcessor.fromFunction(combineExchangesFunction()));
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")

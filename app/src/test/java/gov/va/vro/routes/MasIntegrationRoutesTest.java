@@ -1,17 +1,20 @@
 package gov.va.vro.routes;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.apache.camel.builder.AdviceWith.adviceWith;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
-import gov.va.vro.model.mas.MasAnnotation;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import org.apache.camel.CamelExecutionException;
+import lombok.SneakyThrows;
+import org.apache.camel.*;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -28,44 +31,82 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   @Autowired @InjectMocks MasCollectionService masCollectionService;
 
-  @Test
-  void processClaimInvalidInput() {
-    var payload = MasAutomatedClaimPayload.builder().collectionId(123).build();
-    try {
-      camelEntrance.processClaim(payload);
-      fail();
-    } catch (CamelExecutionException cee) {
+  @Autowired CamelContext camelContext;
 
-    }
-  }
+  @EndpointInject("mock:sufficiency-assess")
+  private MockEndpoint mockSufficiencyAssess;
 
-  // TODO: test Mas API returns invalid object
+  @EndpointInject("mock:claim-submit")
+  private MockEndpoint mockClaimSubmit;
+
+  @EndpointInject("mock:empty-endpoint")
+  private MockEndpoint mockEmptyEndpoint;
 
   @Test
-  void processClaimLighthouseConnectFailed() {
+  void processClaimSufficentEvidence() throws Exception {
+
+    replaceEndpoint(
+        "claim-submit",
+        "rabbitmq://claim-submit-exchange?queue=claim-submit&requestTimeout=60000&routingKey=code.1233",
+        "mock:claim-submit");
+
+    mockClaimSubmit.whenAnyExchangeReceived(
+        new Processor() {
+          @Override
+          @SneakyThrows
+          public void process(Exchange exchange) {
+            var assessment = new HealthDataAssessment();
+            exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(assessment));
+          }
+        });
+
+    replaceEndpoint(
+        "mas-processing",
+        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.1233&requestTimeout=60000",
+        "mock:sufficiency-assess");
+
+    mockSufficiencyAssess.whenAnyExchangeReceived(
+        new Processor() {
+          @Override
+          @SneakyThrows
+          public void process(Exchange exchange) {
+            var evidence = new AbdEvidenceWithSummary();
+            evidence.setSufficientForFastTracking(true);
+            exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
+          }
+        });
+
+    replaceEndpoint(
+        "generate-pdf",
+        "rabbitmq:tap-claim-submitted?exchangeType=topic&amp;queue=tap-claim-submitted-not-used&amp;skipQueueBind=true",
+        "mock:empty-endpoint");
+
+    replaceEndpoint(
+        "generate-pdf",
+        "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
+        "mock:empty-endpoint");
+
+    mockEmptyEndpoint.whenAnyExchangeReceived(
+        new Processor() {
+          @Override
+          public void process(Exchange exchange) {}
+        });
+
     int collectionId = 123;
     var collectionAnnotation = new MasCollectionAnnotation();
-    MasDocument document = createHypertensionDocument();
-    collectionAnnotation.setCollectionsId(123);
+    MasDocument document = MasTestData.createHypertensionDocument();
+    collectionAnnotation.setCollectionsId(collectionId);
     collectionAnnotation.setDocuments(Collections.singletonList(document));
     Mockito.when(masApiService.getCollectionAnnotations(collectionId))
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
-    try {
-      camelEntrance.processClaim(payload);
-      fail();
-    } catch (CamelExecutionException me) {
-
-    }
+    camelEntrance.processClaim(payload);
   }
 
-  private static MasDocument createHypertensionDocument() {
-    var document = new MasDocument();
-    document.setCondition("Hypertension");
-    var annotation = new MasAnnotation();
-    annotation.setAnnotType("Medication");
-    annotation.setAnnotVal("Placebo");
-    document.setAnnotations(Collections.singletonList(annotation));
-    return document;
+  private void replaceEndpoint(String routeId, String fromUri, String toUri) throws Exception {
+    adviceWith(
+        camelContext,
+        routeId,
+        route -> route.interceptSendToEndpoint(fromUri).skipSendToOriginalEndpoint().to(toUri));
   }
 }
