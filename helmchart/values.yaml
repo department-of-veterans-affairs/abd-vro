@@ -55,6 +55,10 @@ images:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
     imagePullPolicy: Always
+  console:
+    imageName: dev_vro-console
+    tag: tagPlaceholder
+    imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
     tag: tagPlaceholder

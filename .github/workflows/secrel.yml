@@ -16,16 +16,10 @@ env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
-  #call-build-workflow:
-  #  uses: ./.github/workflows/build.yml
-  #  secrets:
-  #    ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
   build-and-scan:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: Tornado Pipeline
-    #needs: call-build-workflow
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v3.0.1
     with:
       config-file: .github/secrel/config.yml
