@@ -44,17 +44,17 @@ images:
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  -  SERVICE_FOLDER=pdfgenerator
+  - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
 - name: vro-service-assessclaimdc7101
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  -  SERVICE_FOLDER=assessclaimdc7101
+  - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
 - name: vro-service-assessclaimdc6602
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  -  SERVICE_FOLDER=assessclaimdc6602
+  - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
 # END image-names.sh replacement block (do not modify this line)
 
 # Remove source block if you're not building sources

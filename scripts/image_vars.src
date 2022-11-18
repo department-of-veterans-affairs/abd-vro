@@ -71,22 +71,22 @@ export serviceDataAccess_HELM_KEY="serviceDataAccess"
 # --- pdfgenerator in folder ./service-python/pdfgenerator
 export pdfGenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
 export pdfGenerator_IMG="vro-service-pdfgenerator"
-export pdfGenerator_DOCKERFILE="./service-python/pdfgenerator/src/docker/Dockerfile"
-export pdfGenerator_DOCKER_CONTEXT="./service-python/pdfgenerator/src"
+export pdfGenerator_DOCKERFILE="./service-python/Dockerfile"
+export pdfGenerator_DOCKER_CONTEXT="./service-python"
 export pdfGenerator_HELM_KEY="pdfGenerator"
 
 # --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
 export serviceAssessClaimDC7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
 export serviceAssessClaimDC7101_IMG="vro-service-assessclaimdc7101"
-export serviceAssessClaimDC7101_DOCKERFILE="./service-python/assessclaimdc7101/src/docker/Dockerfile"
-export serviceAssessClaimDC7101_DOCKER_CONTEXT="./service-python/assessclaimdc7101/src"
+export serviceAssessClaimDC7101_DOCKERFILE="./service-python/Dockerfile"
+export serviceAssessClaimDC7101_DOCKER_CONTEXT="./service-python"
 export serviceAssessClaimDC7101_HELM_KEY="serviceAssessClaimDC7101"
 
 # --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
 export serviceAssessClaimDC6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
 export serviceAssessClaimDC6602_IMG="vro-service-assessclaimdc6602"
-export serviceAssessClaimDC6602_DOCKERFILE="./service-python/assessclaimdc6602/src/docker/Dockerfile"
-export serviceAssessClaimDC6602_DOCKER_CONTEXT="./service-python/assessclaimdc6602/src"
+export serviceAssessClaimDC6602_DOCKERFILE="./service-python/Dockerfile"
+export serviceAssessClaimDC6602_DOCKER_CONTEXT="./service-python"
 export serviceAssessClaimDC6602_HELM_KEY="serviceAssessClaimDC6602"
 
 # End of file

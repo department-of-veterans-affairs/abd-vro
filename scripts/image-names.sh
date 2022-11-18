@@ -52,6 +52,7 @@ secrel_image_name() {
 secrel_dockerfile() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
+    pdfgenerator|assessclaim*) echo "./service-python/Dockerfile";;
     *) echo "$GRADLE_FOLDER/src/docker/Dockerfile";;
   esac
 }
@@ -59,8 +60,16 @@ secrel_dockerfile() {
 secrel_docker_context() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
-    pdfgenerator|assessclaim*) echo "$GRADLE_FOLDER/src";;
+    pdfgenerator|assessclaim*) echo "./service-python";;
     *) echo "$GRADLE_FOLDER/build/docker";;
+  esac
+}
+
+secrel_docker_service_src_folder() {
+  GRADLE_FOLDER=$(gradle_folder "$1")
+  case "$1" in
+    pdfgenerator|assessclaim*) echo "SERVICE_SRC_FOLDER=$1/build/docker";;
+    *) echo "";;
   esac
 }
 
@@ -148,10 +157,15 @@ overwriteSrcFile > "$SRC_FILE"
 images_for_secrel_config_yml(){
   echo '# BEGIN image-names.sh replacement block (do not modify this line)
 # The following image list is updated by image-names.sh'
-for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-  echo "- name: $(getVarValue "${PREFIX}" _IMG)
-  context: \"$(getVarValue "${PREFIX}" _DOCKER_CONTEXT)\"
-  path: \"$(getVarValue "${PREFIX}" _DOCKERFILE)\""
+for IMG in "${IMAGES[@]}"; do
+  echo "- name: $(secrel_image_name "$IMG")
+  context: \"$(secrel_docker_context "$IMG")\"
+  path: \"$(secrel_dockerfile "$IMG")\""
+  SERVICE_SRC_FOLDER="$(secrel_docker_service_src_folder "$IMG")"
+  if [ "$SERVICE_SRC_FOLDER" ]; then
+    echo "  args:
+  - $SERVICE_SRC_FOLDER"
+  fi
 done
 echo '# END image-names.sh replacement block (do not modify this line)'
 }
