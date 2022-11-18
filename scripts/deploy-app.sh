@@ -31,11 +31,18 @@ source scripts/image_vars.src
 generateImageArgs(){
   local _IMAGE_TAG=$2
 
+  # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
     dev|qa) IMG_NAME_PREFIX="${1}_";;
     sandbox|prod|prod-test) IMG_NAME_PREFIX="";;
     *) { echo "Unknown environment: $1"; exit 20; }
   esac
+
+  # Set USE_SECREL_IMAGES to deploy SecRel images to any ENV
+  if [ "$USE_SECREL_IMAGES" ]; then
+    IMG_NAME_PREFIX=""
+    echo "--set-string images.repo=abd-vro-internal "
+  fi
 
   for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
     local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
