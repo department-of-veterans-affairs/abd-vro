@@ -157,7 +157,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
 overwriteSrcFile > "$SRC_FILE"
 
 images_for_secrel_config_yml(){
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
 for IMG in "${IMAGES[@]}"; do
   echo "- name: $(secrel_image_name "$IMG")
@@ -169,12 +169,12 @@ for IMG in "${IMAGES[@]}"; do
 $BUILD_ARGS"
   fi
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 images_for_helmchart_values_yaml(){
   local _ENV=$1
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
 for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
@@ -182,7 +182,7 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
     tag: tagPlaceholder
     imagePullPolicy: Always"
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 # shellcheck source=image_vars.src

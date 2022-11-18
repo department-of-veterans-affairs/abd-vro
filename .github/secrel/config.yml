@@ -23,7 +23,7 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
 images:
-# BEGIN image-names.sh replacement block (do not modify this line)
+# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
 - name: vro-app
   context: "./app/build/docker"
@@ -64,7 +64,7 @@ images:
   path: "./service-python/Dockerfile"
   args:
     - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
-# END image-names.sh replacement block (do not modify this line)
+# END image-names.sh replacement block (do not modify this block)
 
 # Remove source block if you're not building sources
 #source:

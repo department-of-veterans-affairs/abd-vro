@@ -71,8 +71,8 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
-echo helm del $HELM_APP_NAME -n ${NAMESPACE}
-echo helm upgrade --install $HELM_APP_NAME helmchart \
+helm del $HELM_APP_NAME -n ${NAMESPACE}
+helm upgrade --install $HELM_APP_NAME helmchart \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run
