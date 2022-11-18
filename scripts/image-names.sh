@@ -60,12 +60,12 @@ secrel_docker_context() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
     pdfgenerator|assessclaim*) echo "$GRADLE_FOLDER/src";;
-    app|*) echo "$GRADLE_FOLDER/src/main/resources";;
+    *) echo "$GRADLE_FOLDER/build/docker";;
   esac
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602)
+IMAGES=( app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -141,6 +141,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
+  echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
 
