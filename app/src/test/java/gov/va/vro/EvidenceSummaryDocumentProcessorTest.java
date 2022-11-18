@@ -51,7 +51,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     InputStream stream = pdfGeneratorInput01.getInputStream();
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     GeneratePdfRequest input = mapper.readValue(inputAsString, GeneratePdfRequest.class);
-    var response = post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
+    post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
 
     // Verify that the evidence summary document is created and saved correctly.
     assertNotNull(claim.getId());
@@ -88,7 +88,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     InputStream stream = pdfGeneratorInput01.getInputStream();
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     GeneratePdfRequest input = mapper.readValue(inputAsString, GeneratePdfRequest.class);
-    var response = post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
+    post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
 
     // Verify that the evidence summary document is not created or saved.
     assertNotNull(claim.getId());
