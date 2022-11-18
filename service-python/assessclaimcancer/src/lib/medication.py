@@ -67,6 +67,7 @@ def medication_match(request_body, cancer_type):
                 if med in medication_display.lower():
                     medication["conditionRelated"] = True
                     relevant_medications.append(medication)
+                    break
 
     relevant_medications = sorted(
         relevant_medications,

@@ -242,6 +242,127 @@ from assessclaimcancer.src.lib import medication
                     }],
                     "relevantMedCount": 1,
                     "totalMedCount": 2}
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "aldesleukin 22000000 UNT [Proleukin]",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            },
+                            {
+                                "authoredOn": "1962-04-06T04:00:00Z",
+                                "description": "CISplatin 50 MG",
+                                "status": "active",
+                            },
+                        ],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "kidney",
+                {'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
+                                  'conditionRelated': True,
+                                  'description': 'aldesleukin 22000000 UNT [Proleukin]',
+                                  'status': 'active'}],
+                 'relevantMedCount': 1,
+                 'totalMedCount': 2}
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "methotrexate 2.5 MG/ML Injectable Solution",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            },
+                            {
+                                "authoredOn": "1962-04-06T04:00:00Z",
+                                "description": "CISplatin 50 MG",
+                                "status": "active",
+                            },
+                        ],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "breast",
+                {"medications": [
+                    {
+                        "description": "methotrexate 2.5 MG/ML Injectable Solution",
+                        "status": "active",
+                        "authoredOn": "1952-04-06T04:00:00Z",
+                        "conditionRelated": True
+                    }],
+                    "relevantMedCount": 1,
+                    "totalMedCount": 2}
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "aldesleukin 22000000 UNT [Proleukin]",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            },
+                            {
+                                "authoredOn": "1962-04-06T04:00:00Z",
+                                "description": "CISplatin 50 MG",
+                                "status": "active",
+                            },
+                        ],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "gi",
+                {"medications": [
+                    {
+                        "description": "CISplatin 50 MG",
+                        "status": "active",
+                        "authoredOn": "1962-04-06T04:00:00Z",
+                        "conditionRelated": True
+                    }],
+                    "relevantMedCount": 1,
+                    "totalMedCount": 2}
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [
+                            {
+                                "description": "aldesleukin 22000000 UNT [Proleukin]",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            },
+                            {
+                                "authoredOn": "1962-04-06T04:00:00Z",
+                                "description": "CISplatin 50 MG",
+                                "status": "active",
+                            },
+                        ],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "brain",
+                {"medications": [
+                    {
+                        "description": "CISplatin 50 MG",
+                        "status": "active",
+                        "authoredOn": "1962-04-06T04:00:00Z",
+                        "conditionRelated": True
+                    }],
+                    "relevantMedCount": 1,
+                    "totalMedCount": 2}
         )
     ],
 )

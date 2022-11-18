@@ -133,6 +133,92 @@ from assessclaimcancer.src.lib import condition
                  'conditionsCount': 2,
                  'relevantConditionsCount': 1},
         ),
+        (
+                {
+                    "evidence": {
+                        "medications": [],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"},
+                                       {"code": "C18.1",
+                                        "text": "Malignant neoplasm of appendix"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "gi",
+                {'conditions': [{"code": "C18.1",
+                                 "text": "Malignant neoplasm of appendix"}],
+                 'conditionsCount': 2,
+                 'relevantConditionsCount': 1},
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"},
+                                       {"code": "C50",
+                                        "text": "Malignant neoplasm of breast"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "breast",
+                {'conditions': [{"code": "C50",
+                                 "text": "Malignant neoplasm of breast"}],
+                 'conditionsCount': 2,
+                 'relevantConditionsCount': 1},
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"},
+                                       {"code": "C64",
+                                        "text": "Malignant neoplasm of kidney, except renal pelvis"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "kidney",
+                {'conditions': [{"code": "C64",
+                                 "text": "Malignant neoplasm of kidney, except renal pelvis"}],
+                 'conditionsCount': 2,
+                 'relevantConditionsCount': 1},
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"},
+                                       {"code":"C71",
+                                        "text": "Malignant neoplasm of brain"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "brain",
+                {'conditions': [{"code":"C71",
+                                 "text": "Malignant neoplasm of brain"}],
+                 'conditionsCount': 2,
+                 'relevantConditionsCount': 1},
+        ),
+        (
+                {
+                    "evidence": {
+                        "medications": [],
+                        "conditions": [{"code": "C41.0",
+                                        "text": "Malignant neoplasm of bones of skull and face"},
+                                       {"code": "C34.0",
+                                        "text": "Malignant neoplasm of main bronchus"}]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                },
+                "respiratory",
+                {'conditions': [{"code": "C34.0",
+                                 "suggestedCategory": "Bronchus",
+                                 "text": "Malignant neoplasm of main bronchus"}],
+                 'conditionsCount': 2,
+                 'relevantConditionsCount': 1},
+        ),
 
     ],
 )
