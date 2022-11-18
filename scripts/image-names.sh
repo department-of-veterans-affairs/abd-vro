@@ -65,10 +65,12 @@ secrel_docker_context() {
   esac
 }
 
-secrel_docker_service_src_folder() {
+secrel_docker_build_args() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
-    pdfgenerator|assessclaim*) echo "SERVICE_SRC_FOLDER=$1/build/docker";;
+    pdfgenerator|assessclaim*) echo "    - SERVICE_SRC_FOLDER=$1/build/docker";;
+    app|console|svc-lighthouse-api) echo "    - JAR_FILE=$1-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh";;
     *) echo "";;
   esac
 }
@@ -161,10 +163,10 @@ for IMG in "${IMAGES[@]}"; do
   echo "- name: $(secrel_image_name "$IMG")
   context: \"$(secrel_docker_context "$IMG")\"
   path: \"$(secrel_dockerfile "$IMG")\""
-  SERVICE_SRC_FOLDER="$(secrel_docker_service_src_folder "$IMG")"
-  if [ "$SERVICE_SRC_FOLDER" ]; then
+  BUILD_ARGS="$(secrel_docker_build_args "$IMG")"
+  if [ "$BUILD_ARGS" ]; then
     echo "  args:
-  - $SERVICE_SRC_FOLDER"
+$BUILD_ARGS"
   fi
 done
 echo '# END image-names.sh replacement block (do not modify this line)'
