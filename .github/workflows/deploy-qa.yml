@@ -19,7 +19,7 @@ env:
   TARGET_ENV: "qa"
 
 jobs:
-  publish-image:
+  deploy-images:
     # only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
