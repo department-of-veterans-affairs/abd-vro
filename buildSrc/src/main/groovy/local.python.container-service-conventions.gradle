@@ -9,15 +9,8 @@ plugins {
 }
 
 docker {
-    dependsOn(assemble)
-    name "${dockerRegistry}/${rootProject.name}-${project.name}"
-    tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
-    tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
-    noCache false // Use image caches; only recreate if different
-    dockerfile file('Dockerfile')
-
-    files "bin/entrypoint.sh"
-    buildArgs([ENTRYPOINT_FILE: "entrypoint.sh"])
+    // Refer to service-python/Dockerfile
+    dockerfile file('../Dockerfile')
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
@@ -25,7 +18,6 @@ docker {
     }
     copySpec.into(".").from("../"){
         include("*.py")
-        include("Dockerfile")
     }
 }
 
