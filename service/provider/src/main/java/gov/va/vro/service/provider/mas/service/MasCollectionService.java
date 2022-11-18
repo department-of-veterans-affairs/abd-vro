@@ -1,8 +1,6 @@
 package gov.va.vro.service.provider.mas.service;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.*;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -93,16 +93,43 @@ public class MasCollectionService {
     AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
     AbdEvidence masApiEvidence = masApiAssessment.getEvidence();
     // for now, we just add up the lists
+    log.info("combineEvidence >> LH  : " + lighthouseEvidence != null ? "not null" : "null");
+    log.info("combineEvidence >> MAS : " + masApiEvidence != null ? "not null" : "null");
     AbdEvidence compositeEvidence = new AbdEvidence();
     compositeEvidence.setBloodPressures(
-        merge(lighthouseEvidence.getBloodPressures(), masApiEvidence.getBloodPressures()));
+        merge(
+                lighthouseEvidence != null ? lighthouseEvidence.getBloodPressures() : null,
+                masApiEvidence != null ? masApiEvidence.getBloodPressures() : null)
+            .stream()
+            .flatMap(s -> Stream.ofNullable(s))
+            .distinct()
+            .collect(Collectors.toList()));
     compositeEvidence.setConditions(
-        merge(lighthouseEvidence.getConditions(), masApiEvidence.getConditions()));
+        merge(
+                lighthouseEvidence != null ? lighthouseEvidence.getConditions() : null,
+                masApiEvidence != null ? masApiEvidence.getConditions() : null)
+            .stream()
+            .flatMap(s -> Stream.ofNullable(s))
+            .distinct()
+            .collect(Collectors.toList()));
     compositeEvidence.setMedications(
-        merge(lighthouseEvidence.getMedications(), masApiEvidence.getMedications()));
+        merge(
+                lighthouseEvidence != null ? lighthouseEvidence.getMedications() : null,
+                masApiEvidence != null ? masApiEvidence.getMedications() : null)
+            .stream()
+            .flatMap(s -> Stream.ofNullable(s))
+            .distinct()
+            .collect(Collectors.toList()));
     compositeEvidence.setProcedures(
-        merge(lighthouseEvidence.getProcedures(), masApiEvidence.getProcedures()));
+        merge(
+                lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
+                masApiEvidence != null ? masApiEvidence.getProcedures() : null)
+            .stream()
+            .flatMap(s -> Stream.ofNullable(s))
+            .distinct()
+            .collect(Collectors.toList()));
     lighthouseAssessment.setEvidence(compositeEvidence);
+
     return lighthouseAssessment;
   }
 

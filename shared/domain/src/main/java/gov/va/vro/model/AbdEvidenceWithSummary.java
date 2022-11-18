@@ -22,5 +22,7 @@ public class AbdEvidenceWithSummary {
 
   private String errorMessage;
 
+  @Schema(description = "Sufficient for Fast Tracking flag")
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   private boolean sufficientForFastTracking;
 }

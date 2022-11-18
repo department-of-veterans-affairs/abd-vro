@@ -31,12 +31,17 @@ def pyflake8 = tasks.register("pyflake8", PythonTask) {
   dependsOn pyisort
 }
 
-tasks.register("pytest", PythonTask) {
+// Runs pytest when `./gradlew test` is run
+// Also skips pytest when `./gradlew build -x test` is run
+tasks.register("test", PythonTask) {
   module = 'pytest'
   command = "--cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc"
   dependsOn pyflake8
 }
 
-check{
-  dependsOn pytest
+check {
+  dependsOn test
+  dependsOn checkPython
 }
+
+clean.dependsOn(cleanPython)
