@@ -1,6 +1,6 @@
-ARG PYTHON_VERSION=3.9
+ARG WKHTML_VERSION=3.10.6-0.12.6-small
 
-FROM python:${PYTHON_VERSION}-alpine
+FROM surnet/alpine-python-wkhtmltopdf:${WKHTML_VERSION}
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -13,4 +13,3 @@ WORKDIR /home/docker
 RUN pip install --no-cache-dir -r requirements.txt
 USER docker
 CMD ["python", "-u", "main_consumer.py"]
-

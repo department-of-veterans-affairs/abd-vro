@@ -7,8 +7,8 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.DevResource;
 import gov.va.vro.api.responses.FetchClaimsResponse;
+import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
-import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.FetchClaimsService;
@@ -36,7 +36,7 @@ public class DevController implements DevResource {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
-  public ResponseEntity<HealthDataAssessment> postHealthAssessment(
+  public ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
       HealthDataAssessmentRequest claim)
       throws RequestValidationException, ClaimProcessingException {
     log.info(
@@ -47,8 +47,8 @@ public class DevController implements DevResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaim(model);
 
-      HealthDataAssessment response =
-          objectMapper.readValue(responseAsString, HealthDataAssessment.class);
+      HealthDataAssessmentResponse response =
+          objectMapper.readValue(responseAsString, HealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");

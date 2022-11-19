@@ -1,20 +1,22 @@
 
 plugins {
-  id 'starter.std.java.library-spring-conventions'
+    id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {
-  implementation project(':shared:domain')
-  implementation project(':api')
-  implementation project(':service:provider')
-  implementation project(':service:spi')
+    implementation project(':domain')
+    implementation project(':api')
+    implementation project(':service:provider')
+    implementation project(':service:spi')
 
-  implementation "gov.va.starter:exceptions"
+    implementation "gov.va.starter:exceptions"
 
-  // Needed?
-  // implementation 'gov.va.starter:test-data'
-  // implementation "gov.va.starter:entity-lifecycle-notifier"
-  // implementation 'org.springframework.boot:spring-boot-starter-web'
-  // implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  // implementation "io.opentracing.contrib:opentracing-spring-web-starter"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+
+    // Needed?
+    // implementation 'gov.va.starter:test-data'
+    // implementation "gov.va.starter:entity-lifecycle-notifier"
+    // implementation 'org.springframework.boot:spring-boot-starter-web'
+    // implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // implementation "io.opentracing.contrib:opentracing-spring-web-starter"
 }

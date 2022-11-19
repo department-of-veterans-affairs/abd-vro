@@ -7,8 +7,8 @@ ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 
 WORKDIR /project
-COPY ${ENTRYPOINT_FILE} entrypoint.sh
-COPY ${JAR_FILE} vro-app.jar
+COPY ./entrypoint.sh entrypoint.sh
+COPY ./app*.jar vro-app.jar
 RUN mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat && chmod +x entrypoint.sh
 EXPOSE 8081
 

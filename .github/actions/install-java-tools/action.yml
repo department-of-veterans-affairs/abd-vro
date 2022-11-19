@@ -7,7 +7,7 @@ runs:
     # http://man7.org/linux/man-pages/man1/date.1.html
     - name: Get Date
       id: get-date
-      run: echo "today_date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+      run: echo "name=date::$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
       shell: bash
 
     - name: Restore hadolint
@@ -15,7 +15,7 @@ runs:
       id: cache-hadolint
       with:
         path: /usr/local/bin/hadolint
-        key: hadolint-${{ steps.get-date.outputs.today_date }}
+        key: hadolint-${{ steps.get-date.outputs.date }}
 
     - name: Install hadolint
       if: steps.cache-hadolint.outputs.cache-hit != 'true'

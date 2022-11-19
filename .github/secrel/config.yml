@@ -11,9 +11,8 @@
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
 
-# Setup script to run before images are built
 setup:
-  script: ./scripts/build-images.sh
+  script: ./build-images.sh
   env:
   - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
@@ -23,39 +22,29 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
 images:
-# BEGIN image-names.sh replacement block (do not modify this line)
-# The following image list is updated by image-names.sh
 - name: vro-app
+  #context: "./app/src/main/resources"
   context: "./app/build/docker"
   path: "./app/src/docker/Dockerfile"
 - name: vro-postgres
-  context: "./postgres/build/docker"
+  context: "./postgres/src/main/resources"
   path: "./postgres/src/docker/Dockerfile"
 - name: vro-db-init
-  context: "./db-init/build/docker"
+  context: "./db-init/src/main/resources"
   path: "./db-init/src/docker/Dockerfile"
-- name: vro-console
-  context: "./console/build/docker"
-  path: "./console/src/docker/Dockerfile"
 - name: vro-service-data-access
-  context: "./svc-lighthouse-api/build/docker"
-  path: "./svc-lighthouse-api/src/docker/Dockerfile"
+  #context: "./service-data-access/src/main/resources"
+  context: "./service-data-access/build/docker"
+  path: "./service-data-access/src/docker/Dockerfile"
 - name: vro-service-pdfgenerator
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-  - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
+  context: "./service-python/pdfgenerator/src"
+  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
 - name: vro-service-assessclaimdc7101
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-  - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
+  context: "./service-python/assessclaimdc7101/src"
+  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
 - name: vro-service-assessclaimdc6602
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-  - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
-# END image-names.sh replacement block (do not modify this line)
+  context: "./service-python/assessclaimdc6602/src"
+  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
 
 # Remove source block if you're not building sources
 #source:

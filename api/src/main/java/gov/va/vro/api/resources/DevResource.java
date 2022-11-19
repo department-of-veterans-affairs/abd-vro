@@ -4,7 +4,7 @@ import gov.va.starter.boot.exception.RequestValidationException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FetchClaimsResponse;
-import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,7 +61,7 @@ public interface DevResource {
       })
   @Timed(value = "health-data-assessment")
   @Tag(name = "Health Assessment")
-  ResponseEntity<HealthDataAssessment> postHealthAssessment(
+  ResponseEntity<HealthDataAssessmentResponse> postHealthAssessment(
       @Parameter(
               description = "Claim for which health data assessment requested",
               required = true,
