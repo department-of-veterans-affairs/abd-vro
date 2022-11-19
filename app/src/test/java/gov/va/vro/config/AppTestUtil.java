@@ -1,8 +1,8 @@
 package gov.va.vro.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 
@@ -17,7 +17,7 @@ public class AppTestUtil {
 
   @SneakyThrows
   public String claimToResponse(Claim claim, boolean evidence) {
-    var response = new HealthDataAssessmentResponse();
+    var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
     response.setErrorMessage("I am not a real endpoint.");

@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.HealthDataAssessmentResponse;
+import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.service.provider.camel.FunctionProcessor;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -63,20 +63,18 @@ class DevControllerTest extends BaseControllerTest {
     request.setVeteranIcn("icn");
     request.setDiagnosticCode("1701");
 
-    var responseEntity1 =
-        post("/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    var responseEntity1 = post("/v1/health-data-assessment", request, HealthDataAssessment.class);
 
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
-    HealthDataAssessmentResponse response1 = responseEntity1.getBody();
+    HealthDataAssessment response1 = responseEntity1.getBody();
     assertNotNull(response1);
     assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
     // Now submit an existing claim:
-    var responseEntity2 =
-        post("/v1/health-data-assessment", request, HealthDataAssessmentResponse.class);
+    var responseEntity2 = post("/v1/health-data-assessment", request, HealthDataAssessment.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    HealthDataAssessmentResponse response2 = responseEntity2.getBody();
+    HealthDataAssessment response2 = responseEntity2.getBody();
     assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
