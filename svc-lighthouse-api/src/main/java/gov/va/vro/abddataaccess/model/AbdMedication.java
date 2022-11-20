@@ -1,6 +1,7 @@
 package gov.va.vro.abddataaccess.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   @Schema(description = "Medication can be for asthma", example = "true")
   private Boolean asthmaRelevant;
+
   private Boolean conditionRelated;
   private List<String> suggestedCategory;
   private String duration;
