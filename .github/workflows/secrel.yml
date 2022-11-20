@@ -16,11 +16,6 @@ env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
-  #call-build-workflow:
-  #  uses: ./.github/workflows/build.yml
-  #  secrets:
-  #    ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
   build-and-scan:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
