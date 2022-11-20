@@ -248,7 +248,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.passwordKey }}
-
           resources:
             requests:
               cpu: 150m
