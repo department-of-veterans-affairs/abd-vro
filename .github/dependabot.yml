@@ -45,25 +45,13 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/service-data-access/src/docker"
+    directory: "/svc-lighthouse-api/src/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/service-python/pdfgenerator/src/docker"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/service-python/assessclaimdc6602/src/docker"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/service-python/assessclaimdc7101/src/docker"
+    directory: "/service-python"
     target-branch: "develop"
     schedule:
       interval: "weekly"

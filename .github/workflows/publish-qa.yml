@@ -9,7 +9,7 @@ on:
 
   workflow_call:
     secrets:
-      DEV_KUBE_CONFIG: 
+      DEV_KUBE_CONFIG:
         required: true
 
 env:
@@ -126,7 +126,7 @@ jobs:
                      ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc7101:latest \
                      ghcr.io/${{ github.repository }}/qa_vro-service-assessclaimdc6602:latest \
                      ghcr.io/${{ github.repository }}/qa_vro-service-data-access:latest
-      
+
       - name: Generate kubeconfig
         run: |
           mkdir ~/.kube
@@ -138,4 +138,3 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
           ./deploy-app.sh qa ${COMMIT_SHA:0:7}
-
