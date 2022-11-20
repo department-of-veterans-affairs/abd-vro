@@ -26,6 +26,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   @Schema(description = "Medication can be for asthma", example = "true")
   private Boolean asthmaRelevant;
+
   private Boolean conditionRelated;
   private List<String> suggestedCategory;
   private String duration;
