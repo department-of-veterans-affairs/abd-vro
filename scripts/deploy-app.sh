@@ -43,6 +43,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string images.serviceAssessClaimDC7101.tag="${IMAGE_TAG}"\
               --set-string images.serviceAssessClaimDC6602.tag="${IMAGE_TAG}"\
               --set-string images.serviceDataAccess.tag="${IMAGE_TAG}"\
+              --set-string images.console.tag="${IMAGE_TAG}"\
               --set-string info.version="${IMAGE_TAG}"\
               --set-string info.git_hash="${GIT_SHA}" \
               --set-string info.deploy_env="${ENV}" \
@@ -56,6 +57,7 @@ helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string images.serviceAssessClaimDC7101.imageName=${ENV}_vro-service-assessclaimdc7101 \
               --set-string images.serviceAssessClaimDC6602.imageName=${ENV}_vro-service-assessclaimdc6602 \
               --set-string images.serviceDataAccess.imageName=${ENV}_vro-service-data-access \
+              --set-string images.console.imageName=${ENV}_vro-console \
               --debug \
               -n ${TEAMNAME}-"${ENV}" #--dry-run
               #-f helmchart/"${ENV}".yaml
