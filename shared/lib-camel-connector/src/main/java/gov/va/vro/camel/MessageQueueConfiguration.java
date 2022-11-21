@@ -18,7 +18,7 @@ public class MessageQueueConfiguration {
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(messageQueueProps.getHost());
     factory.setPort(messageQueueProps.getPort());
-    factory.setUsername(messageQueueProps.getUser());
+    factory.setUsername(messageQueueProps.getUsername());
     factory.setPassword(messageQueueProps.getPassword());
     return factory;
   }
