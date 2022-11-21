@@ -23,11 +23,14 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
 images:
-# BEGIN image-names.sh replacement block (do not modify this line)
+# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
 - name: vro-app
   context: "./app/build/docker"
   path: "./app/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=app-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-postgres
   context: "./postgres/build/docker"
   path: "./postgres/src/docker/Dockerfile"
@@ -37,25 +40,31 @@ images:
 - name: vro-console
   context: "./console/build/docker"
   path: "./console/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=console-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-service-data-access
   context: "./svc-lighthouse-api/build/docker"
   path: "./svc-lighthouse-api/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=svc-lighthouse-api-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-service-pdfgenerator
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
+    - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
 - name: vro-service-assessclaimdc7101
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
+    - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
 - name: vro-service-assessclaimdc6602
   context: "./service-python"
   path: "./service-python/Dockerfile"
   args:
-  - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
-# END image-names.sh replacement block (do not modify this line)
+    - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
+# END image-names.sh replacement block (do not modify this block)
 
 # Remove source block if you're not building sources
 #source:

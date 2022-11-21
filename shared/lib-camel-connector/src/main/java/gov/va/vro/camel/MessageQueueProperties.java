@@ -14,6 +14,6 @@ import org.springframework.context.annotation.Configuration;
 class MessageQueueProperties {
   private String host;
   private int port;
-  private String user;
+  private String username;
   private String password;
 }

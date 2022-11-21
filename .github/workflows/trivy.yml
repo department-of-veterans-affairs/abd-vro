@@ -6,7 +6,7 @@ on:
 
   # When changes are pushed to special branches
   push:
-    branches: [main, develop]
+    branches: [main, qa, develop]
 
   # Allow manual triggering
   workflow_dispatch:
