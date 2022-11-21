@@ -41,7 +41,7 @@ images:
   mq:
     imageName: vro-rabbitmq
     tag: 3
-# BEGIN image-names.sh replacement block (do not modify this line)
+# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
   app:
     imageName: dev_vro-app
@@ -75,7 +75,7 @@ images:
     imageName: dev_vro-service-assessclaimdc6602
     tag: tagPlaceholder
     imagePullPolicy: Always
-# END image-names.sh replacement block (do not modify this line)
+# END image-names.sh replacement block (do not modify this block)
 
 resources:
   api:
