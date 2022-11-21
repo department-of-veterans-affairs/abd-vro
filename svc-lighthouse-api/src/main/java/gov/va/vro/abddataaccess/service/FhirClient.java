@@ -177,9 +177,6 @@ public class FhirClient {
       AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
       result.add(summary);
     }
-    if (result.size() < 1) {
-      return null;
-    }
     result.sort(null);
     return result;
   }
@@ -263,9 +260,8 @@ public class FhirClient {
         }
         case BLOOD_PRESSURE -> {
           List<AbdBloodPressure> bps = getPatientBloodPressures(entries);
-          if (bps != null) {
-            result.setBloodPressures(bps);
-          }
+          result.setBloodPressures(bps);
+
         }
         default -> {
         }
