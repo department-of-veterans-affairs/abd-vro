@@ -191,6 +191,18 @@ mas:
   masCollectionStatusPath: masCollectionStatusPath
   masCreateExamOrderPath: masCreateExampOrderPath
 
+bip:
+  keyName: bip
+  bipApplicationId: bipApplicationId
+  bipApplicationIss: bipApplicationIss
+  bipClaimSecret: bipClaimSecret
+  bipClaimUrl: bipClaimUrl
+  bipClaimUserId: bipClaimUserId
+  bipEvidenceSecret: bipEvidenceSecret
+  bipEvidenceUrl: bipEvidenceUrl
+  bipEvidenceUserId: bipEvidenceUserId
+  bipStationId: bipStationId
+  
 redis:
   secretName: redis
   passwordKey: redisPassword
