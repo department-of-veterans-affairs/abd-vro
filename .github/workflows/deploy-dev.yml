@@ -32,9 +32,9 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: C04CA47HV96
-          slack-text: ":arrow_forward: Starting deploy of `${{ github.ref }}` (`${{ github.sha }}`) caused by ${{ github.event_name }}"
+          slack-text: ":arrow_forward: Starting deploy of *${{ github.ref }}* ( *${{ github.sha }}* ) caused by ${{ github.event_name }}"
       - name: debug-slack-result
-        run: echo "slack result- ${{ steps.notify-slack.outputs.slack-result }}"
+        run: echo 'slack result- ${{ steps.notify-slack.outputs.slack-result }}'
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
