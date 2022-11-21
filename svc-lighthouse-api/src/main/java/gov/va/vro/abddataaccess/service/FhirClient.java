@@ -261,7 +261,6 @@ public class FhirClient {
         case BLOOD_PRESSURE -> {
           List<AbdBloodPressure> bps = getPatientBloodPressures(entries);
           result.setBloodPressures(bps);
-
         }
         default -> {
         }
