@@ -32,7 +32,9 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: C04CA47HV96
-          slack-text: ":arrow_forward: Starting deploy of *${{ github.ref }}* ( *${{ github.sha }}* ) caused by ${{ github.event_name }}"
+          slack-text: ":arrow_forward: Starting deploy of ${{github.ref_type}} `${{ github.ref_name }}` \
+            (`${{ github.sha }}`) caused by ${{ github.event_name }} triggered by ${{github.triggering_actor}}. \
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: debug-slack-result
         run: echo 'slack result- ${{ steps.notify-slack.outputs.slack-result }}'
 
@@ -59,17 +61,13 @@ jobs:
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
 
-      - name: Send Thread Message
-        id: notify-slack-thread
+      - name: "Notify Slack: Deploying..."
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":rocket: Deploying to ${{ env.TARGET_ENV }}"
-          #slack-optional-reply_broadcast: true # To broadcast thread reply in channel
-      - name: debug-slack-thread
-        run: echo "Data - ${{ steps.notify-slack-thread.outputs.slack-result }}"
+          slack-text: ":rocket: Deploying to ${{ env.TARGET_ENV }} ..."
 
       - name: "Set up kube config"
         run: |
@@ -86,7 +84,17 @@ jobs:
       - name: kubectl rollout status
         run: kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api
 
-      - name: Send Slack Reaction To Message
+      - name: "Notify Slack: Deployment failed"
+        if: failure()
+        uses: archive/github-actions-slack@v2.0.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
+          slack-text: ":fire: Deployment failed"
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-optional-reply_broadcast: true # To broadcast thread reply in channel
+
+      - name: "Notify Slack: Done"
         id: notify-slack-react
         if: always()
         uses: archive/github-actions-slack@v2.0.0
@@ -96,6 +104,3 @@ jobs:
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-emoji-name: heavy_check_mark
           slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-
-      - name: Send Slack Reaction To Message Result
-        run: echo "Data - ${{ steps.notify-slack-react.outputs.slack-result }}"
