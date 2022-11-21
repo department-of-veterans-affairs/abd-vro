@@ -36,28 +36,43 @@ public class BipController implements BipResource {
   }
 
   @Override
-  public ResponseEntity<BipClaimResponse> getClaim(@Valid BipRequestClaimPayload request) {
-    log.info("Received claim info for claim ID {}", request.getClaimId());
+  public ResponseEntity<BipClaimResponse> getClaim(@Valid String id) {
+    try {
+      Long claimId = Long.getLong(id);
+      log.info("Received claim info for claim ID {}", id);
+      BipRequestClaimPayload request = BipRequestClaimPayload.builder().claimId(claimId).build();
 
-    // TODO: route to call BipApiService
+      // TODO: route to call BipApiService
 
-    BipClaimResponse response =
-        BipClaimResponse.builder().claimId(request.getClaimId()).message("not called").build();
-    return ResponseEntity.ok(response);
+      BipClaimResponse response =
+          BipClaimResponse.builder().claimId(request.getClaimId()).message("not called").build();
+      return ResponseEntity.ok(response);
+    } catch (SecurityException e) {
+      BipClaimResponse errResp =
+          BipClaimResponse.builder().message("Invalid claim ID: " + id).build();
+      return ResponseEntity.badRequest().body(errResp);
+    }
   }
 
   @Override
-  public ResponseEntity<BipClaimContentionsResponse> getContentions(
-      @Valid BipRequestClaimContentionPayload payload) {
-    log.info("Retrieve contentions for claim ID {}", payload.getClaimId());
+  public ResponseEntity<BipClaimContentionsResponse> getContentions(@Valid String id) {
+    try {
+      Long claimId = Long.getLong(id);
+      log.info("Retrieve contentions for claim ID {}", id);
 
-    // TODO: route to call BipApiService
+      BipRequestClaimContentionPayload request =
+          BipRequestClaimContentionPayload.builder().claimId(claimId).build();
 
-    BipClaimContentionsResponse response =
-        BipClaimContentionsResponse.builder()
-            .contentions(Arrays.asList(new ClaimContention()))
-            .build();
-    return ResponseEntity.ok(response);
+      // TODO: route to call BipApiService
+
+      BipClaimContentionsResponse response =
+          BipClaimContentionsResponse.builder()
+              .contentions(Arrays.asList(new ClaimContention()))
+              .build();
+      return ResponseEntity.ok(response);
+    } catch (SecurityException e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @Override

@@ -60,7 +60,7 @@ public interface BipResource {
           BipUpdateClaimPayload request);
 
   @Operation(summary = "Get claim information.", description = "Request claim information.")
-  @GetMapping("/claim/info")
+  @GetMapping("/claim/info/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ApiResponses(
       value = {
@@ -80,15 +80,15 @@ public interface BipResource {
       @Parameter(
               description = "a claim ID for claim information",
               required = true,
-              schema = @Schema(implementation = BipRequestClaimPayload.class))
+              schema = @Schema(implementation = String.class))
           @Valid
-          @RequestBody
-          BipRequestClaimPayload request);
+          @PathVariable(value = "id")
+          String id);
 
   @Operation(
       summary = "Get claim contentions",
       description = "Request a claim contention information.")
-  @GetMapping("/claim/contention")
+  @GetMapping("/claim/contention/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ApiResponses(
       value = {
@@ -108,10 +108,10 @@ public interface BipResource {
       @Parameter(
               description = "Request claim contentions",
               required = true,
-              schema = @Schema(implementation = BipRequestClaimContentionPayload.class))
+              schema = @Schema(implementation = String.class))
           @Valid
-          @RequestBody
-          BipRequestClaimContentionPayload payload);
+          @PathVariable(value = "id")
+          String id);
 
   @Operation(
       summary = "Update a claim contention",

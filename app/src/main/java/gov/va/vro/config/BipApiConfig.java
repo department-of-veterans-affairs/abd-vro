@@ -5,7 +5,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** @author warren @Date 10/31/22 */
+/**
+ * Configures BIP API access.
+ *
+ * @author warren @Date 10/31/22
+ */
 @Configuration
 public class BipApiConfig {
   @Bean
