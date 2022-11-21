@@ -10,6 +10,8 @@ valid_pdf = {
     "margin-left": "",
     "encoding": "",
     "zoom": "",
+    "print-media-type": "",
+    "enable-local-file-access": "",
 }
 
 valid_redis = {
@@ -40,4 +42,4 @@ def test_valid_queue_options():
 
 def test_all_codes_are_numbers():
   for key in codes.keys():
-    assert key.isnumeric()
+    assert key.isnumeric() 
