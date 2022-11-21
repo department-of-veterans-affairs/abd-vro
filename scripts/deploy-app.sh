@@ -31,11 +31,18 @@ source scripts/image_vars.src
 generateImageArgs(){
   local _IMAGE_TAG=$2
 
+  # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
     dev|qa) IMG_NAME_PREFIX="${1}_";;
-    sandbox|prod|prod-test) IMG_NAME_PREFIX="";;
+    sandbox|prod|prod-test) USE_SECREL_IMAGES="true";;
     *) { echo "Unknown environment: $1"; exit 20; }
   esac
+
+  # Set USE_SECREL_IMAGES to deploy SecRel images to any ENV
+  if [ "$USE_SECREL_IMAGES" ]; then
+    IMG_NAME_PREFIX=""
+    echo "--set-string images.repo=abd-vro-internal "
+  fi
 
   for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
     local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
@@ -46,57 +53,27 @@ generateImageArgs(){
 }
 VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
 
-if [ "${ENV}" == "qa" ] || [ "${ENV}" == "dev" ]
-then
+COMMON_HELM_ARGS="--set-string environment=${ENV} \
+--set-string info.version=${IMAGE_TAG} \
+--set-string info.git_hash=${GIT_SHA} \
+--set-string info.deploy_env=${ENV} \
+--set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
+\
+--set-string images.redis.imageName=redis \
+--set-string images.redis.tag=latest \
+\
+--set-string images.mq.imageName=rabbitmq \
+--set-string images.mq.tag=3 \
+"
+
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-${ENV}
+# K8s namespace
+NAMESPACE="${TEAMNAME}-${ENV}"
+
+helm del $HELM_APP_NAME -n ${NAMESPACE}
 helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string environment=${ENV} \
-              --set-string info.version=${IMAGE_TAG} \
-              --set-string info.git_hash=${GIT_SHA} \
-              --set-string info.deploy_env=${ENV} \
-              --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
-              --set-string images.redis.tag=latest \
-              --set-string images.redis.imageName=redis \
-              --set-string images.mq.tag="3" \
-              --set-string images.mq.imageName=vro-rabbitmq \
-              ${VRO_IMAGE_ARGS} \
+              ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
-              -n ${TEAMNAME}-${ENV} #--dry-run
+              -n ${NAMESPACE} #--dry-run
               #-f helmchart/"${ENV}".yaml
-elif [ "${ENV}" == "sandbox" ] || [ "${ENV}" == "prod" ] || [ "${ENV}" == "prod-test" ]
-then
-: "${TEAMNAME:=va-abd-rrd}"
-: "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
-helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string images.repo=abd-vro-internal \
-              --set-string environment="${ENV}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.redis.tag="latest"\
-              --set-string images.redis.imageName=redis \
-              --set-string images.mq.tag="3"\
-              --set-string images.mq.imageName=rabbitmq \
-              ${VRO_IMAGE_ARGS} \
-              --debug \
-              -n ${TEAMNAME}-"${ENV}"
-else
-helm del abd-vro
-helm upgrade --install abd-vro helmchart \
-              --set-string images.repo=abd-vro-internal \
-              --set-string environment="${ENV}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.redis.imageName=redis \
-              --set-string images.redis.tag="latest"\
-              --set-string images.mq.imageName=rabbitmq \
-              --set-string images.mq.tag="3"\
-              ${VRO_IMAGE_ARGS} \
-              --debug
-fi
