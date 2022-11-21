@@ -204,7 +204,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCreateExampOrderPath }}                       
+                  key: {{ .Values.mas.masCreateExamOrderPath }}                       
 
           resources:
             requests:
