@@ -33,8 +33,7 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: C04CA47HV96
-          slack-text: Hello! Event "${{ github.event_name }}" in "${{ github.repository }}" 🤓
-          slack-optional-icon_emoji: ":fire:"
+          slack-text: "Hello! :wave: Event ${{ github.event_name }} in ${{ github.repository }} 🤓"
       - name: Slack result
         run: echo "The result was ${{ steps.notify-slack.outputs.slack-result }}"
 
@@ -73,4 +72,5 @@ jobs:
           slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
 
       - name: Send Slack Reaction To Message Result
+        if: always()
         run: echo "Data - ${{ steps.notify-slack-react.outputs.slack-result }}"
