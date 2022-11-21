@@ -76,7 +76,7 @@ images:
     tag: tagPlaceholder
     imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this block)
-
+    
 resources:
   api:
     requests:
@@ -179,6 +179,17 @@ rabbitmq:
   secretName: rabbitmq
   usernameKey: User
   passwordKey: Pass
+
+mas:
+  keyName: mas
+  masApiAuthClientId: masApiAuthClientId
+  masApiAuthClientSecret: masApiAuthClientSecret
+  masApiAuthScope: masApiAuthScope
+  masApiAuthTokenUri: masApiAuthTokenUri
+  masApiBaseUrl: masApiBaseUrl
+  masCollectionAnnotsPath: masCollectionAnnotsPath
+  masCollectionStatusPath: masCollectionStatusPath
+  masCreateExamOrderPath: masCreateExampOrderPath
 
 redis:
   secretName: redis
