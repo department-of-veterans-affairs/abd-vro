@@ -137,8 +137,6 @@ public class VroController implements VroResource {
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } catch (ClaimProcessingException cpe) {
-      throw cpe;
     } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
