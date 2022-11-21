@@ -1,5 +1,6 @@
 package gov.va.vro;
 
+import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -14,10 +15,13 @@ public abstract class BaseIntegrationTest {
 
   @Autowired protected VeteranRepository veteranRepository;
 
+  @Autowired protected AuditEventRepository auditEventRepository;
+
   @BeforeEach
   @AfterEach
   public void delete() {
     claimRepository.deleteAll();
     veteranRepository.deleteAll();
+    auditEventRepository.deleteAll();
   }
 }

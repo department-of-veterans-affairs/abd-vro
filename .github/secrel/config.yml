@@ -11,8 +11,9 @@
 #   - -Dexample.maven=${{ secrets.example_secret }}
 
 
+# Setup script to run before images are built
 setup:
-  script: ./build-images.sh
+  script: ./scripts/build-images.sh
   env:
   - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
@@ -22,29 +23,48 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
 images:
+# BEGIN image-names.sh replacement block (do not modify this block)
+# The following image list is updated by image-names.sh
 - name: vro-app
-  #context: "./app/src/main/resources"
   context: "./app/build/docker"
   path: "./app/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=app-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-postgres
-  context: "./postgres/src/main/resources"
+  context: "./postgres/build/docker"
   path: "./postgres/src/docker/Dockerfile"
 - name: vro-db-init
-  context: "./db-init/src/main/resources"
+  context: "./db-init/build/docker"
   path: "./db-init/src/docker/Dockerfile"
+- name: vro-console
+  context: "./console/build/docker"
+  path: "./console/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=console-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-service-data-access
-  #context: "./service-data-access/src/main/resources"
-  context: "./service-data-access/build/docker"
-  path: "./service-data-access/src/docker/Dockerfile"
+  context: "./svc-lighthouse-api/build/docker"
+  path: "./svc-lighthouse-api/src/docker/Dockerfile"
+  args:
+    - JAR_FILE=svc-lighthouse-api-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh
 - name: vro-service-pdfgenerator
-  context: "./service-python/pdfgenerator/src"
-  path: "./service-python/pdfgenerator/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  args:
+    - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
 - name: vro-service-assessclaimdc7101
-  context: "./service-python/assessclaimdc7101/src"
-  path: "./service-python/assessclaimdc7101/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  args:
+    - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
 - name: vro-service-assessclaimdc6602
-  context: "./service-python/assessclaimdc6602/src"
-  path: "./service-python/assessclaimdc6602/src/docker/Dockerfile"
+  context: "./service-python"
+  path: "./service-python/Dockerfile"
+  args:
+    - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
+# END image-names.sh replacement block (do not modify this block)
 
 # Remove source block if you're not building sources
 #source:

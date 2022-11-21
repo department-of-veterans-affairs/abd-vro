@@ -34,4 +34,3 @@ ext {
         return !ref ? defaultValue : ref;
     }
 }
-
