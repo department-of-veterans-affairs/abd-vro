@@ -4,22 +4,18 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from assessclaimdc7101v2.src.lib import queues as q7101v2
-from assessclaimdc7101v2.src.lib.main import assess_hypertension as main7101v2
 from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc6602v2.src.lib import queues as q6602v2
 from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
 from assessclaimdc7101.src.lib import queues as q7101
-from assessclaimdc7101.src.lib.main import assess_hypertension as main7101
 
 
 @pytest.mark.parametrize(
-    "queue, service_queue_name", [
-        (q6602v2, "6602v2"), (q6602, "6602"), (q7101, "7101"), (q7101v2, "7101v2")
-    ]
+    "queue, service_queue_name", [(q6602, "6602"), (q7101, "7101")]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
+    queue_name = f"health-assess.{service_queue_name}"
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
         queue.queue_setup(channel=channel)
@@ -31,15 +27,14 @@ def test_queue_setup(queue, service_queue_name, caplog):
         auto_delete=True,
     )
 
-    channel.queue_declare.assert_called_with(queue=f"health-assess.{service_queue_name}", durable=True, auto_delete=True)
-    channel.queue_declare.assert_called_with(queue=service_queue_name, durable=True, auto_delete=True)
+    channel.queue_declare.assert_called_with(queue=queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
-        queue=service_queue_name, exchange="health-assess-exchange"
+        queue=queue_name, exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: {service_queue_name}. To exit press CTRL+C"
+        f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C"
         in caplog.text
     )
 
@@ -48,9 +43,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
     "queue, diagnosticCode, body, main",
     [
         (q6602, "6602", {"evidence": "some medical data body"}, main6602),
-        (q7101, "7101", {"evidence": "some medical data body"}, main7101),
         (q6602v2, "6602v2", {"evidence": "some medical data body"}, main6602v2),
-        (q7101v2, "7101v2", {"evidence": "some medical data body"}, main7101v2),
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):

@@ -2,9 +2,12 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
 }
 
-dependencies {
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+ext {
+  // TODO: improve test code coverage so that the following can be removed
+  jacoco_minimum_coverage = 0.4
+}
 
+dependencies {
   implementation project(':shared:domain')
   implementation project(':persistence:model')
   implementation project(':service:spi')

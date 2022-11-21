@@ -2,13 +2,11 @@ name: Trivy scan
 
 on:
   pull_request:
-    branches: [main, develop]
-    # Limit to certain PR event types since this action doesn't need to run for every commit
-    #types: [ready_for_review, review_requested]
+    branches: "*"
 
   # When changes are pushed to special branches
   push:
-    branches: [main, develop]
+    branches: [main, qa, develop]
 
   # Allow manual triggering
   workflow_dispatch:

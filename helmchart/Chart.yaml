@@ -1,6 +1,7 @@
 apiVersion: v2
+# `name` affects container hostnames, so references to those hostnames must be updated too
 name: vro-api
-description: VRO API and backend
+description: ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -14,8 +15,10 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.1.0
+version: 0.1.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.0.0
+# This is updated automatically when running `./gradlew release -Prelease.forceVersion=$NEW_VERSION`
+# Refer to https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO
+appVersion: 1.0.25

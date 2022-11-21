@@ -20,6 +20,7 @@ x-mas-vars: &mas-vars
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
   
 x-postgres-vars: &postgres-vars
+  # TODO: Is POSTGRES_HOST needed? It's not listed in helmchart/templates/api/deployment.yaml
   POSTGRES_HOST: postgres-service
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
@@ -155,17 +156,6 @@ services:
     networks:
       - internal
 
-  svc-assessor-dc7101v2:
-    image: va/abd_vro-assessclaimdc7101v2:latest
-    <<: *common-security-opt
-    environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
   svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
@@ -190,6 +180,21 @@ services:
     networks:
       - internal
     profiles: ["prototype"]
+
+  svc-feature-toggle:
+    image: va/abd_vro-featuretoggle:latest
+    <<: *common-security-opt
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      redis-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
 
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
