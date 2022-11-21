@@ -27,6 +27,17 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
+      - name: Send message to Slack API
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: C04CA47HV96
+          slack-text: Hello! Event "${{ github.event_name }}" in "${{ github.repository }}" 🤓
+          slack-optional-icon_emoji: ":fire:"
+      - name: Slack result
+        run: echo "The result was ${{ steps.notify-slack.outputs.slack-result }}"
+
       - name: Checkout source code
         uses: actions/checkout@v3
         with:
@@ -37,3 +48,29 @@ jobs:
           GIT_USERNAME: ${{ github.actor }}
           GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIT_SSH_NO_VERIFY_HOST: "true"
+
+      - name: Send Thread Message
+        id: notify-slack-thread
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
+          slack-text: This is a thread reply
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          #slack-optional-reply_broadcast: true # To broadcast thread reply in channel
+
+      - name: Send "Send Thread Message" Result
+        run: echo "Data - ${{ steps.notify-slack-thread.outputs.slack-result }}"
+
+      - name: Send Slack Reaction To Message
+        id: notify-slack-react
+        uses: archive/github-actions-slack@v2.0.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
+          slack-emoji-name: heavy_check_mark
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+
+      - name: Send Slack Reaction To Message Result
+        run: echo "Data - ${{ steps.notify-slack-react.outputs.slack-result }}"
