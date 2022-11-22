@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       target_env:
-        description: 'TARGET_ENV like dev or qa'
+        description: 'Target LHDI environment'
         required: true
         default: 'dev'
         type: choice
