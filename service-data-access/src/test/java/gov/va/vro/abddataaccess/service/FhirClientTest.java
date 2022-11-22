@@ -82,11 +82,11 @@ class FhirClientTest {
   private void mockGetBundle(Bundle bundle, AbdDomain domain) throws AbdException {
     Mockito.doReturn(bundle)
         .when(client)
-        .getBundle(domain, TEST_PATIENT, DEFAULT_PAGE, DEFAULT_SIZE);
+        .getBundle(domain, TEST_PATIENT, Mockito.anyString(), DEFAULT_PAGE, DEFAULT_SIZE);
     if (bundle.hasEntry()) {
       Mockito.doReturn(new Bundle())
           .when(client)
-          .getBundle(domain, TEST_PATIENT, DEFAULT_PAGE + 1, DEFAULT_SIZE);
+          .getBundle(domain, TEST_PATIENT, Mockito.anyString(), DEFAULT_PAGE + 1, DEFAULT_SIZE);
     }
   }
 
