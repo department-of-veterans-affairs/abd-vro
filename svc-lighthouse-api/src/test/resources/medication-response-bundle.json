@@ -12,12 +12,8 @@
       "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=9000682&page=1&_count=30"
     },
     {
-      "relation": "next",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=9000682&page=2&_count=30"
-    },
-    {
       "relation": "last",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=9000682&page=2&_count=30"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=9000682&page=1&_count=30"
     }
   ],
   "entry": [

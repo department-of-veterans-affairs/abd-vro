@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.EncodingEnum;
+import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
 import gov.va.vro.abddataaccess.model.AbdBloodPressure;
 import gov.va.vro.abddataaccess.model.AbdClaim;
@@ -21,13 +22,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +48,7 @@ import java.util.Objects;
  */
 @ExtendWith(MockitoExtension.class)
 @Slf4j
+@ActiveProfiles("test")
 class FhirClientTest {
 
   private static final String TEST_PATIENT = "9000682";
@@ -55,15 +64,28 @@ class FhirClientTest {
 
   private static final int DEFAULT_PAGE = 1;
   private static final int DEFAULT_SIZE = 30;
+  private static final String FHIRURL = "https://sandbox-api.va.gov/";
+  private static final String TEST_KEY_FILE = "testkey.pem";
+  private static final String TEST_TOKEN = "lighthouseToken.json";
 
-  @Spy private final FhirClient client = new FhirClient();
+  @InjectMocks private FhirClient client = Mockito.spy(new FhirClient());
+
+  @Mock private RestTemplate restTemplate;
+
+  @Mock private LighthouseApiService lighthouseApiService;
+
+  @Mock private LighthouseProperties properties;
+
+  @Mock private IParser jsonParser;
 
   private IParser parser;
   private Bundle medicationBundle;
   private Bundle bpBundle;
+  private String medicationResponseBody;
+  private String bpResponseBody;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws AbdException, IOException {
     FhirContext fhirContext = FhirContext.forR4();
     EncodingEnum respType = EncodingEnum.forContentType(CONTENT_TYPE);
     parser = respType.newParser(fhirContext);
@@ -72,42 +94,47 @@ class FhirClientTest {
         Objects.requireNonNull(getClass().getClassLoader().getResource(MEDICATION_REQUEST_RESPONSE))
             .getPath();
     medicationBundle = getMedicalInfoBundle(testfile);
+    medicationResponseBody = new String(Files.readAllBytes(Paths.get(testfile)));
 
     testfile =
         Objects.requireNonNull(getClass().getClassLoader().getResource(OBSERVATION_RESPONSE))
             .getPath();
     bpBundle = getMedicalInfoBundle(testfile);
+    bpResponseBody = new String(Files.readAllBytes(Paths.get(testfile)));
   }
 
-  private void mockGetBundle(Bundle bundle, AbdDomain domain) throws AbdException {
-    Mockito.doReturn(bundle)
-        .when(client)
-        .getBundle(
-            Mockito.eq(domain),
-            Mockito.eq(TEST_PATIENT),
-            Mockito.anyString(),
-            Mockito.eq(DEFAULT_PAGE),
-            Mockito.eq(DEFAULT_SIZE));
-    if (bundle.hasEntry()) {
-      Mockito.doReturn(new Bundle())
-          .when(client)
-          .getBundle(
-              Mockito.eq(domain),
-              Mockito.eq(TEST_PATIENT),
-              Mockito.anyString(),
-              Mockito.eq(DEFAULT_PAGE + 1),
-              Mockito.eq(DEFAULT_SIZE));
-    }
+  private void mockPropertyNParser() {
+    Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
+
+    Mockito.doReturn(medicationBundle)
+        .when(jsonParser)
+        .parseResource(Bundle.class, medicationResponseBody);
+    Mockito.doReturn(bpBundle).when(jsonParser).parseResource(Bundle.class, bpResponseBody);
   }
 
-  // @Test
+  private void mockRest(ResponseEntity<String> resp, String domainName) {
+    Mockito.doReturn(resp)
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.contains(domainName),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
+  }
+
+  @Test
   public void testGetMedicalEvidence() {
     AbdClaim testClaim = new AbdClaim();
     testClaim.setClaimSubmissionId(TEST_CLAIM_ID);
     testClaim.setDiagnosticCode(TEST_MEDICATION_REQUEST);
     testClaim.setVeteranIcn(TEST_PATIENT);
     try {
-      mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
+      Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
+      Mockito.doReturn(medicationBundle)
+          .when(jsonParser)
+          .parseResource(Bundle.class, medicationResponseBody);
+      ResponseEntity<String> medicationResp = ResponseEntity.ok(medicationResponseBody);
+      mockRest(medicationResp, "MedicationRequest");
       AbdEvidence evidence = client.getMedicalEvidence(testClaim);
       assertNotNull(evidence);
       assertTrue(evidence.getMedications().size() > 0);
@@ -118,15 +145,22 @@ class FhirClientTest {
     }
   }
 
-  // @Test
+  @Test
   public void testGetBloodPressure() {
     AbdClaim testClaim = new AbdClaim();
     testClaim.setClaimSubmissionId(TEST_CLAIM_ID);
     testClaim.setDiagnosticCode(TEST_DIAGNOSTIC_CODE);
     testClaim.setVeteranIcn(TEST_PATIENT);
     try {
-      mockGetBundle(bpBundle, AbdDomain.BLOOD_PRESSURE);
-      mockGetBundle(medicationBundle, AbdDomain.MEDICATION);
+      Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
+      Mockito.doReturn(medicationBundle)
+          .when(jsonParser)
+          .parseResource(Bundle.class, medicationResponseBody);
+      Mockito.doReturn(bpBundle).when(jsonParser).parseResource(Bundle.class, bpResponseBody);
+      ResponseEntity<String> medicationResp = ResponseEntity.ok(medicationResponseBody);
+      ResponseEntity<String> bpResp = ResponseEntity.ok(bpResponseBody);
+      mockRest(medicationResp, "MedicationRequest");
+      mockRest(bpResp, "Observation");
       AbdEvidence evidence = client.getMedicalEvidence(testClaim);
       assertNotNull(evidence);
       assertTrue(evidence.getBloodPressures().size() > 0);

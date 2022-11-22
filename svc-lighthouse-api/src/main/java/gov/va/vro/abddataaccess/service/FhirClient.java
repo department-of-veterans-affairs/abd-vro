@@ -3,42 +3,28 @@ package gov.va.vro.abddataaccess.service;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import gov.va.vro.abddataaccess.config.AppProperties;
+import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
-import gov.va.vro.abddataaccess.model.AbdBloodPressure;
-import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.abddataaccess.model.AbdCondition;
-import gov.va.vro.abddataaccess.model.AbdEvidence;
-import gov.va.vro.abddataaccess.model.AbdMedication;
-import gov.va.vro.abddataaccess.model.AbdProcedure;
+import gov.va.vro.abddataaccess.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.MedicationRequest;
-import org.hl7.fhir.r4.model.Observation;
-import org.hl7.fhir.r4.model.Procedure;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
 public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
   private static final int DEFAULT_PAGE = 0;
-  private static final int DEFAULT_SIZE = 30;
+  private static final int DEFAULT_SIZE = 100;
 
-  @Autowired private AppProperties properties;
+  @Autowired private LighthouseProperties properties;
 
   @Autowired private RestTemplate restTemplate;
 
@@ -94,14 +80,7 @@ public class FhirClient {
               }),
           new AbstractMap.SimpleEntry<>(
               "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
-          new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}),
-          new AbstractMap.SimpleEntry<>(
-              "6602v2", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}),
-          new AbstractMap.SimpleEntry<>(
-              "7101v2",
-              new AbdDomain[] {
-                AbdDomain.MEDICATION, AbdDomain.BLOOD_PRESSURE, AbdDomain.CONDITION
-              }));
+          new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -120,33 +99,68 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
 
+  //  /**
+  //   * Gets a FHIR {@link Bundle} for the given parameters.
+  //   *
+  //   * @param domain an {@link AbdDomain}.
+  //   * @param patientIcn a patient ICN.
+  //   * @param pageNo page number.
+  //   * @param pageSize page size.
+  //   * @return a {@link Bundle}.
+  //   * @throws AbdException when error occurs.
+  //   */
+  //  public Bundle getBundle(
+  //      AbdDomain domain, String patientIcn, String lighthouseToken, int pageNo, int pageSize)
+  //      throws AbdException {
+  //    SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
+  //    String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
+  //
+  //    HttpHeaders headers = new HttpHeaders();
+  //    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+  //    headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
+  //    HttpEntity request = new HttpEntity(headers);
+  //
+  //    String baseUrl = properties.lighthouseProperties().getFhirurl();
+  //    String fullUrl = baseUrl + "/" + url;
+  //    log.info("Get FHIR data from {}", fullUrl);
+  //    try {
+  //      ResponseEntity<String> response =
+  //          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
+  //      if (response.getStatusCode() != HttpStatus.OK) {
+  //        log.error("Unexpected response from lighthouse {}", response.getStatusCode());
+  //        log.error("Body is {}", response.getBody());
+  //        throw new AbdException("Unable to get the bundle for the patient.");
+  //      }
+  //      String strBody = response.getBody();
+  //      Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
+  //      return bundle;
+  //    } catch (RestClientException ex) {
+  //      log.error("Unable to get bundle from {}", fullUrl, ex);
+  //      throw new AbdException("Unable to get the bundle for the patient.");
+  //    } catch (DataFormatException dfEx) {
+  //      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
+  //      throw new AbdException("Unable to parse bundle for the patient.");
+  //    }
+  //  }
+
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
    *
-   * @param domain an {@link AbdDomain}.
-   * @param patientIcn a patient ICN.
-   * @param pageNo page number.
-   * @param pageSize page size.
+   * @param url a URL string.
+   * @param lighthouseToken a token to access Lighthouse FHIR API..
    * @return a {@link Bundle}.
    * @throws AbdException when error occurs.
    */
-  public Bundle getBundle(
-      AbdDomain domain, String patientIcn, String lighthouseToken, int pageNo, int pageSize)
-      throws AbdException {
-    SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
-
+  public Bundle getFhirBundle(String url, String lighthouseToken) throws AbdException {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
     headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
     HttpEntity request = new HttpEntity(headers);
 
-    String baseUrl = properties.lighthouseProperties().getFhirurl();
-    String fullUrl = baseUrl + "/" + url;
-    log.info("Get FHIR data from {}", fullUrl);
+    log.info("Get FHIR data from {}", url);
     try {
       ResponseEntity<String> response =
-          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, request, String.class);
       if (response.getStatusCode() != HttpStatus.OK) {
         log.error("Unexpected response from lighthouse {}", response.getStatusCode());
         log.error("Body is {}", response.getBody());
@@ -156,10 +170,10 @@ public class FhirClient {
       Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
       return bundle;
     } catch (RestClientException ex) {
-      log.error("Unable to get bundle from {}", fullUrl, ex);
+      log.error("Unable to get bundle from {}", url, ex);
       throw new AbdException("Unable to get the bundle for the patient.");
     } catch (DataFormatException dfEx) {
-      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
+      log.error("Unable to parse the bundle from {}", url, dfEx);
       throw new AbdException("Unable to parse bundle for the patient.");
     }
   }
@@ -176,6 +190,7 @@ public class FhirClient {
   }
 
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
+    log.info("Extract patient medication entries. number of entries: {}", entries.size());
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
@@ -232,26 +247,44 @@ public class FhirClient {
     String patientIcn = claim.getVeteranIcn();
     for (AbdDomain domain : domains) {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
-      int pageNo = DEFAULT_PAGE;
-      boolean hasNextPage;
-      List<BundleEntryComponent> records = new ArrayList<>();
-      do {
-        pageNo++;
-        Bundle bundle = getBundle(domain, patientIcn, lighthouseToken, pageNo, DEFAULT_SIZE);
-        List<BundleEntryComponent> entries = bundle.getEntry();
-        if (entries.size() > 0) {
-          records.addAll(entries);
-        }
-        if (bundle.hasLink()) {
-          hasNextPage = bundle.getLink().stream().anyMatch(l -> l.getRelation().equals("next"));
-        } else {
-          hasNextPage = false;
-        }
-      } while (hasNextPage);
-      log.info("Retrieved {} entries for {}", records.size(), domain.toString());
-      result.put(domain, records);
+      List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
+      if (!records.isEmpty()) {
+        result.put(domain, records);
+      }
     }
     return result;
+  }
+
+  private List<BundleEntryComponent> getRecords(
+      String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
+    SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
+    String url = searchSpec.getUrl() + "&_count=" + DEFAULT_SIZE;
+
+    String baseUrl = properties.getFhirurl();
+    String fullUrl = baseUrl + "/" + url;
+    log.info("Retrieve data for {}", domain.name());
+
+    List<BundleEntryComponent> records = new ArrayList<>();
+    String nextLink = fullUrl;
+    do {
+      log.info("get fhir bundle from {}", nextLink);
+      Bundle bundle = getFhirBundle(nextLink, lighthouseToken);
+      nextLink = "";
+      if (bundle.hasLink()) {
+        Optional<Bundle.BundleLinkComponent> next =
+            bundle.getLink().stream().filter(l -> l.getRelation().equals("next")).findFirst();
+        if (next.isPresent()) {
+          nextLink = next.get().getUrl();
+        }
+      }
+      List<BundleEntryComponent> entries = bundle.getEntry();
+      if (entries.size() > 0) {
+        records.addAll(entries);
+      } else {
+        break;
+      }
+    } while (!nextLink.isEmpty());
+    return records;
   }
 
   /**
