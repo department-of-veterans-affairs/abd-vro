@@ -1,8 +1,8 @@
-name: Deploy to QA
+name: Deploy to DEV
 
 on:
   push:
-    branches: [ qa ]
+    branches: [ develop ]
 
   # Allow manual triggering
   workflow_dispatch:
@@ -11,5 +11,5 @@ jobs:
   deploy-images:
     uses: ./.github/workflows/deploy-unsigned.yml
     with:
-      target_env: qa
+      target_env: dev
     secrets: inherit

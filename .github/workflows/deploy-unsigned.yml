@@ -1,9 +1,6 @@
 name: Deploy unsigned images
 
 on:
-  push:
-    branches: [ develop ]
-
   # Allow manual triggering
   workflow_dispatch:
     inputs:
@@ -60,7 +57,7 @@ jobs:
           ghcr_username: ${{ secrets.USERNAME }}
           ghcr_password: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: "Cleanup images locally"
+      - name: "Cleanup ${{ env.TARGET_ENV }} images locally"
         run: |
           docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
