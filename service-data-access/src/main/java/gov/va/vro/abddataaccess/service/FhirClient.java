@@ -31,7 +31,7 @@ import java.util.function.Function;
 public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
   private static final int DEFAULT_PAGE = 0;
-  private static final int DEFAULT_SIZE = 30;
+  private static final int DEFAULT_SIZE = 100;
 
   @Autowired private AppProperties properties;
 
@@ -158,12 +158,9 @@ public class FhirClient {
     headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
     HttpEntity request = new HttpEntity(headers);
 
-    String baseUrl = properties.lighthouseProperties().getFhirurl();
-    String fullUrl = baseUrl + "/" + url;
-    log.info("Get FHIR data from {}", fullUrl);
     try {
       ResponseEntity<String> response =
-          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, request, String.class);
       if (response.getStatusCode() != HttpStatus.OK) {
         log.error("Unexpected response from lighthouse {}", response.getStatusCode());
         log.error("Body is {}", response.getBody());
@@ -173,10 +170,10 @@ public class FhirClient {
       Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
       return bundle;
     } catch (RestClientException ex) {
-      log.error("Unable to get bundle from {}", fullUrl, ex);
+      log.error("Unable to get bundle from {}", url, ex);
       throw new AbdException("Unable to get the bundle for the patient.");
     } catch (DataFormatException dfEx) {
-      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
+      log.error("Unable to parse the bundle from {}", url, dfEx);
       throw new AbdException("Unable to parse bundle for the patient.");
     }
   }
@@ -261,19 +258,24 @@ public class FhirClient {
   private List<BundleEntryComponent> getRecords(
       String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl() + "&page=" + DEFAULT_PAGE + "&count=" + DEFAULT_SIZE;
+    String url = searchSpec.getUrl() + "&_count=" + DEFAULT_SIZE;
+
+    String baseUrl = properties.lighthouseProperties().getFhirurl();
+    String fullUrl = baseUrl + "/" + url;
     log.info("Retrieve data for {}", domain.name());
+    log.info("Get FHIR data from {}", fullUrl);
+
     List<BundleEntryComponent> records = new ArrayList<>();
-    String nextlink = url;
+    String nextLink = fullUrl;
     do {
-      log.info("get fhir bundle from {}", nextlink);
-      Bundle bundle = getFhirBundle(nextlink, lighthouseToken);
-      nextlink = "";
+      log.info("get fhir bundle from {}", nextLink);
+      Bundle bundle = getFhirBundle(nextLink, lighthouseToken);
+      nextLink = "";
       if (bundle.hasLink()) {
         Optional<Bundle.BundleLinkComponent> next =
             bundle.getLink().stream().filter(l -> l.getRelation().equals("next")).findFirst();
         if (next.isPresent()) {
-          nextlink = next.get().getUrl();
+          nextLink = next.get().getUrl();
         }
       }
       List<BundleEntryComponent> entries = bundle.getEntry();
@@ -282,7 +284,7 @@ public class FhirClient {
       } else {
         break;
       }
-    } while (!nextlink.isEmpty());
+    } while (!nextLink.isEmpty());
     return records;
   }
 
