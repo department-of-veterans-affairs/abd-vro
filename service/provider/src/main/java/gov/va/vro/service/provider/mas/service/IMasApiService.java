@@ -10,7 +10,7 @@ import java.util.List;
 public interface IMasApiService {
   List<MasCollectionStatus> getMasCollectionStatus(List<Integer> collectionIds) throws MasException;
 
-  List<MasCollectionAnnotation> getCollectionAnnots(Integer collectionId) throws MasException;
+  List<MasCollectionAnnotation> getCollectionAnnotations(Integer collectionId) throws MasException;
 
   String orderExam(MasOrderExamReq masOrderExamReq) throws MasException;
 }

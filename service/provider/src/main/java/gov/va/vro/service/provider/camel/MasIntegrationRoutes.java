@@ -8,8 +8,9 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.mas.service.MasTransferObject;
+import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
-import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -104,6 +105,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
+        .to("bean-validator:payload-validator")
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
         .setProperty(
@@ -112,46 +114,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
         .setProperty("evidence", simple("${body}"))
-        .routingSlip(
-            method(
-                slipClaimSubmitRouter, "routeHealthAssessV2")) // TODO: call "health assess" service
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) {
-
-                MasAutomatedClaimPayload claimPayload =
-                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                AbdEvidenceWithSummary evidence =
-                    exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
-                HealthDataAssessment assessment =
-                    (HealthDataAssessment) exchange.getProperty("evidence");
-                if (evidence.getErrorMessage() != null) {
-                  log.error("Health Assessment Failed");
-                } else {
-                  exchange.setProperty(
-                      "sufficientForFastTracking", evidence.isSufficientForFastTracking());
-                  log.info(
-                      " MAS Processing >> Sufficient Evidence >>> "
-                          + evidence.isSufficientForFastTracking());
-                  var masTransferObject =
-                      new MasTransferObject(claimPayload, assessment.getEvidence());
-                  exchange.getMessage().setBody(masTransferObject);
-                }
-              }
-            })
+        .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         // Call pcOrderExam in the absence of evidence
         .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) throws Exception {
-                MasAutomatedClaimPayload claimPayload =
-                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                exchange.getMessage().setBody(claimPayload);
-              }
+            exchange -> {
+              MasAutomatedClaimPayload claimPayload =
+                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
+              exchange.getMessage().setBody(claimPayload);
             })
         .to(orderExamEndpoint); // Call Order Exam;
     // TODO upload PDF
@@ -159,17 +132,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(collectEvidenceEndpoint)
         .routeId("mas-automated-claim-collect-evidence")
-        .multicast(new GroupedBodyAggregationStrategy())
+        .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
         .process( // combine evidence
-            FunctionProcessor.fromFunction(
-                (Function<List<HealthDataAssessment>, HealthDataAssessment>)
-                    abdEvidences ->
-                        MasCollectionService.combineEvidence(
-                            abdEvidences.get(0), abdEvidences.get(1))));
+            FunctionProcessor.fromFunction(combineExchangesFunction()));
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
@@ -194,6 +163,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+  }
+
+  private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
+    return exchanges -> {
+      for (Exchange exchange : exchanges) {
+        if (exchange.isFailed()) {
+          throw new MasException(
+              "Failed to collect evidence", exchange.getException(Throwable.class));
+        }
+      }
+      Exchange exchange1 = exchanges.get(0);
+      Exchange exchange2 = exchanges.get(1);
+      var evidence1 = exchange1.getMessage().getBody(HealthDataAssessment.class);
+      var evidence2 = exchange2.getMessage().getBody(HealthDataAssessment.class);
+      return MasCollectionService.combineEvidence(evidence1, evidence2);
+    };
   }
 
   private void configureOrderExamStatus() {

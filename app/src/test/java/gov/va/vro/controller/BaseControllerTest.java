@@ -1,5 +1,6 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
+import gov.va.vro.BaseIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
