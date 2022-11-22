@@ -1,39 +1,38 @@
 medications = {
     "Vaginal": [
-        "L1 protein",
+        "gardasil",
         "human papillomavirus",
-        "Gardasil",
+        "l1 protein"
     ],
     "Cervical": [
+        "bevacizumab",
         "cyclophosphamide",
         "gemcitabine",
-        "cyclophosphamide",
-        "thiotepa",
-        "bevacizumab",
-        "pembrolizumab",
+        "infugem",
+        "lynparza",
+        "mvasi",
         "olaparib",
-        "Tepadina",
-        "Lynparza",
-        "Mvasi",
-        "Infugem",
+        "pembrolizumab",
+        "tepadina",
+        "thiotepa",
         "tisotumab",
-        "Tivdak"
+        "tivdak"
     ],
     "Uterine": [
-        "doxorubicin",
+        "adriamycin",
+        "docefrez",
         "docetaxel",
-        "Taxotere",
-        "Docefrez",
-        "Adriamycin",
-        "LipoDox",
-        "Doxil"
+        "doxil",
+        "doxorubicin",
+        "lipodox",
+        "taxotere"
     ],
     "Cervical, Uterine": [
-        "paclitaxel",
-        "Abraxane",
+        "abraxane",
+        "adriamycin",
+        "doxil",
         "doxorubicin",
-        "Doxil",
-        "LipoDox",
-        "Adriamycin",
+        "lipodox",
+        "paclitaxel"
     ],
 }

@@ -1,7 +1,8 @@
+import logging
 from datetime import date
 from typing import Dict
 
-from assessclaimcancer.src.lib import medication, utils, condition
+from . import condition, medication, utils
 
 
 def assess_cancer(event: Dict):
@@ -37,7 +38,9 @@ def assess_cancer(event: Dict):
                 },
             }
         )
+        logging.info("Message processed successfully")
     else:
+        logging.info(f"Message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
 
     return response_body

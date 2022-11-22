@@ -88,5 +88,4 @@ medication = {
      "vincristine",
      "Marqibo",
      "Vincasar"}
-
 }

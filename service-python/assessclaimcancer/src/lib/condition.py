@@ -1,7 +1,11 @@
-from datetime import datetime
-from assessclaimcancer.src.lib.codesets import male_reproductive_condition, melanoma_condition, \
-    head_cancer_condition, gyn_cancer_condition, pancreatic_condition, prostate_cancer_condition, neck_condition, \
-    breast_cancer_condition, gi_condition, kidney_cancer_condtion, brain_cancer_condition, respiratory_cancer_condition
+# from datetime import datetime
+
+from .codesets import (brain_cancer_condition, breast_cancer_condition,
+                       gi_condition, gyn_cancer_condition,
+                       head_cancer_condition, kidney_cancer_condtion,
+                       male_reproductive_condition, melanoma_condition,
+                       neck_condition, pancreatic_condition,
+                       prostate_cancer_condition, respiratory_cancer_condition)
 
 conditions_codeset_map = {"head": head_cancer_condition.conditions_dict,
                           "neck": neck_condition.condition_dict,
@@ -46,8 +50,8 @@ def active_cancer_condition(request_body, cancer_type):
 
     relevant_conditions = []
     response = {}
-    date_of_claim = request_body["dateOfClaim"]
-    date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
+    # date_of_claim = request_body["dateOfClaim"]
+    # date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
     condition_codes = conditions_codeset_map[cancer_type]
 

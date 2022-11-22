@@ -1,4 +1,4 @@
-condition_codes= {
+condition_codes = {
     "109835005",
     "109836006",
     "109837002",

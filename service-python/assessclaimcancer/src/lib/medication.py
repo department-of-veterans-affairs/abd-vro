@@ -1,7 +1,12 @@
 from datetime import datetime
-from assessclaimcancer.src.lib.codesets import male_reproductive_medication, melanoma_medication, \
-    head_cancer_medication, gyn_cancer_medication, pancreatic_medication, prostate_cancer_medication, neck_medication, \
-    breast_cancer_medication, gi_medication, kidney_cancer_medication, brain_cancer_medication, respiratory_cancer_medication
+
+from .codesets import (brain_cancer_medication, breast_cancer_medication,
+                       gi_medication, gyn_cancer_medication,
+                       head_cancer_medication, kidney_cancer_medication,
+                       male_reproductive_medication, melanoma_medication,
+                       neck_medication, pancreatic_medication,
+                       prostate_cancer_medication,
+                       respiratory_cancer_medication)
 
 medication_codeset_map = {"head": head_cancer_medication.medication_keywords,
                           "neck": neck_medication.medications,
@@ -10,7 +15,7 @@ medication_codeset_map = {"head": head_cancer_medication.medication_keywords,
                           "prostate": prostate_cancer_medication.medication_keywords,
                           "melanoma": melanoma_medication.medications,
                           "pancreatic": pancreatic_medication.medication_keywords,
-                          "breast": breast_cancer_medication.medications,
+                          "breast": breast_cancer_medication.medication_keywords,
                           "gi": gi_medication.medications,
                           "kidney": kidney_cancer_medication.medications,
                           "brain": brain_cancer_medication.medications,
@@ -46,8 +51,8 @@ def medication_match(request_body, cancer_type):
     """
     response = {}
     relevant_medications = []
-    date_of_claim = request_body["dateOfClaim"]
-    date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
+    # date_of_claim = request_body["dateOfClaim"]
+    # date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
 
     medication_keywords = medication_codeset_map[cancer_type]
 

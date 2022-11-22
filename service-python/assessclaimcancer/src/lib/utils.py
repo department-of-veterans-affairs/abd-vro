@@ -115,12 +115,15 @@ def validate_request_body(request_body):
                             },
                             "onsetDate": {
                                 "type": "string",
+                                "nullable": True
                             },
                             "recordedDate": {
                                 "type": "string",
+                                "nullable": True
                             },
                             "abatementDate": {
                                 "type": "string",
+                                "nullable": True
                             }
                         }
                     }

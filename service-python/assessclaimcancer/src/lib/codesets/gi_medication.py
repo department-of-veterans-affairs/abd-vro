@@ -1,5 +1,5 @@
 medications = {
-    "trastuzumab",
+    "aflibercept",
     "atezolizumab",
     "bevacizumab",
     "cabozantinib",
@@ -30,7 +30,6 @@ medications = {
     "regorafenib",
     "sorafenib",
     "tipiracil",
-    "tipiracil",
-    "trifluridine",
-    "aflibercept",
+    "trastuzumab",
+    "trifluridine"
 }

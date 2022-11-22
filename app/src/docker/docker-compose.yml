@@ -180,6 +180,19 @@ services:
       - internal
     profiles: ["prototype"]
 
+  svc-assessor-cancer:
+    image: va/abd_vro-assessclaimcancer:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: [ "prototype" ]
+
   svc-feature-toggle:
     image: va/abd_vro-featuretoggle:latest
     <<: *common-security-opt
