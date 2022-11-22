@@ -1,7 +1,8 @@
-package gov.va.vro;
+package gov.va.vro.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import gov.va.vro.controller.BaseControllerTest;
 import gov.va.vro.service.provider.mas.service.MasAuthToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

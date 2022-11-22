@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -171,7 +171,7 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void fullHealthAssessmentInvalidInput() throws Exception {
+  void fullHealthAssessmentInvalidInput() {
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setVeteranIcn("icn");
 
