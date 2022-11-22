@@ -163,7 +163,7 @@ class VroControllerTest extends BaseControllerTest {
 
     var responseEntity =
         post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
