@@ -62,7 +62,7 @@ public class MasApiService implements IMasApiService {
   }
 
   @Override
-  public List<MasCollectionAnnotation> getCollectionAnnots(Integer collectionId)
+  public List<MasCollectionAnnotation> getCollectionAnnotations(Integer collectionId)
       throws MasException {
     try {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionAnnotsPath();
@@ -98,7 +98,7 @@ public class MasApiService implements IMasApiService {
         // catch various errors
         // NOP;
       }
-      log.info(" Exam Order >>>> API Service URL : " + url.toString());
+      log.info(" Exam Order >>>> API Service URL : " + url);
       log.info(
           " Exam Order >>>> API Service collectionsid : "
               + masOrderExamReq.getCollectionsId().toString());
