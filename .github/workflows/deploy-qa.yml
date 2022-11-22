@@ -12,7 +12,7 @@ env:
 
 jobs:
   deploy-images:
-    uses: ./.github/workflows/deploy-dev.yml
+    uses: ./.github/workflows/deploy-unsigned.yml
     with:
       target_env: qa
     secrets: inherit
