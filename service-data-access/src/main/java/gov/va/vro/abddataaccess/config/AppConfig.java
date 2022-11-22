@@ -1,6 +1,7 @@
 package gov.va.vro.abddataaccess.config;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.service.FhirClient;
@@ -24,6 +25,11 @@ public class AppConfig {
   public IGenericClient lighthouseClient() {
     LighthouseProperties setup = properties.lighthouseProperties();
     return fhirContext.newRestfulGenericClient(setup.getFhirurl());
+  }
+
+  @Bean
+  public IParser jsonFhirParser() {
+    return fhirContext.newJsonParser();
   }
 
   @Bean

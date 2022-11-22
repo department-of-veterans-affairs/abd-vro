@@ -1,6 +1,9 @@
 package gov.va.vro.abddataaccess.service;
 
+import ca.uhn.fhir.parser.DataFormatException;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import gov.va.vro.abddataaccess.config.AppProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
 import gov.va.vro.abddataaccess.model.AbdBloodPressure;
 import gov.va.vro.abddataaccess.model.AbdClaim;
@@ -17,9 +20,13 @@ import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Procedure;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +37,12 @@ public class FhirClient {
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
   private static final int DEFAULT_PAGE = 0;
   private static final int DEFAULT_SIZE = 30;
+
+  @Autowired private AppProperties properties;
+
+  @Autowired private RestTemplate restTemplate;
+
+  @Autowired private IParser jsonParser;
 
   @Autowired private IGenericClient client;
 
@@ -110,18 +123,38 @@ public class FhirClient {
    * @return a {@link Bundle}.
    * @throws AbdException when error occurs.
    */
-  public Bundle getBundle(AbdDomain domain, String patientIcn, int pageNo, int pageSize)
+  public Bundle getBundle(
+      AbdDomain domain, String patientIcn, String lighthouseToken, int pageNo, int pageSize)
       throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
     String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
-    String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
-    log.info("Get FHIR data from {}", url);
-    return client
-        .search()
-        .byUrl(url)
-        .returnBundle(Bundle.class)
-        .withAdditionalHeader(LIGHTHOUSE_AUTH_HEAD, lighthouseToken)
-        .execute();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
+    HttpEntity request = new HttpEntity(headers);
+
+    String baseUrl = properties.lighthouseProperties().getFhirurl();
+    String fullUrl = baseUrl + "/" + url;
+    log.info("Get FHIR data from {}", fullUrl);
+    try {
+      ResponseEntity<String> response =
+          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
+      if (response.getStatusCode() != HttpStatus.OK) {
+        log.error("Unexpected response from lighthouse {}", response.getStatusCode());
+        log.error("Body is {}", response.getBody());
+        throw new AbdException("Unable to get the bundle for the patient.");
+      }
+      String strBody = response.getBody();
+      Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
+      return bundle;
+    } catch (RestClientException ex) {
+      log.error("Unable to get bundle from {}", fullUrl, ex);
+      throw new AbdException("Unable to get the bundle for the patient.");
+    } catch (DataFormatException dfEx) {
+      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
+      throw new AbdException("Unable to parse bundle for the patient.");
+    }
   }
 
   private List<AbdCondition> getPatientConditions(List<BundleEntryComponent> entries) {
@@ -165,14 +198,12 @@ public class FhirClient {
    * @return a list of {@link AbdBloodPressure}.
    */
   public List<AbdBloodPressure> getPatientBloodPressures(List<BundleEntryComponent> entries) {
+    log.info("Extract patient blood pressure entries. number of entries: {}", entries.size());
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
       AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
       result.add(summary);
-    }
-    if (result.size() < 1) {
-      return null;
     }
     result.sort(null);
     return result;
@@ -194,12 +225,13 @@ public class FhirClient {
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
     for (AbdDomain domain : domains) {
+      String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       int pageNo = DEFAULT_PAGE;
       boolean hasNextPage;
       List<BundleEntryComponent> records = new ArrayList<>();
       do {
         pageNo++;
-        Bundle bundle = getBundle(domain, patientIcn, pageNo, DEFAULT_SIZE);
+        Bundle bundle = getBundle(domain, patientIcn, lighthouseToken, pageNo, DEFAULT_SIZE);
         List<BundleEntryComponent> entries = bundle.getEntry();
         if (entries.size() > 0) {
           records.addAll(entries);
@@ -258,9 +290,7 @@ public class FhirClient {
         }
         case BLOOD_PRESSURE -> {
           List<AbdBloodPressure> bps = getPatientBloodPressures(entries);
-          if (bps != null) {
-            result.setBloodPressures(bps);
-          }
+          result.setBloodPressures(bps);
         }
         default -> {
         }
