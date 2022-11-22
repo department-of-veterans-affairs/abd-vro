@@ -1,4 +1,4 @@
-name: Deploy dev images
+name: Deploy to non-prod
 
 on:
   push:
@@ -16,16 +16,12 @@ on:
         - dev
         - qa
 
+  # Allow other workflows to call this one
   workflow_call:
     inputs:
       target_env:
         required: true
         type: string
-    secrets:
-      DEV_KUBE_CONFIG:
-        required: true
-      SLACK_BOT_USER_OAUTH_ACCESS_TOKEN:
-        required: true
 
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

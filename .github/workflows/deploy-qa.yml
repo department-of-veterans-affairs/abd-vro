@@ -7,123 +7,12 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-  workflow_call:
-    secrets:
-      DEV_KUBE_CONFIG:
-        required: true
-      SLACK_BOT_USER_OAUTH_ACCESS_TOKEN:
-        required: true
-
 env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  COMMIT_SHA: ${{ github.sha }}
-  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: "qa"
 
 jobs:
   deploy-images:
-    # only run this job in the abd-vro repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Notify Slack"
-        id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: C04CA47HV96
-          slack-text: ":arrow_forward: Starting \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`) \
-            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`..."
-      - name: debug-slack-result
-        run: echo 'slack result- ${{ steps.notify-slack.outputs.slack-result }}'
-
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
-
-      - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
-        if: contains('Hello world', 'true')
-        uses: ./.github/actions/publish-images
-        with:
-          target_env: ${{ env.TARGET_ENV }}
-          access_token: ${{ secrets.ACCESS_TOKEN }}
-          ghcr_username: ${{ secrets.USERNAME }}
-          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
-
-      - name: "Cleanup images locally"
-        if: contains('Hello world', 'true')
-        run: |
-          docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
-
-          source scripts/image_vars.src
-          for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            IMG_NAME=${{ env.TARGET_ENV }}_$(getVarValue ${PREFIX} _IMG)
-            echo "Clean up image with tags '$IMG_NAME:${COMMIT_SHA:0:7}' and '${IMG_NAME}:latest'"
-            docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}" \
-                       "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
-          done
-
-      - name: "Notify Slack: Deploying..."
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":rocket: Deploying to ${{ env.TARGET_ENV }} ..."
-
-      - name: "Set up kube config"
-        run: |
-          mkdir ~/.kube
-          echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
-
-      - name: "Deploy to ${{ env.TARGET_ENV }} env"
-        if: contains('Hello world', 'true')
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.USERNAME }}
-        run: |
-          ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
-
-      - name: "Wait for LHDI deployment"
-        if: contains('Hello world', 'true')
-        run: kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api
-
-      - name: "Fail"
-        id: notify-slack-react
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-function: send-reaction
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-emoji-name: heavy_check_mark
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-
-      - name: "Notify Slack: Deployment failed"
-        if: failure()
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-text: ":fire: Deployment failed"
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-optional-reply_broadcast: true # To broadcast thread reply in channel
-
-      - name: "Notify Slack: Deployment success"
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-text: ":tada: Deployed!"
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-
-      - name: "Notify Slack: Done"
-        id: notify-slack-react
-        # if: always()
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-function: send-reaction
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-emoji-name: heavy_check_mark
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+    uses: ./.github/workflows/deploy-dev.yml
+    with:
+      target_env: qa
+    secrets: inherit
