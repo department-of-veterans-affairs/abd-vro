@@ -24,12 +24,7 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
@@ -157,6 +152,35 @@ public class FhirClient {
     }
   }
 
+  public Bundle getFhirBundle(String url, String lighthouseToken) throws AbdException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
+    HttpEntity request = new HttpEntity(headers);
+
+    String baseUrl = properties.lighthouseProperties().getFhirurl();
+    String fullUrl = baseUrl + "/" + url;
+    log.info("Get FHIR data from {}", fullUrl);
+    try {
+      ResponseEntity<String> response =
+          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
+      if (response.getStatusCode() != HttpStatus.OK) {
+        log.error("Unexpected response from lighthouse {}", response.getStatusCode());
+        log.error("Body is {}", response.getBody());
+        throw new AbdException("Unable to get the bundle for the patient.");
+      }
+      String strBody = response.getBody();
+      Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
+      return bundle;
+    } catch (RestClientException ex) {
+      log.error("Unable to get bundle from {}", fullUrl, ex);
+      throw new AbdException("Unable to get the bundle for the patient.");
+    } catch (DataFormatException dfEx) {
+      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
+      throw new AbdException("Unable to parse bundle for the patient.");
+    }
+  }
+
   private List<AbdCondition> getPatientConditions(List<BundleEntryComponent> entries) {
     List<AbdCondition> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
@@ -226,27 +250,40 @@ public class FhirClient {
     String patientIcn = claim.getVeteranIcn();
     for (AbdDomain domain : domains) {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
-      int pageNo = DEFAULT_PAGE;
-      boolean hasNextPage;
-      List<BundleEntryComponent> records = new ArrayList<>();
-      do {
-        pageNo++;
-        Bundle bundle = getBundle(domain, patientIcn, lighthouseToken, pageNo, DEFAULT_SIZE);
-        List<BundleEntryComponent> entries = bundle.getEntry();
-        if (entries.size() > 0) {
-          records.addAll(entries);
-        }
-        if (bundle.hasLink()) {
-          hasNextPage = bundle.getLink().stream().anyMatch(l -> l.getRelation().equals("next"));
-        } else {
-          hasNextPage = false;
-        }
-      } while (hasNextPage);
+      List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
       if (!records.isEmpty()) {
         result.put(domain, records);
       }
     }
     return result;
+  }
+
+  private List<BundleEntryComponent> getRecords(
+      String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
+    SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
+    String url = searchSpec.getUrl() + "&page=" + DEFAULT_PAGE + "&count=" + DEFAULT_SIZE;
+    log.info("Retrieve data for {}", domain.name());
+    List<BundleEntryComponent> records = new ArrayList<>();
+    String nextlink = url;
+    do {
+      log.info("get fhir bundle from {}", nextlink);
+      Bundle bundle = getFhirBundle(nextlink, lighthouseToken);
+      nextlink = "";
+      if (bundle.hasLink()) {
+        Optional<Bundle.BundleLinkComponent> next =
+            bundle.getLink().stream().filter(l -> l.getRelation().equals("next")).findFirst();
+        if (next.isPresent()) {
+          nextlink = next.get().getUrl();
+        }
+      }
+      List<BundleEntryComponent> entries = bundle.getEntry();
+      if (entries.size() > 0) {
+        records.addAll(entries);
+      } else {
+        break;
+      }
+    } while (!nextlink.isEmpty());
+    return records;
   }
 
   /**
