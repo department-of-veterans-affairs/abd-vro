@@ -72,9 +72,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":rocket: Deploying to ${{ env.TARGET_ENV }} ..."
-      - name: debug-slack-result
-        run: echo 'slack result- ${{ steps.notify-slack-deploying.outputs.slack-result }}'
+          slack-text: ":panda_coffee: Deploying to ${{ env.TARGET_ENV }} ..."
 
       - name: "Set up kube config"
         run: |
@@ -93,15 +91,6 @@ jobs:
         if: contains('Hello world', 'true')
         run: kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api
 
-      - name: "Fail"
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-function: send-reaction
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-emoji-name: heavy_check_mark
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-
       - name: "Notify Slack: Deployment failed"
         id: notify-slack-failed
         if: failure()
@@ -110,10 +99,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":fire: Deployment failed"
-      - name: debug-slack-result
-        if: failure()
-        run: echo 'slack result- ${{ steps.notify-slack-failed.outputs.slack-result }}'
+          slack-text: ":panda_shocked: Deployment failed"
 
       - name: "Notify Slack: Deployment success"
         uses: archive/github-actions-slack@v2.6.0
@@ -124,7 +110,7 @@ jobs:
           slack-text: ":tada: Deployed!"
 
       - name: "Notify Slack: Done"
-        # if: always()
+        if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
