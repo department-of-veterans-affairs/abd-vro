@@ -197,14 +197,12 @@ public class FhirClient {
    * @return a list of {@link AbdBloodPressure}.
    */
   public List<AbdBloodPressure> getPatientBloodPressures(List<BundleEntryComponent> entries) {
+    log.info("Extract patient blood pressure entries. number of entries: {}", entries.size());
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
       AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
       result.add(summary);
-    }
-    if (result.size() < 1) {
-      return null;
     }
     result.sort(null);
     return result;
@@ -291,9 +289,7 @@ public class FhirClient {
         }
         case BLOOD_PRESSURE -> {
           List<AbdBloodPressure> bps = getPatientBloodPressures(entries);
-          if (bps != null) {
-            result.setBloodPressures(bps);
-          }
+          result.setBloodPressures(bps);
         }
         default -> {
         }
