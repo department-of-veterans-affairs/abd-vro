@@ -2,13 +2,11 @@ package gov.va.vro.model.event;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.ZonedDateTime;
 
 @Getter
 @Builder(toBuilder = true)
-@ToString
 public class AuditEvent {
 
   private String eventId;
@@ -37,7 +35,38 @@ public class AuditEvent {
         .eventId(body.getEventId())
         .routeId(routeId)
         .payloadType(body.getClass())
+        .message(exception.getMessage())
         .throwable(exception)
         .build();
+  }
+
+  @Override
+  public String toString() {
+    if (isException()) {
+      return String.format(
+          "Exception occurred on route %s for %s(id = %s): %s\n"
+              + "Please check the audit store for more information.",
+          routeId, payloadType.getSimpleName(), eventId, message);
+    } else {
+      return toSimpleString();
+    }
+  }
+
+  public String toSimpleString() {
+    return "AuditEvent{"
+        + "routeId='"
+        + routeId
+        + '\''
+        + ", payloadType="
+        + payloadType
+        + ", throwable="
+        + throwable
+        + ", message='"
+        + message
+        + '\''
+        + ", details='"
+        + details
+        + '\''
+        + '}';
   }
 }
