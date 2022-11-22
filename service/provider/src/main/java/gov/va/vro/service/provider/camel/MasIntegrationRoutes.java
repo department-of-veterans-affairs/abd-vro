@@ -18,6 +18,7 @@ import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS =
       "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
@@ -63,7 +64,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   void setUpRecipients() {
     auditRecipientList = ENDPOINT_AUDIT_EVENT;
     exceptionRecipientList =
-        masConfig.getSlackExceptionWebhook() == null
+        StringUtils.isEmpty(masConfig.getSlackExceptionWebhook())
             ? ENDPOINT_AUDIT_EVENT
             : String.format(
                 "%s,slack:#%s?webhookUrl=%s",
@@ -147,7 +148,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             new Processor() {
               @Override
-              public void process(Exchange exchange) throws Exception {
+              public void process(Exchange exchange) {
                 MasAutomatedClaimPayload claimPayload =
                     (MasAutomatedClaimPayload) exchange.getProperty("claim");
                 exchange.getMessage().setBody(claimPayload);
