@@ -65,10 +65,12 @@ secrel_docker_context() {
   esac
 }
 
-secrel_docker_service_src_folder() {
+secrel_docker_build_args() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
-    pdfgenerator|assessclaim*) echo "SERVICE_SRC_FOLDER=$1/build/docker";;
+    pdfgenerator|assessclaim*) echo "    - SERVICE_SRC_FOLDER=$1/build/docker";;
+    app|console|svc-lighthouse-api) echo "    - JAR_FILE=$1-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh";;
     *) echo "";;
   esac
 }
@@ -155,24 +157,24 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
 overwriteSrcFile > "$SRC_FILE"
 
 images_for_secrel_config_yml(){
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
 for IMG in "${IMAGES[@]}"; do
   echo "- name: $(secrel_image_name "$IMG")
   context: \"$(secrel_docker_context "$IMG")\"
   path: \"$(secrel_dockerfile "$IMG")\""
-  SERVICE_SRC_FOLDER="$(secrel_docker_service_src_folder "$IMG")"
-  if [ "$SERVICE_SRC_FOLDER" ]; then
+  BUILD_ARGS="$(secrel_docker_build_args "$IMG")"
+  if [ "$BUILD_ARGS" ]; then
     echo "  args:
-  - $SERVICE_SRC_FOLDER"
+$BUILD_ARGS"
   fi
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 images_for_helmchart_values_yaml(){
   local _ENV=$1
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
 for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
@@ -180,7 +182,7 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
     tag: tagPlaceholder
     imagePullPolicy: Always"
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 # shellcheck source=image_vars.src
