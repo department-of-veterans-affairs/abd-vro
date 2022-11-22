@@ -1,4 +1,4 @@
-name: Deploy QA images
+name: Deploy to QA
 
 on:
   push:
