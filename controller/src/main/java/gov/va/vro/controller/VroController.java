@@ -131,7 +131,7 @@ public class VroController implements VroResource {
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
+            claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
       }
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
@@ -139,8 +139,7 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (ClaimProcessingException cpe) {
       throw cpe;
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
           claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
