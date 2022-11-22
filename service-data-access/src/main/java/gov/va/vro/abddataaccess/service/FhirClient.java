@@ -142,16 +142,17 @@ public class FhirClient {
           restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
       if (response.getStatusCode() != HttpStatus.OK) {
         log.error("Unexpected response from lighthouse {}", response.getStatusCode());
-        throw new AbdException("Unable to get bundle for the patient.");
+        log.error("Body is {}", response.getBody());
+        throw new AbdException("Unable to get the bundle for the patient.");
       }
       String strBody = response.getBody();
       Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
       return bundle;
     } catch (RestClientException ex) {
-      log.error("Unable to get bundle from {}", fullUrl);
-      throw new AbdException("Unable to get bundle for the patient.");
-    } catch (DataFormatException dfex) {
-      log.error("Unable to parse the bundle from {}", fullUrl);
+      log.error("Unable to get bundle from {}", fullUrl, ex);
+      throw new AbdException("Unable to get the bundle for the patient.");
+    } catch (DataFormatException dfEx) {
+      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
       throw new AbdException("Unable to parse bundle for the patient.");
     }
   }
