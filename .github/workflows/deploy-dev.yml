@@ -66,12 +66,15 @@ jobs:
           done
 
       - name: "Notify Slack: Deploying..."
+        id: notify-slack-deploying
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":rocket: Deploying to ${{ env.TARGET_ENV }} ..."
+      - name: debug-slack-result
+        run: echo 'slack result- ${{ steps.notify-slack-deploying.outputs.slack-result }}'
 
       - name: "Set up kube config"
         run: |
@@ -97,25 +100,28 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-emoji-name: heavy_check_mark
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
 
       - name: "Notify Slack: Deployment failed"
+        id: notify-slack-failed
         if: failure()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":fire: Deployment failed"
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-optional-reply_broadcast: true # To broadcast thread reply in channel
+      - name: debug-slack-result
+        if: failure()
+        run: echo 'slack result- ${{ steps.notify-slack-failed.outputs.slack-result }}'
 
       - name: "Notify Slack: Deployment success"
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":tada: Deployed!"
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
 
       - name: "Notify Slack: Done"
         # if: always()
@@ -124,5 +130,5 @@ jobs:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-emoji-name: heavy_check_mark
           slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: heavy_check_mark
