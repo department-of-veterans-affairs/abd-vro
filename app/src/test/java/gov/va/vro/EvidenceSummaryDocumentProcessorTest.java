@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.config.AppTestConfig;
+import gov.va.vro.controller.BaseControllerTest;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
