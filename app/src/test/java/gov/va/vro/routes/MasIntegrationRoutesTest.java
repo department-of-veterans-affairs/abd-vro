@@ -14,7 +14,6 @@ import gov.va.vro.model.mas.MasOrderExamReq;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import lombok.SneakyThrows;
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
@@ -64,10 +63,10 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
-            exchange -> {
-              var assessment = new HealthDataAssessment();
-              exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(assessment));
-            });
+        exchange -> {
+          var assessment = new HealthDataAssessment();
+          exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(assessment));
+        });
 
     // Mock a return value when health assess is invoked
 
@@ -77,11 +76,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
-            exchange -> {
-              var evidence = new AbdEvidenceWithSummary();
-              evidence.setSufficientForFastTracking(sufficientEvidence);
-              exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
-            });
+        exchange -> {
+          var evidence = new AbdEvidenceWithSummary();
+          evidence.setSufficientForFastTracking(sufficientEvidence);
+          exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
+        });
 
     // Mock NOOP when generate PDF endpoints are called
 
@@ -95,8 +94,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
         "mock:empty-endpoint");
 
-    mockEmptyEndpoint.whenAnyExchangeReceived(
-            exchange -> {});
+    mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     // set up a Mas Request and invoke processClaim
     int collectionId = 123;
@@ -118,7 +116,6 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
       MasOrderExamReq orderExamRequest = argumentCaptor.getValue();
       assertEquals(collectionId, orderExamRequest.getCollectionsId());
     }
-
   }
 
   private void replaceEndpoint(String routeId, String fromUri, String toUri) throws Exception {
