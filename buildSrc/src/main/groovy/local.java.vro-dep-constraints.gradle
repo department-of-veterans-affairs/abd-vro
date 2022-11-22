@@ -20,5 +20,9 @@ dependencies {
 
         // for mockserver-netty and hapi-fhir
         implementation 'org.apache.commons:commons-text:1.10.0'
+
+        // for camel-bean-validator
+        // https://github.com/department-of-veterans-affairs/abd-vro-internal/security/code-scanning/579
+        implementation 'org.glassfish:jakarta.el:5.0.0-M1'
     }
 }
