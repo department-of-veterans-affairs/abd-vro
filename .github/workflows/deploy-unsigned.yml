@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       target_env:
-        description: 'TARGET_ENV like dev or qa'
+        description: 'Target LHDI environment'
         required: true
         default: 'dev'
         type: choice
@@ -53,7 +53,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
-        if: contains('Hello world', 'true')
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
@@ -62,7 +61,6 @@ jobs:
           ghcr_password: ${{ secrets.ACCESS_TOKEN }}
 
       - name: "Cleanup images locally"
-        if: contains('Hello world', 'true')
         run: |
           docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
@@ -89,7 +87,6 @@ jobs:
           echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
       - name: "Deploy to ${{ env.TARGET_ENV }} env"
-        if: contains('Hello world', 'true')
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
@@ -97,11 +94,9 @@ jobs:
           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
-        if: contains('Hello world', 'true')
         run: kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api
 
       - name: "Notify Slack: Deployment failed"
-        id: notify-slack-failed
         if: failure()
         uses: archive/github-actions-slack@v2.6.0
         with:
