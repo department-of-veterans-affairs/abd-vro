@@ -90,7 +90,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
-        .to("bean-validator:payload-validator")
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
         .setProperty(

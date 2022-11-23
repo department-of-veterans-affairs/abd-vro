@@ -13,8 +13,13 @@ public class AuditEvent {
   private String routeId;
   private Class<?> payloadType;
   private Throwable throwable;
+
+  // WARNING: DO NOT STORE PII/PHI
   private String message;
+
+  // WARNING: DO NOT STORE PII/PHI
   private String details;
+
   @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
 
   public boolean isException() {
@@ -60,14 +65,8 @@ public class AuditEvent {
         + '\''
         + ", payloadType="
         + payloadType
-        + ", throwable="
-        + throwable
         + ", message='"
         + message
-        + '\''
-        + ", details='"
-        + details
-        + '\''
         + '}';
   }
 }
