@@ -254,11 +254,15 @@ public class FieldExtractor {
               String bpType = codingInner.getCode();
               if ("8480-6".equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
-                result.setSystolic(m);
+                if (m.getValue() != null) {
+                  result.setSystolic(m);
+                }
               }
               if ("8462-4".equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
-                result.setDiastolic(m);
+                if (m.getValue() != null) {
+                  result.setDiastolic(m);
+                }
               }
             }
           }
