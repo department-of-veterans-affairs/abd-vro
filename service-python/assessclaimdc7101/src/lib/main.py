@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from . import bp_filter, continuous_medication, utils
@@ -34,8 +35,8 @@ def assess_hypertension(event: Dict):
                 },
             }
         )
-
+        logging.info("Message processed successfully")
     else:
+        logging.info(f"Message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
-
     return response_body
