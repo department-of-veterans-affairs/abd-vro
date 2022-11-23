@@ -68,7 +68,6 @@ from assessclaimdc6602.src.lib import main
                     "medications": [
                         {
                             "description": "Advil",
-                            "status": "active",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
                     ]
@@ -82,7 +81,6 @@ from assessclaimdc6602.src.lib import main
                             "asthmaRelevant": "false",
                             "authoredOn": "1952-04-06T04:00:00Z",
                             "description": "Advil",
-                            "status": "active",
                         }
                     ]
                 },

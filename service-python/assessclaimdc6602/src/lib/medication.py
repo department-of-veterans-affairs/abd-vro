@@ -41,7 +41,12 @@ def medication_required(request_body):
     other_medications = []
 
     veterans_medication = request_body["evidence"]["medications"]
+
     for medication in veterans_medication:
+        if "status" not in medication.keys():
+            other_medications.append(medication)
+            medication["asthmaRelevant"] = "false"
+            continue
         if medication["status"].lower() == "active":
             flagged = False
             medication_display = medication["description"]
