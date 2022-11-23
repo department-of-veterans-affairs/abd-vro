@@ -37,6 +37,7 @@ public class AuditEvent {
         .payloadType(body.getClass())
         .message(exception.getMessage())
         .throwable(exception)
+        .message(exception.getMessage())
         .build();
   }
 
