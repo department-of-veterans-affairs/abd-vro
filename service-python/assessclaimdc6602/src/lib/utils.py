@@ -23,7 +23,7 @@ def validate_request_body(request_body):
                     "schema": {
                         "type": "dict",
                         "schema": {
-                            "authoredOn": {"type": "string"},
+                            "authoredOn": {"type": "string", "required": True},
                             "status": {"type": "string"},
                             "dosageInstructions": {
                                 "type": "list",
@@ -33,7 +33,7 @@ def validate_request_body(request_body):
                             "route": {"type": "string", "nullable": True},
                             "refills": {},
                             "duration": {"type": "string", "nullable": True},
-                            "description": {"type": "string"},
+                            "description": {"type": "string", "required": True},
                             "notes": {
                                 "type": "list",
                                 "nullable": True,
