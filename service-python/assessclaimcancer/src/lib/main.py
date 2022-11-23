@@ -16,7 +16,7 @@ def assess_cancer(event: Dict):
     """
     validation_results = utils.validate_request_body(event)
     response_body = {}
-    cancer_type = "head"
+    cancer_type = "respiratory"
     if "dateOfClaim" not in event:
         event["dateOfClaim"] = str(date.today())
 
