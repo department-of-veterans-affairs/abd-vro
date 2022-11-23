@@ -34,6 +34,7 @@ public abstract class BaseControllerTest extends BaseIntegrationTest {
       Class<O> responseType) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("X-API-Key", "test-key-01");
+    headers.add("Authorization", "Bearer test-key-01");
     if (headersIn != null) {
       headersIn.forEach(
           (key, value) -> {

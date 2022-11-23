@@ -24,9 +24,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 
-@RequestMapping(value = "/v1", produces = "application/json")
-@SecurityRequirement(name = "X-API-Key")
-@SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
+@RequestMapping(value = "/v2", produces = "application/json")
+@SecurityRequirement(name = "bearerAuth")
+@SecurityScheme(
+    name = "bearerAuth",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer",
+    in = SecuritySchemeIn.HEADER)
 @Timed
 public interface MasResource {
 

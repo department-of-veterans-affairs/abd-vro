@@ -62,7 +62,7 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimD_invalidRequest() {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
@@ -82,7 +82,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasNotificationEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<MasAutomatedClaimPayload, String>fromFunction(claim -> "hi"));
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
 
@@ -99,7 +99,7 @@ public class MasControllerTest extends BaseControllerTest {
         .end();
 
     MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    post("/v1/automatedClaim", request, MasResponse.class);
+    post("/v2/automatedClaim", request, MasResponse.class);
     Mockito.verify(auditEventService, Mockito.atLeastOnce())
         .logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
@@ -113,7 +113,7 @@ public class MasControllerTest extends BaseControllerTest {
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
-        post("/v1/examOrderingStatus", payload, MasResponse.class);
+        post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());

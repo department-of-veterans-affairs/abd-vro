@@ -39,7 +39,8 @@ public class SecurityConfig {
    * @throws Exception when error occurs.
    */
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+  public SecurityFilterChain apikeyFilterChain(HttpSecurity httpSecurity) throws Exception {
+
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(apiKeyAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
@@ -55,6 +56,31 @@ public class SecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .addFilter(apiAuthKeyFilter)
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated();
+    return httpSecurity.build();
+  }
+
+  @Bean
+  public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+    ApiAuthKeyFilter apiAuthKeyFilter1 = new ApiAuthKeyFilter("Authorization");
+    apiAuthKeyFilter1.setAuthenticationManager(apiAuthKeyManager);
+
+    httpSecurity
+        .exceptionHandling()
+        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+
+    // Secure end point
+    httpSecurity
+        .antMatcher("/v2/**")
+        .csrf()
+        .disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(apiAuthKeyFilter1)
         .authorizeRequests()
         .anyRequest()
         .authenticated();
