@@ -133,6 +133,11 @@ public class VroController implements VroResource {
         throw new ClaimProcessingException(
             claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
       }
+      else if (response.getStatus().equals("ERROR")) {
+        log.info("RESPONSE from condition processor returned error message: {}", response.getErrorMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());

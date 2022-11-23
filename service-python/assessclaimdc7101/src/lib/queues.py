@@ -21,7 +21,7 @@ def pdf_evidence_request_callback(channel, method, properties, body):
         response = main.assess_hypertension(message)
     except Exception as e:
         logging.error(e, exc_info=True)
-        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
+        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}, "errorMessage": str(e)}
 
     channel.basic_publish(
         exchange=EXCHANGE,
