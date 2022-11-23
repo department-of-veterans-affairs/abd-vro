@@ -112,6 +112,12 @@ masAPIProvider:
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
   createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+
+
+slack:
+  exception:
+    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
+    channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
   
 opentracing:
   zipkin:
@@ -158,12 +164,6 @@ spring.redis:
   host: ${REDIS_PLACEHOLDERS_HOST}
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
-
-#TODO: These must be supplied
-#slack:
-#  exception:
-#    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
-#    channel: "${SLACK_EXCEPTION_CHANNEL}"
 
 spring.config.import: >
   conf-camel.yml,
