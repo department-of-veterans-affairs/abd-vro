@@ -189,13 +189,42 @@ public class FhirClient {
     return result;
   }
 
+  private boolean validateMedication(AbdMedication med) {
+    boolean result = true;
+
+    if (med.getDescription() == null) {
+      log.warn("Found a med without description.");
+      result = false;
+    }
+
+    if (med.getAuthoredOn() == null) {
+      log.warn("Found a med without authored on.");
+      result = false;
+    }
+
+    if (med.getStatus() == null) {
+      log.warn("Found a med without status.");
+      result = false;
+    }
+
+    return result;
+  }
+
   private List<AbdMedication> getPatientMedications(List<BundleEntryComponent> entries) {
     log.info("Extract patient medication entries. number of entries: {}", entries.size());
+    int ignored = 0;
     List<AbdMedication> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       MedicationRequest resource = (MedicationRequest) entry.getResource();
       AbdMedication summary = FieldExtractor.extractMedication(resource);
-      result.add(summary);
+      if (validateMedication(summary)) {
+        result.add(summary);
+      } else {
+        ignored = ignored + 1;
+      }
+    }
+    if (ignored > 0) {
+      log.warn("The number of ignored medications is: {}", ignored);
     }
     result.sort(null);
     return result;
@@ -212,6 +241,27 @@ public class FhirClient {
     return result;
   }
 
+  private boolean validateBloodPressure(AbdBloodPressure bp) {
+    boolean result = true;
+
+    if (bp.getSystolic() == null) {
+      log.warn("Found a blood pressure record without systolic.");
+      result = false;
+    }
+
+    if (bp.getDiastolic() == null) {
+      log.warn("Found a blood pressure record without diastolic.");
+      result = false;
+    }
+
+    if (bp.getDate() == null) {
+      log.warn("Found a blood pressure record without date.");
+      result = false;
+    }
+
+    return result;
+  }
+
   /**
    * Gets a list of blood pressure readings.
    *
@@ -220,11 +270,19 @@ public class FhirClient {
    */
   public List<AbdBloodPressure> getPatientBloodPressures(List<BundleEntryComponent> entries) {
     log.info("Extract patient blood pressure entries. number of entries: {}", entries.size());
+    int ignored = 0;
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
       AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      result.add(summary);
+      if (validateBloodPressure(summary)) {
+        result.add(summary);
+      } else {
+        ignored = ignored + 1;
+      }
+    }
+    if (ignored > 0) {
+      log.warn("The number of ignored blood pressures is: {}", ignored);
     }
     result.sort(null);
     return result;
