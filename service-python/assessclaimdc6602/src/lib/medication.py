@@ -44,8 +44,8 @@ def medication_required(request_body):
 
     for medication in veterans_medication:
         if "status" not in medication.keys():
-            other_medications.append(medication)
             medication["asthmaRelevant"] = "false"
+            other_medications.append(medication)
             continue
         if medication["status"].lower() == "active":
             flagged = False
