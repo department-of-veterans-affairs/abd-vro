@@ -2,20 +2,34 @@ package gov.va.vro.abddataaccess.service;
 
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
-import gov.va.vro.abddataaccess.model.*;
+import gov.va.vro.abddataaccess.model.AbdBloodPressure;
+import gov.va.vro.abddataaccess.model.AbdClaim;
+import gov.va.vro.abddataaccess.model.AbdCondition;
+import gov.va.vro.abddataaccess.model.AbdEvidence;
+import gov.va.vro.abddataaccess.model.AbdMedication;
+import gov.va.vro.abddataaccess.model.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Procedure;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -29,8 +43,6 @@ public class FhirClient {
   @Autowired private RestTemplate restTemplate;
 
   @Autowired private IParser jsonParser;
-
-  @Autowired private IGenericClient client;
 
   @Autowired private LighthouseApiService lighthouseApiService;
 
@@ -80,7 +92,14 @@ public class FhirClient {
               }),
           new AbstractMap.SimpleEntry<>(
               "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
-          new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}));
+          new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}),
+          new AbstractMap.SimpleEntry<>(
+              "6602v2", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}),
+          new AbstractMap.SimpleEntry<>(
+              "7101v2",
+              new AbdDomain[] {
+                AbdDomain.MEDICATION, AbdDomain.BLOOD_PRESSURE, AbdDomain.CONDITION
+              }));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -98,50 +117,6 @@ public class FhirClient {
               AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
-
-  //  /**
-  //   * Gets a FHIR {@link Bundle} for the given parameters.
-  //   *
-  //   * @param domain an {@link AbdDomain}.
-  //   * @param patientIcn a patient ICN.
-  //   * @param pageNo page number.
-  //   * @param pageSize page size.
-  //   * @return a {@link Bundle}.
-  //   * @throws AbdException when error occurs.
-  //   */
-  //  public Bundle getBundle(
-  //      AbdDomain domain, String patientIcn, String lighthouseToken, int pageNo, int pageSize)
-  //      throws AbdException {
-  //    SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-  //    String url = searchSpec.getUrl() + "&page=" + pageNo + "&count=" + pageSize;
-  //
-  //    HttpHeaders headers = new HttpHeaders();
-  //    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-  //    headers.set(LIGHTHOUSE_AUTH_HEAD, lighthouseToken);
-  //    HttpEntity request = new HttpEntity(headers);
-  //
-  //    String baseUrl = properties.lighthouseProperties().getFhirurl();
-  //    String fullUrl = baseUrl + "/" + url;
-  //    log.info("Get FHIR data from {}", fullUrl);
-  //    try {
-  //      ResponseEntity<String> response =
-  //          restTemplate.exchange(fullUrl, HttpMethod.GET, request, String.class);
-  //      if (response.getStatusCode() != HttpStatus.OK) {
-  //        log.error("Unexpected response from lighthouse {}", response.getStatusCode());
-  //        log.error("Body is {}", response.getBody());
-  //        throw new AbdException("Unable to get the bundle for the patient.");
-  //      }
-  //      String strBody = response.getBody();
-  //      Bundle bundle = jsonParser.parseResource(Bundle.class, strBody);
-  //      return bundle;
-  //    } catch (RestClientException ex) {
-  //      log.error("Unable to get bundle from {}", fullUrl, ex);
-  //      throw new AbdException("Unable to get the bundle for the patient.");
-  //    } catch (DataFormatException dfEx) {
-  //      log.error("Unable to parse the bundle from {}", fullUrl, dfEx);
-  //      throw new AbdException("Unable to parse bundle for the patient.");
-  //    }
-  //  }
 
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
@@ -267,7 +242,7 @@ public class FhirClient {
     List<BundleEntryComponent> records = new ArrayList<>();
     String nextLink = fullUrl;
     do {
-      log.info("get fhir bundle from {}", nextLink);
+      log.info("Next link is {}", nextLink);
       Bundle bundle = getFhirBundle(nextLink, lighthouseToken);
       nextLink = "";
       if (bundle.hasLink()) {
@@ -279,8 +254,10 @@ public class FhirClient {
       }
       List<BundleEntryComponent> entries = bundle.getEntry();
       if (entries.size() > 0) {
+        log.info("Adding {} entries to records", entries.size());
         records.addAll(entries);
       } else {
+        log.info("Empty page from fhir service. Ending pulling resources.");
         break;
       }
     } while (!nextLink.isEmpty());
