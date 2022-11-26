@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -40,6 +40,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -160,7 +163,7 @@ class VroControllerTest extends BaseControllerTest {
 
     var responseEntity =
         post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
@@ -168,7 +171,7 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void fullHealthAssessmentInvalidInput() throws Exception {
+  void fullHealthAssessmentInvalidInput() {
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setVeteranIcn("icn");
 
@@ -242,5 +245,48 @@ class VroControllerTest extends BaseControllerTest {
 
     var response = get("/v1/evidence-pdf/1234", null, String.class);
     assertNotNull(response);
+  }
+
+  @Test
+  @DirtiesContext
+  void fetchPdfAcceptJson() throws Exception {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    fetchPdfCommon(headers);
+  }
+
+  @Test
+  @DirtiesContext
+  void fetchPdfAcceptPdf() throws Exception {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/pdf");
+    fetchPdfCommon(headers);
+  }
+
+  void fetchPdfCommon(Map<String, String> headers) throws Exception {
+    adviceWith(
+        camelContext,
+        "fetch-pdf",
+        route ->
+            route
+                .interceptSendToEndpoint(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+                .skipSendToOriginalEndpoint()
+                .to("mock:fetch-pdf"));
+    mockFetchPdfEndpoint.expectedMessageCount(1);
+
+    var fetchPdfResponse = new FetchPdfResponse();
+    fetchPdfResponse.setPdfData(Base64.getEncoder().encodeToString("Example PDF".getBytes()));
+    fetchPdfResponse.setClaimSubmissionId("1239");
+    fetchPdfResponse.setStatus("SUCCESS");
+
+    mockFetchPdfEndpoint.whenAnyExchangeReceived(
+        FunctionProcessor.fromFunction(
+            (Function<Object, Object>) o -> util.toJsonString(fetchPdfResponse)));
+
+    var response = get("/v1/evidence-pdf/1239", null, headers, byte[].class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    String value = new String(response.getBody());
+    assertEquals("Example PDF", value);
   }
 }

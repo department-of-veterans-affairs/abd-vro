@@ -3,15 +3,24 @@ package gov.va.vro.service.db;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -22,6 +31,9 @@ class SaveToDbServiceImplTest {
   @Autowired private VeteranRepository veteranRepository;
 
   @Autowired private ClaimRepository claimRepository;
+
+  @Value("classpath:test-data/evidence-summary-document-data.json")
+  private Resource esdData;
 
   @Test
   void persistClaim() {
@@ -50,5 +62,34 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+  }
+
+  @Test
+  void persistEvidenceSummaryDocument() throws Exception {
+    // Save claim
+    Claim claim = new Claim();
+    claim.setClaimSubmissionId("1234");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("7101");
+    saveToDbService.insertClaim(claim);
+    // Build evidence
+    InputStream stream = esdData.getInputStream();
+    String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    ObjectMapper mapper = new ObjectMapper();
+    GeneratePdfPayload input = mapper.readValue(inputAsString, GeneratePdfPayload.class);
+    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+    String diagnosis = "Hypertension";
+    String documentName =
+        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+    // Save evidence summary document.
+    saveToDbService.insertEvidenceSummaryDocument(input, documentName);
+    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    // Verify evidence is correct
+    assertNotNull(result);
+    EvidenceSummaryDocumentEntity esd =
+        result.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
+    assertNotNull(esd);
+    assertEquals(esd.getDocumentName(), documentName);
+    assertEquals(esd.getEvidenceCount().size(), 2);
   }
 }
