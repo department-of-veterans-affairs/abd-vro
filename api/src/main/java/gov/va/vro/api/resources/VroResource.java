@@ -98,7 +98,7 @@ public interface VroResource {
             description = "PDF Generator Server Error",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
-            responseCode = "404",
+            responseCode = "500",
             description = "PDF generation for specified claimSubmissionID not requested",
             content = @Content(schema = @Schema(hidden = true)))
       })
@@ -131,7 +131,7 @@ public interface VroResource {
             description = "Claim Processing Server Error",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
-            responseCode = "404",
+            responseCode = "500",
             description = "No evidence found",
             content =
                 @Content(

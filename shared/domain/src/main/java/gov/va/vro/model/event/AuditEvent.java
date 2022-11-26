@@ -38,6 +38,7 @@ public class AuditEvent {
         .routeId(routeId)
         .payloadType(body.getClass())
         .throwable(exception)
+        .message(exception.getMessage())
         .build();
   }
 }

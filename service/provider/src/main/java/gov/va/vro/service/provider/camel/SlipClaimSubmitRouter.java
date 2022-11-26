@@ -55,7 +55,7 @@ public class SlipClaimSubmitRouter {
   }
 
   @SneakyThrows
-  public String routeHealthAssessV2(Object body, @ExchangeProperties Map<String, Object> props) {
+  public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
     String route =
         String.format(
