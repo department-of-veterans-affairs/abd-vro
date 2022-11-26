@@ -51,7 +51,7 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   @Override
   public String getEventId() {
-    return Integer.toString(collectionId);
+    return collectionId == null ? null : Integer.toString(collectionId);
   }
 
   public String getDiagnosticCode() {
