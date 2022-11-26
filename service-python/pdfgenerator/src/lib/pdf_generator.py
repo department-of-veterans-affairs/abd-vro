@@ -23,12 +23,13 @@ class PDFGenerator:
         filled_variables["start_date"] = datetime.now() - relativedelta(years=1)
         filled_variables["timestamp"] = pytz.utc.localize(datetime.now())
         filled_variables["veteran_info"]["birthdate"] = parser.parse(filled_variables["veteran_info"]["birthdate"])
-        for medication_info in filled_variables["evidence"]["medications"]:
-            medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
+        if "evidence" in filled_variables:
+            for medication_info in filled_variables["evidence"]["medications"]:
+                medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
         return filled_variables
 
-    def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False) -> str:
-        loader_path = "pdfgenerator.src.lib" if test_mode else "lib"
+    def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False, loader="pdfgenerator.src.lib") -> str:
+        loader_path = loader if test_mode else "lib"
         jinja_env = Environment(
             loader=PackageLoader(loader_path),
             autoescape=select_autoescape()
@@ -38,5 +39,10 @@ class PDFGenerator:
 
         return generated_html
 
-    def generate_pdf_from_string(self, html: str) -> bytes or bool:
-        return pdfkit.from_string(html, False, options=self.options)
+    def generate_pdf_from_string(self, template_name: str, html: str, output=False) -> bytes or bool:
+        toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/toc.xsl")
+        if os.path.isfile(toc_file_path):
+            toc = {'xsl-style-sheet': toc_file_path}
+            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=True)
+        else:
+            return pdfkit.from_string(html, output, options=self.options, verbose=True)
