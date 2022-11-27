@@ -132,6 +132,7 @@ ext {
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
+    dockerModules.add(':service-python:assessclaimdc6522')
   }
 }
 

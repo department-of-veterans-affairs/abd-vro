@@ -93,4 +93,5 @@ include ':service-python:featuretoggle'
 include ':svc-lighthouse-api'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
+  include ':service-python:assessclaimdc6522'
 }

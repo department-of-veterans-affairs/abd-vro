@@ -198,6 +198,19 @@ services:
     networks:
       - internal
 
+  svc-assessor-dc6522:
+    image: va/abd_vro-assessclaimdc6522:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
+
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     <<: *common-security-opt
