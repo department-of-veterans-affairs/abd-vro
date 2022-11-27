@@ -38,7 +38,7 @@ def medication_required(request_body):
             medication_display = medication["description"]
             category = categorize_med(medication_display)
             if category:
-                medication["suggestedCategory"] = category
+                medication["suggestedCategory"] = [category]
                 medication["conditionRelated"] = True
                 relevant_medications.append(medication)
             else:
