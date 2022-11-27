@@ -1,6 +1,8 @@
 package gov.va.vro.service.provider.mas.service;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.mas.*;
 import gov.va.vro.service.provider.MasApiProps;
@@ -60,7 +62,7 @@ public class MasApiService implements IMasApiService {
   }
 
   @Override
-  public List<MasCollectionAnnotation> getCollectionAnnots(Integer collectionId)
+  public List<MasCollectionAnnotation> getCollectionAnnotations(Integer collectionId)
       throws MasException {
     try {
       String url = masApiProps.getBaseURL() + masApiProps.getCollectionAnnotsPath();
@@ -87,18 +89,33 @@ public class MasApiService implements IMasApiService {
     try {
       String url = masApiProps.getBaseURL() + masApiProps.getCreateExamOrderPath();
       HttpHeaders headers = getMasHttpHeaders();
+      ObjectMapper mapper = new ObjectMapper();
+
+      try {
+        // convert user object to json string and return it
+        log.info("masOrderExamReq JSON : " + mapper.writeValueAsString(masOrderExamReq));
+      } catch (JsonGenerationException | JsonMappingException e) {
+        // catch various errors
+        // NOP;
+      }
+      log.info(" Exam Order >>>> API Service URL : " + url);
+      log.info(
+          " Exam Order >>>> API Service collectionsid : "
+              + masOrderExamReq.getCollectionsId().toString());
+      log.info(
+          " Exam Order >>>> API Service condition text: "
+              + masOrderExamReq.getConditions().get(0).getContentionText());
+      log.info(
+          " Exam Order >>>> API Service condition code : "
+              + masOrderExamReq.getConditions().get(0).getConditionCode());
 
       HttpEntity<MasOrderExamReq> httpEntity = new HttpEntity<>(masOrderExamReq, headers);
 
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+      return mapper.readValue(masResponse.getBody(), new TypeReference<>() {});
 
-      // TODO: Replace with the actual response contract when available
-      // ObjectMapper mapper = new ObjectMapper();
-      // return mapper.readValue(masReturn, new TypeReference<List<MasOrderExam>>() {});
-
-      return masResponse.getBody();
-    } catch (RestClientException e) {
+    } catch (RestClientException | IOException e) {
       log.error("Failed to order exam", e);
       throw new MasException(e.getMessage(), e);
     }
