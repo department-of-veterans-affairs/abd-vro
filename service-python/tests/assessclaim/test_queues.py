@@ -4,6 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from assessclaimdc6510.src.lib import queues as q6510
+from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 from assessclaimdc6522.src.lib import queues as q6522
 from assessclaimdc6522.src.lib.main import assess_rhinitis as main6522
 from assessclaimdc6602.src.lib import queues as q6602
@@ -51,6 +53,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
     [
         (q6602, "6602", {"evidence": "some medical data body"}, main6602),
         (q6602v2, "6602v2", {"evidence": "some medical data body"}, main6602v2),
+        (q6510, "6510", {"evidence": "some medical data body"}, main6510),
         (q6522, "6522", {"evidence": "some medical data body"}, main6522),
     ],
 )

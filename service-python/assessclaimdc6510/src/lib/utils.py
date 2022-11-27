@@ -42,6 +42,32 @@ def validate_request_body(request_body):
                         },
                     },
                 },
+                "procedures": {
+                    "required": True,
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "codeSystem": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
+                            },
+                        },
+                    },
+                },
                 "conditions": {
                     "required": True,
                     "type": "list",
@@ -67,5 +93,6 @@ def validate_request_body(request_body):
         },
     }
     v = Validator(schema)
+    v.allow_unknown = True
 
     return {"is_valid": v.validate(request_body), "errors": v.errors}
