@@ -1,0 +1,63 @@
+{
+  "document_type": "summary",
+  "veteran_info": {
+    "first": "",
+    "middle": "",
+    "last": "",
+    "suffix": "",
+    "birthdate": ""
+  },
+  "service_locations": [
+    {"key_term": "Vietnam", "document": "VA 21-3101 Request for Information", "receipt_date": "1/28/2016", "page": "2", "document_id": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"},
+    {"key_term": "Vietnam", "document": "VA 21-3101 Request for Information", "receipt_date": "1/28/2016", "page": "2", "document_id": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"},
+    {"key_term": "Vietnam", "document": "VA 21-3101 Request for Information", "receipt_date": "1/28/2016", "page": "2", "document_id": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"}
+  ],
+  "condition_history": [
+    {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"},
+    {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"},
+    {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"},
+    {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"},
+    {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"}
+  ],
+  "bp_readings": [
+    {"bp": "133/79", "date": "8/12/2022", "source": "VAMC record – GRAND JUNCTION VAMC", "receipt_date": "n.a.", "page": "n.a.", "document_id": "n.a. – See VistA/CAPRI to verify ", "na": true},
+    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
+    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
+    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
+    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
+    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false}
+  ],
+  "other_evidence": [
+    {"key_term": "Essential Hypertension", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "n.a.", "page": "n.a.", "document_id": "n.a. – See VistA/CAPRI to verify "},
+    {"key_term": "Essential Hypertension", "observation_date": "8/25/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Essential Hypertension", "observation_date": "8/25/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"}
+  ],
+  "schedular_evidence": [
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"},
+    {"key_term": "Furosemide", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "7/15/2022", "page": "20, 21", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}"}
+  ],
+  "unavailable_reviews": [
+  ]
+}

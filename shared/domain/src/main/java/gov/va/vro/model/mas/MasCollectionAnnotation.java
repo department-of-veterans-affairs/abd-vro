@@ -18,7 +18,7 @@ public class MasCollectionAnnotation {
   private int collectionsId;
 
   @JsonProperty("vtrnFileId")
-  private String vtrnFileId;
+  private String veteranFileId;
 
   @JsonProperty("creationDate")
   private String creationDate;
