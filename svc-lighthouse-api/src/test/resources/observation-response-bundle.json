@@ -12,12 +12,8 @@
       "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?patient=9000682&_count=30&page=1"
     },
     {
-      "relation": "next",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?patient=9000682&_count=30&page=2"
-    },
-    {
       "relation": "last",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?patient=9000682&_count=30&page=3"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?patient=9000682&_count=30&page=1"
     }
   ],
   "entry": [
