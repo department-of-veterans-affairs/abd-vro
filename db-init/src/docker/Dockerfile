@@ -1,4 +1,4 @@
-FROM flyway/flyway:9.8.2-alpine
+FROM flyway/flyway:9.8.3-alpine
 
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
