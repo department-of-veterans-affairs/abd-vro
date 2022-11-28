@@ -5,6 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="pdfkit-orientation" content="Landscape"/>
   <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
   <meta name="pdfkit-footer-font-size" content="8"/>
 
@@ -15,6 +16,12 @@
   <title>{{pdf_title}}</title>
 
   <style>
+    @font-face {
+      font-family: NotoSans;
+      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+      font-weight: normal;
+      font-style: normal;
+    }
     body {
       font-family: serif;
       padding: 10px;
@@ -34,12 +41,18 @@
     h4 {
       margin-top: 12;
     }
+    a {
+      color: #004795 !important;
+    }
     table, th, td {
-      border-color: #B7B7B7;
+      border: 1px solid #757575;
       text-align: left;
+      font-size: 11px;
+      font-family: NotoSans;
+      font-weight: normal;
     }
     thead th {
-      background-color: #EFEFEF;
+      background-color: #F1F1F1;
     }
     @media print {
       .pagebreak {
@@ -53,9 +66,9 @@
 
 <body>
   <!-- Relevant military service locations -->
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
-      <h2><b>Presumptive service connection</b></h2>
+      <h1><b>Presumptive service connection</b></h1>
       <p class="m-0"><b>Claimed as:</b> high blood pressure</p>
       <p class="m-0"><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
     </div>
@@ -108,7 +121,7 @@
   <div class="row">
     <div class="col">
       <h3 class="">&zwnj;<b>Condition history</b></h3>
-      <p class="m-0">The VistA EHR search found the following diagnosis information in VHA records as of <b>{{ timestamp.strftime('%B/%d/%Y') }}</b>.</p>
+      <p class="m-0">The VistA EHR search found the following diagnosis information in VHA records as of<b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
     </div>
   </div>
   <div class="row">
@@ -134,7 +147,7 @@
           {% endif %}
         </tbody>
       </table>
-      <p><i><sup>*</sup>An encounter diagnosis is a point-in-time diagnosis (e.g. from a physician or nurse) made during a specific
+      <p><i><sup>*</sup>An encounter diagnosis is a point-in-time diagnosis (for example, from a physician or nurse) made during a specific
         interaction with the patient, such as during an appointment or in-patient treatment. It may be a preliminary assessment.</i></p>
     </div>
   </div>
@@ -144,7 +157,7 @@
     <div class="col">
       <h2 class=""><b>Condition: Hypertension</b></h2>
       <h3><b>Schedular evidence for hypertension – blood pressure readings</b></h3>
-      <p>The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of <b>{{ timestamp.strftime('%B/%d/%Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
+      <p>The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of<b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
     </div>
   </div>
   <div class="row">
@@ -262,7 +275,7 @@
     </div>
   </div>
   <!-- Relevant documents with no keywords found -->
-  <div class="row">
+  <div class="row mt-3">
     <div class="col">
       <h3><b>Relevant documents with no keywords found</b></h3>
     </div>
