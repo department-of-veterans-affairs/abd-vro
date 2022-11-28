@@ -1,0 +1,21 @@
+name: Notify Slack on branch update
+
+on:
+  push:
+    branches: [ main, qa, develop ]
+
+jobs:
+  notify_push:
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Notify Slack"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: C04CA47HV96
+          slack-text: ":git-merge: ${{github.ref_type}} `${{github.ref_name}}` was updated \
+            by `${{github.event.pusher.name}}` \n\
+            <${{github.event.repository.html_url}}/commits/${{github.ref_name}}|${{github.sha}}>\n\
+            *Commit Message*: ${{github.event.head_commit.message}}"

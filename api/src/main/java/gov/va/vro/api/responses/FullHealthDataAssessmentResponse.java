@@ -33,6 +33,10 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Map<String, Object> evidenceSummary;
 
+  @Schema(description = "Calculated evidence fields")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Map<String, Object> calculated;
+
   @Schema(description = "Decision based on available data")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Boolean sufficientForFastTracking;
