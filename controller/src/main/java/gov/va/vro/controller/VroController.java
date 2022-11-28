@@ -15,6 +15,7 @@ import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -157,9 +158,13 @@ public class VroController implements VroResource {
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
+    ClaimMetricsInfo info = claimMetricsService.claimMetrics();
     try {
-      response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
-      if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
+      response.setNumberOfClaims(info.getTotalClaims());
+      response.setMedicationsCount(info.getMedicationsCount());
+      response.setTotalBpReadings(info.getTotalBpReadings());
+      response.setRecentBpReadings(info.getRecentBpReadings());
+      if (info.getErrorMessage() != null) {
         throw new MetricsProcessingException(
             HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
       }

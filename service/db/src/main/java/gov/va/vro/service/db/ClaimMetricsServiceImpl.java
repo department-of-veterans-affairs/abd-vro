@@ -1,5 +1,6 @@
 package gov.va.vro.service.db;
 
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -14,11 +15,19 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   private final ClaimRepository claimRepository;
 
+  private final AssessmentResultRepository assessmentResultRepository;
+
   @Override
   public ClaimMetricsInfo claimMetrics() {
     ClaimMetricsInfo metrics = new ClaimMetricsInfo();
     try {
       metrics.setTotalClaims(claimRepository.count());
+      // metrics.setProceduresCount(assessmentResultRepository.getProceduresCount());
+      if (assessmentResultRepository.count() != 0) {
+        metrics.setMedicationsCount(assessmentResultRepository.getMedicationsCount());
+        metrics.setTotalBpReadings(assessmentResultRepository.getTotalBpReadingsCount());
+        metrics.setRecentBpReadings(assessmentResultRepository.getRecentBpReadingsCount());
+      }
       return metrics;
     } catch (Exception e) {
       log.error("Could not get metrics in claim repository.", e);
