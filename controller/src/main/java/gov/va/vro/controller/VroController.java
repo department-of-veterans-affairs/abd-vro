@@ -131,9 +131,8 @@ public class VroController implements VroResource {
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       if (response.getStatus().equals("ERROR")) {
         log.info("Response from condition processor returned error message: {}", response.getErrorMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new ClaimProcessingException(claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "Validation error in condition processor");
       }
-
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());

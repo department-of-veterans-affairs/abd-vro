@@ -130,45 +130,90 @@ class VroControllerTest extends BaseControllerTest {
 
   @Test
   @DirtiesContext
-  void fullHealthAssessmentMissingEvidence() throws Exception {
+  void fullHealthAssessmentValidationError() throws Exception {
     adviceWith(
-        camelContext,
-        "claim-submit",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
+            camelContext,
+            "claim-submit",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:claim-submit-exchange"
+                                            + "?queue=claim-submit"
+                                            + "&routingKey=code.7101&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit"));
     // Mock secondary process endpoint
     adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
+            camelContext,
+            "claim-submit-full",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:health-assess-exchange"
+                                            + "?routingKey=health-assess.7101&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit-full"));
+
+    var fullHealthDataAssessmentResponse = new FullHealthDataAssessmentResponse("1234", "7101", "error validating request message data", "ERROR");
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
+            FunctionProcessor.<Claim, String>fromFunction(claim -> util.toJsonString(fullHealthDataAssessmentResponse)));
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");
     request.setDiagnosticCode("7101");
 
     var responseEntity =
-        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+            post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("Response from condition processor returned error message: {}", claimProcessingError.getMessage());
+    assertEquals("Validation error in condition processor", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
+
+  @Test
+  @DirtiesContext
+  void fullHealthAssessmentMissingEvidence() throws Exception {
+    adviceWith(
+            camelContext,
+            "claim-submit",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:claim-submit-exchange"
+                                            + "?queue=claim-submit"
+                                            + "&routingKey=code.7101&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit"));
+    // Mock secondary process endpoint
+    adviceWith(
+            camelContext,
+            "claim-submit-full",
+            route ->
+                    route
+                            .interceptSendToEndpoint(
+                                    "rabbitmq:health-assess-exchange"
+                                            + "?routingKey=health-assess.7101&requestTimeout=60000")
+                            .skipSendToOriginalEndpoint()
+                            .to("mock:claim-submit-full"));
+
+    mockFullHealthEndpoint.whenAnyExchangeReceived(
+            FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
+    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+    request.setClaimSubmissionId("1234");
+    request.setVeteranIcn("icn");
+    request.setDiagnosticCode("7101");
+
+    var responseEntity =
+            post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    var claimProcessingError = responseEntity.getBody();
+    assertNotNull(claimProcessingError);
+    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  }
+
 
   @Test
   void fullHealthAssessmentInvalidInput() {

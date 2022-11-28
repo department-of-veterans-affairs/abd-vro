@@ -28,6 +28,7 @@ def assess_asthma(event: Dict):
                     "relevantMedCount": active_medications["relevantMedCount"],
                     "totalMedCount": active_medications["totalMedCount"],
                 },
+                "status": "SUCCESS"
             }
         )
         logging.info("Message processed successfully")

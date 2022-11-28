@@ -37,6 +37,7 @@ def assess_hypertension(event: Dict):
                     "recentBpReadings": bp_readings["oneYearBpReadings"],
                     "medicationsCount": relevant_medication["medicationsCount"],
                 },
+                "status": "SUCCESS"
             }
         )
         logging.info("Message processed successfully")
