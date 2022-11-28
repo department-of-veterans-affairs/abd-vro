@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,6 +19,11 @@ import javax.validation.constraints.NotNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasAutomatedClaimPayload implements Auditable {
+
+  public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
+  public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
+
+  public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
@@ -59,5 +65,18 @@ public class MasAutomatedClaimPayload implements Auditable {
       return null;
     }
     return claimDetail.getConditions().getDiagnosticCode();
+  }
+
+  public String getDisabilityActionType() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getDisabilityActionType();
+  }
+
+  public boolean isInScope() {
+    return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
+        && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
+            || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
   }
 }

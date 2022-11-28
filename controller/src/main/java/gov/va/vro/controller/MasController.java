@@ -25,12 +25,19 @@ public class MasController implements MasResource {
   public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimPayload payload) {
     log.info(
         "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
-    camelEntrance.notifyAutomatedClaim(
-        payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
+    String message;
+    if (payload.isInScope()) {
+      camelEntrance.notifyAutomatedClaim(
+          payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
+      message = "Received";
+    } else {
+      // TODO: send slack notification
+      message = "Out of scope";
+    }
     MasResponse response =
         MasResponse.builder()
             .id(Integer.toString(payload.getCollectionId()))
-            .message("Received")
+            .message(message)
             .build();
     return ResponseEntity.ok(response);
   }
