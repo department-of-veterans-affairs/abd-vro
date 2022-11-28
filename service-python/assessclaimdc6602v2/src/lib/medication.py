@@ -11,14 +11,13 @@ def categorize_med(medication_display):
     :return: list
     """
     medication_dict = medication_codesets.med_dict
-    medication_category = []
+    medication_category = str()
     for category_id in list(medication_dict.keys()):
         if medication_category:
-            # most general category has been identified
             break
         for medication in medication_dict[category_id]:
             if medication in medication_display.lower():
-                medication_category.append(category_id)
+                medication_category = category_id
                 break
     return medication_category
 
