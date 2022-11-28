@@ -168,7 +168,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("Validation error in condition processor", claimProcessingError.getMessage());
+    assertEquals("Validation error in condition processor.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
