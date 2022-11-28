@@ -31,6 +31,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+                'status': 'SUCCESS'
             },
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -59,6 +60,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+                'status': 'SUCCESS'
             },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
@@ -87,6 +89,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
+                'status': 'SUCCESS'
             },
         ),
     ],

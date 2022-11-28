@@ -51,7 +51,7 @@ public class DevController implements DevResource {
           objectMapper.readValue(responseAsString, HealthDataAssessment.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
+            claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
       }
       log.info("Returning health assessment for: {}", response.getVeteranIcn());
       return new ResponseEntity<>(response, HttpStatus.CREATED);

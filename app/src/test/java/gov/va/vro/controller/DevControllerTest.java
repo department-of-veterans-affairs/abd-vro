@@ -109,7 +109,7 @@ class DevControllerTest extends BaseControllerTest {
     request.setDiagnosticCode("1701");
 
     var responseEntity = post("/v1/health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
