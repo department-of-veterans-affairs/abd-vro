@@ -62,9 +62,10 @@ public class FullHealthDataAssessmentResponse {
    * @param errorMessage error message
    */
   public FullHealthDataAssessmentResponse(
-      String veteranIcn, String diagnosticCode, String errorMessage) {
+      String veteranIcn, String diagnosticCode, String errorMessage, String status) {
     this.veteranIcn = veteranIcn;
     this.diagnosticCode = diagnosticCode;
     this.errorMessage = errorMessage;
+    this.status = status;
   }
 }

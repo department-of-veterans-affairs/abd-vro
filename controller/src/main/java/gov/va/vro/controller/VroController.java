@@ -129,12 +129,8 @@ public class VroController implements VroResource {
 
       FullHealthDataAssessmentResponse response =
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
-      if (response.getEvidence() == null) {
-        throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
-      }
-      else if (response.getStatus().equals("ERROR")) {
-        log.info("RESPONSE from condition processor returned error message: {}", response.getErrorMessage());
+      if (response.getStatus().equals("ERROR")) {
+        log.info("Response from condition processor returned error message: {}", response.getErrorMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
@@ -142,8 +138,6 @@ public class VroController implements VroResource {
       response.setVeteranIcn(claim.getVeteranIcn());
       response.setDiagnosticCode(claim.getDiagnosticCode());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } catch (ClaimProcessingException cpe) {
-      throw cpe;
     } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(

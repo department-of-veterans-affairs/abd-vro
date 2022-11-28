@@ -116,9 +116,9 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, HealthDataAssessment.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    HealthDataAssessment response2 = responseEntity2.getBody();
+    FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
@@ -166,7 +166,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("Response from condition processor returned error message: {}", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
