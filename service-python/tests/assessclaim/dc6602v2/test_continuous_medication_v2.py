@@ -152,13 +152,13 @@ def test_continuous_medication_required(
 @pytest.mark.parametrize(
     "medication_display, expected",
     [
-        ("Albuterol", ["Bronchodilator/Used in Respiratory Failure"]),
-        ("Advil", []),
+        ("Albuterol", "Bronchodilator/Used in Respiratory Failure"),
+        ("Advil", ''),
         # medication description contains multiple keywords,
         # returns the most general category for any medication in description
         (
             "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-            ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"],
+            "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive",
         ),
     ],
 )
