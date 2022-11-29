@@ -22,11 +22,15 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     ClaimMetricsInfo metrics = new ClaimMetricsInfo();
     try {
       metrics.setTotalClaims(claimRepository.count());
-      // metrics.setProceduresCount(assessmentResultRepository.getProceduresCount());
       if (assessmentResultRepository.count() != 0) {
+        metrics.setAssessmentResults((int) assessmentResultRepository.count());
         metrics.setMedicationsCount(assessmentResultRepository.getMedicationsCount());
         metrics.setTotalBpReadings(assessmentResultRepository.getTotalBpReadingsCount());
         metrics.setRecentBpReadings(assessmentResultRepository.getRecentBpReadingsCount());
+        if(assessmentResultRepository.getProceduresCount() != null){
+          metrics.setProceduresCount(assessmentResultRepository.getProceduresCount());
+        }
+
       }
       return metrics;
     } catch (Exception e) {

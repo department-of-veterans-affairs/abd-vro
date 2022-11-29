@@ -160,7 +160,8 @@ public class VroController implements VroResource {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     ClaimMetricsInfo info = claimMetricsService.claimMetrics();
     try {
-      response.setNumberOfClaims(info.getTotalClaims());
+      response.setClaims(info.getTotalClaims());
+      response.setAssessmentResults(info.getAssessmentResults());
       response.setMedicationsCount(info.getMedicationsCount());
       response.setTotalBpReadings(info.getTotalBpReadings());
       response.setRecentBpReadings(info.getRecentBpReadings());

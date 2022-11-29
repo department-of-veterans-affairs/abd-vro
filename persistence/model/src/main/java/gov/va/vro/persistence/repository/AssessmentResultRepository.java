@@ -14,23 +14,23 @@ public interface AssessmentResultRepository extends JpaRepository<AssessmentResu
       value =
           "SELECT SUM(CAST(getlatestcounts->>'medicationsCount' as integer)) FROM claims.GetLatestCounts()",
       nativeQuery = true)
-  int getMedicationsCount();
+  Integer getMedicationsCount();
 
   @Query(
       value =
           "SELECT SUM(CAST(getlatestcounts->>'totalBpReadings' as integer)) FROM claims.GetLatestCounts()",
       nativeQuery = true)
-  int getTotalBpReadingsCount();
+  Integer getTotalBpReadingsCount();
 
   @Query(
       value =
           "SELECT SUM(CAST(getlatestcounts->>'recentBpReadings' as integer)) FROM claims.GetLatestCounts()",
       nativeQuery = true)
-  int getRecentBpReadingsCount();
+  Integer getRecentBpReadingsCount();
 
   @Query(
       value =
           "SELECT SUM(CAST(getlatestcounts->>'proceduresCount' as integer)) FROM claims.GetLatestCounts()",
       nativeQuery = true)
-  int getProceduresCount();
+  Integer getProceduresCount();
 }
