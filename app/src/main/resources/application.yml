@@ -112,6 +112,12 @@ masAPIProvider:
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
   createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+
+
+slack:
+  exception:
+    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
+    channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
   
 opentracing:
   zipkin:
@@ -159,35 +165,6 @@ spring.redis:
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
-bip:
-  claimClientId: "${BIP_CLAIM_USERID:VROSYSACCT}"
-  claimSecret: "${BIP_CLAIM_SECRET:x!A%D*G-KaPdSgUkXp2s5v8y/B?E(H+M}"
-  claimBaseURL: "${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}"
-  evidenceClientId: "${BIP_EVIDENCE_USERID:VROSYSACCT}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET:qGYYiuiFCWvRTUIk5CvVbHJqqP0Q045CV}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL:vefs-claimevidence-dev.dev8.bip.va.gov/api/v1/rest/}"
-  applicationName: "${BIP_APPLICATION_ISS:virtual_regional_office}"
-  applicationId: "${BIP_APPLICATION_ID:VRO}"
-  stationId: "${BIP_STATION_ID:281}"
-
-#TODO: These must be supplied
-#slack:
-#  exception:
-#    webhook: "${SLACK_EXCEPTION_WEBHOOK}"
-#    channel: "${SLACK_EXCEPTION_CHANNEL}"
-
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
-
-# BIP API
-#bip.claimClientId: ${BIP_CLAIM_USERID:VROSYSACCT}
-#bip.claimSecret: ${BIP_CLAIM_SECRET:x!A%D*G-KaPdSgUkXp2s5v8y/B?E(H+M}
-#bip.claimBaseURL: ${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}
-#bip.evidenceClientId: ${BIP_EVIDENCE_USERID:VROSYSACCT}
-#bip.evidenceSecret: ${BIP_EVIDENCE_SECRET:qGYYiuiFCWvRTUIk5CvVbHJqqP0Q045CV}
-#bip.evidenceBaseURL: ${BIP_EVIDENCE_URL:vefs-claimevidence-dev.dev8.bip.va.gov/api/v1/rest/}
-#bip.applicationName: ${BIP_APPLICATION_ISS:virtual_regional_office}
-#bip.jti: d3cf85-7263-4c86-b413-1f476f5425b
-#bip.applicationID: ${BIP_APPLICATION_ID:VRO}
-#bip.stationId: ${BIP_STATION_ID:281}

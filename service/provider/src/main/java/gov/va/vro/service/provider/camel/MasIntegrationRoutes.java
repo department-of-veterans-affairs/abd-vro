@@ -19,11 +19,11 @@ import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor
@@ -33,11 +33,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS =
       "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
   public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
+
+  public static final String ENDPOINT_SLACK_EVENT = "seda:slack-event";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
 
@@ -55,23 +57,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   private final MasConfig masConfig;
-
-  private String auditRecipientList;
-  private String exceptionRecipientList;
-
-  @PostConstruct
-  /** Setup recipients list for audits */
-  void setUpRecipients() {
-    auditRecipientList = ENDPOINT_AUDIT_EVENT;
-    exceptionRecipientList =
-        masConfig.getSlackExceptionWebhook() == null
-            ? ENDPOINT_AUDIT_EVENT
-            : String.format(
-                "%s,slack:#%s?webhookUrl=%s",
-                ENDPOINT_AUDIT_EVENT,
-                masConfig.getSlackExceptionChannel(),
-                masConfig.getSlackExceptionWebhook());
-  }
 
   @Override
   public void configure() {
@@ -105,7 +90,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
-        .to("bean-validator:payload-validator")
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
         .setProperty(
@@ -194,7 +178,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant(exceptionRecipientList))
+        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT, ENDPOINT_SLACK_EVENT))
         .to(transform_uri);
 
     // intercept all MAS routes
@@ -202,7 +186,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant(auditRecipientList))
+        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
         .to(transform_uri);
 
     // Transform to an AuditEvent and send to recipients
@@ -211,11 +195,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .recipientList(exchangeProperty("recipientList"));
 
     // persist audit event
-    from("seda:audit-event")
+    from(ENDPOINT_AUDIT_EVENT)
         .process(
             exchange -> {
               AuditEvent event = exchange.getMessage().getBody(AuditEvent.class);
               auditEventService.logEvent(event);
             });
+
+    from(ENDPOINT_SLACK_EVENT)
+        .filter(exchange -> StringUtils.isNotBlank(masConfig.getSlackExceptionWebhook()))
+        .process(FunctionProcessor.fromFunction(AuditEvent::toString))
+        .to(
+            String.format(
+                "slack:#%s?webhookUrl=%s",
+                masConfig.getSlackExceptionChannel(), masConfig.getSlackExceptionWebhook()));
   }
 }
