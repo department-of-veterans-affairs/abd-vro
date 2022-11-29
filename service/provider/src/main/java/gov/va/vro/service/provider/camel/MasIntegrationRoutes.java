@@ -203,6 +203,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
             });
 
     from(ENDPOINT_SLACK_EVENT)
+        .routeId("mas-slack-event")
         .filter(exchange -> StringUtils.isNotBlank(masConfig.getSlackExceptionWebhook()))
         .process(FunctionProcessor.fromFunction(AuditEvent::toString))
         .to(

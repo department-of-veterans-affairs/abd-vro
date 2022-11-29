@@ -47,7 +47,7 @@ public class MasController implements MasResource {
 
   @Override
   public ResponseEntity<MasResponse> examOrderingStatus(MasExamOrderStatusPayload payload) {
-    log.info("Received MAS order statues request with collection ID {}", payload.getCollectionId());
+    log.info("Received MAS order status request with collection ID {}", payload.getCollectionId());
     camelEntrance.examOrderingStatus(payload);
     MasResponse response =
         MasResponse.builder()
