@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,9 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Valid
   @Schema(description = "Details of the Claim")
   private ClaimDetail claimDetail;
+
+  @Schema(description = "Veteran Flash Ids")
+  private List<String> veteranFlashIds;
 
   @Override
   public String getEventId() {
