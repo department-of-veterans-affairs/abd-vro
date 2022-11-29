@@ -1,6 +1,7 @@
 package gov.va.vro.routes;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
@@ -9,13 +10,14 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
+import gov.va.vro.model.mas.MasOrderExamReq;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import lombok.SneakyThrows;
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,22 +45,30 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   private MockEndpoint mockEmptyEndpoint;
 
   @Test
-  void processClaimSufficentEvidence() throws Exception {
+  void processClaimSufficientEvidence() throws Exception {
+    processClaim(true);
+  }
 
+  @Test
+  void processClaimInsufficientEvidence() throws Exception {
+    processClaim(false);
+  }
+
+  private void processClaim(boolean sufficientEvidence) throws Exception {
+
+    // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
         "claim-submit",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&requestTimeout=60000&routingKey=code.1233",
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
-        new Processor() {
-          @Override
-          @SneakyThrows
-          public void process(Exchange exchange) {
-            var assessment = new HealthDataAssessment();
-            exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(assessment));
-          }
+        exchange -> {
+          var assessment = new HealthDataAssessment();
+          exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(assessment));
         });
+
+    // Mock a return value when health assess is invoked
 
     replaceEndpoint(
         "mas-processing",
@@ -66,15 +76,13 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
-        new Processor() {
-          @Override
-          @SneakyThrows
-          public void process(Exchange exchange) {
-            var evidence = new AbdEvidenceWithSummary();
-            evidence.setSufficientForFastTracking(true);
-            exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
-          }
+        exchange -> {
+          var evidence = new AbdEvidenceWithSummary();
+          evidence.setSufficientForFastTracking(sufficientEvidence);
+          exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
         });
+
+    // Mock NOOP when generate PDF endpoints are called
 
     replaceEndpoint(
         "generate-pdf",
@@ -86,12 +94,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
         "mock:empty-endpoint");
 
-    mockEmptyEndpoint.whenAnyExchangeReceived(
-        new Processor() {
-          @Override
-          public void process(Exchange exchange) {}
-        });
+    mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
+    // set up a Mas Request and invoke processClaim
     int collectionId = 123;
     var collectionAnnotation = new MasCollectionAnnotation();
     MasDocument document = MasTestData.createHypertensionDocument();
@@ -101,6 +106,16 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
     camelEntrance.processClaim(payload);
+
+    // verify if order exam was called based on the sufficient evidence flag
+    if (sufficientEvidence) {
+      Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
+    } else {
+      var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamReq.class);
+      Mockito.verify(masApiService, Mockito.times(1)).orderExam(argumentCaptor.capture());
+      MasOrderExamReq orderExamRequest = argumentCaptor.getValue();
+      assertEquals(collectionId, orderExamRequest.getCollectionsId());
+    }
   }
 
   private void replaceEndpoint(String routeId, String fromUri, String toUri) throws Exception {
