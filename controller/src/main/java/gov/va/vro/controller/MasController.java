@@ -2,6 +2,7 @@ package gov.va.vro.controller;
 
 import gov.va.vro.api.resources.MasResource;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -31,7 +32,9 @@ public class MasController implements MasResource {
           payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
       message = "Received";
     } else {
-      // TODO: send slack notification
+      // send slack notification
+      var auditEvent = buildAuditEvent(payload);
+      camelEntrance.sendSlack(auditEvent);
       message = "Out of scope";
     }
     MasResponse response =
@@ -52,5 +55,16 @@ public class MasController implements MasResource {
             .message("Received")
             .build();
     return ResponseEntity.ok(response);
+  }
+
+  private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload) {
+    return AuditEvent.builder()
+        .eventId(Integer.toString(payload.getCollectionId()))
+        .payloadType(MasAutomatedClaimPayload.class)
+        .routeId("/automatedClaim")
+        .message(
+            String.format(
+                "Request with collection Id %s is not in scope.", payload.getCollectionId()))
+        .build();
   }
 }

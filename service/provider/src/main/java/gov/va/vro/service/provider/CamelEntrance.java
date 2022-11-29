@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -62,5 +63,9 @@ public class CamelEntrance {
   public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     return producerTemplate.requestBody(
         MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
+  }
+
+  public void sendSlack(AuditEvent auditEvent) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT, auditEvent);
   }
 }
