@@ -27,10 +27,9 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
         metrics.setMedicationsCount(assessmentResultRepository.getMedicationsCount());
         metrics.setTotalBpReadings(assessmentResultRepository.getTotalBpReadingsCount());
         metrics.setRecentBpReadings(assessmentResultRepository.getRecentBpReadingsCount());
-        if(assessmentResultRepository.getProceduresCount() != null){
+        if (assessmentResultRepository.getProceduresCount() != null) {
           metrics.setProceduresCount(assessmentResultRepository.getProceduresCount());
         }
-
       }
       return metrics;
     } catch (Exception e) {
