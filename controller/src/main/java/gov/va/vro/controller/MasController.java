@@ -36,8 +36,8 @@ public class MasController implements MasResource {
       // send slack notification
       var auditEvent = buildAuditEvent(payload);
       camelEntrance.sendSlack(auditEvent);
-      message = "Out of scope";
       camelEntrance.offRampClaim(payload);
+      message = "Out of scope";
     }
     MasResponse response =
         MasResponse.builder()

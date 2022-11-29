@@ -34,6 +34,9 @@ public class MasControllerTest extends BaseControllerTest {
   @EndpointInject("mock:mas-notification")
   private MockEndpoint mockMasNotificationEndpoint;
 
+  @EndpointInject("mock:mas-offramp")
+  private MockEndpoint mockMasOffRampEndpoint;
+
   @Autowired private CamelContext camelContext;
 
   @Autowired @SpyBean private AuditEventService auditEventService;
@@ -80,10 +83,22 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
+    adviceWith(
+            camelContext,
+            "mas-offramp-claim",
+            route ->
+                route
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
+                    .skipSendToOriginalEndpoint()
+                    .to("mock:mas-offramp"))
+        .end();
+    mockMasOffRampEndpoint.whenAnyExchangeReceived(exchange -> {});
+
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
     var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.assertIsSatisfied();
+    mockMasOffRampEndpoint.assertIsSatisfied();
   }
 
   @Test
