@@ -23,6 +23,11 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
+      volumes:
+        - name: mq-persistent-storage
+          persistentVolumeClaim:
+            # claimName should match that of the persistent volume claim created in mq/service.yaml
+            claimName: mq-efs-claim
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -213,7 +218,7 @@ spec:
               cpu: 1000m
               memory: 1024Mi
           volumeMounts:
-            # name should match the volume name in mq/deployment.yaml
+            # name should match the volume name in the volumes block
             - name: mq-persistent-storage
               mountPath: /rabbitmq
         - name: {{ .Values.name }}-api
