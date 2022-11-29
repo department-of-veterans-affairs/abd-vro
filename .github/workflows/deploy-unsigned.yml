@@ -40,11 +40,9 @@ jobs:
           slack-channel: C04CA47HV96
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`) \
-            to ${{env.TARGET_ENV}} env \n\
-            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`..."
-      - name: debug-slack-result
-        run: echo 'slack result- ${{ steps.notify-slack.outputs.slack-result }}'
+            to *${{env.TARGET_ENV}}* env \n\
+            of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
+            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -91,21 +89,30 @@ jobs:
           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
-        run: kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api
+        id: wait-for-deploy
+        run: |
+          if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
+            echo 'deploy_state_slack_text=:panda_cool: Deployed!' >> $GITHUB_OUTPUT
+            echo 'deploy_state_emoji=heavy_check_mark' >> $GITHUB_OUTPUT
+          else
+            echo 'deploy_state_slack_text=:panda_shocked: Deployment failed!' >> $GITHUB_OUTPUT
+            echo 'deploy_state_emoji=x' >> $GITHUB_OUTPUT
+          fi
 
-      - name: "Notify Slack: Deployment failed"
-        if: failure()
+      - name: "Notify Slack: Thread deployment status"
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_shocked: Deployment failed"
+          slack-text: ${{ steps.wait-for-deploy.outputs.deploy_state_slack_text }}
 
-      - name: "Notify Slack: Deployment success"
-        uses: archive/github-actions-slack@v2.6.0
+      - name: "Notify Slack: React to top-level notification"
+        id: slack-react
+        uses: archive/github-actions-slack@v2.0.0
         with:
+          slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_cool: Deployed!"
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: ${{ steps.wait-for-deploy.outputs.deploy_state_emoji }}

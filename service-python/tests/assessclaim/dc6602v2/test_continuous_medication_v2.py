@@ -17,11 +17,11 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol inhaler',
                               'status': 'active',
                               'suggestedCategory': ['Bronchodilator/Used in Respiratory '
@@ -40,11 +40,11 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol',
                               'status': 'active',
                               'suggestedCategory': ['Bronchodilator/Used in Respiratory '
@@ -63,11 +63,11 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'false',
+                              'conditionRelated': False,
                               'description': 'Advil',
                               'status': 'active',
                               'suggestedCategory': []}],
@@ -90,17 +90,17 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol',
                               'status': 'active',
                               'suggestedCategory': ['Bronchodilator/Used in Respiratory '
                                                     'Failure']},
                              {'authoredOn': '1952-04-06T04:00:00Z',
-                              'conditionRelated': 'false',
+                              'conditionRelated': False,
                               'description': 'Advil',
                               'status': 'active',
                               'suggestedCategory': []}],
@@ -119,11 +119,11 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         },
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': '14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT '
                                              '/ vilanterol 0.025 MG/ACTUAT Dry Powder '
                                              'Inhaler',

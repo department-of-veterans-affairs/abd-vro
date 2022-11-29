@@ -88,27 +88,6 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void automatedClaim_throwsException() throws Exception {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
-    adviceWith(
-            camelContext,
-            "mas-claim-notification",
-            route ->
-                route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
-                    .throwException(new Exception("Exception")))
-        .end();
-
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
-    post("/v1/automatedClaim", request, MasResponse.class);
-    Mockito.verify(auditEventService, Mockito.atLeastOnce())
-        .logEvent(auditEventArgumentCaptor.capture());
-    var event = auditEventArgumentCaptor.getValue();
-    assertEquals("123", event.getEventId());
-    assertEquals("mas-claim-notification", event.getRouteId());
-  }
-
-  @Test
   void orderExamStatus() {
     ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload =

@@ -1,6 +1,6 @@
 
 # Linting + Testing
-flake8==5.0.4
+flake8==6.0.0
 isort==5.10.1
 Jinja2==3.1.2
 pdfkit==1.0.0
@@ -10,4 +10,4 @@ pytest-cov==4.0.0
 pytest-mock-resources==2.6.3
 python-dateutil==2.8.2
 pytz==2022.6
-redis==4.3.4
+redis==4.3.5
