@@ -33,7 +33,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS =
       "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
