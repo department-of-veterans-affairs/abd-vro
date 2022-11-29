@@ -23,6 +23,13 @@ def assess_cancer(event: Dict):
     if validation_results["is_valid"]:
         medications = medication.medication_match(event, cancer_type)
         conditions = condition.active_cancer_condition(event, cancer_type)
+        sufficient = None
+
+        if conditions["relevantConditionsCount"] > 0:
+            if any({medications["medicationMeetsDateRequirements"], conditions["conditionsMeetDateRequirements"]}):
+                sufficient = True  # Proceed with fast track
+            else:
+                sufficient = False  # Order an exam
 
         response_body.update(
             {
@@ -36,6 +43,7 @@ def assess_cancer(event: Dict):
                     "conditionsCount": conditions["conditionsCount"],
                     "relevantConditionsCount": conditions["relevantConditionsCount"]
                 },
+                "sufficientForFastTracking": sufficient,
             }
         )
         logging.info("Message processed successfully")
