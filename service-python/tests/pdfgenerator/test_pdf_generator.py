@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 from pdfgenerator.src.lib import settings
@@ -95,8 +96,9 @@ def test_medication_date_conversion(template_code):
     assert isinstance(selected_date, datetime)
 
 
+@patch("pdfkit.from_string")
 @pytest.mark.parametrize("template_code", ["0000", "6602"])
-def test_pdf_generation(template_code):
+def test_pdf_generation(pdfkit_mock, template_code):
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -107,8 +109,8 @@ def test_pdf_generation(template_code):
     html_file = pdf_generator.generate_template_file(
         template, generated_variables, True
     )
-    pdf = pdf_generator.generate_pdf_from_string(
+    pdf_generator.generate_pdf_from_string(
         template, html_file
     )
 
-    assert pdf
+    assert pdfkit_mock.called
