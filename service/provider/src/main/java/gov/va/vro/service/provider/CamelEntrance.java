@@ -55,14 +55,17 @@ public class CamelEntrance {
             retryCount));
   }
 
-  public String examOrderingStatus(MasExamOrderStatusPayload payload) {
+  public void examOrderingStatus(MasExamOrderStatusPayload payload) {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
-    return "Message Received";
   }
 
-  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    return producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
+  public void processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    producerTemplate.sendBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload);
+  }
+
+  public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP, masAutomatedClaimPayload);
   }
 
   public void sendSlack(AuditEvent auditEvent) {

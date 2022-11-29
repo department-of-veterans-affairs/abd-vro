@@ -47,6 +47,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
+  public static final String ENDPOINT_MAS_OFFRAMP = "direct:mas-offramp";
+
   private final MasPollingProcessor masPollingProcessor;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
@@ -64,6 +66,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureAutomatedClaim();
     configureMasProcessing();
     configureOrderExamStatus();
+    configureOffRampClaim();
   }
 
   private void configureAutomatedClaim() {
@@ -210,5 +213,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
             String.format(
                 "slack:#%s?webhookUrl=%s",
                 masConfig.getSlackExceptionChannel(), masConfig.getSlackExceptionWebhook()));
+  }
+
+  private void configureOffRampClaim() {
+    // TODO: complete route
+    from(ENDPOINT_MAS_OFFRAMP)
+        .routeId("mas-offramp-claim")
+        .log("Request to off-ramp claim received");
   }
 }

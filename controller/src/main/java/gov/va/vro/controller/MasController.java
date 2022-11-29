@@ -28,6 +28,7 @@ public class MasController implements MasResource {
         "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
     String message;
     if (payload.isInScope()) {
+      // TODO: check if it has anchor
       camelEntrance.notifyAutomatedClaim(
           payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
       message = "Received";
@@ -36,6 +37,7 @@ public class MasController implements MasResource {
       var auditEvent = buildAuditEvent(payload);
       camelEntrance.sendSlack(auditEvent);
       message = "Out of scope";
+      camelEntrance.offRampClaim(payload);
     }
     MasResponse response =
         MasResponse.builder()
