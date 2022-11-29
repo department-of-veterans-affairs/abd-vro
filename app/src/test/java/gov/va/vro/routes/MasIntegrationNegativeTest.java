@@ -38,8 +38,6 @@ public class MasIntegrationNegativeTest extends BaseIntegrationTest {
     }
   }
 
-  // TODO: test Mas API returns invalid object
-
   @Test
   void processClaimLighthouseConnectFailed() {
     int collectionId = 123;
