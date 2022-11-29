@@ -13,7 +13,7 @@ from assessclaimcancer.src.lib import medication
                             {
                                 "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
                                 "status": "active",
-                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "authoredOn": "2021-04-06T04:00:00Z",
                             },
                             {
                                 "authoredOn": "1962-04-06T04:00:00Z",
@@ -27,21 +27,19 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "head",
-                {"medications": [
-                    {
-                        "authoredOn": "1962-04-06T04:00:00Z",
-                        "description": "CISplatin 50 MG",
-                        "status": "active",
-                        "conditionRelated": True
-                    },
-                    {
-                        "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
-                        "status": "active",
-                        "authoredOn": "1952-04-06T04:00:00Z",
-                        "conditionRelated": True
-                    }],
-                    "relevantMedCount": 2,
-                    "totalMedCount": 2}
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [{"authoredOn": "2021-04-06T04:00:00Z",
+                                  "conditionRelated": True,
+                                  "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
+                                  "status": "active",
+                                  "suggestedCategory": "Multiple"},
+                                 {"authoredOn": "1962-04-06T04:00:00Z",
+                                  "conditionRelated": True,
+                                  "description": "CISplatin 50 MG",
+                                  "status": "active",
+                                  "suggestedCategory": "Multiple"}],
+                 "relevantMedCount": 2,
+                 "totalMedCount": 2}
         ),
         (
                 {
@@ -64,19 +62,20 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "neck",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
-                        'suggestedCategory': 'Multiple',
+                        "suggestedCategory": "Multiple",
                         "conditionRelated": True
                     },
                     {
                         "description": "0.4 ML Otrexup 56.3 MG/ML Auto-Injector",
                         "status": "active",
                         "authoredOn": "1952-04-06T04:00:00Z",
-                        'suggestedCategory': 'Multiple',
+                        "suggestedCategory": "Multiple",
                         "conditionRelated": True
                     }],
                     "relevantMedCount": 2,
@@ -103,12 +102,13 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "male_reproductive",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
                         "status": "active",
-                        'suggestedCategory': 'Multiple',
+                        "suggestedCategory": "Multiple",
                         "conditionRelated": True
                     }
                 ],
@@ -136,12 +136,13 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "gyn",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "paclitaxel 6 MG/ML",
                         "status": "active",
-                        'suggestedCategory': 'Cervical, Uterine',
+                        "suggestedCategory": "Cervical, Uterine",
                         "conditionRelated": True
                     }
                 ],
@@ -169,7 +170,8 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "prostate",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "authoredOn": "1962-04-06T04:00:00Z",
                         "description": "CISplatin 50 MG",
@@ -201,7 +203,8 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "pancreatic",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "description": "everolimus 0.75 MG",
                         "status": "active",
@@ -218,7 +221,7 @@ from assessclaimcancer.src.lib import medication
                             {
                                 "description": "aldesleukin 22000000 UNT [Proleukin]",
                                 "status": "active",
-                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "authoredOn": "2021-06-06T04:00:00Z",
                             },
                             {
                                 "authoredOn": "1962-04-06T04:00:00Z",
@@ -232,12 +235,13 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "melanoma",
-                {"medications": [
+                {"medicationMeetsDateRequirements": True,
+                 "medications": [
                     {
                         "description": "aldesleukin 22000000 UNT [Proleukin]",
                         "status": "active",
-                        "authoredOn": "1952-04-06T04:00:00Z",
-                        'suggestedCategory': 'Systemic chemotherapy',
+                        "authoredOn": "2021-06-06T04:00:00Z",
+                        "suggestedCategory": "Systemic chemotherapy",
                         "conditionRelated": True
                     }],
                     "relevantMedCount": 1,
@@ -264,12 +268,13 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "kidney",
-                {'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                  'conditionRelated': True,
-                                  'description': 'aldesleukin 22000000 UNT [Proleukin]',
-                                  'status': 'active'}],
-                 'relevantMedCount': 1,
-                 'totalMedCount': 2}
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
+                                  "conditionRelated": True,
+                                  "description": "aldesleukin 22000000 UNT [Proleukin]",
+                                  "status": "active"}],
+                 "relevantMedCount": 1,
+                 "totalMedCount": 2}
         ),
         (
                 {
@@ -292,7 +297,8 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "breast",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "description": "methotrexate 2.5 MG/ML Injectable Solution",
                         "status": "active",
@@ -312,7 +318,7 @@ from assessclaimcancer.src.lib import medication
                                 "authoredOn": "1952-04-06T04:00:00Z",
                             },
                             {
-                                "authoredOn": "1962-04-06T04:00:00Z",
+                                "authoredOn": "2021-06-06T04:00:00Z",
                                 "description": "CISplatin 50 MG",
                                 "status": "active",
                             },
@@ -323,11 +329,12 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "gi",
-                {"medications": [
+                {"medicationMeetsDateRequirements": True,
+                 "medications": [
                     {
                         "description": "CISplatin 50 MG",
                         "status": "active",
-                        "authoredOn": "1962-04-06T04:00:00Z",
+                        "authoredOn": "2021-06-06T04:00:00Z",
                         "conditionRelated": True
                     }],
                     "relevantMedCount": 1,
@@ -354,7 +361,8 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "brain",
-                {"medications": [
+                {"medicationMeetsDateRequirements": False,
+                 "medications": [
                     {
                         "description": "CISplatin 50 MG",
                         "status": "active",
