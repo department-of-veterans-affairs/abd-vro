@@ -33,8 +33,7 @@ public class MasPollingProcessor implements Processor {
         masCollectionService.checkCollectionStatus(claimPayload.getCollectionId());
 
     if (isCollectionReady) {
-      var response = camelEntrance.processClaim(claimPayload);
-      log.info(response);
+      camelEntrance.processClaim(claimPayload);
     } else {
       log.info("Collection {} is not ready. Requeue..ing...", claimPayload.getCollectionId());
       // re-request after some time

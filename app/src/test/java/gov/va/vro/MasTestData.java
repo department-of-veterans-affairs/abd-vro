@@ -7,10 +7,11 @@ import java.util.Collections;
 public class MasTestData {
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    return getMasAutomatedClaimPayload(123);
+    return getMasAutomatedClaimPayload(123, "1233");
   }
 
-  public static MasAutomatedClaimPayload getMasAutomatedClaimPayload(int collectionId) {
+  public static MasAutomatedClaimPayload getMasAutomatedClaimPayload(
+      int collectionId, String diagnosticCode) {
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
     veteranIdentifiers.setEdipn("X");
     veteranIdentifiers.setParticipantId("X");
@@ -18,7 +19,8 @@ public class MasTestData {
     veteranIdentifiers.setSsn("X");
     veteranIdentifiers.setVeteranFileId("X");
     ClaimCondition conditions = new ClaimCondition();
-    conditions.setDiagnosticCode("1233");
+    conditions.setDiagnosticCode(diagnosticCode);
+    conditions.setDisabilityActionType("INCREASE");
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setClaimSubmissionDateTime("2022-02-04");
     claimDetail.setConditions(conditions);
