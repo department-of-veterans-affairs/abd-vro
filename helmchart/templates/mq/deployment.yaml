@@ -44,9 +44,9 @@ spec:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
           volumeMounts:
-            # name should match the volume name below
+            # name should match the volume name in the volumes block
             - name: mq-persistent-storage
-              mountPath: /var/lib/rabbitmq
+              mountPath: /var/lib/rabbitmq-test
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
       volumes:
         - name: mq-persistent-storage
