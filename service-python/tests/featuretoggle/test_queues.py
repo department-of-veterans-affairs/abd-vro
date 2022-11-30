@@ -8,10 +8,10 @@ from featuretoggle.src.lib import queues
 
 
 @pytest.mark.parametrize(
-    "queue, toggle_queue_name", "feature-toggle-queue"
+    "queue, toggle_queue_name", [(queues, "feature-toggle-queue")]
 )
 def test_queue_setup(queue, toggle_queue_name, caplog):
-    queue_name = f"featuretoggle.{toggle_queue_name}"
+    queue_name = f"{toggle_queue_name}"
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
         queue.queue_setup(channel=channel)
