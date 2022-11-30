@@ -46,7 +46,7 @@ spec:
           volumeMounts:
             # name should match the volume name in the volumes block
             - name: mq-persistent-storage
-              mountPath: /var/lib/rabbitmq-test
+              mountPath: /persist/rabbitmq
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
       volumes:
         - name: mq-persistent-storage

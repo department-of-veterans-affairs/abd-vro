@@ -220,7 +220,7 @@ spec:
           volumeMounts:
             # name should match the volume name in the volumes block
             - name: mq-persistent-storage
-              mountPath: /rabbitmq
+              mountPath: /persist/rabbitmq
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
