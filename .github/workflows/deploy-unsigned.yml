@@ -25,6 +25,9 @@ env:
   COMMIT_SHA: ${{ github.sha }}
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: ${{ inputs.target_env }}
+  # Default to failure messages
+  DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
+  DEPLOY_STATE_EMOJI: 'x'
 
 jobs:
   deploy-images:
@@ -89,30 +92,27 @@ jobs:
           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
-        id: wait-for-deploy
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
-            echo 'deploy_state_slack_text=:panda_cool: Deployed!' >> $GITHUB_OUTPUT
-            echo 'deploy_state_emoji=heavy_check_mark' >> $GITHUB_OUTPUT
-          else
-            echo 'deploy_state_slack_text=:panda_shocked: Deployment failed!' >> $GITHUB_OUTPUT
-            echo 'deploy_state_emoji=x' >> $GITHUB_OUTPUT
+            echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
+            echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
           fi
 
       - name: "Notify Slack: Thread deployment status"
+        if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ${{ steps.wait-for-deploy.outputs.deploy_state_slack_text }}
+          slack-text: ${{ env.DEPLOY_STATE_TEXT }}
 
       - name: "Notify Slack: React to top-level notification"
-        id: slack-react
+        if: always()
         uses: archive/github-actions-slack@v2.0.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
           slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-emoji-name: ${{ steps.wait-for-deploy.outputs.deploy_state_emoji }}
+          slack-emoji-name: ${{ env.DEPLOY_STATE_EMOJI }}

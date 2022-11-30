@@ -11,6 +11,9 @@ public class ExchangeAuditTransformer implements Processor {
   @Override
   public void process(Exchange exchange) {
     String routeId = exchange.getProperty("originalRouteId", String.class);
+    if (routeId == null) {
+      routeId = exchange.getFromRouteId();
+    }
     String endpoint = exchange.getFromEndpoint().getEndpointUri();
     Message message = exchange.getMessage();
     Auditable body = message.getBody(Auditable.class);
