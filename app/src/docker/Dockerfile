@@ -1,15 +1,16 @@
 FROM eclipse-temurin:17-jre-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
-RUN apk update && apk --no-cache add expat=2.5.0-r0 curl=7.86.0-r1
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 curl=7.83.1-r4
 
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE
 
 WORKDIR /project
 COPY ${ENTRYPOINT_FILE} entrypoint.sh
-RUN mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat && chmod +x entrypoint.sh
 COPY ${JAR_FILE} vro-app.jar
+RUN mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat && chmod +x entrypoint.sh
 EXPOSE 8081
 
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1

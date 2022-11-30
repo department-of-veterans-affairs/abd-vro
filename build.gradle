@@ -107,8 +107,7 @@ subprojects {
 }
 
 ext {
-  // TODO: set back to true; temporarily disable test code coverage enforcement
-  jacoco_enforce_violations = false
+  jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
   codeModules = [
     ':app',
@@ -133,6 +132,8 @@ ext {
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
+    dockerModules.add(':service-python:assessclaimdc6510')
+    dockerModules.add(':service-python:assessclaimdc6522')
     dockerModules.add(':service-python:assessclaimcancer')
   }
 }

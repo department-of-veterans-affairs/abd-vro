@@ -6,9 +6,11 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
+import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.mas.service.MasTransferObject;
+import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
-import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor
@@ -31,11 +33,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS =
       "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "direct:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
   public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
+
+  public static final String ENDPOINT_SLACK_EVENT = "seda:slack-event";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
 
@@ -43,8 +47,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
+  public static final String ENDPOINT_MAS_OFFRAMP = "direct:mas-offramp";
+
   private final MasPollingProcessor masPollingProcessor;
 
+  private final MasOrderExamProcessor masOrderExamProcessor;
   private final AuditEventService auditEventService;
 
   private final MasCollectionService masCollectionService;
@@ -53,29 +60,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final MasConfig masConfig;
 
-  private String auditRecipientList;
-  private String exceptionRecipientList;
-
-  @PostConstruct
-  /** Setup recipients list for audits */
-  void setUpRecipients() {
-    auditRecipientList = ENDPOINT_AUDIT_EVENT;
-    exceptionRecipientList =
-        masConfig.getSlackExceptionWebhook() == null
-            ? ENDPOINT_AUDIT_EVENT
-            : String.format(
-                "%s,slack:#%s?webhookUrl=%s",
-                ENDPOINT_AUDIT_EVENT,
-                masConfig.getSlackExceptionChannel(),
-                masConfig.getSlackExceptionWebhook());
-  }
-
   @Override
   public void configure() {
     configureAuditing();
     configureAutomatedClaim();
     configureMasProcessing();
     configureOrderExamStatus();
+    configureOffRampClaim();
   }
 
   private void configureAutomatedClaim() {
@@ -98,56 +89,43 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-processing";
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
     String collectEvidenceEndpoint = "direct:collect-evidence";
+    String orderExamEndpoint = "direct:order-exam";
+
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
+        .setProperty(
+            "disabilityActionType", simple("${body.claimDetail.conditions.disabilityActionType}"))
+        .setProperty("dateOfClaim", simple("${body.claimDetail.claimSubmissionDateTime}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
         .setProperty("evidence", simple("${body}"))
-        .routingSlip(
-            method(
-                slipClaimSubmitRouter, "routeHealthAssessV2")) // TODO: call "health assess" service
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
-        .process( // TODO: This is to print all the validation errors
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) {
-
-                MasAutomatedClaimPayload claimPayload =
-                    (MasAutomatedClaimPayload) exchange.getProperty("claim");
-                AbdEvidenceWithSummary evidence =
-                    exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
-                HealthDataAssessment assessment =
-                    (HealthDataAssessment) exchange.getProperty("evidence");
-                if (evidence.getErrorMessage() != null) {
-                  log.error("Health Assessment Failed");
-                }
-                // FAKE IT: Let's pretend Health assessment passed
-                var masTransferObject =
-                    new MasTransferObject(claimPayload, assessment.getEvidence());
-                exchange.getMessage().setBody(masTransferObject);
-              }
-            })
-        //
-        // TODO: call pcOrderExam in the absence of evidence
-        // TODO: Call claim status update
+        .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF);
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
+        // Call pcOrderExam in the absence of evidence
+        .process(
+            exchange -> {
+              MasAutomatedClaimPayload claimPayload =
+                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
+              exchange.getMessage().setBody(claimPayload);
+            })
+        .to(orderExamEndpoint); // Call Order Exam;
     // TODO upload PDF
+    // TODO: Call claim status update
 
     from(collectEvidenceEndpoint)
         .routeId("mas-automated-claim-collect-evidence")
-        .multicast(new GroupedBodyAggregationStrategy())
+        .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
         .process( // combine evidence
-            FunctionProcessor.fromFunction(
-                (Function<List<HealthDataAssessment>, HealthDataAssessment>)
-                    abdEvidences ->
-                        MasCollectionService.combineEvidence(
-                            abdEvidences.get(0), abdEvidences.get(1))));
+            FunctionProcessor.fromFunction(combineExchangesFunction()));
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
@@ -163,6 +141,31 @@ public class MasIntegrationRoutes extends RouteBuilder {
                             .build()))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
+
+    from(orderExamEndpoint)
+        .routeId("mas-order-exam")
+        .choice()
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
+        .process(masOrderExamProcessor)
+        .setExchangePattern(ExchangePattern.InOnly)
+        .log("MAS Order Exam response: ${body}")
+        .end();
+  }
+
+  private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
+    return exchanges -> {
+      for (Exchange exchange : exchanges) {
+        if (exchange.isFailed()) {
+          throw new MasException(
+              "Failed to collect evidence", exchange.getException(Throwable.class));
+        }
+      }
+      Exchange exchange1 = exchanges.get(0);
+      Exchange exchange2 = exchanges.get(1);
+      var evidence1 = exchange1.getMessage().getBody(HealthDataAssessment.class);
+      var evidence2 = exchange2.getMessage().getBody(HealthDataAssessment.class);
+      return MasCollectionService.combineEvidence(evidence1, evidence2);
+    };
   }
 
   private void configureOrderExamStatus() {
@@ -178,7 +181,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant(exceptionRecipientList))
+        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT, ENDPOINT_SLACK_EVENT))
         .to(transform_uri);
 
     // intercept all MAS routes
@@ -186,7 +189,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant(auditRecipientList))
+        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
         .to(transform_uri);
 
     // Transform to an AuditEvent and send to recipients
@@ -195,11 +198,27 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .recipientList(exchangeProperty("recipientList"));
 
     // persist audit event
-    from("seda:audit-event")
+    from(ENDPOINT_AUDIT_EVENT)
         .process(
             exchange -> {
               AuditEvent event = exchange.getMessage().getBody(AuditEvent.class);
               auditEventService.logEvent(event);
             });
+
+    from(ENDPOINT_SLACK_EVENT)
+        .routeId("mas-slack-event")
+        .filter(exchange -> StringUtils.isNotBlank(masConfig.getSlackExceptionWebhook()))
+        .process(FunctionProcessor.fromFunction(AuditEvent::toString))
+        .to(
+            String.format(
+                "slack:#%s?webhookUrl=%s",
+                masConfig.getSlackExceptionChannel(), masConfig.getSlackExceptionWebhook()));
+  }
+
+  private void configureOffRampClaim() {
+    // TODO: complete route
+    from(ENDPOINT_MAS_OFFRAMP)
+        .routeId("mas-offramp-claim")
+        .log("Request to off-ramp claim received");
   }
 }

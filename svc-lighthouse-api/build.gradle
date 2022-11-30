@@ -28,8 +28,8 @@ dependencies {
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation 'org.springframework:spring-web:5.3.23'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.2.0'
-  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.2.0') {
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.2.1'
+  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.2.1') {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -69,17 +69,9 @@ configurations {
   integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
-jacoco {
-  toolVersion = jacoco_tool_version
-  reportsDirectory = file("$buildDir/jacoco")
-}
-
 test {
   useJUnitPlatform()
   exclude '**/integrationTest'
-  finalizedBy jacocoTestReport {
-    executionData(file("${project.buildDir}/jacoco/test.exec"))
-  }
 }
 
 task integrationTest(type: Test) {

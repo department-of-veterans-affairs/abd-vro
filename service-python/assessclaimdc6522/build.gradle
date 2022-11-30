@@ -1,0 +1,3 @@
+plugins {
+  id 'local.python.container-service-conventions'
+}

@@ -18,8 +18,11 @@ x-mas-vars: &mas-vars
   MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
   MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
-  
+  SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
+  SLACK_EXCEPTION_CHANNEL: ${SLACK_EXCEPTION_CHANNEL}
+
 x-postgres-vars: &postgres-vars
+  # TODO: Is POSTGRES_HOST needed? It's not listed in helmchart/templates/api/deployment.yaml
   POSTGRES_HOST: postgres-service
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
@@ -207,6 +210,32 @@ services:
         condition: service_healthy
     networks:
       - internal
+
+  svc-assessor-dc6510:
+    image: va/abd_vro-assessclaimdc6510:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
+
+  svc-assessor-dc6522:
+    image: va/abd_vro-assessclaimdc6522:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: ["prototype"]
 
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest

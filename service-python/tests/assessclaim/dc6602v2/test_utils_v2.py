@@ -18,7 +18,7 @@ from assessclaimdc6602v2.src.lib import utils
                     ],
                     "conditions": [],
                 },
-                "date_of_claim": "2021-11-09",
+                "dateOfClaim": "2021-11-09",
             },
             True,
             {},
@@ -35,7 +35,7 @@ from assessclaimdc6602v2.src.lib import utils
                     ],
                     "conditions": [],
                 },
-                "date_of_claim": 20211109,
+                "dateOfClaim": 20211109,
             },
             False,
             {
@@ -46,7 +46,7 @@ from assessclaimdc6602v2.src.lib import utils
                         ]
                     }
                 ],
-                "date_of_claim": ["must be of string type"],
+                "dateOfClaim": ["must be of string type"],
             },
         ),
     ],
