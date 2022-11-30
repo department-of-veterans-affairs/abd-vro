@@ -2,13 +2,13 @@ name: Mirroring
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, qa, develop ]
     # Limit to certain PR event types since this action could trigger actions to run in the mirror repo
-    types: [opened, synchronize, reopened, ready_for_review, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, review_requested]
 
   # When changes are pushed to special branches
   push:
-    branches: [ main, develop ]
+    branches: [ main, qa, develop ]
 
   # When a Git reference (Git branch or tag) is created or deleted
   create:

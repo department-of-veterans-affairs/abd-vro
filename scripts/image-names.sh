@@ -53,6 +53,7 @@ secrel_image_name() {
 secrel_dockerfile() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
+    pdfgenerator|assessclaim*) echo "./service-python/Dockerfile";;
     *) echo "$GRADLE_FOLDER/src/docker/Dockerfile";;
   esac
 }
@@ -60,13 +61,23 @@ secrel_dockerfile() {
 secrel_docker_context() {
   GRADLE_FOLDER=$(gradle_folder "$1")
   case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "$GRADLE_FOLDER/src";;
-    app|*) echo "$GRADLE_FOLDER/src/main/resources";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "./service-python";;
+    *) echo "$GRADLE_FOLDER/build/docker";;
+  esac
+}
+
+secrel_docker_build_args() {
+  GRADLE_FOLDER=$(gradle_folder "$1")
+  case "$1" in
+    pdfgenerator|featuretoggle|assessclaim*) echo "    - SERVICE_SRC_FOLDER=$1/build/docker";;
+    app|console|svc-lighthouse-api) echo "    - JAR_FILE=$1-*.jar
+    - ENTRYPOINT_FILE=entrypoint.sh";;
+    *) echo "";;
   esac
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init svc-lighthouse-api pdfgenerator featuretoggle assessclaimdc7101 assessclaimdc6602)
+IMAGES=( app postgres db-init console featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -142,23 +153,29 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
+  echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
 
 images_for_secrel_config_yml(){
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
-for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-  echo "- name: $(getVarValue "${PREFIX}" _IMG)
-  context: \"$(getVarValue "${PREFIX}" _DOCKER_CONTEXT)\"
-  path: \"$(getVarValue "${PREFIX}" _DOCKERFILE)\""
+for IMG in "${IMAGES[@]}"; do
+  echo "- name: $(secrel_image_name "$IMG")
+  context: \"$(secrel_docker_context "$IMG")\"
+  path: \"$(secrel_dockerfile "$IMG")\""
+  BUILD_ARGS="$(secrel_docker_build_args "$IMG")"
+  if [ "$BUILD_ARGS" ]; then
+    echo "  args:
+$BUILD_ARGS"
+  fi
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 images_for_helmchart_values_yaml(){
   local _ENV=$1
-  echo '# BEGIN image-names.sh replacement block (do not modify this line)
+  echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
 for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
@@ -166,7 +183,7 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
     tag: tagPlaceholder
     imagePullPolicy: Always"
 done
-echo '# END image-names.sh replacement block (do not modify this line)'
+echo '# END image-names.sh replacement block (do not modify this block)'
 }
 
 # shellcheck source=image_vars.src
