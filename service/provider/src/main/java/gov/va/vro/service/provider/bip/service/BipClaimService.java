@@ -68,4 +68,20 @@ public class BipClaimService {
     bipApiService.updateClaimContention(claimId, request);
     return true;
   }
+
+  public boolean markAsRFD(int claimId) {
+    // TODO: check if markAsRFD?
+    // TODO: If yes, call markClaimAsRFD
+    // in either case check station and FI
+    checkStationAndFI(claimId);
+    return false;
+  }
+
+  public void checkStationAndFI(int claimId) {
+    // TODO: ???
+  }
+
+  public void updateClaim(int claimId) {
+    // TODO: ???
+  }
 }
