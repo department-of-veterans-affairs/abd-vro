@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class BipClaimService {
 
   private static final String TSOJ = "398";
-  private static final String SPECIAL_ISSUE_1 = "Rating Decision Review - Level 1";
-  private static final String SPECIAL_ISSUE_2 = "RRD";
+  private static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
+  private static final String SPECIAL_ISSUE_2 = "rrd";
   public static final String STATUS_READY = "RFD";
   public static final String STATUS_DECISION_COMPLETE = "Rating Decision Complete";
 
@@ -39,12 +39,12 @@ public class BipClaimService {
       return false;
     }
 
-    // TODO: Ignore case for strings
     // collect all special issues
     var specialIssues =
         contentions.stream()
             .map(ClaimContention::getSpecialIssueCodes)
             .flatMap(Collection::stream)
+            .map(String::toLowerCase) // Ignore case
             .collect(Collectors.toSet());
     return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
   }
@@ -54,13 +54,15 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
-      List<String> codes = contention.getSpecialIssueCodes();
-      // TODO: Ignore case
+      var codes =
+          contention.getSpecialIssueCodes().stream()
+              .map(String::toLowerCase)
+              .collect(Collectors.toSet());
       if (codes.contains(SPECIAL_ISSUE_1)) {
         // remove string from contention
         List<String> updatedCodes =
-            codes.stream()
-                .filter(code -> !SPECIAL_ISSUE_1.equals(code))
+            contention.getSpecialIssueCodes().stream()
+                .filter(code -> !SPECIAL_ISSUE_1.equalsIgnoreCase(code))
                 .collect(Collectors.toList());
         var update = contention.toBuilder().specialIssueCodes(updatedCodes).build();
         updatedContentions.add(update);
