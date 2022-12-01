@@ -11,7 +11,7 @@ import java.util.List;
 public interface IBipApiService {
   BipClaim getClaimDetails(Integer collectionId) throws BipException;
 
-  BipUpdateClaimResp updateClaimStatus(Integer collectionId) throws BipException;
+  BipUpdateClaimResp updateClaimStatus(Integer collectionId, String status) throws BipException;
 
   List<ClaimContention> getClaimContentions(Integer claimId) throws BipException;
 

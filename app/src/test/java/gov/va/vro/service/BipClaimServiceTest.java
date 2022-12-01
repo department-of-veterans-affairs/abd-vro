@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,42 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     assertTrue(claimService.removeSpecialIssue(Integer.parseInt(claimId)));
+    // TODO: Verify arguments passed
+    Mockito.verify(bipApiService)
+        .updateClaimContention(Mockito.anyInt(), Mockito.any(UpdateContentionReq.class));
+  }
+
+  @Test
+  void completeProcessingNotRightStation() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+    Mockito.when(bipApiService.getClaimDetails(collectionId))
+        .thenReturn(createClaim(claimId, "Short Line"));
+
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    assertFalse(claimService.completeProcessing(collectionId, false));
+  }
+
+  @Test
+  void completeProcessingNotRFD() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+    Mockito.when(bipApiService.getClaimDetails(collectionId))
+        .thenReturn(createClaim(claimId, "398"));
+
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    assertTrue(claimService.completeProcessing(collectionId, false));
+    Mockito.verify(bipApiService).updateClaimStatus(collectionId, "Rating Decision Complete");
+  }
+
+  @Test
+  void completeProcessingRFD() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+    Mockito.when(bipApiService.getClaimDetails(collectionId))
+        .thenReturn(createClaim(claimId, "398"));
+
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    assertTrue(claimService.completeProcessing(collectionId, true));
+    Mockito.verify(bipApiService).updateClaimStatus(collectionId, "RFD");
+    Mockito.verify(bipApiService).updateClaimStatus(collectionId, "Rating Decision Complete");
   }
 
   private ClaimContention createContention(List<String> codes) {

@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,8 @@ public class BipClaimService {
   private static final String TSOJ = "398";
   private static final String SPECIAL_ISSUE_1 = "Rating Decision Review - Level 1";
   private static final String SPECIAL_ISSUE_2 = "RRD";
+  public static final String STATUS_READY = "RFD";
+  public static final String STATUS_DECISION_COMPLETE = "Rating Decision Complete";
 
   private final IBipApiService bipApiService;
 
@@ -38,6 +39,7 @@ public class BipClaimService {
       return false;
     }
 
+    // TODO: Ignore case for strings
     // collect all special issues
     var specialIssues =
         contentions.stream()
@@ -53,7 +55,9 @@ public class BipClaimService {
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
       List<String> codes = contention.getSpecialIssueCodes();
+      // TODO: Ignore case
       if (codes.contains(SPECIAL_ISSUE_1)) {
+        // remove string from contention
         List<String> updatedCodes =
             codes.stream()
                 .filter(code -> !SPECIAL_ISSUE_1.equals(code))
@@ -70,19 +74,21 @@ public class BipClaimService {
     return true;
   }
 
-  public boolean markAsRFD(int claimId) {
-    // TODO: check if markAsRFD?
-    // TODO: If yes, call markClaimAsRFD
-    // in either case check station and FI
-    checkStationAndFI(claimId);
-    return false;
-  }
+  // markAsRFID = sufficiencyFlag (from Health Assessment BP service)
+  public boolean completeProcessing(int collectionId, boolean markAsRFD) {
 
-  public void checkStationAndFI(int claimId) {
-    // TODO: ???
-  }
-
-  public BipUpdateClaimResp updateClaim(int collectionId) {
-    return bipApiService.updateClaimStatus(collectionId);
+    // check if markAsRFD?
+    if (markAsRFD) {
+      // If yes, mark claim as Ready For Decision
+      bipApiService.updateClaimStatus(collectionId, STATUS_READY);
+    }
+    // check again if TSOJ. If not, abandon route
+    var claim = bipApiService.getClaimDetails(collectionId);
+    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
+      return false;
+    }
+    // otherwise, update claim
+    bipApiService.updateClaimStatus(collectionId, STATUS_DECISION_COMPLETE);
+    return true;
   }
 }
