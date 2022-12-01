@@ -1,8 +1,6 @@
 package gov.va.vro.model.bip;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,9 +9,11 @@ import java.util.List;
  *
  * @author warren @Date 11/9/22
  */
-@RequiredArgsConstructor
 @Getter
 @Setter
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClaimContention {
   private boolean medicalInd;
   private String beginDate;

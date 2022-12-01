@@ -11,8 +11,8 @@ import java.util.List;
 
 class BipClaimServiceTest {
 
-  private Integer collectionId = 123;
-  private String claimId = "345";
+  private final Integer collectionId = 123;
+  private final String claimId = "345";
 
   @Test
   void hasAnchorsWrongJurisdiction() {
@@ -55,6 +55,34 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     assertTrue(claimService.hasAnchors(collectionId));
+  }
+
+  @Test
+  void removeSpecialIssueMissing() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+
+    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+        .thenReturn(
+            List.of(
+                createContention(List.of("TEST", "RRD")),
+                createContention(List.of("RRD", "OTHER"))));
+
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    assertFalse(claimService.removeSpecialIssue(Integer.parseInt(claimId)));
+  }
+
+  @Test
+  void removeSpecialIssue() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+
+    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+        .thenReturn(
+            List.of(
+                createContention(List.of("TEST", "RRD")),
+                createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
+
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    assertTrue(claimService.removeSpecialIssue(Integer.parseInt(claimId)));
   }
 
   private ClaimContention createContention(List<String> codes) {
