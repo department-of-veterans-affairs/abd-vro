@@ -81,8 +81,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId("mas-claim-processing")
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
-        .setExchangePattern(ExchangePattern.InOnly)
-        .log("MAS response: ${body}");
+        .setExchangePattern(ExchangePattern.InOnly);
   }
 
   private void configureMasProcessing() {
