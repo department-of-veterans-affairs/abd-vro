@@ -43,11 +43,11 @@ public class MasApiService implements IMasApiService {
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       log.info("Call {} to get MAS collection status.", url);
-      log.info("MAS Collection Status Response {}.", masResponse);
+      log.info("MAS Collection Status Response Status {}.", masResponse.getStatusCode());
 
       String masReturn = masResponse.getBody();
 
-      log.info("MAS Collection Status Response body {}.", masReturn);
+      log.trace("MAS Collection Status Response body {}.", masReturn);
       return mapper.readValue(masReturn, new TypeReference<>() {});
     } catch (RestClientException | IOException e) {
       log.error("Failed to get collection status.", e);
