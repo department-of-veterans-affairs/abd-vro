@@ -1,0 +1,17 @@
+antibiotics = {
+    "Augmentin",
+    "Bactrim",
+    "Levaquin",
+    "SMX",
+    "Septra",
+    "Sulfatrim",
+    "TRI-PAK",
+    "Z-PAK",
+    "Zithromax",
+    "amoxicillin",
+    "azithromycin",
+    "clavulanate",
+    "levoFLOXacin",
+    "sulfamethoxazole",
+    "trimethoprim",
+}

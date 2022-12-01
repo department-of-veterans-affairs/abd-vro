@@ -31,7 +31,7 @@ repos:
       - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
       - id: fix-byte-order-marker
       - id: mixed-line-ending
-      - id: requirements-txt-fixer # replaces isort
+      - id: requirements-txt-fixer
       - id: trailing-whitespace
 
   # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
@@ -40,6 +40,11 @@ repos:
     hooks:
       - id: flake8
         args: [--max-line-length=255]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
 
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.15.0
