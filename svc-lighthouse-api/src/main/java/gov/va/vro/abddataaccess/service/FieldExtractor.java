@@ -90,6 +90,10 @@ public class FieldExtractor {
       result.setOnsetDate(FieldExtractor.toDate(condition.getOnsetDateTimeType()));
     }
 
+    if (condition.hasRecordedDateElement()) {
+      result.setRecordedDate(FieldExtractor.toDate(condition.getRecordedDateElement()));
+    }
+
     if (condition.hasClinicalStatus()) {
       CodeableConcept clinicalStatus = condition.getClinicalStatus();
       if (clinicalStatus.hasCoding()) {

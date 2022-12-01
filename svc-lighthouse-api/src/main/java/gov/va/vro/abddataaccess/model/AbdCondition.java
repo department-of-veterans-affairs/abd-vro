@@ -12,7 +12,7 @@ public class AbdCondition implements Comparable<AbdCondition> {
   private String abatementDate;
   private String status;
   private String onsetDate;
-
+  private String recordedDate;
   @Override
   public int compareTo(AbdCondition otherCondition) {
     return StringUtils.compare(onsetDate, otherCondition.onsetDate);
