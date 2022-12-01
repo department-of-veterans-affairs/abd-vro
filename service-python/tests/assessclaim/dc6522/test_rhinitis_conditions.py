@@ -14,30 +14,18 @@ from assessclaimdc6522.src.lib import conditions
                             {"text": "Granulomatous rhinitis (chronic)",
                              "code": "J31.0",
                              "status": "Active"
-                             },
-                            {
-                                "text": "Nasal polyps",
-                                "code": "J33.9",
-                                "status": "Active"
-                            }
-
+                             }
                         ],
                     },
                     "date_of_claim": "2021-11-09",
                 },
-                {"conditions": [{
-                                    "text": "Granulomatous rhinitis (chronic)",
-                                    "code": "J31.0",
-                                    "status": "Active"
-                                 },
-                                {
-                                    "text": "Nasal polyps",
-                                    "code": "J33.9",
-                                    "status": "Active"}],
-                 "relevantConditionsCount": 2,
-                 "totalConditionsCount": 2,
-                 "diagnosticCodes": ["6524"],
-                 "nasalPolyps": True
+                {"conditions": [{"text": "Granulomatous rhinitis (chronic)",
+                                 "code": "J31.0",
+                                 "status": "Active"
+                                 }],
+                 "relevantConditionsCount": 1,
+                 "totalConditionsCount": 1,
+                 "diagnosticCodes": ["6524"]
                  }
         ),
         (
@@ -45,18 +33,17 @@ from assessclaimdc6522.src.lib import conditions
                     "evidence": {
                         "conditions": [
                             {"text": "Allergic rhinitis due to food", "code": "J30.5", "status": "Active"},
-                            {"code": "72409005", "text": "Rhinoscleroma (disorder)", "status": "recurrence"}
+                            {"code": "72409005",	"text": "Rhinoscleroma (disorder)", "status": "recurrence"}
                         ],
                     },
                     "date_of_claim": "2021-11-09",
                 },
                 {"conditions": [{"text": "Allergic rhinitis due to food", "code": "J30.5", "status": "Active"
                                  },
-                                {"code": "72409005", "text": "Rhinoscleroma (disorder)", "status": "recurrence"}],
+                                {"code": "72409005",	"text": "Rhinoscleroma (disorder)", "status": "recurrence"}],
                  "relevantConditionsCount": 2,
                  "totalConditionsCount": 2,
-                 "diagnosticCodes": ["6522", "6523"],
-                 "nasalPolyps": False
+                 "diagnosticCodes": ["6522", "6523"]
                  }
         ),
         (
@@ -75,8 +62,7 @@ from assessclaimdc6522.src.lib import conditions
                 {"conditions": [],
                  "relevantConditionsCount": 0,
                  "totalConditionsCount": 1,
-                 "diagnosticCodes": [],
-                 "nasalPolyps": False
+                 "diagnosticCodes": []
                  }
         ),
     ],

@@ -16,8 +16,6 @@ def conditions_calculation(request_body):
     veterans_conditions = request_body["evidence"]["conditions"]
     total_conditions_count = len(veterans_conditions)
     diagnostic_codes = []
-    nasal_polyps = False
-
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "recurrence", "relapse"]:
             condition_code = condition["code"]
@@ -31,7 +29,6 @@ def conditions_calculation(request_body):
                 relevant_conditions.append(condition)
                 diagnostic_codes.append("6523")
             elif condition_code in rhinitis_conditions.nasal_polyps:
-                nasal_polyps = True
                 relevant_conditions.append(condition)
 
     response.update(
@@ -39,8 +36,7 @@ def conditions_calculation(request_body):
             "conditions": relevant_conditions,
             "relevantConditionsCount": len(relevant_conditions),
             "totalConditionsCount": total_conditions_count,
-            "diagnosticCodes": diagnostic_codes,
-            "nasalPolyps": nasal_polyps
+            "diagnosticCodes": diagnostic_codes
         }
     )
 
