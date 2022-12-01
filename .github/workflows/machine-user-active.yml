@@ -1,0 +1,26 @@
+name: Add issue comment to keep machine user active
+# See https://github.com/department-of-veterans-affairs/abd-vro-internal/issues/28
+
+on:
+  schedule:
+    # On the 1st of the month
+    - cron: "30 12 1 * *"
+
+  # TODO: remove this
+  issues:
+    types:
+      - labeled
+
+jobs:
+  add-comment:
+    # only run this job in the abd-vro-internal repo, where ticket #28 exists
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: 28
+          body: Stayin' alive
