@@ -18,9 +18,6 @@ public interface IBipApiService {
   BipUpdateClaimResp updateClaimContention(Integer claimId, UpdateContentionReq contention)
       throws BipException;
 
-  BipUpdateClaimResp addClaimContention(Integer claimId, CreateContentionReq contention)
-      throws BipException;
-
   HashMap<String, String> uploadEvidence(
       String fileId, BipFileUploadPayload uploadEvidenceReq, File file) throws BipException;
 }
