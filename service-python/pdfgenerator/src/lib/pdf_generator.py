@@ -43,6 +43,7 @@ class PDFGenerator:
 
 if __name__ == '__main__':
     import argparse
+
     from . import settings
     argparser = argparse.ArgumentParser(description='Generate evidence summary PDF from JSON input')
     argparser.add_argument('input', help='path to input JSON file')
