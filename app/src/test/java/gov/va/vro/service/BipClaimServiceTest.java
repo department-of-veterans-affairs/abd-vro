@@ -1,9 +1,12 @@
-package gov.va.vro.service.provider.bip.service;
+package gov.va.vro.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.bip.service.IBipApiService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

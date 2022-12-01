@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +82,7 @@ public class BipClaimService {
     // TODO: ???
   }
 
-  public void updateClaim(int claimId) {
-    // TODO: ???
+  public BipUpdateClaimResp updateClaim(int collectionId) {
+    return bipApiService.updateClaimStatus(collectionId);
   }
 }
