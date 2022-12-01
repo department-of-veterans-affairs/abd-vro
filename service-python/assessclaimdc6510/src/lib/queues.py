@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 import pika
 
@@ -13,7 +14,7 @@ SERVICE_QUEUE = queue_config["service_queue_name"]
 def on_request_callback(channel, method, properties, body):
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
-    logging.info(f" [x] {binding_key}: Received message.")
+    logging.info(f" [x] {binding_key}: Received message at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
     try:
         response = main.assess_sinusitis(message)
     except Exception as e:
@@ -26,7 +27,7 @@ def on_request_callback(channel, method, properties, body):
         properties=pika.BasicProperties(correlation_id=properties.correlation_id),
         body=json.dumps(response),
     )
-    logging.info(f" [x] {binding_key}: Message sent.")
+    logging.info(f" [x] {binding_key}: Message sent at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
 
 
 def queue_setup(channel):
