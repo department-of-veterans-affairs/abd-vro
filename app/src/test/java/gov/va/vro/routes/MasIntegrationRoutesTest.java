@@ -12,6 +12,7 @@ import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.MasOrderExamReq;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import org.apache.camel.*;
@@ -25,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 
+import static gov.va.vro.service.provider.camel.PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   @Autowired CamelEntrance camelEntrance;
@@ -86,7 +88,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "generate-pdf",
-        "rabbitmq:tap-claim-submitted?exchangeType=topic&amp;queue=tap-claim-submitted-not-used&amp;skipQueueBind=true",
+        VroCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
         "mock:empty-endpoint");
 
     replaceEndpoint(
