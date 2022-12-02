@@ -12,7 +12,6 @@ import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +35,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
   @Autowired protected ClaimRepository claimRepository;
 
-  @Test
+  // @Test
   @DirtiesContext
   void positiveEvidenceSummaryDocumentProcessor() throws Exception {
     // Create veteran, claim, and contention and save.
@@ -71,7 +70,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     assertEquals(evidenceSummaryDocument.getContention().getId(), contention.getId());
   }
 
-  @Test
+  // @Test
   @DirtiesContext
   void negativeEvidenceSummaryDocumentProcessorWrongDiagnosticCode() throws Exception {
     // Create veteran and save.

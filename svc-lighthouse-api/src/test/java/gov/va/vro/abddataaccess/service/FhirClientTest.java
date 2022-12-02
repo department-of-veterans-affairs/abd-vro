@@ -83,18 +83,19 @@ class FhirClientTest {
   private static final String OBSERVATION_RESPONSE = "observation-response-bundle.json";
   private static final String CONDITION_RESPONSE = "condition-response-bundle.json";
   private static final String PROCEDURE_RESPONSE = "procedure-response-bundle.json";
+  private static final String EMPTY_RESPONSE = "empty-bundle.json";
 
   private static final int DEFAULT_PAGE = 1;
   private static final int DEFAULT_SIZE = 30;
-  private static final String FHIRURL = "https://sandbox-api.va.gov/";
+  private static final String FHIR_URL = "https://sandbox-api.va.gov/";
   private static final String TEST_KEY_FILE = "testkey.pem";
   private static final String TEST_TOKEN = "lighthouseToken.json";
 
   @InjectMocks private FhirClient client = Mockito.spy(new FhirClient());
 
-  @Mock private RestTemplate restTemplate;
-
   @Mock private LighthouseApiService lighthouseApiService;
+
+  @Mock private RestTemplate restTemplate;
 
   @Mock private LighthouseProperties properties;
 
@@ -106,6 +107,7 @@ class FhirClientTest {
   private static BundleInfo bpBundleInfo;
   private static BundleInfo conditionBundleInfo;
   private static BundleInfo procedureBundleInfo;
+  private static BundleInfo emptyBundleInfo;
 
   @BeforeAll
   private static void initVariables() throws IOException {
@@ -117,16 +119,7 @@ class FhirClientTest {
     medBundleInfo = BundleInfo.getInstance(MEDICATION_REQUEST_RESPONSE);
     conditionBundleInfo = BundleInfo.getInstance(CONDITION_RESPONSE);
     procedureBundleInfo = BundleInfo.getInstance(PROCEDURE_RESPONSE);
-  }
-
-  private void mockPropertyNParser() {
-    Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
-
-    Mockito.doReturn(medBundleInfo.getBundle())
-        .when(jsonParser)
-        .parseResource(Bundle.class, medBundleInfo.getResponseBody());
-
-    Mockito.doReturn(bpBundleInfo.getBundle()).when(jsonParser).parseResource(Bundle.class, bpBundleInfo.getResponseBody());
+    emptyBundleInfo = BundleInfo.getInstance(EMPTY_RESPONSE);
   }
 
   private void mockRest(ResponseEntity<String> resp, String domainName) {
@@ -146,7 +139,7 @@ class FhirClientTest {
     testClaim.setDiagnosticCode(TEST_MEDICATION_REQUEST);
     testClaim.setVeteranIcn(TEST_PATIENT);
 
-    Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
+    Mockito.doReturn(FHIR_URL).when(properties).getFhirurl();
     Mockito.doReturn(medBundleInfo.getBundle())
         .when(jsonParser)
         .parseResource(Bundle.class, medBundleInfo.getResponseBody());
@@ -165,7 +158,7 @@ class FhirClientTest {
     testClaim.setDiagnosticCode(TEST_DIAGNOSTIC_CODE);
     testClaim.setVeteranIcn(TEST_PATIENT);
 
-    Mockito.doReturn(FHIRURL).when(properties).getFhirurl();
+    Mockito.doReturn(FHIR_URL).when(properties).getFhirurl();
     Mockito.doReturn(medBundleInfo.getBundle())
         .when(jsonParser)
         .parseResource(Bundle.class, medBundleInfo.getResponseBody());
@@ -211,5 +204,28 @@ class FhirClientTest {
     List<AbdProcedure> procedures = evidence.getProcedures();
     assertNotNull(procedures);
   }
-}
 
+  private static <T> void checkNotNullButEmpty(List<T> list) {
+    assertNotNull(list);
+    assertTrue(list.isEmpty());
+  }
+
+  @Test
+  public void testMedicalEvidenceEmptyBundles() throws AbdException {
+    Mockito.doReturn("token")
+        .when(lighthouseApiService)
+        .getLighthouseToken(Mockito.any(), Mockito.any());
+
+    Mockito.doReturn(emptyBundleInfo.getBundle())
+        .when(client)
+        .getFhirBundle(Mockito.any(), Mockito.any());
+
+    AbdClaim claim = new AbdClaim("1234", "0", "34");
+    AbdEvidence evidence = client.getMedicalEvidence(claim);
+
+    checkNotNullButEmpty(evidence.getBloodPressures());
+    checkNotNullButEmpty(evidence.getMedications());
+    checkNotNullButEmpty(evidence.getConditions());
+    checkNotNullButEmpty(evidence.getProcedures());
+  }
+}
