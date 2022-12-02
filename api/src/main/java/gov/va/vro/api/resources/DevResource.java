@@ -33,43 +33,43 @@ import javax.validation.Valid;
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface DevResource {
-  @Operation(
-      summary = "Health data assessment",
-      description = "Provides health data assessment for the claim")
-  @PostMapping("/health-data-assessment")
-  @ResponseStatus(HttpStatus.CREATED)
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No evidence found",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    examples =
-                        @ExampleObject(
-                            value = "{claimSubmissionId: 1234, message = No evidence found}")))
-      })
-  @Timed(value = "health-data-assessment")
-  @Tag(name = "Health Assessment")
-  ResponseEntity<HealthDataAssessment> postHealthAssessment(
-      @Parameter(
-              description = "Claim for which health data assessment requested",
-              required = true,
-              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
-          @Valid
-          @RequestBody
-          HealthDataAssessmentRequest claim)
-      throws RequestValidationException, ClaimProcessingException;
+//   @Operation(
+//       summary = "Health data assessment",
+//       description = "Provides health data assessment for the claim")
+//   @PostMapping("/health-data-assessment")
+//   @ResponseStatus(HttpStatus.CREATED)
+//   @ApiResponses(
+//       value = {
+//         @ApiResponse(responseCode = "201", description = "Successful Request"),
+//         @ApiResponse(
+//             responseCode = "401",
+//             description = "Unauthorized",
+//             content = @Content(schema = @Schema(hidden = true))),
+//         @ApiResponse(
+//             responseCode = "500",
+//             description = "Data Access Server Error",
+//             content = @Content(schema = @Schema(hidden = true))),
+//         @ApiResponse(
+//             responseCode = "404",
+//             description = "No evidence found",
+//             content =
+//                 @Content(
+//                     mediaType = "application/json",
+//                     examples =
+//                         @ExampleObject(
+//                             value = "{claimSubmissionId: 1234, message = No evidence found}")))
+//       })
+//   @Timed(value = "health-data-assessment")
+//   @Tag(name = "Health Assessment")
+//   ResponseEntity<HealthDataAssessment> postHealthAssessment(
+//       @Parameter(
+//               description = "Claim for which health data assessment requested",
+//               required = true,
+//               schema = @Schema(implementation = HealthDataAssessmentRequest.class))
+//           @Valid
+//           @RequestBody
+//           HealthDataAssessmentRequest claim)
+//       throws RequestValidationException, ClaimProcessingException;
 
   @Operation(
       summary = "Gets all claims stored in vro database.",
