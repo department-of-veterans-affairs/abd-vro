@@ -18,11 +18,15 @@ public class BipApiProps {
 
   private String claimClientId;
 
+  private String claimIssuer;
+
   private String evidenceBaseURL;
 
   private String evidenceSecret;
 
   private String evidenceClientId;
+
+  private String evidenceIssuer;
 
   private String stationId;
 

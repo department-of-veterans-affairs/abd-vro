@@ -39,10 +39,10 @@ public class BipApiService implements IBipApiService {
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String RFD_STATUS = "Ready For Decision";
-  private static final String X_FOLDER_URI = "VETERAN:FILENUMBER:%s";
+  private static final String X_FOLDER_URI = "VETERAN:%s:%s";
   private static final String HTTPS = "https://";
 
-  private static final String UPLOAD_FILE = "files";
+  private static final String UPLOAD_FILE = "/files";
 
   private final RestTemplate restTemplate;
   private final BipApiProps bipApiProps;
@@ -91,7 +91,7 @@ public class BipApiService implements IBipApiService {
     try {
       String url =
           HTTPS + bipApiProps.getClaimBaseURL() + String.format(UPDATE_CLAIM_STATUS, claimId);
-      log.info("call {} to update claim status.");
+      log.info("call {} to update claim status.", url);
       HttpHeaders headers = getBipHeader(API.CLAIM);
       Map<String, String> requestBody = new HashMap<>();
       requestBody.put(
@@ -140,7 +140,6 @@ public class BipApiService implements IBipApiService {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseURL() + String.format(CONTENTION, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
-      Map<String, String> requestBody = new HashMap<>();
       ObjectMapper mapper = new ObjectMapper();
       String updtContention = mapper.writeValueAsString(contention);
       HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
@@ -172,19 +171,19 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public HashMap<String, String> uploadEvidence(
-      String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+      FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException { // TODO: to be finished.
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseURL() + UPLOAD_FILE;
       HttpHeaders headers = getBipHeader(API.EVIDENCE);
-      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, fileId));
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
 
       ObjectMapper mapper = new ObjectMapper();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
       body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
       body.add("file", new FileSystemResource(file));
-      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity(body, headers);
+      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       HashMap<String, String> resp = new HashMap<>();
@@ -221,7 +220,7 @@ public class BipApiService implements IBipApiService {
     claims.put("applicationID", bipApiProps.getApplicationId());
     claims.put("stationID", bipApiProps.getStationId());
     claims.put("userID", bipApiProps.getClaimClientId());
-    claims.put("iss", bipApiProps.getApplicationName());
+    // claims.put("iss", bipApiProps.getApplicationName());
     claims.put("iat", now.getTime());
     claims.put("expires", expired.getTime());
     Map<String, Object> headerType = new HashMap<>();
@@ -230,6 +229,7 @@ public class BipApiService implements IBipApiService {
     String jwt;
     switch (api) {
       case CLAIM -> {
+        claims.put("iss", bipApiProps.getClaimIssuer());
         byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
         Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
         return Jwts.builder()
@@ -242,6 +242,7 @@ public class BipApiService implements IBipApiService {
             .compact();
       }
       case EVIDENCE -> {
+        claims.put("iss", bipApiProps.getEvidenceIssuer());
         return Jwts.builder()
             .setSubject("Evidence")
             .setIssuedAt(now)

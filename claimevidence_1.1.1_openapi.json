@@ -1,0 +1,4425 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Claim Evidence API.",
+    "description" : "The Claim Evidence Application Programming Interface (API) is file service for handling the storage and management of files supporting VA benefit claims. It serves as a modernized point of entry to files previously only accessible through VBMS eFolder. It is designed for easier implementation by consuming systems, but also with the ability to eventually replace the eFolder logic within VBMS.\nInformation on how to generate the JWT token needed for integrating with this service can be found [here](https://github.com/department-of-veterans-affairs/bip-vefs-claimevidence/wiki/JWT-Authorization)",
+    "termsOfService" : "https://developer.va.gov/terms-of-service",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version" : "0.0.1-SNAPSHOT"
+  },
+  "servers" : [ {
+    "url" : "/api/v1/rest"
+  } ],
+  "tags" : [ {
+    "name" : "PRODUCT_SCOPE",
+    "description" : "BIP"
+  }, {
+    "name" : "PRODUCT_LINE_SCOPE",
+    "description" : "C&P"
+  }, {
+    "name" : "PORTFOLIO_SCOPE",
+    "description" : "BAM"
+  } ],
+  "paths" : {
+    "/folders/files:search" : {
+      "post" : {
+        "tags" : [ "Folder" ],
+        "summary" : "Search Files",
+        "description" : "### Searches files by provided FolderIdentifier, and search request filers.",
+        "operationId" : "searchFiles",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/searchFileRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Search was successful given provided search request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/searchFileResponse"
+                }
+              },
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/searchFileResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files" : {
+      "post" : {
+        "tags" : [ "File" ],
+        "summary" : "Upload a file with associated provider data",
+        "description" : "### Upload a file.\n This endpoint when given a file and associated data returns a UUID which can be used to retrieve back the latest data provided. Information on how to properly creae a payload object for this endpoint is available in the schema section.",
+        "operationId" : "upload",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The Folder Identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/uploadRequest"
+              },
+              "encoding" : {
+                "file" : {
+                  "contentType" : "image/png, image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response containing the file UUID, the owner, and the calculated MD5 Hash. As well as conversion information if the document has been converted.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/uploadResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type. This is common when uploading an unacceptable file type.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files/{uuid}/" : {
+      "post" : {
+        "tags" : [ "File" ],
+        "summary" : "Update a file with associated provider data",
+        "description" : "### Update a file.\n This endpoint when given a file and associated data returns a UUID which can be used to retrieve back the latest data provided. Information on how to properly creae a payload object for this endpoint is available in the schema section.",
+        "operationId" : "update",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The Folder Identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/updateRequest"
+              },
+              "encoding" : {
+                "file" : {
+                  "contentType" : "image/png, image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response containing the file UUID, the owner, and the calculated MD5 Hash. As well as conversion information if the document has been converted.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/updateResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type. This is common when uploading an unacceptable file type.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files/{uuid}/data" : {
+      "get" : {
+        "tags" : [ "File" ],
+        "summary" : "Retrieve file data.",
+        "description" : "Retrieve file data.",
+        "operationId" : "getData",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "File data is returned.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/currentFileDataComposition"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "File" ],
+        "summary" : "Update a file with associated provider data",
+        "description" : "### Update file data.\n This endpoint when givem data returns a status success or error message. Information on how to properly creae a payload object for this endpoint is available in the schema section.",
+        "operationId" : "updateData",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The Folder Identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/updateDataRequest"
+              },
+              "encoding" : {
+                "file" : {
+                  "contentType" : "image/png, image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response indicating a successful data update."
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type. This is common when uploading an unacceptable file type.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files/{uuid}/annotations" : {
+      "get" : {
+        "tags" : [ "File", "Annotation" ],
+        "summary" : "Retrieves annotations.",
+        "description" : "Retrieves annotations for UI consumption.",
+        "operationId" : "getAnnotations",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "annotations are returned.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/annotationResponseModel"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "File", "Annotation" ],
+        "summary" : "Add annotations on content.",
+        "description" : "### Add annotations.\n This endpoint when givem data returns a status success or error message. The annotation object schema is listed at the bottom of this swagger page.",
+        "operationId" : "addAnnotations",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The Folder Identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "title" : "Annotation Request",
+                "type" : "object",
+                "oneOf" : [ {
+                  "$ref" : "#/components/schemas/basic"
+                }, {
+                  "$ref" : "#/components/schemas/basic"
+                }, {
+                  "$ref" : "#/components/schemas/lines"
+                }, {
+                  "$ref" : "#/components/schemas/callout"
+                }, {
+                  "$ref" : "#/components/schemas/freetext"
+                }, {
+                  "$ref" : "#/components/schemas/notes"
+                }, {
+                  "$ref" : "#/components/schemas/textSelection"
+                } ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response indicating a successful annotation save",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Save Annotation Response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type. This is common when uploading an unacceptable file type.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files/{uuid}/annotations/{{annotationUuid}}" : {
+      "put" : {
+        "tags" : [ "File", "Annotation" ],
+        "summary" : "Update annotation on content.",
+        "description" : "### Update annotations.\n This endpoint when givem data returns a status success or error message. The annotation object schema is listed at the bottom of this swagger page.",
+        "operationId" : "updateAnnotations",
+        "parameters" : [ {
+          "name" : "fileUuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "annotationUuid",
+          "in" : "path",
+          "description" : "The UUID of the annotation data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "title" : "Update Annotation Request",
+                "type" : "object",
+                "oneOf" : [ {
+                  "$ref" : "#/components/schemas/updateAnnotationModel"
+                } ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response indicating a successful annotation save"
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "JWT contains claims which indicate the consumer is not authorized to access the resource",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type. This is common when uploading an unacceptable file type.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "File", "Annotation" ],
+        "summary" : "Deletes an annotation.",
+        "description" : "Deletes an annotation.",
+        "operationId" : "deleteAnnotation",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file data.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "annotationUuid",
+          "in" : "path",
+          "description" : "The UUID of the annotation.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The annotation was deleted successfully."
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/files/{uuid}/content" : {
+      "get" : {
+        "tags" : [ "File" ],
+        "summary" : "Downloads file content",
+        "description" : "Downloads file content.",
+        "operationId" : "getContent",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "UUID of the file you wish to download",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "File content is returned.",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "501" : {
+            "description" : "This request is not yet implemented.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/documentTypes" : {
+      "get" : {
+        "tags" : [ "Document Types" ],
+        "summary" : "Retrieves document types and alternative document types.",
+        "description" : "Retrieves document types and alternative document types based on role.",
+        "operationId" : "getDocumentTypes",
+        "responses" : {
+          "200" : {
+            "description" : "document types and alternative document types are returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getDocumentTypesResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/contentSources" : {
+      "get" : {
+        "tags" : [ "Content Sources" ],
+        "summary" : "Retrieves content sources.",
+        "description" : "Retrieves content sources for UI consumption.",
+        "operationId" : "getContentSources",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "content sources are returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getContentSourcesResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/post/files" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves upload permissions.",
+        "description" : "Retrieves upload permissions for the requesting user.",
+        "operationId" : "getUploadPermissions",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postPermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/put/files/{uuid}/data" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves update file data permissions.",
+        "description" : "Retrieves update file data permissions for the requesting user.",
+        "operationId" : "getUpdateDataPermissions",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "The UUID of the file.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/putPermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/post/folders/files:search" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves file search permissions.",
+        "description" : "Retrieves file search permissions for the requesting user.",
+        "operationId" : "getSearchPermissions",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postPermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/post/files/{fileUuid}/annotations" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves create annotations permissions.",
+        "description" : "Retrieves create annotations permissions for the requesting user.",
+        "operationId" : "getCreateAnnotationsPermissions",
+        "parameters" : [ {
+          "name" : "fileUuid",
+          "in" : "path",
+          "description" : "The UUID of the file.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postPermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/put/files/{fileUuid}/annotations/{annotationUuid}" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves update annotations permissions.",
+        "description" : "Retrieves update annotations permissions for the requesting user.",
+        "operationId" : "getUpdateAnnotationsPermissions",
+        "parameters" : [ {
+          "name" : "fileUuid",
+          "in" : "path",
+          "description" : "The UUID of the file.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "annotationUuid",
+          "in" : "path",
+          "description" : "The UUID of the annotation.",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/putPermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/permissions/delete/files/{fileUuid}/annotations/{annotationUuid}" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Retrieves delete annotations permissions.",
+        "description" : "Retrieves delete annotations permissions for the requesting user.",
+        "operationId" : "getDeleteAnnotationsPermissions",
+        "parameters" : [ {
+          "name" : "fileUuid",
+          "in" : "path",
+          "description" : "The UUID of the file.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "annotationUuid",
+          "in" : "path",
+          "description" : "The UUID of the annotation.",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "permission info is returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/deletePermissionsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    },
+    "/folders/uploadSources" : {
+      "get" : {
+        "tags" : [ "Upload Sources" ],
+        "summary" : "Retrieves upload sources.",
+        "description" : "Retrieves upload sources for UI consumption.",
+        "operationId" : "getUploadSources",
+        "parameters" : [ {
+          "name" : "X-Folder-URI",
+          "in" : "header",
+          "description" : "The identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "VETERAN:FILENUMBER:987267855"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "upload sources are returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getUploadSourcesResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "The authentication mechanism failed and hence access is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "The request is not authorized.  Please verify credentials used in the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/vefsErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer-key" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "vefsErrorResponse" : {
+        "title" : "Vefs Error Response",
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "title" : "Error UUID",
+            "type" : "string",
+            "description" : "UUID used to trace the error response",
+            "format" : "uuid"
+          },
+          "code" : {
+            "title" : "Error Code",
+            "type" : "string",
+            "description" : "Enumerated Error Code indicating the error classification."
+          },
+          "message" : {
+            "title" : "The message schema",
+            "type" : "string",
+            "description" : "The message describing the error."
+          }
+        },
+        "additionalProperties" : false,
+        "description" : "The root schema comprises generic File Store Errors."
+      },
+      "postPermissionsResponse" : {
+        "title" : "Post Permissions Response",
+        "type" : "object",
+        "properties" : {
+          "post" : {
+            "$ref" : "#/components/schemas/verbPermission"
+          }
+        },
+        "description" : "Responses contain permission information for the endpoint by POST verb",
+        "example" : {
+          "post" : {
+            "systemData" : [ "systemData", "systemData" ],
+            "providerData" : [ "providerData", "providerData" ],
+            "hasAccess" : true
+          }
+        }
+      },
+      "callout" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "rawXfdf" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "tailDirection" : {
+            "type" : "string"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/callout_position"
+          },
+          "size" : {
+            "$ref" : "#/components/schemas/callout_size"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/callout_text"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "pageNumber" : 1,
+          "size" : {
+            "width" : 5,
+            "height" : 5
+          },
+          "color" : "color",
+          "created" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "tailDirection" : "tailDirection",
+          "modified" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "rawXfdf" : "rawXfdf",
+          "position" : {
+            "left" : 1,
+            "bottom" : 6
+          },
+          "text" : {
+            "size" : 1,
+            "color" : "color",
+            "alignment" : "alignment",
+            "font" : "font"
+          },
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid"
+        }
+      },
+      "notes" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "rawXfdf" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "comment" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "size" : {
+            "$ref" : "#/components/schemas/callout_size"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/callout_position"
+          },
+          "icon" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "pageNumber" : 4,
+          "size" : {
+            "width" : 5,
+            "height" : 5
+          },
+          "color" : "color",
+          "created" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "icon" : "icon",
+          "modified" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "rawXfdf" : "rawXfdf",
+          "comment" : "comment",
+          "position" : {
+            "left" : 1,
+            "bottom" : 6
+          },
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid"
+        }
+      },
+      "updateAnnotationModel" : {
+        "title" : "Update Annotation Model",
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "comment" : {
+            "type" : "string"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/callout_position"
+          },
+          "size" : {
+            "$ref" : "#/components/schemas/callout_size"
+          }
+        }
+      },
+      "currentFileDataComposition" : {
+        "title" : "Current File Data Composition",
+        "type" : "object",
+        "properties" : {
+          "owner" : {
+            "$ref" : "#/components/schemas/folderIdentifier"
+          },
+          "uuid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "currentVersionUuid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "expiredDateTime" : {
+            "type" : "string"
+          },
+          "currentVersion" : {
+            "$ref" : "#/components/schemas/versionComposition"
+          }
+        },
+        "description" : "Current file information.",
+        "example" : {
+          "owner" : {
+            "id" : "id",
+            "type" : "VETERAN"
+          },
+          "expiredDateTime" : "expiredDateTime",
+          "currentVersionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "uuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "currentVersion" : {
+            "systemData" : {
+              "uploadSource" : "uploadSource",
+              "uploadedDateTime" : "uploadedDateTime",
+              "mimeType" : "mimeType",
+              "contentName" : "contentName"
+            },
+            "providerData" : {
+              "veteranMiddleName" : "veteranMiddleName",
+              "veteranSuffix" : "veteranSuffix",
+              "documentType" : {
+                "name" : "name",
+                "description" : "description",
+                "documentCategory" : {
+                  "subDescription" : "subDescription",
+                  "description" : "description",
+                  "modifiedDateTime" : "modifiedDateTime",
+                  "id" : 2,
+                  "createDateTime" : "createDateTime"
+                },
+                "modifiedDateTime" : "modifiedDateTime",
+                "id" : 5,
+                "isUserUploadable" : true,
+                "createDateTime" : "createDateTime"
+              },
+              "subject" : "subject",
+              "veteranLastName" : "veteranLastName",
+              "dateVaReceivedDocument" : "dateVaReceivedDocument",
+              "documentTypeId" : 5,
+              "endProductCode" : "endProductCode",
+              "veteranFirstName" : "veteranFirstName",
+              "systemSource" : "systemSource",
+              "actionable" : true,
+              "modifiedDateTime" : "modifiedDateTime",
+              "certified" : true
+            }
+          }
+        }
+      },
+      "alternativeDocumentType" : {
+        "title" : "Alternative Document Type",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createDateTime" : {
+            "type" : "string"
+          },
+          "modifiedDateTime" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Alternative document type information for UI consumption.",
+        "example" : {
+          "name" : "name",
+          "description" : "description",
+          "modifiedDateTime" : "modifiedDateTime",
+          "id" : 0,
+          "createDateTime" : "createDateTime"
+        }
+      },
+      "uploadResponse" : {
+        "type" : "object",
+        "properties" : {
+          "owner" : {
+            "type" : "string",
+            "description" : "String representation of the document's owner",
+            "example" : "VETERAN:FILENUMBER:987267855"
+          },
+          "uuid" : {
+            "type" : "string",
+            "description" : "UUID representing the file as a whole. This is used for all primary VEFS-Operations.",
+            "format" : "uuid",
+            "example" : "c30626c9-954d-4dd1-9f70-1e38756d9d97"
+          },
+          "currentVersionUuid" : {
+            "type" : "string",
+            "description" : "UUID representing the single point-in-time version of the document.",
+            "format" : "uuid",
+            "example" : "c30626c9-954d-4dd1-9f70-1e38756d9d98"
+          },
+          "md5" : {
+            "type" : "string",
+            "description" : "MD5 Hash of the File field on upload.",
+            "example" : "32c31506acefa9f125c2a790ed1e675f"
+          },
+          "conversionInformation" : {
+            "$ref" : "#/components/schemas/Conversion Information"
+          }
+        },
+        "example" : {
+          "owner" : "VETERAN:FILENUMBER:987267855",
+          "currentVersionUuid" : "c30626c9-954d-4dd1-9f70-1e38756d9d98",
+          "conversionInformation" : {
+            "preprocessed" : {
+              "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "uploadedDateTime" : "uploadedDateTime",
+              "mimeType" : "mimeType",
+              "md5" : "md5"
+            },
+            "converted" : {
+              "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "uploadedDateTime" : "uploadedDateTime",
+              "mimeType" : "mimeType",
+              "md5" : "md5"
+            }
+          },
+          "uuid" : "c30626c9-954d-4dd1-9f70-1e38756d9d97",
+          "md5" : "32c31506acefa9f125c2a790ed1e675f"
+        }
+      },
+      "pageResponse" : {
+        "title" : "Page Responce",
+        "type" : "object",
+        "properties" : {
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "requestedResultsPerPage" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "currentPage" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "Information on paging of results.",
+        "example" : {
+          "totalPages" : 0,
+          "requestedResultsPerPage" : 6,
+          "currentPage" : 1
+        }
+      },
+      "systemDataComposition" : {
+        "title" : "System Data Composition",
+        "type" : "object",
+        "properties" : {
+          "uploadedDateTime" : {
+            "type" : "string"
+          },
+          "contentName" : {
+            "type" : "string"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "uploadSource" : {
+            "type" : "string"
+          }
+        },
+        "description" : "System Data assocated to file.",
+        "example" : {
+          "uploadSource" : "uploadSource",
+          "uploadedDateTime" : "uploadedDateTime",
+          "mimeType" : "mimeType",
+          "contentName" : "contentName"
+        }
+      },
+      "uploadSourceFilter" : {
+        "title" : "UploadSource Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "VBMS-UI"
+          }
+        },
+        "description" : "Filters results on uploadSource."
+      },
+      "Filters" : {
+        "properties" : {
+          "providerData.documentTypeId" : {
+            "$ref" : "#/components/schemas/documentTypeIdFilter"
+          },
+          "providerData.subject" : {
+            "$ref" : "#/components/schemas/subjectFilter"
+          },
+          "systemData.contentName" : {
+            "$ref" : "#/components/schemas/contentNameFilter"
+          },
+          "providerData.dateVaReceivedDocument" : {
+            "$ref" : "#/components/schemas/dateVaReceivedDocumentFilter"
+          },
+          "providerData.endProductCode" : {
+            "$ref" : "#/components/schemas/endProductCodeFilter"
+          },
+          "providerData.associatedClaimId" : {
+            "$ref" : "#/components/schemas/associatedClaimId"
+          },
+          "providerData.associationDateTime" : {
+            "$ref" : "#/components/schemas/associationDateTimeFilter"
+          },
+          "systemData.mimeType" : {
+            "$ref" : "#/components/schemas/mimeTypeFilter"
+          },
+          "systemData.uploadSource" : {
+            "$ref" : "#/components/schemas/uploadSourceFilter"
+          }
+        }
+      },
+      "subjectFilter" : {
+        "title" : "Subject Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "CONTAINS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[\"Doc1\"]"
+          }
+        },
+        "description" : "Filters results on Subject."
+      },
+      "conversionInfo" : {
+        "title" : "Conversion Information",
+        "type" : "object",
+        "properties" : {
+          "versionUuid" : {
+            "title" : "Version Uuid",
+            "type" : "string",
+            "description" : "UUID identifying the particular version.",
+            "format" : "uuid"
+          },
+          "mimeType" : {
+            "title" : "Mime Type",
+            "type" : "string",
+            "description" : "Mime Type of the indicated versionUuid."
+          },
+          "md5" : {
+            "title" : "MDD5 Hash",
+            "type" : "string",
+            "description" : "MD5 hash code of the particular version."
+          },
+          "uploadedDateTime" : {
+            "title" : "Uploaded Date Time",
+            "type" : "string",
+            "description" : "Date and time the document was uploaded."
+          }
+        },
+        "description" : "Information only present if the document has been converted. Details the previous version mime type, md5, and time of file conversion.",
+        "example" : {
+          "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "uploadedDateTime" : "uploadedDateTime",
+          "mimeType" : "mimeType",
+          "md5" : "md5"
+        }
+      },
+      "freetext_position" : {
+        "required" : [ "bottom", "left" ],
+        "properties" : {
+          "bottom" : {
+            "type" : "integer"
+          },
+          "left" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "left" : 1,
+          "bottom" : 7
+        }
+      },
+      "basic_border" : {
+        "properties" : {
+          "width" : {
+            "type" : "integer"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "color" : "color",
+          "width" : 2
+        }
+      },
+      "payload" : {
+        "title" : "Upload Payload",
+        "type" : "object",
+        "properties" : {
+          "contentName" : {
+            "title" : "Content Name",
+            "maxLength" : 256,
+            "minLength" : 4,
+            "pattern" : "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$",
+            "type" : "string",
+            "description" : "The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321."
+          },
+          "providerData" : {
+            "$ref" : "#/components/schemas/uploadProviderDataRequest"
+          }
+        },
+        "description" : "Payload containing content name and the provider specific data."
+      },
+      "uploadRequest" : {
+        "title" : "Upload Request",
+        "type" : "object",
+        "properties" : {
+          "payload" : {
+            "$ref" : "#/components/schemas/payload"
+          },
+          "file" : {
+            "type" : "string",
+            "format" : "binary"
+          }
+        }
+      },
+      "getContentSourcesResponse" : {
+        "title" : "Get Content Sources Response",
+        "type" : "object",
+        "properties" : {
+          "contentSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/contentSource"
+            }
+          }
+        },
+        "description" : "Get content sources UI consumption.",
+        "example" : {
+          "contentSources" : [ {
+            "name" : "name",
+            "id" : 0,
+            "createDateTime" : "createDateTime"
+          }, {
+            "name" : "name",
+            "id" : 0,
+            "createDateTime" : "createDateTime"
+          } ]
+        }
+      },
+      "annotationResponseModel" : {
+        "title" : "Annotation",
+        "type" : "object",
+        "properties" : {
+          "squares" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/basic"
+            }
+          },
+          "circles" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/basic"
+            }
+          },
+          "lines" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/lines"
+            }
+          },
+          "callout" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/callout"
+            }
+          },
+          "freetext" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/freetext"
+            }
+          },
+          "notes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/notes"
+            }
+          },
+          "highlights" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/textSelection"
+            }
+          },
+          "underlines" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/textSelection"
+            }
+          },
+          "strikeouts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/textSelection"
+            }
+          }
+        },
+        "description" : "Annotations for UI consumption.",
+        "example" : {
+          "callout" : [ {
+            "pageNumber" : 1,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "tailDirection" : "tailDirection",
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "text" : {
+              "size" : 1,
+              "color" : "color",
+              "alignment" : "alignment",
+              "font" : "font"
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "pageNumber" : 1,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "tailDirection" : "tailDirection",
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "text" : {
+              "size" : 1,
+              "color" : "color",
+              "alignment" : "alignment",
+              "font" : "font"
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "notes" : [ {
+            "pageNumber" : 4,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "icon" : "icon",
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "pageNumber" : 4,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "icon" : "icon",
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "highlights" : [ {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "freetext" : [ {
+            "pageNumber" : 6,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 7
+            },
+            "text" : {
+              "size" : 1,
+              "color" : "color",
+              "alignment" : "alignment",
+              "font" : "font"
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "pageNumber" : 6,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 7
+            },
+            "text" : {
+              "size" : 1,
+              "color" : "color",
+              "alignment" : "alignment",
+              "font" : "font"
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "squares" : [ {
+            "border" : {
+              "color" : "color",
+              "width" : 2
+            },
+            "pageNumber" : 0,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime"
+            },
+            "modified" : {
+              "dateTime" : "dateTime"
+            },
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "border" : {
+              "color" : "color",
+              "width" : 2
+            },
+            "pageNumber" : 0,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime"
+            },
+            "modified" : {
+              "dateTime" : "dateTime"
+            },
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "underlines" : [ {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "circles" : [ {
+            "border" : {
+              "color" : "color",
+              "width" : 2
+            },
+            "pageNumber" : 0,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime"
+            },
+            "modified" : {
+              "dateTime" : "dateTime"
+            },
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "border" : {
+              "color" : "color",
+              "width" : 2
+            },
+            "pageNumber" : 0,
+            "size" : {
+              "width" : 5,
+              "height" : 5
+            },
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime"
+            },
+            "modified" : {
+              "dateTime" : "dateTime"
+            },
+            "comment" : "comment",
+            "position" : {
+              "left" : 1,
+              "bottom" : 6
+            },
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "strikeouts" : [ {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          }, {
+            "selectedAreas" : [ {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            }, {
+              "left" : 9,
+              "bottom" : 9,
+              "width" : 6,
+              "height" : 8
+            } ],
+            "pageNumber" : 5,
+            "color" : "color",
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid"
+          } ],
+          "lines" : [ {
+            "pageNumber" : 9,
+            "color" : "color",
+            "thickness" : 3,
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid",
+            "points" : {
+              "endY" : 1,
+              "endX" : 7,
+              "startY" : 4,
+              "startX" : 2
+            }
+          }, {
+            "pageNumber" : 9,
+            "color" : "color",
+            "thickness" : 3,
+            "created" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "modified" : {
+              "dateTime" : "dateTime",
+              "userId" : 7
+            },
+            "rawXfdf" : "rawXfdf",
+            "type" : "type",
+            "title" : "title",
+            "uuid" : "uuid",
+            "points" : {
+              "endY" : 1,
+              "endX" : 7,
+              "startY" : 4,
+              "startX" : 2
+            }
+          } ]
+        }
+      },
+      "updateDataPayload" : {
+        "title" : "Payload",
+        "type" : "object",
+        "properties" : {
+          "providerData" : {
+            "$ref" : "#/components/schemas/updateDataProviderData"
+          }
+        },
+        "description" : "Payload containing content name and the provider specific data."
+      },
+      "documentTypeIdFilter" : {
+        "title" : "DocumentTypeId Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[137]"
+          }
+        },
+        "description" : "Filters results on DocumentTypeId."
+      },
+      "sorts" : {
+        "type" : "object",
+        "properties" : {
+          "property" : {
+            "type" : "string",
+            "example" : "providerData.subject"
+          },
+          "direction" : {
+            "type" : "string",
+            "example" : "DESCENDING",
+            "enum" : [ "ASCENDING", "DESCENDING" ]
+          }
+        },
+        "description" : "sorting informmation."
+      },
+      "updateRequest" : {
+        "type" : "object",
+        "properties" : {
+          "payload" : {
+            "$ref" : "#/components/schemas/payload_2"
+          },
+          "file" : {
+            "type" : "string",
+            "format" : "binary"
+          }
+        }
+      },
+      "documentCategory" : {
+        "title" : "Document Type Category",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createDateTime" : {
+            "type" : "string"
+          },
+          "modifiedDateTime" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "subDescription" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Document type category information for UI consumption.",
+        "example" : {
+          "subDescription" : "subDescription",
+          "description" : "description",
+          "modifiedDateTime" : "modifiedDateTime",
+          "id" : 2,
+          "createDateTime" : "createDateTime"
+        }
+      },
+      "Conversion Information" : {
+        "properties" : {
+          "preprocessed" : {
+            "$ref" : "#/components/schemas/conversionInfo"
+          },
+          "converted" : {
+            "$ref" : "#/components/schemas/conversionInfo"
+          }
+        },
+        "description" : "Details about a file's conversion. This is optional, and will only be present on responses where the file has been converted.",
+        "example" : {
+          "preprocessed" : {
+            "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "uploadedDateTime" : "uploadedDateTime",
+            "mimeType" : "mimeType",
+            "md5" : "md5"
+          },
+          "converted" : {
+            "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "uploadedDateTime" : "uploadedDateTime",
+            "mimeType" : "mimeType",
+            "md5" : "md5"
+          }
+        }
+      },
+      "callout_text" : {
+        "properties" : {
+          "size" : {
+            "type" : "integer"
+          },
+          "font" : {
+            "type" : "string"
+          },
+          "alignment" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "size" : 1,
+          "color" : "color",
+          "alignment" : "alignment",
+          "font" : "font"
+        }
+      },
+      "Sorts" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/sorts"
+        }
+      },
+      "associatedClaimId" : {
+        "title" : "Associated Claim ID",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[137]"
+          }
+        },
+        "description" : "Filter based on the claims associated to the documents."
+      },
+      "contentSource" : {
+        "title" : "Content Source",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createDateTime" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Content sources for UI consumption.",
+        "example" : {
+          "name" : "name",
+          "id" : 0,
+          "createDateTime" : "createDateTime"
+        }
+      },
+      "Save Annotation Response" : {
+        "properties" : {
+          "uuid" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "example" : {
+          "uuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      },
+      "basic" : {
+        "title" : "Basic Annotation",
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/basic_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/basic_modified"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "comment" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/callout_position"
+          },
+          "size" : {
+            "$ref" : "#/components/schemas/callout_size"
+          },
+          "border" : {
+            "$ref" : "#/components/schemas/basic_border"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "border" : {
+            "color" : "color",
+            "width" : 2
+          },
+          "pageNumber" : 0,
+          "size" : {
+            "width" : 5,
+            "height" : 5
+          },
+          "color" : "color",
+          "created" : {
+            "dateTime" : "dateTime"
+          },
+          "modified" : {
+            "dateTime" : "dateTime"
+          },
+          "comment" : "comment",
+          "position" : {
+            "left" : 1,
+            "bottom" : 6
+          },
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid"
+        }
+      },
+      "updateResponse" : {
+        "title" : "Update Response",
+        "type" : "object",
+        "properties" : {
+          "owner" : {
+            "type" : "string",
+            "description" : "String representation of the document's owner",
+            "example" : "VETERAN:FILENUMBER:987267855"
+          },
+          "uuid" : {
+            "type" : "string",
+            "description" : "UUID representing the file as a whole. This is used for all primary VEFS-Operations.",
+            "format" : "uuid",
+            "example" : "c30626c9-954d-4dd1-9f70-1e38756d9d97"
+          },
+          "currentVersionUuid" : {
+            "type" : "string",
+            "description" : "UUID representing the single point-in-time version of the document.",
+            "format" : "uuid",
+            "example" : "c30626c9-954d-4dd1-9f70-1e38756d9d98"
+          },
+          "md5" : {
+            "type" : "string",
+            "description" : "MD5 Hash of the File field on upload.",
+            "example" : "32c31506acefa9f125c2a790ed1e675f"
+          },
+          "conversionInformation" : {
+            "$ref" : "#/components/schemas/Conversion Information"
+          }
+        },
+        "example" : {
+          "owner" : "VETERAN:FILENUMBER:987267855",
+          "currentVersionUuid" : "c30626c9-954d-4dd1-9f70-1e38756d9d98",
+          "conversionInformation" : {
+            "preprocessed" : {
+              "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "uploadedDateTime" : "uploadedDateTime",
+              "mimeType" : "mimeType",
+              "md5" : "md5"
+            },
+            "converted" : {
+              "versionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "uploadedDateTime" : "uploadedDateTime",
+              "mimeType" : "mimeType",
+              "md5" : "md5"
+            }
+          },
+          "uuid" : "c30626c9-954d-4dd1-9f70-1e38756d9d97",
+          "md5" : "32c31506acefa9f125c2a790ed1e675f"
+        }
+      },
+      "verbPermission" : {
+        "title" : "Verb Permission",
+        "type" : "object",
+        "properties" : {
+          "hasAccess" : {
+            "type" : "boolean",
+            "description" : "flag indicating whether the requesting user hass access to the endpoint"
+          },
+          "systemData" : {
+            "type" : "array",
+            "description" : "array of strings indicating which system data fields are editable",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "providerData" : {
+            "type" : "array",
+            "description" : "array of strings indicating which provider data fields are editable",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "description" : "Contains permission information for an endpoint based on the HTTP verb",
+        "example" : {
+          "systemData" : [ "systemData", "systemData" ],
+          "providerData" : [ "providerData", "providerData" ],
+          "hasAccess" : true
+        }
+      },
+      "getUploadSourcesResponse" : {
+        "title" : "Get Upload Sources Response",
+        "type" : "object",
+        "properties" : {
+          "uploadSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/uploadSource"
+            }
+          }
+        },
+        "description" : "Get upload sources for UI consumption.",
+        "example" : {
+          "uploadSources" : [ {
+            "name" : "name"
+          }, {
+            "name" : "name"
+          } ]
+        }
+      },
+      "callout_size" : {
+        "properties" : {
+          "width" : {
+            "type" : "integer"
+          },
+          "height" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "width" : 5,
+          "height" : 5
+        }
+      },
+      "freetext" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "rawXfdf" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "comment" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/freetext_position"
+          },
+          "size" : {
+            "$ref" : "#/components/schemas/callout_size"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/callout_text"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "pageNumber" : 6,
+          "size" : {
+            "width" : 5,
+            "height" : 5
+          },
+          "color" : "color",
+          "created" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "modified" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "rawXfdf" : "rawXfdf",
+          "comment" : "comment",
+          "position" : {
+            "left" : 1,
+            "bottom" : 7
+          },
+          "text" : {
+            "size" : 1,
+            "color" : "color",
+            "alignment" : "alignment",
+            "font" : "font"
+          },
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid"
+        }
+      },
+      "providerData" : {
+        "title" : "Provider Data",
+        "type" : "object",
+        "properties" : {
+          "modifiedDateTime" : {
+            "type" : "string"
+          },
+          "dateVaReceivedDocument" : {
+            "type" : "string"
+          },
+          "actionable" : {
+            "type" : "boolean"
+          },
+          "certified" : {
+            "type" : "boolean"
+          },
+          "documentTypeId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentType" : {
+            "$ref" : "#/components/schemas/documentType"
+          },
+          "endProductCode" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "systemSource" : {
+            "type" : "string"
+          },
+          "veteranFirstName" : {
+            "type" : "string"
+          },
+          "veteranLastName" : {
+            "type" : "string"
+          },
+          "veteranMiddleName" : {
+            "type" : "string"
+          },
+          "veteranSuffix" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Provider Data associated to file.",
+        "example" : {
+          "veteranMiddleName" : "veteranMiddleName",
+          "veteranSuffix" : "veteranSuffix",
+          "documentType" : {
+            "name" : "name",
+            "description" : "description",
+            "documentCategory" : {
+              "subDescription" : "subDescription",
+              "description" : "description",
+              "modifiedDateTime" : "modifiedDateTime",
+              "id" : 2,
+              "createDateTime" : "createDateTime"
+            },
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 5,
+            "isUserUploadable" : true,
+            "createDateTime" : "createDateTime"
+          },
+          "subject" : "subject",
+          "veteranLastName" : "veteranLastName",
+          "dateVaReceivedDocument" : "dateVaReceivedDocument",
+          "documentTypeId" : 5,
+          "endProductCode" : "endProductCode",
+          "veteranFirstName" : "veteranFirstName",
+          "systemSource" : "systemSource",
+          "actionable" : true,
+          "modifiedDateTime" : "modifiedDateTime",
+          "certified" : true
+        }
+      },
+      "documentType" : {
+        "title" : "Document Type",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createDateTime" : {
+            "type" : "string"
+          },
+          "modifiedDateTime" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "isUserUploadable" : {
+            "type" : "boolean"
+          },
+          "documentCategory" : {
+            "$ref" : "#/components/schemas/documentCategory"
+          }
+        },
+        "description" : "Document types for UI consumption.",
+        "example" : {
+          "name" : "name",
+          "description" : "description",
+          "documentCategory" : {
+            "subDescription" : "subDescription",
+            "description" : "description",
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 2,
+            "createDateTime" : "createDateTime"
+          },
+          "modifiedDateTime" : "modifiedDateTime",
+          "id" : 5,
+          "isUserUploadable" : true,
+          "createDateTime" : "createDateTime"
+        }
+      },
+      "textSelection" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "rawXfdf" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "selectedAreas" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/textSelection_selectedAreas"
+            }
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "selectedAreas" : [ {
+            "left" : 9,
+            "bottom" : 9,
+            "width" : 6,
+            "height" : 8
+          }, {
+            "left" : 9,
+            "bottom" : 9,
+            "width" : 6,
+            "height" : 8
+          } ],
+          "pageNumber" : 5,
+          "color" : "color",
+          "created" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "modified" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "rawXfdf" : "rawXfdf",
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid"
+        }
+      },
+      "pageRequest" : {
+        "title" : "PagingRequest",
+        "type" : "object",
+        "properties" : {
+          "resultsPerPage" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 10
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 1
+          }
+        },
+        "description" : "Paging request from user."
+      },
+      "searchFileResponse" : {
+        "title" : "Search File Response",
+        "type" : "object",
+        "properties" : {
+          "page" : {
+            "$ref" : "#/components/schemas/pageResponse"
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/currentFileDataComposition"
+            }
+          }
+        },
+        "description" : "Responces contain results from search with applied filters.",
+        "example" : {
+          "files" : [ {
+            "owner" : {
+              "id" : "id",
+              "type" : "VETERAN"
+            },
+            "expiredDateTime" : "expiredDateTime",
+            "currentVersionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "uuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "currentVersion" : {
+              "systemData" : {
+                "uploadSource" : "uploadSource",
+                "uploadedDateTime" : "uploadedDateTime",
+                "mimeType" : "mimeType",
+                "contentName" : "contentName"
+              },
+              "providerData" : {
+                "veteranMiddleName" : "veteranMiddleName",
+                "veteranSuffix" : "veteranSuffix",
+                "documentType" : {
+                  "name" : "name",
+                  "description" : "description",
+                  "documentCategory" : {
+                    "subDescription" : "subDescription",
+                    "description" : "description",
+                    "modifiedDateTime" : "modifiedDateTime",
+                    "id" : 2,
+                    "createDateTime" : "createDateTime"
+                  },
+                  "modifiedDateTime" : "modifiedDateTime",
+                  "id" : 5,
+                  "isUserUploadable" : true,
+                  "createDateTime" : "createDateTime"
+                },
+                "subject" : "subject",
+                "veteranLastName" : "veteranLastName",
+                "dateVaReceivedDocument" : "dateVaReceivedDocument",
+                "documentTypeId" : 5,
+                "endProductCode" : "endProductCode",
+                "veteranFirstName" : "veteranFirstName",
+                "systemSource" : "systemSource",
+                "actionable" : true,
+                "modifiedDateTime" : "modifiedDateTime",
+                "certified" : true
+              }
+            }
+          }, {
+            "owner" : {
+              "id" : "id",
+              "type" : "VETERAN"
+            },
+            "expiredDateTime" : "expiredDateTime",
+            "currentVersionUuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "uuid" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "currentVersion" : {
+              "systemData" : {
+                "uploadSource" : "uploadSource",
+                "uploadedDateTime" : "uploadedDateTime",
+                "mimeType" : "mimeType",
+                "contentName" : "contentName"
+              },
+              "providerData" : {
+                "veteranMiddleName" : "veteranMiddleName",
+                "veteranSuffix" : "veteranSuffix",
+                "documentType" : {
+                  "name" : "name",
+                  "description" : "description",
+                  "documentCategory" : {
+                    "subDescription" : "subDescription",
+                    "description" : "description",
+                    "modifiedDateTime" : "modifiedDateTime",
+                    "id" : 2,
+                    "createDateTime" : "createDateTime"
+                  },
+                  "modifiedDateTime" : "modifiedDateTime",
+                  "id" : 5,
+                  "isUserUploadable" : true,
+                  "createDateTime" : "createDateTime"
+                },
+                "subject" : "subject",
+                "veteranLastName" : "veteranLastName",
+                "dateVaReceivedDocument" : "dateVaReceivedDocument",
+                "documentTypeId" : 5,
+                "endProductCode" : "endProductCode",
+                "veteranFirstName" : "veteranFirstName",
+                "systemSource" : "systemSource",
+                "actionable" : true,
+                "modifiedDateTime" : "modifiedDateTime",
+                "certified" : true
+              }
+            }
+          } ],
+          "page" : {
+            "totalPages" : 0,
+            "requestedResultsPerPage" : 6,
+            "currentPage" : 1
+          }
+        }
+      },
+      "updateDataProviderData" : {
+        "title" : "Update Provider Data",
+        "type" : "object",
+        "properties" : {
+          "contentSource" : {
+            "title" : "Document content source",
+            "maximum" : 500,
+            "minimum" : 1,
+            "pattern" : "^[a-zA-Z0-9\\'\\,\\s.\\-\\_\\|\\/@\\(\\)]*$",
+            "type" : "string",
+            "description" : "String field designating the originating source of the content being uploaded."
+          },
+          "documentTypeId" : {
+            "title" : "Document Type ID",
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents."
+          },
+          "dateVaReceivedDocument" : {
+            "title" : "Date VA Received Document",
+            "maxLength" : 10,
+            "minLength" : 10,
+            "pattern" : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
+            "type" : "string",
+            "description" : "Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today",
+            "format" : "string"
+          },
+          "subject" : {
+            "title" : "Subject",
+            "maxLength" : 256,
+            "pattern" : "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$",
+            "type" : "string",
+            "description" : "Free text describing the document. This is primarily notes used to assist claim developers."
+          },
+          "alternativeDocumentTypeId" : {
+            "title" : "Alternative Document Type Id",
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Integer which relates to a document type Id."
+          },
+          "actionable" : {
+            "title" : "Actionable",
+            "type" : "boolean",
+            "description" : "Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.",
+            "default" : false
+          },
+          "certified" : {
+            "title" : "Actionable",
+            "type" : "boolean",
+            "description" : "Boolean true/false for if the document is considered 'certified'.",
+            "default" : false
+          },
+          "endProductCode" : {
+            "title" : "Subject",
+            "maxLength" : 64,
+            "minLength" : 1,
+            "pattern" : "^[a-zA-Z0-9\\s.\\\\\\-\\_\\|\\/@&><\\(\\))\\'\\+\\,\\$]*$",
+            "type" : "string",
+            "description" : "Free text describing the document. This is primarily notes used to assist claim developers."
+          }
+        },
+        "additionalProperties" : false,
+        "description" : "Claim Evidence API Update data Provider Data."
+      },
+      "getDocumentTypesResponse" : {
+        "title" : "Get Document Types Response",
+        "type" : "object",
+        "properties" : {
+          "documentTypes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/documentType"
+            }
+          },
+          "alternativeDocumentTypes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/alternativeDocumentType"
+            }
+          }
+        },
+        "description" : "Get document types and alternative document types for UI consumption.",
+        "example" : {
+          "documentTypes" : [ {
+            "name" : "name",
+            "description" : "description",
+            "documentCategory" : {
+              "subDescription" : "subDescription",
+              "description" : "description",
+              "modifiedDateTime" : "modifiedDateTime",
+              "id" : 2,
+              "createDateTime" : "createDateTime"
+            },
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 5,
+            "isUserUploadable" : true,
+            "createDateTime" : "createDateTime"
+          }, {
+            "name" : "name",
+            "description" : "description",
+            "documentCategory" : {
+              "subDescription" : "subDescription",
+              "description" : "description",
+              "modifiedDateTime" : "modifiedDateTime",
+              "id" : 2,
+              "createDateTime" : "createDateTime"
+            },
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 5,
+            "isUserUploadable" : true,
+            "createDateTime" : "createDateTime"
+          } ],
+          "alternativeDocumentTypes" : [ {
+            "name" : "name",
+            "description" : "description",
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 0,
+            "createDateTime" : "createDateTime"
+          }, {
+            "name" : "name",
+            "description" : "description",
+            "modifiedDateTime" : "modifiedDateTime",
+            "id" : 0,
+            "createDateTime" : "createDateTime"
+          } ]
+        }
+      },
+      "searchFileRequest" : {
+        "title" : "SearchFileRequest",
+        "type" : "object",
+        "properties" : {
+          "pageRequest" : {
+            "$ref" : "#/components/schemas/pageRequest"
+          },
+          "filters" : {
+            "$ref" : "#/components/schemas/Filters"
+          },
+          "sorts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/sorts"
+            }
+          }
+        },
+        "description" : "SearchFileRequest containing paging request and filters."
+      },
+      "endProductCodeFilter" : {
+        "title" : "EndProductCode Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "030BGR"
+          }
+        },
+        "description" : "Filters results on EndProductCode."
+      },
+      "dateVaReceivedDocumentFilter" : {
+        "title" : "Date Va Received Document Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "BETWEEN" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[\"2020-10-09\",\"2020-10-11\"]"
+          }
+        },
+        "description" : "Filters results on range for DateVaReceivedDocument."
+      },
+      "lines" : {
+        "type" : "object",
+        "properties" : {
+          "uuid" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "created" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "modified" : {
+            "$ref" : "#/components/schemas/callout_created"
+          },
+          "rawXfdf" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "type" : "integer"
+          },
+          "thickness" : {
+            "type" : "integer"
+          },
+          "points" : {
+            "$ref" : "#/components/schemas/lines_points"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "pageNumber" : 9,
+          "color" : "color",
+          "thickness" : 3,
+          "created" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "modified" : {
+            "dateTime" : "dateTime",
+            "userId" : 7
+          },
+          "rawXfdf" : "rawXfdf",
+          "type" : "type",
+          "title" : "title",
+          "uuid" : "uuid",
+          "points" : {
+            "endY" : 1,
+            "endX" : 7,
+            "startY" : 4,
+            "startX" : 2
+          }
+        }
+      },
+      "uploadProviderDataRequest" : {
+        "title" : "Upload Provider Data",
+        "required" : [ "contentSource", "dateVaReceivedDocument", "documentTypeId" ],
+        "type" : "object",
+        "properties" : {
+          "contentSource" : {
+            "title" : "Document content source",
+            "maximum" : 500,
+            "minimum" : 1,
+            "pattern" : "^[a-zA-Z0-9\\'\\,\\s.\\-\\_\\|\\/@\\(\\)]*$",
+            "type" : "string",
+            "description" : "String field designating the originating source of the content being uploaded."
+          },
+          "documentTypeId" : {
+            "title" : "Document Type ID",
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents."
+          },
+          "dateVaReceivedDocument" : {
+            "title" : "Date VA Received Document",
+            "maxLength" : 10,
+            "minLength" : 10,
+            "pattern" : "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
+            "type" : "string",
+            "description" : "Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today",
+            "format" : "string"
+          },
+          "subject" : {
+            "title" : "Subject",
+            "maxLength" : 256,
+            "pattern" : "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$",
+            "type" : "string",
+            "description" : "Free text describing the document. This is primarily notes used to assist claim developers."
+          },
+          "contention" : {
+            "title" : "Contention",
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$",
+            "type" : "string",
+            "description" : "Contention name associated to the document. The document type must be a 526 type ID."
+          },
+          "alternativeDocumentTypeId" : {
+            "title" : "Alternative Document Type Id",
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Integer which relates to a document type Id."
+          },
+          "actionable" : {
+            "title" : "Actionable",
+            "type" : "boolean",
+            "description" : "Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.",
+            "default" : false
+          },
+          "associatedClaimId" : {
+            "title" : "Associated claim Id",
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$",
+            "type" : "string",
+            "description" : "Id of associated claim."
+          }
+        },
+        "additionalProperties" : false,
+        "description" : "Claim Evidence API Provider Data."
+      },
+      "uploadSource" : {
+        "title" : "Upload Source",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Upload sources for UI consumption.",
+        "example" : {
+          "name" : "name"
+        }
+      },
+      "mimeTypeFilter" : {
+        "title" : "MimeType Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[\"application/pdf\", \"image/tiff\"]"
+          }
+        },
+        "description" : "Filters results on MimeType."
+      },
+      "payload_2" : {
+        "title" : "Update Payload",
+        "type" : "object",
+        "properties" : {
+          "providerData" : {
+            "$ref" : "#/components/schemas/uploadProviderDataRequest"
+          }
+        },
+        "description" : "Payload containing content name and the provider specific data."
+      },
+      "associationDateTimeFilter" : {
+        "title" : "Date Document was Associated Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "BETWEEN" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "[\"2020-10-09\",\"2020-10-11\"]"
+          }
+        },
+        "description" : "Filters results on range for AssociationDateTime."
+      },
+      "updateDataRequest" : {
+        "title" : "Update Data Payload",
+        "type" : "object",
+        "properties" : {
+          "payload" : {
+            "$ref" : "#/components/schemas/updateDataPayload"
+          }
+        }
+      },
+      "contentNameFilter" : {
+        "title" : "ContentName Filter",
+        "type" : "object",
+        "properties" : {
+          "evaluationType" : {
+            "type" : "string",
+            "enum" : [ "EQUALS" ]
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "testFileName0.12713919732752.pdf"
+          }
+        },
+        "description" : "Filters results on ContentName."
+      },
+      "contentName" : {
+        "title" : "Content Name",
+        "maxLength" : 256,
+        "minLength" : 4,
+        "pattern" : "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$",
+        "type" : "string",
+        "description" : "The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321."
+      },
+      "callout_created" : {
+        "properties" : {
+          "dateTime" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "dateTime" : "dateTime",
+          "userId" : 7
+        }
+      },
+      "lines_points" : {
+        "properties" : {
+          "startX" : {
+            "type" : "integer"
+          },
+          "startY" : {
+            "type" : "integer"
+          },
+          "endX" : {
+            "type" : "integer"
+          },
+          "endY" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "endY" : 1,
+          "endX" : 7,
+          "startY" : 4,
+          "startX" : 2
+        }
+      },
+      "callout_position" : {
+        "properties" : {
+          "bottom" : {
+            "type" : "integer"
+          },
+          "left" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "left" : 1,
+          "bottom" : 6
+        }
+      },
+      "textSelection_selectedAreas" : {
+        "properties" : {
+          "bottom" : {
+            "type" : "integer"
+          },
+          "left" : {
+            "type" : "integer"
+          },
+          "width" : {
+            "type" : "integer"
+          },
+          "height" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "left" : 9,
+          "bottom" : 9,
+          "width" : 6,
+          "height" : 8
+        }
+      },
+      "basic_modified" : {
+        "properties" : {
+          "dateTime" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "dateTime" : "dateTime"
+        }
+      },
+      "putPermissionsResponse" : {
+        "title" : "Put Permissions Response",
+        "type" : "object",
+        "properties" : {
+          "put" : {
+            "$ref" : "#/components/schemas/verbPermission"
+          }
+        },
+        "description" : "Responses contain permission information for the endpoint by PUT verb",
+        "example" : {
+          "put" : {
+            "systemData" : [ "systemData", "systemData" ],
+            "providerData" : [ "providerData", "providerData" ],
+            "hasAccess" : true
+          }
+        }
+      },
+      "deletePermissionsResponse" : {
+        "title" : "Delete Permissions Response",
+        "type" : "object",
+        "properties" : {
+          "delete" : {
+            "$ref" : "#/components/schemas/verbPermission"
+          }
+        },
+        "description" : "Responses contain permission information for the endpoint by DELETE verb",
+        "example" : {
+          "delete" : {
+            "systemData" : [ "systemData", "systemData" ],
+            "providerData" : [ "providerData", "providerData" ],
+            "hasAccess" : true
+          }
+        }
+      },
+      "folderIdentifier" : {
+        "title" : "Folder Identifier",
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "VETERAN", "PARTICIPANT", "ORGANIZATION", "BIN", "ANY", "UNSUPPORTED" ]
+          },
+          "id" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Details on the owner associated to the file.",
+        "example" : {
+          "id" : "id",
+          "type" : "VETERAN"
+        }
+      },
+      "versionComposition" : {
+        "title" : "Version Composition",
+        "type" : "object",
+        "properties" : {
+          "systemData" : {
+            "$ref" : "#/components/schemas/systemDataComposition"
+          },
+          "providerData" : {
+            "$ref" : "#/components/schemas/providerData"
+          }
+        },
+        "description" : "Version Composition data containg system data and provider data.",
+        "example" : {
+          "systemData" : {
+            "uploadSource" : "uploadSource",
+            "uploadedDateTime" : "uploadedDateTime",
+            "mimeType" : "mimeType",
+            "contentName" : "contentName"
+          },
+          "providerData" : {
+            "veteranMiddleName" : "veteranMiddleName",
+            "veteranSuffix" : "veteranSuffix",
+            "documentType" : {
+              "name" : "name",
+              "description" : "description",
+              "documentCategory" : {
+                "subDescription" : "subDescription",
+                "description" : "description",
+                "modifiedDateTime" : "modifiedDateTime",
+                "id" : 2,
+                "createDateTime" : "createDateTime"
+              },
+              "modifiedDateTime" : "modifiedDateTime",
+              "id" : 5,
+              "isUserUploadable" : true,
+              "createDateTime" : "createDateTime"
+            },
+            "subject" : "subject",
+            "veteranLastName" : "veteranLastName",
+            "dateVaReceivedDocument" : "dateVaReceivedDocument",
+            "documentTypeId" : 5,
+            "endProductCode" : "endProductCode",
+            "veteranFirstName" : "veteranFirstName",
+            "systemSource" : "systemSource",
+            "actionable" : true,
+            "modifiedDateTime" : "modifiedDateTime",
+            "certified" : true
+          }
+        }
+      },
+      "basic_created" : {
+        "required" : [ "dateTime" ],
+        "properties" : {
+          "dateTime" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "dateTime" : "dateTime"
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearer-key" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}

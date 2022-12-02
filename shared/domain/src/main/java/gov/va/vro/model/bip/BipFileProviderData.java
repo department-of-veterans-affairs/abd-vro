@@ -15,7 +15,9 @@ import java.util.List;
 public class BipFileProviderData {
   private String contentSource; // VBMS
   private String claimantFirstName;
-  private String claimantMiddleIn; // e.g, "Smith",
+  private String claimantMiddleInitial; // e.g, M
+  private String claimantLastName;
+  private String claimantSsn;
   private int benefitTypeId; // eg. 10,
   private int documentTypeId; // e.g., 131,
   private String dateVaReceivedDocument; // "2022-02-01",
