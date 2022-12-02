@@ -66,7 +66,10 @@ public class MasController implements MasResource {
         .routeId("/automatedClaim")
         .message(
             String.format(
-                "Request with collection Id %s is not in scope.", payload.getCollectionId()))
+                "Request with [collection id = %s], [diagnostic code = %s], and [disability action type = %s] is not in scope.",
+                payload.getCollectionId(),
+                payload.getDiagnosticCode(),
+                payload.getDisabilityActionType()))
         .build();
   }
 }
