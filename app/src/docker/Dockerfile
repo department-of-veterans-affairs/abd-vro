@@ -1,7 +1,8 @@
 FROM eclipse-temurin:17-jre-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
-RUN apk update && apk --no-cache add expat=2.5.0-r0 curl=7.86.0-r1
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 curl
 
 ARG JAR_FILE
 ARG ENTRYPOINT_FILE

@@ -41,6 +41,8 @@ env:
   MAS_API_AUTH_CLIENT_SECRET: bogusClientSecret
   MAS_API_AUTH_TOKEN_URI: bogusToken
   MAS_API_AUTH_SCOPE: openid
+  SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
+  SLACK_EXCEPTION_CHANNEL: benefits-vro-nonprod
 
 jobs:
   end2end-test:
@@ -57,9 +59,9 @@ jobs:
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
 
-      - name: "Sleep 15 seconds"
+      - name: "Sleep a few seconds"
         # App container is not immediately ready
-        run: sleep 15
+        run: sleep 20
 
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1
