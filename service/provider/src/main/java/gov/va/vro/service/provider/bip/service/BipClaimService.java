@@ -4,6 +4,7 @@ import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
+@Service
 public class BipClaimService {
 
   private static final String TSOJ = "398";

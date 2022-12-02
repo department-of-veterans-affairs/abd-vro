@@ -33,13 +33,11 @@ public class MasController implements MasResource {
 
   @Override
   public ResponseEntity<MasResponse> examOrderingStatus(MasExamOrderStatusPayload payload) {
-    log.info("Received MAS order status request with collection ID {}", payload.getCollectionId());
+    int collectionId = payload.getCollectionId();
+    log.info("Received MAS order status request with collection ID {}", collectionId);
     masProcessingService.examOrderingStatus(payload);
     MasResponse response =
-        MasResponse.builder()
-            .id(Integer.toString(payload.getCollectionId()))
-            .message("Received")
-            .build();
+        MasResponse.builder().id(Integer.toString(collectionId)).message("Received").build();
     return ResponseEntity.ok(response);
   }
 }
