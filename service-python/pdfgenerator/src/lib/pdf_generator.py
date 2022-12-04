@@ -4,8 +4,9 @@ import os
 
 import pdfkit
 from dateutil import parser
-from helper_functions import *  # noqa: F403
 from jinja2 import Environment, PackageLoader, select_autoescape
+
+from .helper_functions import *  # noqa: F403
 
 lib_dir = os.path.dirname(__file__)
 
