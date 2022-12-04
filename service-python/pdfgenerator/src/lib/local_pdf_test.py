@@ -1,6 +1,5 @@
-from pdf_generator import PDFGenerator
-
-from settings import pdf_options
+from .pdf_generator import PDFGenerator
+from .settings import pdf_options
 
 if __name__ == '__main__':
     diagnosis_name = "summary"
