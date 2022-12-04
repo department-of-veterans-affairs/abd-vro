@@ -1,9 +1,10 @@
 {
+  "code": "0000",
   "document_type": "summary",
   "veteran_info": {
-    "first": "",
+    "first": "Test",
     "middle": "",
-    "last": "",
+    "last": "User",
     "suffix": "",
     "birthdate": ""
   },
@@ -20,12 +21,23 @@
     {"diagnosis": "Essential (Primary) Hypertension", "date": "8/25/2022"}
   ],
   "bp_readings": [
-    {"bp": "133/79", "date": "8/12/2022", "source": "VAMC record – GRAND JUNCTION VAMC", "receipt_date": "n.a.", "page": "n.a.", "document_id": "n.a. – See VistA/CAPRI to verify ", "na": true},
-    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
-    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
-    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
-    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false},
-    {"bp": "133/79", "date": "5/3/2022", "source": "CAPRI", "receipt_date": "7/15/2022", "page": "6", "document_id": "{5B3F0A7-3526-4B3F-AK16-5022047B07}", "na": false}
+    {
+      "date": "2020-08-05",
+      "diastolic": {
+        "code": "8480-6",
+        "display": "Systolic blood pressure",
+        "unit": "mm[Hg]",
+        "value": 110
+      },
+      "systolic": {
+        "code": "8480-6",
+        "display": "Systolic blood pressure",
+        "unit": "mm[Hg]",
+        "value": 110
+      },
+      "practitioner": "DR. THOMAS REYNOLDS PHD",
+      "organization": "WASHINGTON VA MEDICAL CENTER"
+    }
   ],
   "other_evidence": [
     {"key_term": "Essential Hypertension", "observation_date": "8/25/2022", "source": "VAMC Record Prescription", "receipt_date": "n.a.", "page": "n.a.", "document_id": "n.a. – See VistA/CAPRI to verify "},

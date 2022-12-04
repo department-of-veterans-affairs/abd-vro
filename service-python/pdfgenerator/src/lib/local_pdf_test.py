@@ -1,5 +1,6 @@
-from .pdf_generator import PDFGenerator
-from .settings import pdf_options
+from pdf_generator import PDFGenerator
+
+from settings import pdf_options
 
 if __name__ == '__main__':
     diagnosis_name = "summary"
@@ -11,5 +12,5 @@ if __name__ == '__main__':
     # print("Template: ", template)
     with open("test.html", "w") as file:
         file.write(template)
-    pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template, 'test.pdf')
+    pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template, variables, 'test.pdf')
     # print("PDF: ", pdf)

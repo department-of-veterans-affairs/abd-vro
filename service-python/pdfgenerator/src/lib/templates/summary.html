@@ -8,6 +8,7 @@
   <meta name="pdfkit-orientation" content="Landscape"/>
   <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
   <meta name="pdfkit-footer-font-size" content="8"/>
+  <meta name="pdfkit-page-size" content="Legal"/>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -18,20 +19,46 @@
   <style>
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-regular-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
       font-weight: normal;
       font-style: normal;
     }
-    body {
-      font-family: serif;
-      padding: 10px;
+    @font-face {
+      font-family: NotoSans;
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-italic-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+      font-weight: normal;
+      font-style: italic;
     }
-    a {
-      text-decoration: none;
+    @font-face {
+      font-family: NotoSans;
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bold-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+      font-weight: bold;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bolditalic-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+      font-weight: bold;
+      font-style: italic;
+    }
+    body {
+      padding: 10px;
+      color: #212121;
+      font-family: NotoSans;
+      font-size: 12px;
+      line-height: 16.34px;
     }
     h1 {
+      font-size: 18px;
+      line-height: 21.6px;
     }
     h2 {
+      font-size: 14px;
+      line-height: 16.8px;
     }
     h3 {
     }
@@ -39,16 +66,22 @@
     }
     a {
       color: #004795 !important;
+      text-decoration: none;
     }
     table, th, td {
       border: 1px solid #757575;
       text-align: left;
       font-size: 11px;
       font-family: NotoSans;
-      font-weight: normal;
     }
     thead th {
       background-color: #F1F1F1;
+      line-height: 14.98px;
+      font-weight: bold;
+    }
+    tbody td {
+      line-height: 11px;
+      font-weight: normal;
     }
     @media print {
       .pagebreak {
@@ -130,13 +163,13 @@
           </tr>
         </thead>
         <tbody>
-          {% for history in condition_history %}
+          {% for history in conditions %}
           <tr>
-            <th>{{ history.diagnosis }}</th>
-            <td>{{ history.date }}</td>
+            <th>{{ history.code }}</th>
+            <td>{{ history.onsetDate }}</td>
           </tr>
           {% endfor %}
-          {% if condition_history|length == 0 %}
+          {% if conditions|length == 0 %}
           <tr>
             <td colspan="2">No encounter diagnoses found through automated review.</td>
           </tr>
@@ -172,9 +205,9 @@
         <tbody>
           {% for bp_reading in bp_readings %}
           <tr>
-            <th>{{ bp_reading.bp }}</th>
+            <th>{{ bp_reading.systolic.value }} / {{ bp_reading.diastolic.value }}</th>
             <th>{{ bp_reading.date }}</th>
-            <td>{{ bp_reading.source }}</td>
+            <td>VAMC record - {{ bp_reading.organization }}</td>
             <td>{{ bp_reading.receipt_date }}</td>
             <td>{{ bp_reading.page }}</td>
             <td>{{ bp_reading.document_id }}</td>

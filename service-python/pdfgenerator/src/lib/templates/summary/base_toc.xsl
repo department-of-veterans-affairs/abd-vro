@@ -16,12 +16,73 @@
         <title>Table of Contents</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <style>
-          h1 {
-            text-align: center;
-            font-size: 20px;
-            font-family: arial;
+          @font-face {
+            font-family: NotoSans;
+            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-regular-webfont.ttf");
+            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            font-weight: normal;
+            font-style: normal;
           }
-          a { color: #004795 !important;}
+          @font-face {
+            font-family: NotoSans;
+            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-italic-webfont.ttf");
+            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            font-weight: normal;
+            font-style: italic;
+          }
+          @font-face {
+            font-family: NotoSans;
+            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bold-webfont.ttf");
+            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            font-weight: bold;
+            font-style: normal;
+          }
+          @font-face {
+            font-family: NotoSans;
+            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bolditalic-webfont.ttf");
+            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            font-weight: bold;
+            font-style: italic;
+          }
+          body {
+            padding: 10px;
+            color: #212121;
+            font-family: NotoSans;
+            font-size: 12px;
+            line-height: 16.34px;
+          }
+          h1 {
+            font-size: 18px;
+            line-height: 21.6px;
+            text-align: center;
+          }
+          h2 {
+            font-size: 14px;
+            line-height: 16.8px;
+          }
+          a {
+            color: #004795 !important;
+          }
+          table, th, td {
+            text-align: left;
+            font-size: 11px;
+            font-family: NotoSans;
+          }
+          thead th {
+            background-color: #F1F1F1;
+            line-height: 14.98px;
+            font-weight: bold;
+          }
+          tbody td {
+            line-height: 11px;
+            font-weight: normal;
+          }
+          @media print {
+            .pagebreak {
+              clear: both;
+              page-break-after: always;
+            }
+          }
           <!-- div {border-bottom: 1px dashed rgb(200,200,200);} -->
           span {float: right;}
           li {list-style: none;}
@@ -49,15 +110,15 @@
             <table class="table table-bordered border-dark">
               <tr>
                 <td>Veteran's Name:</td>
-                <th>Ms. Test A. Veteran</th>
+                <th>{{name}}</th>
               </tr>
               <tr>
                 <td>VA File Number:</td>
-                <th>0000000000</th>
+                <th>{{file}}</th>
               </tr>
               <tr>
                 <td>Date of evidence review:</td>
-                <th>Oct 20, 2022</th>
+                <th>{{date}}</th>
               </tr>
             </table>
           </div>
