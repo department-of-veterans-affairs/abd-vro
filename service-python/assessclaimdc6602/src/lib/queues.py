@@ -14,7 +14,7 @@ SERVICE_QUEUE = queue_config["service_queue_name"]
 def on_request_callback(channel, method, properties, body):
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
-    logging.info(f" [x] {binding_key}: Received message at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+    logging.info(f" [x] {binding_key}: Received message.")
     try:
         response = main.assess_asthma(message)
     except Exception as e:
@@ -27,7 +27,7 @@ def on_request_callback(channel, method, properties, body):
         properties=pika.BasicProperties(correlation_id=properties.correlation_id),
         body=json.dumps(response),
     )
-    logging.info(f" [x] {binding_key}: Message sent at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+    logging.info(f" [x] {binding_key}: Message sent.")
 
 
 def queue_setup(channel):
