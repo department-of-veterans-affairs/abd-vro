@@ -10,6 +10,7 @@ import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import gov.va.vro.service.spi.model.Claim;
@@ -48,6 +49,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
   public static final String ENDPOINT_MAS_OFFRAMP = "direct:mas-offramp";
+  private static final String ENDPOINT_GENERATE_PDF = "direct:mas-generate-pdf";
 
   private final MasPollingProcessor masPollingProcessor;
 
@@ -58,6 +60,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
+
   private final MasConfig masConfig;
 
   @Override
@@ -67,6 +71,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureMasProcessing();
     configureOrderExamStatus();
     configureOffRampClaim();
+    configureRouteGeneratePdf();
   }
 
   private void configureAutomatedClaim() {
@@ -104,7 +109,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
+        .to(ENDPOINT_GENERATE_PDF)
         // Call pcOrderExam in the absence of evidence
         .process(
             exchange -> {
@@ -219,5 +224,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_OFFRAMP)
         .routeId("mas-offramp-claim")
         .log("Request to off-ramp claim received");
+  }
+
+  private void configureRouteGeneratePdf() {
+    from(ENDPOINT_GENERATE_PDF)
+        .routeId("generate-pdf")
+        .process(evidenceSummaryDocumentProcessor)
+        .to(pdfRoute("generate-pdf"));
+  }
+
+  private String pdfRoute(String queueName) {
+    return String.format(
+        "rabbitmq:%s?routingKey=%s&queue=%s", "pdf-generator", queueName, queueName);
   }
 }
