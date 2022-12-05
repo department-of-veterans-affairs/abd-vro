@@ -1,5 +1,10 @@
 package gov.va.vro.service.provider;
 
+import java.util.Map;
+
+import org.apache.camel.ProducerTemplate;
+import org.springframework.stereotype.Service;
+
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -9,10 +14,6 @@ import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ProducerTemplate;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * Used to programmatically inject messages into a Camel endpoint. AKA an entrance ramp onto a Camel
@@ -24,10 +25,6 @@ import java.util.Map;
 public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
-
-  public String submitClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM, claim, String.class);
-  }
 
   public String submitClaimFull(Claim claim) {
     return producerTemplate.requestBody(
