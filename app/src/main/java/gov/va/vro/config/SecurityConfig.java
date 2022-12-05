@@ -23,11 +23,17 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Value("${apiauth.hdr-key-name}")
+  @Value("${apiauth.hdr-key-name-v1}")
   private String apiKeyAuthHeaderName;
 
-  @Value("${apiauth.url-context}")
-  private String urlContext;
+  @Value("${apiauth.url-context-v1}")
+  private String urlContextV1;
+
+  @Value("${apiauth.hdr-key-name-v2}")
+  private String JwtAuthHeaderName;
+
+  @Value("${apiauth.url-context-v2}")
+  private String urlContextV2;
 
   private final ApiAuthKeyManager apiAuthKeyManager;
 
@@ -49,7 +55,7 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .antMatcher(urlContext)
+        .antMatcher(urlContextV1)
         .csrf()
         .disable()
         .sessionManagement()
@@ -65,8 +71,8 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-    ApiAuthKeyFilter apiAuthKeyFilter1 = new ApiAuthKeyFilter("Authorization");
-    apiAuthKeyFilter1.setAuthenticationManager(apiAuthKeyManager);
+    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(JwtAuthHeaderName);
+    apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
     httpSecurity
         .exceptionHandling()
@@ -74,13 +80,13 @@ public class SecurityConfig {
 
     // Secure end point
     httpSecurity
-        .antMatcher("/v2/**")
+        .antMatcher(urlContextV2)
         .csrf()
         .disable()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .addFilter(apiAuthKeyFilter1)
+        .addFilter(apiAuthKeyFilter)
         .authorizeRequests()
         .anyRequest()
         .authenticated();

@@ -4,8 +4,11 @@ info:
     description: Java API Starter from Template
 
 apiauth:
-  hdr-key-name: X-API-Key
-  url-context: /v1/**
+  hdr-key-name-v1: X-API-Key
+  url-context-v1: /v1/**
+  hdr-key-name-v2: Authorization
+  url-context-v2: /v2/**
+
 
 spring:
   application:

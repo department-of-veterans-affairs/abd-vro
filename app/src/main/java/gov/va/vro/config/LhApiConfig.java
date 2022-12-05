@@ -14,7 +14,6 @@ public class LhApiConfig {
       @Value("${lhAPIProvider.vroAudURL}") String vroAudURL,
       @Value("${lhAPIProvider.apiKey}") String apiKey,
       @Value("${lhAPIProvider.validateToken}") String validateToken) {
-    return new LhApiProps(
-            tokenValidatorURL, vroAudURL, validateToken, apiKey);
+    return new LhApiProps(tokenValidatorURL, vroAudURL, validateToken, apiKey);
   }
 }

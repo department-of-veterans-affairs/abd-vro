@@ -11,5 +11,4 @@ public class LhApiProps {
   private final String vroAudURL;
   private final String apiKey;
   private final String validateToken;
-
 }
