@@ -46,10 +46,11 @@ spec:
           volumeMounts:
             # name should match the volume name in the volumes block
             - name: mq-persistent-storage
-              mountPath: /persist/rabbitmq
+              # This folder is available for RabbitMQ messages to be persisted
+              mountPath: /persist/tracking
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
       volumes:
         - name: mq-persistent-storage
           persistentVolumeClaim:
-            # claimName should match that of the persistent volume claim created in mq/service.yaml
-            claimName: mq-efs-claim
+            # claimName should match that of the persistent volume claim created in api/service.yaml
+            claimName: tracking-efs-claim

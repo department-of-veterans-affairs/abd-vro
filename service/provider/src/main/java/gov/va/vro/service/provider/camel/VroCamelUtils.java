@@ -2,7 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 public class VroCamelUtils {
   public static String wiretapProducer(String tapName) {
-    return rabbitmqTopicProducerEndpoint("tap-"+tapName, "tap-"+tapName+"-not-used");
+    return rabbitmqTopicProducerEndpoint("tap-" + tapName, "tap-" + tapName + "-not-used");
   }
 
   static String rabbitmqTopicProducerEndpoint(String exchangeName, String queueName) {
@@ -11,8 +11,8 @@ public class VroCamelUtils {
     return "rabbitmq:" + exchangeName + "?skipQueueBind=true&exchangeType=topic&queue=" + queueName;
   }
 
-  public static String wiretapConsumer(String tapBasename) {
-    return rabbitmqTopicConsumerEndpoint("tap-" + tapBasename, "redis-" + tapBasename);
+  public static String wiretapConsumer(String queuePrefix, String tapBasename) {
+    return rabbitmqTopicConsumerEndpoint("tap-" + tapBasename, queuePrefix + "-" + tapBasename);
   }
 
   static String rabbitmqTopicConsumerEndpoint(String exchangeName, String queueName) {

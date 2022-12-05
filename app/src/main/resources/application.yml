@@ -118,7 +118,7 @@ slack:
   exception:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
-  
+
 opentracing:
   zipkin:
     enabled: false
@@ -157,6 +157,10 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
+
+  persist:
+    tracking:
+      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking/}
 
 spring.redis:
   # database index used by the connection factory

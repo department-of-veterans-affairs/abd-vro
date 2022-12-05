@@ -21,14 +21,16 @@ class RedisRoutes extends RouteBuilder {
 
   void saveIncomingClaimToRedis() throws Exception {
     String tapBasename = PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
-    RouteDefinition routeDef = from(VroCamelUtils.wiretapConsumer(tapBasename)).routeId("redis-" + tapBasename);
+    RouteDefinition routeDef =
+        from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
     appendRedisCommand(routeDef, "HSET", redisKey("claimSubmissionId"), "submitted-claim")
         .to(REDIS_ENDPOINT);
   }
 
   void savePdfRequestToRedis() throws Exception {
     String tapBasename = PrimaryRoutes.GENERATE_PDF_WIRETAP;
-    RouteDefinition routeDef = from(VroCamelUtils.wiretapConsumer(tapBasename)).routeId("redis-" + tapBasename);
+    RouteDefinition routeDef =
+        from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
     appendRedisCommand(routeDef, "HSET", redisKey("claimSubmissionId"), "submitted-pdf")
         .to(REDIS_ENDPOINT);
   }

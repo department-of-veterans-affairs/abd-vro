@@ -26,8 +26,8 @@ spec:
       volumes:
         - name: mq-persistent-storage
           persistentVolumeClaim:
-            # claimName should match that of the persistent volume claim created in mq/service.yaml
-            claimName: mq-efs-claim
+            # claimName should match that of the persistent volume claim created in service.yaml
+            claimName: tracking-efs-claim
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
