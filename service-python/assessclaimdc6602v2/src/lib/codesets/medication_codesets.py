@@ -1,10 +1,8 @@
 med_dict = {
     "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive": {
-        "advair diskus",
-        "advair hfa",
-        "airduo digihaler",
-        "airduo respiclick",
-        "wixela inhub",
+        "advair",
+        "airduo",
+        "wixela",
         "flovent",
         "qvar redihaler",
         "symbicort",
@@ -31,12 +29,12 @@ med_dict = {
         "pulmicort",
         "methylprednisolone",
         "prednisone",
+        "prednisolone",
         "flunisolide",
         "budesonide",
         "beclomethasone",
         "qnasl",
         "beconase",
-        "fluticasone furoate",
     },
     "Anti-Inflammatory/Immuno-Suppressive": {
         "cinqair",
@@ -53,12 +51,14 @@ med_dict = {
         "tiotropium",
         "vilanterol",
         "zileuton",
+        "formoterol fumarate",
+        "tiotropium bromide"
     },
     "Bronchodilator/Used in Respiratory Failure": {
         "adrenalin",
         "metaproterenol",
         "epinephrine",
-        "primatene mist inhaler",
+        "primatene",
         "albuterol",
         "levalbuterol",
     },
@@ -70,7 +70,7 @@ med_dict = {
         "zetonna",
     },
     "Bronchodilator": {
-        "epipen jr",
+        "epipen",
         "auvi-q",
         "symjepi",
         "ventolin hfa",

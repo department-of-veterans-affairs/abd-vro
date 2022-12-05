@@ -27,7 +27,7 @@ from assessclaimdc6522.src.lib import medication
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "fexofenadine Oral Tablet [Allegra]",
                         "status": "active",
-                        "suggestedCategory": ["Antihistimine"]
+                        "suggestedCategory": "Antihistimine"
                     }
                 ],
                 "relevantMedCount": 1,
@@ -55,7 +55,7 @@ from assessclaimdc6522.src.lib import medication
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "pseudoephedrine 45 MG",
                         "status": "active",
-                        "suggestedCategory": ["Antihistamine / Decongestant"]
+                        "suggestedCategory": "Antihistamine / Decongestant"
                     }
                 ],
                 "relevantMedCount": 1,
@@ -115,7 +115,7 @@ from assessclaimdc6522.src.lib import medication
                         "authoredOn": "1950-04-06T04:00:00Z",
                         "description": "diphenhydrAMINE hydrochloride 2.5 MG/ML Oral Solution",
                         "status": "active",
-                        "suggestedCategory": ["Antihistimine"]
+                        "suggestedCategory": "Antihistimine"
                     },
                     {
                         "conditionRelated": False,
