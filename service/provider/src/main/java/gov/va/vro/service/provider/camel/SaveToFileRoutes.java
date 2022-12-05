@@ -10,14 +10,17 @@ import org.springframework.stereotype.Component;
 @Component
 class SaveToFileRoutes extends RouteBuilder {
 
-  @Value("${vro.persist.tracking.base_folder}")
+  @Value("${vro.persist.tracking.base_folder:/tmp/test-vro-persist/tracking/}")
   private String baseTrackingFolder;
+
+  @Value("${vro.nonprod:true}")
+  private boolean nonprod;
 
   @Override
   public void configure() throws Exception {
     // Do not save to file in PROD until we have the encrypted file system in place
     // and the approved updated ATO
-    if (System.getenv("VRO_NON_PROD").equalsIgnoreCase("true")) {
+    if (nonprod) {
       saveIncomingClaimToFile();
       savePdfRequestToFile();
     }
