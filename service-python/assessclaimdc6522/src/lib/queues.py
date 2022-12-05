@@ -18,7 +18,7 @@ def on_request_callback(channel, method, properties, body):
         response = main.assess_rhinitis(message)
     except Exception as e:
         logging.error(e, exc_info=True)
-        response = {"status": "ERROR", "evidence": {}, "evidenceSummary": {}}
+        response = {"status": "ERROR", "evidence": None, "evidenceSummary": None}
 
     channel.basic_publish(
         exchange=EXCHANGE,

@@ -156,7 +156,7 @@ class VroControllerTest extends BaseControllerTest {
 
     var fullHealthDataAssessmentResponse =
         new FullHealthDataAssessmentResponse(
-            "1234", "7101", "error validating request message data", "ERROR");
+            "1234", "7101", "error validating request message data");
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<Claim, String>fromFunction(
