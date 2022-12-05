@@ -24,10 +24,9 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
       volumes:
-        - name: mq-persistent-storage
+        - name: {{ .Values.volumes.tracking.name }}
           persistentVolumeClaim:
-            # claimName should match that of the persistent volume claim created in service.yaml
-            claimName: tracking-efs-claim
+            claimName: {{ .Values.volumes.tracking.claimName }}
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -210,6 +209,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
                   key: {{ .Values.mas.masCreateExamOrderPath }}
+            - name: PERSIST_TRACKING_FOLDER
+              key: {{ .Values.volumes.tracking.mountPath }}
           resources:
             requests:
               cpu: 150m
@@ -218,9 +219,8 @@ spec:
               cpu: 1000m
               memory: 1024Mi
           volumeMounts:
-            # name should match the volume name in the volumes block
-            - name: mq-persistent-storage
-              mountPath: /persist/rabbitmq
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}

@@ -44,13 +44,11 @@ spec:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
           volumeMounts:
-            # name should match the volume name in the volumes block
-            - name: mq-persistent-storage
+            - name: {{ .Values.volumes.tracking.name }}
               # This folder is available for RabbitMQ messages to be persisted
-              mountPath: /persist/tracking
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
       volumes:
-        - name: mq-persistent-storage
+        - name: {{ .Values.volumes.tracking.name }}
           persistentVolumeClaim:
-            # claimName should match that of the persistent volume claim created in api/service.yaml
-            claimName: tracking-efs-claim
+            claimName: {{ .Values.volumes.tracking.claimName }}

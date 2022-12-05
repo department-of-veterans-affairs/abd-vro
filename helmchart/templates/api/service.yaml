@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tracking-efs-claim
+  name: {{ .Values.volumes.tracking.claimName }}
 spec:
   accessModes:
     - ReadWriteMany
