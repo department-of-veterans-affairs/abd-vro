@@ -59,8 +59,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
-  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
-
   private final MasConfig masConfig;
 
   @Override
