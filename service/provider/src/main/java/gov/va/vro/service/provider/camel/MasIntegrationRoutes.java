@@ -49,7 +49,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
   public static final String ENDPOINT_MAS_OFFRAMP = "direct:mas-offramp";
-  private static final String ENDPOINT_GENERATE_PDF = "direct:mas-generate-pdf";
 
   private final MasPollingProcessor masPollingProcessor;
 
@@ -71,7 +70,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureMasProcessing();
     configureOrderExamStatus();
     configureOffRampClaim();
-    configureRouteGeneratePdf();
   }
 
   private void configureAutomatedClaim() {
@@ -109,7 +107,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
         .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
-        .to(ENDPOINT_GENERATE_PDF)
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         // Call pcOrderExam in the absence of evidence
         .process(
             exchange -> {
@@ -224,17 +222,5 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_OFFRAMP)
         .routeId("mas-offramp-claim")
         .log("Request to off-ramp claim received");
-  }
-
-  private void configureRouteGeneratePdf() {
-    from(ENDPOINT_GENERATE_PDF)
-        .routeId("generate-pdf")
-        .process(evidenceSummaryDocumentProcessor)
-        .to(pdfRoute("generate-pdf"));
-  }
-
-  private String pdfRoute(String queueName) {
-    return String.format(
-        "rabbitmq:%s?routingKey=%s&queue=%s", "pdf-generator", queueName, queueName);
   }
 }
