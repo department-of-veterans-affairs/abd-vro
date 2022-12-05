@@ -54,15 +54,16 @@ class FhirClientTest {
     private Bundle bundle;
     private String responseBody;
 
-    private static Bundle getMedicalInfoBundle(String filename) throws FileNotFoundException, IOException {
-        File initialFile = new File(filename);
-        InputStream theResponseInputStream = new FileInputStream(initialFile);
-        Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
-        theResponseInputStream.close();
-        return retVal;
+    private static Bundle getMedicalInfoBundle(String filename)
+        throws FileNotFoundException, IOException {
+      File initialFile = new File(filename);
+      InputStream theResponseInputStream = new FileInputStream(initialFile);
+      Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
+      theResponseInputStream.close();
+      return retVal;
     }
 
-    static public BundleInfo getInstance(String resourceName) throws IOException {
+    public static BundleInfo getInstance(String resourceName) throws IOException {
       Class<?> clazz = FhirClientTest.class;
       URL url = clazz.getClassLoader().getResource(resourceName);
 
@@ -162,7 +163,9 @@ class FhirClientTest {
     Mockito.doReturn(medBundleInfo.getBundle())
         .when(jsonParser)
         .parseResource(Bundle.class, medBundleInfo.getResponseBody());
-    Mockito.doReturn(bpBundleInfo.getBundle()).when(jsonParser).parseResource(Bundle.class, bpBundleInfo.getResponseBody());
+    Mockito.doReturn(bpBundleInfo.getBundle())
+        .when(jsonParser)
+        .parseResource(Bundle.class, bpBundleInfo.getResponseBody());
     ResponseEntity<String> medicationResp = ResponseEntity.ok(medBundleInfo.getResponseBody());
     ResponseEntity<String> bpResp = ResponseEntity.ok(bpBundleInfo.getResponseBody());
     mockRest(medicationResp, "MedicationRequest");
