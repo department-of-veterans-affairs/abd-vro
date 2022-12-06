@@ -36,7 +36,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private Boolean asthmaRelevant;
 
   private Boolean conditionRelated;
-  private List<String> suggestedCategory;
+  private String suggestedCategory;
 
   @EqualsAndHashCode.Include
   @Schema(description = "Duration of the medication")
