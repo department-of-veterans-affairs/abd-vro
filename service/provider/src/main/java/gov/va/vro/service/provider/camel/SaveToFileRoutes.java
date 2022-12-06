@@ -1,32 +1,30 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.ServiceProviderConfig;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.support.builder.ValueBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 class SaveToFileRoutes extends RouteBuilder {
 
-  @Value("${vro.persist.tracking.base_folder:/tmp/test-vro-persist/tracking/}")
-  private String baseTrackingFolder;
-
-  @Value("${vro.nonprod:true}")
-  private boolean nonprod;
+  final ServiceProviderConfig config;
 
   @Override
   public void configure() throws Exception {
     // Do not save to file in PROD until we have the encrypted file system in place
     // and the approved updated ATO
-    if (nonprod) {
+    if (config.persistTrackingEnabled) {
       saveIncomingClaimToFile();
       savePdfRequestToFile();
     }
   }
 
-  private String mqPersistFolder(){
+  private String mqPersistFolder() {
     return System.getenv("MQ_PERSIST_FOLDER");
   }
 
@@ -35,7 +33,7 @@ class SaveToFileRoutes extends RouteBuilder {
     RouteDefinition routeDef =
         from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
             .routeId("saveToFile-" + tapBasename);
-    appendHeaders(routeDef).to("file:" + baseTrackingFolder + tapBasename);
+    appendHeaders(routeDef).to("file:" + config.baseTrackingFolder + tapBasename);
   }
 
   private void savePdfRequestToFile() throws Exception {
@@ -43,7 +41,7 @@ class SaveToFileRoutes extends RouteBuilder {
     RouteDefinition routeDef =
         from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
             .routeId("saveToFile-" + tapBasename);
-    appendHeaders(routeDef).to("file:" + baseTrackingFolder + tapBasename);
+    appendHeaders(routeDef).to("file:" + config.baseTrackingFolder + tapBasename);
   }
 
   private ValueBuilder filepath(String idField) {

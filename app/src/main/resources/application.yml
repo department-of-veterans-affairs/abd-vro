@@ -136,7 +136,6 @@ springdoc:
     enabled: ${VRO_NON_PROD:false}
 
 vro:
-  nonprod: ${VRO_NON_PROD:false}
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
@@ -161,6 +160,7 @@ vro:
 
   persist:
     tracking:
+      enabled: ${PERSIST_TRACKING_ENABLED:true}
       base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking/}
 
 spring.redis:

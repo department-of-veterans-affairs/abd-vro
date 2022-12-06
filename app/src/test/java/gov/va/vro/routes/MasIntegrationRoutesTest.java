@@ -1,5 +1,6 @@
 package gov.va.vro.routes;
 
+import static gov.va.vro.service.provider.camel.PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +27,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 
-import static gov.va.vro.service.provider.camel.PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   @Autowired CamelEntrance camelEntrance;
