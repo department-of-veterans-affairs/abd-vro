@@ -4,8 +4,11 @@ info:
     description: Java API Starter from Template
 
 apiauth:
-  hdr-key-name: X-API-Key
-  url-context: /v1/**
+  hdr-key-name-v1: X-API-Key
+  url-context-v1: /v1/**
+  hdr-key-name-v2: Authorization
+  url-context-v2: /v2/**
+
 
 spring:
   application:
@@ -47,6 +50,12 @@ masAPIProvider:
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
   createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "${VALIDATE_TOKEN:NO}"
 
 opentracing:
   zipkin:
