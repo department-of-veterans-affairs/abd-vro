@@ -103,29 +103,19 @@ class BipClaimServiceTest {
         .thenReturn(createClaim(claimId, "Short Line"));
 
     BipClaimService claimService = new BipClaimService(bipApiService);
-    assertFalse(claimService.completeProcessing(collectionId, false));
+    var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
+    assertFalse(claimService.completeProcessing(payload));
   }
 
   @Test
-  void completeProcessingNotRFD() {
+  void completeProcessing() {
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
     Mockito.when(bipApiService.getClaimDetails(collectionId))
         .thenReturn(createClaim(claimId, "398"));
 
     BipClaimService claimService = new BipClaimService(bipApiService);
-    assertTrue(claimService.completeProcessing(collectionId, false));
-    Mockito.verify(bipApiService).updateClaimStatus(collectionId, "Rating Decision Complete");
-  }
-
-  @Test
-  void completeProcessingRFD() {
-    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
-        .thenReturn(createClaim(claimId, "398"));
-
-    BipClaimService claimService = new BipClaimService(bipApiService);
-    assertTrue(claimService.completeProcessing(collectionId, true));
-    Mockito.verify(bipApiService).updateClaimStatus(collectionId, "RFD");
+    var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
+    assertTrue(claimService.completeProcessing(payload));
     Mockito.verify(bipApiService).updateClaimStatus(collectionId, "Rating Decision Complete");
   }
 

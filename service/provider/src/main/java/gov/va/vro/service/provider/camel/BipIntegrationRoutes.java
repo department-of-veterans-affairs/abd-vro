@@ -27,6 +27,11 @@ public class BipIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_OFFRAMP)
         .routeId("mas-offramp-claim")
         .log("Request to off-ramp claim received")
-        .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue));
+        .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
+        .choice()
+        .when(simple("${exchangeProperty.sufficientForFastTracking}"))
+        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRFD))
+        .end()
+        .bean(bipClaimService, "completeProcessing");
   }
 }

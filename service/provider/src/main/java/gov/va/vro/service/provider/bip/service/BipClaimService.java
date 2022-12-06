@@ -88,20 +88,28 @@ public class BipClaimService {
     return payload;
   }
 
-  // markAsRFID = sufficiencyFlag (from Health Assessment BP service)
-  public boolean completeProcessing(int collectionId, boolean markAsRFD) {
+  public MasAutomatedClaimPayload markAsRFD(MasAutomatedClaimPayload payload) {
+    int collectionId = payload.getCollectionId();
+    log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
+    var response = bipApiService.updateClaimStatus(collectionId, STATUS_READY);
+    // TODO: check response, catch exceptions etc
+    return payload;
+  }
 
-    // check if markAsRFD?
-    if (markAsRFD) {
-      // If yes, mark claim as Ready For Decision
-      bipApiService.updateClaimStatus(collectionId, STATUS_READY);
-    }
+  // markAsRFID = sufficiencyFlag (from Health Assessment BP service)
+  public boolean completeProcessing(MasAutomatedClaimPayload payload) {
+    int collectionId = payload.getCollectionId();
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(collectionId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
+      log.info(
+          "Claim with collection Id = {} is in state {}. Not updating status",
+          collectionId,
+          claim.getTempStationOfJurisdiction());
       return false;
     }
     // otherwise, update claim
+    log.info("Updating claim status for claim with collection id = {}", collectionId);
     bipApiService.updateClaimStatus(collectionId, STATUS_DECISION_COMPLETE);
     return true;
   }

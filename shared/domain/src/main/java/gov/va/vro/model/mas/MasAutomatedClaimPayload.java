@@ -1,5 +1,6 @@
 package gov.va.vro.model.mas;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,10 +61,12 @@ public class MasAutomatedClaimPayload implements Auditable {
   private List<String> veteranFlashIds;
 
   @Override
+  @JsonIgnore
   public String getEventId() {
     return collectionId == null ? null : Integer.toString(collectionId);
   }
 
+  @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
@@ -71,6 +74,7 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
+  @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
@@ -78,12 +82,14 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDisabilityActionType();
   }
 
+  @JsonIgnore
   public boolean isInScope() {
     return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
         && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
             || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
   }
 
+  @JsonIgnore
   public Integer getClaimId() {
     return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
   }
