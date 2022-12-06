@@ -29,7 +29,7 @@ class SaveToFileRoutes extends RouteBuilder {
     from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath("claimSubmissionId"))
-        .to("file:" + Paths.get(config.baseTrackingFolder,tapBasename));
+        .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename));
   }
 
   private ValueBuilder filepath(String idField) {
