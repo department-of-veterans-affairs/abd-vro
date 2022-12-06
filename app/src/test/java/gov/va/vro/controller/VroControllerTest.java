@@ -190,6 +190,20 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void fullHealthAssessmentMalformedJson() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    var responseEntity =
+        post(
+            "/v1/full-health-data-assessment",
+            "{ \"one\":\"one\", \"two\":\"two\",}",
+            headers,
+            ClaimProcessingError.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+  }
+
+  @Test
   @DirtiesContext
   void generatePdf() throws Exception {
     var mapper = new ObjectMapper();

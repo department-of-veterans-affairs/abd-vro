@@ -12,6 +12,8 @@ def categorize_med(medication_display):
     medication_dict = rhinitis_medication.rhinitis_med
     medication_category = str()
     for category_id in list(medication_dict.keys()):
+        if medication_category:
+            break
         for medication in medication_dict[category_id]:
             if medication.lower() in medication_display.lower():
                 medication_category = category_id
@@ -38,7 +40,7 @@ def medication_required(request_body):
             medication_display = medication["description"]
             category = categorize_med(medication_display)
             if category:
-                medication["suggestedCategory"] = [category]
+                medication["suggestedCategory"] = category
                 medication["conditionRelated"] = True
                 relevant_medications.append(medication)
             else:
