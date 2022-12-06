@@ -65,7 +65,7 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimInvalidRequest() {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
@@ -95,7 +95,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasOffRampEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.assertIsSatisfied();
     mockMasOffRampEndpoint.assertIsSatisfied();
@@ -117,7 +117,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101");
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.expectedMessageCount(1);
   }
@@ -128,7 +128,7 @@ public class MasControllerTest extends BaseControllerTest {
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
-        post("/v1/examOrderingStatus", payload, MasResponse.class);
+        post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());

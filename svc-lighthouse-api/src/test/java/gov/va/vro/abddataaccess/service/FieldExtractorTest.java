@@ -242,5 +242,12 @@ class FieldExtractorTest {
               .isEmpty(),
           abdCondition.getOnsetDate().isEmpty());
     }
+    if (condition.hasRecordedDateElement()) {
+      assertEquals(
+          Optional.ofNullable(condition.getRecordedDateElement().asStringValue())
+              .orElse("")
+              .isEmpty(),
+          abdCondition.getRecordedDate().isEmpty());
+    }
   }
 }

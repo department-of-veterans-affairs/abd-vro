@@ -40,9 +40,7 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": False,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False},
+                    "sufficientForFastTracking": None,
                 }
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -86,10 +84,7 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": True,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False,
-                                   },
+                    "sufficientForFastTracking": True,
                 },
         ),
         (
@@ -152,9 +147,7 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 1,
                                         "totalProceduresCount": 1},
-                    "calculated": {"constantSinusitis": False,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False},
+                    "sufficientForFastTracking": False
                 },
         ),
     ],

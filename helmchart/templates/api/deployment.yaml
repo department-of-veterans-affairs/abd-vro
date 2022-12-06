@@ -23,6 +23,10 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -189,23 +193,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiBaseUrl }}                                                                  
+                  key: {{ .Values.mas.masApiBaseUrl }}
             - name: MAS_COLLECTION_ANNOTS_PATH
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionAnnotsPath }}           
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
             - name: MAS_COLLECTION_STATUS_PATH
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionStatusPath }}           
+                  key: {{ .Values.mas.masCollectionStatusPath }}
             - name: MAS_CREATE_EXAM_ORDER_PATH
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCreateExamOrderPath }}                       
-
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
           resources:
             requests:
               cpu: 150m
@@ -213,6 +216,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
@@ -234,6 +240,8 @@ spec:
                   key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.volumes.tracking.mountPath }}
             - name: POSTGRES_URL
               valueFrom:
                 secretKeyRef:
@@ -313,17 +321,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiBaseUrl }}                                                                  
+                  key: {{ .Values.mas.masApiBaseUrl }}
             - name: MAS_COLLECTION_ANNOTS_PATH
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionAnnotsPath }}           
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
             - name: MAS_COLLECTION_STATUS_PATH
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionStatusPath }}           
+                  key: {{ .Values.mas.masCollectionStatusPath }}
             - name: MAS_CREATE_EXAM_ORDER_PATH
               valueFrom:
                 secretKeyRef:
@@ -383,6 +391,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
