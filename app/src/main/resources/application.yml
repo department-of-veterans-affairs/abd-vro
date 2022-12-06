@@ -136,6 +136,7 @@ springdoc:
     enabled: ${VRO_NON_PROD:false}
 
 vro:
+  env: ${ENV:local}
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API

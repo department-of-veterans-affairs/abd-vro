@@ -18,7 +18,7 @@ class SaveToFileRoutes extends RouteBuilder {
   public void configure() throws Exception {
     // Do not save to file in PROD until we have the encrypted file system in place
     // and the approved updated ATO
-    if (config.persistTrackingEnabled) {
+    if (!config.vroEnv.equalsIgnoreCase("prod") && config.persistTrackingEnabled) {
       saveIncomingClaimToFile();
       savePdfRequestToFile();
     }

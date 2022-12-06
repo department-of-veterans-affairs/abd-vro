@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 @Configuration
 public class ServiceProviderConfig {
 
+  @Value("${vro.env:test}")
+  public String vroEnv;
+
   // Default to false for unit tests
   @Value("${vro.persist.tracking.enabled:false}")
   public boolean persistTrackingEnabled;
