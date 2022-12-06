@@ -3,7 +3,6 @@ package gov.va.vro.service.provider;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.service.provider.camel.BipIntegrationRoutes;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -67,7 +66,7 @@ public class CamelEntrance {
 
   public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     producerTemplate.requestBody(
-        BipIntegrationRoutes.ENDPOINT_MAS_OFFRAMP, masAutomatedClaimPayload);
+        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
   }
 
   public void sendSlack(AuditEvent auditEvent) {

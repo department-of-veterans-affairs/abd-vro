@@ -8,7 +8,6 @@ import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.*;
-import gov.va.vro.service.provider.camel.BipIntegrationRoutes;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
@@ -89,7 +88,7 @@ public class MasControllerTest extends BaseControllerTest {
             "mas-offramp-claim",
             route ->
                 route
-                    .interceptSendToEndpoint(BipIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-offramp"))
         .end();

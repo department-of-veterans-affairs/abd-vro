@@ -8,11 +8,10 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
-import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
-import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.*;
@@ -21,9 +20,6 @@ import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -37,26 +33,31 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
-  public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
-
-  public static final String ENDPOINT_SLACK_EVENT = "seda:slack-event";
-
   public static final String MAS_DELAY_PARAM = "masDelay";
 
   public static final String MAS_RETRY_PARAM = "masRetryCount";
 
   public static final String ENDPOINT_MAS_PROCESSING = "direct:mas-processing";
 
+  public static final String ENDPOINT_AUDIT_EVENT = "seda:audit-event";
+
+  public static final String ENDPOINT_SLACK_EVENT = "seda:slack-event";
+
+  public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
+
+  private final BipClaimService bipClaimService;
+
+  private final AuditEventService auditEventService;
+
+  private final MasConfig masConfig;
+
   private final MasPollingProcessor masPollingProcessor;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
-  private final AuditEventService auditEventService;
 
   private final MasCollectionService masCollectionService;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
-
-  private final MasConfig masConfig;
 
   @Override
   public void configure() {
@@ -64,6 +65,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureAutomatedClaim();
     configureMasProcessing();
     configureOrderExamStatus();
+    configureCompleteProcessing();
   }
 
   private void configureAutomatedClaim() {
@@ -120,21 +122,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
-        .process( // combine evidence
-            FunctionProcessor.fromFunction(combineExchangesFunction()));
+        .process(MasIntegrationProcessors.combineExchangesProcessor());
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
-        .process(
-            FunctionProcessor.fromFunction(
-                (Function<MasAutomatedClaimPayload, Claim>)
-                    payload ->
-                        Claim.builder()
-                            .claimSubmissionId(payload.getClaimDetail().getBenefitClaimId())
-                            .diagnosticCode(
-                                payload.getClaimDetail().getConditions().getDiagnosticCode())
-                            .veteranIcn(payload.getVeteranIdentifiers().getIcn())
-                            .build()))
+        .process(MasIntegrationProcessors.payloadToClaimProcessor())
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
 
@@ -148,29 +140,25 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end();
   }
 
-  private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
-    return exchanges -> {
-      for (Exchange exchange : exchanges) {
-        if (exchange.isFailed()) {
-          throw new MasException(
-              "Failed to collect evidence", exchange.getException(Throwable.class));
-        }
-      }
-      Exchange exchange1 = exchanges.get(0);
-      Exchange exchange2 = exchanges.get(1);
-      var evidence1 = exchange1.getMessage().getBody(HealthDataAssessment.class);
-      var evidence2 = exchange2.getMessage().getBody(HealthDataAssessment.class);
-      return MasCollectionService.combineEvidence(evidence1, evidence2);
-    };
-  }
-
   private void configureOrderExamStatus() {
     // This route does not do anything, but an audit event is persisted
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS).routeId(routeId).log("Invoked " + routeId);
   }
 
-  private void configureAuditing() {
+  private void configureCompleteProcessing() {
+    from(ENDPOINT_MAS_COMPLETE)
+        .routeId("mas-offramp-claim")
+        .log("Request to off-ramp claim received")
+        .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
+        .choice()
+        .when(simple("${exchangeProperty.sufficientForFastTracking}"))
+        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRFD))
+        .end()
+        .bean(bipClaimService, "completeProcessing");
+  }
+
+  public void configureAuditing() {
     String transform_uri = "seda:audit-transform?multipleConsumers=true";
 
     // Capture exceptions
