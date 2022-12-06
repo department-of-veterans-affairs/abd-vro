@@ -14,18 +14,29 @@ import java.util.Map;
 public class MockBipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(Integer collectionId) throws BipException {
-    return null;
+    if (collectionId == 350) {
+      return buildClaim(1234, BipClaimService.TSOJ);
+    } else if (collectionId == 351) {
+      // wrong station
+      return buildClaim(999, "OTHER");
+    } else {
+      return buildClaim(555, BipClaimService.TSOJ);
+    }
+  }
+
+  @Override
+  public List<ClaimContention> getClaimContentions(Integer claimId) throws BipException {
+    if (claimId == 1234) {
+      return List.of(
+          buildContention(BipClaimService.SPECIAL_ISSUE_1, BipClaimService.SPECIAL_ISSUE_2));
+    }
+    return List.of(buildContention("A", "B", "C"));
   }
 
   @Override
   public BipUpdateClaimResp updateClaimStatus(Integer collectionId, String status)
       throws BipException {
     return new BipUpdateClaimResp(HttpStatus.OK, "OK");
-  }
-
-  @Override
-  public List<ClaimContention> getClaimContentions(Integer claimId) throws BipException {
-    return null;
   }
 
   @Override
@@ -45,5 +56,11 @@ public class MockBipApiService implements IBipApiService {
     claim.setClaimId(Integer.toString(claimId));
     claim.setTempStationOfJurisdiction(station);
     return claim;
+  }
+
+  private ClaimContention buildContention(String... specialIssueCodes) {
+    var contention = new ClaimContention();
+    contention.setSpecialIssueCodes(List.of(specialIssueCodes));
+    return contention;
   }
 }

@@ -2,8 +2,10 @@ package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,9 +18,9 @@ import java.util.stream.Collectors;
 @Service
 public class BipClaimService {
 
-  private static final String TSOJ = "398";
-  private static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
-  private static final String SPECIAL_ISSUE_2 = "rrd";
+  public static final String TSOJ = "398";
+  public static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
+  public static final String SPECIAL_ISSUE_2 = "rrd";
   public static final String STATUS_READY = "RFD";
   public static final String STATUS_DECISION_COMPLETE = "Rating Decision Complete";
 
@@ -51,8 +53,14 @@ public class BipClaimService {
     return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
   }
 
-  public boolean removeSpecialIssue(int claimId) {
+  public MasAutomatedClaimPayload removeSpecialIssue(MasAutomatedClaimPayload payload) {
+    var claimId = payload.getClaimId();
+    log.info("Attempting to remove special issue for claim id = {}", claimId);
     var contentions = bipApiService.getClaimContentions(claimId);
+    if (ObjectUtils.isEmpty(contentions)) {
+      log.warn("Claim id = {} has no contentions.", claimId);
+      return payload;
+    }
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
@@ -71,11 +79,13 @@ public class BipClaimService {
       }
     }
     if (updatedContentions.isEmpty()) {
-      return false; // nothing to update
+      log.info("Special issue for claim id = {} not found. Nothing to update.", claimId);
+      return payload; // nothing to update
     }
+    log.info("Removing special issue for claim id = {}", claimId);
     var request = new UpdateContentionReq(updatedContentions);
     bipApiService.updateClaimContention(claimId, request);
-    return true;
+    return payload;
   }
 
   // markAsRFID = sufficiencyFlag (from Health Assessment BP service)

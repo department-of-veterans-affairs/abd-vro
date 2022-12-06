@@ -9,6 +9,7 @@ import java.util.Map;
 
 /** @author warren @Date 11/8/22 */
 public interface IBipApiService {
+
   BipClaim getClaimDetails(Integer collectionId) throws BipException;
 
   BipUpdateClaimResp updateClaimStatus(Integer collectionId, String status) throws BipException;

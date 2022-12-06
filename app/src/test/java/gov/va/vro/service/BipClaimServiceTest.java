@@ -3,6 +3,7 @@ package gov.va.vro.service;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import gov.va.vro.MasTestData;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
@@ -72,7 +73,9 @@ class BipClaimServiceTest {
                 createContention(List.of("RRD", "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(bipApiService);
-    assertFalse(claimService.removeSpecialIssue(Integer.parseInt(claimId)));
+    var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
+    claimService.removeSpecialIssue(payload);
+    // TODO: Verify result
   }
 
   @Test
@@ -86,7 +89,8 @@ class BipClaimServiceTest {
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(bipApiService);
-    assertTrue(claimService.removeSpecialIssue(Integer.parseInt(claimId)));
+    var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
+    claimService.removeSpecialIssue(payload);
     // TODO: Verify arguments passed
     Mockito.verify(bipApiService)
         .updateClaimContention(Mockito.anyInt(), Mockito.any(UpdateContentionReq.class));

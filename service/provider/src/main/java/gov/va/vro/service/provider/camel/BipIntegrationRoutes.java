@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.service.provider.bip.service.BipClaimService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
@@ -11,8 +13,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class BipIntegrationRoutes extends RouteBuilder {
 
-  public static final String ENDPOINT_UPDATE_CLAIM_STATUS = "direct:update-claim-status";
+  public static final String ENDPOINT_MAS_OFFRAMP = "direct:mas-offramp";
+
+  private final BipClaimService bipClaimService;
 
   @Override
-  public void configure() throws Exception {}
+  public void configure() {
+    configureOffRampClaim();
+  }
+
+  private void configureOffRampClaim() {
+    // TODO: complete route
+    from(ENDPOINT_MAS_OFFRAMP)
+        .routeId("mas-offramp-claim")
+        .log("Request to off-ramp claim received")
+        .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue));
+  }
 }

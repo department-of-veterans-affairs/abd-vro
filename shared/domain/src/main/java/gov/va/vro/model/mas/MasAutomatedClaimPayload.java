@@ -83,4 +83,8 @@ public class MasAutomatedClaimPayload implements Auditable {
         && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
             || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
   }
+
+  public Integer getClaimId() {
+    return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
+  }
 }
