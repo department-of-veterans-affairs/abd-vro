@@ -210,7 +210,7 @@ spec:
                   name: {{ .Values.mas.keyName }}
                   key: {{ .Values.mas.masCreateExamOrderPath }}
             - name: PERSIST_TRACKING_FOLDER
-              key: {{ .Values.volumes.tracking.mountPath }}
+              value: {{ .Values.volumes.tracking.mountPath }}
           resources:
             requests:
               cpu: 150m
