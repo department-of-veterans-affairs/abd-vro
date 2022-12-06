@@ -25,8 +25,8 @@ from assessclaimdc6602v2.src.lib import main
                                                "conditionRelated": True,
                                                "description": "Prednisone",
                                                "status": "active",
-                                               "suggestedCategory": [
-                                                   "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"]}]},
+                                               "suggestedCategory":
+                                                   "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"}]},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 1,
                                      "totalConditionsCount": 0,
@@ -53,8 +53,8 @@ from assessclaimdc6602v2.src.lib import main
                                                "description": "predniSONE 1 MG "
                                                               "Oral Tablet",
                                                "status": "active",
-                                               "suggestedCategory": [
-                                                   "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"]}]},
+                                               "suggestedCategory":
+                                                   "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive"}]},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 1,
                                      "totalConditionsCount": 0,
@@ -80,7 +80,7 @@ from assessclaimdc6602v2.src.lib import main
                                                "conditionRelated": False,
                                                "description": "Advil",
                                                "status": "active",
-                                               "suggestedCategory": []}]},
+                                               }]},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 0,
                                      "totalConditionsCount": 0,
