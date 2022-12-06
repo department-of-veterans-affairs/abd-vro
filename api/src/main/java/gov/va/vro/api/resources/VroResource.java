@@ -153,10 +153,9 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
-      summary = "Retrieves metrics on the previously processed claims",
-      description =
-          "This endpoint provides metrics on the previously processed claims. "
-              + "Currently only the number of the processed claims is provided.")
+      summary = "Retrieves information on the previously processed claims",
+      description = "This endpoint provides processed claims information. ")
+  @GetMapping("/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -173,10 +172,9 @@ public interface VroResource {
             description = "Claim Metrics Server Error",
             content = @Content(schema = @Schema(hidden = true)))
       })
-  @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-metrics")
-  @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimMetricsResponse> claimMetrics()
-      throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
+  @Timed(value = "claim-info")
+  @Tag(name = "Claim Info")
+  ResponseEntity<ClaimMetricsResponse> claimInfo(@PathVariable String claimSubmissionId)
+      throws MetricsProcessingException;
 }

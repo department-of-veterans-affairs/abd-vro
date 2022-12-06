@@ -1,6 +1,7 @@
 package gov.va.vro.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import gov.va.vro.api.model.ClaimInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,7 +19,7 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class ClaimMetricsResponse {
-  private long numberOfClaims;
+  List<ClaimInfo> claims;
 
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)

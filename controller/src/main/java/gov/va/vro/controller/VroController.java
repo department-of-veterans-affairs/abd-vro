@@ -11,10 +11,12 @@ import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.controller.mapper.ClaimMetricsMapper;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,6 +45,7 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
+  private final ClaimMetricsMapper claimMetricsMapper;
 
   private final ClaimMetricsService claimMetricsService;
 
@@ -155,20 +160,21 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
+  public ResponseEntity<ClaimMetricsResponse> claimInfo(String claimSubmissionId)
+      throws MetricsProcessingException {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     try {
-      response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
-      if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
-        throw new MetricsProcessingException(
-            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      List<ClaimMetricsInfo> info = claimMetricsService.claimMetrics(claimSubmissionId);
+      List<ClaimInfo> infoList = new ArrayList<>();
+      for (ClaimMetricsInfo metricsInfo : info) {
+        ClaimInfo claim = claimMetricsMapper.toClaimInfo(metricsInfo);
+        infoList.add(claim);
       }
+      response.setClaims(infoList);
       return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (MetricsProcessingException mpe) {
-      throw mpe;
     } catch (Exception e) {
-      log.error("Error in claim metrics services." + e.getMessage());
-      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      log.error("Error in claim-info", e);
+      throw new MetricsProcessingException(HttpStatus.valueOf("Error getting claim info"), e);
     }
   }
 }
