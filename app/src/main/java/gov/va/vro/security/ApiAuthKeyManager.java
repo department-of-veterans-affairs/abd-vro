@@ -44,7 +44,7 @@ public class ApiAuthKeyManager implements AuthenticationManager {
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
     String authorizationHdr = (String) authentication.getPrincipal();
-    log.info("Header Information : " + authorizationHdr);
+    log.debug("Header Information : " + authorizationHdr);
     authentication.setAuthenticated(false); // Default
 
     if (authorizationHdr == null) {
