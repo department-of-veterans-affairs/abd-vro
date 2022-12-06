@@ -33,8 +33,6 @@ public class AppTestUtil {
     var response = new FullHealthDataAssessmentResponse();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
-    response.setStatus("SUCCESS");
-    response.setErrorMessage("I am not a real endpoint.");
     if (evidence) {
       response.setEvidence(new AbdEvidence());
     }

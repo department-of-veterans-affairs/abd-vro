@@ -4,7 +4,6 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.GeneratePdfRequest;
@@ -18,7 +17,6 @@ import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.CamelContext;
@@ -42,7 +40,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,66 +64,68 @@ class VroControllerTest extends BaseControllerTest {
   @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
-  @Test
-  @DirtiesContext
-  void postFullHealthAssessment() throws Exception {
-
-    // intercept the original endpoint, skip it and replace it with the mock
-    // endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.7101&requestTimeout=60000")
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
-    // The mock endpoint returns a valid response
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(
-            claim -> util.fullClaimToResponse(claim, true)));
-
-    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-    request.setClaimSubmissionId("1234");
-    request.setVeteranIcn("icn");
-    request.setDiagnosticCode("7101");
-
-    var responseEntity1 =
-        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
-
-    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
-    FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
-    assertNotNull(response1);
-    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
-    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
-
-    // Now submit an existing claim:
-    var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
-    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
-    assertNotNull(response2);
-    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
-    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
-
-    Optional<ClaimEntity> claimEntityOptional =
-        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
-    assertTrue(claimEntityOptional.isPresent());
-  }
+  //  @Test
+  //  @DirtiesContext
+  //  void postFullHealthAssessment() throws Exception {
+  //
+  //    // intercept the original endpoint, skip it and replace it with the mock
+  //    // endpoint
+  //    adviceWith(
+  //        camelContext,
+  //        "claim-submit",
+  //        route ->
+  //            route
+  //                .interceptSendToEndpoint(
+  //                    "rabbitmq:claim-submit-exchange"
+  //                        + "?queue=claim-submit"
+  //                        + "&routingKey=code.7101&requestTimeout=60000")
+  //                .skipSendToOriginalEndpoint()
+  //                .to("mock:claim-submit"));
+  //    // Mock secondary process endpoint
+  //    adviceWith(
+  //        camelContext,
+  //        "claim-submit-full",
+  //        route ->
+  //            route
+  //                .interceptSendToEndpoint(
+  //                    "rabbitmq:health-assess-exchange"
+  //                        + "?routingKey=health-assess.7101&requestTimeout=60000")
+  //                .skipSendToOriginalEndpoint()
+  //                .to("mock:claim-submit-full"));
+  //    // The mock endpoint returns a valid response
+  //    mockFullHealthEndpoint.whenAnyExchangeReceived(
+  //        FunctionProcessor.<Claim, String>fromFunction(
+  //            claim -> util.fullClaimToResponse(claim, true)));
+  //
+  //    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+  //    request.setClaimSubmissionId("1234");
+  //    request.setVeteranIcn("icn");
+  //    request.setDiagnosticCode("7101");
+  //
+  //    var responseEntity1 =
+  //        post("/v1/full-health-data-assessment", request,
+  // FullHealthDataAssessmentResponse.class);
+  //
+  //    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+  //    FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
+  //    assertNotNull(response1);
+  //    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+  //    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+  //
+  //    // Now submit an existing claim:
+  //    var responseEntity2 =
+  //        post("/v1/full-health-data-assessment", request,
+  // FullHealthDataAssessmentResponse.class);
+  //    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
+  //    FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
+  //    assertNotNull(response2);
+  //    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
+  //    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+  //
+  //    Optional<ClaimEntity> claimEntityOptional =
+  //        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
+  //    assertTrue(claimEntityOptional.isPresent());
+  //  }
 
   @Test
   @DirtiesContext
@@ -154,9 +153,7 @@ class VroControllerTest extends BaseControllerTest {
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
 
-    var fullHealthDataAssessmentResponse =
-        new FullHealthDataAssessmentResponse(
-            "1234", "7101", "error validating request message data");
+    var fullHealthDataAssessmentResponse = new FullHealthDataAssessmentResponse("1234", "7101");
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<Claim, String>fromFunction(
@@ -171,7 +168,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("Error in condition processor.", claimProcessingError.getMessage());
+    assertEquals("Internal error while processing claim data.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
@@ -214,7 +211,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("Internal error while processing claim data.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
