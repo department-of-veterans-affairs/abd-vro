@@ -16,7 +16,7 @@ public class ServiceProviderConfig {
   @Value("${vro.persist.tracking.enabled:false}")
   public boolean persistTrackingEnabled;
 
-  @Value("${vro.persist.tracking.base_folder:/tmp/vro-test-persist/}")
+  @Value("${vro.persist.tracking.base_folder:/tmp/vro-test-persist}")
   @NotNull
   @NotBlank
   public String baseTrackingFolder;

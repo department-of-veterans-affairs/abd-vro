@@ -162,7 +162,7 @@ vro:
   persist:
     tracking:
       enabled: ${PERSIST_TRACKING_ENABLED:true}
-      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking/}
+      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking}
 
 spring.redis:
   # database index used by the connection factory

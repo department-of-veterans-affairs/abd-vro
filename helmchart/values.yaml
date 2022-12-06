@@ -154,7 +154,7 @@ readinessProbe:
 
 volumes:
   tracking:
-    name: mq-persistent-storage
+    name: tracking-persistent-storage
     claimName: tracking-efs-claim
     mountPath: /persist/tracking
 

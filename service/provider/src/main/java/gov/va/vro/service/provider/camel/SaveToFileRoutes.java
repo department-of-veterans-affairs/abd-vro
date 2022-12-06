@@ -7,6 +7,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.support.builder.ValueBuilder;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Paths;
+
 @RequiredArgsConstructor
 @Component
 class SaveToFileRoutes extends RouteBuilder {
@@ -27,7 +29,7 @@ class SaveToFileRoutes extends RouteBuilder {
     from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath("claimSubmissionId"))
-        .to("file:" + config.baseTrackingFolder + tapBasename);
+        .to("file:" + Paths.get(config.baseTrackingFolder,tapBasename));
   }
 
   private ValueBuilder filepath(String idField) {
