@@ -18,6 +18,11 @@ public abstract class BaseControllerTest extends BaseIntegrationTest {
     return exchange(url, request, HttpMethod.POST, responseType);
   }
 
+  protected <I, O> ResponseEntity<O> post(
+      String url, I request, Map<String, String> headers, Class<O> responseType) {
+    return exchange(url, request, HttpMethod.POST, headers, responseType);
+  }
+
   protected <I, O> ResponseEntity<O> get(String url, I request, Class<O> responseType) {
     return exchange(url, request, HttpMethod.GET, responseType);
   }

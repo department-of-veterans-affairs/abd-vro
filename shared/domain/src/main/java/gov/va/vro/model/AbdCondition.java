@@ -18,6 +18,7 @@ public class AbdCondition implements Comparable<AbdCondition> {
   private String abatementDate;
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String onsetDate;
+  private String recordedDate;
 
   @Override
   public int compareTo(AbdCondition otherCondition) {
