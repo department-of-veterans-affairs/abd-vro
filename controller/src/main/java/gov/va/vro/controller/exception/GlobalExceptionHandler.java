@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ClaimProcessingError> handleJsonParseException(
       JsonParseException exception) {
-    log.error("Unexpected error", exception);
+    log.error("Bad Request: Malformed JSON", exception);
     ClaimProcessingError cpe = new ClaimProcessingError(HttpStatus.BAD_REQUEST.getReasonPhrase());
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
