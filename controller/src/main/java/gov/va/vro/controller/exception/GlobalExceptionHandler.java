@@ -1,9 +1,11 @@
 package gov.va.vro.controller.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import gov.va.vro.api.model.ClaimProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,5 +42,13 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ClaimProcessingError> handleClaimProcessingException(
       ClaimProcessingException exception) {
     return new ResponseEntity<>(new ClaimProcessingError(exception), exception.getHttpStatus());
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ClaimProcessingError> handleJsonParseException(
+      JsonParseException exception) {
+    log.error("Unexpected error", exception);
+    ClaimProcessingError cpe = new ClaimProcessingError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 }

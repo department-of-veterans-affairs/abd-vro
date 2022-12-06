@@ -85,9 +85,11 @@ public class FieldExtractor {
     if (condition.hasAbatementDateTimeType()) {
       result.setAbatementDate(FieldExtractor.toDate(condition.getAbatementDateTimeType()));
     }
-
     if (condition.hasOnsetDateTimeType()) {
       result.setOnsetDate(FieldExtractor.toDate(condition.getOnsetDateTimeType()));
+    }
+    if (condition.hasRecordedDateElement()) {
+      result.setRecordedDate(FieldExtractor.toDate(condition.getRecordedDateElement()));
     }
 
     if (condition.hasClinicalStatus()) {
