@@ -209,8 +209,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.mas.keyName }}
                   key: {{ .Values.mas.masCreateExamOrderPath }}
-            - name: PERSIST_TRACKING_FOLDER
-              value: {{ .Values.volumes.tracking.mountPath }}
           resources:
             requests:
               cpu: 150m
@@ -242,6 +240,8 @@ spec:
                   key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.volumes.tracking.mountPath }}
             - name: POSTGRES_URL
               valueFrom:
                 secretKeyRef:
@@ -391,6 +391,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
