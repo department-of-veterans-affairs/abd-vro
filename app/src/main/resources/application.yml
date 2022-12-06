@@ -168,7 +168,7 @@ spring.redis:
 bip:
   claimClientId: "${BIP_CLAIM_USERID:VROSYSACCT}"
   claimSecret: "${BIP_CLAIM_SECRET:x!A%D*G-KaPdSgUkXp2s5v8y/B?E(H+M}"
-  claimBaseURL: "${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}"
+  claimBaseURL: "${BIP_CLAIM_URL:https://2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io}"
   claimIssuer: "${BIP_CLAIM_ISS:virtual-regional-office}"
   evidenceClientId: "${BIP_EVIDENCE_USERID:VROSYSACCT}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET:qGYYiuiFCWvRTUIk5CvVbHJqqP0Q045CV}"
