@@ -85,7 +85,7 @@ public class MasControllerTest extends BaseControllerTest {
 
     adviceWith(
             camelContext,
-            "mas-offramp-claim",
+            "mas-complete-claim",
             route ->
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
