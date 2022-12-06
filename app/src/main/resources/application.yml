@@ -118,7 +118,7 @@ slack:
   exception:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
-  
+
 opentracing:
   zipkin:
     enabled: false
@@ -136,6 +136,7 @@ springdoc:
     enabled: ${VRO_NON_PROD:false}
 
 vro:
+  env: ${ENV:local}
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
@@ -157,6 +158,11 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
+
+  persist:
+    tracking:
+      enabled: ${PERSIST_TRACKING_ENABLED:true}
+      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking}
 
 spring.redis:
   # database index used by the connection factory
