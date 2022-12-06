@@ -88,7 +88,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
     String collectEvidenceEndpoint = "direct:collect-evidence";
     String orderExamEndpoint = "direct:order-exam";
-
+    String uploadPdfEndpoint = "direct:upload-pdf";
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
@@ -102,18 +102,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
-        .process(FunctionProcessor.fromFunction(MasCollectionService::getGeneratePdfPayload))
+        .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        // Call pcOrderExam in the absence of evidence
         .process(
             exchange -> {
               MasAutomatedClaimPayload claimPayload =
                   (MasAutomatedClaimPayload) exchange.getProperty("claim");
               exchange.getMessage().setBody(claimPayload);
             })
-        .to(orderExamEndpoint); // Call Order Exam;
-    // TODO upload PDF
-    // TODO: Call claim status update
+        .to(orderExamEndpoint)
+        .to(uploadPdfEndpoint)
+        .to(ENDPOINT_MAS_COMPLETE);
 
     from(collectEvidenceEndpoint)
         .routeId("mas-automated-claim-collect-evidence")
@@ -130,6 +129,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
 
+    // Call "Order Exam" in the absence of evidence
     from(orderExamEndpoint)
         .routeId("mas-order-exam")
         .choice()
@@ -138,6 +138,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+
+    from(uploadPdfEndpoint).routeId("mas-upload-pdf").log("TODO: upload PDF");
   }
 
   private void configureOrderExamStatus() {
@@ -148,8 +150,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureCompleteProcessing() {
     from(ENDPOINT_MAS_COMPLETE)
-        .routeId("mas-offramp-claim")
-        .log("Request to off-ramp claim received")
+        .routeId("mas-complete-claim")
+        .log("Request to complete claim received")
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking}"))
