@@ -56,7 +56,8 @@ class DevControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit"));
     // The mock endpoint returns a valid response
     mockSubmitClaimEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, true)));
+        FunctionProcessor.<Claim, String>fromFunction(
+            claim -> util.claimToResponse(claim, true, null)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -101,7 +102,8 @@ class DevControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit"));
 
     mockSubmitClaimEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
+        FunctionProcessor.<Claim, String>fromFunction(
+            claim -> util.claimToResponse(claim, false, null)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");

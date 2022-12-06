@@ -94,7 +94,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 2,
                                      "totalConditionsCount": 1},
                  "sufficientForFastTracking": True,
-                 'status': 'SUCCESS'}
+                 }
         ),
         # New claim with two recent BP both elevated and no condition
         (
@@ -178,7 +178,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 2,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": True,
-                 'status': 'SUCCESS'}
+                 }
         ),
         # New claim with relevant condition but no recent BP
         (
@@ -227,7 +227,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 1,
                                      "totalConditionsCount": 1},
                  "sufficientForFastTracking": False,
-                 'status': 'SUCCESS'}
+                 }
         ),
         # New claim with no condition and no recent BP, BP not elevated
         (
@@ -300,7 +300,7 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": None,
-                 'status': 'SUCCESS'}
+                 }
         ),
         # Claim for increase, not enough BP readings
         (
@@ -373,7 +373,7 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": None,
-                 'status': 'SUCCESS'}
+                 }
         ),
         (
                 {
@@ -497,7 +497,7 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 4,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": None,
-                 'status': 'SUCCESS'}
+                 }
         ),
         # Claim for increase
         (
@@ -624,7 +624,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 4,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": True,
-                 'status': 'SUCCESS'}
+                 }
         ),
         (
 
@@ -648,7 +648,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 0,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": None,
-                 'status': 'SUCCESS'}
+                }
         ),
         # Bad data missing action type
         (
@@ -658,8 +658,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                     }
                 },
-                {"errorMessage": "error validating request message data",
-                 "status": "ERROR"}
+                {"errorMessage": "error validating request message data"}
         ),
         # Bad data:
         # - "diastolic" value is string instead of int
@@ -710,8 +709,7 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09"
                 },
-                {"errorMessage": "error validating request message data",
-                 "status": "ERROR"}
+                {"errorMessage": "error validating request message data"}
         ),
     ],
 )

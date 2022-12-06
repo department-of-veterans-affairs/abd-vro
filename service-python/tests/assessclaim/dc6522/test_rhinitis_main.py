@@ -34,8 +34,8 @@ from assessclaimdc6522.src.lib import main
                                  "relevantProceduresCount": 0,
                                  "totalConditionsCount": 0,
                                  "totalMedCount": 1,
-                                 "totalProceduresCount": 0},
-             "status": "SUCCESS"}
+                                 "totalProceduresCount": 0}
+             }
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -66,9 +66,8 @@ from assessclaimdc6522.src.lib import main
                                  "relevantProceduresCount": 0,
                                  "totalConditionsCount": 0,
                                  "totalMedCount": 1,
-                                 "totalProceduresCount": 0},
-            "status": "SUCCESS"},
-
+                                 "totalProceduresCount": 0}
+             },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
@@ -110,7 +109,6 @@ from assessclaimdc6522.src.lib import main
                                     'totalConditionsCount': 1,
                                     'totalMedCount': 1,
                                     'totalProceduresCount': 0},
-                "status": "SUCCESS"
             },
         ),
     ],

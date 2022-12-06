@@ -130,7 +130,7 @@ public class VroController implements VroResource {
 
       AbdEvidenceWithSummary response =
           objectMapper.readValue(responseAsString, AbdEvidenceWithSummary.class);
-      if (response.getEvidence() == null) {
+      if (response.getErrorMessage() != null) {
         log.info(
             "Response from condition processor returned error message: {}",
             response.getErrorMessage());
@@ -140,7 +140,7 @@ public class VroController implements VroResource {
             "Internal error while processing claim data.");
       }
       FullHealthDataAssessmentResponse HttpResponse =
-          objectMapper.readValue(response.toString(), FullHealthDataAssessmentResponse.class);
+          objectMapper.convertValue(response, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       HttpResponse.setVeteranIcn(claim.getVeteranIcn());
       HttpResponse.setDiagnosticCode(claim.getDiagnosticCode());

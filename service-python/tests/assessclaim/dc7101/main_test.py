@@ -106,8 +106,7 @@ from assessclaimdc7101.src.lib import main
                     "medicationsCount": 1,
                     "recentBpReadings": 2,
                     "totalBpReadings": 2,
-                },
-                "status": "SUCCESS"
+                }
             },
         ),
         (
@@ -162,7 +161,6 @@ from assessclaimdc7101.src.lib import main
                     "recentBpReadings": 0,
                     "totalBpReadings": 2,
                 },
-                "status": "SUCCESS"
             },
         ),
         # Sufficiency and history algos fail
@@ -182,7 +180,6 @@ from assessclaimdc7101.src.lib import main
                     "recentBpReadings": 0,
                     "totalBpReadings": 0,
                 },
-                "status": "SUCCESS"
             },
         ),
         # Bad data: "systolic" key is missing in second reading
@@ -222,8 +219,7 @@ from assessclaimdc7101.src.lib import main
                 }
             },
             {
-                "errorMessage": "error validating request message data",
-                "status": "ERROR"
+                "errorMessage": "error validating request message data"
             },
         ),
         # Bad data:
@@ -274,8 +270,7 @@ from assessclaimdc7101.src.lib import main
                 "dateOfClaim": "2021-11-09",
             },
             {
-                "errorMessage": "error validating request message data",
-                "status": "ERROR"
+                "errorMessage": "error validating request message data"
             },
         ),
     ],

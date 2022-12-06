@@ -43,7 +43,6 @@ from assessclaimdc6510.src.lib import main
                     "calculated": {"constantSinusitis": False,
                                    "multipleSurgery": False,
                                    "radicalSurgery": False},
-                    "status": "SUCCESS"
                 }
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -91,7 +90,6 @@ from assessclaimdc6510.src.lib import main
                                    "multipleSurgery": False,
                                    "radicalSurgery": False,
                                    },
-                    "status": "SUCCESS"
                 },
         ),
         (
@@ -157,7 +155,6 @@ from assessclaimdc6510.src.lib import main
                     "calculated": {"constantSinusitis": False,
                                    "multipleSurgery": False,
                                    "radicalSurgery": False},
-                    "status": "SUCCESS"
                 },
         ),
     ],

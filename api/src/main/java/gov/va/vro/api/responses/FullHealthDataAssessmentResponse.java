@@ -1,5 +1,6 @@
 package gov.va.vro.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import java.util.Map;
 
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class FullHealthDataAssessmentResponse {

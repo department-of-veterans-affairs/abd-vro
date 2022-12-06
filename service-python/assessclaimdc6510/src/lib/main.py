@@ -44,12 +44,10 @@ def assess_sinusitis(event: Dict):
                     "multipleSurgery": procedures["multipleSurgery"],
                     "constantSinusitis": conditions["constantSinusitis"]
                 },
-                "status": "SUCCESS"
             }
         )
         logging.info("Message processed successfully")
     else:
         logging.info(f"Message failed to process due to: {validation_results['errors']}")
-        response_body["status"] = "ERROR"
         response_body["errorMessage"] = "error validating request message data"
     return response_body
