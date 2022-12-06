@@ -8,6 +8,7 @@ import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.*;
+import gov.va.vro.service.provider.camel.BipIntegrationRoutes;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
@@ -88,7 +89,7 @@ public class MasControllerTest extends BaseControllerTest {
             "mas-offramp-claim",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
+                    .interceptSendToEndpoint(BipIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-offramp"))
         .end();
@@ -116,7 +117,7 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101");
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.expectedMessageCount(1);
