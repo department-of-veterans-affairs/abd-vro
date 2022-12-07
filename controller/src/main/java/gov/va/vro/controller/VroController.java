@@ -130,7 +130,7 @@ public class VroController implements VroResource {
 
       AbdEvidenceWithSummary response =
           objectMapper.readValue(responseAsString, AbdEvidenceWithSummary.class);
-      if (response.getErrorMessage() != null) {
+      if (response.getEvidence() == null) {
         log.info(
             "Response from condition processor returned error message: {}",
             response.getErrorMessage());
