@@ -177,4 +177,23 @@ public class VroController implements VroResource {
       throw new MetricsProcessingException(HttpStatus.valueOf("Error getting claim info"), e);
     }
   }
+
+  @Override
+  public ResponseEntity<ClaimMetricsResponse> claimInfoForVeteran(String veteranIcn)
+      throws MetricsProcessingException {
+    ClaimMetricsResponse response = new ClaimMetricsResponse();
+    try {
+      List<ClaimMetricsInfo> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
+      List<ClaimInfo> infoList = new ArrayList<>();
+      for (ClaimMetricsInfo metricsInfo : info) {
+        ClaimInfo claim = claimMetricsMapper.toClaimInfo(metricsInfo);
+        infoList.add(claim);
+      }
+      response.setClaims(infoList);
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      log.error("Error in claim-info", e);
+      throw new MetricsProcessingException(HttpStatus.valueOf("Error getting claim info"), e);
+    }
+  }
 }

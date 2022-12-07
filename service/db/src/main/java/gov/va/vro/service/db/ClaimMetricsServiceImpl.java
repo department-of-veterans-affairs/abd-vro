@@ -41,6 +41,28 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     return infoList;
   }
 
+  @Override
+  public List<ClaimMetricsInfo> claimInfoForVeteran(String veteranIcn) {
+    List<ClaimMetricsInfo> veteranClaims = new ArrayList<>();
+    ClaimMetricsInfo info = new ClaimMetricsInfo();
+    try {
+      List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn);
+      for (ClaimEntity claim : claims) {
+        info.setVeteranIcn(veteranIcn);
+        info.setClaimSubmissionId(claim.getClaimSubmissionId());
+        info.setContentionsCount(claim.getContentions().size());
+        setContentionsList(claim, info);
+        setAssessmentResultsAndCount(claim, info);
+        setEvidenceSummaryCounts(claim, info);
+        veteranClaims.add(info);
+      }
+      return veteranClaims;
+    } catch (Exception e) {
+      log.error("Could not find claim with the given claimSubmissionId");
+      throw new NoSuchElementException("Could not find claim with the given claimSubmissionId");
+    }
+  }
+
   private void setContentionsList(ClaimEntity entity, ClaimMetricsInfo info) {
     List<String> diagnosticCodes = new ArrayList<>();
     for (ContentionEntity contention : entity.getContentions()) {

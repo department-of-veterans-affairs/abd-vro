@@ -177,4 +177,30 @@ public interface VroResource {
   @Tag(name = "Claim Info")
   ResponseEntity<ClaimMetricsResponse> claimInfo(@PathVariable String claimSubmissionId)
       throws MetricsProcessingException;
+
+  @Operation(
+      summary = "Retrieves the claims and appropriate data for a particular veteran ICN",
+      description = "This endpoint provides processed claims information for a specific veteran. ")
+  @GetMapping("/claim-info-for-veteran/{veteranIcn}")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "claim-info-for-veteran")
+  @Tag(name = "Claim Info")
+  ResponseEntity<ClaimMetricsResponse> claimInfoForVeteran(@PathVariable String veteranIcn)
+      throws MetricsProcessingException;
 }
