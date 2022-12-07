@@ -140,7 +140,6 @@ services:
       ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
-      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
     depends_on:
       - postgres-service
       - rabbitmq-service

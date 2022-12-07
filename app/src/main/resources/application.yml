@@ -142,7 +142,7 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-    enabled: ${SWAGGER_ENABLED:false}
+    enabled: ${SWAGGER_ENABLED:true}
 
 vro:
   env: ${ENV:local}

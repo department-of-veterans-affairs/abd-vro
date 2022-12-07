@@ -15,7 +15,6 @@ on:
 
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  SWAGGER_ENABLED: true
   COMPOSE_PROJECT_NAME: vro
   LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
   LH_ASSERTION_URL: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
