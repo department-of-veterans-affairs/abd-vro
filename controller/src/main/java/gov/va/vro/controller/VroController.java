@@ -193,7 +193,8 @@ public class VroController implements VroResource {
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
       log.error("Error in claim-info", e);
-      throw new MetricsProcessingException(HttpStatus.valueOf("Error getting claim info for veteran"), e);
+      throw new MetricsProcessingException(
+          HttpStatus.valueOf("Error getting claim info for veteran"), e);
     }
   }
 }
