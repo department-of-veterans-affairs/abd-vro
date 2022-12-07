@@ -1,5 +1,5 @@
 from featuretoggle.src.lib.queues import queue_config, redis_config
-from featuretoggle.src.lib.settings import (queue_config, redis_config)
+from featuretoggle.src.lib.settings import queue_config, redis_config
 
 valid_redis = {
     "host": "",

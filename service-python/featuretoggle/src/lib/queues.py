@@ -1,5 +1,8 @@
 import json
 import logging
+from datetime import datetime
+
+import pytz
 
 from . import main, utils
 from .redis_client import RedisClient
@@ -19,6 +22,7 @@ def feature_toggle_request_callback(channel, method, properties, body):
     try:
         response = main.report_feature_toggles(message)
         redis_client.save_hash_data("features", items=utils.create_features_list())
+        redis_client.save_data("features_timestamp", pytz.utc.localize(datetime.now()))
     except Exception as e:
         logging.error(e, exc_info=True)
         response = {"status": "ERROR", "features": {}}
