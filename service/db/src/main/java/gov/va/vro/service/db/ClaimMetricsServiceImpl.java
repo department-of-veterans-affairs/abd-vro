@@ -32,6 +32,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       info.setContentionsCount(claim.getContentions().size());
       setContentionsList(claim, info);
       setAssessmentResultsAndCount(claim, info);
+      setEvidenceSummaryCounts(claim, info);
       infoList.add(info);
     } catch (Exception e) {
       log.error("Could not find claim with the given claimSubmissionId");
@@ -57,5 +58,13 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       }
     }
     info.setAssessmentResultsCount(count);
+  }
+
+  private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimMetricsInfo info) {
+    int count = 0;
+    for (ContentionEntity contention : claim.getContentions()) {
+      count = contention.getEvidenceSummaryDocuments().size();
+    }
+    info.setEvidenceSummaryDocumentsCount(count);
   }
 }

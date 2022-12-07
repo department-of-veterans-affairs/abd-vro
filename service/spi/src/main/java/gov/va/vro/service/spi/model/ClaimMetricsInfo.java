@@ -21,6 +21,7 @@ public class ClaimMetricsInfo {
   String veteranIcn;
   int contentionsCount;
   int assessmentResultsCount;
+  int evidenceSummaryDocumentsCount;
   List<String> contentions;
   Map<String, String> evidenceSummary;
   String errorMessage;
