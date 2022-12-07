@@ -24,6 +24,14 @@ def assess_sinusitis(event: Dict):
         active_medications = medication.medication_required(event)
         conditions = condition.conditions_calculation(event)
         procedures = procedure.procedures_calculation(event)
+
+        sufficient = None
+        if len(conditions["conditions"]) >= 1:
+            if procedures["multipleSurgery"] or conditions["constantSinusitis"] or \
+                    procedures["radicalSurgery"] or conditions["osteomyelitis"]:
+                sufficient = True
+            else:
+                sufficient = False
         response_body.update(
             {
                 "evidence": {
@@ -39,11 +47,7 @@ def assess_sinusitis(event: Dict):
                     "relevantProceduresCount": procedures["relevantProceduresCount"],
                     "totalProceduresCount": procedures["totalProceduresCount"],
                 },
-                "calculated": {
-                    "radicalSurgery": procedures["radicalSurgery"],
-                    "multipleSurgery": procedures["multipleSurgery"],
-                    "constantSinusitis": conditions["constantSinusitis"]
-                },
+                "sufficientForFastTracking": sufficient,
             }
         )
         logging.info("Message processed successfully")

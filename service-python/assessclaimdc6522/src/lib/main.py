@@ -21,6 +21,12 @@ def assess_rhinitis(event: Dict):
         relevant_conditions = conditions.conditions_calculation(event)
         procedures = procedure.procedures_calculation(event)
 
+        sufficient = None
+        if len(relevant_conditions["conditions"]) >= 1:
+            if "6523" in relevant_conditions["diagnosticCodes"] or relevant_conditions["nasalPolyps"]:
+                sufficient = True
+            else:
+                sufficient = False
         response_body.update(
             {
                 "evidence": {
@@ -37,6 +43,7 @@ def assess_rhinitis(event: Dict):
                     "relevantProceduresCount": procedures["relevantProceduresCount"],
                     "totalProceduresCount": procedures["totalProceduresCount"],
                 },
+                "sufficientForFastTracking": sufficient,
             }
         )
         logging.info("Message processed successfully")
