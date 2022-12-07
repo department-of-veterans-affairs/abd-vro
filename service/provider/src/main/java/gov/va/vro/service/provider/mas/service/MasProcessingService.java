@@ -7,10 +7,12 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MasProcessingService {
 
   private final CamelEntrance camelEntrance;
@@ -34,8 +36,9 @@ public class MasProcessingService {
     if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
       var message =
           String.format(
-              "Request with [collection id = %s] does not qualify for autmated processing because it is missing anchors",
+              "Request with [collection id = %s] does not qualify for automated processing because it is missing anchors",
               payload.getCollectionId());
+      log.info(message);
       offRampClaim(payload, message);
       return "Missing anchor";
     }

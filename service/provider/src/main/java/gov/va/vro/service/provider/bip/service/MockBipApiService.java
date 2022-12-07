@@ -14,7 +14,8 @@ import java.util.Map;
 public class MockBipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(Integer collectionId) throws BipException {
-    if (collectionId == 350) {
+    if (collectionId == 350 || collectionId == 353) {
+      // valid
       return buildClaim(1234, BipClaimService.TSOJ);
     } else if (collectionId == 351) {
       // wrong station

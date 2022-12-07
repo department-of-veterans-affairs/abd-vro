@@ -151,7 +151,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureCompleteProcessing() {
     from(ENDPOINT_MAS_COMPLETE)
         .routeId("mas-complete-claim")
-        .log("Request to complete claim received")
+        .log(" >> Request to complete claim received.")
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking}"))
