@@ -50,7 +50,7 @@ public class AuditEvent {
   public String toString() {
     if (isException()) {
       return String.format(
-          "Exception occurred on route %s for %s(id = %s): %s\n"
+          "Exception occurred on route %s for %s(id = %s): %s.\n"
               + "Please check the audit store for more information.",
           routeId, payloadType.getSimpleName(), eventId, message);
     } else {
@@ -64,7 +64,7 @@ public class AuditEvent {
         + routeId
         + '\''
         + ", payloadType="
-        + payloadType
+        + payloadType.getSimpleName()
         + ", message='"
         + message
         + '}';
