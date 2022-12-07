@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -62,6 +66,32 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+  }
+
+  @Test
+  void persistAssessmentResult() throws Exception {
+    // Save claim
+    Claim claim = new Claim();
+    claim.setClaimSubmissionId("1234");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("7101");
+    saveToDbService.insertClaim(claim);
+    ClaimEntity claimBeforeAssessment =
+        claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ContentionEntity contention = new ContentionEntity("7101");
+    claimBeforeAssessment.addContention(contention);
+    Map<String, Object> evidenceMap = new HashMap<>();
+    evidenceMap.put("medicationsCount", "10");
+    AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
+    evidence.setEvidenceSummary(evidenceMap);
+    saveToDbService.insertAssessmentResult(
+        claimBeforeAssessment.getId(), evidence, contention.getDiagnosticCode());
+    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    assertNotNull(result);
+    assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
+    AssessmentResultEntity assessmentResult =
+        result.getContentions().get(0).getAssessmentResults().get(0);
+    assertEquals(assessmentResult.getEvidenceCountSummary(), evidenceMap);
   }
 
   @Test
