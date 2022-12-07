@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/** Mock some claim data returned by the BIP API */
 @Service
 public class MockBipApiService implements IBipApiService {
   @Override
