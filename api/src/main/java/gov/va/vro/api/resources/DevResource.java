@@ -6,11 +6,9 @@ import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.model.HealthDataAssessment;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.validation.Valid;
 
 @RequestMapping(value = "/v1", produces = "application/json")
 @SecurityRequirement(name = "X-API-Key")
@@ -39,6 +35,7 @@ public interface DevResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
+
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
