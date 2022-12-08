@@ -5,7 +5,6 @@ pdf_options = {
     "print-media-type": None,
     "enable-local-file-access": None,
     "disable-smart-shrinking": None,
-    "dpi": "72",
 }
 
 redis_config = {

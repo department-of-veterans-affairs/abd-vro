@@ -18,43 +18,37 @@
         <style>
           @font-face {
             font-family: Bitter;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/bitter-regular-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: Bitter;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/bitter-bold-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-regular-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-italic-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
             font-weight: normal;
             font-style: italic;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bold-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-bolditalic-webfont.ttf");
-            /* src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf"); */
+            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
             font-weight: 700;
             font-style: italic;
           }
