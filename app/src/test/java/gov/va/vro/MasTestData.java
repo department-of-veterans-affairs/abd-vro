@@ -7,11 +7,11 @@ import java.util.Collections;
 public class MasTestData {
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    return getMasAutomatedClaimPayload(123, "1233");
+    return getMasAutomatedClaimPayload(123, "1233", "999");
   }
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload(
-      int collectionId, String diagnosticCode) {
+      int collectionId, String diagnosticCode, String claimId) {
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
     veteranIdentifiers.setEdipn("X");
     veteranIdentifiers.setParticipantId("X");
@@ -24,7 +24,7 @@ public class MasTestData {
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setClaimSubmissionDateTime("2022-02-04");
     claimDetail.setConditions(conditions);
-    claimDetail.setBenefitClaimId("999");
+    claimDetail.setBenefitClaimId(claimId);
 
     return MasAutomatedClaimPayload.builder()
         .dateOfBirth("2002-12-12")

@@ -62,7 +62,7 @@ public class CamelEntrance {
 
   public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP, masAutomatedClaimPayload);
+        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
   }
 
   public void sendSlack(AuditEvent auditEvent) {
