@@ -26,7 +26,6 @@ class PDFGenerator:
             logging.info("No helper function found")
         # Call a helper function that gets run for all codes
         filled_variables = pdf_helper_all(filled_variables) # noqa: F405, E261
-        logging.info(filled_variables)
         if "evidence" in filled_variables:
             for medication_info in filled_variables["evidence"]["medications"]:
                 medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
