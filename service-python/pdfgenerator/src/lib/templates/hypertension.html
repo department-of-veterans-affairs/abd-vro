@@ -38,25 +38,25 @@
     @font-face {
       font-family: NotoSans;
       src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
-      font-weight: normal;
+      font-weight: 400;
       font-style: normal;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
-      font-weight: normal;
+      src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
+      font-weight: 400;
       font-style: italic;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
-      font-weight: bold;
+      src: url("/home/docker/public/fonts/notosans-bold-webfont.ttf");
+      font-weight: 700;
       font-style: normal;
     }
     @font-face {
       font-family: NotoSans;
       src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
-      font-weight: bold;
+      font-weight: 700;
       font-style: italic;
     }
     body {
@@ -185,7 +185,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for location in service_locations %}
+          {% for location in evidence.service_locations %}
           <tr>
             <th>{{ location.key_term }}</th>
             <td>{{ location.document }}</td>
@@ -194,7 +194,7 @@
             <td style="white-space: nowrap !important;">{{ location.document_id }}</td>
           </tr>
           {% endfor %}
-          {% if service_locations|length == 0 %}
+          {% if evidence.service_locations|length == 0 %}
           <tr>
             <td colspan="5" class="empty">No service locations found through automated review.</td>
           </tr>
@@ -221,13 +221,13 @@
           </tr>
         </thead>
         <tbody>
-          {% for history in condition_history %}
+          {% for condition in evidence.conditions %}
           <tr>
-            <th>{{ history.diagnosis }}</th>
-            <td>{{ history.date }}</td>
+            <th>{{ condition.code }}</th>
+            <td>{{ condition.onsetDate }}</td>
           </tr>
           {% endfor %}
-          {% if condition_history|length == 0 %}
+          {% if evidence.conditions|length == 0 %}
           <tr>
             <td colspan="2" class="empty">No encounter diagnoses found through automated review.</td>
           </tr>
@@ -261,7 +261,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for bp_reading in bp_readings %}
+          {% for bp_reading in evidence.bp_readings %}
           <tr>
             <th>{{ bp_reading.systolic.value }} / {{ bp_reading.diastolic.value }}</th>
             <th>{{ bp_reading.date }}</th>
@@ -296,7 +296,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for evidence in schedular_evidence %}
+          {% for evidence in evidence.schedular_evidence %}
           <tr>
             <th>{{ evidence.key_term }}</th>
             <td>{{ evidence.observation_date }}</td>
@@ -306,7 +306,7 @@
             <td>{{ evidence.document_id }}</td>
           </tr>
           {% endfor %}
-          {% if schedular_evidence|length == 0 %}
+          {% if evidence.schedular_evidence|length == 0 %}
           <tr>
             <td colspan="6" class="empty">No keywords found through automated review.</td>
           </tr>
@@ -336,7 +336,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for evidence in other_evidence %}
+          {% for evidence in evidence.other_evidence %}
           <tr>
             <th>{{ evidence.key_term }}</th>
             <td>{{ evidence.observation_date }}</td>
@@ -346,9 +346,9 @@
             <td>{{ evidence.document_id }}</td>
           </tr>
           {% endfor %}
-          {% if other_evidence|length == 0 %}
+          {% if evidence.other_evidence|length == 0 %}
           <tr>
-            <td colspan="6">No keywords found through automated review.</td>
+            <td colspan="6" class="empty">No keywords found through automated review.</td>
           </tr>
           {% endif %}
         </tbody>
@@ -378,14 +378,14 @@
           </tr>
         </thead>
         <tbody>
-          {% for review in unavailable_reviews %}
+          {% for review in evidence.unavailable_reviews %}
           <tr>
             <td>{{ review.document }}</td>
             <td>{{ review.receipt_date }}</td>
             <td>{{ review.document_id }}</td>
           </tr>
           {% endfor %}
-          {% if unavailable_reviews|length == 0 %}
+          {% if evidence.unavailable_reviews|length == 0 %}
           <tr>
             <td colspan="3" class="empty">The automated review scanned all relevant documents.</td>
           </tr>
@@ -402,7 +402,7 @@
       <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
       <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
       <ul>
-        <li class="m-0 mb-13"><b>VistA Electronic Health Records (eHRs):</b> This document includes digital medical information from VistA. This data will exclude some readings, such as blood pressure readings entered into clinical notes.</li>
+        <li class="m-0 mb-13"><b>VistA Electronic Health Records (EHRs):</b> This document includes digital medical information from VistA. This data will exclude some readings, such as blood pressure readings entered into clinical notes.</li>
         <li class="m-0 mb-13"><b>eFolder document scan:</b> Certain documents within the Veteran’s eFolder are digitally scanned and relevant search terms and summarized in this document. Only data in the eFolder on the date of the claim are included, although some documents uploaded on the date of claim may not be included.</li>
       </ul>
       <p class="m-0 mb-13"><b>Always check for additional data.</b> The following data are only included if they were in the eFolder on the date of claim:</p>
@@ -410,7 +410,7 @@
         <li class="m-0 mb-13">Medical records at a military or non-governmental facility</li>
         <li class="m-0 mb-13">Medical records from a VA medical facility using Cerner EHR</li>
       </ul>
-      <p><b>Always check for duplicate data entries in this document; some data points may appear more than once.</b> The VistA eHR and eFolder scan both contain VAMC medical records, and may find the same information in both places.</p>
+      <p><b>Always check for duplicate data entries in this document; some data points may appear more than once.</b> The VistA EHR and eFolder scan both contain VAMC medical records, and may find the same information in both places.</p>
     </div>
   </div>
   <!-- <h3 class="text-center">&zwnj;End of Evidence Review Summary</h3> -->
