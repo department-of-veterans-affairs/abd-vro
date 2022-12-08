@@ -19,6 +19,7 @@ from assessclaimdc6602v2.src.lib import main
                         "conditions": [],
                     },
                     "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
                 {"evidence": {"conditions": [],
                               "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
@@ -30,7 +31,8 @@ from assessclaimdc6602v2.src.lib import main
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 1,
                                      "totalConditionsCount": 0,
-                                     "totalMedCount": 1}},
+                                     "totalMedCount": 1},
+                 "claimSubmissionId": "1234"},
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -46,6 +48,7 @@ from assessclaimdc6602v2.src.lib import main
                         "conditions": [],
                     },
                     "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
                 {"evidence": {"conditions": [],
                               "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
@@ -58,7 +61,8 @@ from assessclaimdc6602v2.src.lib import main
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 1,
                                      "totalConditionsCount": 0,
-                                     "totalMedCount": 1}},
+                                     "totalMedCount": 1},
+                 "claimSubmissionId": "1234"},
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
@@ -74,6 +78,7 @@ from assessclaimdc6602v2.src.lib import main
                         "conditions": [],
                     },
                     "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
                 {"evidence": {"conditions": [],
                               "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
@@ -84,7 +89,8 @@ from assessclaimdc6602v2.src.lib import main
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "relevantMedCount": 0,
                                      "totalConditionsCount": 0,
-                                     "totalMedCount": 1}}
+                                     "totalMedCount": 1},
+                 "claimSubmissionId": "1234"}
         ),
     ],
 )

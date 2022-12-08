@@ -20,6 +20,7 @@ public class AppTestUtil {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
+    response.setClaimSubmissionId(claim.getClaimSubmissionId());
     response.setErrorMessage("I am not a real endpoint.");
     if (evidence) {
       response.setEvidence(new AbdEvidence());

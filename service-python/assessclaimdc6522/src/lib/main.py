@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from . import conditions, medication, procedure, utils
@@ -45,7 +46,10 @@ def assess_rhinitis(event: Dict):
                 "sufficientForFastTracking": sufficient,
             }
         )
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body
