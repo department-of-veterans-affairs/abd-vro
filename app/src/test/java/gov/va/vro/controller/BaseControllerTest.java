@@ -40,6 +40,7 @@ public abstract class BaseControllerTest extends BaseIntegrationTest {
       Class<O> responseType) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("X-API-Key", "test-key-01");
+    headers.add("Authorization", "Bearer " + sampleJWT);
     if (headersIn != null) {
       headersIn.forEach(
           (key, value) -> {
@@ -54,4 +55,7 @@ public abstract class BaseControllerTest extends BaseIntegrationTest {
       String url, I request, HttpMethod method, Class<O> responseType) {
     return exchange(url, request, method, null, responseType);
   }
+
+  String sampleJWT =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 }
