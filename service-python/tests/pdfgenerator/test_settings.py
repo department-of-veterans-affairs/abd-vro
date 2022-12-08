@@ -2,15 +2,10 @@ from pdfgenerator.src.lib.settings import (codes, pdf_options, queue_config,
                                            redis_config)
 
 valid_pdf = {
-    "page-size": "",
-    "margin-top": "",
-    "margin-right": "",
-    "margin-bottom": "",
-    "margin-left": "",
     "encoding": "",
-    "zoom": "",
     "print-media-type": "",
     "enable-local-file-access": "",
+    "disable-smart-shrinking": "",
 }
 
 valid_redis = {
