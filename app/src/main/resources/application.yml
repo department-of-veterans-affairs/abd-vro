@@ -150,11 +150,6 @@ lhAPIProvider:
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "${VALIDATE_TOKEN:NO}"
 
-slack:
-  exception:
-    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
-    channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
-
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: false
