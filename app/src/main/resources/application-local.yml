@@ -1,7 +1,2 @@
 # This file is used when ENV=local -- see app/src/docker/docker-compose.yml
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
-
-opentracing:
-  zipkin:
-    # Disabling to run locally without errors
-    enabled: false
