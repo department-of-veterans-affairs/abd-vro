@@ -4,11 +4,16 @@
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="pdfkit-orientation" content="Landscape"/>
   <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
   <meta name="pdfkit-footer-font-size" content="8"/>
   <meta name="pdfkit-page-size" content="Legal"/>
+  <meta name="pdfkit-margin-left" content="0.5in"/>
+  <meta name="pdfkit-margin-right" content="0.5in"/>
+  <meta name="pdfkit-margin-top" content="0.5in"/>
+  <meta name="pdfkit-margin-bottom" content="0.5in"/>
+  <meta name="pdfkit-zoom" content="1.33"/>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -17,6 +22,20 @@
   <title>{{pdf_title}}</title>
 
   <style>
+    @font-face {
+      font-family: Bitter;
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/bitter-regular-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf"); */
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: Bitter;
+      src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/bitter-bold-webfont.ttf");
+      /* src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf"); */
+      font-weight: 700;
+      font-style: normal;
+    }
     @font-face {
       font-family: NotoSans;
       src: url("/Users/anthonyvelazquez/Documents/abd-vro/service-python/pdfgenerator/src/public/fonts/notosans-regular-webfont.ttf");
@@ -46,42 +65,77 @@
       font-style: italic;
     }
     body {
-      padding: 10px;
+      padding: 12px 32px;
       color: #212121;
       font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
       font-size: 12px;
-      line-height: 16.34px;
+      line-height: 16px;
     }
     h1 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
       font-size: 18px;
-      line-height: 21.6px;
+      line-height: 22px;
     }
     h2 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
       font-size: 14px;
-      line-height: 16.8px;
-    }
-    h3 {
-    }
-    h4 {
+      line-height: 16px;
     }
     a {
       color: #004795 !important;
-      text-decoration: none;
+      text-decoration-line: underline;
+    }
+    table {
+      border: 1px solid #757575;
     }
     table, th, td {
-      border: 1px solid #757575;
       text-align: left;
       font-size: 11px;
       font-family: NotoSans;
     }
     thead th {
       background-color: #F1F1F1;
-      line-height: 14.98px;
-      font-weight: bold;
     }
-    tbody td {
-      line-height: 11px;
-      font-weight: normal;
+    th {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    td {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .empty {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+      color: #323A45;
+    }
+    .footnote {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .mb-13 {
+      margin-bottom: 13px !important;
+    }
+    .mb-30 {
+      margin-bottom: 30px !important;
     }
     @media print {
       .pagebreak {
@@ -95,35 +149,36 @@
 
 <body>
   <!-- Relevant military service locations -->
-  <div class="row mb-3">
+  <div class="row m-0">
     <div class="col">
-      <h1><b>Evidence for service connection</b></h1>
+      <h1 class="mb-13"><b>Evidence for service connection</b></h1>
       <p class="m-0"><b>Claimed as:</b> high blood pressure</p>
-      <p class="m-0"><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
+      <p class="m-0 mb-13"><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
     </div>
   </div>
-  <div class="row">
+  <div class="row m-0">
     <div class="col">
       <p class="m-0"><i class="fas fa-check-circle"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.</p>
       <p class="m-0"><i class="fas fa-check-circle"></i> The Veteran is claiming a condition that may be presumptive based on their service.</p>
-      <p class="m-0"><i class="far fa-calendar-check"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.</p>
+      <p class="m-0 mb-30"><i class="far fa-calendar-check"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.</p>
     </div>
   </div>
-  <div class="row">
+  <div class="row m-0">
     <div class="col">
-      <h3 class="mt-4">&zwnj;<b>Relevant military service locations</b></h3>
+      <h2 class="mb-13">&zwnj;<b>Relevant military service locations</b></h2>
     </div>
   </div>
+  <div style="border: 1px solid black; width: 1007px;">a</div>
   <div class="row">
     <div class="col">
-      <table id="" class="table table-bordered">
+      <table id="relevant-military-service-locations" class="table table-bordered" style="width: 875px !important;">
         <thead>
           <tr>
-            <th>Key Terms</th>
+            <th style="width: 118px !important;">Key Terms</th>
             <th>Document</th>
-            <th>VBMS Receipt Date</th>
-            <th>Page(s)</th>
-            <th>Document ID</th>
+            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 70px !important;">Page(s)</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -149,17 +204,17 @@
   <!-- Condition History -->
   <div class="row">
     <div class="col">
-      <h3 class="">&zwnj;<b>Condition history</b></h3>
-      <p class="m-0">The VistA EHR search found the following diagnosis information in VHA records as of<b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
+      <h2 class="m-0 mb-13">&zwnj;<b>Condition history</b></h2>
+      <p>The VistA EHR search found the following diagnosis information in VHA records as of <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
     </div>
   </div>
   <div class="row">
     <div class="col">
-      <table id="" class="table table-bordered">
+      <table id="condition-history" class="table table-bordered" style="width: 400px !important;">
         <thead>
           <tr>
-            <th>Encounter Diagnosis<sup>*</sup></th>
-            <th>Recorded Date</th>
+            <th style="width: 310px !important;">Encounter Diagnosis<sup>*</sup></th>
+            <th style="width: 90px !important;">Recorded Date</th>
           </tr>
         </thead>
         <tbody>
@@ -171,12 +226,12 @@
           {% endfor %}
           {% if conditions|length == 0 %}
           <tr>
-            <td colspan="2">No encounter diagnoses found through automated review.</td>
+            <td colspan="2" class="empty">No encounter diagnoses found through automated review.</td>
           </tr>
           {% endif %}
         </tbody>
       </table>
-      <p><i><sup>*</sup>An encounter diagnosis is a point-in-time diagnosis (for example, from a physician or nurse) made during a specific
+      <p class="footnote"><i><sup>*</sup>An encounter diagnosis is a point-in-time diagnosis (for example, from a physician or nurse) made during a specific
         interaction with the patient, such as during an appointment or in-patient treatment. It may be a preliminary assessment.</i></p>
     </div>
   </div>
@@ -184,9 +239,9 @@
   <!-- Hypertension -->
   <div class="row">
     <div class="col">
-      <h2 class=""><b>Condition: Hypertension</b></h2>
-      <h3><b>Schedular evidence for hypertension – blood pressure readings</b></h3>
-      <p>The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of<b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
+      <h1 class="m-0 mb-30"><b>Condition: Hypertension</b></h1>
+      <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension – blood pressure readings</b></h2>
+      <p class="m-0 mb-13">The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
     </div>
   </div>
   <div class="row">
@@ -194,12 +249,12 @@
       <table id="schedular-evidence-bp" class="table table-bordered">
         <thead>
           <tr>
-            <th>Blood pressure</th>
-            <th>Observation Date</th>
-            <th>Source(s)</th>
-            <th>VBMS Receipt Date</th>
-            <th>Page(s)</th>
-            <th>Document ID</th>
+            <th style="width: 67px !important;">Blood pressure</th>
+            <th style="width: 90px !important;">Observation Date</th>
+            <th>Source</th>
+            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 70px !important;">Page(s)</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -221,7 +276,7 @@
   <!-- Schedular evidence -->
   <div class="row">
     <div class="col">
-      <h3><b>Schedular evidence for hypertension</b></h3>
+      <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension</b></h2>
     </div>
   </div>
   <div class="row">
@@ -230,11 +285,11 @@
         <thead>
           <tr>
             <th>Key Terms</th>
-            <th>Observation Date</th>
-            <th>VBMS Receipt Date</th>
-            <th>Document</th>
-            <th>Page Number(s)</th>
-            <th>Document ID</th>
+            <th style="width: 90px !important;">Observation Date</th>
+            <th style="width: 204px !important;">Source</th>
+            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -261,7 +316,7 @@
   <!-- Other medical evidence -->
   <div class="row">
     <div class="col">
-      <h3><b>Other medical evidence for hypertension</b></h3>
+      <h2 class="m-0 mb-13"><b>Other medical evidence for hypertension</b></h2>
     </div>
   </div>
   <div class="row">
@@ -270,11 +325,11 @@
         <thead>
           <tr>
             <th>Key Terms</th>
-            <th>Observation Date</th>
-            <th>VBMS Receipt Date</th>
-            <th>Document</th>
-            <th>Page Number(s)</th>
-            <th>Document ID</th>
+            <th style="width: 90px !important;">Observation Date</th>
+            <th style="width: 204px !important;">Source</th>
+            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -299,14 +354,14 @@
   </div>
   <div class="row">
     <div class="col">
-      <h3><b>Schedule for rating disabilities for hypertension</b></h3>
-      <a href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
+      <h2 class="m-0 mb-13"><b>Schedule for rating disabilities for hypertension</b></h2>
+      <a class="mb-30" href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
     </div>
   </div>
   <!-- Relevant documents with no keywords found -->
   <div class="row mt-3">
     <div class="col">
-      <h3><b>Relevant documents with no keywords found</b></h3>
+      <h1 class="m-0 mb-13"><b>Relevant documents with no keywords found</b></h1>
     </div>
   </div>
   <div class="row">
@@ -314,9 +369,9 @@
       <table id="unavailable-automated-review" class="table table-bordered">
         <thead>
           <tr>
-            <th>Document</th>
-            <th>VBMS Receipt Date</th>
-            <th>Document ID</th>
+            <th style="width: 271px !important;">Document</th>
+            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -329,7 +384,7 @@
           {% endfor %}
           {% if unavailable_reviews|length == 0 %}
           <tr>
-            <td colspan="3">The automated review scanned all relevant documents.</td>
+            <td colspan="3" class="empty">The automated review scanned all relevant documents.</td>
           </tr>
           {% endif %}
         </tbody>
@@ -340,17 +395,17 @@
   <!-- About this document -->
   <div class="row">
     <div class="col">
-      <h3><b>About this document</b></h3>
-      <p>The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
-      <p><b>This document summarizes data gathered from two sources:</b></p>
+      <h1 class="m-0 mb-13"><b>About this document</b></h1>
+      <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
+      <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
       <ul>
-        <li><b>VistA Electronic Health Records (eHRs):</b> This document includes digital medical information from VistA. This data will exclude some readings, such as blood pressure readings entered into clinical notes.</li>
-        <li><b>eFolder document scan:</b> Certain documents within the Veteran’s eFolder are digitally scanned and relevant search terms and summarized in this document. Only data in the eFolder on the date of the claim are included, although some documents uploaded on the date of claim may not be included.</li>
+        <li class="m-0 mb-13"><b>VistA Electronic Health Records (eHRs):</b> This document includes digital medical information from VistA. This data will exclude some readings, such as blood pressure readings entered into clinical notes.</li>
+        <li class="m-0 mb-13"><b>eFolder document scan:</b> Certain documents within the Veteran’s eFolder are digitally scanned and relevant search terms and summarized in this document. Only data in the eFolder on the date of the claim are included, although some documents uploaded on the date of claim may not be included.</li>
       </ul>
-      <p><b>Always check for additional data.</b> The following data are only included if they were in the eFolder on the date of claim:</p>
+      <p class="m-0 mb-13"><b>Always check for additional data.</b> The following data are only included if they were in the eFolder on the date of claim:</p>
       <ul>
-        <li>Medical records at a military or non-governmental facility</li>
-        <li>Medical records from a VA medical facility using Cerner EHR</li>
+        <li class="m-0 mb-13">Medical records at a military or non-governmental facility</li>
+        <li class="m-0 mb-13">Medical records from a VA medical facility using Cerner EHR</li>
       </ul>
       <p><b>Always check for duplicate data entries in this document; some data points may appear more than once.</b> The VistA eHR and eFolder scan both contain VAMC medical records, and may find the same information in both places.</p>
     </div>
