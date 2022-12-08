@@ -102,7 +102,7 @@ def test_medication_date_conversion(template_code):
 
 
 @patch("pdfkit.from_string")
-@pytest.mark.parametrize("template_code", ["0000", "6602"])
+@pytest.mark.parametrize("template_code", ["6602"])
 def test_pdf_generation(pdfkit_mock, template_code):
     """Test if the generate PDF function gets called."""
     pdf_generator = PDFGenerator({})
@@ -115,8 +115,12 @@ def test_pdf_generation(pdfkit_mock, template_code):
     html_file = pdf_generator.generate_template_file(
         template, generated_variables, True
     )
+    tag = (
+        "<html"
+    )
     pdf_generator.generate_pdf_from_string(
-        template, html_file
+        template, html_file, {}
     )
 
+    assert tag in html_file
     assert pdfkit_mock.called
