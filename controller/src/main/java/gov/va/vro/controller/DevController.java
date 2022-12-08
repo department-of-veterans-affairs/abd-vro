@@ -6,21 +6,16 @@ import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.DevResource;
-import gov.va.vro.api.responses.FetchClaimsResponse;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.services.FetchClaimsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,8 +25,6 @@ public class DevController implements DevResource {
 
   private final CamelEntrance camelEntrance;
   private final PostClaimRequestMapper postClaimRequestMapper;
-
-  private final FetchClaimsService fetchClaimsService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -61,24 +54,6 @@ public class DevController implements DevResource {
       log.error("Error in health assessment", ex);
       throw new ClaimProcessingException(
           claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
-    }
-  }
-
-  @Override
-  public ResponseEntity<FetchClaimsResponse> fetchClaims() {
-
-    try {
-
-      List<Claim> claimList = fetchClaimsService.fetchClaims();
-      List<ClaimInfo> claims =
-          claimList.stream().map(this::getClaimInfo).collect(Collectors.toList());
-      FetchClaimsResponse response = new FetchClaimsResponse(claims, "Success");
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (Exception e) {
-      FetchClaimsResponse failure = new FetchClaimsResponse();
-      failure.setErrorMessage("Could not fetch claims from the DB.  " + e.getCause());
-      log.error("Could not fetch claims from the DB.", e);
-      return new ResponseEntity<>(failure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

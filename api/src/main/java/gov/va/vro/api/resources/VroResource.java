@@ -153,7 +153,7 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
-      summary = "Retrieves information on the previously processed claims",
+      summary = "Retrieves the claim corresponding to the claimSubmissionId.",
       description = "This endpoint provides processed claims information. ")
   @GetMapping("/claim-info/{claimSubmissionId}")
   @ApiResponses(
@@ -207,7 +207,7 @@ public interface VroResource {
   @Operation(
       summary = "Retrieves pages of claims based on passing the page number and size",
       description = "This endpoint provides processed claims by the page. ")
-  @GetMapping("/claim-info-for-veteran/{offset}/{pageSize}")
+  @GetMapping("/claim-info-with-pagination/{offset}/{pageSize}")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),

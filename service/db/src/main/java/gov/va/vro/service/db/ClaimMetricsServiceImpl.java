@@ -26,9 +26,9 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   @Override
   public List<ClaimMetricsInfo> claimMetrics(String claimSubmissionId) {
     List<ClaimMetricsInfo> infoList = new ArrayList<>();
-    ClaimMetricsInfo info = new ClaimMetricsInfo();
     try {
       ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
+      ClaimMetricsInfo info = new ClaimMetricsInfo();
       info.setClaimSubmissionId(claim.getClaimSubmissionId());
       info.setVeteranIcn(claim.getVeteran().getIcn());
       info.setContentionsCount(claim.getContentions().size());
@@ -46,10 +46,10 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   @Override
   public List<ClaimMetricsInfo> claimInfoForVeteran(String veteranIcn) {
     List<ClaimMetricsInfo> veteranClaims = new ArrayList<>();
-    ClaimMetricsInfo info = new ClaimMetricsInfo();
     try {
       List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn);
       for (ClaimEntity claim : claims) {
+        ClaimMetricsInfo info = new ClaimMetricsInfo();
         info.setVeteranIcn(veteranIcn);
         info.setClaimSubmissionId(claim.getClaimSubmissionId());
         info.setContentionsCount(claim.getContentions().size());
@@ -68,10 +68,10 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   @Override
   public List<ClaimMetricsInfo> claimInfoWithPagination(int offset, int pageSize) {
     List<ClaimMetricsInfo> infoList = new ArrayList<>();
-    ClaimMetricsInfo info = new ClaimMetricsInfo();
     try {
       Page<ClaimEntity> entityList = claimRepository.findAll(PageRequest.of(offset, pageSize));
       for (ClaimEntity claim : entityList) {
+        ClaimMetricsInfo info = new ClaimMetricsInfo();
         info.setVeteranIcn(claim.getVeteran().getIcn());
         info.setClaimSubmissionId(claim.getClaimSubmissionId());
         info.setContentionsCount(claim.getContentions().size());
