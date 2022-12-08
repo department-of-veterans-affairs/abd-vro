@@ -55,12 +55,20 @@
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+      src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
       font-weight: bold;
       font-style: italic;
     }
     body {
       padding: 12px 32px;
+      color: #212121;
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    p {
       color: #212121;
       font-family: NotoSans;
       font-style: normal;
@@ -147,15 +155,16 @@
   <div class="row m-0">
     <div class="col">
       <h1 class="mb-13"><b>Evidence for service connection</b></h1>
-      <p class="m-0"><b>Claimed as:</b> high blood pressure</p>
-      <p class="m-0 mb-13"><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
+      <p class="m-0 mb-13"><b>Claimed as:</b> high blood pressure<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
     </div>
   </div>
   <div class="row m-0">
     <div class="col">
-      <p class="m-0"><i class="fas fa-check-circle"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.</p>
-      <p class="m-0"><i class="fas fa-check-circle"></i> The Veteran is claiming a condition that may be presumptive based on their service.</p>
-      <p class="m-0 mb-30"><i class="far fa-calendar-check"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.</p>
+      <p class="m-0 mb-30">
+        <i class="fas fa-fw fa-check-circle"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.<br>
+        <i class="fas fa-fw fa-check-circle"></i> The Veteran is claiming a condition that may be presumptive based on their service.<br>
+        <i class="far fa-fw fa-calendar-check"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.
+      </p>
     </div>
   </div>
   <div class="row m-0">
@@ -168,9 +177,9 @@
       <table id="relevant-military-service-locations" class="table table-bordered" style="width: 875px !important;">
         <thead>
           <tr>
-            <th style="width: 118px !important;">Key Terms</th>
+            <th style="width: 118px !important;">Key terms</th>
             <th>Document</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 70px !important;">Page(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
@@ -182,7 +191,7 @@
             <td>{{ location.document }}</td>
             <td>{{ location.receipt_date }}</td>
             <td>{{ location.page }}</td>
-            <td>{{ location.document_id }}</td>
+            <td style="white-space: nowrap !important;">{{ location.document_id }}</td>
           </tr>
           {% endfor %}
           {% if service_locations|length == 0 %}

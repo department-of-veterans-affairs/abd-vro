@@ -18,41 +18,49 @@
         <style>
           @font-face {
             font-family: Bitter;
-            src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
+                  src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: Bitter;
-            src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
+                  src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
             font-weight: normal;
             font-style: italic;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("/home/docker/public/fonts/notosans-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-            src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
             font-weight: 700;
             font-style: italic;
           }
           body {
+            color: #212121;
+            font-family: NotoSans;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 16px;
+          }
+          p {
             color: #212121;
             font-family: NotoSans;
             font-style: normal;
@@ -173,11 +181,11 @@
         <div class="row flex">
           <table class="table table-bordered mb-30">
             <tr>
-              <td>Veteran's Name</td>
+              <td>Veteran's name</td>
               <th>{{name}}</th>
             </tr>
             <tr>
-              <td>VA File Number</td>
+              <td>VA file number</td>
               <th>{{file}}</th>
             </tr>
             <tr>
@@ -189,10 +197,10 @@
         <div class="row flex">
           <div style="max-width: 540px !important;">
             <p class="mb-13">
-              <b>Claims Processors:</b> This document summarizes data from VHA locations that use Vista/CAPRI, as well as scanned text from relevant documents in the Veteran’s eFolder on the date of claim.
+              <b>Claims Processors:</b> This document summarizes data from VHA locations that use VistA/CAPRI, as well as scanned text from relevant documents in the Veteran’s eFolder on the date of claim.
             </p>
             <p class="mb-30">
-              <b>Notice(s)</b> Some relevant data may be missing and some of the same data may appear twice. Learn more in the <a href="https://www.va.gov">About this document</a> section.
+              <b>Notice(s):</b> Some relevant data may be missing and some of the same data may appear twice. Learn more in the <a href="https://www.va.gov">About this document</a> section.
             </p>
           </div>
         </div>
