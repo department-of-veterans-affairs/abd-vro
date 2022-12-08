@@ -7,13 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class VroV2Tests {
@@ -29,11 +25,8 @@ public class VroV2Tests {
 
   @Test
   void testExamOrderingStatus_invalidRequest() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setBearerAuth(JWT_TOKEN);
-    String request = getOrderingStatusInvalidRequest();
-    HttpEntity<String> requestEntity = new HttpEntity<>(request, headers);
+    var request = getOrderingStatusInvalidRequest();
+    var requestEntity = getEntity(request);
     String url = BASE_URL + "/examOrderingStatus";
     try {
       restTemplate.postForEntity(url, requestEntity, String.class);
@@ -47,11 +40,8 @@ public class VroV2Tests {
 
   @Test
   void testExamOrderingStatus() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setBearerAuth(JWT_TOKEN);
-    String request = getOrderingStatusValidRequest();
-    HttpEntity<String> requestEntity = new HttpEntity<>(request, headers);
+    var request = getOrderingStatusValidRequest();
+    var requestEntity = getEntity(request);
     String url = BASE_URL + "/examOrderingStatus";
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -61,19 +51,32 @@ public class VroV2Tests {
 
   @SneakyThrows
   private String getOrderingStatusInvalidRequest() {
-    Map<String, String> payload = new HashMap<>();
-    payload.put("key1", "value1");
-    payload.put("key2", "value2");
-    return objectMapper.writeValueAsString(payload);
+    return objectMapper.writeValueAsString(Map.of("key1", "value1", "key2", "value2"));
   }
 
   @SneakyThrows
   private String getOrderingStatusValidRequest() {
-    Map<String, String> payload = new HashMap<>();
-    payload.put("collectionId", "123");
-    payload.put("collectionStatus", "DRAFT");
-    payload.put("examOrderDateTime", "2022-12-08T17:45:61Z");
-    payload.put("eventId", "None");
+    var payload =
+        Map.of(
+            "collectionId",
+            "123",
+            "collectionStatus",
+            "DRAFT",
+            "examOrderDateTime",
+            "2022-12-08T17:45:61Z",
+            "eventId",
+            "None");
     return objectMapper.writeValueAsString(payload);
+  }
+
+  private HttpEntity<String> getEntity(String content) {
+    return new HttpEntity<>(content, getHttpHeaders());
+  }
+
+  private static HttpHeaders getHttpHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setBearerAuth(JWT_TOKEN);
+    return headers;
   }
 }
