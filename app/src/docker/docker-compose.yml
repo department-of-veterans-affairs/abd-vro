@@ -20,6 +20,10 @@ x-mas-vars: &mas-vars
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
   SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
   SLACK_EXCEPTION_CHANNEL: ${SLACK_EXCEPTION_CHANNEL}
+  LH_API_AUTH_URL: ${LH_API_AUTH_URL}
+  VRO_AUD_URL: ${VRO_AUD_URL}
+  LH_VRO_API_KEY: ${LH_VRO_API_KEY}
+  VALIDATE_TOKEN: ${VALIDATE_TOKEN}
 
 x-postgres-vars: &postgres-vars
   # TODO: Is POSTGRES_HOST needed? It's not listed in helmchart/templates/api/deployment.yaml
@@ -136,7 +140,6 @@ services:
       ENV: ${ENV:-dev}
       # Cause application-compose.yml to be used
       JAVA_PROFILE: "-Dspring.profiles.include=compose"
-      VRO_NON_PROD: "$VRO_NON_PROD"
     depends_on:
       - postgres-service
       - rabbitmq-service

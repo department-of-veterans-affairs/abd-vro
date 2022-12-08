@@ -196,6 +196,8 @@ spec:
             type: string
           onsetDate:
             type: string
+          recordedDate:
+            type: string
       AbdEvidence:
         type: object
         properties:
