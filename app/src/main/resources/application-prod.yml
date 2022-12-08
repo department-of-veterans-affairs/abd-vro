@@ -1,0 +1,17 @@
+# This file is used when ENV=prod
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+# Secrets should reference environment variables, which will be set in Kubernetes.
+
+opentracing:
+  zipkin:
+    enabled: false
+    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+
+logging:
+  level:
+    org.springframework.jdbc.core: INFO # DEBUG
+    org.springframework.jdbc.core.JdbcTemplate: INFO # DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO # TRACE
+    org.hibernate.SQL: INFO # DEBUG
+    org.type.descriptor.sql.BasicBinder: INFO # TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO # TRACE

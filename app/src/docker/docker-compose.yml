@@ -137,9 +137,8 @@ services:
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      ENV: ${ENV:-dev}
-      # Cause application-compose.yml to be used
-      JAVA_PROFILE: "-Dspring.profiles.include=compose"
+      # Cause application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      ENV: ${ENV:-local}
     depends_on:
       - postgres-service
       - rabbitmq-service

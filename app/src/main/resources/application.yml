@@ -1,3 +1,6 @@
+# This file contains shared properties across all environments; it is always loaded by Spring
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+
 info:
   app:
     name: abd_vro
@@ -82,7 +85,17 @@ spring:
   application:
     name: "abd-vro"
   profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
     active: ${ENV:default}
+    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
+    group:
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-local.yml
+      local: nonprod
+      # Remaining profiles are for deployment to LHDI's EKS environments
+      dev: nonprod
+      qa: nonprod
+      sandbox: nonprod
+
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -97,6 +110,21 @@ spring:
   http:
     encoding:
       force: true
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      jdbc-url: ${POSTGRES_URL}
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      schema: ${POSTGRES_SCHEMA}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
   security:
     oauth2:
       client:
@@ -109,6 +137,7 @@ spring:
             client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
             scope: "${MAS_API_AUTH_SCOPE:openid}"
             grant-type: client_credentials
+
 masAPIProvider:
   baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
@@ -121,17 +150,10 @@ lhAPIProvider:
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "${VALIDATE_TOKEN:NO}"
 
-
-
 slack:
   exception:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
-
-opentracing:
-  zipkin:
-    enabled: false
-    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
 
 springdoc:
   writer-with-default-pretty-printer: true
@@ -145,7 +167,9 @@ springdoc:
     enabled: ${SWAGGER_ENABLED:true}
 
 vro:
+  # Deployment environment
   env: ${ENV:local}
+
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API

@@ -270,7 +270,8 @@ spec:
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
             - name: JAVA_PROFILE
-              value: -Dspring.profiles.include=compose
+              # For prod deployments, override this with `-Dspring.profiles.include=prod`
+              value: -Dspring.profiles.include=nonprod
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
