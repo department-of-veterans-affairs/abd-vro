@@ -19,8 +19,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.*;
@@ -53,7 +55,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipClaim getClaimDetails(Integer claimId) throws BipException {
+  public BipClaim getClaimDetails(long claimId) throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseURL() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
@@ -87,7 +89,7 @@ public class BipApiService implements IBipApiService {
    * @throws BipException error occurs
    */
   @Override
-  public BipUpdateClaimResp updateClaimStatus(Integer claimId) throws BipException {
+  public BipUpdateClaimResp updateClaimStatus(long claimId) throws BipException {
     try {
       String url =
           HTTPS + bipApiProps.getClaimBaseURL() + String.format(UPDATE_CLAIM_STATUS, claimId);
@@ -109,7 +111,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(Integer claimId) throws BipException {
+  public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseURL() + String.format(CONTENTION, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
@@ -120,6 +122,8 @@ public class BipApiService implements IBipApiService {
         ObjectMapper mapper = new ObjectMapper();
         BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
         return resp.getContentions();
+      } else if (HttpStatus.NO_CONTENT.equals(bipResponse.getStatusCode())) {
+        return new ArrayList<>();
       } else {
         log.error(
             "getClaimContentions returned {} for {}. {}",
@@ -135,7 +139,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(Integer claimId, UpdateContentionReq contention)
+  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseURL() + String.format(CONTENTION, claimId);
@@ -153,7 +157,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp addClaimContention(Integer claimId, CreateContentionReq contention)
+  public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseURL() + String.format(CONTENTION, claimId);
@@ -161,6 +165,7 @@ public class BipApiService implements IBipApiService {
       ObjectMapper mapper = new ObjectMapper();
       String createContention = mapper.writeValueAsString(contention);
       HttpEntity<String> request = new HttpEntity<>(createContention, headers);
+      log.info("createContesion: \n {}", createContention);
       ResponseEntity<String> bipResponse = restTemplate.postForEntity(url, request, String.class);
       return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
     } catch (RestClientException | JsonProcessingException e) {
@@ -191,6 +196,36 @@ public class BipApiService implements IBipApiService {
       resp.put("message", bipResponse.getBody());
       return resp;
     } catch (RestClientException | JsonProcessingException e) {
+      log.error("failed to upload file.", e);
+      throw new BipException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public BipFileUploadResp uploadEvidenceFile(
+      FILE_ID_TYPE idtype,
+      String fileId,
+      BipFileUploadPayload uploadEvidenceReq,
+      MultipartFile file)
+      throws BipException {
+    try {
+      String url = HTTPS + bipApiProps.getEvidenceBaseURL() + UPLOAD_FILE;
+      HttpHeaders headers = getBipHeader(API.EVIDENCE);
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
+
+      ObjectMapper mapper = new ObjectMapper();
+      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+      body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
+      body.add("file", new FileSystemResource(String.valueOf(file.getBytes())));
+      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+      ResponseEntity<String> bipResponse =
+          restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+      BipFileUploadResp resp = new BipFileUploadResp();
+      resp.setStatus(bipResponse.getStatusCode());
+      resp.setMessage(bipResponse.getBody());
+      return resp;
+    } catch (RestClientException | IOException e) {
       log.error("failed to upload file.", e);
       throw new BipException(e.getMessage(), e);
     }

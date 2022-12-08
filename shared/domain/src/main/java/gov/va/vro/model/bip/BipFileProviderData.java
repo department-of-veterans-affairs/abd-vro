@@ -1,5 +1,6 @@
 package gov.va.vro.model.bip;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,25 +14,62 @@ import java.util.List;
 @Getter
 @Setter
 public class BipFileProviderData {
-  private String contentSource; // VBMS
+  @Schema(description = "Content Source", example = "VBMS")
+  private String contentSource;
+
+  @Schema(description = "Claimant First Name", example = "John")
   private String claimantFirstName;
-  private String claimantMiddleInitial; // e.g, M
+
+  @Schema(description = "Claimant Middle Initial", example = "M")
+  private String claimantMiddleInitial;
+
+  @Schema(description = "Claimant Last Name", example = "Smith")
   private String claimantLastName;
+
+  @Schema(description = "Social Security Number", example = "204972342")
   private String claimantSsn;
-  private int benefitTypeId; // eg. 10,
-  private int documentTypeId; // e.g., 131,
-  private String dateVaReceivedDocument; // "2022-02-01",
+
+  @Schema(description = "Benefit Type ID Number", example = "10")
+  private int benefitTypeId;
+
+  @Schema(description = "Document Type ID", example = "131")
+  private int documentTypeId;
+
+  @Schema(description = "Date VA Received Document", example = "2022-02-01")
+  private String dateVaReceivedDocument;
+
+  @Schema(description = "Subject", example = "subject")
   private String subject;
-  private List<String> contentions; // e.g., [ "contention 1]
+
+  @Schema(description = "Contention list", example = "[ \"contention 1\" ]")
+  private List<String> contentions;
+
+  @Schema(description = "Social Security Number", example = "204972342")
   private boolean actionable;
-  private List<String> associatedClaimIds; // e.g.,  [ "1" ],
-  private List<String>
-      notes; // e.g., "[This is a note for a document, These replace editing the document summary]"
-  private String payeeCode; // e.g., "00"
-  private String endProductCode; // e.g., "130DPNDCY",
-  private String regionalProcessingOffice; // "Buffalo",
-  private String facilityCode; // "Facility",
-  private String claimantParticipantId; // "000000000",
+
+  @Schema(description = "A list of associate claim IDs", example = "[ \"139278345\" ]")
+  private List<String> associatedClaimIds;
+
+  private List<String> notes;
+
+  @Schema(description = "Payee Code", example = "00")
+  private String payeeCode;
+
+  @Schema(description = "End Product Code", example = "30DPNDCY")
+  private String endProductCode;
+
+  @Schema(description = "Regional Processing Office", example = "Buffalo")
+  private String regionalProcessingOffice;
+
+  @Schema(description = "facility Code", example = "Facility")
+  private String facilityCode;
+
+  @Schema(description = "claimant ParticipantId", example = "9320497233")
+  private String claimantParticipantId;
+
+  @Schema(description = "Source comment", example = "source comment")
   private String sourceComment; // "source comment",
-  private String claimantDateOfBirth; // "2022-01-01"
+
+  @Schema(description = "Claimant Date of Birth", example = "1972-01-01")
+  private String claimantDateOfBirth;
 }

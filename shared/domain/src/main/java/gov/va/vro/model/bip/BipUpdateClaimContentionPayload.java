@@ -16,5 +16,5 @@ public class BipUpdateClaimContentionPayload {
   private long claimId;
 
   @JsonProperty("contention")
-  private ClaimContention contention;
+  private UpdateContention contention;
 }

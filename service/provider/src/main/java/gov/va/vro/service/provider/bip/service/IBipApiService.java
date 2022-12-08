@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.*;
 import gov.va.vro.service.provider.bip.BipException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaim getClaimDetails(Integer collectionId) throws BipException;
+  BipClaim getClaimDetails(long collectionId) throws BipException;
 
   /**
    * Updates claim status to RFD.
@@ -30,7 +31,7 @@ public interface IBipApiService {
    * @return a claim info object.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp updateClaimStatus(Integer collectionId) throws BipException;
+  BipUpdateClaimResp updateClaimStatus(long collectionId) throws BipException;
 
   /**
    * Gets a list of contentions in a claim.
@@ -39,7 +40,7 @@ public interface IBipApiService {
    * @return a list of contention objects.
    * @throws BipException error occurs.
    */
-  List<ClaimContention> getClaimContentions(Integer claimId) throws BipException;
+  List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
   /**
    * Updates a contention in a cloim.
@@ -49,7 +50,7 @@ public interface IBipApiService {
    * @return an object with the information of update status and a message.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp updateClaimContention(Integer claimId, UpdateContentionReq contention)
+  BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException;
 
   /**
@@ -60,7 +61,7 @@ public interface IBipApiService {
    * @return an update status information object.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp addClaimContention(Integer claimId, CreateContentionReq contention)
+  BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException;
 
   /**
@@ -75,5 +76,22 @@ public interface IBipApiService {
    */
   HashMap<String, String> uploadEvidence(
       FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+      throws BipException;
+
+  /**
+   * Uploads an evidence file for the claim.
+   *
+   * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
+   * @param fileId id
+   * @param uploadEvidenceReq upload payload data.
+   * @param file the file to be uploaded.
+   * @return an object for the upload status.
+   * @throws BipException
+   */
+  BipFileUploadResp uploadEvidenceFile(
+      FILE_ID_TYPE idtype,
+      String fileId,
+      BipFileUploadPayload uploadEvidenceReq,
+      MultipartFile file)
       throws BipException;
 }

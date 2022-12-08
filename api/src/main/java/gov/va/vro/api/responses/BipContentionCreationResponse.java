@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Schema(
     name = "BipContentionCreationResponse",
-    description = "Indicate that the claim contention has been created")
+    description = "Indicate that the claim contention has been created or not")
 public class BipContentionCreationResponse {
   private boolean created;
   private long contentionId;

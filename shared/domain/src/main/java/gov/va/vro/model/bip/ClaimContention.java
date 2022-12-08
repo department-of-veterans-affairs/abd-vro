@@ -31,4 +31,7 @@ public class ClaimContention {
   private long contentionId;
   private String lastModified;
   private String summaryDateTime;
+  private String lifecycleStatus;
+  private boolean automationIndicator;
+  private List<TrackedItems> associatedTrackedItems;
 }

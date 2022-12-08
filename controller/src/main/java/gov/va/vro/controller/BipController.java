@@ -3,13 +3,17 @@ package gov.va.vro.controller;
 import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.*;
 import gov.va.vro.model.bip.*;
+import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.bip.service.BipApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 
@@ -23,55 +27,69 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Profile("!qa & !sandbox & !prod")
 public class BipController implements BipResource {
+  private final BipApiService service;
 
   @Override
-  public ResponseEntity<BipClaimStatusResponse> updateClaim(@Valid BipUpdateClaimPayload request) {
+  public ResponseEntity<BipClaimStatusResponse> setClaimRFD(@Valid BipUpdateClaimPayload request) {
     log.info("Set the claim status to RFD for claim ID {}", request.getClaimId());
 
     // TODO: route to call BipApiService
-
-    BipClaimStatusResponse response =
-        BipClaimStatusResponse.builder().updated(true).message("Updated").build();
-    return ResponseEntity.ok(response);
+    long claimId = Long.parseLong(request.getClaimId());
+    try {
+      BipUpdateClaimResp resp = service.updateClaimStatus(claimId);
+      String msg = resp.getMessage();
+      boolean isSuccessful = resp.getStatus() == HttpStatus.OK;
+      BipClaimStatusResponse response =
+          BipClaimStatusResponse.builder().updated(isSuccessful).message(msg).build();
+      return ResponseEntity.ok(response);
+    } catch (BipException e) {
+      log.error("failed to update claim to RFD, {}", claimId);
+      BipClaimStatusResponse badResp =
+          BipClaimStatusResponse.builder().updated(false).message(e.getMessage()).build();
+      return ResponseEntity.internalServerError().body(badResp);
+    }
   }
 
   @Override
   public ResponseEntity<BipClaimResponse> getClaim(@Valid String id) {
     try {
-      Long claimId = Long.getLong(id);
-      log.info("Received claim info for claim ID {}", id);
-      BipRequestClaimPayload request = BipRequestClaimPayload.builder().claimId(claimId).build();
+      long claimId = Long.parseLong(id);
+      log.info("Received claim info for claim ID {}", claimId);
 
       // TODO: route to call BipApiService
 
-      BipClaimResponse response =
-          BipClaimResponse.builder().claimId(request.getClaimId()).message("not called").build();
-      return ResponseEntity.ok(response);
-    } catch (SecurityException e) {
+      BipClaim response = service.getClaimDetails(claimId);
+      BipClaimResponse resp = BipClaimResponse.builder().claimId(claimId).claim(response).build();
+      return ResponseEntity.ok(resp);
+    } catch (SecurityException | NullPointerException e) {
       BipClaimResponse errResp =
           BipClaimResponse.builder().message("Invalid claim ID: " + id).build();
       return ResponseEntity.badRequest().body(errResp);
+    } catch (BipException e) {
+      log.error("failed to get claim details, {}", id, e);
+      BipClaimResponse bipErrResp = BipClaimResponse.builder().message(e.getMessage()).build();
+      return ResponseEntity.internalServerError().body(bipErrResp);
     }
   }
 
   @Override
   public ResponseEntity<BipClaimContentionsResponse> getContentions(@Valid String id) {
+    long claimId = Long.parseLong(id);
+    log.info("Retrieve contentions for claim ID {} from {}", claimId, id);
     try {
-      Long claimId = Long.getLong(id);
-      log.info("Retrieve contentions for claim ID {}", id);
-
-      BipRequestClaimContentionPayload request =
-          BipRequestClaimContentionPayload.builder().claimId(claimId).build();
-
       // TODO: route to call BipApiService
 
+      List<ClaimContention> resp = service.getClaimContentions(claimId);
       BipClaimContentionsResponse response =
-          BipClaimContentionsResponse.builder()
-              .contentions(Arrays.asList(new ClaimContention()))
-              .build();
+          BipClaimContentionsResponse.builder().contentions(resp).claimId(claimId).build();
       return ResponseEntity.ok(response);
-    } catch (SecurityException e) {
+    } catch (SecurityException | NullPointerException e) {
       return ResponseEntity.badRequest().build();
+    } catch (BipException e) {
+      log.error("failed to get contentions for {}", id, e);
+      BipClaimContentionsResponse badResp =
+          BipClaimContentionsResponse.builder().claimId(claimId).message(e.getMessage()).build();
+      return ResponseEntity.internalServerError().body(badResp);
     }
   }
 
@@ -79,32 +97,60 @@ public class BipController implements BipResource {
   public ResponseEntity<BipContentionUpdateResponse> updateContentions(
       @Valid BipUpdateClaimContentionPayload payload) {
     log.info("update a contention for claim ID {}", payload.getClaimId());
+    log.info("contention to update:\n {}", payload.getContention());
 
     // TODO: route to call BipApiService
 
-    BipContentionUpdateResponse response =
-        BipContentionUpdateResponse.builder()
-            .updated(true)
-            .contentionId(
-                Optional.ofNullable(payload.getContention().getContentionId()).orElse(100000L))
-            .message("Updated")
-            .build();
-    return ResponseEntity.ok(response);
+    try {
+      UpdateContention contention = payload.getContention();
+      List<UpdateContention> contentions = Collections.singletonList(contention);
+      UpdateContentionReq req = new UpdateContentionReq();
+      req.setUpdateContentions(contentions);
+      BipUpdateClaimResp resp = service.updateClaimContention(payload.getClaimId(), req);
+      boolean isUpdated = resp.getStatus() == HttpStatus.OK;
+      BipContentionUpdateResponse response =
+          BipContentionUpdateResponse.builder()
+              .updated(isUpdated)
+              .contentionId(Optional.of(payload.getContention().getContentionId()).orElse(0L))
+              .message(resp.getMessage())
+              .build();
+      return ResponseEntity.ok(response);
+    } catch (BipException e) {
+      BipContentionUpdateResponse badResp =
+          BipContentionUpdateResponse.builder().updated(false).message(e.getMessage()).build();
+      return ResponseEntity.internalServerError().body(badResp);
+    }
   }
 
   @Override
   public ResponseEntity<BipContentionCreationResponse> createContentions(
-      @Valid BipUpdateClaimContentionPayload payload) {
+      @Valid BipCreateClaimContentionPayload payload) {
     log.info("Create a contention for claim ID {}", payload.getClaimId());
+    log.info("contention to create: \n {}", payload.getContention());
 
     // TODO: route to call BipApiService
-
-    BipContentionCreationResponse response =
-        BipContentionCreationResponse.builder()
-            .contentionId(100000L)
-            .created(true)
-            .message("create a new contention")
-            .build();
-    return ResponseEntity.ok(response);
+    try {
+      List<CreateContention> contentions = Collections.singletonList(payload.getContention());
+      CreateContentionReq req = new CreateContentionReq();
+      req.setCreateContentions(contentions);
+      BipUpdateClaimResp resp = service.addClaimContention(payload.getClaimId(), req);
+      boolean isCreated = resp.getStatus() == HttpStatus.CREATED;
+      BipContentionCreationResponse response =
+          BipContentionCreationResponse.builder()
+              .contentionId(payload.getClaimId())
+              .created(isCreated)
+              .message(resp.getMessage())
+              .build();
+      return ResponseEntity.ok(response);
+    } catch (BipException e) {
+      log.error("failed to create contention for claim {}", payload.getClaimId(), e);
+      BipContentionCreationResponse badResp =
+          BipContentionCreationResponse.builder()
+              .contentionId(payload.getClaimId())
+              .created(false)
+              .message(e.getMessage())
+              .build();
+      return ResponseEntity.internalServerError().body(badResp);
+    }
   }
 }

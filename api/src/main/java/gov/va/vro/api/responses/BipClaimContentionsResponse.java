@@ -12,5 +12,7 @@ import java.util.List;
 @Getter
 @Schema(name = "BIPClaimContentionsResponse", description = "A list of contentions for a claim.")
 public class BipClaimContentionsResponse {
-  List<ClaimContention> contentions;
+  private long claimId;
+  private List<ClaimContention> contentions;
+  private String message;
 }

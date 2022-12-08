@@ -1,7 +1,9 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.*;
-import gov.va.vro.model.bip.*;
+import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
+import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
+import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +52,7 @@ public interface BipResource {
       })
   @Timed(value = "bip-update-claim")
   @Tag(name = "BIP Integration")
-  ResponseEntity<BipClaimStatusResponse> updateClaim(
+  ResponseEntity<BipClaimStatusResponse> setClaimRFD(
       @Parameter(
               description = "Request to update the status of a claim",
               required = true,
@@ -164,8 +166,8 @@ public interface BipResource {
       @Parameter(
               description = "Request to create a contention for a claim.",
               required = true,
-              schema = @Schema(implementation = BipUpdateClaimContentionPayload.class))
+              schema = @Schema(implementation = BipCreateClaimContentionPayload.class))
           @Valid
           @RequestBody
-          BipUpdateClaimContentionPayload payload);
+          BipCreateClaimContentionPayload payload);
 }
