@@ -8,6 +8,7 @@ from pdfgenerator.src.lib import queues
     "service_queue_name", ["fetch-pdf"]
 )
 def test_queue_setup(service_queue_name):
+    """Test if the proper queue gets generated."""
     exchange_name = "pdf-generator"
     queue_name = service_queue_name
     channel = Mock(autospec=True, create=True)

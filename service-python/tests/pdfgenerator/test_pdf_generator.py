@@ -12,6 +12,7 @@ lib_dir = os.path.dirname(__file__)
 
 @pytest.mark.parametrize("template_code", ["6602"])
 def test_default_template_variables(template_code):
+    """Test if default values all get added into the template."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -38,6 +39,7 @@ def test_default_template_variables(template_code):
 
 @pytest.mark.parametrize("template_code", ["6602"])
 def test_replaced_template_variables(template_code):
+    """Test if the default values get replaced."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -52,6 +54,7 @@ def test_replaced_template_variables(template_code):
 
 @pytest.mark.parametrize("template_code", ["6602"])
 def test_generate_html_file(template_code):
+    """Test if the PDF HTML file gets generated."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -66,6 +69,7 @@ def test_generate_html_file(template_code):
 
 @pytest.mark.parametrize("template_code", ["6602"])
 def test_valid_variables_in_html_file(template_code):
+    """Test that the replaced variable appears in the HTML file."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -83,6 +87,7 @@ def test_valid_variables_in_html_file(template_code):
 
 @pytest.mark.parametrize("template_code", ["6602"])
 def test_medication_date_conversion(template_code):
+    """Test if 'authoredOn' in 'medications' is a datetime."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
@@ -99,6 +104,7 @@ def test_medication_date_conversion(template_code):
 @patch("pdfkit.from_string")
 @pytest.mark.parametrize("template_code", ["0000", "6602"])
 def test_pdf_generation(pdfkit_mock, template_code):
+    """Test if the generate PDF function gets called."""
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
