@@ -1,5 +1,6 @@
 package gov.va.vro.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.*;
 import gov.va.vro.model.bip.*;
@@ -135,9 +136,10 @@ public class BipController implements BipResource {
       req.setCreateContentions(contentions);
       BipUpdateClaimResp resp = service.addClaimContention(payload.getClaimId(), req);
       boolean isCreated = resp.getStatus() == HttpStatus.CREATED;
+      //TODO: If isCreated, return the contention content.
       BipContentionCreationResponse response =
           BipContentionCreationResponse.builder()
-              .contentionId(payload.getClaimId())
+              .claimId(payload.getClaimId())
               .created(isCreated)
               .message(resp.getMessage())
               .build();

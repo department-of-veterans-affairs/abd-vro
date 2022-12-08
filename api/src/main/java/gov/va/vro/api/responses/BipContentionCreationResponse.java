@@ -12,6 +12,7 @@ import lombok.Getter;
     description = "Indicate that the claim contention has been created or not")
 public class BipContentionCreationResponse {
   private boolean created;
+  private long claimId;
   private long contentionId;
   private String message;
 }
