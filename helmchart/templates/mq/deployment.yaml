@@ -25,9 +25,9 @@ spec:
           #image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.mq.imageName }}:{{ .Values.images.mq.tag }}
           image: rabbitmq:3
           #command:
-          #  - chown 
+          #  - chown
           #  - -R
-          #  - 777 
+          #  - 777
           #  - /var/lib/rabbitmq
           env:
             - name: RABBITMQ_DEFAULT_USER
@@ -43,11 +43,12 @@ spec:
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
-          #volumeMounts:
-          #  - name: persistent-storage
-          #    mountPath: /var/lib/rabbitmq
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              # This folder is available for RabbitMQ messages to be persisted
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
-      #volumes:
-      #  - name: persistent-storage
-      #    persistentVolumeClaim:
-      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}

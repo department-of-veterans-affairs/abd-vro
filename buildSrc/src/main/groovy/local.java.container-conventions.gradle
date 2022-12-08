@@ -1,86 +1,30 @@
 /**
  * Provides docker container settings
+ * Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.container-conventions.gradle
  */
 
 plugins {
-    id 'base'
-    id 'com.palantir.docker'
-    id 'com.palantir.docker-run'
-    id 'com.palantir.docker-compose'
+    id 'java'
+    id 'local.docker.container-conventions'
 }
 // Requires
 // id 'starter.java.build-utils-property-conventions'
 
-ext {
-    dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
-    dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
-}
-
-docker {
-    dependsOn(assemble)
-    name "${dockerRegistry}/${rootProject.name}-${project.name}"
-    tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
-    tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
-    noCache true
-    dockerfile file('src/docker/Dockerfile')
-}
-
-dockerRun {
-    name project.name
-    image "${dockerRegistry}/${rootProject.name}-${project.name}"
-    ports '8080:8080'
-}
-
-dockerCompose {
-    dockerComposeFile 'src/docker/docker-compose.yml'
-}
-
-def dockerStart = tasks.register('dockerStart', DefaultTask) {
-    dependsOn "dockerPrune", "docker", "dockerRun"
-}
-
-def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
-    mustRunAfter 'dockerStop', 'dockerRemoveContainer'
-    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
-}
-
-def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
-    executable "docker"
-    args "container", "prune", "-f"
-}
-
-def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
-    executable "docker"
-    args "image", "prune", "-f"
-}
-
-def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
-    executable "docker"
-    args "volume", "prune", "-f"
-}
-
-def dcPrune = tasks.register('dcPrune', DefaultTask) {
-    mustRunAfter('dockerComposeDown')
-    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
-}
-
-def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
-    mustRunAfter('dockerComposeDown')
-    dependsOn 'dockerPruneVolume'
-}
-
 def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
-    def binary = "hadolint"
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Use linter (default hadolint) to perform static analysis on Dockerfile"
+    ext.binary = "hadolint"
     ext.targets = [ "src/docker/Dockerfile" ]
-    def taskTimeout = 10000L
+    ext.taskTimeout = 10000L
     def result = 0
-    def sout = new StringBuilder(), serr = new StringBuilder()
+    def sout = new StringBuilder()
+    def serr = new StringBuilder()
     doLast {
         ext.targets.each { f ->
-            def cmdLine = "${binary} ${f}"
+            def cmdLine = "${ext.binary} ${f}"
             def proc = cmdLine.execute(null, project.projectDir)
             proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(taskTimeout)
+            proc.waitForOrKill(ext.taskTimeout)
             result |= proc.exitValue()
         }
         if (result != 0 && serr) {
@@ -88,21 +32,10 @@ def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
         else if (result != 0) {
             ant.fail(sout)
         }
+        return result
     }
 }
 
-tasks.named("dockerRemoveContainer").configure {
-    mustRunAfter('dockerStop')
-}
-
-tasks.named("dockerComposeUp").configure {
-    dependsOn tasks.named("docker")
-}
-
-tasks.named("dockerRun").configure {
-    dependsOn tasks.named("docker")
-}
-
 tasks.named("check").configure {
-    dependsOn('lintDockerfile')
+    dependsOn lintDockerfile
 }

@@ -12,4 +12,3 @@ ext {
         modifiedFiles = files(grgit.status().unstaged.modified)
     }
 }
-

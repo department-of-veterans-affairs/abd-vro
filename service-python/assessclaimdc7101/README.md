@@ -5,7 +5,7 @@
 [RabbitMQ](https://www.rabbitmq.com/)
 
 ### RabbitMQ configuration
-The application connects to RabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and are routed by VASRD code. 
+The application connects to RabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and are routed by VASRD code.
 
 ### Event object validation
 Incoming messages are validated by Cerberus to avoid container shutdown from unexpected exceptions.
@@ -14,9 +14,9 @@ Incoming messages are validated by Cerberus to avoid container shutdown from une
 
 MedicationRequest objects are evaluated by keyword matching. If any of the identified keywords appear in the medicationRequest object description, they are collected as evidence.
 
-Blood pressure readings are filtered upstream to be <1 year from the date of claim. 
+Blood pressure readings are filtered upstream to be <1 year from the date of claim.
 
-Evidence under `calculated` in the response object is still under development and is not currently in use. 
+Evidence under `calculated` in the response object is still under development and is not currently in use.
 
 ### Example response
 
@@ -36,7 +36,7 @@ Response objects will resemble the following:
                 "unit": "mm[Hg]",
                 "value": 115
             },
-            "systolic": {                
+            "systolic": {
                 "code": "8480-6",
                 "display": "Systolic blood pressure",
                 "unit": "mm[Hg]",

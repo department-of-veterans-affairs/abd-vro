@@ -26,7 +26,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
@@ -49,7 +48,7 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
-      throws MethodArgumentNotValidException, ClaimProcessingException {
+      throws ClaimProcessingException {
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
         request.getClaimSubmissionId(),
@@ -75,8 +74,7 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<Object> fetchPdf(String claimSubmissionId)
-      throws MethodArgumentNotValidException, ClaimProcessingException {
+  public ResponseEntity<Object> fetchPdf(String claimSubmissionId) throws ClaimProcessingException {
 
     log.info("Fetching pdf for claim: {}", claimSubmissionId);
     try {
@@ -120,8 +118,7 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
-      HealthDataAssessmentRequest claim)
-      throws MethodArgumentNotValidException, ClaimProcessingException {
+      HealthDataAssessmentRequest claim) throws ClaimProcessingException {
     log.info(
         "Getting full health assessment for claim {} and veteran icn {}",
         claim.getClaimSubmissionId(),
@@ -134,7 +131,7 @@ public class VroController implements VroResource {
           objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
       if (response.getEvidence() == null) {
         throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.NOT_FOUND, "No evidence found.");
+            claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
       }
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
       response.setVeteranIcn(claim.getVeteranIcn());

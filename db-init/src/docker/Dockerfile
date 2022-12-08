@@ -1,4 +1,5 @@
-FROM flyway/flyway:9.7.0-alpine
+FROM flyway/flyway:9.8.3-alpine
+
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 RUN apk update && apk --no-cache add expat=2.5.0-r0
