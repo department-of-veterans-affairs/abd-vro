@@ -203,4 +203,30 @@ public interface VroResource {
   @Tag(name = "Claim Info")
   ResponseEntity<ClaimMetricsResponse> claimInfoForVeteran(@PathVariable String veteranIcn)
       throws MetricsProcessingException;
+
+  @Operation(
+      summary = "Retrieves pages of claims based on passing the page number and size",
+      description = "This endpoint provides processed claims by the page. ")
+  @GetMapping("/claim-info-for-veteran/{offset}/{pageSize}")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "claim-info-with-pagination")
+  @Tag(name = "Claim Info")
+  ResponseEntity<ClaimMetricsResponse> claimInfoWithPagination(
+      @PathVariable int offset, @PathVariable int pageSize) throws Exception;
 }

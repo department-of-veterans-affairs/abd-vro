@@ -8,6 +8,8 @@ import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,6 +62,28 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     } catch (Exception e) {
       log.error("Could not find claim with the given claimSubmissionId");
       throw new NoSuchElementException("Could not find claim with the given claimSubmissionId");
+    }
+  }
+
+  @Override
+  public List<ClaimMetricsInfo> claimInfoWithPagination(int offset, int pageSize) {
+    List<ClaimMetricsInfo> infoList = new ArrayList<>();
+    ClaimMetricsInfo info = new ClaimMetricsInfo();
+    try {
+      Page<ClaimEntity> entityList = claimRepository.findAll(PageRequest.of(offset, pageSize));
+      for (ClaimEntity claim : entityList) {
+        info.setVeteranIcn(claim.getVeteran().getIcn());
+        info.setClaimSubmissionId(claim.getClaimSubmissionId());
+        info.setContentionsCount(claim.getContentions().size());
+        setContentionsList(claim, info);
+        setAssessmentResultsAndCount(claim, info);
+        setEvidenceSummaryCounts(claim, info);
+        infoList.add(info);
+      }
+      return infoList;
+    } catch (Exception e) {
+      log.error("Error getting page of claims in claimInfoWithPagination.");
+      throw new NoSuchElementException("Error getting page of claims in claimInfoWithPagination.");
     }
   }
 
