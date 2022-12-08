@@ -115,16 +115,12 @@ def test_pdf_generation(pdfkit_mock, template_code):
     html_file = pdf_generator.generate_template_file(
         template, generated_variables, True
     )
-<<<<<<< MCP-2061
-
     tag = (
         "<html"
     )
-    assert tag in html_file
-=======
     pdf_generator.generate_pdf_from_string(
         template, html_file
     )
 
+    assert tag in html_file
     assert pdfkit_mock.called
->>>>>>> develop
