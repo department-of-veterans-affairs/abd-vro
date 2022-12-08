@@ -109,7 +109,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimMetricsInfo info) {
     int count = 0;
     for (ContentionEntity contention : claim.getContentions()) {
-      count = contention.getEvidenceSummaryDocuments().size();
+      count += contention.getEvidenceSummaryDocuments().size();
     }
     info.setEvidenceSummaryDocumentsCount(count);
   }
