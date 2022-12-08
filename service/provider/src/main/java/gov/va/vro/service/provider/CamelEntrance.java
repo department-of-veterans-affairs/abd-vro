@@ -25,10 +25,6 @@ public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
 
-  public String submitClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM, claim, String.class);
-  }
-
   public String submitClaimFull(Claim claim) {
     return producerTemplate.requestBody(
         PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM_FULL, claim, String.class);
