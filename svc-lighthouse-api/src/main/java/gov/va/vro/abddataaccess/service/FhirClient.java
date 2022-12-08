@@ -229,9 +229,7 @@ public class FhirClient {
     for (AbdDomain domain : domains) {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
-      if (!records.isEmpty()) {
-        result.put(domain, records);
-      }
+      result.put(domain, records);
     }
     return result;
   }
