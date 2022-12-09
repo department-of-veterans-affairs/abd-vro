@@ -33,7 +33,7 @@ jobs:
       - name: "Start the containers"
         run: |
           source scripts/setenv.sh
-          env
+          export -p | sed 's/declare -x //'
           ./gradlew :app:dockerComposeUp
         env:
           ENV: "end2end-test"
