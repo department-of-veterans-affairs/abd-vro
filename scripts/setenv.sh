@@ -101,7 +101,7 @@ export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
 ### Slack notifications ###
 
 # Secret token
-export SLACK_EXCEPTION_WEBHOOK=$(getSecret SLACK_EXCEPTION_WEBHOOK)
+[ "$SLACK_EXCEPTION_WEBHOOK" ] || export SLACK_EXCEPTION_WEBHOOK=$(getSecret SLACK_EXCEPTION_WEBHOOK)
 
 ###
 ### Integration with Lighthouse API ###
@@ -113,8 +113,8 @@ export LH_ASSERTION_URL=https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7
 export LH_FHIR_URL=https://sandbox-api.va.gov/services/fhir/v0/r4
 
 # Credentials for connecting to Lighthouse API
-export LH_ACCESS_CLIENT_ID=$(getSecret LH_ACCESS_CLIENT_ID)
-export LH_PRIVATE_KEY=$(getSecret LH_PRIVATE_KEY)
+[ "$LH_ACCESS_CLIENT_ID" ] || export LH_ACCESS_CLIENT_ID=$(getSecret LH_ACCESS_CLIENT_ID)
+[ "$LH_PRIVATE_KEY" ] ||export LH_PRIVATE_KEY=$(getSecret LH_PRIVATE_KEY)
 
 ###
 ### Integration with MAS/IBM ###
