@@ -1,4 +1,6 @@
 # This file is used when ENV=prod
+# Contrast this file against application-nonprod.yml
+#
 # File application-k8s.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
 # Secrets should reference environment variables, which will be set in Kubernetes.
