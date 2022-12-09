@@ -2,16 +2,14 @@
   "code": "7101",
   "document_type": "hypertension",
   "veteran_info": {
-    "first": "Test",
+    "first": "",
     "middle": "",
-    "last": "User",
+    "last": "",
     "suffix": "",
     "birthdate": "1935-06-15T00:00:00+00:00"
   },
   "evidence": {
     "bp_readings": [],
-    "conditions": [],
-    "medications": [],
-    "procedures": []
+    "medications": []
   }
 }
