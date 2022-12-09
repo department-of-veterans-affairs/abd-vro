@@ -91,10 +91,12 @@ spring:
     group:
       # Configure profile group so that application-nonprod.yml is loaded, along with application-local.yml
       local: nonprod
+      end2end-test: nonprod
       # Remaining profiles are for deployment to LHDI's EKS environments
-      dev: nonprod
-      qa: nonprod
-      sandbox: nonprod
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      prod: k8s
 
   servlet:
     multipart:
@@ -185,11 +187,6 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
-
-  persist:
-    tracking:
-      enabled: ${PERSIST_TRACKING_ENABLED:true}
-      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking}
 
 spring.redis:
   # database index used by the connection factory

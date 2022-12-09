@@ -1,5 +1,8 @@
-# Contains shared properties for non-prod environments (local, dev, qa, sandbox)
-# This file is used when a Spring Group Profile is set up
-# in application.yml (under spring.profiles.group) to use `nonprod`
-# or when JAVA_PROFILE="-Dspring.profiles.include=nonprod"
-# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+# This file is used when ENV=local -- see app/src/docker/docker-compose.yml
+# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
+
+vro:
+  persist:
+    tracking:
+      enabled: true
+      base_folder: /tmp/persist/tracking
