@@ -58,6 +58,8 @@ jobs:
 
       - name: "Start the containers"
         run: ./gradlew :app:dockerComposeUp
+        env:
+          - ENV: end2end-test
 
       - name: "Sleep a few seconds"
         # App container is not immediately ready
