@@ -14,7 +14,6 @@ on:
   workflow_dispatch:
 
 env:
-  COMPOSE_PROJECT_NAME: vro
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
@@ -33,7 +32,7 @@ jobs:
 
       - name: "Start the containers"
         run: |
-          source app/src/end2endTest/resources/setenv.sh
+          source scripts/setenv.sh
           env
           ./gradlew :app:dockerComposeUp
         env:
