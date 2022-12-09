@@ -1,6 +1,7 @@
 # This file is used when ENV=prod
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
 # Secrets should reference environment variables, which will be set in Kubernetes.
+# If environment variable doesn't exist, it fails fast and an exception will be thrown.
 
 opentracing:
   zipkin:
@@ -9,14 +10,18 @@ opentracing:
 
 logging:
   level:
-    org.springframework.jdbc.core: INFO # DEBUG
-    org.springframework.jdbc.core.JdbcTemplate: INFO # DEBUG
-    org.springframework.jdbc.core.StatementCreatorUtils: INFO # TRACE
-    org.hibernate.SQL: INFO # DEBUG
-    org.type.descriptor.sql.BasicBinder: INFO # TRACE
-    org.hibernate.type.descriptor.sql.BasicBinder: INFO # TRACE
+    org.springframework.jdbc.core: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    org.hibernate.SQL: INFO
+    org.type.descriptor.sql.BasicBinder: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
 
 slack:
   exception:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
-    channel: "${SLACK_EXCEPTION_CHANNEL:benefits-vro-alerts}"
+    channel: benefits-vro-alerts
+
+springdoc:
+  swagger-ui:
+    enabled: false
