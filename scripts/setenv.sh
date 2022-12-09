@@ -49,8 +49,21 @@ fi
 echo "Setting up environment variables for VRO local development and testing"
 
 getSecret(){
-  >&2 echo "- using $SECRETS_DIR/$1"
-  cat "$SECRETS_DIR/$1"
+  if [ "$SECRETS_DIR" ]; then
+    >&2 echo "- using $1"
+    cat "$SECRETS_DIR/$1"
+  else
+    >&2 echo "- Error: environment variable is not set: $1"
+  fi
+}
+
+exportSecretIfUnset(){
+  local VAR_VALUE=$(eval echo "\$$1")
+  if [ "${VAR_VALUE}" ]; then
+    >&2 echo "$1 already set -- not overriding."
+  else
+    eval "export $1=\$(getSecret $1)"
+  fi
 }
 
 ###
@@ -101,7 +114,7 @@ export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
 ### Slack notifications ###
 
 # Secret token
-[ "$SLACK_EXCEPTION_WEBHOOK" ] || export SLACK_EXCEPTION_WEBHOOK=$(getSecret SLACK_EXCEPTION_WEBHOOK)
+exportSecretIfUnset SLACK_EXCEPTION_WEBHOOK
 
 ###
 ### Integration with Lighthouse API ###
@@ -113,14 +126,14 @@ export LH_ASSERTION_URL=https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7
 export LH_FHIR_URL=https://sandbox-api.va.gov/services/fhir/v0/r4
 
 # Credentials for connecting to Lighthouse API
-[ "$LH_ACCESS_CLIENT_ID" ] || export LH_ACCESS_CLIENT_ID=$(getSecret LH_ACCESS_CLIENT_ID)
-[ "$LH_PRIVATE_KEY" ] ||export LH_PRIVATE_KEY=$(getSecret LH_PRIVATE_KEY)
+exportSecretIfUnset LH_ACCESS_CLIENT_ID
+exportSecretIfUnset LH_PRIVATE_KEY
 
 ###
 ### Integration with MAS/IBM ###
 
 export MAS_API_AUTH_CLIENTID=vro_dev
-export MAS_API_AUTH_CLIENT_SECRET=$(getSecret MAS_API_AUTH_CLIENT_SECRET)
+exportSecretIfUnset MAS_API_AUTH_CLIENT_SECRET
 
 # TODO: Move these to application*.yml
 export MAS_API_AUTH_TOKEN_URI=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
@@ -134,11 +147,11 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 ### Integration with BIP ###
 
 # Credentials for BIP Claim API
-export BIP_CLAIM_USERID=$(getSecret BIP_CLAIM_USERID)
-export BIP_CLAIM_SECRET=$(getSecret BIP_CLAIM_SECRET)
+exportSecretIfUnset BIP_CLAIM_USERID
+exportSecretIfUnset BIP_CLAIM_SECRET
 # Credentials for BIP Claim Evidence API
-export BIP_EVIDENCE_USERID=$(getSecret BIP_EVIDENCE_USERID)
-export BIP_EVIDENCE_SECRET=$(getSecret BIP_EVIDENCE_SECRET)
+exportSecretIfUnset BIP_EVIDENCE_USERID
+exportSecretIfUnset BIP_EVIDENCE_SECRET
 
 # TODO: Move all? of these to application*.yml
 export BIP_CLAIM_URL=2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io
