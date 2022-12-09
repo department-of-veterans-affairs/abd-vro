@@ -22,6 +22,7 @@ env:
   LH_FHIR_URL: https://sandbox-api.va.gov/services/fhir/v0/r4
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
+
   POSTGRES_SUPER_USER: vro_super_user
   POSTGRES_SUPER_PASSWORD: vro_super_user_pw
   POSTGRES_SUPER_DB: vro_super_db
@@ -42,7 +43,6 @@ env:
   MAS_API_AUTH_TOKEN_URI: bogusToken
   MAS_API_AUTH_SCOPE: openid
   SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
-  SLACK_EXCEPTION_CHANNEL: benefits-vro-nonprod
 
 jobs:
   end2end-test:
