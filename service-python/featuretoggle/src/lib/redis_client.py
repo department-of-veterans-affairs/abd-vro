@@ -38,3 +38,6 @@ class RedisClient:
 
     def get_hash_data(self, name, key):
         return self.client.hget(name, key)
+
+    def publish(self, channel, message):
+        return self.client.publish(channel, message)
