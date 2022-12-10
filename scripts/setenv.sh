@@ -50,7 +50,7 @@ echo "Setting up environment variables for VRO local development and testing"
 
 getSecret(){
   if [ "$SECRETS_DIR" ]; then
-    >&2 echo "- using $1"
+    >&2 echo "- retrieving $1"
     cat "$SECRETS_DIR/$1"
   else
     >&2 echo "- Error: environment variable is not set: $1"
