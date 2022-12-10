@@ -106,12 +106,6 @@ export SLACK_EXCEPTION_WEBHOOK=$(getSecret SLACK_EXCEPTION_WEBHOOK)
 ###
 ### Integration with Lighthouse API ###
 
-# TODO: These should be moved to application*.yml files
-# Only needed by svc-lighthouse-api for connecting to Lighthouse API
-export LH_TOKEN_URL=https://sandbox-api.va.gov/oauth2/health/system/v1/token
-export LH_ASSERTION_URL=https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
-export LH_FHIR_URL=https://sandbox-api.va.gov/services/fhir/v0/r4
-
 # Credentials for connecting to Lighthouse API
 export LH_ACCESS_CLIENT_ID=$(getSecret LH_ACCESS_CLIENT_ID)
 export LH_PRIVATE_KEY=$(getSecret LH_PRIVATE_KEY)
