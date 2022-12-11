@@ -5,7 +5,6 @@ import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,7 +30,17 @@ public interface IBipApiService {
    * @return a claim info object.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp updateClaimStatus(long collectionId) throws BipException;
+  BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException;
+
+  /**
+   * Updates a claim status.
+   *
+   * @param collectionId claim ID.
+   * @param status status to be updated to.
+   * @return a claim update info object.
+   * @throws BipException error occurs.
+   */
+  BipUpdateClaimResp updateClaimStatus(long collectionId, CLAIM_STATUS status) throws BipException;
 
   /**
    * Gets a list of contentions in a claim.
@@ -74,7 +83,7 @@ public interface IBipApiService {
    * @return an object for the upload status.
    * @throws BipException
    */
-  HashMap<String, String> uploadEvidence(
+  BipFileUploadResp uploadEvidence(
       FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException;
 

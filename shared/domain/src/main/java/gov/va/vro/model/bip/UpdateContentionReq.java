@@ -1,7 +1,7 @@
 package gov.va.vro.model.bip;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
 public class UpdateContentionReq {
   private List<UpdateContention> updateContentions;
 }

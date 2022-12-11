@@ -7,7 +7,6 @@ import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
-import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -122,25 +121,5 @@ public class MasCollectionService {
       result.addAll(list2);
     }
     return new ArrayList<>(result);
-  }
-
-  public static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
-    MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
-    GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
-    generatePdfPayload.setEvidence(transferObject.getEvidence());
-    generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
-    generatePdfPayload.setDiagnosticCode(
-        claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
-    VeteranInfo veteranInfo = new VeteranInfo();
-    veteranInfo.setFirst(claimPayload.getFirstName());
-    veteranInfo.setLast(claimPayload.getLastName());
-    veteranInfo.setMiddle("");
-    veteranInfo.setBirthdate(claimPayload.getDateOfBirth());
-    generatePdfPayload.setVeteranInfo(veteranInfo);
-    log.info(
-        "Generating pdf for claim: {} and diagnostic code {}",
-        generatePdfPayload.getClaimSubmissionId(),
-        generatePdfPayload.getDiagnosticCode());
-    return generatePdfPayload;
   }
 }

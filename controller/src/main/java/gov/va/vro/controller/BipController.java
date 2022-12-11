@@ -1,6 +1,5 @@
 package gov.va.vro.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.*;
 import gov.va.vro.model.bip.*;
@@ -37,7 +36,7 @@ public class BipController implements BipResource {
     // TODO: route to call BipApiService
     long claimId = Long.parseLong(request.getClaimId());
     try {
-      BipUpdateClaimResp resp = service.updateClaimStatus(claimId);
+      BipUpdateClaimResp resp = service.setClaimToRfdStatus(claimId);
       String msg = resp.getMessage();
       boolean isSuccessful = resp.getStatus() == HttpStatus.OK;
       BipClaimStatusResponse response =
@@ -105,8 +104,8 @@ public class BipController implements BipResource {
     try {
       UpdateContention contention = payload.getContention();
       List<UpdateContention> contentions = Collections.singletonList(contention);
-      UpdateContentionReq req = new UpdateContentionReq();
-      req.setUpdateContentions(contentions);
+      UpdateContentionReq req =
+          UpdateContentionReq.builder().updateContentions(contentions).build();
       BipUpdateClaimResp resp = service.updateClaimContention(payload.getClaimId(), req);
       boolean isUpdated = resp.getStatus() == HttpStatus.OK;
       BipContentionUpdateResponse response =
@@ -136,7 +135,7 @@ public class BipController implements BipResource {
       req.setCreateContentions(contentions);
       BipUpdateClaimResp resp = service.addClaimContention(payload.getClaimId(), req);
       boolean isCreated = resp.getStatus() == HttpStatus.CREATED;
-      //TODO: If isCreated, return the contention content.
+      // TODO: If isCreated, return the contention content.
       BipContentionCreationResponse response =
           BipContentionCreationResponse.builder()
               .claimId(payload.getClaimId())

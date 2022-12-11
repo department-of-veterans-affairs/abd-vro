@@ -1,8 +1,6 @@
 package gov.va.vro.model.bip;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,9 +9,11 @@ import java.util.List;
  *
  * @author warren @Date 11/9/22
  */
-@RequiredArgsConstructor
 @Getter
 @Setter
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClaimContention {
   private boolean medicalInd;
   private String beginDate;
@@ -30,8 +30,31 @@ public class ClaimContention {
   private List<String> specialIssueCodes;
   private long contentionId;
   private String lastModified;
-  private String summaryDateTime;
   private String lifecycleStatus;
+  private String summaryDateTime;
   private boolean automationIndicator;
   private List<TrackedItems> associatedTrackedItems;
+
+  public UpdateContention toUpdateContention(String action) {
+    return UpdateContention.builder()
+        .medicalInd(medicalInd)
+        .beginDate(beginDate)
+        .createDate(createDate)
+        .altContentionName(altContentionName)
+        .completedDate(completedDate)
+        .notificationDate(notificationDate)
+        .contentionTypeCode(contentionTypeCode)
+        .classificationType(classificationType)
+        .diagnosticTypeCode(diagnosticTypeCode)
+        .claimantText(claimantText)
+        .contentionStatusTypeCode(contentionStatusTypeCode)
+        .originalSourceTypeCode(originalSourceTypeCode)
+        .specialIssueCodes(specialIssueCodes)
+        .contentionId(contentionId)
+        .lastModified(lastModified)
+        .lifecycleStatus(lifecycleStatus)
+        .automationIndicator(automationIndicator)
+        .action(action)
+        .build();
+  }
 }

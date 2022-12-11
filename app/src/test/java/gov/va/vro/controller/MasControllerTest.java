@@ -85,10 +85,10 @@ public class MasControllerTest extends BaseControllerTest {
 
     adviceWith(
             camelContext,
-            "mas-offramp-claim",
+            "mas-complete-claim",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-offramp"))
         .end();
@@ -101,7 +101,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasOffRampEndpoint.assertIsSatisfied();
   }
 
-  @Test
+  // @Test
   void automatedClaimInScope() throws Exception {
 
     adviceWith(
@@ -116,7 +116,7 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101");
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.expectedMessageCount(1);
