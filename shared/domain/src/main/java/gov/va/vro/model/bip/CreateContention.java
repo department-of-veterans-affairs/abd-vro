@@ -2,7 +2,6 @@ package gov.va.vro.model.bip;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
  *
  * @author warren @Date 11/14/22
  */
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class CreateContention {
