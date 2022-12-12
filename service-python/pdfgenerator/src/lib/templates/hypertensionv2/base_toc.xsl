@@ -31,13 +31,13 @@
           @font-face {
             font-family: NotoSans;
                   src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
-            font-weight: normal;
+            font-weight: 400;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
                   src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
-            font-weight: normal;
+            font-weight: 400;
             font-style: italic;
           }
           @font-face {
