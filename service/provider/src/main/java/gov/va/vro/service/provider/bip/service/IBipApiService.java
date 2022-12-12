@@ -40,7 +40,7 @@ public interface IBipApiService {
    * @return a claim update info object.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp updateClaimStatus(long collectionId, CLAIM_STATUS status) throws BipException;
+  BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
 
   /**
    * Gets a list of contentions in a claim.

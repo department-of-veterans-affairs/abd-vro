@@ -40,7 +40,7 @@ public class MockBipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(long claimId, CLAIM_STATUS status)
+  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
     return new BipUpdateClaimResp(HttpStatus.OK, "OK");
   }

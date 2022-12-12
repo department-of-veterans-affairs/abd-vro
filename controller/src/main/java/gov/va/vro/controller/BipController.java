@@ -4,7 +4,7 @@ import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.*;
 import gov.va.vro.model.bip.*;
 import gov.va.vro.service.provider.bip.BipException;
-import gov.va.vro.service.provider.bip.service.BipApiService;
+import gov.va.vro.service.provider.bip.service.IBipApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -27,7 +27,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Profile("!qa & !sandbox & !prod")
 public class BipController implements BipResource {
-  private final BipApiService service;
+  private final IBipApiService service;
 
   @Override
   public ResponseEntity<BipClaimStatusResponse> setClaimRFD(@Valid BipUpdateClaimPayload request) {
