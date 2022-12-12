@@ -1,15 +1,18 @@
 {
   "code": "7101",
   "document_type": "hypertension",
+  "fileIdentifier": "12345",
   "veteran_info": {
-    "first": "",
+    "first": "Test",
     "middle": "",
-    "last": "",
+    "last": "User",
     "suffix": "",
     "birthdate": "1935-06-15T00:00:00+00:00"
   },
   "evidence": {
     "bp_readings": [],
-    "medications": []
+    "conditions": [],
+    "medications": [],
+    "procedures": []
   }
 }

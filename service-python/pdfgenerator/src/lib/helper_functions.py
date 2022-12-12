@@ -25,7 +25,7 @@ def toc_helper_all(toc_file_path, data):
         file_data = file.read()
 
     file_data = file_data.replace("{{name}}", f"{data['veteran_info']['first']} {data['veteran_info']['middle']} {data['veteran_info']['last']}")
-    file_data = file_data.replace("{{file}}", "12345")
+    file_data = file_data.replace("{{file}}", data['fileIdentifier'])
     file_data = file_data.replace("{{date}}", f"{pytz.utc.localize(datetime.now()).strftime('%b. %d, %Y')}")
 
     generated_toc_path = toc_file_path.replace("base_toc", "generated_toc")
