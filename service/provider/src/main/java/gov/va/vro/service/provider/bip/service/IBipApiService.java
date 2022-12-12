@@ -84,7 +84,7 @@ public interface IBipApiService {
    * @throws BipException
    */
   BipFileUploadResp uploadEvidence(
-      FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+          FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException;
 
   /**
@@ -98,7 +98,7 @@ public interface IBipApiService {
    * @throws BipException
    */
   BipFileUploadResp uploadEvidenceFile(
-      FILE_ID_TYPE idtype,
+      FileIdType idtype,
       String fileId,
       BipFileUploadPayload uploadEvidenceReq,
       MultipartFile file)
