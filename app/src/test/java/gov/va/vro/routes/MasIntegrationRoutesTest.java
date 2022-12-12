@@ -18,6 +18,7 @@ import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -45,12 +46,12 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:empty-endpoint")
   private MockEndpoint mockEmptyEndpoint;
 
-  // @Test
+  @Test
   void processClaimSufficientEvidence() throws Exception {
     processClaim(true);
   }
 
-  // @Test
+  @Test
   void processClaimInsufficientEvidence() throws Exception {
     processClaim(false);
   }

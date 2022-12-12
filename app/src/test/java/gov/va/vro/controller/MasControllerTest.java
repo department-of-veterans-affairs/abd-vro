@@ -101,7 +101,7 @@ public class MasControllerTest extends BaseControllerTest {
     mockMasOffRampEndpoint.assertIsSatisfied();
   }
 
-  // @Test
+  @Test
   void automatedClaimInScope() throws Exception {
 
     adviceWith(
