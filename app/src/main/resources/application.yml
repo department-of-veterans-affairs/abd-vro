@@ -89,12 +89,17 @@ spring:
     active: ${ENV:default}
     # Define Sprint Profile Groups with group names corresponding to the value of $ENV
     group:
-      # Configure profile group so that application-nonprod.yml is loaded, along with application-local.yml
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
       local: nonprod
+      end2end-test: nonprod
       # Remaining profiles are for deployment to LHDI's EKS environments
-      dev: nonprod
-      qa: nonprod
-      sandbox: nonprod
+      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
+      # along with application-$ENV.yml
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      # For prod, only load application-prod.yml and application-k8s.yml
+      prod: k8s
 
   servlet:
     multipart:
@@ -159,7 +164,6 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-    enabled: ${SWAGGER_ENABLED:true}
 
 vro:
   # Deployment environment
@@ -186,11 +190,6 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
-
-  persist:
-    tracking:
-      enabled: ${PERSIST_TRACKING_ENABLED:true}
-      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking}
 
 spring.redis:
   # database index used by the connection factory

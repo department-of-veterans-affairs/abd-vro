@@ -14,33 +14,9 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  COMPOSE_PROJECT_NAME: vro
-  # TODO: migrate these into an application-end2endtest.yml
-  LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
-  LH_ASSERTION_URL: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
-  LH_FHIR_URL: https://sandbox-api.va.gov/services/fhir/v0/r4
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
-  POSTGRES_SUPER_USER: vro_super_user
-  POSTGRES_SUPER_PASSWORD: vro_super_user_pw
-  POSTGRES_SUPER_DB: vro_super_db
-  POSTGRES_ADMIN_USER: vro_admin_user
-  POSTGRES_ADMIN_PASSWORD: vro_admin_user_pw
-  RABBITMQ_PLACEHOLDERS_USERNAME: guest
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
-  POSTGRES_USER: vro_user
-  POSTGRES_PASSWORD: vro_user_pw
-  POSTGRES_DB: vro
-  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
-  POSTGRES_SCHEMA: claims
-  REDIS_PLACEHOLDERS_PASSWORD: vro_redis_password
-  MAS_API_AUTH_CLIENTID: bogusClientId
-  MAS_API_AUTH_CLIENT_SECRET: bogusClientSecret
-  MAS_API_AUTH_TOKEN_URI: bogusToken
-  MAS_API_AUTH_SCOPE: openid
   SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
-  SLACK_EXCEPTION_CHANNEL: benefits-vro-nonprod
 
 jobs:
   end2end-test:
@@ -52,10 +28,15 @@ jobs:
       - name: "Build the images"
         uses: ./.github/actions/build-images
         with:
-          access_token: ${{ env.GITHUB_ACCESS_TOKEN }}
+          access_token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: "Start the containers"
-        run: ./gradlew :app:dockerComposeUp
+        run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
+          ./gradlew :app:dockerComposeUp
+        env:
+          ENV: "end2end-test"
 
       - name: "Sleep a few seconds"
         # App container is not immediately ready

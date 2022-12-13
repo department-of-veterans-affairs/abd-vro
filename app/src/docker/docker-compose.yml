@@ -245,8 +245,8 @@ services:
       <<: *rabbitmq-placeholder-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-      LH_ASSERTION_URL: ${LH_ASSERTION_URL}
       # TODO: Set these values in svc-lighthouse-api/src/main/resources/application-local.properties instead of setting env vars
+      LH_ASSERTION_URL: ${LH_ASSERTION_URL}
       LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
       LH_FHIR_URL: ${LH_FHIR_URL}
     depends_on:
