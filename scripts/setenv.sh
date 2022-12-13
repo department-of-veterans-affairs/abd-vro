@@ -84,11 +84,6 @@ export POSTGRES_SCHEMA=claims
 export POSTGRES_ADMIN_USER=vro_admin_user
 export POSTGRES_ADMIN_PASSWORD=vro_admin_user_pw
 
-# TODO: Move to flyway.conf
-# Only used by db-init in flyway.conf
-export FLYWAY_TABLE=schema_history
-export FLYWAY_TABLESPACE=pg_default
-
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_PLACEHOLDERS_USERNAME=guest
 export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
