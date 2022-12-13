@@ -1,6 +1,6 @@
 package gov.va.vro.service.db;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
@@ -11,6 +11,7 @@ import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,6 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
   private final ClaimMapper mapper;
-  private final ObjectMapper objMapper;
 
   @Override
   public Claim insertClaim(Claim claim) {
@@ -62,6 +62,39 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
+    ClaimEntity claim =
+        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim by claimSubmissionId, exiting.");
+      return;
+    }
+    ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
+    if (contention == null) {
+      log.warn("Could not match the contention with the claim and diagnostic code, exiting.");
+      return;
+    }
+    Map<String, String> evidenceCount = fillEvidenceCounts(request);
+    contention.addEvidenceSummaryDocument(evidenceCount, documentName);
+    claimRepository.save(claim);
+  }
+
+  private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
+    AbdEvidence evidence = request.getEvidence();
+    Map<String, String> evidenceCount = new HashMap<>();
+    if (evidence.getBloodPressures() != null) {
+      evidenceCount.put("totalBpReadings", String.valueOf(evidence.getBloodPressures().size()));
+    }
+    if (evidence.getMedications() != null) {
+      evidenceCount.put("medicationsCount", String.valueOf(evidence.getMedications().size()));
+    }
+    if (evidence.getProcedures() != null) {
+      evidenceCount.put("proceduresCount", String.valueOf(evidence.getProcedures().size()));
+    }
+    return evidenceCount;
   }
 
   private Map<String, String> convertMap(Map<String, Object> summary) {

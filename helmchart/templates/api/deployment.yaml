@@ -23,6 +23,10 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -160,11 +164,46 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.passwordKey }}
-            - name: VRO_NON_PROD
+            - name: MAS_API_AUTH_CLIENTID
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret }}
-                  key: {{ .Values.api.vroNonProdKey }}
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientId }}
+            - name: MAS_API_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientSecret }}
+            - name: MAS_API_AUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthScope }}
+            - name: MAS_API_AUTH_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BAS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiBaseUrl }}
+            - name: MAS_COLLECTION_ANNOTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
+            - name: MAS_COLLECTION_STATUS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionStatusPath }}
+            - name: MAS_CREATE_EXAM_ORDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
           resources:
             requests:
               cpu: 150m
@@ -172,6 +211,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
@@ -193,6 +235,8 @@ spec:
                   key: {{ .Values.api.apiKey02 }}
             - name: JAVA_OPTS
               value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.volumes.tracking.mountPath }}
             - name: POSTGRES_URL
               valueFrom:
                 secretKeyRef:
@@ -218,11 +262,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.schemaKey }}
-            - name: VRO_NON_PROD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret }}
-                  key: {{ .Values.api.vroNonProdKey }}
+            - name: SWAGGER_ENABLED
+              # enabled when not in prod
+              value: {{ ne .Values.environment "prod" | quote }}
             - name: SERVER_SERVLET_CONTEXTPATH
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
@@ -248,6 +290,93 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.passwordKey }}
+            - name: MAS_API_AUTH_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientId }}
+            - name: MAS_API_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientSecret }}
+            - name: MAS_API_AUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthScope }}
+            - name: MAS_API_AUTH_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BAS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiBaseUrl }}
+            - name: MAS_COLLECTION_ANNOTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
+            - name: MAS_COLLECTION_STATUS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionStatusPath }}
+            - name: MAS_CREATE_EXAM_ORDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
+
+            - name: bipApplicationId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationId }}
+            - name: bipApplicationIss
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationIss }}
+            - name: bipClaimSecret
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimSecret }}
+            - name: bipClaimUrl
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUrl }}
+            - name: bipClaimUserId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUserId }}
+            - name: bipEvidenceSecret
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceSecret }}
+            - name: bipEvidenceUrl
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUrl }}
+            - name: bipEvidenceUserId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUserId }}
+            - name: bipStationId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipStationId }}
+
           resources:
             requests:
               cpu: 150m
@@ -255,6 +384,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}

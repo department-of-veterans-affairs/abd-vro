@@ -1,11 +1,11 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.*;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -34,6 +34,9 @@ public class MasControllerTest extends BaseControllerTest {
   @EndpointInject("mock:mas-notification")
   private MockEndpoint mockMasNotificationEndpoint;
 
+  @EndpointInject("mock:mas-offramp")
+  private MockEndpoint mockMasOffRampEndpoint;
+
   @Autowired private CamelContext camelContext;
 
   @Autowired @SpyBean private AuditEventService auditEventService;
@@ -59,52 +62,64 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void automatedClaimD_invalidRequest() {
+  void automatedClaimInvalidRequest() {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
   @Test
-  void automatedClaim_validRequest() throws Exception {
-
+  void automatedClaimOutOfScope() throws Exception {
     adviceWith(
             camelContext,
-            "mas-claim-notification",
+            "mas-slack-event",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-notification"))
         .end();
     // The mock endpoint returns a valid response
-    mockMasNotificationEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<MasAutomatedClaimPayload, String>fromFunction(claim -> "hi"));
-    MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
+
+    adviceWith(
+            camelContext,
+            "mas-complete-claim",
+            route ->
+                route
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
+                    .skipSendToOriginalEndpoint()
+                    .to("mock:mas-offramp"))
+        .end();
+    mockMasOffRampEndpoint.whenAnyExchangeReceived(exchange -> {});
+
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    mockMasNotificationEndpoint.assertIsSatisfied();
+    mockMasOffRampEndpoint.assertIsSatisfied();
   }
 
   @Test
-  void automatedClaim_throwsException() throws Exception {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+  void automatedClaimInScope() throws Exception {
+
     adviceWith(
             camelContext,
             "mas-claim-notification",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS)
-                    .throwException(new Exception("Exception")))
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM)
+                    .skipSendToOriginalEndpoint()
+                    .to("mock:mas-notification"))
         .end();
+    // The mock endpoint returns a valid response
+    mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = getMasAutomatedClaimPayload();
-    post("/v1/automatedClaim", request, MasResponse.class);
-    Mockito.verify(auditEventService, Mockito.atLeastOnce())
-        .logEvent(auditEventArgumentCaptor.capture());
-    var event = auditEventArgumentCaptor.getValue();
-    assertEquals("123", event.getEventId());
-    assertEquals("mas-claim-notification", event.getRouteId());
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    mockMasNotificationEndpoint.expectedMessageCount(1);
   }
 
   @Test
@@ -113,35 +128,12 @@ public class MasControllerTest extends BaseControllerTest {
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
-        post("/v1/examOrderingStatus", payload, MasResponse.class);
+        post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
     assertEquals("123", event.getEventId());
     assertEquals("mas-exam-order-status", event.getRouteId());
-  }
-
-  private static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
-    veteranIdentifiers.setEdipn("X");
-    veteranIdentifiers.setParticipantId("X");
-    veteranIdentifiers.setIcn("X");
-    veteranIdentifiers.setSsn("X");
-    veteranIdentifiers.setVeteranFileId("X");
-    ClaimCondition conditions = new ClaimCondition();
-    conditions.setDiagnosticCode("1233");
-    ClaimDetail claimDetail = new ClaimDetail();
-    claimDetail.setClaimSubmissionDateTime("123");
-    claimDetail.setConditions(conditions);
-
-    return MasAutomatedClaimPayload.builder()
-        .dateOfBirth("2002-12-12")
-        .collectionId(123)
-        .firstName("Rick")
-        .lastName("Smith")
-        .veteranIdentifiers(veteranIdentifiers)
-        .claimDetail(claimDetail)
-        .build();
   }
 }

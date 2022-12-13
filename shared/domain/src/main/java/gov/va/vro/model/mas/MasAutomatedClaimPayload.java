@@ -1,5 +1,6 @@
 package gov.va.vro.model.mas;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,6 +21,11 @@ import javax.validation.constraints.NotNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasAutomatedClaimPayload implements Auditable {
+
+  public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
+  public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
+
+  public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
@@ -49,15 +57,40 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Schema(description = "Details of the Claim")
   private ClaimDetail claimDetail;
 
+  @Schema(description = "Veteran Flash Ids")
+  private List<String> veteranFlashIds;
+
   @Override
+  @JsonIgnore
   public String getEventId() {
-    return Integer.toString(collectionId);
+    return collectionId == null ? null : Integer.toString(collectionId);
   }
 
+  @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
     }
     return claimDetail.getConditions().getDiagnosticCode();
+  }
+
+  @JsonIgnore
+  public String getDisabilityActionType() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getDisabilityActionType();
+  }
+
+  @JsonIgnore
+  public boolean isInScope() {
+    return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
+        && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
+            || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
+  }
+
+  @JsonIgnore
+  public Integer getClaimId() {
+    return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
   }
 }

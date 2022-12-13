@@ -1,4 +1,4 @@
-package gov.va.vro;
+package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -163,7 +163,7 @@ class VroControllerTest extends BaseControllerTest {
 
     var responseEntity =
         post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
     assertEquals("No evidence found.", claimProcessingError.getMessage());
@@ -171,7 +171,7 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void fullHealthAssessmentInvalidInput() throws Exception {
+  void fullHealthAssessmentInvalidInput() {
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setVeteranIcn("icn");
 
@@ -187,6 +187,20 @@ class VroControllerTest extends BaseControllerTest {
       "diagnosticCode: Diagnostic code cannot be empty"
     };
     assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  void fullHealthAssessmentMalformedJson() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    var responseEntity =
+        post(
+            "/v1/full-health-data-assessment",
+            "{ \"one\":\"one\", \"two\":\"two\",}",
+            headers,
+            ClaimProcessingError.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
   @Test

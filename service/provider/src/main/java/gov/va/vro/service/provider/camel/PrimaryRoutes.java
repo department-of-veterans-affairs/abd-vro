@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.service.provider.services.AssessmentResultProcessor;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SaveToDbService saveToDbService;
 
   private final AssessmentResultProcessor assessmentResultProcessor;
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   @Override
@@ -44,7 +46,7 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM)
         .routeId("claim-submit")
-        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
+        .wireTap(VroCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
@@ -52,19 +54,11 @@ public class PrimaryRoutes extends RouteBuilder {
         .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
-  private String wireTapTopicFor(String tapName) {
-    // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
-    // Create the queue but don't bind it to the exchange so that messages don't accumulate.
-    return String.format(
-        "rabbitmq:tap-%s?exchangeType=topic&queue=tap-%s-not-used&skipQueueBind=true",
-        tapName, tapName);
-  }
-
   private void configureRouteClaimSubmitForFull() {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM_FULL)
         .routeId("claim-submit-full")
-        .wireTap(wireTapTopicFor(INCOMING_CLAIM_WIRETAP))
+        .wireTap(VroCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
@@ -78,7 +72,8 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
-        .wireTap(wireTapTopicFor(GENERATE_PDF_WIRETAP))
+        .wireTap(VroCamelUtils.wiretapProducer(GENERATE_PDF_WIRETAP))
+        .process(evidenceSummaryDocumentProcessor)
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
 

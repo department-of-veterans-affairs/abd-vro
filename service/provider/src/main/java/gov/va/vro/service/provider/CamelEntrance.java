@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -23,10 +24,6 @@ import java.util.Map;
 public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
-
-  public String submitClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM, claim, String.class);
-  }
 
   public String submitClaimFull(Claim claim) {
     return producerTemplate.requestBody(
@@ -54,13 +51,21 @@ public class CamelEntrance {
             retryCount));
   }
 
-  public String examOrderingStatus(MasExamOrderStatusPayload payload) {
+  public void examOrderingStatus(MasExamOrderStatusPayload payload) {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
-    return "Message Received";
   }
 
-  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    return producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
+  public void processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload);
+  }
+
+  public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
+  }
+
+  public void sendSlack(AuditEvent auditEvent) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT, auditEvent);
   }
 }

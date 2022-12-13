@@ -152,6 +152,12 @@ readinessProbe:
   timeoutSeconds: 10
   failureThreshold: 3
 
+volumes:
+  tracking:
+    name: tracking-persistent-storage
+    claimName: tracking-efs-claim
+    mountPath: /persist/tracking
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1
@@ -179,6 +185,29 @@ rabbitmq:
   secretName: rabbitmq
   usernameKey: User
   passwordKey: Pass
+
+mas:
+  keyName: mas
+  masApiAuthClientId: masApiAuthClientId
+  masApiAuthClientSecret: masApiAuthClientSecret
+  masApiAuthScope: masApiAuthScope
+  masApiAuthTokenUri: masApiAuthTokenUri
+  masApiBaseUrl: masApiBaseUrl
+  masCollectionAnnotsPath: masCollectionAnnotsPath
+  masCollectionStatusPath: masCollectionStatusPath
+  masCreateExamOrderPath: masCreateExampOrderPath
+
+bip:
+  keyName: bip
+  bipApplicationId: bipApplicationId
+  bipApplicationIss: bipApplicationIss
+  bipClaimSecret: bipClaimSecret
+  bipClaimUrl: bipClaimUrl
+  bipClaimUserId: bipClaimUserId
+  bipEvidenceSecret: bipEvidenceSecret
+  bipEvidenceUrl: bipEvidenceUrl
+  bipEvidenceUserId: bipEvidenceUserId
+  bipStationId: bipStationId
 
 redis:
   secretName: redis
