@@ -32,7 +32,8 @@ then
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
 helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
-sleep 30 # wait for Persistent Volume Claim to be deleted
+echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
+sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
