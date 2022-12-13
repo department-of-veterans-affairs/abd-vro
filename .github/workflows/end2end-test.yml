@@ -27,8 +27,6 @@ env:
   POSTGRES_SUPER_DB: vro_super_db
   POSTGRES_ADMIN_USER: vro_admin_user
   POSTGRES_ADMIN_PASSWORD: vro_admin_user_pw
-  FLYWAY_TABLE: schema_history
-  FLYWAY_TABLESPACE: pg_default
   RABBITMQ_PLACEHOLDERS_USERNAME: guest
   RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
   POSTGRES_USER: vro_user
