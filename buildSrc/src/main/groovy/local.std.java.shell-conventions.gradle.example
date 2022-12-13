@@ -5,4 +5,3 @@
 plugins {
     id 'starter.java.lint-shellcheck-conventions'
 }
-

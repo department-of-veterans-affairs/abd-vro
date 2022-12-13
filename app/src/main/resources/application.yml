@@ -5,8 +5,10 @@ info:
 
 # API Auth
 apiauth:
-  hdr-key-name: X-API-Key
-  url-context: /v1/**
+  hdr-key-name-v1: X-API-Key
+  url-context-v1: /v1/**
+  hdr-key-name-v2: Authorization
+  url-context-v2: /v2/**
 
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
@@ -95,6 +97,36 @@ spring:
   http:
     encoding:
       force: true
+  security:
+    oauth2:
+      client:
+        provider:
+          mas:
+            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
+        registration:
+          mas:
+            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
+            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
+            scope: "${MAS_API_AUTH_SCOPE:openid}"
+            grant-type: client_credentials
+masAPIProvider:
+  baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+  collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
+  collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
+  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "${VALIDATE_TOKEN:NO}"
+
+
+
+slack:
+  exception:
+    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
+    channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
 
 opentracing:
   zipkin:
@@ -110,17 +142,18 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-    enabled: ${VRO_NON_PROD:false}
+    enabled: ${SWAGGER_ENABLED:true}
 
 vro:
+  env: ${ENV:local}
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
       description: This API provides functionality to improve benefit delivery to Veterans using health data.
       version: v1
       contact:
-        name: D (Yoom) Lam
-        email: "dung.lam1@va.gov"
+        name: Premal Shah
+        email: "premal.shah@va.gov"
       license:
         name: CCO 1.0
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
@@ -134,6 +167,18 @@ vro:
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
+
+  persist:
+    tracking:
+      enabled: ${PERSIST_TRACKING_ENABLED:true}
+      base_folder:  ${PERSIST_TRACKING_FOLDER:/tmp/vro-persist/tracking}
+
+spring.redis:
+  # database index used by the connection factory
+  database: 0
+  host: ${REDIS_PLACEHOLDERS_HOST}
+  port: 6379
+  password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
 spring.config.import: >
   conf-camel.yml,

@@ -196,6 +196,8 @@ spec:
             type: string
           onsetDate:
             type: string
+          recordedDate:
+            type: string
       AbdEvidence:
         type: object
         properties:
@@ -329,4 +331,3 @@ spec:
               read: Read permissions
               write: Write permissions
               delete: Deletion permissions
-  

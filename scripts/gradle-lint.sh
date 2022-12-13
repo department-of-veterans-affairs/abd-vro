@@ -2,7 +2,7 @@
 
 # Shows differences in gradleLint results
 
-# ./gradlew :generateGradleLintReport
+./gradlew :generateGradleLintReport
 
 echo "====================== Differences ========================"
 diff build/reports/gradleLint/abd_vro.txt gradle/gradleLint.log

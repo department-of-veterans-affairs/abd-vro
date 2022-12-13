@@ -1,0 +1,42 @@
+name: Test code
+
+on:
+  # Trigger on all pull requests
+  pull_request:
+    branches:
+      - "*"
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
+    secrets:
+      ACCESS_TOKEN:
+        required: true
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+env:
+  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    services:
+      rabbitmq:
+        image: rabbitmq:3.8
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: "Run linters and tests"
+        # `check` runs hadolint and shellcheck
+        # `jacocoTestCoverageVerification` checks for adequate test coverage
+        run: ./gradlew check jacocoTestCoverageVerification

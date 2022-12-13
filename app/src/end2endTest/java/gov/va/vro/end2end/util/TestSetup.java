@@ -103,11 +103,11 @@ public class TestSetup {
   }
 
   /**
-   * Returns expected content disposition header.
+   * Returns expected content disposition filename.
    *
-   * @return expectred content disposition header
+   * @return expected content disposition filename
    */
-  public String getContentDisposition() {
+  public String getContentDispositionFilename() {
     Instant instant = Instant.now();
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
     String date = dtf.format(instant);
@@ -115,7 +115,7 @@ public class TestSetup {
     String dcName = diagnosticCodeToName.get(diagnosticCode);
 
     String filename = "VAMC_" + dcName + "_Rapid_Decision_Evidence--" + date + ".pdf";
-    return "attachment; filename=\"" + filename + "\"";
+    return filename;
   }
 
   /**
