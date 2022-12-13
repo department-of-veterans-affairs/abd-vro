@@ -40,7 +40,7 @@ public interface IBipApiService {
    * @return a claim update info object.
    * @throws BipException error occurs.
    */
-  BipUpdateClaimResp updateClaimStatus(long collectionId, CLAIM_STATUS status) throws BipException;
+  BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
 
   /**
    * Gets a list of contentions in a claim.
@@ -84,7 +84,7 @@ public interface IBipApiService {
    * @throws BipException
    */
   BipFileUploadResp uploadEvidence(
-      FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+          FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException;
 
   /**
@@ -98,7 +98,7 @@ public interface IBipApiService {
    * @throws BipException
    */
   BipFileUploadResp uploadEvidenceFile(
-      FILE_ID_TYPE idtype,
+      FileIdType idtype,
       String fileId,
       BipFileUploadPayload uploadEvidenceReq,
       MultipartFile file)

@@ -5,13 +5,13 @@ package gov.va.vro.model.bip;
  *
  * @author warren @Date 12/1/22
  */
-public enum FILE_ID_TYPE {
+public enum FileIdType {
   FILENUMBER,
   SSN,
   PARTICIPANT_ID,
   EDIPI;
 
-  public static FILE_ID_TYPE getIDType(String idString) {
+  public static FileIdType getIDType(String idString) {
     String value = idString.toUpperCase();
     if (FILENUMBER.name().equals(value)) {
       return FILENUMBER;

@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.bip;
 
 /** @author warren @Date 10/31/22 */
-public class BipException extends Exception {
+public class BipException extends RuntimeException {
   private static final String BIP_ERROR = "VA BIP API access error.";
 
   public BipException() {

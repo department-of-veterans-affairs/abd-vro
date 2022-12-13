@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.CLAIM_STATUS;
 import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -129,7 +129,7 @@ public class BipClaimService {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
     try {
-      var response = bipApiService.updateClaimStatus(collectionId, CLAIM_STATUS.RFD);
+      var response = bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
       // TODO: check response, catch exceptions etc
       return payload;
     } catch (BipException e) { // TODO: how to handle exception?

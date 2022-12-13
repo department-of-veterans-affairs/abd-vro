@@ -1,7 +1,7 @@
 package gov.va.vro.model.bip;
 
 /** @author warren @Date 12/9/22 */
-public enum CLAIM_STATUS {
+public enum ClaimStatus {
   RFD("Ready for Decision"),
   OPEN("Open"),
   SRFD("Secondary Ready for Decision"),
@@ -19,7 +19,7 @@ public enum CLAIM_STATUS {
 
   private String description;
 
-  CLAIM_STATUS(String description) {
+  ClaimStatus(String description) {
     this.description = description;
   }
 
@@ -27,8 +27,8 @@ public enum CLAIM_STATUS {
     return description;
   }
 
-  public static CLAIM_STATUS getStatusCode(String desc) {
-    for (CLAIM_STATUS s : values()) {
+  public static ClaimStatus getStatusCode(String desc) {
+    for (ClaimStatus s : values()) {
       if (s.getDescription().equals(desc)) {
         return s;
       }

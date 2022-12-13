@@ -40,7 +40,7 @@ public class MockBipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(long claimId, CLAIM_STATUS status)
+  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
     return new BipUpdateClaimResp(HttpStatus.OK, "OK");
   }
@@ -59,14 +59,14 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidence(
-      FILE_ID_TYPE idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+          FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException {
     return new BipFileUploadResp();
   }
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FILE_ID_TYPE idtype,
+      FileIdType idtype,
       String fileId,
       BipFileUploadPayload uploadEvidenceReq,
       MultipartFile file)
