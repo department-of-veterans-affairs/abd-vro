@@ -15,7 +15,6 @@ public class AppProperties {
   }
 
   @Bean
-  @ConfigurationProperties(prefix = "lh")
   public LighthouseProperties lighthouseProperties() {
     return new LighthouseProperties();
   }
