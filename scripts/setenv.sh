@@ -34,6 +34,7 @@ fi
 ###
 # Before adding configuration settings in this file, prefer to add them to application*.yml (for Java)
 # or settings*.py (for Python). Those files allow different setting values per deployment env.
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
 # Adding environment variables incurs the cost of keeping docker-compose.yml (for local development)
 # and helmcharts (for each LHDI deployment environment) updated.
 #
