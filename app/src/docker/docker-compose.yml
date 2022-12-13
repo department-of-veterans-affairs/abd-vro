@@ -19,7 +19,6 @@ x-mas-vars: &mas-vars
   MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
   SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
-  SLACK_EXCEPTION_CHANNEL: ${SLACK_EXCEPTION_CHANNEL}
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
@@ -137,9 +136,8 @@ services:
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      ENV: ${ENV:-dev}
-      # Cause application-compose.yml to be used
-      JAVA_PROFILE: "-Dspring.profiles.include=compose"
+      # Cause application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      ENV: ${ENV:-local}
     depends_on:
       - postgres-service
       - rabbitmq-service
@@ -250,7 +248,8 @@ services:
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
       LH_ASSERTION_URL: ${LH_ASSERTION_URL}
-      LH_TOKEN_URL: ${LH_TOKEN_URL}
+      # TODO: Set these values in svc-lighthouse-api/src/main/resources/application-local.properties instead of setting env vars
+      LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
       LH_FHIR_URL: ${LH_FHIR_URL}
     depends_on:
       rabbitmq-service:
