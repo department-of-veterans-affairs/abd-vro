@@ -18,6 +18,6 @@ public class IntegrationTestController implements IntegrationTestResource {
   @Override
   public void automatedClaimSync(@RequestBody MasAutomatedClaimPayload payload) {
     String response = camelEntrance.processClaim(payload);
-    System.out.println(response);
+    // System.out.println(response);
   }
 }
