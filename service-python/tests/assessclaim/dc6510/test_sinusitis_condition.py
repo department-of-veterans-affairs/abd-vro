@@ -30,6 +30,7 @@ from assessclaimdc6510.src.lib import condition
                     "constantSinusitis": False,
                     "relevantConditionsCount": 1,
                     "totalConditionsCount": 1,
+                    "osteomyelitis": False,
                 },
         ),
         (
@@ -50,6 +51,7 @@ from assessclaimdc6510.src.lib import condition
                     "relevantConditionsCount": 0,
                     "totalConditionsCount": 1,
                     "constantSinusitis": False,
+                    "osteomyelitis": False,
                 },
         ),
         (
@@ -77,15 +79,16 @@ from assessclaimdc6510.src.lib import condition
                     ],
                     "relevantConditionsCount": 1,
                     "totalConditionsCount": 2,
-                    "constantSinusitis": True
+                    "constantSinusitis": True,
+                    "osteomyelitis": False,
                 },
         ),
         (
                 {
                     "evidence": {
                         "conditions": [
-                            {"text": "Chronic maxillary sinusitis",
-                             "code": "35923002",
+                            {"text": "Osteomyelitis",
+                             "code": "H05.029",
                              "status": "active",
                              "onsetDate": "2021-11-01"},
                             {"text": "Chronic maxillary sinusitis",
@@ -98,8 +101,8 @@ from assessclaimdc6510.src.lib import condition
                 },
                 {
                     "conditions": [
-                        {"text": "Chronic maxillary sinusitis",
-                         "code": "35923002",
+                        {"text": "Osteomyelitis",
+                         "code": "H05.029",
                          "status": "active",
                          "onsetDate": "2021-11-01"},
                         {"text": "Chronic maxillary sinusitis",
@@ -109,7 +112,8 @@ from assessclaimdc6510.src.lib import condition
                     ],
                     "relevantConditionsCount": 2,
                     "totalConditionsCount": 2,
-                    "constantSinusitis": False
+                    "constantSinusitis": False,
+                    "osteomyelitis": True,
                 },
         ),
     ],

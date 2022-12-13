@@ -16,7 +16,11 @@ from assessclaimdc6522.src.lib import main
                             "authoredOn": "1952-04-06T04:00:00Z",
                         }
                     ],
-                    "conditions": [],
+                    "conditions": [{
+                        "text": "Nasal polyps",
+                        "code": "J33.9",
+                        "status": "Active"
+                    }],
                     "procedures": []
                 },
                 "date_of_claim": "2021-11-09",
@@ -25,16 +29,21 @@ from assessclaimdc6522.src.lib import main
                                            "conditionRelated": False,
                                            "description": "Prednisone",
                                            "status": "active"}],
-                          "conditions": [],
+                          "conditions": [{
+                              "text": "Nasal polyps",
+                              "code": "J33.9",
+                              "status": "Active"
+                          }],
                           "procedures": []
                           },
              "evidenceSummary": {"diagnosticCodes": [],
-                                 "relevantConditionsCount": 0,
+                                 "relevantConditionsCount": 1,
                                  "relevantMedCount": 0,
                                  "relevantProceduresCount": 0,
-                                 "totalConditionsCount": 0,
+                                 "totalConditionsCount": 1,
                                  "totalMedCount": 1,
-                                 "totalProceduresCount": 0}}
+                                 "totalProceduresCount": 0},
+             "sufficientForFastTracking": True}
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -65,7 +74,9 @@ from assessclaimdc6522.src.lib import main
                                  "relevantProceduresCount": 0,
                                  "totalConditionsCount": 0,
                                  "totalMedCount": 1,
-                                 "totalProceduresCount": 0}}
+                                 "totalProceduresCount": 0},
+             "sufficientForFastTracking": None},
+
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
@@ -100,13 +111,14 @@ from assessclaimdc6522.src.lib import main
                                     }],
                     "procedures": []
                 },
-                'evidenceSummary': {'diagnosticCodes': ['6524'],
-                                    'relevantConditionsCount': 1,
-                                    'relevantMedCount': 0,
-                                    'relevantProceduresCount': 0,
-                                    'totalConditionsCount': 1,
-                                    'totalMedCount': 1,
-                                    'totalProceduresCount': 0}
+                "evidenceSummary": {"diagnosticCodes": ["6524"],
+                                    "relevantConditionsCount": 1,
+                                    "relevantMedCount": 0,
+                                    "relevantProceduresCount": 0,
+                                    "totalConditionsCount": 1,
+                                    "totalMedCount": 1,
+                                    "totalProceduresCount": 0},
+                "sufficientForFastTracking": False
             },
         ),
     ],
