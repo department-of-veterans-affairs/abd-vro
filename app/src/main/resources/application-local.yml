@@ -17,5 +17,3 @@ logging:
     org.hibernate.SQL: INFO
     org.type.descriptor.sql.BasicBinder: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
-=======
-# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
