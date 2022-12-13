@@ -59,17 +59,14 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidence(
-          FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException {
     return new BipFileUploadResp();
   }
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype,
-      String fileId,
-      BipFileUploadPayload uploadEvidenceReq,
-      MultipartFile file)
+      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
       throws BipException {
     return new BipFileUploadResp();
   }
