@@ -92,13 +92,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
-        .setProperty(
-            "disabilityActionType", simple("${body.claimDetail.conditions.disabilityActionType}"))
-        .setProperty("dateOfClaim", simple("${body.claimDetail.claimSubmissionDateTime}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        .setProperty("evidence", simple("${body}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
