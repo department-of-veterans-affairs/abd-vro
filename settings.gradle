@@ -9,70 +9,71 @@
 
 
 pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-        maven {
-            name = "starterBootPkgs"
-            url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
-            }
-            authentication {
-                register("header", HttpHeaderAuthentication)
-            }
-        }
-        maven {
-            name = "nexus"
-            url = uri("https://tools.health.dev-developer.va.gov/nexus")
-            credentials {
-                String result = "unknown"
-                result = System.getenv("NEXUS_USERNAME")
-                username = !result ? "NEXUS_USERNAME_FIXME" : result;
-                result = System.getenv("NEXUS_TOKEN")
-                password = !result ? "NEXUS_TOKEN_FIXME" : result;
-            }
-        }
+  repositories {
+    mavenLocal()
+    gradlePluginPortal()
+    mavenCentral()
+    maven {
+      name = "starterBootPkgs"
+      url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
+      credentials(HttpHeaderCredentials) {
+        name = "Authorization"
+        value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
+      }
+      authentication {
+        register("header", HttpHeaderAuthentication)
+      }
     }
+    maven {
+      name = "nexus"
+      url = uri("https://tools.health.dev-developer.va.gov/nexus")
+      credentials {
+        String result = "unknown"
+        result = System.getenv("NEXUS_USERNAME")
+        username = !result ? "NEXUS_USERNAME_FIXME" : result;
+        result = System.getenv("NEXUS_TOKEN")
+        password = !result ? "NEXUS_TOKEN_FIXME" : result;
+      }
+    }
+  }
 }
 
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            name = "starterBootPkgs"
-            url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
-            }
-            authentication {
-                register("header", HttpHeaderAuthentication)
-            }
-        }
-        maven {
-            name = "nexus"
-            url = uri("https://tools.health.dev-developer.va.gov/nexus")
-            credentials {
-                String result = "unknown"
-                result = System.getenv("NEXUS_USERNAME")
-                username = !result ? "NEXUS_USERNAME_FIXME" : result;
-                result = System.getenv("NEXUS_TOKEN")
-                password = !result ? "NEXUS_TOKEN_FIXME" : result;
-            }
-        }
+  repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+      name = "starterBootPkgs"
+      url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
+      credentials(HttpHeaderCredentials) {
+        name = "Authorization"
+        value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
+      }
+      authentication {
+        register("header", HttpHeaderAuthentication)
+      }
     }
+    maven {
+      name = "nexus"
+      url = uri("https://tools.health.dev-developer.va.gov/nexus")
+      credentials {
+        String result = "unknown"
+        result = System.getenv("NEXUS_USERNAME")
+        username = !result ? "NEXUS_USERNAME_FIXME" : result;
+        result = System.getenv("NEXUS_TOKEN")
+        password = !result ? "NEXUS_TOKEN_FIXME" : result;
+      }
+    }
+  }
 }
 
 
 rootProject.name = 'abd_vro'
 include ':api'
 include ':app'
+include ':console'
 include ':controller'
 include ':docs'
 include ':db-init'
@@ -81,12 +82,17 @@ include ':persistence:model'
 include ':scripts'
 include ':service:provider'
 include ':service:spi'
+include ':service:db'
+include ':shared:domain'
+include ':shared:lib-camel-connector'
 include ':service-python'
 include ':service-python:assessclaimdc7101'
 include ':service-python:assessclaimdc6602'
 include ':service-python:pdfgenerator'
-include ':service-data-access'
-include ':test-data-factory'
-include 'service:db'
-include 'domain'
-
+include ':service-python:featuretoggle'
+include ':svc-lighthouse-api'
+if (startParameter.projectProperties.containsKey("enablePrototype")) {
+  include ':service-python:assessclaimdc6602v2'
+  include ':service-python:assessclaimdc6510'
+  include ':service-python:assessclaimdc6522'
+}

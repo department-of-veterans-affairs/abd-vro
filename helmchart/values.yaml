@@ -1,8 +1,9 @@
 # NOTE: the name cannot have underscore
 name: abd-vro
-owner: Example
+owner: VA-OCTO
 environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
 cluster: nonprod
+# TODO: How is version used? What should this be set to?
 version: 0.1
 replicaCount: 1
 
@@ -37,37 +38,45 @@ images:
     imageName: redis
     tag: latest
     imagePullPolicy: Always
-  db:
-    imageName: dev_vro-postgres
-    tag: 0b9c9c4
   mq:
     imageName: vro-rabbitmq
     tag: 3
+# BEGIN image-names.sh replacement block (do not modify this block)
+# The following image list is updated by image-names.sh
   app:
     imageName: dev_vro-app
-    tag: 0b9c9c4
+    tag: tagPlaceholder
+    imagePullPolicy: Always
+  db:
+    imageName: dev_vro-postgres
+    tag: tagPlaceholder
     imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
-  pdfGenerator:
-    imageName: dev_vro-service-pdfgenerator
-    tag: 0b9c9c4
-    imagePullPolicy: Always
-  serviceAssessClaimDC7101:
-    imageName: dev_vro-service-assessclaimdc7101
-    tag: 0b9c9c4
-    imagePullPolicy: Always
-  serviceAssessClaimDC6602:
-    imageName: dev_vro-service-assessclaimdc6602
-    tag: 0b9c9c4
+  console:
+    imageName: dev_vro-console
+    tag: tagPlaceholder
     imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
-    tag: 0b9c9c4
+    tag: tagPlaceholder
     imagePullPolicy: Always
-    
+  pdfGenerator:
+    imageName: dev_vro-service-pdfgenerator
+    tag: tagPlaceholder
+    imagePullPolicy: Always
+  serviceAssessClaimDC7101:
+    imageName: dev_vro-service-assessclaimdc7101
+    tag: tagPlaceholder
+    imagePullPolicy: Always
+  serviceAssessClaimDC6602:
+    imageName: dev_vro-service-assessclaimdc6602
+    tag: tagPlaceholder
+    imagePullPolicy: Always
+# END image-names.sh replacement block (do not modify this block)
+
 resources:
   api:
     requests:
@@ -143,6 +152,12 @@ readinessProbe:
   timeoutSeconds: 10
   failureThreshold: 3
 
+volumes:
+  tracking:
+    name: tracking-persistent-storage
+    claimName: tracking-efs-claim
+    mountPath: /persist/tracking
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1
@@ -170,6 +185,29 @@ rabbitmq:
   secretName: rabbitmq
   usernameKey: User
   passwordKey: Pass
+
+mas:
+  keyName: mas
+  masApiAuthClientId: masApiAuthClientId
+  masApiAuthClientSecret: masApiAuthClientSecret
+  masApiAuthScope: masApiAuthScope
+  masApiAuthTokenUri: masApiAuthTokenUri
+  masApiBaseUrl: masApiBaseUrl
+  masCollectionAnnotsPath: masCollectionAnnotsPath
+  masCollectionStatusPath: masCollectionStatusPath
+  masCreateExamOrderPath: masCreateExampOrderPath
+
+bip:
+  keyName: bip
+  bipApplicationId: bipApplicationId
+  bipApplicationIss: bipApplicationIss
+  bipClaimSecret: bipClaimSecret
+  bipClaimUrl: bipClaimUrl
+  bipClaimUserId: bipClaimUserId
+  bipEvidenceSecret: bipEvidenceSecret
+  bipEvidenceUrl: bipEvidenceUrl
+  bipEvidenceUserId: bipEvidenceUserId
+  bipStationId: bipStationId
 
 redis:
   secretName: redis
