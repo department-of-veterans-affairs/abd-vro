@@ -31,7 +31,8 @@ if [ "${ENV}" == "qa" ] || [ "${ENV}" == "dev" ]
 then
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-#helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
+helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
+sleep 30 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helmchart \
               --set-string environment="${ENV}"\
               --set-string images.app.tag="${IMAGE_TAG}"\
