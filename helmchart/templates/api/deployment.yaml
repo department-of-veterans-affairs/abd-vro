@@ -80,16 +80,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.schemaKey }}
-            - name: FLYWAY_TABLE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dbinit.secretName }}
-                  key: {{ .Values.dbinit.flywayTableKey }}
-            - name: FLYWAY_TABLESPACE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dbinit.secretName }}
-                  key: {{ .Values.dbinit.flywayTablespaceKey }}
             - name: FLYWAY_PLACEHOLDERS_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -269,8 +259,6 @@ spec:
               value: /{{ .Values.name }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.name }}
-            - name: JAVA_PROFILE
-              value: -Dspring.profiles.include=compose
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME
@@ -502,6 +490,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.name }}
                   key: {{ .Values.dataservice.lhAssertionUrl }}
+            # Setting these secrets are only needed for the prod cluster
+            # For the nonprod cluster, these settings are set directly in application-*.yml files
             - name: LH_TOKEN_URL
               valueFrom:
                 secretKeyRef:

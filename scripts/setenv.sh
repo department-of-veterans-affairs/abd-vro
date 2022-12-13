@@ -34,6 +34,7 @@ fi
 ###
 # Before adding configuration settings in this file, prefer to add them to application*.yml (for Java)
 # or settings*.py (for Python). Those files allow different setting values per deployment env.
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
 # Adding environment variables incurs the cost of keeping docker-compose.yml (for local development)
 # and helmcharts (for each LHDI deployment environment) updated.
 #
@@ -82,11 +83,6 @@ export POSTGRES_SCHEMA=claims
 # Credentials used by Flyway to connect to Postgres
 export POSTGRES_ADMIN_USER=vro_admin_user
 export POSTGRES_ADMIN_PASSWORD=vro_admin_user_pw
-
-# TODO: Move to flyway.conf
-# Only used by db-init in flyway.conf
-export FLYWAY_TABLE=schema_history
-export FLYWAY_TABLESPACE=pg_default
 
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_PLACEHOLDERS_USERNAME=guest
