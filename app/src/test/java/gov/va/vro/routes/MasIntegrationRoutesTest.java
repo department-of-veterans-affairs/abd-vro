@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -80,6 +81,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     mockSufficiencyAssess.whenAnyExchangeReceived(
         exchange -> {
           var evidence = new AbdEvidenceWithSummary();
+          evidence.setEvidence(new AbdEvidence());
           evidence.setSufficientForFastTracking(sufficientEvidence);
           exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
         });
