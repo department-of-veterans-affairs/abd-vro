@@ -13,6 +13,8 @@ docker {
     buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
 }
 
+// VRO runs via docker-compose, so we don't use this
+// Leaving it since it is part of VA-starter's convention
 dockerRun {
     env 'JAVA_PROFILE': '-Dspring.profiles.include=docker'
 }
