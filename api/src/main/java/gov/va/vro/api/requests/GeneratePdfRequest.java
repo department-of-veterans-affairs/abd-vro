@@ -1,6 +1,7 @@
 package gov.va.vro.api.requests;
 
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -29,6 +31,9 @@ public class GeneratePdfRequest {
   @NotNull
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
+
+  @Schema(description = "Veteran service locations for the pdf")
+  private List<ServiceLocation> serviceLocations;
 
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")

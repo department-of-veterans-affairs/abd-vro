@@ -184,18 +184,17 @@
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
-        {{ veteran_info['first'] }}
         <tbody>
-          {% for location in evidence.service_locations %}
+          {% for location in service_locations %}
           <tr>
-            <th>{{ location.key_term }}</th>
+            <th>{{ location.location }}</th>
             <td>{{ location.document }}</td>
-            <td>{{ location.receipt_date }}</td>
+            <td>{{ location.receiptDate }}</td>
             <td>{{ location.page }}</td>
-            <td style="white-space: nowrap !important;">{{ location.document_id }}</td>
+            <td style="white-space: nowrap !important;">{{ location.documentId }}</td>
           </tr>
           {% endfor %}
-          {% if evidence.service_locations|length == 0 %}
+          {% if service_locations|length == 0 %}
           <tr>
             <td colspan="5" class="empty">No service locations found through automated review.</td>
           </tr>
@@ -223,10 +222,12 @@
         </thead>
         <tbody>
           {% for condition in evidence.conditions %}
-          <tr>
-            <th>{{ condition.code }}</th>
-            <td>{{ condition.onsetDate }}</td>
-          </tr>
+            {% if condition.relevant and condition.dataSource == "LH" %}
+              <tr>
+                <th>{{ condition.text}}</th>
+                <td>{{ condition.recordedDate }}</td>
+              </tr>
+            {% endif %}
           {% endfor %}
           {% if evidence.conditions|length == 0 %}
           <tr>
@@ -297,17 +298,17 @@
           </tr>
         </thead>
         <tbody>
-          {% for evidence in evidence.schedular_evidence %}
+          {% for medication in evidence.medications %}
           <tr>
-            <th>{{ evidence.key_term }}</th>
-            <td>{{ evidence.observation_date }}</td>
-            <td>{{ evidence.source }}</td>
-            <td>{{ evidence.receipt_date }}</td>
-            <td>{{ evidence.page }}</td>
-            <td>{{ evidence.document_id }}</td>
+            <th>{{ medication.description }}</th>
+            <td>{{ medication.authoredOn }}</td>
+<!--            <td>{{ medication.source }}</td>-->
+<!--            <td>{{ medication.receipt_date }}</td>-->
+<!--            <td>{{ medication.page }}</td>-->
+<!--            <td>{{ medication.document_id }}</td>-->
           </tr>
           {% endfor %}
-          {% if evidence.schedular_evidence|length == 0 %}
+          {% if evidence.medications|length == 0 %}
           <tr>
             <td colspan="6" class="empty">No keywords found through automated review.</td>
           </tr>
@@ -337,15 +338,17 @@
           </tr>
         </thead>
         <tbody>
-          {% for evidence in evidence.other_evidence %}
-          <tr>
-            <th>{{ evidence.key_term }}</th>
-            <td>{{ evidence.observation_date }}</td>
-            <td>{{ evidence.source }}</td>
-            <td>{{ evidence.receipt_date }}</td>
-            <td>{{ evidence.page }}</td>
-            <td>{{ evidence.document_id }}</td>
-          </tr>
+          {% for condition in evidence.conditions %}
+            {% if condition.dataSource == "MAS" %}
+              <tr>
+                <th>{{ condition.text }}</th>
+                <td>{{ condition.observation_date }}</td>
+<!--                <td>{{ condition.source }}</td>-->
+<!--                <td>{{ condition.receipt_date }}</td>-->
+<!--                <td>{{ condition.page }}</td>-->
+<!--                <td>{{ condition.document_id }}</td>-->
+              </tr>
+            {% endif %}
           {% endfor %}
           {% if evidence.other_evidence|length == 0 %}
           <tr>

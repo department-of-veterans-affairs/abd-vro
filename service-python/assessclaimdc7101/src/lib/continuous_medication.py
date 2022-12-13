@@ -25,3 +25,13 @@ def continuous_medication_required(request_body):
     response["medications"] = relevant_medications
     response["medicationsCount"] = len(relevant_medications)
     return response
+
+
+def filter_mas_medication(event):
+    """Filter MAS medication data"""
+    relevant_medications = []
+    for medication in event["evidence"]["medications"]:
+        if medication["relevant"]:
+            relevant_medications.append(medication)
+
+    return relevant_medications

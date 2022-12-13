@@ -94,6 +94,13 @@ def assess_sufficiency(event: Dict):
                 "dateOfClaim": event["dateOfClaim"],
                 "disabilityActionType": event["disabilityActionType"],
             })
+        if "medications" in event["evidence"].keys():
+            medications = continuous_medication.filter_mas_medication(event)
+            response_body["evidence"].update(
+                {
+                    "medications": medications
+                }
+            )
         logging.info("Message processed successfully")
     else:
         logging.info(f"Message failed to process due to: {validation_results['errors']}")

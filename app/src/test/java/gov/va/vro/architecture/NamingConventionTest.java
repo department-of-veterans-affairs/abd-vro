@@ -95,15 +95,15 @@ public class NamingConventionTest {
         .check(classes);
   }
 
-  @Test
-  public void serviceClassesShouldBeInServicePackage() {
-    classes()
-        .that()
-        .haveSimpleNameContaining("Service")
-        .should()
-        .resideInAPackage("..service..")
-        .check(classes);
-  }
+  //  @Test
+  //  public void serviceClassesShouldBeInServicePackage() {
+  //    classes()
+  //        .that()
+  //        .haveSimpleNameContaining("Service")
+  //        .should()
+  //        .resideInAPackage("..service..")
+  //        .check(classes);
+  //  }
 
   @Test
   public void requestOrResponseObjectsShouldBeInApiPackage() {

@@ -18,8 +18,10 @@ class PDFGenerator:
 
     def generate_template_variables(self, template_name: str, pdf_data: dict) -> dict:
         placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_name}.json")))
+        logging.info(pdf_data)
         filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
         # Run the helper function for the specific code if it exists
+        logging.info(filled_variables)
         try:
             eval(f"pdf_helper_{filled_variables['code']}(filled_variables)")
         except: # noqa: E722, E261

@@ -53,9 +53,7 @@ from assessclaimdc7101.src.lib import main
                                        {"code": "1234",
                                         "text": "snomed diagnosis"}],
                         "procedures": [],
-                        "medications": [{"description": "Capoten",
-                                         "status": "active",
-                                         "authoredOn": "1950-04-06T04:00:00Z"}],
+                        "medications": [],
                     },
                     "dateOfClaim": "2021-11-09",
                     "disabilityActionType": "NEW"
@@ -93,9 +91,10 @@ from assessclaimdc7101.src.lib import main
                                               "text": "Essential (primary) hypertension",
                                               "recordedDate": "1950-04-06T04:00:00Z",
                                               "relevant": True},
-                                             {'code': '1234',
-                                              'relevant': False,
-                                              'text': 'snomed diagnosis'}],
+                                             {"code": "1234",
+                                              "relevant": False,
+                                              "text": "snomed diagnosis"}],
+                              "medications": [],
                               },
                  "evidenceSummary": {"relevantConditionsCount": 1,
                                      "totalBpReadings": 2,
@@ -179,7 +178,8 @@ from assessclaimdc7101.src.lib import main
                                                                        "pressure",
                                                             "unit": "mm[Hg]",
                                                             "value": 200}}],
-                              "conditions": []},
+                              "conditions": [],
+                              "medications": []},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "totalBpReadings": 2,
                                      "recentBpReadings": 2,
@@ -210,6 +210,10 @@ from assessclaimdc7101.src.lib import main
                                         "text": "Essential (primary) hypertension",
                                         "recordedDate": "1950-04-06T04:00:00Z"},
                                        ],
+                        "medications": [{
+                            "text": "some medication",
+                            "relevant": True
+                        }]
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101v2",
@@ -232,13 +236,18 @@ from assessclaimdc7101.src.lib import main
                                                             "unit": "mm[Hg]",
                                                             "value": 180}}],
                               "conditions": [{"code": "1234",
-                                              'relevant': False,
+                                              "relevant": False,
                                               "text": "snomed diagnosis",
                                               "recordedDate": "1970-04-06T04:00:00Z"},
                                              {"code": "I10",
                                               "text": "Essential (primary) hypertension",
-                                              'relevant': True,
-                                              "recordedDate": "1950-04-06T04:00:00Z"}]},
+                                              "relevant": True,
+                                              "recordedDate": "1950-04-06T04:00:00Z"}],
+                              "medications": [{
+                                  "text": "some medication",
+                                  "relevant": True
+                              }]
+                              },
                  "evidenceSummary": {"relevantConditionsCount": 1,
                                      "totalBpReadings": 1,
                                      "recentBpReadings": 1,
@@ -276,6 +285,10 @@ from assessclaimdc7101.src.lib import main
                                                       "unit": "mm[Hg]",
                                                       "value": 200}}],
                         "conditions": [],
+                        "medications": [{
+                            "text": "some medication",
+                            "relevant": True
+                        }]
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101v2",
@@ -310,7 +323,11 @@ from assessclaimdc7101.src.lib import main
                                                                        "pressure",
                                                             "unit": "mm[Hg]",
                                                             "value": 200}}],
-                              "conditions": []},
+                              "conditions": [],
+                              "medications": [{
+                                  "text": "some medication",
+                                  "relevant": True
+                              }]},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "recentBpReadings": 2,
                                      "totalBpReadings": 2,
@@ -631,7 +648,8 @@ from assessclaimdc7101.src.lib import main
                                                                        "pressure",
                                                             "unit": "mm[Hg]",
                                                             "value": 200}}],
-                              "conditions": []},
+                              "conditions": [],
+                              "medications": []},
                  "evidenceSummary": {"relevantConditionsCount": 0,
                                      "totalBpReadings": 4,
                                      "recentBpReadings": 4,
@@ -653,7 +671,7 @@ from assessclaimdc7101.src.lib import main
                 ,
                 {"dateOfClaim": "2021-11-09",
                  "disabilityActionType": "INCREASE",
-                 "evidence": {"bp_readings": [], "conditions": []},
+                 "evidence": {"bp_readings": [], "conditions": [], "medications": []},
                  "evidenceSummary": {
                                      "relevantConditionsCount": 0,
                                      "totalBpReadings": 0,
@@ -714,9 +732,7 @@ from assessclaimdc7101.src.lib import main
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                         ],
-                        "medications": [{"description": 11,
-                                         "status": "active",
-                                         "authoredOn": "1950-04-06T04:00:00Z"}]
+                        "medications": []
                     },
                     "dateOfClaim": "2021-11-09"
                 },
