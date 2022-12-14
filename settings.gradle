@@ -95,4 +95,5 @@ if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
   include ':service-python:assessclaimdc6522'
+  include ':service-python:assessclaimcancer'
 }
