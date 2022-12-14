@@ -16,9 +16,6 @@ import lombok.ToString;
 public class ClaimMetricsInfo {
   long totalClaims;
   int assessmentResults;
-  int medicationsCount;
-  int totalBpReadings;
-  int recentBpReadings;
-  int proceduresCount;
+  int evidenceSummaryDocuments;
   String errorMessage;
 }
