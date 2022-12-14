@@ -5,7 +5,9 @@ from time import sleep, time
 import pika
 from lib.queues import queue_setup
 
-logging.basicConfig(level=logging.INFO)
+import logging_setup
+
+logger = logging_setup.set_format()
 
 CONSUMER_CONFIG = {
     "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
