@@ -19,7 +19,7 @@ spec:
           env:
             - name: ENV
               value: {{ .Values.environment }}
-            - name: POSTGRES_SUPER_DB
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
