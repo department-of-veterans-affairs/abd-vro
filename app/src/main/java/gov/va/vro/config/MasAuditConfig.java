@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** Configure mas queues and slack notifications */
+/** Configure mas queues and slack notifications. */
 @Configuration
 public class MasAuditConfig {
 
