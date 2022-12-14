@@ -34,7 +34,6 @@ public class AppTestUtil {
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
     response.setClaimSubmissionId(claim.getClaimSubmissionId());
-    response.setErrorMessage("I am not a real endpoint.");
     response.setErrorMessage(errorMessage);
     if (evidence) {
       response.setEvidence(new AbdEvidence());
