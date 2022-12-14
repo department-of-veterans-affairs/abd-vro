@@ -130,6 +130,5 @@
     "totalBpReadings": 8,
     "recentBpReadings": 3,
     "medicationsCount": 7
-  },
-  "sufficientForFastTracking": false
+  }
 }
