@@ -77,6 +77,10 @@ openApi {
 }
 
 afterEvaluate {
+  // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
+  generateOpenApiDocs.enabled = false
+  forkedSpringBootRun.enabled = false
+
   tasks.named('forkedSpringBootRun').configure {
     dependsOn 'bootStartScripts'
     dependsOn 'checkstyleIntegrationTest'
