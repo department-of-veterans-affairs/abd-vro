@@ -17,8 +17,8 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class ClaimMetricsResponse {
   private long claims;
-  private int assessmentResults;
-  private int evidenceSummaryDocuments;
+  private int totalEvidenceGenerations;
+  private int totalPdfGenerations;
 
   @Schema(description = "Error message in the case of an error")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)

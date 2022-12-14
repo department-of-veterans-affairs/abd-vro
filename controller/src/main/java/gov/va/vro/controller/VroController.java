@@ -167,8 +167,8 @@ public class VroController implements VroResource {
     ClaimMetricsInfo info = claimMetricsService.claimMetrics();
     try {
       response.setClaims(info.getTotalClaims());
-      response.setAssessmentResults(info.getAssessmentResults());
-      response.setEvidenceSummaryDocuments(info.getEvidenceSummaryDocuments());
+      response.setTotalEvidenceGenerations(info.getAssessmentResults());
+      response.setTotalPdfGenerations(info.getEvidenceSummaryDocuments());
       if (info.getErrorMessage() != null) {
         throw new MetricsProcessingException(
             HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
