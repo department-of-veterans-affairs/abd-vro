@@ -7,16 +7,17 @@ import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
+import gov.va.vro.api.responses.ClaimInfoResponse;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
-import gov.va.vro.controller.mapper.ClaimMetricsMapper;
+import gov.va.vro.controller.mapper.ClaimInfoDataMapper;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.model.ClaimMetricsInfo;
+import gov.va.vro.service.spi.model.ClaimInfoData;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,8 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
-  private final ClaimMetricsMapper claimMetricsMapper;
+
+  private final ClaimInfoDataMapper claimInfoDataMapper;
 
   private final ClaimMetricsService claimMetricsService;
 
@@ -160,61 +162,95 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<ClaimMetricsResponse> claimInfo(String claimSubmissionId)
-      throws MetricsProcessingException {
+  public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     try {
-      List<ClaimMetricsInfo> info = claimMetricsService.claimMetrics(claimSubmissionId);
-      List<ClaimInfo> infoList = new ArrayList<>();
-      for (ClaimMetricsInfo metricsInfo : info) {
-        ClaimInfo claim = claimMetricsMapper.toClaimInfo(metricsInfo);
-        infoList.add(claim);
+      response.setNumberOfClaims(claimMetricsService.claimMetrics().getTotalClaims());
+      if (claimMetricsService.claimMetrics().getErrorMessage() != null) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
       }
-      response.setClaims(infoList);
       return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
     } catch (Exception e) {
-      log.error("Error in claim-info", e);
-      throw new MetricsProcessingException(HttpStatus.valueOf("Error getting claim info"), e);
+      log.error("Error in claim metrics services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
   @Override
-  public ResponseEntity<ClaimMetricsResponse> claimInfoForVeteran(String veteranIcn)
+  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId)
       throws MetricsProcessingException {
-    ClaimMetricsResponse response = new ClaimMetricsResponse();
+    ClaimInfoResponse response = new ClaimInfoResponse();
     try {
-      List<ClaimMetricsInfo> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
+      List<ClaimInfoData> info = claimMetricsService.claimInfoForClaimId(claimSubmissionId);
       List<ClaimInfo> infoList = new ArrayList<>();
-      for (ClaimMetricsInfo metricsInfo : info) {
-        ClaimInfo claim = claimMetricsMapper.toClaimInfo(metricsInfo);
+      if (info.size() == 0) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      }
+      for (ClaimInfoData metricsInfo : info) {
+        ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
         infoList.add(claim);
       }
       response.setClaims(infoList);
       return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
     } catch (Exception e) {
-      log.error("Error in claim-info", e);
-      throw new MetricsProcessingException(
-          HttpStatus.valueOf("Error getting claim info for veteran"), e);
+      log.error("Error in claimInfoForClaimId services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
   @Override
-  public ResponseEntity<ClaimMetricsResponse> claimInfoWithPagination(int offset, int pageSize)
+  public ResponseEntity<ClaimInfoResponse> claimInfoForVeteran(String veteranIcn)
+      throws MetricsProcessingException {
+    ClaimInfoResponse response = new ClaimInfoResponse();
+    try {
+      List<ClaimInfoData> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
+      List<ClaimInfo> infoList = new ArrayList<>();
+      if (info.size() == 0) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      }
+      for (ClaimInfoData metricsInfo : info) {
+        ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
+        infoList.add(claim);
+      }
+      response.setClaims(infoList);
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
+    } catch (Exception e) {
+      log.error("Error in claimInfoForVeteran services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+  }
+
+  @Override
+  public ResponseEntity<ClaimInfoResponse> claimInfoWithPagination(int offset, int pageSize)
       throws Exception {
-    ClaimMetricsResponse response = new ClaimMetricsResponse();
+    ClaimInfoResponse response = new ClaimInfoResponse();
     try {
-      List<ClaimMetricsInfo> info = claimMetricsService.claimInfoWithPagination(offset, pageSize);
+      List<ClaimInfoData> info = claimMetricsService.claimInfoWithPagination(offset, pageSize);
       List<ClaimInfo> infoList = new ArrayList<>();
-      for (ClaimMetricsInfo metricsInfo : info) {
-        ClaimInfo claim = claimMetricsMapper.toClaimInfo(metricsInfo);
+      if (info.size() == 0) {
+        throw new MetricsProcessingException(
+            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+      }
+      for (ClaimInfoData metricsInfo : info) {
+        ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
         infoList.add(claim);
       }
       response.setClaims(infoList);
       return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (MetricsProcessingException mpe) {
+      throw mpe;
     } catch (Exception e) {
-      log.error("Error in claim-info", e);
-      throw new MetricsProcessingException(
-          HttpStatus.valueOf("Error getting claim info for veteran"), e);
+      log.error("Error in claimInfoWithPagination services." + e.getMessage());
+      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 }

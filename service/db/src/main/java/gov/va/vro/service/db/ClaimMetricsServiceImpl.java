@@ -4,6 +4,7 @@ import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.service.spi.model.ClaimInfoData;
 import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,25 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private final ClaimRepository claimRepository;
 
   @Override
-  public List<ClaimMetricsInfo> claimMetrics(String claimSubmissionId) {
-    List<ClaimMetricsInfo> infoList = new ArrayList<>();
+  public ClaimMetricsInfo claimMetrics() {
+    ClaimMetricsInfo metrics = new ClaimMetricsInfo();
+    try {
+      metrics.setTotalClaims(claimRepository.count());
+      return metrics;
+    } catch (Exception e) {
+      log.error("Could not get metrics in claim repository.", e);
+      metrics.setTotalClaims(0);
+      metrics.setErrorMessage("Failure;" + e.getMessage());
+      return metrics;
+    }
+  }
+
+  @Override
+  public List<ClaimInfoData> claimInfoForClaimId(String claimSubmissionId) {
+    List<ClaimInfoData> infoList = new ArrayList<>();
     try {
       ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
-      ClaimMetricsInfo info = new ClaimMetricsInfo();
+      ClaimInfoData info = new ClaimInfoData();
       info.setClaimSubmissionId(claim.getClaimSubmissionId());
       info.setVeteranIcn(claim.getVeteran().getIcn());
       info.setContentionsCount(claim.getContentions().size());
@@ -44,12 +59,12 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public List<ClaimMetricsInfo> claimInfoForVeteran(String veteranIcn) {
-    List<ClaimMetricsInfo> veteranClaims = new ArrayList<>();
+  public List<ClaimInfoData> claimInfoForVeteran(String veteranIcn) {
+    List<ClaimInfoData> veteranClaims = new ArrayList<>();
     try {
       List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn);
       for (ClaimEntity claim : claims) {
-        ClaimMetricsInfo info = new ClaimMetricsInfo();
+        ClaimInfoData info = new ClaimInfoData();
         info.setVeteranIcn(veteranIcn);
         info.setClaimSubmissionId(claim.getClaimSubmissionId());
         info.setContentionsCount(claim.getContentions().size());
@@ -66,12 +81,12 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public List<ClaimMetricsInfo> claimInfoWithPagination(int offset, int pageSize) {
-    List<ClaimMetricsInfo> infoList = new ArrayList<>();
+  public List<ClaimInfoData> claimInfoWithPagination(int offset, int pageSize) {
+    List<ClaimInfoData> infoList = new ArrayList<>();
     try {
       Page<ClaimEntity> entityList = claimRepository.findAll(PageRequest.of(offset, pageSize));
       for (ClaimEntity claim : entityList) {
-        ClaimMetricsInfo info = new ClaimMetricsInfo();
+        ClaimInfoData info = new ClaimInfoData();
         info.setVeteranIcn(claim.getVeteran().getIcn());
         info.setClaimSubmissionId(claim.getClaimSubmissionId());
         info.setContentionsCount(claim.getContentions().size());
@@ -87,7 +102,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     }
   }
 
-  private void setContentionsList(ClaimEntity entity, ClaimMetricsInfo info) {
+  private void setContentionsList(ClaimEntity entity, ClaimInfoData info) {
     List<String> diagnosticCodes = new ArrayList<>();
     for (ContentionEntity contention : entity.getContentions()) {
       diagnosticCodes.add(contention.getDiagnosticCode());
@@ -95,7 +110,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     info.setContentions(diagnosticCodes);
   }
 
-  private void setAssessmentResultsAndCount(ClaimEntity entity, ClaimMetricsInfo info) {
+  private void setAssessmentResultsAndCount(ClaimEntity entity, ClaimInfoData info) {
     int count = 0;
     for (ContentionEntity contention : entity.getContentions()) {
       for (AssessmentResultEntity assessmentResult : contention.getAssessmentResults()) {
@@ -106,7 +121,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     info.setAssessmentResultsCount(count);
   }
 
-  private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimMetricsInfo info) {
+  private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimInfoData info) {
     int count = 0;
     for (ContentionEntity contention : claim.getContentions()) {
       count += contention.getEvidenceSummaryDocuments().size();

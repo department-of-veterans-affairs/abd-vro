@@ -4,6 +4,7 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.ClaimInfoResponse;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
@@ -153,6 +154,34 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
+      summary = "Retrieves metrics on the previously processed claims",
+      description =
+          "This endpoint provides metrics on the previously processed claims. "
+              + "Currently only the number of the processed claims is provided.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @GetMapping("/claim-metrics")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "claim-metrics")
+  @Tag(name = "Claim Metrics")
+  ResponseEntity<ClaimMetricsResponse> claimMetrics()
+      throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
+
+  @Operation(
       summary = "Retrieves the claim corresponding to the claimSubmissionId.",
       description = "This endpoint provides processed claims information. ")
   @GetMapping("/claim-info/{claimSubmissionId}")
@@ -174,8 +203,8 @@ public interface VroResource {
       })
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info")
-  @Tag(name = "Claim Info")
-  ResponseEntity<ClaimMetricsResponse> claimInfo(@PathVariable String claimSubmissionId)
+  @Tag(name = "Claim Metrics")
+  ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(@PathVariable String claimSubmissionId)
       throws MetricsProcessingException;
 
   @Operation(
@@ -200,8 +229,8 @@ public interface VroResource {
       })
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info-for-veteran")
-  @Tag(name = "Claim Info")
-  ResponseEntity<ClaimMetricsResponse> claimInfoForVeteran(@PathVariable String veteranIcn)
+  @Tag(name = "Claim Metrics")
+  ResponseEntity<ClaimInfoResponse> claimInfoForVeteran(@PathVariable String veteranIcn)
       throws MetricsProcessingException;
 
   @Operation(
@@ -226,7 +255,7 @@ public interface VroResource {
       })
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info-with-pagination")
-  @Tag(name = "Claim Info")
-  ResponseEntity<ClaimMetricsResponse> claimInfoWithPagination(
+  @Tag(name = "Claim Metrics")
+  ResponseEntity<ClaimInfoResponse> claimInfoWithPagination(
       @PathVariable int offset, @PathVariable int pageSize) throws Exception;
 }

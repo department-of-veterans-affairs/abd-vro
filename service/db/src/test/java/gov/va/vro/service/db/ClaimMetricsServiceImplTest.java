@@ -8,7 +8,7 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.model.ClaimMetricsInfo;
+import gov.va.vro.service.spi.model.ClaimInfoData;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ public class ClaimMetricsServiceImplTest {
     // Creates claim with contention, assessment results, and evidence summary documents.
     ClaimEntity claim = saveTestData();
     // Run claim-info endpoint and test
-    List<ClaimMetricsInfo> claimInfoList = claimMetricsService.claimMetrics("1234");
-    ClaimMetricsInfo result = claimInfoList.get(0);
+    List<ClaimInfoData> claimInfoList = claimMetricsService.claimInfoForClaimId("1234");
+    ClaimInfoData result = claimInfoList.get(0);
     assertEquals(result.getClaimSubmissionId(), claim.getClaimSubmissionId());
     assertEquals(result.getContentionsCount(), claim.getContentions().size());
     assertEquals(result.getVeteranIcn(), claim.getVeteran().getIcn());
@@ -62,8 +62,8 @@ public class ClaimMetricsServiceImplTest {
     // Creates claim with contention, assessment results, and evidence summary documents.
     ClaimEntity claim = saveTestData();
     // Run claim-info endpoint and test
-    List<ClaimMetricsInfo> claimInfoList = claimMetricsService.claimInfoForVeteran("v1");
-    ClaimMetricsInfo result = claimInfoList.get(0);
+    List<ClaimInfoData> claimInfoList = claimMetricsService.claimInfoForVeteran("v1");
+    ClaimInfoData result = claimInfoList.get(0);
     assertEquals(result.getClaimSubmissionId(), claim.getClaimSubmissionId());
     assertEquals(result.getContentionsCount(), claim.getContentions().size());
     assertEquals(result.getVeteranIcn(), claim.getVeteran().getIcn());
@@ -81,8 +81,8 @@ public class ClaimMetricsServiceImplTest {
     // Creates claim with contention, assessment results, and evidence summary documents.
     ClaimEntity claim = saveTestData();
     // Run claim-info endpoint and test
-    List<ClaimMetricsInfo> claimInfoList = claimMetricsService.claimInfoWithPagination(0, 10);
-    ClaimMetricsInfo result = claimInfoList.get(0);
+    List<ClaimInfoData> claimInfoList = claimMetricsService.claimInfoWithPagination(0, 10);
+    ClaimInfoData result = claimInfoList.get(0);
     assertEquals(result.getClaimSubmissionId(), claim.getClaimSubmissionId());
     assertEquals(result.getContentionsCount(), claim.getContentions().size());
     assertEquals(result.getVeteranIcn(), claim.getVeteran().getIcn());
