@@ -5,6 +5,12 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="pdfkit-page-size" content="Letter"/>
+  <meta name="pdfkit-zoom" content="1.1"/>
+  <meta name="pdfkit-margin-left" content="0.5in"/>
+  <meta name="pdfkit-margin-right" content="0.5in"/>
+  <meta name="pdfkit-margin-top" content="0.5in"/>
+  <meta name="pdfkit-margin-bottom" content="0.5in"/>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -80,7 +86,7 @@
   <h1>VHA {{document_type|capitalize}} Data Summary</h1>
   <i>Generated automatically on {{timestamp.strftime('%m/%d/%Y')}} at {{timestamp.strftime('%H:%M %p %Z')}}</i>
   <br /><br />
-  
+
   <h1 class="m-0" style="font-size: 21px; margin-top: 24px;">{{veteran_info.first}} {{veteran_info.middle}} {{veteran_info.last}} {{veteran_info.suffix}}</h1>
 
   <p>DOB: {{veteran_info.birthdate.strftime('%m/%d/%Y')}}</p>

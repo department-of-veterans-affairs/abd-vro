@@ -13,6 +13,7 @@ import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
+import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -127,18 +128,23 @@ public class VroController implements VroResource {
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
 
-      FullHealthDataAssessmentResponse response =
-          objectMapper.readValue(responseAsString, FullHealthDataAssessmentResponse.class);
+      AbdEvidenceWithSummary response =
+          objectMapper.readValue(responseAsString, AbdEvidenceWithSummary.class);
       if (response.getEvidence() == null) {
+        log.info(
+            "Response from condition processor returned error message: {}",
+            response.getErrorMessage());
         throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, "No evidence found.");
+            claim.getClaimSubmissionId(),
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Internal error while processing claim data.");
       }
+      FullHealthDataAssessmentResponse HttpResponse =
+          objectMapper.convertValue(response, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
-      response.setVeteranIcn(claim.getVeteranIcn());
-      response.setDiagnosticCode(claim.getDiagnosticCode());
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } catch (ClaimProcessingException cpe) {
-      throw cpe;
+      HttpResponse.setVeteranIcn(claim.getVeteranIcn());
+      HttpResponse.setDiagnosticCode(claim.getDiagnosticCode());
+      return new ResponseEntity<>(HttpResponse, HttpStatus.CREATED);
     } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
