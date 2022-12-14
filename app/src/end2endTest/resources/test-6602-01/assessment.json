@@ -149,6 +149,5 @@
   "evidenceSummary": {
     "relevantMedCount": 4,
     "totalMedCount": 11
-  },
-  "sufficientForFastTracking": false
+  }
 }
