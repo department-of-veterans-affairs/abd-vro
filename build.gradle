@@ -134,6 +134,7 @@ ext {
     dockerModules.add(':service-python:assessclaimdc6602v2')
     dockerModules.add(':service-python:assessclaimdc6510')
     dockerModules.add(':service-python:assessclaimdc6522')
+    dockerModules.add(':service-python:assessclaimcancer')
   }
 }
 

@@ -1,4 +1,5 @@
 import pytest
+
 from assessclaimdc7101.src.lib import main
 
 
@@ -149,7 +150,7 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
@@ -216,7 +217,7 @@ from assessclaimdc7101.src.lib import main
                                        ],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
@@ -250,7 +251,6 @@ from assessclaimdc7101.src.lib import main
                                      "totalConditionsCount": 2},
                  "sufficientForFastTracking": False,
                  "claimSubmissionId": "1234"}
-
         ),
         # New claim with no condition and no recent BP, BP not elevated
         (
@@ -285,7 +285,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
@@ -359,7 +359,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
@@ -458,7 +458,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
@@ -586,7 +586,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
@@ -662,7 +662,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }

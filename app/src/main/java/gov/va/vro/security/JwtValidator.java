@@ -12,7 +12,11 @@ import com.google.gson.JsonObject;
 import gov.va.vro.config.LhApiProps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,6 +39,12 @@ public class JwtValidator {
 
   private final LhApiProps lhApiProps;
 
+  /**
+   * Sub string bearer.
+   *
+   * @param authorizationHdr authorization hdr.
+   * @return sub string bearer.
+   */
   public String subStringBearer(String authorizationHdr) {
     try {
       return authorizationHdr.substring(BEARER.length());
@@ -43,25 +53,41 @@ public class JwtValidator {
     }
   }
 
+  /**
+   * Decodes the jwt token.
+   *
+   * @param jwtToken jwt token.
+   * @return decoded jwt.
+   */
   public DecodedJWT decodeToken(String jwtToken) {
     if (isNull(jwtToken)) {
       throw new InvalidTokenException("Token has not been provided");
     }
-    DecodedJWT decodedJWT = JWT.decode(jwtToken);
+    DecodedJWT decodedJwt = JWT.decode(jwtToken);
     log.info("Token decoded successfully");
-    return decodedJWT;
+    return decodedJwt;
   }
 
-  public void verifyTokenHeader(DecodedJWT decodedJWT) {
-    if (decodedJWT.getType().equals("JWT")) {
+  /**
+   * Verifies JWT token.
+   *
+   * @param decodedJwt decoded jwt.
+   */
+  public void verifyTokenHeader(DecodedJWT decodedJwt) {
+    if (decodedJwt.getType().equals("JWT")) {
       log.info("Token's header is correct");
     } else {
       throw new InvalidTokenException("Token is not JWT type");
     }
   }
 
-  public void verifyPayload(DecodedJWT decodedJWT) {
-    JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJWT);
+  /**
+   * Verifies the payload.
+   *
+   * @param decodedJwt decoded jwt.
+   */
+  public void verifyPayload(DecodedJWT decodedJwt) {
+    JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJwt);
     if (hasTokenExpired(payloadAsJson)) {
       throw new InvalidTokenException("Token has expired");
     }
@@ -80,9 +106,15 @@ public class JwtValidator {
     */
   }
 
-  public JsonObject decodeTokenPayloadToJsonObject(DecodedJWT decodedJWT) {
+  /**
+   * Decodes JWT into a JSON object.
+   *
+   * @param decodedJwt decoded JWT.
+   * @return JsonObject decode token payload.
+   */
+  public JsonObject decodeTokenPayloadToJsonObject(DecodedJWT decodedJwt) {
     try {
-      String payloadAsString = decodedJWT.getPayload();
+      String payloadAsString = decodedJwt.getPayload();
       return new Gson()
           .fromJson(
               new String(Base64.getDecoder().decode(payloadAsString), StandardCharsets.UTF_8),
@@ -93,11 +125,23 @@ public class JwtValidator {
     }
   }
 
+  /**
+   * Checks if token has expired.
+   *
+   * @param payloadAsJson payload.
+   * @return true or false if token has expired.
+   */
   public boolean hasTokenExpired(JsonObject payloadAsJson) {
     Instant expirationDatetime = extractExpirationDate(payloadAsJson);
     return Instant.now().isAfter(expirationDatetime);
   }
 
+  /**
+   * Gets the expiration date.
+   *
+   * @param payloadAsJson payload
+   * @return expiration date.
+   */
   public Instant extractExpirationDate(JsonObject payloadAsJson) {
     try {
       return Instant.ofEpochSecond(payloadAsJson.get("exp").getAsLong());
@@ -106,7 +150,13 @@ public class JwtValidator {
     }
   }
 
-  public boolean validateTokenUsingLH(String jwtToken) {
+  /**
+   * Validates token using LH.
+   *
+   * @param jwtToken JWT token.
+   * @return true or false.
+   */
+  public boolean validateTokenUsingLh(String jwtToken) {
     if (lhApiProps.getValidateToken().toLowerCase() == VALIDATE_TOKEN) {
       try {
         HttpHeaders lhHttpHeaders = new HttpHeaders();
@@ -115,7 +165,7 @@ public class JwtValidator {
         lhHttpHeaders.add("Authorization", "Bearer " + jwtToken);
 
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("aud", lhApiProps.getVroAudURL());
+        requestBody.add("aud", lhApiProps.getVroAudUrl());
 
         HttpEntity formEntity =
             new HttpEntity<MultiValueMap<String, String>>(requestBody, lhHttpHeaders);
@@ -124,7 +174,7 @@ public class JwtValidator {
 
         ResponseEntity<String> response =
             restTemplate.exchange(
-                lhApiProps.getTokenValidatorURL(), HttpMethod.POST, formEntity, String.class);
+                lhApiProps.getTokenValidatorUrl(), HttpMethod.POST, formEntity, String.class);
         JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response));
         // Sample response
         // https://department-of-veterans-affairs.github.io/

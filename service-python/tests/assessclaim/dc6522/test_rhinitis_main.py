@@ -78,7 +78,6 @@ from assessclaimdc6522.src.lib import main
                                  "totalMedCount": 1,
                                  "totalProceduresCount": 0},
              "sufficientForFastTracking": None},
-
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
