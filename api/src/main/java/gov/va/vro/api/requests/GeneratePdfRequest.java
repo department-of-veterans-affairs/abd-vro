@@ -3,6 +3,7 @@ package gov.va.vro.api.requests;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.ClaimCondition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public class GeneratePdfRequest {
 
   @Schema(description = "Veteran service locations for the pdf")
   private List<ServiceLocation> serviceLocations;
+
+  @NotNull private ClaimCondition conditions;
 
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
