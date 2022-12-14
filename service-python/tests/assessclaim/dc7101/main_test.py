@@ -56,58 +56,40 @@ from assessclaimdc7101.src.lib import main
                 },
                 "dateOfClaim": "2021-11-09",
             },
-            {
-                "evidence": {
-                    "bp_readings": [
-                        {
-                            "date": "2021-11-01",
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood " "pressure",
-                                "unit": "mm[Hg]",
-                                "value": 115,
-                            },
-                            "organization": "LYONS VA MEDICAL CENTER",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "systolic": {
-                                "code": "8480-6",
-                                "display": "Systolic blood " "pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180,
-                            },
-                        },
-                        {
-                            "date": "2021-09-01",
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood " "pressure",
-                                "unit": "mm[Hg]",
-                                "value": 110,
-                            },
-                            "organization": "LYONS VA MEDICAL CENTER",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "systolic": {
-                                "code": "8480-6",
-                                "display": "Systolic blood " "pressure",
-                                "unit": "mm[Hg]",
-                                "value": 200.0,
-                            },
-                        },
-                    ],
-                    "medications": [
-                        {
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                            "description": "Capoten",
-                            "status": "active",
-                        }
-                    ],
-                },
-                "evidenceSummary": {
-                    "medicationsCount": 1,
-                    "recentBpReadings": 2,
-                    "totalBpReadings": 2,
-                }
-            },
+            {'evidence': {'bp_readings': [{'date': '2021-11-01',
+                                           'dateFormatted': '11/01/2021',
+                                           'diastolic': {'code': '8462-4',
+                                                         'display': 'Diastolic blood '
+                                                                    'pressure',
+                                                         'unit': 'mm[Hg]',
+                                                         'value': 115},
+                                           'organization': 'LYONS VA MEDICAL CENTER',
+                                           'practitioner': 'DR. JANE460 DOE922 MD',
+                                           'systolic': {'code': '8480-6',
+                                                        'display': 'Systolic blood '
+                                                                   'pressure',
+                                                        'unit': 'mm[Hg]',
+                                                        'value': 180}},
+                                          {'date': '2021-09-01',
+                                           'dateFormatted': '09/01/2021',
+                                           'diastolic': {'code': '8462-4',
+                                                         'display': 'Diastolic blood '
+                                                                    'pressure',
+                                                         'unit': 'mm[Hg]',
+                                                         'value': 110},
+                                           'organization': 'LYONS VA MEDICAL CENTER',
+                                           'practitioner': 'DR. JANE460 DOE922 MD',
+                                           'systolic': {'code': '8480-6',
+                                                        'display': 'Systolic blood '
+                                                                   'pressure',
+                                                        'unit': 'mm[Hg]',
+                                                        'value': 200.0}}],
+                          'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                                           'description': 'Capoten',
+                                           'status': 'active'}]},
+             'evidenceSummary': {'medicationsCount': 1,
+                                 'recentBpReadings': 2,
+                                 'totalBpReadings': 2}}
         ),
         (
             {

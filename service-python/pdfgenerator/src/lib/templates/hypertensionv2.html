@@ -226,7 +226,7 @@
             {% if condition.relevant and condition.dataSource == "LH" %}
               <tr>
                 <th>{{ condition.text}}</th>
-                <td>{{ condition.recordedDate }}</td>
+                <td>{{ condition.dateFormatted }}</td>
               </tr>
             {% endif %}
           {% endfor %}
@@ -268,7 +268,7 @@
           {% for bp_reading in evidence.bp_readings %}
           <tr>
             <th>{{ bp_reading.systolic.value | int }} / {{ bp_reading.diastolic.value | int }}</th>
-            <th>{{ bp_reading.date }}</th>
+            <th>{{ bp_reading.dateFormatted }}</th>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td>{{ bp_reading.receipt_date }}</td>
             <td>{{ bp_reading.page }}</td>
@@ -303,7 +303,7 @@
           {% for medication in evidence.medications %}
           <tr>
             <th>{{ medication.description }}</th>
-            <td>{{ medication.authoredOn }}</td>
+            <td>{{ medication.dateFormatted }}</td>
 <!--            <td>{{ medication.source }}</td>-->
 <!--            <td>{{ medication.receipt_date }}</td>-->
 <!--            <td>{{ medication.page }}</td>-->
@@ -344,7 +344,7 @@
             {% if condition.dataSource == "MAS" %}
               <tr>
                 <th>{{ condition.text }}</th>
-                <td>{{ condition.observation_date }}</td>
+                <td>{{ condition.dateFormatted }}</td>
 <!--                <td>{{ condition.source }}</td>-->
 <!--                <td>{{ condition.receipt_date }}</td>-->
 <!--                <td>{{ condition.page }}</td>-->
