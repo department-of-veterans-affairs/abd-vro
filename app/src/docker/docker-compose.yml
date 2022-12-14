@@ -9,6 +9,11 @@ volumes:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+
+x-common-vars: &common-vars
+  # ENV determines which configuration settings to use.
+  ENV: ${ENV:-local}
+
 x-mas-vars: &mas-vars
   MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
   MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
@@ -26,7 +31,7 @@ x-mas-vars: &mas-vars
 
 x-postgres-vars: &postgres-vars
   # TODO: Is POSTGRES_HOST needed? It's not listed in helmchart/templates/api/deployment.yaml
-  POSTGRES_HOST: postgres-service
+  #POSTGRES_HOST: postgres-service
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
@@ -117,8 +122,6 @@ services:
       FLYWAY_USER: ${POSTGRES_ADMIN_USER}
       FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
-      FLYWAY_TABLE: ${FLYWAY_TABLE}
-      FLYWAY_TABLESPACE: ${FLYWAY_TABLESPACE}
       FLYWAY_PLACEHOLDERS_USERNAME: ${POSTGRES_USER}
       FLYWAY_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
       FLYWAY_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
@@ -132,12 +135,12 @@ services:
       - "8080:8080"
       - "8081:8081"
     environment:
+      # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      <<: *common-vars
       <<: *rabbitmq-placeholder-vars
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      # Cause application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
-      ENV: ${ENV:-local}
     depends_on:
       - postgres-service
       - rabbitmq-service
@@ -183,6 +186,19 @@ services:
     networks:
       - internal
     profiles: ["prototype"]
+
+  svc-assessor-cancer:
+    image: va/abd_vro-assessclaimcancer:latest
+    <<: *common-security-opt
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: [ "prototype" ]
 
   svc-feature-toggle:
     image: va/abd_vro-featuretoggle:latest
@@ -244,13 +260,11 @@ services:
     image: va/abd_vro-service-data-access:latest
     <<: *common-security-opt
     environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
       <<: *rabbitmq-placeholder-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-      LH_ASSERTION_URL: ${LH_ASSERTION_URL}
-      # TODO: Set these values in svc-lighthouse-api/src/main/resources/application-local.properties instead of setting env vars
-      LH_TOKEN_URL: https://sandbox-api.va.gov/oauth2/health/system/v1/token
-      LH_FHIR_URL: ${LH_FHIR_URL}
     depends_on:
       rabbitmq-service:
         condition: service_healthy

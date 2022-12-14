@@ -54,8 +54,7 @@ class FhirClientTest {
     private Bundle bundle;
     private String responseBody;
 
-    private static Bundle getMedicalInfoBundle(String filename)
-        throws FileNotFoundException, IOException {
+    private static Bundle getMedicalInfoBundle(String filename) throws IOException {
       File initialFile = new File(filename);
       InputStream theResponseInputStream = new FileInputStream(initialFile);
       Bundle retVal = parser.parseResource(Bundle.class, theResponseInputStream);
@@ -86,11 +85,7 @@ class FhirClientTest {
   private static final String PROCEDURE_RESPONSE = "procedure-response-bundle.json";
   private static final String EMPTY_RESPONSE = "empty-bundle.json";
 
-  private static final int DEFAULT_PAGE = 1;
-  private static final int DEFAULT_SIZE = 30;
   private static final String FHIR_URL = "https://sandbox-api.va.gov/";
-  private static final String TEST_KEY_FILE = "testkey.pem";
-  private static final String TEST_TOKEN = "lighthouseToken.json";
 
   @InjectMocks private FhirClient client = Mockito.spy(new FhirClient());
 
