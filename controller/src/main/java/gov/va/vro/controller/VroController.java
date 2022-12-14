@@ -166,7 +166,7 @@ public class VroController implements VroResource {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
     ClaimMetricsInfo info = claimMetricsService.claimMetrics();
     try {
-      response.setClaims(info.getTotalClaims());
+      response.setTotalClaims(info.getTotalClaims());
       response.setTotalEvidenceGenerations(info.getAssessmentResults());
       response.setTotalPdfGenerations(info.getEvidenceSummaryDocuments());
       if (info.getErrorMessage() != null) {

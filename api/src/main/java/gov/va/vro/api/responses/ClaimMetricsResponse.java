@@ -16,7 +16,7 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class ClaimMetricsResponse {
-  private long claims;
+  private long totalClaims;
   private long totalEvidenceGenerations;
   private long totalPdfGenerations;
 

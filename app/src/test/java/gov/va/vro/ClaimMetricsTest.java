@@ -54,6 +54,6 @@ public class ClaimMetricsTest extends BaseIntegrationTest {
         get("/v1/claim-metrics", null, ClaimMetricsResponse.class);
     ClaimMetricsResponse response = responseEntity.getBody();
     assertNotNull(response);
-    assertEquals(response.getClaims(), total);
+    assertEquals(response.getTotalClaims(), total);
   }
 }
