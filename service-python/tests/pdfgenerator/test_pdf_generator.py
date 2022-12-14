@@ -30,7 +30,7 @@ def test_default_template_variables(template_code):
     # these variables are only available when the pdf_generator is called so no need to compare
     del generated_variables["timestamp"]
     del generated_variables["start_date"]
-    
+
     # reset this field because it gets turned into a datetime object so it wont match
     generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
 

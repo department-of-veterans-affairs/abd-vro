@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Configuration
 public class MasOauth2Config {
-  // Created the MAS Authorization Provider Client Registration
+  // Created the MAS Authorization Provider Client Registration.
   @Bean
   ClientRegistration masAuthProviderClientRegistration(
       @Value("${spring.security.oauth2.client.provider.mas.uri}") String tokenUri,
@@ -35,14 +35,14 @@ public class MasOauth2Config {
         .build();
   }
 
-  // Create the client registration repository
+  // Create the client registration repository.
   @Bean
   public ClientRegistrationRepository clientRegistrationRepository(
       ClientRegistration masAuthProviderClientRegistration) {
     return new InMemoryClientRegistrationRepository(masAuthProviderClientRegistration);
   }
 
-  // Create the authorized client service
+  // Create the authorized client service.
   @Bean
   public OAuth2AuthorizedClientService auth2AuthorizedClientService(
       ClientRegistrationRepository clientRegistrationRepository) {
@@ -50,8 +50,8 @@ public class MasOauth2Config {
   }
 
   /**
-   * Create the authorized client manager and service manager using the beans created and configured
-   * above
+   * Create the authorized client manager and service manager using the beans created and
+   * configured. above
    */
   @Bean
   public AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager(

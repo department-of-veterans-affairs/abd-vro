@@ -1,6 +1,11 @@
 package gov.va.vro;
 
-import gov.va.vro.model.mas.*;
+import gov.va.vro.model.mas.ClaimCondition;
+import gov.va.vro.model.mas.ClaimDetail;
+import gov.va.vro.model.mas.MasAnnotation;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasDocument;
+import gov.va.vro.model.mas.VeteranIdentifiers;
 
 import java.util.Collections;
 
@@ -10,6 +15,14 @@ public class MasTestData {
     return getMasAutomatedClaimPayload(123, "1233", "999");
   }
 
+  /**
+   * Gets the automated claim payload.
+   *
+   * @param collectionId collection ID.
+   * @param diagnosticCode diagnostic code.
+   * @param claimId claim ID.
+   * @return Claim payload.
+   */
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload(
       int collectionId, String diagnosticCode, String claimId) {
     VeteranIdentifiers veteranIdentifiers = new VeteranIdentifiers();
@@ -36,6 +49,11 @@ public class MasTestData {
         .build();
   }
 
+  /**
+   * Creates hypertension document.
+   *
+   * @return the document.
+   */
   public static MasDocument createHypertensionDocument() {
     var document = new MasDocument();
     document.setCondition("Hypertension");

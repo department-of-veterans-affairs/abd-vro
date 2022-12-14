@@ -1,0 +1,9 @@
+# See https://github.com/zricethezav/gitleaks/issues/995
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''test/resources/application-test.properties$'''
+  ]
