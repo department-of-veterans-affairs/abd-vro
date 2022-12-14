@@ -55,10 +55,10 @@ public class ApiAuthKeyManager implements AuthenticationManager {
       // Validate JWT token
       try {
         String jwtToken = jwtValidator.subStringBearer(authorizationHdr);
-        DecodedJWT decodedJWT = jwtValidator.decodeToken(jwtToken);
-        jwtValidator.verifyTokenHeader(decodedJWT);
-        jwtValidator.verifyPayload(decodedJWT);
-        jwtValidator.validateTokenUsingLH(jwtToken);
+        DecodedJWT decodedJwt = jwtValidator.decodeToken(jwtToken);
+        jwtValidator.verifyTokenHeader(decodedJwt);
+        jwtValidator.verifyPayload(decodedJwt);
+        jwtValidator.validateTokenUsingLh(jwtToken);
         authentication.setAuthenticated(true);
       } catch (InvalidTokenException invalidTokenException) {
         log.info("Tried to access with invalid JWT Token, {}", invalidTokenException.getMessage());

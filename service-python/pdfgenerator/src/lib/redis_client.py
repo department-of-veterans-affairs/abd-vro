@@ -3,8 +3,6 @@ from time import sleep
 
 import redis
 
-logging.basicConfig(level=logging.INFO)
-
 
 class RedisClient:
 
