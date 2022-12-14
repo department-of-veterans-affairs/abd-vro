@@ -1,4 +1,4 @@
-package gov.va.vro.api.responses;
+package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

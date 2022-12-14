@@ -1,9 +1,11 @@
 package gov.va.vro.service.provider.camel;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.mas.FetchPdfResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
@@ -45,6 +47,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
+
   private final BipClaimService bipClaimService;
 
   private final AuditEventService auditEventService;
@@ -66,6 +70,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureMasProcessing();
     configureOrderExamStatus();
     configureCompleteProcessing();
+    configureUploadPdf();
   }
 
   private void configureAutomatedClaim() {
@@ -88,7 +93,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
     String collectEvidenceEndpoint = "direct:collect-evidence";
     String orderExamEndpoint = "direct:order-exam";
-    String uploadPdfEndpoint = "direct:upload-pdf";
+
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
@@ -101,7 +106,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         .setBody(simple("${exchangeProperty.claim}"))
         .to(orderExamEndpoint)
-        .to(uploadPdfEndpoint)
+        .to(ENDPOINT_UPLOAD_PDF)
         .to(ENDPOINT_MAS_COMPLETE);
 
     from(collectEvidenceEndpoint)
@@ -125,11 +130,28 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         .process(masOrderExamProcessor)
-        .setExchangePattern(ExchangePattern.InOnly)
+        // .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+  }
 
-    from(uploadPdfEndpoint).routeId("mas-upload-pdf").log("TODO: upload PDF");
+  private void configureUploadPdf() {
+    from(ENDPOINT_UPLOAD_PDF)
+        .routeId("mas-upload-pdf")
+        .setBody(simple("${body.claimId}"))
+        .convertBodyTo(String.class)
+        .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+        .process(
+            new Processor() {
+              @Override
+              public void process(Exchange exchange) throws Exception {
+                String response = exchange.getMessage().getBody(String.class);
+                FetchPdfResponse pdfResponse =
+                    new ObjectMapper().readValue(response, FetchPdfResponse.class);
+                // TODO: System.out.println(pdfResponse);
+              }
+            })
+        .log("TODO: upload PDF");
   }
 
   private void configureOrderExamStatus() {
