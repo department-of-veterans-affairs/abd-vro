@@ -217,8 +217,8 @@
       <table id="condition-history" class="table table-bordered" style="width: 400px !important;">
         <thead>
           <tr>
-            <th style="width: 310px !important;">Encounter Diagnosis<sup>*</sup></th>
-            <th style="width: 90px !important;">Recorded Date</th>
+            <th style="width: 310px !important;">Encounter diagnosis<sup>*</sup></th>
+            <th style="width: 90px !important;">Recorded date</th>
           </tr>
         </thead>
         <tbody>
@@ -257,9 +257,9 @@
         <thead>
           <tr>
             <th style="width: 67px !important;">Blood pressure</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th>Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 70px !important;">Page(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
@@ -267,7 +267,7 @@
         <tbody>
           {% for bp_reading in evidence.bp_readings %}
           <tr>
-            <th>{{ bp_reading.systolic.value }} / {{ bp_reading.diastolic.value }}</th>
+            <th>{{ bp_reading.systolic.value | int }} / {{ bp_reading.diastolic.value | int }}</th>
             <th>{{ bp_reading.date }}</th>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td>{{ bp_reading.receipt_date }}</td>
@@ -291,11 +291,11 @@
       <table id="schedular-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key Terms</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th>Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 204px !important;">Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
-            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 70px !important;">Page number(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
@@ -331,11 +331,11 @@
       <table id="other-medical-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key Terms</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th>Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 204px !important;">Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
-            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 70px !important;">Page number(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
@@ -379,7 +379,7 @@
         <thead>
           <tr>
             <th style="width: 271px !important;">Document</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
