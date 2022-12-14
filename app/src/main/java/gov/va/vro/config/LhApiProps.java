@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class LhApiProps {
 
-  private final String tokenValidatorURL;
-  private final String vroAudURL;
+  private final String tokenValidatorUrl;
+  private final String vroAudUrl;
   private final String apiKey;
   private final String validateToken;
 }
