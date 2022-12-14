@@ -70,6 +70,7 @@ dependencies {
 }
 
 openApi {
+  // Generates build/springdoc/openapi.json
   customBootRun {
     getClasspath().setFrom(sourceSets.test.runtimeClasspath)
     args = [
@@ -80,6 +81,7 @@ openApi {
 
 afterEvaluate {
   // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
+  // Not particularly useful
   generateOpenApiDocs.enabled = false
   forkedSpringBootRun.enabled = false
 
