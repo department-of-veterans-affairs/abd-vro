@@ -10,6 +10,7 @@ import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 
+@Slf4j
 public class MasIntegrationNegativeTest extends BaseIntegrationTest {
 
   @Autowired CamelEntrance camelEntrance;
@@ -34,7 +36,7 @@ public class MasIntegrationNegativeTest extends BaseIntegrationTest {
       camelEntrance.processClaim(payload);
       fail();
     } catch (CamelExecutionException cee) {
-
+      log.info("error in masIntegrationNegativeTest.");
     }
   }
 
@@ -52,7 +54,7 @@ public class MasIntegrationNegativeTest extends BaseIntegrationTest {
       camelEntrance.processClaim(payload);
       fail();
     } catch (CamelExecutionException me) {
-
+      log.info("error in masIntegrationNegativeTest.");
     }
   }
 }
