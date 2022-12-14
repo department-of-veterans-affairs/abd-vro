@@ -16,7 +16,8 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import org.apache.camel.*;
+import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -61,7 +62,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
         "claim-submit",
-        "rabbitmq://claim-submit-exchange?queue=claim-submit&requestTimeout=60000&routingKey=code.1233",
+        "rabbitmq://claim-submit-exchange?queue=claim-submit&"
+            + "requestTimeout=60000&routingKey=code.1233",
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
@@ -74,7 +76,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "mas-processing",
-        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.1233&requestTimeout=60000",
+        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.1233&"
+            + "requestTimeout=60000",
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
