@@ -25,8 +25,8 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     ClaimMetricsInfo metrics = new ClaimMetricsInfo();
     try {
       metrics.setTotalClaims(claimRepository.count());
-      metrics.setAssessmentResults((int) assessmentResultRepository.count());
-      metrics.setEvidenceSummaryDocuments((int) evidenceSummaryDocumentRepository.count());
+      metrics.setAssessmentResults(assessmentResultRepository.count());
+      metrics.setEvidenceSummaryDocuments(evidenceSummaryDocumentRepository.count());
       return metrics;
     } catch (Exception e) {
       log.error("Could not get metrics in claim repository.", e);

@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class ClaimMetricsInfo {
   long totalClaims;
-  int assessmentResults;
-  int evidenceSummaryDocuments;
+  long assessmentResults;
+  long evidenceSummaryDocuments;
   String errorMessage;
 }
