@@ -29,11 +29,11 @@ public class AppTestUtil {
    * @return claim response to string.
    */
   @SneakyThrows
-  public String claimToResponse(Claim claim, boolean evidence) {
+  public String claimToResponse(Claim claim, boolean evidence, String errorMessage) {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
-    response.setErrorMessage("I am not a real endpoint.");
+    response.setErrorMessage(errorMessage);
     if (evidence) {
       response.setEvidence(new AbdEvidence());
     }
