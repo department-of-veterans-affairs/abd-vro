@@ -105,7 +105,9 @@ public class FhirClient {
               "7101v2",
               new AbdDomain[] {
                 AbdDomain.MEDICATION, AbdDomain.BLOOD_PRESSURE, AbdDomain.CONDITION
-              }));
+              }),
+          new AbstractMap.SimpleEntry<>(
+              "cancer", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}));
 
   private static final Map<AbdDomain, Function<String, SearchSpec>> domainToSearchSpec =
       Map.ofEntries(
@@ -229,9 +231,7 @@ public class FhirClient {
     for (AbdDomain domain : domains) {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
-      if (!records.isEmpty()) {
-        result.put(domain, records);
-      }
+      result.put(domain, records);
     }
     return result;
   }

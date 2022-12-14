@@ -1,4 +1,5 @@
 import pytest
+
 from assessclaimdc7101.src.lib import main
 
 
@@ -49,7 +50,9 @@ from assessclaimdc7101.src.lib import main
                         ],
                         "conditions": [{"code": "I10",
                                         "text": "Essential (primary) hypertension",
-                                        "recordedDate": "1950-04-06T04:00:00Z"}],
+                                        "recordedDate": "1950-04-06T04:00:00Z"},
+                                       {"code": "1234",
+                                        "text": "snomed diagnosis"}],
                         "procedures": [],
                         "medications": [{"description": "Capoten",
                                          "status": "active",
@@ -89,12 +92,16 @@ from assessclaimdc7101.src.lib import main
                                                             "value": 200.0}}],
                               "conditions": [{"code": "I10",
                                               "text": "Essential (primary) hypertension",
-                                              "recordedDate": "1950-04-06T04:00:00Z"}],
+                                              "recordedDate": "1950-04-06T04:00:00Z",
+                                              "relevant": True},
+                                             {'code': '1234',
+                                              'relevant': False,
+                                              'text': 'snomed diagnosis'}],
                               },
                  "evidenceSummary": {"relevantConditionsCount": 1,
                                      "totalBpReadings": 2,
                                      "recentBpReadings": 2,
-                                     "totalConditionsCount": 1},
+                                     "totalConditionsCount": 2},
                  "sufficientForFastTracking": True}
         ),
         # New claim with two recent BP both elevated and no condition
@@ -141,7 +148,7 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW"
                 }
                 ,
@@ -178,7 +185,8 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 2,
                                      "recentBpReadings": 2,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": True}
+                 "sufficientForFastTracking": True,
+                 }
         ),
         # New claim with relevant condition but no recent BP
         (
@@ -197,12 +205,16 @@ from assessclaimdc7101.src.lib import main
                                                                  "pressure",
                                                       "unit": "mm[Hg]",
                                                       "value": 180}},],
-                        "conditions": [{"code": "I10",
+                        "conditions": [{"code": "1234",
+                                        "text": "snomed diagnosis",
+                                        "recordedDate": "1970-04-06T04:00:00Z"},
+                                       {"code": "I10",
                                         "text": "Essential (primary) hypertension",
-                                        "recordedDate": "1950-04-06T04:00:00Z"}],
+                                        "recordedDate": "1950-04-06T04:00:00Z"},
+                                       ],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW"
                 }
                 ,
@@ -221,14 +233,20 @@ from assessclaimdc7101.src.lib import main
                                                                        "pressure",
                                                             "unit": "mm[Hg]",
                                                             "value": 180}}],
-                              "conditions": [{"code": "I10",
+                              "conditions": [{"code": "1234",
+                                              'relevant': False,
+                                              "text": "snomed diagnosis",
+                                              "recordedDate": "1970-04-06T04:00:00Z"},
+                                             {"code": "I10",
                                               "text": "Essential (primary) hypertension",
+                                              'relevant': True,
                                               "recordedDate": "1950-04-06T04:00:00Z"}]},
                  "evidenceSummary": {"relevantConditionsCount": 1,
                                      "totalBpReadings": 1,
                                      "recentBpReadings": 1,
-                                     "totalConditionsCount": 1},
-                 "sufficientForFastTracking": False}
+                                     "totalConditionsCount": 2},
+                 "sufficientForFastTracking": False
+                 }
         ),
         # New claim with no condition and no recent BP, BP not elevated
         (
@@ -263,7 +281,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "NEW"
                 }
                 ,
@@ -300,7 +318,8 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 2,
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": None}
+                 "sufficientForFastTracking": None,
+                 }
         ),
         # Claim for increase, not enough BP readings
         (
@@ -335,7 +354,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE"
                 }
                 ,
@@ -372,7 +391,8 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 2,
                                      "totalBpReadings": 2,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": None}
+                 "sufficientForFastTracking": None,
+                 }
         ),
         (
                 {
@@ -432,7 +452,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE"
                 }
                 ,
@@ -495,7 +515,8 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 4,
                                      "totalBpReadings": 4,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": None}
+                 "sufficientForFastTracking": None,
+                 }
         ),
         # Claim for increase
         (
@@ -558,7 +579,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE"
                 }
                 ,
@@ -621,7 +642,8 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 4,
                                      "recentBpReadings": 4,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": True}
+                 "sufficientForFastTracking": True,
+                 }
         ),
         (
 
@@ -632,7 +654,7 @@ from assessclaimdc7101.src.lib import main
                         "conditions": []
                     },
                     "dateOfClaim": "2021-11-09",
-                    "diagnosticCode": "7101v2",
+                    "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE"
                 }
                 ,
@@ -644,7 +666,8 @@ from assessclaimdc7101.src.lib import main
                                      "totalBpReadings": 0,
                                      "recentBpReadings": 0,
                                      "totalConditionsCount": 0},
-                 "sufficientForFastTracking": None}
+                 "sufficientForFastTracking": None,
+                }
         ),
         # Bad data missing action type
         (

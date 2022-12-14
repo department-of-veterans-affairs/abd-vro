@@ -1,5 +1,6 @@
 package gov.va.vro.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.model.AbdEvidence;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import java.util.Map;
 
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class FullHealthDataAssessmentResponse {
@@ -48,14 +50,6 @@ public class FullHealthDataAssessmentResponse {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String disabilityActionType;
 
-  @Schema(description = "Error message in the case of an error")
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private String errorMessage;
-
-  @Schema(description = "Status")
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private String status;
-
   /***
    *<p>Summary.</p>
    *
@@ -63,12 +57,9 @@ public class FullHealthDataAssessmentResponse {
    *
    * @param diagnosticCode diagnostic code
    *
-   * @param errorMessage error message
    */
-  public FullHealthDataAssessmentResponse(
-      String veteranIcn, String diagnosticCode, String errorMessage) {
+  public FullHealthDataAssessmentResponse(String veteranIcn, String diagnosticCode) {
     this.veteranIcn = veteranIcn;
     this.diagnosticCode = diagnosticCode;
-    this.errorMessage = errorMessage;
   }
 }
