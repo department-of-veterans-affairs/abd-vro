@@ -228,5 +228,3 @@ dbinit:
   urlKey: url
   usernameKey: username
   passwordKey: password
-  flywayTableKey: flywayTable
-  flywayTablespaceKey: flywayTablespace
