@@ -186,9 +186,9 @@ public class VroController implements VroResource {
     try {
       List<ClaimInfoData> info = claimMetricsService.claimInfoForClaimId(claimSubmissionId);
       List<ClaimInfo> infoList = new ArrayList<>();
-      if (info.size() == 0) {
+      if (info.get(0).getErrorMessage() != null) {
         throw new MetricsProcessingException(
-            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
+            HttpStatus.INTERNAL_SERVER_ERROR, info.get(0).getErrorMessage());
       }
       for (ClaimInfoData metricsInfo : info) {
         ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
@@ -211,7 +211,7 @@ public class VroController implements VroResource {
     try {
       List<ClaimInfoData> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
       List<ClaimInfo> infoList = new ArrayList<>();
-      if (info.size() == 0) {
+      if (info.get(0).getErrorMessage() != null) {
         throw new MetricsProcessingException(
             HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
       }
@@ -231,12 +231,12 @@ public class VroController implements VroResource {
 
   @Override
   public ResponseEntity<ClaimInfoResponse> claimInfoWithPagination(int offset, int pageSize)
-      throws Exception {
+      throws MetricsProcessingException {
     ClaimInfoResponse response = new ClaimInfoResponse();
     try {
       List<ClaimInfoData> info = claimMetricsService.claimInfoWithPagination(offset, pageSize);
       List<ClaimInfo> infoList = new ArrayList<>();
-      if (info.size() == 0) {
+      if (info.get(0).getErrorMessage() != null) {
         throw new MetricsProcessingException(
             HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
       }

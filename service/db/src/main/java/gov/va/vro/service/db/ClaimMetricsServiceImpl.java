@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,11 +50,15 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       setAssessmentResultsAndCount(claim, info);
       setEvidenceSummaryCounts(claim, info);
       infoList.add(info);
+      return infoList;
     } catch (Exception e) {
       log.error("Could not find claim with the given claimSubmissionId");
-      throw new NoSuchElementException("Could not find claim with the given claimSubmissionId");
+      ClaimInfoData info = new ClaimInfoData();
+      info.setErrorMessage(
+          "Could not find claim with the given claimSubmissionId: " + e.getMessage());
+      infoList.add(info);
+      return infoList;
     }
-    return infoList;
   }
 
   @Override
@@ -75,8 +78,11 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       }
       return veteranClaims;
     } catch (Exception e) {
-      log.error("Could not find claim with the given claimSubmissionId");
-      throw new NoSuchElementException("Could not find claim with the given claimSubmissionId");
+      log.error("Could not find claim with the given veteranIcn");
+      ClaimInfoData info = new ClaimInfoData();
+      info.setErrorMessage("Could not find claim with the given veteranIcn: " + e.getMessage());
+      veteranClaims.add(info);
+      return veteranClaims;
     }
   }
 
@@ -98,7 +104,10 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       return infoList;
     } catch (Exception e) {
       log.error("Error getting page of claims in claimInfoWithPagination.");
-      throw new NoSuchElementException("Error getting page of claims in claimInfoWithPagination.");
+      ClaimInfoData info = new ClaimInfoData();
+      info.setErrorMessage("Could not find claim with the given veteranIcn: " + e.getMessage());
+      infoList.add(info);
+      return infoList;
     }
   }
 
