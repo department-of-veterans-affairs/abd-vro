@@ -151,11 +151,12 @@
 </head>
 
 <body>
+  {% if claim.disabilityActionType == "NEW" %}
   <!-- Relevant military service locations -->
   <div class="row m-0">
     <div class="col">
       <h1 class="mb-13"><b>Evidence for service connection</b></h1>
-      <p class="m-0 mb-13"><b>Claimed as:</b> high blood pressure<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
+      <p class="m-0 mb-13"><b>Claimed as:</b> {{ claim.name }}<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
     </div>
   </div>
   <div class="row m-0">
@@ -241,6 +242,7 @@
     </div>
   </div>
   <div class="pagebreak"> </div>
+  {% endif %}
   <!-- Hypertension -->
   <div class="row">
     <div class="col">

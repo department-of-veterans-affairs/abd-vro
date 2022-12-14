@@ -68,7 +68,7 @@ def assess_sufficiency(event: Dict):
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
-            if bp_calculation["oneYearBpReadings"] >= 4:
+            if bp_calculation["oneYearBpReadings"] >= 1:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
             if relevant_conditions["conditions"]:

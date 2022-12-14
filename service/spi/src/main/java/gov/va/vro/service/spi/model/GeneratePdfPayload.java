@@ -5,6 +5,7 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.mas.ClaimCondition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -31,6 +33,8 @@ public class GeneratePdfPayload implements Auditable {
 
   @JsonProperty("serviceLocations")
   private List<ServiceLocation> serviceLocations;
+
+  @NotNull private ClaimCondition conditions;
 
   @JsonProperty("evidence")
   private AbdEvidence evidence;
