@@ -1,9 +1,8 @@
 #Ignoring the password file
 all-secrets.txt
 
-# Files copied from repo abd-vro-dev-secrets
-private.pem
-setenv.sh
+# Files possibly copied from repo abd-vro-dev-secrets
+./setenv.sh
 
 #Ignoring cache folders
 .cache
