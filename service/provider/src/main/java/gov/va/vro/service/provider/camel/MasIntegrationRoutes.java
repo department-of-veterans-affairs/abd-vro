@@ -99,12 +99,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(new HealthEvidenceProcessor())
         .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .process(
-            exchange -> {
-              MasAutomatedClaimPayload claimPayload =
-                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
-              exchange.getMessage().setBody(claimPayload);
-            })
+        .setBody(simple("${exchangeProperty.claim}"))
         .to(orderExamEndpoint)
         .to(uploadPdfEndpoint)
         .to(ENDPOINT_MAS_COMPLETE);

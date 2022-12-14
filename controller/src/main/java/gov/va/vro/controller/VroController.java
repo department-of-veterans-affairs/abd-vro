@@ -1,7 +1,6 @@
 package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
@@ -42,9 +41,7 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
-
   private final ClaimMetricsService claimMetricsService;
-
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -58,7 +55,7 @@ public class VroController implements VroResource {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
       log.info(model.toString());
       String response = camelEntrance.generatePdf(model);
-      log.info(response.toString());
+      log.info(response);
       GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
       log.info(pdfResponse.toString());
       log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
@@ -86,19 +83,8 @@ public class VroController implements VroResource {
         byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
         try (InputStream is = new ByteArrayInputStream(decoder)) {
           InputStreamResource resource = new InputStreamResource(is);
-          HttpHeaders headers = new HttpHeaders();
-          headers.setContentType(MediaType.APPLICATION_PDF);
-
-          String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
           String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-          ContentDisposition disposition =
-              ContentDisposition.attachment()
-                  .filename(
-                      String.format(
-                          "VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
-                  .build();
-
-          headers.setContentDisposition(disposition);
+          HttpHeaders headers = getHttpHeaders(diagnosis);
           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
 
@@ -152,14 +138,6 @@ public class VroController implements VroResource {
     }
   }
 
-  private ClaimInfo getClaimInfo(Claim claim) {
-    ClaimInfo info = new ClaimInfo();
-    info.setClaimSubmissionId(claim.getClaimSubmissionId());
-    info.setVeteranIcn(claim.getVeteranIcn());
-    info.setContentions(claim.getContentions().stream().toList());
-    return info;
-  }
-
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
     ClaimMetricsResponse response = new ClaimMetricsResponse();
@@ -176,5 +154,18 @@ public class VroController implements VroResource {
       log.error("Error in claim metrics services." + e.getMessage());
       throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
+  }
+
+  private static HttpHeaders getHttpHeaders(String diagnosis) {
+    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+    ContentDisposition disposition =
+        ContentDisposition.attachment()
+            .filename(
+                String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+            .build();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_PDF);
+    headers.setContentDisposition(disposition);
+    return headers;
   }
 }
