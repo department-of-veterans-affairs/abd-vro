@@ -72,7 +72,9 @@ dependencies {
 openApi {
   customBootRun {
     getClasspath().setFrom(sourceSets.test.runtimeClasspath)
-    args = ["--spring.profiles.active=test"]
+    args = [
+      "--spring.profiles.active=test"
+    ]
   }
 }
 
