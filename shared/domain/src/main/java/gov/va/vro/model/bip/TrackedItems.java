@@ -8,5 +8,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TrackedItems {
-  private String trackedItemId;
+  private int trackedItemId;
 }
