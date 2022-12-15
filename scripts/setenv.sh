@@ -77,7 +77,7 @@ export COMPOSE_PROFILES=assessors,feat-toggle,pdf-gen
 ###
 ### Credentials for VRO internal services ###
 
-# Credentials for Postgres
+# Credentials for Postgres superuser (root)
 export POSTGRES_SUPER_USER=vro_super_user
 export POSTGRES_SUPER_PASSWORD=vro_super_user_pw
 export POSTGRES_SUPER_DB=vro_super_db
@@ -90,9 +90,9 @@ export POSTGRES_PASSWORD=vro_user_pw
 export POSTGRES_DB=vro
 export POSTGRES_SCHEMA=claims
 
-# Credentials used by Flyway to connect to Postgres
-export POSTGRES_ADMIN_USER=vro_admin_user
-export POSTGRES_ADMIN_PASSWORD=vro_admin_user_pw
+# Credentials used by Flyway to initialize VRO database
+export POSTGRES_FLYWAY_USER=vro_admin_user
+export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_PLACEHOLDERS_USERNAME=guest

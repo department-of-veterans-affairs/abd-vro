@@ -95,9 +95,9 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_SUPER_USER}
       POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_SUPER_DB}
-      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
-      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -116,9 +116,9 @@ services:
     networks:
       - internal
     environment:
-      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_ADMIN_USER}&password=${POSTGRES_ADMIN_PASSWORD}
-      FLYWAY_USER: ${POSTGRES_ADMIN_USER}
-      FLYWAY_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_FLYWAY_USER}&password=${POSTGRES_FLYWAY_PASSWORD}
+      FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
       FLYWAY_PLACEHOLDERS_USERNAME: ${POSTGRES_USER}
       FLYWAY_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
@@ -157,6 +157,8 @@ services:
     depends_on:
       rabbitmq-service:
         condition: service_healthy
+      app:
+        condition: service_healthy
     networks:
       - internal
 
@@ -168,6 +170,8 @@ services:
       <<: *rabbitmq-client-vars
     depends_on:
       rabbitmq-service:
+        condition: service_healthy
+      app:
         condition: service_healthy
     networks:
       - internal
@@ -210,6 +214,8 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+      app:
+        condition: service_healthy
     networks:
       - internal
 
@@ -251,6 +257,8 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+      app:
+        condition: service_healthy
     networks:
       - internal
 
@@ -265,6 +273,8 @@ services:
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
       rabbitmq-service:
+        condition: service_healthy
+      app:
         condition: service_healthy
     networks:
       - internal
@@ -284,6 +294,8 @@ services:
       postgres-service:
         condition: service_started
       rabbitmq-service:
+        condition: service_healthy
+      app:
         condition: service_healthy
     networks:
       - internal
