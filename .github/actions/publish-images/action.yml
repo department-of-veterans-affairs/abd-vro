@@ -39,7 +39,7 @@ runs:
       shell: bash
       env:
         COMMIT_SHA: ${{ github.sha }}
-      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}"
+      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA}" "${{ inputs.target_env }}"
 
     - name: "List images"
       shell: bash

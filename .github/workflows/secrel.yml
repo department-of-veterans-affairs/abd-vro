@@ -46,12 +46,12 @@ jobs:
     with:
       config-file: .github/secrel/config.yml
       images: |-
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-app:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-postgres:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-db-init:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-console:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-data-access:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-pdfgenerator:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc7101:${COMMIT_SHA:0:7}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc6602:${COMMIT_SHA:0:7}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-app:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-postgres:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-db-init:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-console:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-data-access:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-pdfgenerator:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc7101:${{ env.COMMIT_SHA }}
+        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc6602:${{ env.COMMIT_SHA }}
     secrets: inherit
