@@ -37,12 +37,14 @@ def assess_hypertension(event: Dict):
                     "recentBpReadings": bp_readings["oneYearBpReadings"],
                     "medicationsCount": relevant_medication["medicationsCount"],
                 },
+                "claimSubmissionId": event['claimSubmissionId']
             }
         )
-        logging.info("Message processed successfully")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
-        logging.info(f"Message failed to process due to: {validation_results['errors']}")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body
 
@@ -93,10 +95,12 @@ def assess_sufficiency(event: Dict):
                 "sufficientForFastTracking": sufficient,
                 "dateOfClaim": event["dateOfClaim"],
                 "disabilityActionType": event["disabilityActionType"],
+                "claimSubmissionId": event['claimSubmissionId']
             })
-        logging.info("Message processed successfully")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
-        logging.info(f"Message failed to process due to: {validation_results['errors']}")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body

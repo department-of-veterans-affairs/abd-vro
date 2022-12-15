@@ -11,6 +11,8 @@ public class AbdResponse {
   private String veteranIcn;
   private String diagnosticCode;
 
+  private String claimSubmissionId;
+
   @JsonInclude(JsonInclude.Include.ALWAYS)
   private AbdEvidence evidence;
 
@@ -22,6 +24,7 @@ public class AbdResponse {
   public AbdResponse(AbdClaim claim) {
     veteranIcn = claim.getVeteranIcn();
     diagnosticCode = claim.getDiagnosticCode();
+    claimSubmissionId = claim.getClaimSubmissionId();
   }
 
   /**
@@ -33,6 +36,7 @@ public class AbdResponse {
   public AbdResponse(AbdClaim claim, AbdEvidence evidence) {
     veteranIcn = claim.getVeteranIcn();
     diagnosticCode = claim.getDiagnosticCode();
+    claimSubmissionId = claim.getClaimSubmissionId();
     this.evidence = evidence;
   }
 
@@ -45,6 +49,7 @@ public class AbdResponse {
   public AbdResponse(AbdClaim claim, String errorMessage) {
     veteranIcn = claim.getVeteranIcn();
     diagnosticCode = claim.getDiagnosticCode();
+    claimSubmissionId = claim.getClaimSubmissionId();
     this.errorMessage = errorMessage;
   }
 }
