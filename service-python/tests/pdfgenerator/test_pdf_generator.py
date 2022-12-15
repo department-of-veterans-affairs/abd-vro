@@ -34,6 +34,9 @@ def test_default_template_variables(template_code):
     # reset this field because it gets turned into a datetime object so it wont match
     generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
 
+    # reset this field because it gets turned into a datetime object so it wont match
+    generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
+
     assert default_variables == generated_variables
 
 
