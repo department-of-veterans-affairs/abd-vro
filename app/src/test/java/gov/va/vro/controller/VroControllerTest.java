@@ -202,6 +202,21 @@ class VroControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void serverResponseUnsupportedHttpMethod() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    String url = "/v1/fetch-claims";
+    String sampleRequestBody = "{ \"one\":\"one\", \"two\":\"two\",}";
+    var getResponseEntity = get(url, headers, ClaimProcessingError.class);
+    var postResponseEntity = post(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    var putResponseEntity = put(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    assertEquals(HttpStatus.OK, getResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, postResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, putResponseEntity.getStatusCode());
+  }
+
+  @Test
   @DirtiesContext
   void generatePdf() throws Exception {
     var mapper = new ObjectMapper();
