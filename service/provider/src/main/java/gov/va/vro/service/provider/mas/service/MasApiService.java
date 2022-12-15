@@ -96,6 +96,7 @@ public class MasApiService implements IMasApiService {
   public String orderExam(MasOrderExamRequest masOrderExamRequest) throws MasException {
     try {
       String url = masApiProps.getBaseUrl() + masApiProps.getCreateExamOrderPath();
+      HttpHeaders headers = getMasHttpHeaders();
       ObjectMapper mapper = new ObjectMapper();
       try {
         // convert user object to json string and return it
