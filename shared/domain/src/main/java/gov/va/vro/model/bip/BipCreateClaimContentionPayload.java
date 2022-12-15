@@ -1,4 +1,4 @@
-package gov.va.vro.model.mas;
+package gov.va.vro.model.bip;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** @author warren @Date 11/16/22 */
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasCollectionStatusReq {
-  @JsonProperty("collectionsId")
-  private int collectionsId;
+public class BipCreateClaimContentionPayload {
+  @JsonProperty("claimId")
+  private long claimId;
+
+  @JsonProperty("contention")
+  private CreateContention contention;
 }

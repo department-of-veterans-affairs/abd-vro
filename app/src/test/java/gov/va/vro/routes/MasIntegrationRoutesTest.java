@@ -11,7 +11,7 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
-import gov.va.vro.model.mas.MasOrderExamReq;
+import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
@@ -116,9 +116,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     if (sufficientEvidence) {
       Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
     } else {
-      var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamReq.class);
+      var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamRequest.class);
       Mockito.verify(masApiService, Mockito.times(1)).orderExam(argumentCaptor.capture());
-      MasOrderExamReq orderExamRequest = argumentCaptor.getValue();
+      MasOrderExamRequest orderExamRequest = argumentCaptor.getValue();
       assertEquals(collectionId, orderExamRequest.getCollectionsId());
     }
   }
