@@ -101,7 +101,7 @@ public class JwtValidator {
     }
     log.info("Token has not expired");
 
-    if (VALIDATE_TOKEN.equals(lhApiProps.getValidateToken().toLowerCase())) {
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
       if (!payloadAsJson.has("scp")) {
         throw new InvalidTokenException("Token doesn't contain scope information");
       }
@@ -160,7 +160,7 @@ public class JwtValidator {
    * @return true or false.
    */
   public boolean validateTokenUsingLh(String jwtToken) {
-    if (VALIDATE_TOKEN.equals(lhApiProps.getValidateToken().toLowerCase())) {
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
       try {
         HttpHeaders lhHttpHeaders = new HttpHeaders();
         lhHttpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -170,8 +170,7 @@ public class JwtValidator {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("aud", lhApiProps.getVroAudUrl());
 
-        HttpEntity formEntity =
-            new HttpEntity<MultiValueMap<String, String>>(requestBody, lhHttpHeaders);
+        HttpEntity formEntity = new HttpEntity<>(requestBody, lhHttpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
 
