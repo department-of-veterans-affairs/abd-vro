@@ -1,7 +1,8 @@
-package gov.va.vro.model.mas;
+package gov.va.vro.model.mas.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.va.vro.model.mas.MasOrderExamConditions;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasOrderExamReq {
+public class MasOrderExamRequest {
   @JsonProperty("conditions")
   private List<MasOrderExamConditions> conditions;
 

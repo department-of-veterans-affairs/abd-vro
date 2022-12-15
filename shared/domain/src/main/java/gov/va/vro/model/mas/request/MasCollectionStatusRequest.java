@@ -1,4 +1,4 @@
-package gov.va.vro.model.mas;
+package gov.va.vro.model.mas.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MasCollectionStatusReq {
+public class MasCollectionStatusRequest {
   @JsonProperty("collectionsId")
   private int collectionsId;
 }
