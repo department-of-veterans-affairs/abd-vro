@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.*;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
