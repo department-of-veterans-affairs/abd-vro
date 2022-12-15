@@ -23,10 +23,10 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
-      #volumes:
-      #  - name: {{ .Values.volumes.tracking.name }}
-      #    persistentVolumeClaim:
-      #      claimName: {{ .Values.volumes.tracking.claimName }}
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}
       initContainers:
         - name: pg-isready
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -201,9 +201,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
-          #volumeMounts:
-          #  - name: {{ .Values.volumes.tracking.name }}
-          #    mountPath: {{ .Values.volumes.tracking.mountPath }}
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-api
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag }}
           imagePullPolicy: {{ .Values.images.app.imagePullPolicy }}
@@ -369,9 +369,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
-          #volumeMounts:
-          #  - name: {{ .Values.volumes.tracking.name }}
-          #    mountPath: {{ .Values.volumes.tracking.mountPath }}
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
           imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
