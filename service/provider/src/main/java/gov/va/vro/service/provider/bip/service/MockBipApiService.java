@@ -5,17 +5,16 @@ import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /** Mock some claim data returned by the BIP API */
 @Service
 public class MockBipApiService implements IBipApiService {
   @Override
-  public BipClaim getClaimDetails(Integer collectionId) throws BipException {
+  public BipClaim getClaimDetails(long collectionId) {
     if (collectionId == 350 || collectionId == 353) {
       // valid
       return buildClaim(1234, BipClaimService.TSOJ);
@@ -28,7 +27,12 @@ public class MockBipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(Integer claimId) throws BipException {
+  public BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException {
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+  }
+
+  @Override
+  public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     if (claimId == 1234) {
       return List.of(
           buildContention(BipClaimService.SPECIAL_ISSUE_1, BipClaimService.SPECIAL_ISSUE_2));
@@ -37,21 +41,35 @@ public class MockBipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(Integer collectionId, String status)
+  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
     return new BipUpdateClaimResp(HttpStatus.OK, "OK");
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(Integer claimId, UpdateContentionReq contention)
+  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
     return new BipUpdateClaimResp(HttpStatus.OK, "OK");
   }
 
   @Override
-  public Map<String, String> uploadEvidence(
-      String fileId, BipFileUploadPayload uploadEvidenceReq, File file) throws BipException {
-    return Collections.emptyMap();
+  public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
+      throws BipException {
+    return null;
+  }
+
+  @Override
+  public BipFileUploadResp uploadEvidence(
+      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+      throws BipException {
+    return new BipFileUploadResp();
+  }
+
+  @Override
+  public BipFileUploadResp uploadEvidenceFile(
+      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      throws BipException {
+    return new BipFileUploadResp();
   }
 
   private BipClaim buildClaim(int claimId, String station) {
