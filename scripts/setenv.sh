@@ -39,10 +39,9 @@ fi
 # and helmcharts (for each LHDI deployment environment) updated.
 #
 # Reasons why a setting should be in this file:
-# 1. Secret credentials like username, password, private token. Only fake secret values belong in this file.
-# 2. Environment variable used by a third-party Docker container (e.g., POSTGRES_PASSWORD)
-# 3. A setting that must be the same or shared across containers (e.g., POSTGRES_URL)
-# 4. A setting to support local development (and automated end2end testing)
+# 1. A setting to support local development (and automated end2end testing)
+# 2. Secret credentials like username, password, private token. Only fake secret values belong in this file.
+# 3. A setting that must be the same or shared across containers
 # When adding a setting below, also add a comment that describes the reason and where it is used.
 ###
 
@@ -83,13 +82,11 @@ export POSTGRES_SUPER_USER=vro_super_user
 export POSTGRES_SUPER_PASSWORD=vro_super_user_pw
 export POSTGRES_SUPER_DB=vro_super_db
 
-# Credentials for Postgres container and shared across containers
+# Shared across containers to connect to Postgres
 export POSTGRES_USER=vro_user
 export POSTGRES_PASSWORD=vro_user_pw
 
-# Shared across containers to connect to Postgres and use the target DB and schema
-# POSTGRES_URL should match the one in docker-compose.yml
-export POSTGRES_URL=jdbc:postgresql://postgres-service:5432/vro
+# Shared across containers to use the target Postgres DB and schema
 export POSTGRES_DB=vro
 export POSTGRES_SCHEMA=claims
 
@@ -102,7 +99,7 @@ export RABBITMQ_PLACEHOLDERS_USERNAME=guest
 export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
 
 # Credentials for Redis
-# TODO NOW: How is the redis URL shared?
+# Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
 export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
 
 ###
