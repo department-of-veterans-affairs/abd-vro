@@ -101,6 +101,12 @@ jobs:
             exit 1
           fi
 
+      - name: "Cancelled workflow"
+        if: cancelled()
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
       - name: "Notify Slack: Thread deployment status"
         if: always()
         uses: archive/github-actions-slack@v2.6.0
