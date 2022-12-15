@@ -156,8 +156,6 @@ services:
     depends_on:
       rabbitmq-service:
         condition: service_healthy
-      app:
-        condition: service_healthy
     networks:
       - internal
 
@@ -169,8 +167,6 @@ services:
       <<: *rabbitmq-client-vars
     depends_on:
       rabbitmq-service:
-        condition: service_healthy
-      app:
         condition: service_healthy
     networks:
       - internal
@@ -213,8 +209,6 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
-      app:
-        condition: service_healthy
     networks:
       - internal
 
@@ -256,8 +250,6 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
-      app:
-        condition: service_healthy
     networks:
       - internal
 
@@ -272,8 +264,6 @@ services:
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
       rabbitmq-service:
-        condition: service_healthy
-      app:
         condition: service_healthy
     networks:
       - internal
@@ -293,8 +283,6 @@ services:
       postgres-service:
         condition: service_started
       rabbitmq-service:
-        condition: service_healthy
-      app:
         condition: service_healthy
     networks:
       - internal
