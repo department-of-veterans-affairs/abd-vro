@@ -43,10 +43,10 @@ spec:
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
-          volumeMounts:
-            - name: {{ .Values.volumes.tracking.name }}
-              # This folder is available for RabbitMQ messages to be persisted
-              mountPath: {{ .Values.volumes.tracking.mountPath }}
+          #volumeMounts:
+          #  - name: {{ .Values.volumes.tracking.name }}
+          #    # This folder is available for RabbitMQ messages to be persisted
+          #    mountPath: {{ .Values.volumes.tracking.mountPath }}
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
       volumes:
         - name: {{ .Values.volumes.tracking.name }}
