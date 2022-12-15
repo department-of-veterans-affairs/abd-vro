@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GlobalExceptionHandler {
 
+  /**
+   * Handles method argument not valid.
+   *
+   * @param exception the exception
+   * @return returns exception
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ClaimProcessingError> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException exception) {
@@ -30,6 +36,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * Handles exception.
+   *
+   * @param exception the exception
+   * @return returns new exception
+   */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
     log.error("Unexpected error", exception);
@@ -38,12 +50,24 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  /**
+   * Handles claim processing exception.
+   *
+   * @param exception exception.
+   * @return returns claim processing error
+   */
   @ExceptionHandler(ClaimProcessingException.class)
   public ResponseEntity<ClaimProcessingError> handleClaimProcessingException(
       ClaimProcessingException exception) {
     return new ResponseEntity<>(new ClaimProcessingError(exception), exception.getHttpStatus());
   }
 
+  /**
+   * handles json parsing.
+   *
+   * @param exception the exception
+   * @return returns claim processing error
+   */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ClaimProcessingError> handleJsonParseException(
       JsonParseException exception) {

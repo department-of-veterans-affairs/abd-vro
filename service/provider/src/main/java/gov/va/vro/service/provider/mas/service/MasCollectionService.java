@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.mas.service;
 
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
@@ -11,7 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -20,6 +25,13 @@ public class MasCollectionService {
 
   private final IMasApiService masCollectionAnnotsApiService;
 
+  /**
+   * Checks collection status on collection ID.
+   *
+   * @param collectionId collection ID
+   * @return true or false
+   * @throws MasException exception
+   */
   public boolean checkCollectionStatus(int collectionId) throws MasException {
 
     log.info("Checking collection status for collection {}.", collectionId);
@@ -47,6 +59,13 @@ public class MasCollectionService {
     return false;
   }
 
+  /**
+   * Collects annotations.
+   *
+   * @param claimPayload claim
+   * @return health assessment
+   * @throws MasException exception
+   */
   public HealthDataAssessment collectAnnotations(MasAutomatedClaimPayload claimPayload)
       throws MasException {
 
@@ -83,6 +102,13 @@ public class MasCollectionService {
     return healthDataAssessment;
   }
 
+  /**
+   * Combines the evidence.
+   *
+   * @param lighthouseAssessment lighthouse data
+   * @param masApiAssessment mas api data
+   * @return returns health assessment
+   */
   public static HealthDataAssessment combineEvidence(
       HealthDataAssessment lighthouseAssessment, HealthDataAssessment masApiAssessment) {
     AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();

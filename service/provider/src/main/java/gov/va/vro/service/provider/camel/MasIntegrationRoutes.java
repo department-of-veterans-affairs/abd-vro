@@ -1,7 +1,8 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -14,7 +15,7 @@ import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.*;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -27,7 +28,8 @@ import org.springframework.stereotype.Component;
 public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS =
-      "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
+      "rabbitmq:mas-notification-exchange?queue=mas-notification"
+          + "-queue&routingKey=mas-notification&requestTimeout=0";
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
@@ -155,20 +157,21 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking}"))
-        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRFD))
+        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
         .end()
         .bean(bipClaimService, "completeProcessing");
   }
 
+  /** Configure auditing. */
   public void configureAuditing() {
-    String transform_uri = "seda:audit-transform?multipleConsumers=true";
+    String transformUri = "seda:audit-transform?multipleConsumers=true";
 
     // Capture exceptions
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
         .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT, ENDPOINT_SLACK_EVENT))
-        .to(transform_uri);
+        .to(transformUri);
 
     // intercept all MAS routes
     interceptFrom("*")
@@ -176,10 +179,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
         .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
-        .to(transform_uri);
+        .to(transformUri);
 
     // Transform to an AuditEvent and send to recipients
-    from(transform_uri)
+    from(transformUri)
         .process(new ExchangeAuditTransformer())
         .recipientList(exchangeProperty("recipientList"));
 

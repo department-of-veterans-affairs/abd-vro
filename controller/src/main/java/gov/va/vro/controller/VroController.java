@@ -139,12 +139,12 @@ public class VroController implements VroResource {
             HttpStatus.INTERNAL_SERVER_ERROR,
             "Internal error while processing claim data.");
       }
-      FullHealthDataAssessmentResponse HttpResponse =
+      FullHealthDataAssessmentResponse httpResponse =
           objectMapper.convertValue(response, FullHealthDataAssessmentResponse.class);
       log.info("Returning health assessment for: {}", claim.getVeteranIcn());
-      HttpResponse.setVeteranIcn(claim.getVeteranIcn());
-      HttpResponse.setDiagnosticCode(claim.getDiagnosticCode());
-      return new ResponseEntity<>(HttpResponse, HttpStatus.CREATED);
+      httpResponse.setVeteranIcn(claim.getVeteranIcn());
+      httpResponse.setDiagnosticCode(claim.getDiagnosticCode());
+      return new ResponseEntity<>(httpResponse, HttpStatus.CREATED);
     } catch (Exception ex) {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
