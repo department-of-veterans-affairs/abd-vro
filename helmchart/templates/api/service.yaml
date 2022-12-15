@@ -16,6 +16,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.volumes.tracking.claimName }}
+  annotations:
+    # Keep this PVC when the deploy is deleted/uninstalled
+    # https://helm.sh/docs/topics/charts_hooks/#hook-resources-are-not-managed-with-corresponding-releases
+    helm.sh/resource-policy: keep
 spec:
   accessModes:
     - ReadWriteMany
