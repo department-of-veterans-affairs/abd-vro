@@ -20,7 +20,6 @@ def on_request_callback(channel, method, properties, body):
         logging.error(e, exc_info=True)
         response = {"evidence": None, "evidenceSummary": None, "errorMessage": str(e), "claimSubmissionId": message['claimSubmissionId']}
 
-
     channel.basic_publish(
         exchange=EXCHANGE,
         routing_key=properties.reply_to,
