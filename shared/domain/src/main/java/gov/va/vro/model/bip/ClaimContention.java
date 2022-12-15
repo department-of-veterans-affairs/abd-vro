@@ -30,5 +30,31 @@ public class ClaimContention {
   private List<String> specialIssueCodes;
   private long contentionId;
   private String lastModified;
+  private String lifecycleStatus;
   private String summaryDateTime;
+  private boolean automationIndicator;
+  private List<TrackedItems> associatedTrackedItems;
+
+  public UpdateContention toUpdateContention(String action) {
+    return UpdateContention.builder()
+        .medicalInd(medicalInd)
+        .beginDate(beginDate)
+        .createDate(createDate)
+        .altContentionName(altContentionName)
+        .completedDate(completedDate)
+        .notificationDate(notificationDate)
+        .contentionTypeCode(contentionTypeCode)
+        .classificationType(classificationType)
+        .diagnosticTypeCode(diagnosticTypeCode)
+        .claimantText(claimantText)
+        .contentionStatusTypeCode(contentionStatusTypeCode)
+        .originalSourceTypeCode(originalSourceTypeCode)
+        .specialIssueCodes(specialIssueCodes)
+        .contentionId(contentionId)
+        .lastModified(lastModified)
+        .lifecycleStatus(lifecycleStatus)
+        .automationIndicator(automationIndicator)
+        .action(action)
+        .build();
+  }
 }
