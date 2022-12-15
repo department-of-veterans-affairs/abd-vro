@@ -5,7 +5,7 @@ import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
-import gov.va.vro.model.mas.FetchPdfResponse;
+import gov.va.vro.model.mas.FetchPdfResp;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
@@ -146,8 +146,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
               @Override
               public void process(Exchange exchange) throws Exception {
                 String response = exchange.getMessage().getBody(String.class);
-                FetchPdfResponse pdfResponse =
-                    new ObjectMapper().readValue(response, FetchPdfResponse.class);
+                FetchPdfResp pdfResponse =
+                    new ObjectMapper().readValue(response, FetchPdfResp.class);
                 // TODO: System.out.println(pdfResponse);
               }
             })

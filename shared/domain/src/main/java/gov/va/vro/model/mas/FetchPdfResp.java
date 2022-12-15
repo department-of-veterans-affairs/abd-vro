@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FetchPdfResponse {
+public class FetchPdfResp {
 
   @NotBlank private String claimSubmissionId;
   private String status;
