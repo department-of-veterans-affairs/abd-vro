@@ -1,12 +1,10 @@
 package gov.va.vro.service.provider.camel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -141,17 +139,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setBody(simple("${body.claimId}"))
         .convertBodyTo(String.class)
         .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
-        .process(
-            new Processor() {
-              @Override
-              public void process(Exchange exchange) throws Exception {
-                String response = exchange.getMessage().getBody(String.class);
-                FetchPdfResponse pdfResponse =
-                    new ObjectMapper().readValue(response, FetchPdfResponse.class);
-                // TODO: System.out.println(pdfResponse);
-              }
-            })
-        .log("TODO: upload PDF")
+        .process(MasIntegrationProcessors.covertToPdfReponse())
+        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
         .setBody(simple("${exchangeProperty.claim}"));
   }
 
