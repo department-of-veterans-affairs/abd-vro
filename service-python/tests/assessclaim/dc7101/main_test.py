@@ -106,7 +106,7 @@ from assessclaimdc7101.src.lib import main
                     "medicationsCount": 1,
                     "recentBpReadings": 2,
                     "totalBpReadings": 2,
-                },
+                }
             },
         ),
         (
@@ -219,7 +219,7 @@ from assessclaimdc7101.src.lib import main
                 }
             },
             {
-                "errorMessage": "error validating request message data",
+                "errorMessage": "error validating request message data"
             },
         ),
         # Bad data:
@@ -270,7 +270,7 @@ from assessclaimdc7101.src.lib import main
                 "dateOfClaim": "2021-11-09",
             },
             {
-                "errorMessage": "error validating request message data",
+                "errorMessage": "error validating request message data"
             },
         ),
     ],

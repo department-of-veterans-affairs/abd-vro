@@ -30,7 +30,7 @@ public class SecurityConfig {
   private String urlContextV1;
 
   @Value("${apiauth.hdr-key-name-v2}")
-  private String JwtAuthHeaderName;
+  private String jwtAuthHeaderName;
 
   @Value("${apiauth.url-context-v2}")
   private String urlContextV2;
@@ -68,10 +68,17 @@ public class SecurityConfig {
     return httpSecurity.build();
   }
 
+  /**
+   * Sets the security filter chain.
+   *
+   * @param httpSecurity http security.
+   * @return a security build.
+   * @throws Exception when error occurs.
+   */
   @Bean
   public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(JwtAuthHeaderName);
+    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(jwtAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
     httpSecurity

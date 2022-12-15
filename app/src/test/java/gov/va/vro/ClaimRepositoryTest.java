@@ -23,21 +23,21 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
 
-    ContentionEntity contention1 = new ContentionEntity("c1");
-    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
     EvidenceSummaryDocumentEntity evidenceSummaryDocument1 = new EvidenceSummaryDocumentEntity();
-    EvidenceSummaryDocumentEntity evidenceSummaryDocument2 = new EvidenceSummaryDocumentEntity();
     Map<String, String> count1 = new HashMap<>();
-    Map<String, String> count2 = new HashMap<>();
     count1.put("count", "1");
     evidenceSummaryDocument1.setEvidenceCount(count1);
     evidenceSummaryDocument1.setDocumentName("documentName1");
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument2 = new EvidenceSummaryDocumentEntity();
+    Map<String, String> count2 = new HashMap<>();
     count2.put("count2", "2");
     evidenceSummaryDocument2.setEvidenceCount(count2);
     evidenceSummaryDocument2.setDocumentName("documentName2");
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
+    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
     assessmentResult.setEvidenceCountSummary(evidence);
+    ContentionEntity contention1 = new ContentionEntity("c1");
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
