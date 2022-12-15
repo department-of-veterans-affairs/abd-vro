@@ -14,4 +14,4 @@ runs:
 
     - name: "Build Docker images"
       shell: bash
-      run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }} --debug
+      run: ./gradlew build docker -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
