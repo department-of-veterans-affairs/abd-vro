@@ -63,9 +63,14 @@ public class JwtValidator {
     if (isNull(jwtToken)) {
       throw new InvalidTokenException("Token has not been provided");
     }
-    DecodedJWT decodedJwt = JWT.decode(jwtToken);
-    log.info("Token decoded successfully");
-    return decodedJwt;
+    try {
+      DecodedJWT decodedJWT = JWT.decode(jwtToken);
+      log.info("Token decoded successfully");
+      return decodedJWT;
+    } catch (RuntimeException exception) {
+      throw new InvalidTokenException(
+          "Invalid JWT or JSON format of each of the jwt parts", exception);
+    }
   }
 
   /**
@@ -74,10 +79,13 @@ public class JwtValidator {
    * @param decodedJwt decoded jwt.
    */
   public void verifyTokenHeader(DecodedJWT decodedJwt) {
-    if (decodedJwt.getType().equals("JWT")) {
-      log.info("Token's header is correct");
+    if (isNull(decodedJwt.getHeader())) {
+      throw new InvalidTokenException("Invalid token, Header missing");
+    }
+    if (isNull((decodedJwt.getAlgorithm())) || isNull((decodedJwt.getKeyId()))) {
+      throw new InvalidTokenException("Invalid token, should have alg, kid claims in the header");
     } else {
-      throw new InvalidTokenException("Token is not JWT type");
+      log.info("Token's header is valid");
     }
   }
 
@@ -93,17 +101,12 @@ public class JwtValidator {
     }
     log.info("Token has not expired");
 
-    /*
-    if (!hasTokenRealmRolesClaim(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain claims with realm roles");
+    if (VALIDATE_TOKEN.equals(lhApiProps.getValidateToken().toLowerCase())) {
+      if (!payloadAsJson.has("scp")) {
+        throw new InvalidTokenException("Token doesn't contain scope information");
+      }
+      log.info("Token's payload contain scope information");
     }
-    log.info("Token's payload contain claims with realm roles");
-
-    if (!hasTokenScopeInfo(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain scope information");
-    }
-    log.info("Token's payload contain scope information");
-    */
   }
 
   /**
@@ -157,7 +160,7 @@ public class JwtValidator {
    * @return true or false.
    */
   public boolean validateTokenUsingLh(String jwtToken) {
-    if (lhApiProps.getValidateToken().toLowerCase() == VALIDATE_TOKEN) {
+    if (VALIDATE_TOKEN.equals(lhApiProps.getValidateToken().toLowerCase())) {
       try {
         HttpHeaders lhHttpHeaders = new HttpHeaders();
         lhHttpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -175,13 +178,13 @@ public class JwtValidator {
         ResponseEntity<String> response =
             restTemplate.exchange(
                 lhApiProps.getTokenValidatorUrl(), HttpMethod.POST, formEntity, String.class);
-        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response));
+        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response.getBody()));
         // Sample response
         // https://department-of-veterans-affairs.github.io/
         // lighthouse-api-standards/security/oauth/token-validation/#self-verification
-        if (lhResp.get("data") != null
-            && lhResp.get("data").get("type") != null
-            && lhResp.get("data").get("type").asText().toLowerCase() == IS_TOKEN_VALIDATED) {
+        if ((!isNull(lhResp.get("data")))
+            && (!isNull(lhResp.get("data").get("type")))
+            && IS_TOKEN_VALIDATED.equals(lhResp.get("data").get("type").asText().toLowerCase())) {
           // NOP
         } else {
           log.error("Could not validate token against LightHouse API.");
