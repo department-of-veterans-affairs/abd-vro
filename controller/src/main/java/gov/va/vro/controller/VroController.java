@@ -12,7 +12,7 @@ import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.FetchPdfResp;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -77,7 +77,7 @@ public class VroController implements VroResource {
     log.info("Fetching pdf for claim: {}", claimSubmissionId);
     try {
       String response = camelEntrance.fetchPdf(claimSubmissionId);
-      FetchPdfResp pdfResponse = objectMapper.readValue(response, FetchPdfResp.class);
+      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
       log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
       if (pdfResponse.hasContent()) {
         byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());

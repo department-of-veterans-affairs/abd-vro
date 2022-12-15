@@ -5,8 +5,8 @@ import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.*;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
-import gov.va.vro.model.mas.FetchPdfResp;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -146,12 +146,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
               @Override
               public void process(Exchange exchange) throws Exception {
                 String response = exchange.getMessage().getBody(String.class);
-                FetchPdfResp pdfResponse =
-                    new ObjectMapper().readValue(response, FetchPdfResp.class);
+                FetchPdfResponse pdfResponse =
+                    new ObjectMapper().readValue(response, FetchPdfResponse.class);
                 // TODO: System.out.println(pdfResponse);
               }
             })
-        .log("TODO: upload PDF");
+        .log("TODO: upload PDF")
+        .setBody(simple("${exchangeProperty.claim}"));
   }
 
   private void configureOrderExamStatus() {

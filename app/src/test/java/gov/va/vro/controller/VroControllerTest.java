@@ -14,7 +14,7 @@ import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.model.mas.FetchPdfResp;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -264,7 +264,7 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:fetch-pdf"));
     mockFetchPdfEndpoint.expectedMessageCount(1);
 
-    var fetchPdfResponse = new FetchPdfResp("1234", "ERROR", "diagnosis", null, "");
+    var fetchPdfResponse = new FetchPdfResponse("1234", "ERROR", "diagnosis", null, "");
 
     mockFetchPdfEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.fromFunction(
@@ -301,7 +301,7 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:fetch-pdf"));
     mockFetchPdfEndpoint.expectedMessageCount(1);
 
-    var fetchPdfResponse = new FetchPdfResp();
+    var fetchPdfResponse = new FetchPdfResponse();
     fetchPdfResponse.setPdfData(Base64.getEncoder().encodeToString("Example PDF".getBytes()));
     fetchPdfResponse.setClaimSubmissionId("1239");
     fetchPdfResponse.setStatus("SUCCESS");
