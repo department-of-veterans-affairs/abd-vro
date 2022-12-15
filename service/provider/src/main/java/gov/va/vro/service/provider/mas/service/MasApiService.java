@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasCollectionAnnotationReq;
-import gov.va.vro.model.mas.MasCollectionStatus;
-import gov.va.vro.model.mas.MasCollectionStatusReq;
-import gov.va.vro.model.mas.MasOrderExamReq;
+import gov.va.vro.model.mas.*;
+import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
+import gov.va.vro.model.mas.request.MasCollectionStatusRequest;
+import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.MasApiProps;
 import gov.va.vro.service.provider.mas.MasException;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +41,11 @@ public class MasApiService implements IMasApiService {
     try {
       String url = masApiProps.getBaseUrl() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
-      List<MasCollectionStatusReq> masCollectionStatusReqList =
+      List<MasCollectionStatusRequest> masCollectionStatusRequestList =
           collectionIds.stream().map(this::statusRequest).toList();
 
-      HttpEntity<MasCollectionStatusReq> httpEntity =
-          new HttpEntity<>(masCollectionStatusReqList.get(0), headers);
+      HttpEntity<MasCollectionStatusRequest> httpEntity =
+          new HttpEntity<>(masCollectionStatusRequestList.get(0), headers);
 
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
@@ -63,10 +62,10 @@ public class MasApiService implements IMasApiService {
     }
   }
 
-  private MasCollectionStatusReq statusRequest(int collectionId) {
-    MasCollectionStatusReq masCollectionStatusReq = new MasCollectionStatusReq();
-    masCollectionStatusReq.setCollectionsId(collectionId);
-    return masCollectionStatusReq;
+  private MasCollectionStatusRequest statusRequest(int collectionId) {
+    MasCollectionStatusRequest masCollectionStatusRequest = new MasCollectionStatusRequest();
+    masCollectionStatusRequest.setCollectionsId(collectionId);
+    return masCollectionStatusRequest;
   }
 
   @Override
@@ -76,10 +75,11 @@ public class MasApiService implements IMasApiService {
       String url = masApiProps.getBaseUrl() + masApiProps.getCollectionAnnotsPath();
       HttpHeaders headers = getMasHttpHeaders();
 
-      MasCollectionAnnotationReq masCollectionAnnotationReq = new MasCollectionAnnotationReq();
-      masCollectionAnnotationReq.setCollectionsId(collectionId);
-      HttpEntity<MasCollectionAnnotationReq> httpEntity =
-          new HttpEntity<>(masCollectionAnnotationReq, headers);
+      MasCollectionAnnotationRequest masCollectionAnnotationRequest =
+          new MasCollectionAnnotationRequest();
+      masCollectionAnnotationRequest.setCollectionsId(collectionId);
+      HttpEntity<MasCollectionAnnotationRequest> httpEntity =
+          new HttpEntity<>(masCollectionAnnotationRequest, headers);
 
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
@@ -93,13 +93,13 @@ public class MasApiService implements IMasApiService {
   }
 
   @Override
-  public String orderExam(MasOrderExamReq masOrderExamReq) throws MasException {
+  public String orderExam(MasOrderExamRequest masOrderExamRequest) throws MasException {
     try {
       String url = masApiProps.getBaseUrl() + masApiProps.getCreateExamOrderPath();
       ObjectMapper mapper = new ObjectMapper();
       try {
         // convert user object to json string and return it
-        log.info("masOrderExamReq JSON : " + mapper.writeValueAsString(masOrderExamReq));
+        log.info("masOrderExamReq JSON : " + mapper.writeValueAsString(masOrderExamRequest));
       } catch (JsonGenerationException | JsonMappingException e) {
         // catch various errors
         // NOP;
@@ -107,15 +107,15 @@ public class MasApiService implements IMasApiService {
       log.info(" Exam Order >>>> API Service URL : " + url);
       log.info(
           " Exam Order >>>> API Service collectionsid : "
-              + masOrderExamReq.getCollectionsId().toString());
+              + masOrderExamRequest.getCollectionsId().toString());
       log.info(
           " Exam Order >>>> API Service condition text: "
-              + masOrderExamReq.getConditions().get(0).getContentionText());
+              + masOrderExamRequest.getConditions().get(0).getContentionText());
       log.info(
           " Exam Order >>>> API Service condition code : "
-              + masOrderExamReq.getConditions().get(0).getConditionCode());
-      HttpHeaders headers = getMasHttpHeaders();
-      HttpEntity<MasOrderExamReq> httpEntity = new HttpEntity<>(masOrderExamReq, headers);
+              + masOrderExamRequest.getConditions().get(0).getConditionCode());
+
+      HttpEntity<MasOrderExamRequest> httpEntity = new HttpEntity<>(masOrderExamRequest, headers);
 
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);

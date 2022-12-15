@@ -155,8 +155,7 @@ readinessProbe:
 volumes:
   tracking:
     name: tracking-persistent-storage
-    #claimName: tracking-efs-claim
-    claimName: efs-sc
+    claimName: tracking-efs-claim
     mountPath: /persist/tracking
 
 # autoscaling:

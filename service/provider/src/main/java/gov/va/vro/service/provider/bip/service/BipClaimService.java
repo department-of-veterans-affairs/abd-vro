@@ -1,6 +1,8 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
+import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +23,6 @@ public class BipClaimService {
   public static final String TSOJ = "398";
   public static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
   public static final String SPECIAL_ISSUE_2 = "rrd";
-  public static final String STATUS_READY = "RFD";
-  public static final String STATUS_DECISION_COMPLETE = "Rating Decision Complete";
 
   private final IBipApiService bipApiService;
 
@@ -33,6 +33,7 @@ public class BipClaimService {
    * @return true if the anchors are satisfied, false otherwise
    */
   public boolean hasAnchors(int collectionId) {
+
     var claimDetails = bipApiService.getClaimDetails(collectionId);
     if (claimDetails == null) {
       log.warn("Claim with collection Id {} not found in BIP", collectionId);
@@ -68,6 +69,7 @@ public class BipClaimService {
   public MasAutomatedClaimPayload removeSpecialIssue(MasAutomatedClaimPayload payload) {
     var claimId = payload.getClaimId();
     log.info("Attempting to remove special issue for claim id = {}", claimId);
+
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
       log.warn("Claim id = {} has no contentions.", claimId);
@@ -95,7 +97,13 @@ public class BipClaimService {
       return payload; // nothing to update
     }
     log.info("Removing special issue for claim id = {}", claimId);
-    var request = new UpdateContentionReq(updatedContentions);
+    String action = "Remove special issue";
+    List<UpdateContention> updateContentions =
+        updatedContentions.stream()
+            .map(c -> c.toUpdateContention(action))
+            .collect(Collectors.toList());
+    UpdateContentionReq request =
+        UpdateContentionReq.builder().updateContentions(updateContentions).build();
     bipApiService.updateClaimContention(claimId, request);
     return payload;
   }
@@ -109,7 +117,8 @@ public class BipClaimService {
   public MasAutomatedClaimPayload markAsRfd(MasAutomatedClaimPayload payload) {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
-    var response = bipApiService.updateClaimStatus(collectionId, STATUS_READY);
+
+    var response = bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
     // TODO: check response, catch exceptions etc
     return payload;
   }
@@ -122,6 +131,7 @@ public class BipClaimService {
    */
   public boolean completeProcessing(MasAutomatedClaimPayload payload) {
     int collectionId = payload.getCollectionId();
+
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(collectionId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
@@ -133,7 +143,7 @@ public class BipClaimService {
     }
     // otherwise, update claim
     log.info("Updating claim status for claim with collection id = {}", collectionId);
-    bipApiService.updateClaimStatus(collectionId, STATUS_DECISION_COMPLETE);
+    bipApiService.setClaimToRfdStatus(collectionId);
     return true;
   }
 }
