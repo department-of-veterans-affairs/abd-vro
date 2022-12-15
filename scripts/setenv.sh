@@ -80,7 +80,6 @@ export COMPOSE_PROFILES=assessors,feat-toggle,pdf-gen
 # Credentials for Postgres superuser (root)
 export POSTGRES_SUPER_USER=vro_super_user
 export POSTGRES_SUPER_PASSWORD=vro_super_user_pw
-export POSTGRES_SUPER_DB=vro_super_db
 
 # Shared across containers to connect to Postgres
 export POSTGRES_USER=vro_user
