@@ -77,6 +77,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * Handles unsupported Http Methods.
+   *
+   * @param exception exception
+   * @return new exception
+   */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ClaimProcessingError> handleUnsupportedHttpMethodException(
       HttpRequestMethodNotSupportedException exception) {

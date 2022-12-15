@@ -89,7 +89,7 @@ public interface IBipApiService {
    * @param uploadEvidenceReq upload payload data.
    * @param file file to be uploaded.
    * @return an object for the upload status.
-   * @throws BipException
+   * @throws BipException exception
    */
   BipFileUploadResp uploadEvidence(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
@@ -103,7 +103,7 @@ public interface IBipApiService {
    * @param uploadEvidenceReq upload payload data.
    * @param file the file to be uploaded.
    * @return an object for the upload status.
-   * @throws BipException
+   * @throws BipException exception
    */
   BipFileUploadResp uploadEvidenceFile(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)

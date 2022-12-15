@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.mas.*;
+import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
 import gov.va.vro.model.mas.request.MasCollectionStatusRequest;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
@@ -96,7 +97,6 @@ public class MasApiService implements IMasApiService {
   public String orderExam(MasOrderExamRequest masOrderExamRequest) throws MasException {
     try {
       String url = masApiProps.getBaseUrl() + masApiProps.getCreateExamOrderPath();
-      HttpHeaders headers = getMasHttpHeaders();
       ObjectMapper mapper = new ObjectMapper();
       try {
         // convert user object to json string and return it
@@ -115,7 +115,7 @@ public class MasApiService implements IMasApiService {
       log.info(
           " Exam Order >>>> API Service condition code : "
               + masOrderExamRequest.getConditions().get(0).getConditionCode());
-
+      HttpHeaders headers = getMasHttpHeaders();
       HttpEntity<MasOrderExamRequest> httpEntity = new HttpEntity<>(masOrderExamRequest, headers);
 
       ResponseEntity<String> masResponse =

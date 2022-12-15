@@ -64,9 +64,9 @@ public class JwtValidator {
       throw new InvalidTokenException("Token has not been provided");
     }
     try {
-      DecodedJWT decodedJWT = JWT.decode(jwtToken);
+      DecodedJWT decodedJwt = JWT.decode(jwtToken);
       log.info("Token decoded successfully");
-      return decodedJWT;
+      return decodedJwt;
     } catch (RuntimeException exception) {
       throw new InvalidTokenException(
           "Invalid JWT or JSON format of each of the jwt parts", exception);
