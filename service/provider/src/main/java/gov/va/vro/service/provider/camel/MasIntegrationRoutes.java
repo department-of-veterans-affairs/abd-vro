@@ -97,14 +97,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
+        // determine is evidence is sufficent
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
+        // Generate PDF
         .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         .setBody(simple("${exchangeProperty.claim}"))
+        // Conditionally order exam
         .to(orderExamEndpoint)
+        // Upload PDF
         .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE);
 
     from(collectEvidenceEndpoint)
@@ -128,7 +133,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         .process(masOrderExamProcessor)
-        // .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
   }
