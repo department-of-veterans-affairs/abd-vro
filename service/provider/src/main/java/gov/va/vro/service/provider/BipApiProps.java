@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class BipApiProps {
 
-  private String claimBaseURL;
+  private String claimBaseUrl;
 
   private String claimSecret;
 
@@ -20,7 +20,7 @@ public class BipApiProps {
 
   private String claimIssuer;
 
-  private String evidenceBaseURL;
+  private String evidenceBaseUrl;
 
   private String evidenceSecret;
 
