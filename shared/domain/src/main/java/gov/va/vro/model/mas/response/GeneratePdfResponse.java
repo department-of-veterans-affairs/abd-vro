@@ -1,4 +1,4 @@
-package gov.va.vro.model.mas;
+package gov.va.vro.model.mas.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class GeneratePdfResp {
+public class GeneratePdfResponse {
 
   @NotBlank private String claimSubmissionId;
   private String status;

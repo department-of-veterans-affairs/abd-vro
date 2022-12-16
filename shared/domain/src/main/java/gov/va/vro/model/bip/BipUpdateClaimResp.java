@@ -1,12 +1,17 @@
 package gov.va.vro.model.bip;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-@Getter
+@Data
 public class BipUpdateClaimResp {
-  private final HttpStatus status;
-  private final String message;
+  private HttpStatus status;
+  private String message;
+
+  public BipUpdateClaimResp(HttpStatus status, String msg) {
+    this.status = status;
+    this.message = msg;
+  }
 }
