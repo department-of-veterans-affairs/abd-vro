@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-/** @author warren @Date 11/16/22 */
+/**
+ * Bip contention creation response.
+ *
+ * @author warren @Date 11/16/22
+ */
 @Builder
 @Getter
 @Schema(

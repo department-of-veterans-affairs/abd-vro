@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-/** @author warren @Date 11/7/22 */
+/**
+ * Bip claim status response.
+ *
+ * @author warren @Date 11/7/22
+ */
 @Builder
 @Getter
 @Schema(

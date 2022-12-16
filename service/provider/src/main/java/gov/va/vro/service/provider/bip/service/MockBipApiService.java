@@ -1,6 +1,13 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.*;
+import gov.va.vro.model.bip.BipClaim;
+import gov.va.vro.model.bip.BipFileUploadPayload;
+import gov.va.vro.model.bip.BipFileUploadResp;
+import gov.va.vro.model.bip.BipUpdateClaimResp;
+import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
+import gov.va.vro.model.bip.CreateContentionReq;
+import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.http.HttpStatus;
@@ -10,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-/** Mock some claim data returned by the BIP API */
+/** Mock some claim data returned by the BIP API. */
 @Service
 public class MockBipApiService implements IBipApiService {
   @Override

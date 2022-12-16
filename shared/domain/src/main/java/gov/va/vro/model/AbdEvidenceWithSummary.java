@@ -27,5 +27,5 @@ public class AbdEvidenceWithSummary {
 
   @Schema(description = "Sufficient for Fast Tracking flag")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private Boolean sufficientForFastTracking;
+  private boolean sufficientForFastTracking;
 }

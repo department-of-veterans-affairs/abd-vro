@@ -150,5 +150,6 @@
     "relevantMedCount": 4,
     "totalMedCount": 11
   },
-  "claimSubmissionId": "7002"
+  "claimSubmissionId": "7002",
+  "sufficientForFastTracking": false
 }

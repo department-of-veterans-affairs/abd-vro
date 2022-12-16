@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.mas.*;
+import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
 import gov.va.vro.model.mas.request.MasCollectionStatusRequest;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
@@ -12,7 +13,11 @@ import gov.va.vro.service.provider.MasApiProps;
 import gov.va.vro.service.provider.mas.MasException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -35,7 +40,7 @@ public class MasApiService implements IMasApiService {
   public List<MasCollectionStatus> getMasCollectionStatus(List<Integer> collectionIds)
       throws MasException {
     try {
-      String url = masApiProps.getBaseURL() + masApiProps.getCollectionStatusPath();
+      String url = masApiProps.getBaseUrl() + masApiProps.getCollectionStatusPath();
       HttpHeaders headers = getMasHttpHeaders();
       List<MasCollectionStatusRequest> masCollectionStatusRequestList =
           collectionIds.stream().map(this::statusRequest).toList();
@@ -68,7 +73,7 @@ public class MasApiService implements IMasApiService {
   public List<MasCollectionAnnotation> getCollectionAnnotations(Integer collectionId)
       throws MasException {
     try {
-      String url = masApiProps.getBaseURL() + masApiProps.getCollectionAnnotsPath();
+      String url = masApiProps.getBaseUrl() + masApiProps.getCollectionAnnotsPath();
       HttpHeaders headers = getMasHttpHeaders();
 
       MasCollectionAnnotationRequest masCollectionAnnotationRequest =
@@ -91,10 +96,8 @@ public class MasApiService implements IMasApiService {
   @Override
   public String orderExam(MasOrderExamRequest masOrderExamRequest) throws MasException {
     try {
-      String url = masApiProps.getBaseURL() + masApiProps.getCreateExamOrderPath();
-      HttpHeaders headers = getMasHttpHeaders();
+      String url = masApiProps.getBaseUrl() + masApiProps.getCreateExamOrderPath();
       ObjectMapper mapper = new ObjectMapper();
-
       try {
         // convert user object to json string and return it
         log.info("masOrderExamReq JSON : " + mapper.writeValueAsString(masOrderExamRequest));
@@ -112,7 +115,7 @@ public class MasApiService implements IMasApiService {
       log.info(
           " Exam Order >>>> API Service condition code : "
               + masOrderExamRequest.getConditions().get(0).getConditionCode());
-
+      HttpHeaders headers = getMasHttpHeaders();
       HttpEntity<MasOrderExamRequest> httpEntity = new HttpEntity<>(masOrderExamRequest, headers);
 
       ResponseEntity<String> masResponse =
