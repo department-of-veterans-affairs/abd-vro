@@ -4,12 +4,10 @@ from typing import Dict
 from . import utils
 
 
-def report_feature_toggles(event: Dict):
+def report_feature_toggles():
     """
     Take a request and return a response that includes feature toggle data
 
-    :param event: request body
-    :type event: dict
     :return: response body
     :rtype: dict
     """

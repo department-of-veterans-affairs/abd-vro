@@ -16,11 +16,10 @@ def feature_toggle_request_callback(channel, method, properties, body):
 
     redis_client = RedisClient(redis_config)
     binding_key = method.routing_key
-    message = json.loads(body.decode("utf-8"))
     logging.info(f" [x] {binding_key}: Received message.")
 
     try:
-        response = main.report_feature_toggles(message)
+        response = main.report_feature_toggles()
         redis_client.publish("features", items=utils.create_features_list())
         redis_client.publish("features_timestamp", pytz.utc.localize(datetime.now()))
     except Exception as e:
