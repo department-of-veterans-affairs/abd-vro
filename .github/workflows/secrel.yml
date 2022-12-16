@@ -59,5 +59,5 @@ jobs:
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0-rc1
     with:
       config-file: .github/secrel/config.yml
-      images: {{ needs.build-app-images.outputs.secrel_images }}
+      images: ${{ needs.build-app-images.outputs.secrel_images }}
     secrets: inherit
