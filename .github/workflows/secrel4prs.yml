@@ -1,0 +1,70 @@
+name: "SecRel check for PRs"
+
+on:
+  pull_request:
+    branches: [ main, qa, develop ]
+    # Limit to certain PR event types since this action doesn't need to run for every commit
+    types: [ready_for_review, review_requested]
+
+  # Trigger on every code push to main and develop branches
+  push:
+    branches: [ main, qa, develop ]
+
+  # Trigger on all published GitHub Releases
+  release:
+    types: [ "created" ]
+
+  # Trigger manually
+  workflow_dispatch:
+
+env:
+  TARGET_ENV: 'dev'
+
+jobs:
+  publish-images:
+    # only run for the internal repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    outputs:
+      vro-images: ${{ steps.publish-images.outputs.images_list }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Determine target environment"
+        run: |
+          echo "ref_name: ${{github.ref_name}}"
+          echo 'TARGET_ENV=dev' >> $GITHUB_ENV
+          echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
+
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
+        id: publish-images
+        uses: ./.github/actions/publish-images
+        with:
+          target_env: ${{ env.TARGET_ENV }}
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          ghcr_username: ${{ secrets.USERNAME }}
+          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
+
+  debug:
+    runs-on: ubuntu-latest
+    needs:
+      - publish-images
+    steps:
+      - name: output var
+        run: |
+          echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
+          echo "ref_name: ${{github.ref_name}}"
+          echo "publish-images: ${{ needs.publish-images.outputs.vro-images }}"
+          export -p | sed 's/declare -x //'
+
+  secrel:
+    # only run for the internal repo -- SecRel doesn't work on public repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: SecRel Pipeline
+    needs: publish-images
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0-rc1
+    with:
+      config-file: .github/secrel/config4.yml
+      images: ${{ needs.publish-images.outputs.vro-images }}
+    secrets: inherit
