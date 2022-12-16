@@ -30,8 +30,18 @@ jobs:
     steps:
       - name: "Determine target environment"
         run: |
-          echo "ref_name: ${{github.ref_name}}"
-          echo 'TARGET_ENV=dev' >> $GITHUB_ENV
+          echo "ref_name: ${{ github.ref_name }}"
+          case "${{ github.ref_name }}" in
+            # main and sandbox are untested
+            # main)      IMAGE_PREFIX="";;
+            # sandbox) IMAGE_PREFIX=sandbox;;
+            qa)        IMAGE_PREFIX=qa;;
+            develop|*) IMAGE_PREFIX=dev;;
+          esac
+          echo 'TARGET_ENV=${IMAGE_PREFIX}' >> $GITHUB_ENV
+
+      - name: "DEBUG"
+        run: |
           echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
 
       - name: "Checkout source code"
