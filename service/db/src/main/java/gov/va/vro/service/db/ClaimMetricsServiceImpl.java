@@ -3,12 +3,10 @@ package gov.va.vro.service.db;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
-import gov.va.vro.service.spi.model.ClaimInfoData;
-
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import gov.va.vro.service.spi.model.ClaimInfoData;
 import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
