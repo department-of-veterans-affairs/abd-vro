@@ -56,7 +56,6 @@ public class VroController implements VroResource {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
       log.info(model.toString());
       String response = camelEntrance.generatePdf(model);
-      log.info(response);
       GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
       log.info(pdfResponse.toString());
       log.info("RESPONSE from generatePdf returned status: {}", pdfResponse.getStatus());
