@@ -77,7 +77,7 @@ secrel_docker_build_args() {
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+IMAGES=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
