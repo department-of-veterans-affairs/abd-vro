@@ -14,6 +14,8 @@ import java.util.List;
 
 @Slf4j
 public class HealthEvidenceProcessor implements Processor {
+
+  /** Set the flag "sufficient for fast-tracking" */
   @Override
   public void process(Exchange exchange) {
     MasAutomatedClaimPayload claimPayload =
@@ -34,6 +36,10 @@ public class HealthEvidenceProcessor implements Processor {
     }
   }
 
+  /**
+   * The list must be provided to the PDF processor, even if they are empty. Otherwise, it will fail
+   * to process
+   */
   private AbdEvidence getValidEvidence(AbdEvidence evidence) {
     var validEvidence = new AbdEvidence();
     validEvidence.setConditions(emptyIfNull(evidence.getConditions()));

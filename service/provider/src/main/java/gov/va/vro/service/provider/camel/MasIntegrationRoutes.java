@@ -97,7 +97,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        // determine is evidence is sufficent
+        // determine if evidence is sufficent
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
