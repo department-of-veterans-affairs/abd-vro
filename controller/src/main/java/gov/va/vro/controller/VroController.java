@@ -1,6 +1,7 @@
 package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
@@ -229,5 +230,18 @@ public class VroController implements VroResource {
       log.error("Error in claimInfoWithPagination services." + e.getMessage());
       throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
+  }
+
+  private static HttpHeaders getHttpHeaders(String diagnosis) {
+    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+    ContentDisposition disposition =
+        ContentDisposition.attachment()
+            .filename(
+                String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+            .build();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_PDF);
+    headers.setContentDisposition(disposition);
+    return headers;
   }
 }
