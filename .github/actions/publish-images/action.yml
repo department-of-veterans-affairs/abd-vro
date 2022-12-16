@@ -14,6 +14,9 @@ inputs:
   ghcr_password:
     description: 'GHCR password or access token'
     required: true
+  run_tests:
+    description: 'Run test before publishing images'
+    default: 'true'
 
 outputs:
   images_list:
@@ -30,6 +33,7 @@ runs:
         access_token: ${{ inputs.access_token }}
 
     - name: "Test code"
+      if: inputs.run_tests == 'true'
       shell: bash
       run: ./gradlew check
 

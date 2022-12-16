@@ -19,6 +19,7 @@ on:
 
 env:
   TARGET_ENV: 'dev'
+  RUN_TESTS: 'true'
 
 jobs:
   publish-images:
@@ -31,18 +32,24 @@ jobs:
       - name: "Determine target environment"
         run: |
           echo "ref_name: ${{ github.ref_name }}"
+          GRADLE_TESTS=true
           case "${{ github.ref_name }}" in
             # main and sandbox are untested
-            # main)      IMAGE_PREFIX="";;
+            # main)    IMAGE_PREFIX="";;
             # sandbox) IMAGE_PREFIX=sandbox;;
-            qa)        IMAGE_PREFIX=qa;;
-            develop|*) IMAGE_PREFIX=dev;;
+            qa)      IMAGE_PREFIX=qa;;
+            develop) IMAGE_PREFIX=dev;;
+            *)       IMAGE_PREFIX=dev
+                     GRADLE_TESTS=false
+              ;;
           esac
           echo 'TARGET_ENV=${IMAGE_PREFIX}' >> $GITHUB_ENV
+          echo 'RUN_TESTS=${GRADLE_TESTS}' >> $GITHUB_ENV
 
       - name: "DEBUG"
         run: |
           echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
+          echo "RUN_TESTS: ${{ env.RUN_TESTS }}"
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -55,6 +62,7 @@ jobs:
           access_token: ${{ secrets.ACCESS_TOKEN }}
           ghcr_username: ${{ secrets.USERNAME }}
           ghcr_password: ${{ secrets.ACCESS_TOKEN }}
+          run_tests: ${{ env.RUN_TESTS }}
 
   debug:
     runs-on: ubuntu-latest
