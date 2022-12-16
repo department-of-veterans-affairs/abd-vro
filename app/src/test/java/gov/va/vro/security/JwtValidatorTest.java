@@ -1,6 +1,6 @@
 package gov.va.vro.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gov.va.vro.config.LhApiProps;
 import org.junit.jupiter.api.Test;

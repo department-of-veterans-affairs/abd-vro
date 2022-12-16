@@ -33,7 +33,7 @@ public class BipClaimService {
   private final IBipApiService bipApiService;
 
   /**
-   * Check if all the anchors for fast-tracking are satisfied
+   * Check if all the anchors for fast-tracking are satisfied.
    *
    * @param collectionId collection id identifying the claim
    * @return true if the anchors are satisfied, false otherwise
@@ -67,7 +67,7 @@ public class BipClaimService {
   }
 
   /**
-   * Remove special issue contention
+   * Remove special issue contention.
    *
    * @param payload the claim payload
    * @return the claim payload
@@ -115,12 +115,12 @@ public class BipClaimService {
   }
 
   /**
-   * Update claim status
+   * Update claim status.
    *
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload markAsRFD(MasAutomatedClaimPayload payload) {
+  public MasAutomatedClaimPayload markAsRfd(MasAutomatedClaimPayload payload) {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
 
@@ -130,7 +130,7 @@ public class BipClaimService {
   }
 
   /**
-   * Check if claim is still eligible for fast tracking, and if so, update status
+   * Check if claim is still eligible for fast tracking, and if so, update status.
    *
    * @param payload the claim payload
    * @return true if the status is updated, false otherwise

@@ -7,7 +7,11 @@ import lombok.Getter;
 
 import java.util.List;
 
-/** @author warren @Date 11/16/22 */
+/**
+ * Bip claim contention response.
+ *
+ * @author warren @Date 11/16/22
+ */
 @Builder
 @Getter
 @Schema(name = "BIPClaimContentionsResponse", description = "A list of contentions for a claim.")

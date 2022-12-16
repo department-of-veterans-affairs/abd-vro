@@ -18,7 +18,7 @@ import org.apache.camel.Processor;
 import java.util.List;
 import java.util.function.Function;
 
-/** Helper processors for Mas Integration */
+/** Helper processors for Mas Integration. */
 @Slf4j
 public class MasIntegrationProcessors {
 
@@ -42,6 +42,11 @@ public class MasIntegrationProcessors {
     };
   }
 
+  /**
+   * Processor that turns payload to claim.
+   *
+   * @return return
+   */
   public static Processor payloadToClaimProcessor() {
     return FunctionProcessor.fromFunction(
         (Function<MasAutomatedClaimPayload, Claim>)

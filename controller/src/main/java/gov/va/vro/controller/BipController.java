@@ -1,8 +1,21 @@
 package gov.va.vro.controller;
 
 import gov.va.vro.api.resources.BipResource;
-import gov.va.vro.api.responses.*;
-import gov.va.vro.model.bip.*;
+import gov.va.vro.api.responses.BipClaimContentionsResponse;
+import gov.va.vro.api.responses.BipClaimResponse;
+import gov.va.vro.api.responses.BipClaimStatusResponse;
+import gov.va.vro.api.responses.BipContentionCreationResponse;
+import gov.va.vro.api.responses.BipContentionUpdateResponse;
+import gov.va.vro.model.bip.BipClaim;
+import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
+import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
+import gov.va.vro.model.bip.BipUpdateClaimPayload;
+import gov.va.vro.model.bip.BipUpdateClaimResp;
+import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.CreateContention;
+import gov.va.vro.model.bip.CreateContentionReq;
+import gov.va.vro.model.bip.UpdateContention;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +43,7 @@ public class BipController implements BipResource {
   private final IBipApiService service;
 
   @Override
-  public ResponseEntity<BipClaimStatusResponse> setClaimRFD(@Valid BipUpdateClaimPayload request) {
+  public ResponseEntity<BipClaimStatusResponse> setClaimRfd(@Valid BipUpdateClaimPayload request) {
     log.info("Set the claim status to RFD for claim ID {}", request.getClaimId());
 
     // TODO: route to call BipApiService
