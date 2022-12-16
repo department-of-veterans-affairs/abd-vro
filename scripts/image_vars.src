@@ -36,57 +36,41 @@ getVarValue(){
 # --- app in folder ./app
 export app_GRADLE_IMG="va/abd_vro-app"
 export app_IMG="vro-app"
-export app_DOCKERFILE="./app/src/docker/Dockerfile"
-export app_DOCKER_CONTEXT="./app/build/docker"
 export app_HELM_KEY="app"
 
 # --- postgres in folder ./postgres
 export db_GRADLE_IMG="va/abd_vro-postgres"
 export db_IMG="vro-postgres"
-export db_DOCKERFILE="./postgres/src/docker/Dockerfile"
-export db_DOCKER_CONTEXT="./postgres/build/docker"
 export db_HELM_KEY="db"
 
 # --- db-init in folder ./db-init
 export dbInit_GRADLE_IMG="va/abd_vro-db-init"
 export dbInit_IMG="vro-db-init"
-export dbInit_DOCKERFILE="./db-init/src/docker/Dockerfile"
-export dbInit_DOCKER_CONTEXT="./db-init/build/docker"
 export dbInit_HELM_KEY="dbInit"
 
 # --- console in folder ./console
 export console_GRADLE_IMG="va/abd_vro-console"
 export console_IMG="vro-console"
-export console_DOCKERFILE="./console/src/docker/Dockerfile"
-export console_DOCKER_CONTEXT="./console/build/docker"
 export console_HELM_KEY="console"
 
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
 export serviceDataAccess_GRADLE_IMG="va/abd_vro-service-data-access"
 export serviceDataAccess_IMG="vro-service-data-access"
-export serviceDataAccess_DOCKERFILE="./svc-lighthouse-api/src/docker/Dockerfile"
-export serviceDataAccess_DOCKER_CONTEXT="./svc-lighthouse-api/build/docker"
 export serviceDataAccess_HELM_KEY="serviceDataAccess"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
 export pdfGenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
 export pdfGenerator_IMG="vro-service-pdfgenerator"
-export pdfGenerator_DOCKERFILE="./service-python/Dockerfile"
-export pdfGenerator_DOCKER_CONTEXT="./service-python"
 export pdfGenerator_HELM_KEY="pdfGenerator"
 
 # --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
 export serviceAssessClaimDC7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
 export serviceAssessClaimDC7101_IMG="vro-service-assessclaimdc7101"
-export serviceAssessClaimDC7101_DOCKERFILE="./service-python/Dockerfile"
-export serviceAssessClaimDC7101_DOCKER_CONTEXT="./service-python"
 export serviceAssessClaimDC7101_HELM_KEY="serviceAssessClaimDC7101"
 
 # --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
 export serviceAssessClaimDC6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
 export serviceAssessClaimDC6602_IMG="vro-service-assessclaimdc6602"
-export serviceAssessClaimDC6602_DOCKERFILE="./service-python/Dockerfile"
-export serviceAssessClaimDC6602_DOCKER_CONTEXT="./service-python"
 export serviceAssessClaimDC6602_HELM_KEY="serviceAssessClaimDC6602"
 
 # End of file
