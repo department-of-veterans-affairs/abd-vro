@@ -7,12 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
+import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -83,6 +85,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     mockSufficiencyAssess.whenAnyExchangeReceived(
         exchange -> {
           var evidence = new AbdEvidenceWithSummary();
+          evidence.setEvidence(new AbdEvidence());
           evidence.setSufficientForFastTracking(sufficientEvidence);
           exchange.getMessage().setBody(new ObjectMapper().writeValueAsBytes(evidence));
         });
@@ -98,6 +101,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "generate-pdf",
         "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
         "mock:empty-endpoint");
+
+    replaceEndpoint(
+        "mas-processing", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
