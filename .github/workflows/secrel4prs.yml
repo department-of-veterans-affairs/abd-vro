@@ -1,14 +1,8 @@
 name: "SecRel check for PRs"
 
 on:
-  pull_request:
-    branches: [ main, qa, develop ]
-    # Limit to certain PR event types since this action doesn't need to run for every commit
-    types: [ready_for_review, review_requested]
-
-  # Trigger on every code push to main and develop branches
+  # Trigger on every code push to all branches
   push:
-    branches: [ main, qa, develop ]
 
   # Trigger on all published GitHub Releases
   release:
@@ -27,6 +21,8 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
+      target-env: ${{ env.TARGET_ENV }}
+      run-tests: ${{ env.RUN_TESTS }}
     runs-on: ubuntu-latest
     steps:
       - name: "Determine target environment"
@@ -43,10 +39,10 @@ jobs:
                      GRADLE_TESTS=false
               ;;
           esac
-          echo 'TARGET_ENV=${IMAGE_PREFIX}' >> $GITHUB_ENV
-          echo 'RUN_TESTS=${GRADLE_TESTS}' >> $GITHUB_ENV
+          echo "TARGET_ENV=${IMAGE_PREFIX}" >> $GITHUB_ENV
+          echo "RUN_TESTS=${GRADLE_TESTS}" >> $GITHUB_ENV
 
-      - name: "DEBUG"
+      - name: "DEBUG step"
         run: |
           echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
           echo "RUN_TESTS: ${{ env.RUN_TESTS }}"
@@ -54,7 +50,7 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
+      - name: "Publish ${{ env.TARGET_ENV }} images to GHCR"
         id: publish-images
         uses: ./.github/actions/publish-images
         with:
@@ -64,14 +60,15 @@ jobs:
           ghcr_password: ${{ secrets.ACCESS_TOKEN }}
           run_tests: ${{ env.RUN_TESTS }}
 
-  debug:
+  debug-job:
     runs-on: ubuntu-latest
     needs:
       - publish-images
     steps:
       - name: output var
         run: |
-          echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
+          echo "TARGET_ENV: ${{ needs.publish-images.outputs.target-env }}"
+          echo "RUN_TESTS: ${{ needs.publish-images.outputs.run-tests }}"
           echo "ref_name: ${{github.ref_name}}"
           echo "publish-images: ${{ needs.publish-images.outputs.vro-images }}"
           export -p | sed 's/declare -x //'
