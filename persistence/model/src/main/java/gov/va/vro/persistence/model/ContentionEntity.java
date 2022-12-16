@@ -50,6 +50,12 @@ public class ContentionEntity extends BaseEntity {
     this.diagnosticCode = diagnosticCode;
   }
 
+  /**
+   * Adds assessment result to a claim.
+   *
+   * @param ar assessment result entity
+   * @return returns the assessment result
+   */
   public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
     assessmentResult.setContention(this);
@@ -58,6 +64,12 @@ public class ContentionEntity extends BaseEntity {
     return assessmentResult;
   }
 
+  /**
+   * Adds evidence summary document to contention entity.
+   *
+   * @param request evidence summary document entity.
+   * @return returns the evidence summary document.
+   */
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
       EvidenceSummaryDocumentEntity request) {
     EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
@@ -69,9 +81,7 @@ public class ContentionEntity extends BaseEntity {
   }
 
   /**
-   * add evidence summary document.
-   *
-   * <p>
+   * Add evidence summary document to contention entity.
    *
    * @param evidenceCount evidence counts
    * @param documentName document name

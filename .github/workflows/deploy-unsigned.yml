@@ -96,7 +96,16 @@ jobs:
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
             echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
             echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+          else
+            # Return nonzero error code so that workflow fails
+            exit 1
           fi
+
+      - name: "Cancelled workflow"
+        if: cancelled()
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
       - name: "Notify Slack: Thread deployment status"
         if: always()

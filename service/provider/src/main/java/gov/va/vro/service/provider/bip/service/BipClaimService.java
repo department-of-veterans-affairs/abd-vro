@@ -1,14 +1,22 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bip.*;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.BipException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,18 +29,17 @@ public class BipClaimService {
   public static final String TSOJ = "398";
   public static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
   public static final String SPECIAL_ISSUE_2 = "rrd";
-  public static final String STATUS_READY = "RFD";
-  public static final String STATUS_DECISION_COMPLETE = "Rating Decision Complete";
 
   private final IBipApiService bipApiService;
 
   /**
-   * Check if all the anchors for fast-tracking are satisfied
+   * Check if all the anchors for fast-tracking are satisfied.
    *
    * @param collectionId collection id identifying the claim
    * @return true if the anchors are satisfied, false otherwise
    */
   public boolean hasAnchors(int collectionId) {
+
     var claimDetails = bipApiService.getClaimDetails(collectionId);
     if (claimDetails == null) {
       log.warn("Claim with collection Id {} not found in BIP", collectionId);
@@ -60,7 +67,7 @@ public class BipClaimService {
   }
 
   /**
-   * Remove special issue contention
+   * Remove special issue contention.
    *
    * @param payload the claim payload
    * @return the claim payload
@@ -68,6 +75,7 @@ public class BipClaimService {
   public MasAutomatedClaimPayload removeSpecialIssue(MasAutomatedClaimPayload payload) {
     var claimId = payload.getClaimId();
     log.info("Attempting to remove special issue for claim id = {}", claimId);
+
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
       log.warn("Claim id = {} has no contentions.", claimId);
@@ -95,33 +103,41 @@ public class BipClaimService {
       return payload; // nothing to update
     }
     log.info("Removing special issue for claim id = {}", claimId);
-    var request = new UpdateContentionReq(updatedContentions);
+    String action = "Remove special issue";
+    List<UpdateContention> updateContentions =
+        updatedContentions.stream()
+            .map(c -> c.toUpdateContention(action))
+            .collect(Collectors.toList());
+    UpdateContentionReq request =
+        UpdateContentionReq.builder().updateContentions(updateContentions).build();
     bipApiService.updateClaimContention(claimId, request);
     return payload;
   }
 
   /**
-   * Update claim status
+   * Update claim status.
    *
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload markAsRFD(MasAutomatedClaimPayload payload) {
+  public MasAutomatedClaimPayload markAsRfd(MasAutomatedClaimPayload payload) {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
-    var response = bipApiService.updateClaimStatus(collectionId, STATUS_READY);
+
+    var response = bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
     // TODO: check response, catch exceptions etc
     return payload;
   }
 
   /**
-   * Check if claim is still eligible for fast tracking, and if so, update status
+   * Check if claim is still eligible for fast tracking, and if so, update status.
    *
    * @param payload the claim payload
    * @return true if the status is updated, false otherwise
    */
   public boolean completeProcessing(MasAutomatedClaimPayload payload) {
     int collectionId = payload.getCollectionId();
+
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(collectionId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
@@ -133,7 +149,29 @@ public class BipClaimService {
     }
     // otherwise, update claim
     log.info("Updating claim status for claim with collection id = {}", collectionId);
-    bipApiService.updateClaimStatus(collectionId, STATUS_DECISION_COMPLETE);
+    bipApiService.setClaimToRfdStatus(collectionId);
     return true;
+  }
+
+  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
+    log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
+    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
+    File file = new File(filename);
+    try {
+      byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+      InputStream is = new ByteArrayInputStream(decoder);
+      Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      // TODO: I don't know what parameters should be passed here. A BIP expert will address this
+      bipApiService.uploadEvidence(
+          FileIdType.FILENUMBER,
+          pdfResponse.getClaimSubmissionId(),
+          new BipFileUploadPayload(),
+          file);
+      return pdfResponse;
+    } catch (IOException ioe) {
+      throw new BipException("Failed to upload evidence file.", ioe);
+    } finally {
+      file.delete();
+    }
   }
 }

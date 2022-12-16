@@ -40,6 +40,13 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
+  /**
+   * Notify automated claim.
+   *
+   * @param payload mas payload
+   * @param delay delay time
+   * @param retryCount amount of retries
+   */
   public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay, int retryCount) {
     producerTemplate.sendBodyAndHeaders(
         MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM,
@@ -55,9 +62,9 @@ public class CamelEntrance {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
   }
 
-  public void processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload);
+  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    return producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
   }
 
   public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
