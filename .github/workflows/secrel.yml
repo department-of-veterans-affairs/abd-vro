@@ -25,6 +25,8 @@ env:
 jobs:
   build-app-images:
     runs-on: ubuntu-latest
+    outputs:
+        secrel_images: ${{ steps.secrel_images.outputs.images }}
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -37,6 +39,18 @@ jobs:
           ghcr_username: ${{ secrets.USERNAME }}
           ghcr_password: ${{ secrets.ACCESS_TOKEN }}
 
+      - name: "Generate images string to use in secrel job"
+        id: secrel_images
+        run: |
+          echo -e "images=ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-app:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-postgres:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-db-init:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-console:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-data-access:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-pdfgenerator:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc7101:${{ env.COMMIT_SHA }} \n
+          ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc6602:${{ env.COMMIT_SHA }}" >> $GITHUB_OUTPUT
+
   secrel:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
@@ -45,13 +59,5 @@ jobs:
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0-rc1
     with:
       config-file: .github/secrel/config.yml
-      images: |-
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-app:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-postgres:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-db-init:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-console:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-data-access:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-pdfgenerator:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc7101:${{ env.COMMIT_SHA }}
-        ghcr.io/${{ github.repository }}/${{ env.TARGET_ENV }}_vro-service-assessclaimdc6602:${{ env.COMMIT_SHA }}
+      images: {{ needs.build-app-images.outputs.secrel_images }}
     secrets: inherit
