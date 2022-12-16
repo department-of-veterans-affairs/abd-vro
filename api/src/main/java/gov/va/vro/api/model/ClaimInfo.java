@@ -24,5 +24,4 @@ public class ClaimInfo {
   int evidenceSummaryDocumentsCount;
   List<String> contentions;
   Map<String, String> evidenceSummary;
-  String errorMessage;
 }

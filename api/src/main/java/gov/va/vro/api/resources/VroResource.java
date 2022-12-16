@@ -4,6 +4,7 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.ClaimInfoListResponse;
 import gov.va.vro.api.responses.ClaimInfoResponse;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
@@ -182,9 +185,9 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
 
   @Operation(
-      summary = "Retrieves the claim corresponding to the claimSubmissionId.",
+      summary = "Claims for a claimSubmissionId.",
       description = "This endpoint provides processed claims information. ")
-  @GetMapping("/claim-info/{claimSubmissionId}")
+  @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -202,15 +205,16 @@ public interface VroResource {
             content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-info")
+  @Timed(value = "claim-info-claim-id")
   @Tag(name = "Claim Metrics")
+  @ResponseBody
   ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(@PathVariable String claimSubmissionId)
       throws MetricsProcessingException;
 
   @Operation(
-      summary = "Retrieves the claims and appropriate data for a particular veteran ICN",
+      summary = "Claims for a veteran ICN",
       description = "This endpoint provides processed claims information for a specific veteran. ")
-  @GetMapping("/claim-info-for-veteran/{veteranIcn}")
+  @GetMapping(value = "/claim-info/veteran")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -230,13 +234,13 @@ public interface VroResource {
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info-for-veteran")
   @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimInfoResponse> claimInfoForVeteran(@PathVariable String veteranIcn)
-      throws MetricsProcessingException;
+  ResponseEntity<ClaimInfoListResponse> claimInfoForVeteran(
+      @RequestParam(name = "veteranIcn") String veteranIcn) throws MetricsProcessingException;
 
   @Operation(
-      summary = "Retrieves pages of claims based on passing the page number and size",
+      summary = "Pages of claims",
       description = "This endpoint provides processed claims by the page. ")
-  @GetMapping("/claim-info-with-pagination/{offset}/{pageSize}")
+  @GetMapping(value = "/claim-info")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -256,6 +260,7 @@ public interface VroResource {
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info-with-pagination")
   @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimInfoResponse> claimInfoWithPagination(
-      @PathVariable int offset, @PathVariable int pageSize) throws Exception;
+  ResponseEntity<ClaimInfoListResponse> claimInfoWithPagination(
+      @RequestParam(name = "offset") int offset, @RequestParam(name = "pageSize") int pageSize)
+      throws Exception;
 }

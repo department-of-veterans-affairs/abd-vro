@@ -7,6 +7,7 @@ import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
+import gov.va.vro.api.responses.ClaimInfoListResponse;
 import gov.va.vro.api.responses.ClaimInfoResponse;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FetchPdfResponse;
@@ -194,20 +195,10 @@ public class VroController implements VroResource {
       throws MetricsProcessingException {
     ClaimInfoResponse response = new ClaimInfoResponse();
     try {
-      List<ClaimInfoData> info = claimMetricsService.claimInfoForClaimId(claimSubmissionId);
-      List<ClaimInfo> infoList = new ArrayList<>();
-      if (info.get(0).getErrorMessage() != null) {
-        throw new MetricsProcessingException(
-            HttpStatus.INTERNAL_SERVER_ERROR, info.get(0).getErrorMessage());
-      }
-      for (ClaimInfoData metricsInfo : info) {
-        ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
-        infoList.add(claim);
-      }
-      response.setClaims(infoList);
+      ClaimInfoData info = claimMetricsService.claimInfoForClaimId(claimSubmissionId);
+      ClaimInfo claim = claimInfoDataMapper.toClaimInfo(info);
+      response.setClaim(claim);
       return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (MetricsProcessingException mpe) {
-      throw mpe;
     } catch (Exception e) {
       log.error("Error in claimInfoForClaimId services." + e.getMessage());
       throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -215,9 +206,9 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoForVeteran(String veteranIcn)
+  public ResponseEntity<ClaimInfoListResponse> claimInfoForVeteran(String veteranIcn)
       throws MetricsProcessingException {
-    ClaimInfoResponse response = new ClaimInfoResponse();
+    ClaimInfoListResponse response = new ClaimInfoListResponse();
     try {
       List<ClaimInfoData> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
       List<ClaimInfo> infoList = new ArrayList<>();
@@ -240,9 +231,9 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoWithPagination(int offset, int pageSize)
+  public ResponseEntity<ClaimInfoListResponse> claimInfoWithPagination(int offset, int pageSize)
       throws MetricsProcessingException {
-    ClaimInfoResponse response = new ClaimInfoResponse();
+    ClaimInfoListResponse response = new ClaimInfoListResponse();
     try {
       List<ClaimInfoData> info = claimMetricsService.claimInfoWithPagination(offset, pageSize);
       List<ClaimInfo> infoList = new ArrayList<>();

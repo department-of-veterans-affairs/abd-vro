@@ -9,7 +9,7 @@ public interface ClaimMetricsService {
 
   ClaimMetricsInfo claimMetrics();
 
-  List<ClaimInfoData> claimInfoForClaimId(String claimSubmissionId);
+  ClaimInfoData claimInfoForClaimId(String claimSubmissionId);
 
   List<ClaimInfoData> claimInfoForVeteran(String veteranIcn);
 

@@ -45,27 +45,20 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public List<ClaimInfoData> claimInfoForClaimId(String claimSubmissionId) {
-    List<ClaimInfoData> infoList = new ArrayList<>();
+  public ClaimInfoData claimInfoForClaimId(String claimSubmissionId) {
+    ClaimInfoData info = new ClaimInfoData();
     try {
       ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
-      ClaimInfoData info = new ClaimInfoData();
       info.setClaimSubmissionId(claim.getClaimSubmissionId());
       info.setVeteranIcn(claim.getVeteran().getIcn());
       info.setContentionsCount(claim.getContentions().size());
       setContentionsList(claim, info);
       setAssessmentResultsAndCount(claim, info);
       setEvidenceSummaryCounts(claim, info);
-      infoList.add(info);
-      return infoList;
     } catch (Exception e) {
       log.error("Could not find claim with the given claimSubmissionId");
-      ClaimInfoData info = new ClaimInfoData();
-      info.setErrorMessage(
-          "Could not find claim with the given claimSubmissionId: " + e.getMessage());
-      infoList.add(info);
-      return infoList;
     }
+    return info;
   }
 
   @Override
