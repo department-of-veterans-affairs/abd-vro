@@ -22,7 +22,10 @@ public class AbdEvidenceWithSummary {
 
   private String errorMessage;
 
+  @Schema(description = "Claim submission id", example = "1234")
+  private String claimSubmissionId;
+
   @Schema(description = "Sufficient for Fast Tracking flag")
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  private boolean sufficientForFastTracking;
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Boolean sufficientForFastTracking;
 }

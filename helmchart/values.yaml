@@ -76,7 +76,7 @@ images:
     tag: tagPlaceholder
     imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this block)
-    
+
 resources:
   api:
     requests:
@@ -152,6 +152,12 @@ readinessProbe:
   timeoutSeconds: 10
   failureThreshold: 3
 
+volumes:
+  tracking:
+    name: tracking-persistent-storage
+    claimName: tracking-efs-claim
+    mountPath: /persist/tracking
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1
@@ -202,7 +208,7 @@ bip:
   bipEvidenceUrl: bipEvidenceUrl
   bipEvidenceUserId: bipEvidenceUserId
   bipStationId: bipStationId
-  
+
 redis:
   secretName: redis
   passwordKey: redisPassword
@@ -222,5 +228,3 @@ dbinit:
   urlKey: url
   usernameKey: username
   passwordKey: password
-  flywayTableKey: flywayTable
-  flywayTablespaceKey: flywayTablespace

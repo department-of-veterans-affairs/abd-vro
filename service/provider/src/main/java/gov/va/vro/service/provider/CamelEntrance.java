@@ -25,10 +25,6 @@ public class CamelEntrance {
 
   private final ProducerTemplate producerTemplate;
 
-  public String submitClaim(Claim claim) {
-    return producerTemplate.requestBody(PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM, claim, String.class);
-  }
-
   public String submitClaimFull(Claim claim) {
     return producerTemplate.requestBody(
         PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM_FULL, claim, String.class);
@@ -59,13 +55,14 @@ public class CamelEntrance {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
   }
 
-  public void processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.sendBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload);
+  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    return producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
   }
 
   public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP, masAutomatedClaimPayload);
+    producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
   }
 
   public void sendSlack(AuditEvent auditEvent) {

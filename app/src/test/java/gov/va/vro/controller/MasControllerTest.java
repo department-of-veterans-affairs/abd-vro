@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
-import gov.va.vro.model.mas.*;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
@@ -65,7 +66,7 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimInvalidRequest() {
     MasAutomatedClaimPayload request =
         MasAutomatedClaimPayload.builder().dateOfBirth("2002-12-12").collectionId(123).build();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
   }
 
@@ -85,17 +86,17 @@ public class MasControllerTest extends BaseControllerTest {
 
     adviceWith(
             camelContext,
-            "mas-offramp-claim",
+            "mas-complete-claim",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_OFFRAMP)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
                     .to("mock:mas-offramp"))
         .end();
     mockMasOffRampEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.assertIsSatisfied();
     mockMasOffRampEndpoint.assertIsSatisfied();
@@ -116,8 +117,8 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101");
-    var responseEntity = post("/v1/automatedClaim", request, MasResponse.class);
+    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
+    var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasNotificationEndpoint.expectedMessageCount(1);
   }
@@ -128,7 +129,7 @@ public class MasControllerTest extends BaseControllerTest {
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
-        post("/v1/examOrderingStatus", payload, MasResponse.class);
+        post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());

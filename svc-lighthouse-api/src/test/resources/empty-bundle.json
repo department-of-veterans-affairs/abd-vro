@@ -1,0 +1,20 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 0,
+  "link": [
+    {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/resource"
+    },
+    {
+      "relation": "self",
+      "url": "https://sandbox-api.va.gov/resource"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/resource"
+    }
+  ],
+  "entry": []
+}
