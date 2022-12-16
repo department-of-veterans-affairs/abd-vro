@@ -10,16 +10,30 @@ import lombok.SneakyThrows;
 public class AppTestUtil {
   private final ObjectMapper mapper = new ObjectMapper();
 
+  /**
+   * JSON object to string.
+   *
+   * @param o object to stringify.
+   * @return json as string.
+   */
   @SneakyThrows
   public String toJsonString(Object o) {
     return mapper.writeValueAsString(o);
   }
 
+  /**
+   * Claim object to string response.
+   *
+   * @param claim claim.
+   * @param evidence evidence.
+   * @return claim response to string.
+   */
   @SneakyThrows
   public String claimToResponse(Claim claim, boolean evidence, String errorMessage) {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
+    response.setClaimSubmissionId(claim.getClaimSubmissionId());
     response.setErrorMessage(errorMessage);
     if (evidence) {
       response.setEvidence(new AbdEvidence());

@@ -12,7 +12,11 @@ import com.google.gson.JsonObject;
 import gov.va.vro.config.LhApiProps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,6 +39,12 @@ public class JwtValidator {
 
   private final LhApiProps lhApiProps;
 
+  /**
+   * Sub string bearer.
+   *
+   * @param authorizationHdr authorization hdr.
+   * @return sub string bearer.
+   */
   public String subStringBearer(String authorizationHdr) {
     try {
       return authorizationHdr.substring(BEARER.length());
@@ -43,46 +53,71 @@ public class JwtValidator {
     }
   }
 
+  /**
+   * Decodes the jwt token.
+   *
+   * @param jwtToken jwt token.
+   * @return decoded jwt.
+   */
   public DecodedJWT decodeToken(String jwtToken) {
     if (isNull(jwtToken)) {
       throw new InvalidTokenException("Token has not been provided");
     }
-    DecodedJWT decodedJWT = JWT.decode(jwtToken);
-    log.info("Token decoded successfully");
-    return decodedJWT;
-  }
-
-  public void verifyTokenHeader(DecodedJWT decodedJWT) {
-    if (decodedJWT.getType().equals("JWT")) {
-      log.info("Token's header is correct");
-    } else {
-      throw new InvalidTokenException("Token is not JWT type");
+    try {
+      DecodedJWT decodedJWT = JWT.decode(jwtToken);
+      log.info("Token decoded successfully");
+      return decodedJWT;
+    } catch (RuntimeException exception) {
+      throw new InvalidTokenException(
+          "Invalid JWT or JSON format of each of the jwt parts", exception);
     }
   }
 
-  public void verifyPayload(DecodedJWT decodedJWT) {
-    JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJWT);
+  /**
+   * Verifies JWT token.
+   *
+   * @param decodedJwt decoded jwt.
+   */
+  public void verifyTokenHeader(DecodedJWT decodedJwt) {
+    if (isNull(decodedJwt.getHeader())) {
+      throw new InvalidTokenException("Invalid token, Header missing");
+    }
+    if (isNull((decodedJwt.getAlgorithm())) || isNull((decodedJwt.getKeyId()))) {
+      throw new InvalidTokenException("Invalid token, should have alg, kid claims in the header");
+    } else {
+      log.info("Token's header is valid");
+    }
+  }
+
+  /**
+   * Verifies the payload.
+   *
+   * @param decodedJwt decoded jwt.
+   */
+  public void verifyPayload(DecodedJWT decodedJwt) {
+    JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJwt);
     if (hasTokenExpired(payloadAsJson)) {
       throw new InvalidTokenException("Token has expired");
     }
     log.info("Token has not expired");
 
-    /*
-    if (!hasTokenRealmRolesClaim(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain claims with realm roles");
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
+      if (!payloadAsJson.has("scp")) {
+        throw new InvalidTokenException("Token doesn't contain scope information");
+      }
+      log.info("Token's payload contain scope information");
     }
-    log.info("Token's payload contain claims with realm roles");
-
-    if (!hasTokenScopeInfo(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain scope information");
-    }
-    log.info("Token's payload contain scope information");
-    */
   }
 
-  public JsonObject decodeTokenPayloadToJsonObject(DecodedJWT decodedJWT) {
+  /**
+   * Decodes JWT into a JSON object.
+   *
+   * @param decodedJwt decoded JWT.
+   * @return JsonObject decode token payload.
+   */
+  public JsonObject decodeTokenPayloadToJsonObject(DecodedJWT decodedJwt) {
     try {
-      String payloadAsString = decodedJWT.getPayload();
+      String payloadAsString = decodedJwt.getPayload();
       return new Gson()
           .fromJson(
               new String(Base64.getDecoder().decode(payloadAsString), StandardCharsets.UTF_8),
@@ -93,11 +128,23 @@ public class JwtValidator {
     }
   }
 
+  /**
+   * Checks if token has expired.
+   *
+   * @param payloadAsJson payload.
+   * @return true or false if token has expired.
+   */
   public boolean hasTokenExpired(JsonObject payloadAsJson) {
     Instant expirationDatetime = extractExpirationDate(payloadAsJson);
     return Instant.now().isAfter(expirationDatetime);
   }
 
+  /**
+   * Gets the expiration date.
+   *
+   * @param payloadAsJson payload
+   * @return expiration date.
+   */
   public Instant extractExpirationDate(JsonObject payloadAsJson) {
     try {
       return Instant.ofEpochSecond(payloadAsJson.get("exp").getAsLong());
@@ -106,8 +153,14 @@ public class JwtValidator {
     }
   }
 
-  public boolean validateTokenUsingLH(String jwtToken) {
-    if (lhApiProps.getValidateToken().toLowerCase() == VALIDATE_TOKEN) {
+  /**
+   * Validates token using LH.
+   *
+   * @param jwtToken JWT token.
+   * @return true or false.
+   */
+  public boolean validateTokenUsingLh(String jwtToken) {
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
       try {
         HttpHeaders lhHttpHeaders = new HttpHeaders();
         lhHttpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -115,23 +168,22 @@ public class JwtValidator {
         lhHttpHeaders.add("Authorization", "Bearer " + jwtToken);
 
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("aud", lhApiProps.getVroAudURL());
+        requestBody.add("aud", lhApiProps.getVroAudUrl());
 
-        HttpEntity formEntity =
-            new HttpEntity<MultiValueMap<String, String>>(requestBody, lhHttpHeaders);
+        HttpEntity formEntity = new HttpEntity<>(requestBody, lhHttpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> response =
             restTemplate.exchange(
-                lhApiProps.getTokenValidatorURL(), HttpMethod.POST, formEntity, String.class);
-        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response));
+                lhApiProps.getTokenValidatorUrl(), HttpMethod.POST, formEntity, String.class);
+        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response.getBody()));
         // Sample response
         // https://department-of-veterans-affairs.github.io/
         // lighthouse-api-standards/security/oauth/token-validation/#self-verification
-        if (lhResp.get("data") != null
-            && lhResp.get("data").get("type") != null
-            && lhResp.get("data").get("type").asText().toLowerCase() == IS_TOKEN_VALIDATED) {
+        if ((!isNull(lhResp.get("data")))
+            && (!isNull(lhResp.get("data").get("type")))
+            && IS_TOKEN_VALIDATED.equals(lhResp.get("data").get("type").asText().toLowerCase())) {
           // NOP
         } else {
           log.error("Could not validate token against LightHouse API.");

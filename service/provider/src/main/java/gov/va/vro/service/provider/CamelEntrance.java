@@ -55,9 +55,9 @@ public class CamelEntrance {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
   }
 
-  public void processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload);
+  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+    return producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
   }
 
   public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {

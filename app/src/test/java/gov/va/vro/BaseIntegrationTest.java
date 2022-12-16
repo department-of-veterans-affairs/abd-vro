@@ -19,6 +19,7 @@ public abstract class BaseIntegrationTest {
 
   @Autowired protected AuditEventRepository auditEventRepository;
 
+  /** Delete all from repositories. */
   @BeforeEach
   @AfterEach
   public void delete() {
