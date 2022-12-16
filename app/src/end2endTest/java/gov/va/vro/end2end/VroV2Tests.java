@@ -88,7 +88,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("MissingAnchor", masResponse.getMessage());
+    assertEquals("Missing anchor", masResponse.getMessage());
   }
 
   @SneakyThrows
