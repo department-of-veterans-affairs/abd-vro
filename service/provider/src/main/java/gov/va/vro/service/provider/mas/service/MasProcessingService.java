@@ -21,12 +21,19 @@ public class MasProcessingService {
 
   private final BipClaimService bipClaimService;
 
+  /**
+   * Processes incoming claim.
+   *
+   * @param payload mas payload.
+   * @return String
+   */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
 
     if (!payload.isInScope()) {
       var message =
           String.format(
-              "Request with [collection id = %s], [diagnostic code = %s], and [disability action type = %s] is not in scope.",
+              "Request with [collection id = %s], [diagnostic code = %s],"
+                  + " and [disability action type = %s] is not in scope.",
               payload.getCollectionId(),
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType());
@@ -36,7 +43,8 @@ public class MasProcessingService {
     if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
       var message =
           String.format(
-              "Request with [collection id = %s] does not qualify for automated processing because it is missing anchors",
+              "Request with [collection id = %s] does not qualify for"
+                  + " automated processing because it is missing anchors",
               payload.getCollectionId());
       log.info(message);
       offRampClaim(payload, message);

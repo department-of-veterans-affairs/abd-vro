@@ -2,7 +2,7 @@ package gov.va.vro.service.provider;
 
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasOrderExamConditions;
-import gov.va.vro.model.mas.MasOrderExamReq;
+import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ public class MasOrderExamProcessor implements Processor {
 
     log.info("Ordering Exam for the collection {}.", claimPayload.getCollectionId());
     try {
-      MasOrderExamReq masOrderExamReq = new MasOrderExamReq();
-      masOrderExamReq.setCollectionsId(claimPayload.getCollectionId());
+      MasOrderExamRequest masOrderExamRequest = new MasOrderExamRequest();
+      masOrderExamRequest.setCollectionsId(claimPayload.getCollectionId());
       MasOrderExamConditions masOrderExamConditions = new MasOrderExamConditions();
       masOrderExamConditions.setConditionCode(
           masConditionCode.getOrDefault(claimPayload.getDiagnosticCode(), "NA"));
@@ -42,8 +42,8 @@ public class MasOrderExamProcessor implements Processor {
       ArrayList<MasOrderExamConditions> listMasOrderExamConditions =
           new ArrayList<MasOrderExamConditions>();
       listMasOrderExamConditions.add(masOrderExamConditions);
-      masOrderExamReq.setConditions(listMasOrderExamConditions);
-      var response = masApiService.orderExam(masOrderExamReq);
+      masOrderExamRequest.setConditions(listMasOrderExamConditions);
+      var response = masApiService.orderExam(masOrderExamRequest);
       log.info("Order Exam Response :  " + response);
       exchange.setProperty("OrderExamResponse", response);
 

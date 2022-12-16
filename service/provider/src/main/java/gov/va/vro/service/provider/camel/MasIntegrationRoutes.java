@@ -1,7 +1,8 @@
 package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -14,7 +15,7 @@ import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.*;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -27,7 +28,8 @@ import org.springframework.stereotype.Component;
 public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS =
-      "rabbitmq:mas-notification-exchange?queue=mas-notification-queue&routingKey=mas-notification&requestTimeout=0";
+      "rabbitmq:mas-notification-exchange?queue=mas-notification"
+          + "-queue&routingKey=mas-notification&requestTimeout=0";
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
@@ -44,6 +46,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_SLACK_EVENT = "seda:slack-event";
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
+
+  public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
 
   private final BipClaimService bipClaimService;
 
@@ -66,6 +70,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureMasProcessing();
     configureOrderExamStatus();
     configureCompleteProcessing();
+    configureUploadPdf();
   }
 
   private void configureAutomatedClaim() {
@@ -88,30 +93,25 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
     String collectEvidenceEndpoint = "direct:collect-evidence";
     String orderExamEndpoint = "direct:order-exam";
-    String uploadPdfEndpoint = "direct:upload-pdf";
+
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
-        .setProperty(
-            "disabilityActionType", simple("${body.claimDetail.conditions.disabilityActionType}"))
-        .setProperty("dateOfClaim", simple("${body.claimDetail.claimSubmissionDateTime}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        .setProperty("evidence", simple("${body}"))
+        // determine if evidence is sufficent
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
+        // Generate PDF
         .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .process(
-            exchange -> {
-              MasAutomatedClaimPayload claimPayload =
-                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
-              exchange.getMessage().setBody(claimPayload);
-            })
+        .setBody(simple("${exchangeProperty.claim}"))
+        // Conditionally order exam
         .to(orderExamEndpoint)
-        .to(uploadPdfEndpoint)
+        // Upload PDF
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE);
 
     from(collectEvidenceEndpoint)
@@ -135,11 +135,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         .process(masOrderExamProcessor)
-        .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+  }
 
-    from(uploadPdfEndpoint).routeId("mas-upload-pdf").log("TODO: upload PDF");
+  private void configureUploadPdf() {
+    from(ENDPOINT_UPLOAD_PDF)
+        .routeId("mas-upload-pdf")
+        .setBody(simple("${body.claimId}"))
+        .convertBodyTo(String.class)
+        .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+        .process(MasIntegrationProcessors.covertToPdfReponse())
+        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
+        .setBody(simple("${exchangeProperty.claim}"));
   }
 
   private void configureOrderExamStatus() {
@@ -155,20 +163,21 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking}"))
-        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRFD))
+        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
         .end()
         .bean(bipClaimService, "completeProcessing");
   }
 
+  /** Configure auditing. */
   public void configureAuditing() {
-    String transform_uri = "seda:audit-transform?multipleConsumers=true";
+    String transformUri = "seda:audit-transform?multipleConsumers=true";
 
     // Capture exceptions
     onException(Throwable.class)
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
         .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT, ENDPOINT_SLACK_EVENT))
-        .to(transform_uri);
+        .to(transformUri);
 
     // intercept all MAS routes
     interceptFrom("*")
@@ -176,10 +185,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
         .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
         .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
-        .to(transform_uri);
+        .to(transformUri);
 
     // Transform to an AuditEvent and send to recipients
-    from(transform_uri)
+    from(transformUri)
         .process(new ExchangeAuditTransformer())
         .recipientList(exchangeProperty("recipientList"));
 

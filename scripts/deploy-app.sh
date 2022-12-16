@@ -3,9 +3,9 @@
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
 
 #verify we have an environment set
-if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" "${ENV}" != "local" ]
+if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ] && [ "${ENV}" != "prod-test" ]
 then
-  echo "Please enter valid environment (dev, sandbox, qa, prod, local)" && exit 1
+  echo "Please enter valid environment (dev, sandbox, qa, prod, prod-test)" && exit 1
 fi
 
 if [ "${GITHUB_ACCESS_TOKEN}" == "" ]
@@ -27,101 +27,55 @@ else
   VERSION=${GIT_SHA:0:7}
 fi
 
-if [ "${ENV}" == "qa" ] || [ "${ENV}" == "dev" ]
-then
+source scripts/image_vars.src
+generateImageArgs(){
+  local _IMAGE_TAG=$2
+
+  # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
+  case "$1" in
+    dev|qa) IMG_NAME_PREFIX="${1}_";;
+    sandbox|prod|prod-test) USE_SECREL_IMAGES="true";;
+    *) { echo "Unknown environment: $1"; exit 20; }
+  esac
+
+  # Set USE_SECREL_IMAGES to deploy SecRel images to any ENV
+  if [ "$USE_SECREL_IMAGES" ]; then
+    IMG_NAME_PREFIX=""
+    echo "--set-string images.repo=abd-vro-internal "
+  fi
+
+  for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+    local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
+    local IMAGE_NAME=${IMG_NAME_PREFIX}$(getVarValue "${PREFIX}" _IMG)
+    echo "--set-string images.$HELM_KEY.tag=${_IMAGE_TAG} "
+    echo "--set-string images.$HELM_KEY.imageName=${IMAGE_NAME} "
+  done
+}
+VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
+
+COMMON_HELM_ARGS="--set-string environment=${ENV} \
+--set-string info.version=${IMAGE_TAG} \
+--set-string info.git_hash=${GIT_SHA} \
+--set-string info.deploy_env=${ENV} \
+--set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
+\
+--set-string images.redis.imageName=redis \
+--set-string images.redis.tag=latest \
+\
+--set-string images.mq.imageName=rabbitmq \
+--set-string images.mq.tag=3 \
+"
+
 : "${TEAMNAME:=va-abd-rrd}"
 : "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
+# K8s namespace
+NAMESPACE="${TEAMNAME}-${ENV}"
+
+helm del $HELM_APP_NAME -n ${NAMESPACE}
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
 sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string environment="${ENV}"\
-              --set-string images.app.tag="${IMAGE_TAG}"\
-              --set-string images.redis.tag="latest"\
-              --set-string images.db.tag="${IMAGE_TAG}"\
-              --set-string images.mq.tag="3"\
-              --set-string images.dbInit.tag="${IMAGE_TAG}"\
-              --set-string images.pdfGenerator.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC7101.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC6602.tag="${IMAGE_TAG}"\
-              --set-string images.serviceDataAccess.tag="${IMAGE_TAG}"\
-              --set-string images.console.tag="${IMAGE_TAG}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.app.imageName=${ENV}_vro-app \
-              --set-string images.redis.imageName=redis \
-              --set-string images.db.imageName=${ENV}_vro-postgres \
-              --set-string images.mq.imageName=vro-rabbitmq \
-              --set-string images.dbInit.imageName=${ENV}_vro-db-init \
-              --set-string images.pdfGenerator.imageName=${ENV}_vro-service-pdfgenerator \
-              --set-string images.serviceAssessClaimDC7101.imageName=${ENV}_vro-service-assessclaimdc7101 \
-              --set-string images.serviceAssessClaimDC6602.imageName=${ENV}_vro-service-assessclaimdc6602 \
-              --set-string images.serviceDataAccess.imageName=${ENV}_vro-service-data-access \
-              --set-string images.console.imageName=${ENV}_vro-console \
+              ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
-              -n ${TEAMNAME}-"${ENV}" #--dry-run
+              -n ${NAMESPACE} #--dry-run
               #-f helmchart/"${ENV}".yaml
-elif [ "${ENV}" == "sandbox" ] || [ "${ENV}" == "prod" ] || [ "${ENV}" == "prod-test" ]
-then
-: "${TEAMNAME:=va-abd-rrd}"
-: "${HELM_APP_NAME:=abd-vro}"
-helm del $HELM_APP_NAME -n ${TEAMNAME}-"${ENV}"
-helm upgrade --install $HELM_APP_NAME helmchart \
-              --set-string images.repo=abd-vro-internal \
-              --set-string environment="${ENV}"\
-              --set-string images.app.tag="${IMAGE_TAG}"\
-              --set-string images.redis.tag="latest"\
-              --set-string images.db.tag="${IMAGE_TAG}"\
-              --set-string images.mq.tag="3"\
-              --set-string images.dbInit.tag="${IMAGE_TAG}"\
-              --set-string images.pdfGenerator.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC7101.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC6602.tag="${IMAGE_TAG}"\
-              --set-string images.serviceDataAccess.tag="${IMAGE_TAG}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.app.imageName=vro-app \
-              --set-string images.redis.imageName=redis \
-              --set-string images.db.imageName=vro-postgres \
-              --set-string images.mq.imageName=rabbitmq \
-              --set-string images.dbInit.imageName=vro-db-init \
-              --set-string images.pdfGenerator.imageName=vro-service-pdfgenerator \
-              --set-string images.serviceAssessClaimDC7101.imageName=vro-service-assessclaimdc7101 \
-              --set-string images.serviceAssessClaimDC6602.imageName=vro-service-assessclaimdc6602 \
-              --set-string images.serviceDataAccess.imageName=vro-service-data-access \
-              --debug \
-              -n ${TEAMNAME}-"${ENV}"
-else
-helm del abd-vro
-helm upgrade --install abd-vro helmchart \
-              --set-string images.repo=abd-vro-internal \
-              --set-string environment="${ENV}"\
-              --set-string images.app.tag="${IMAGE_TAG}"\
-              --set-string images.redis.tag="latest"\
-              --set-string images.db.tag="${IMAGE_TAG}"\
-              --set-string images.mq.tag="3"\
-              --set-string images.dbInit.tag="${IMAGE_TAG}"\
-              --set-string images.pdfGenerator.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC7101.tag="${IMAGE_TAG}"\
-              --set-string images.serviceAssessClaimDC6602.tag="${IMAGE_TAG}"\
-              --set-string images.serviceDataAccess.tag="${IMAGE_TAG}"\
-              --set-string info.version="${IMAGE_TAG}"\
-              --set-string info.git_hash="${GIT_SHA}" \
-              --set-string info.deploy_env="${ENV}" \
-              --set-string info.github_token="${GITHUB_ACCESS_TOKEN}" \
-              --set-string images.app.imageName=vro-app \
-              --set-string images.redis.imageName=redis \
-              --set-string images.db.imageName=vro-postgres \
-              --set-string images.mq.imageName=rabbitmq \
-              --set-string images.dbInit.imageName=vro-db-init \
-              --set-string images.pdfGenerator.imageName=vro-service-pdfgenerator \
-              --set-string images.serviceAssessClaimDC7101.imageName=vro-service-assessclaimdc7101 \
-              --set-string images.serviceAssessClaimDC6602.imageName=vro-service-assessclaimdc6602 \
-              --set-string images.serviceDataAccess.imageName=vro-service-data-access \
-              --debug
-
-fi

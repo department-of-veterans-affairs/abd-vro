@@ -33,7 +33,7 @@ spec:
           env:
             - name: ENV
               value: {{ .Values.environment }}
-            - name: POSTGRES_ADMIN_USER
+            - name: POSTGRES_FLYWAY_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
@@ -48,7 +48,7 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d $POSTGRES_DB -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_ADMIN_USER; do
+                until pg_isready -d $POSTGRES_DB -h {{ .Chart.Name }}-postgres-service -p {{ .Values.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
                   echo 'Waiting for Postgres DB to be available'
                   sleep 5
                 done
