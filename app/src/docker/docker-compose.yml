@@ -30,8 +30,6 @@ x-mas-vars: &mas-vars
   VALIDATE_TOKEN: ${VALIDATE_TOKEN}
 
 x-postgres-vars: &postgres-vars
-  # TODO: Is POSTGRES_HOST needed? It's not listed in helmchart/templates/api/deployment.yaml
-  #POSTGRES_HOST: postgres-service
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}

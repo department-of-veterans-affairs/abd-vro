@@ -47,6 +47,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
+
   private final BipClaimService bipClaimService;
 
   private final AuditEventService auditEventService;
@@ -68,6 +70,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureMasProcessing();
     configureOrderExamStatus();
     configureCompleteProcessing();
+    configureUploadPdf();
   }
 
   private void configureAutomatedClaim() {
@@ -90,30 +93,25 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String lighthouseEndpoint = "direct:lighthouse-claim-submit";
     String collectEvidenceEndpoint = "direct:collect-evidence";
     String orderExamEndpoint = "direct:order-exam";
-    String uploadPdfEndpoint = "direct:upload-pdf";
+
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("veteranIcn", simple("${body.veteranIdentifiers.icn}"))
-        .setProperty(
-            "disabilityActionType", simple("${body.claimDetail.conditions.disabilityActionType}"))
-        .setProperty("dateOfClaim", simple("${body.claimDetail.claimSubmissionDateTime}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        .setProperty("evidence", simple("${body}"))
+        // determine if evidence is sufficent
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor())
+        // Generate PDF
         .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .process(
-            exchange -> {
-              MasAutomatedClaimPayload claimPayload =
-                  (MasAutomatedClaimPayload) exchange.getProperty("claim");
-              exchange.getMessage().setBody(claimPayload);
-            })
+        .setBody(simple("${exchangeProperty.claim}"))
+        // Conditionally order exam
         .to(orderExamEndpoint)
-        .to(uploadPdfEndpoint)
+        // Upload PDF
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE);
 
     from(collectEvidenceEndpoint)
@@ -137,11 +135,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         .process(masOrderExamProcessor)
-        .setExchangePattern(ExchangePattern.InOnly)
         .log("MAS Order Exam response: ${body}")
         .end();
+  }
 
-    from(uploadPdfEndpoint).routeId("mas-upload-pdf").log("TODO: upload PDF");
+  private void configureUploadPdf() {
+    from(ENDPOINT_UPLOAD_PDF)
+        .routeId("mas-upload-pdf")
+        .setBody(simple("${body.claimId}"))
+        .convertBodyTo(String.class)
+        .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+        .process(MasIntegrationProcessors.covertToPdfReponse())
+        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
+        .setBody(simple("${exchangeProperty.claim}"));
   }
 
   private void configureOrderExamStatus() {

@@ -51,10 +51,14 @@ def test_queue_setup(queue, service_queue_name, caplog):
 @pytest.mark.parametrize(
     "queue, diagnosticCode, body, main",
     [
-        (q6602, "6602", {"evidence": "some medical data body"}, main6602),
-        (q6602v2, "6602v2", {"evidence": "some medical data body"}, main6602v2),
-        (q6510, "6510", {"evidence": "some medical data body"}, main6510),
-        (q6522, "6522", {"evidence": "some medical data body"}, main6522),
+        (q6602, "6602", {"evidence": "some medical data body",
+                         "claimSubmissionId": "1234"}, main6602),
+        (q6602v2, "6602v2", {"evidence": "some medical data body",
+                             "claimSubmissionId": "1234"}, main6602v2),
+        (q6510, "6510", {"evidence": "some medical data body",
+                         "claimSubmissionId": "1234"}, main6510),
+        (q6522, "6522", {"evidence": "some medical data body",
+                         "claimSubmissionId": "1234"}, main6522),
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
@@ -71,14 +75,14 @@ def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
     with caplog.at_level(logging.INFO):
         with patch(
             f"assessclaimdc{diagnosticCode}.src.lib.main.{main.__name__}",
-            return_value=True,
+            return_value={"claimSubmissionId": "1234"},
         ):
             queue.on_request_callback(channel, method, properties, body_formatted)
 
     assert (
-        f" [x] {diagnosticCode}: Received message."
+        f"claimSubmissionId: 1234, health data received by {diagnosticCode}"
         in caplog.text
     )
     assert (
-        f" [x] {diagnosticCode}: Message sent." in caplog.text
+        f"claimSubmissionId: 1234, evaluation sent by {diagnosticCode}" in caplog.text
     )

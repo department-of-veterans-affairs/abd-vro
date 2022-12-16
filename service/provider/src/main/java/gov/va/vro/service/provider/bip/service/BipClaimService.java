@@ -1,16 +1,22 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.UpdateContention;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bip.*;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.BipException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,5 +151,27 @@ public class BipClaimService {
     log.info("Updating claim status for claim with collection id = {}", collectionId);
     bipApiService.setClaimToRfdStatus(collectionId);
     return true;
+  }
+
+  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
+    log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
+    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
+    File file = new File(filename);
+    try {
+      byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+      InputStream is = new ByteArrayInputStream(decoder);
+      Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      // TODO: I don't know what parameters should be passed here. A BIP expert will address this
+      bipApiService.uploadEvidence(
+          FileIdType.FILENUMBER,
+          pdfResponse.getClaimSubmissionId(),
+          new BipFileUploadPayload(),
+          file);
+      return pdfResponse;
+    } catch (IOException ioe) {
+      throw new BipException("Failed to upload evidence file.", ioe);
+    } finally {
+      file.delete();
+    }
   }
 }

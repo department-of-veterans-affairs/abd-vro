@@ -17,7 +17,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.volumes.tracking.claimName }}
   annotations:
-    # Keep this PVC when the deploy is deleted/uninstalled
+    # As an alternative to a StatefulSet (mentioned below), keep this PVC when the deploy is deleted/uninstalled.
+    # Helm will no longer manage it in any way, so this PVC must be manually deleted.
     # https://helm.sh/docs/topics/charts_hooks/#hook-resources-are-not-managed-with-corresponding-releases
     helm.sh/resource-policy: keep
 spec:

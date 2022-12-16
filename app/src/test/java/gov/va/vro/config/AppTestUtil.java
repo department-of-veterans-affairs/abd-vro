@@ -33,6 +33,7 @@ public class AppTestUtil {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
+    response.setClaimSubmissionId(claim.getClaimSubmissionId());
     response.setErrorMessage(errorMessage);
     if (evidence) {
       response.setEvidence(new AbdEvidence());
