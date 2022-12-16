@@ -1,6 +1,10 @@
 package gov.va.vro.api.resources;
 
-import gov.va.vro.api.responses.*;
+import gov.va.vro.api.responses.BipClaimContentionsResponse;
+import gov.va.vro.api.responses.BipClaimResponse;
+import gov.va.vro.api.responses.BipClaimStatusResponse;
+import gov.va.vro.api.responses.BipContentionCreationResponse;
+import gov.va.vro.api.responses.BipContentionUpdateResponse;
 import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
@@ -11,6 +15,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,12 +23,17 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 
 /**
- * BIP API
+ * BIP API.
  *
  * @author warren @Date 11/7/22
  */
@@ -52,7 +62,7 @@ public interface BipResource {
       })
   @Timed(value = "bip-update-claim")
   @Tag(name = "BIP Integration")
-  ResponseEntity<BipClaimStatusResponse> setClaimRFD(
+  ResponseEntity<BipClaimStatusResponse> setClaimRfd(
       @Parameter(
               description = "Request to update the status of a claim",
               required = true,

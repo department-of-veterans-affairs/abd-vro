@@ -131,5 +131,6 @@
     "recentBpReadings": 3,
     "medicationsCount": 7
   },
-  "claimSubmissionId": "7001"
+  "claimSubmissionId": "7001",
+  "sufficientForFastTracking": false
 }
