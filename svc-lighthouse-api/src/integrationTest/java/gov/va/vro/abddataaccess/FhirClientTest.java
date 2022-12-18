@@ -1,6 +1,8 @@
 package gov.va.vro.abddataaccess;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.abddataaccess.model.AbdEvidence;
 import gov.va.vro.abddataaccess.service.FhirClient;
