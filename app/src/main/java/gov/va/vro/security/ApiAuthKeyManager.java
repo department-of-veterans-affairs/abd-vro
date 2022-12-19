@@ -68,8 +68,8 @@ public class ApiAuthKeyManager implements AuthenticationManager {
     if (authorizationHdr.startsWith("Bearer ")) {
       // Validate JWT token
       try {
-        String reqURI = httpServletRequest.getRequestURI();
-        String methodName = reqURI.split("/")[reqURI.split("/").length - 1];
+        String reqUri = httpServletRequest.getRequestURI();
+        String methodName = reqUri.split("/")[reqUri.split("/").length - 1];
         String jwtToken = jwtValidator.subStringBearer(authorizationHdr);
         DecodedJWT decodedJwt = jwtValidator.decodeToken(jwtToken);
         jwtValidator.verifyTokenHeader(decodedJwt);

@@ -58,6 +58,11 @@ public class MasIntegrationProcessors {
                     .build());
   }
 
+  /**
+   * Processor that converts to PDF response.
+   *
+   * @return return.
+   */
   public static Processor covertToPdfReponse() {
     return exchange -> {
       String response = exchange.getMessage().getBody(String.class);

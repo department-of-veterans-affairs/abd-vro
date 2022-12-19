@@ -5,7 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-/** @author warren @Date 12/7/22 */
+/**
+ * BIP file upload response.
+ *
+ * @author warren @Date 12/7/22
+ */
 @RequiredArgsConstructor
 @Getter
 @Setter
