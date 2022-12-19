@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gov.va.vro.config.LhApiProps;
 import lombok.RequiredArgsConstructor;
@@ -64,9 +65,9 @@ public class JwtValidator {
       throw new InvalidTokenException("Token has not been provided");
     }
     try {
-      DecodedJWT decodedJwt = JWT.decode(jwtToken);
+      DecodedJWT decodedJWT = JWT.decode(jwtToken);
       log.info("Token decoded successfully");
-      return decodedJwt;
+      return decodedJWT;
     } catch (RuntimeException exception) {
       throw new InvalidTokenException(
           "Invalid JWT or JSON format of each of the jwt parts", exception);
@@ -94,19 +95,28 @@ public class JwtValidator {
    *
    * @param decodedJwt decoded jwt.
    */
-  public void verifyPayload(DecodedJWT decodedJwt) {
+  public void verifyPayload(DecodedJWT decodedJwt, String methodName) {
     JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJwt);
     if (hasTokenExpired(payloadAsJson)) {
       throw new InvalidTokenException("Token has expired");
     }
     log.info("Token has not expired");
 
+    Boolean validScope = false;
     if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
-      if (!payloadAsJson.has("scp")) {
-        throw new InvalidTokenException("Token doesn't contain scope information");
+      if (payloadAsJson.has("scp")) {
+        for (JsonElement scope : payloadAsJson.getAsJsonArray("scp")) {
+          log.info("Scope : " + scope);
+          if (scope.getAsString().toLowerCase().contains(methodName.toLowerCase())) {
+            validScope = true;
+          }
+        }
       }
-      log.info("Token's payload contain scope information");
+      if (!validScope) {
+        throw new InvalidTokenException("Token doesn't contain valid scope information");
+      }
     }
+    log.info("Token's payload contain scope information");
   }
 
   /**
