@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -212,9 +213,8 @@ public interface VroResource {
       throws MetricsProcessingException;
 
   @Operation(
-      summary = "Claims for a veteran ICN",
+      summary = "Claim info list for a veteran ICN or for paging",
       description = "This endpoint provides processed claims information for a specific veteran. ")
-  @GetMapping(value = "/claim-info/veteran")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -232,15 +232,13 @@ public interface VroResource {
             content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-info-for-veteran")
+  @Timed(value = "claim-info")
   @Tag(name = "Claim Metrics")
+  @RequestMapping(value = "/claim-info", params = "veteranIcn", method = RequestMethod.GET)
   ResponseEntity<ClaimInfoListResponse> claimInfoForVeteran(
-      @RequestParam(name = "veteranIcn") String veteranIcn) throws MetricsProcessingException;
+      @RequestParam(name = "veteranIcn", required = false) String veteranIcn)
+      throws MetricsProcessingException;
 
-  @Operation(
-      summary = "Pages of claims",
-      description = "This endpoint provides processed claims by the page. ")
-  @GetMapping(value = "/claim-info")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -258,9 +256,14 @@ public interface VroResource {
             content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-info-with-pagination")
+  @Timed(value = "claim-info")
   @Tag(name = "Claim Metrics")
+  @RequestMapping(
+      value = "/claim-info",
+      params = {"offset", "pageSize"},
+      method = RequestMethod.GET)
   ResponseEntity<ClaimInfoListResponse> claimInfoWithPagination(
-      @RequestParam(name = "offset") int offset, @RequestParam(name = "pageSize") int pageSize)
+      @RequestParam(name = "offset", required = false) int offset,
+      @RequestParam(name = "pageSize", required = false) int pageSize)
       throws Exception;
 }
