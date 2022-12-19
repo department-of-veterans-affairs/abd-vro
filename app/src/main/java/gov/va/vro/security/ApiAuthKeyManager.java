@@ -12,12 +12,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Component
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
 @Order(1)
 public class ApiAuthKeyManager implements AuthenticationManager {
+
+  private HttpServletRequest httpServletRequest;
+
+  public HttpServletRequest getHttpServletRequest() {
+    return httpServletRequest;
+  }
+
+  @Autowired
+  public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
+    this.httpServletRequest = httpServletRequest;
+  }
+
   private ApiAuthKeys apiAuthKeys;
 
   private JwtValidator jwtValidator;
@@ -54,10 +68,12 @@ public class ApiAuthKeyManager implements AuthenticationManager {
     if (authorizationHdr.startsWith("Bearer ")) {
       // Validate JWT token
       try {
+        String reqURI = httpServletRequest.getRequestURI();
+        String methodName = reqURI.split("/")[reqURI.split("/").length - 1];
         String jwtToken = jwtValidator.subStringBearer(authorizationHdr);
         DecodedJWT decodedJwt = jwtValidator.decodeToken(jwtToken);
         jwtValidator.verifyTokenHeader(decodedJwt);
-        jwtValidator.verifyPayload(decodedJwt);
+        jwtValidator.verifyPayload(decodedJwt, methodName.concat(".write"));
         jwtValidator.validateTokenUsingLh(jwtToken);
         authentication.setAuthenticated(true);
       } catch (InvalidTokenException invalidTokenException) {

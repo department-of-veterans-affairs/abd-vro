@@ -32,3 +32,8 @@ spring:
           mas:
             client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
             client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "NO"
