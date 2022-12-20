@@ -112,4 +112,3 @@ def assess_sufficiency(event: Dict):
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body
-    
