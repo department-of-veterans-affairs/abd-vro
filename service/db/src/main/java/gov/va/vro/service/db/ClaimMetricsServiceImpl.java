@@ -87,8 +87,9 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public List<ClaimInfoData> claimInfoWithPagination(int offset, int pageSize) {
+  public List<ClaimInfoData> claimInfoWithPagination(Integer offset) {
     List<ClaimInfoData> infoList = new ArrayList<>();
+    int pageSize = 50;
     try {
       Page<ClaimEntity> entityList = claimRepository.findAll(PageRequest.of(offset, pageSize));
       for (ClaimEntity claim : entityList) {

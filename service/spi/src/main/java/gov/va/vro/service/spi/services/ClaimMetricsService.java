@@ -13,5 +13,5 @@ public interface ClaimMetricsService {
 
   List<ClaimInfoData> claimInfoForVeteran(String veteranIcn);
 
-  List<ClaimInfoData> claimInfoWithPagination(int offset, int pageSize);
+  List<ClaimInfoData> claimInfoWithPagination(Integer offset);
 }

@@ -186,8 +186,8 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
 
   @Operation(
-      summary = "Claims for a claimSubmissionId.",
-      description = "This endpoint provides processed claims information. ")
+      summary = "Retrieves claim specific data.",
+      description = "Gets claim info for a specific claim. ")
   @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
@@ -213,8 +213,9 @@ public interface VroResource {
       throws MetricsProcessingException;
 
   @Operation(
-      summary = "Claim info list for a veteran ICN or for paging",
-      description = "This endpoint provides processed claims information for a specific veteran. ")
+      summary = "Retrieves claim specific data for all claims.",
+      description =
+          "Retrieves claim specific data for all claims using pagination with a page size of 50.")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful"),
@@ -234,36 +235,9 @@ public interface VroResource {
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info")
   @Tag(name = "Claim Metrics")
-  @RequestMapping(value = "/claim-info", params = "veteranIcn", method = RequestMethod.GET)
-  ResponseEntity<ClaimInfoListResponse> claimInfoForVeteran(
-      @RequestParam(name = "veteranIcn", required = false) String veteranIcn)
+  @RequestMapping(value = "/claim-info", method = RequestMethod.GET)
+  ResponseEntity<ClaimInfoListResponse> claimInfoForAll(
+      @RequestParam(name = "veteranIcn", required = false) String veteranIcn,
+      @RequestParam(name = "offset", required = false) Integer offset)
       throws MetricsProcessingException;
-
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Claim Metrics Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-info")
-  @Tag(name = "Claim Metrics")
-  @RequestMapping(
-      value = "/claim-info",
-      params = {"offset", "pageSize"},
-      method = RequestMethod.GET)
-  ResponseEntity<ClaimInfoListResponse> claimInfoWithPagination(
-      @RequestParam(name = "offset", required = false) int offset,
-      @RequestParam(name = "pageSize", required = false) int pageSize)
-      throws Exception;
 }
