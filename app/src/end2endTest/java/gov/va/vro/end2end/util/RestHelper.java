@@ -2,6 +2,7 @@ package gov.va.vro.end2end.util;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Getter
 @Setter
+@Slf4j
 public class RestHelper {
   private static final String BASE_URL = "http://localhost:8080/v1";
   private static final String API_KEY = "X-API-KEY";
@@ -43,7 +45,9 @@ public class RestHelper {
     HttpHeaders headers = buildHeaders();
     HttpEntity<String> requestEntity = new HttpEntity<>(req, headers);
     String url = BASE_URL + ASSESSMENT_END_POINT;
+    log.info("POST to {} with request: {}", url, requestEntity);
     ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+    log.info("Got response: {}", response);
 
     Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -62,7 +66,9 @@ public class RestHelper {
     HttpHeaders headers = buildHeaders();
     HttpEntity<String> requestEntity = new HttpEntity<>(req, headers);
     String url = BASE_URL + PDF_END_POINT;
+    log.info("POST to {} with request: {}", url, requestEntity);
     ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+    log.info("Got response: {}", response);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -82,12 +88,15 @@ public class RestHelper {
     HttpHeaders headers = buildHeaders();
     HttpEntity<String> requestEntity = new HttpEntity<>(headers);
     String url = BASE_URL + PDF_END_POINT + "/" + claimSubmissionId;
+    log.info("GET to {} with request: {}", url, requestEntity);
     ResponseEntity<byte[]> response =
         restTemplate.exchange(url, HttpMethod.GET, requestEntity, byte[].class);
+    log.info("Got response of type: {}", response.getBody().getClass().getSimpleName());
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
     HttpHeaders responseHeaders = response.getHeaders();
+    log.info("responseHeaders: {}", responseHeaders);
     ContentDisposition actualCd = responseHeaders.getContentDisposition();
     String filename = actualCd.getFilename();
     Assertions.assertEquals(cd, filename);
