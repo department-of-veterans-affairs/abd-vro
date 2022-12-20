@@ -50,7 +50,7 @@ prod_image_name() {
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+IMAGES=( app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -126,7 +126,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
 }
 overwriteSrcFile > "$SRC_FILE"
 
-images_for_helmchart_values_yaml(){
+images_for_helm-app_values_yaml(){
   local _ENV=$1
   echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
@@ -141,16 +141,16 @@ echo '# END image-names.sh replacement block (do not modify this block)'
 
 # shellcheck source=image_vars.src
 source "$SRC_FILE"
-VALUES_YML_IMAGES=$(images_for_helmchart_values_yaml dev)
+VALUES_YML_IMAGES=$(images_for_helm-app_values_yaml dev)
 
 if which sed > /dev/null; then
-  echo "=== Writing images to helmchart/values-updated.yaml"
+  echo "=== Writing images to helm-app/values-updated.yaml"
   sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
-    helmchart/values.yaml <<< "$VALUES_YML_IMAGES" > helmchart/values-updated.yaml
+    helmc-app/values.yaml <<< "$VALUES_YML_IMAGES" > helm-app/values-updated.yaml
   echo "Differences:"
-  diff helmchart/values.yaml helmchart/values-updated.yaml
+  diff helm-app/values.yaml helm-app/values-updated.yaml
 else
   echo
-  echo "=== Paste the following into helmchart/values.yaml"
+  echo "=== Paste the following into helm-app/values.yaml"
   echo "$VALUES_YML_IMAGES"
 fi

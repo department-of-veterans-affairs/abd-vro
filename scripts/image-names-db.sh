@@ -122,7 +122,7 @@ source "$SRC_FILE"
 VALUES_YML_IMAGES=$(images_for_helmchart_values_yaml dev)
 
 if which sed > /dev/null; then
-  echo "=== Writing images to helmchart/values-updated.yaml"
+  echo "=== Writing images to helm-serivce-db/values-updated.yaml"
   sed -e '/^# BEGIN image-names-db.sh/,/^# END image-names-db.sh/{ r /dev/stdin' -e ';d;}' \
     helm-service-db/values.yaml <<< "$VALUES_YML_IMAGES" > helm-service-db/values-updated.yaml
   echo "Differences:"
