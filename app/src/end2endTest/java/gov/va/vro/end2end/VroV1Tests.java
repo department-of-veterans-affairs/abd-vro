@@ -19,8 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Slf4j
 public class VroV1Tests {
@@ -77,8 +78,8 @@ public class VroV1Tests {
   }
 
   private void savePdfFile(byte[] pdfContents, String filename) {
-    try (FileOutputStream outputStream = new FileOutputStream(filename)) {
-      outputStream.write(pdfContents);
+    try {
+      Files.write(Paths.get(filename), pdfContents);
       log.info("Saved pdf to: {}", filename);
     } catch (IOException e) {
       e.printStackTrace();
