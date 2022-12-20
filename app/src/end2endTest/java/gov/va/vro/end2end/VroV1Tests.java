@@ -54,7 +54,7 @@ public class VroV1Tests {
     checkPdfText(setup, response.getBody());
   }
 
-  private void checkPdfText(TestSetup setup, byte[] pdf) throws Exception{
+  private void checkPdfText(TestSetup setup, byte[] pdf) throws Exception {
     if (Boolean.parseBoolean(System.getenv("VRO_SAVE_PDF"))) {
       savePdfFile(pdf, setup.getName() + "-" + setup.getContentDispositionFilename());
     }
@@ -118,9 +118,9 @@ public class VroV1Tests {
     RestHelper helper = new RestHelper();
     helper.setApiKey("bad-key-01");
 
-    HttpClientErrorException.Unauthorized exception = assertThrowsExactly(
-        HttpClientErrorException.Unauthorized.class,
-        () -> helper.getAssessment(setup));
+    HttpClientErrorException.Unauthorized exception =
+        assertThrowsExactly(
+            HttpClientErrorException.Unauthorized.class, () -> helper.getAssessment(setup));
     assertEquals("401 : [no body]", exception.getMessage());
   }
 }

@@ -38,7 +38,8 @@ public class RestHelper {
    * @throws Exception any error to fail the test
    */
   public ResponseEntity<String> getAssessment(TestSetup setup) {
-    HttpEntity<String> requestEntity = new HttpEntity<>(setup.getAssessmentRequest(), buildHeaders());
+    HttpEntity<String> requestEntity =
+        new HttpEntity<>(setup.getAssessmentRequest(), buildHeaders());
     String url = BASE_URL + ASSESSMENT_END_POINT;
     log.info("POST to {} with request: {}", url, requestEntity);
     ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
@@ -54,7 +55,8 @@ public class RestHelper {
    * @throws Exception any error to fail the test
    */
   public ResponseEntity<String> generatePdf(TestSetup setup) {
-    HttpEntity<String> requestEntity = new HttpEntity<>(setup.getGeneratePdfRequest(), buildHeaders());
+    HttpEntity<String> requestEntity =
+        new HttpEntity<>(setup.getGeneratePdfRequest(), buildHeaders());
     String url = BASE_URL + PDF_END_POINT;
     log.info("POST to {} with request: {}", url, requestEntity);
     ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
