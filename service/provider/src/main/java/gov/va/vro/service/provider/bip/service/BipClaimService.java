@@ -156,8 +156,9 @@ public class BipClaimService {
   public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
-    File file = new File(filename);
+    File file = null;
     try {
+      file = File.createTempFile(filename, "tmp", null);
       byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
       InputStream is = new ByteArrayInputStream(decoder);
       Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -171,7 +172,9 @@ public class BipClaimService {
     } catch (IOException ioe) {
       throw new BipException("Failed to upload evidence file.", ioe);
     } finally {
-      file.delete();
+      if (file != null) {
+        file.delete();
+      }
     }
   }
 }

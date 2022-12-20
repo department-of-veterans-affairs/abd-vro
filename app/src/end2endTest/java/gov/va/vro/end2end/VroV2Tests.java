@@ -21,7 +21,7 @@ import java.util.Map;
 public class VroV2Tests {
 
   private static final String BASE_URL = "http://localhost:8080/v2";
-  private static final String EXAM_ORDERING_URL = BASE_URL + "/examOrderingStatus";
+  private static final String EXAM_ORDERING_STATUS_URL = BASE_URL + "/examOrderingStatus";
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
 
   private static final String JWT_TOKEN =
@@ -36,7 +36,7 @@ public class VroV2Tests {
     var request = getOrderingStatusInvalidRequest();
     var requestEntity = getEntity(request);
     try {
-      restTemplate.postForEntity(EXAM_ORDERING_URL, requestEntity, String.class);
+      restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
     } catch (Exception e) {
       assertEquals(
@@ -49,7 +49,8 @@ public class VroV2Tests {
   void testExamOrderingStatus() {
     var request = getOrderingStatusValidRequest();
     var requestEntity = getEntity(request);
-    var response = restTemplate.postForEntity(EXAM_ORDERING_URL, requestEntity, MasResponse.class);
+    var response =
+        restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals("Received", masResponse.getMessage());
