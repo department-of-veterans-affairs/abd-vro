@@ -58,7 +58,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     assertNotNull(claim.getId());
     var claim2 = claimRepository.findById(claim.getId()).orElse(null);
     assertNotNull(claim2);
-    assertEquals(claim2.getContentions().get(0).getEvidenceSummaryDocuments().size(), 0);
+    assertEquals(claim2.getContentions().get(0).getEvidenceSummaryDocuments().size(), 1);
     EvidenceSummaryDocumentEntity evidenceSummaryDocument =
         claim2.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
     assertEquals(evidenceSummaryDocument.getEvidenceCount().get("medicationsCount"), "2");
