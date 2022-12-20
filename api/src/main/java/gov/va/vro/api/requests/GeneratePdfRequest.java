@@ -33,9 +33,6 @@ public class GeneratePdfRequest {
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
 
-  @Schema(description = "Veteran service locations for the pdf")
-  private List<ServiceLocation> serviceLocations;
-
   private ClaimCondition conditions;
 
   @NonNull

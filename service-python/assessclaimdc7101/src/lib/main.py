@@ -97,7 +97,6 @@ def assess_sufficiency(event: Dict):
                 "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             })
-
         if "medications" in event["evidence"].keys():
             medications = continuous_medication.filter_mas_medication(event)
             response_body["evidence"].update(

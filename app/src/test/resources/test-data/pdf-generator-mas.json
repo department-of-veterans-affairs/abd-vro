@@ -1,6 +1,6 @@
 {
   "claimSubmissionId": "1234",
-  "diagnosticCode": "0000",
+  "diagnosticCode": "7101",
   "conditions":  {
     "disabilityActionType": "NEW",
     "name": "high blood pressure"
@@ -12,13 +12,13 @@
     "suffix": "Jr",
     "birthdate": "01/04/1971"
   },
-  "serviceLocations": [
-    {"location": "Vietnam",
-    "document": "VA 21-3101 Request for Information",
-    "receiptDate" : "1/28/2016",
-    "page": "2",
-    "documentId": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"}],
   "evidence": {
+    "serviceLocations": [
+      {"location": "Vietnam",
+        "document": "VA 21-3101 Request for Information",
+        "receiptDate" : "1/28/2016",
+        "page": "2",
+        "documentId": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"}],
     "conditions": [{"code": "I10",
       "text": "Essential (primary) hypertension",
       "recordedDate": "1950-04-06T04:00:00Z",
