@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -20,12 +21,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * veteranInfo.json provides the veteran information needed for pdf generation.
  */
 @Getter
+@RequiredArgsConstructor
 public class TestSetup {
   private static final Map<String, String> diagnosticCodeToName =
       Map.ofEntries(
           new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
           new AbstractMap.SimpleEntry<>("6602", "Asthma"));
   private static final AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
+
+  private final String name;
 
   private String assessment;
   private String veteranInfo;
@@ -126,7 +130,7 @@ public class TestSetup {
    * @throws Exception any error to fail the test
    */
   public static TestSetup getInstance(String resourceDir) throws Exception {
-    TestSetup result = new TestSetup();
+    TestSetup result = new TestSetup(resourceDir);
 
     String assessmentPath = String.format("/%s/assessment.json", resourceDir);
     result.assessment = result.getResource(assessmentPath);

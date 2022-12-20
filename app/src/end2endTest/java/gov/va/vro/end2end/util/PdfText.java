@@ -64,6 +64,7 @@ public class PdfText {
     stripper.setSortByPosition(true);
     String text = stripper.getText(document);
     log.info("PDF text: {}", text);
+
     return new PdfText(text);
   }
 }

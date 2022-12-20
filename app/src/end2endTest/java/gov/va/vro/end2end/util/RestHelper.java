@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 @Getter
 @Setter
 @Slf4j
@@ -93,14 +96,27 @@ public class RestHelper {
         restTemplate.exchange(url, HttpMethod.GET, requestEntity, byte[].class);
     log.info("Got response of type: {}", response.getBody().getClass().getSimpleName());
 
+    if(Boolean.parseBoolean(System.getenv("VRO_SAVE_PDF"))) {
+      savePdfFile(response.getBody(), setup.getName() + "-" + setup.getContentDispositionFilename());
+    }
+
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
     HttpHeaders responseHeaders = response.getHeaders();
-    log.info("responseHeaders: {}", responseHeaders);
+    log.info("Response headers: {}", responseHeaders);
     ContentDisposition actualCd = responseHeaders.getContentDisposition();
     String filename = actualCd.getFilename();
     Assertions.assertEquals(cd, filename);
 
     return response.getBody();
+  }
+
+  private void savePdfFile(byte[] pdfContents, String filename) {
+    try (FileOutputStream outputStream = new FileOutputStream(filename)) {
+      outputStream.write(pdfContents);
+      log.info("Saved pdf to: {}", filename);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
