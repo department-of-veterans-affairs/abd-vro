@@ -1,9 +1,11 @@
 package gov.va.vro.service.provider.camel;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasTransferObject;
@@ -16,7 +18,7 @@ import org.apache.camel.Processor;
 import java.util.List;
 import java.util.function.Function;
 
-/** Helper processors for Mas Integration */
+/** Helper processors for Mas Integration. */
 @Slf4j
 public class MasIntegrationProcessors {
 
@@ -40,6 +42,11 @@ public class MasIntegrationProcessors {
     };
   }
 
+  /**
+   * Processor that turns payload to claim.
+   *
+   * @return return
+   */
   public static Processor payloadToClaimProcessor() {
     return FunctionProcessor.fromFunction(
         (Function<MasAutomatedClaimPayload, Claim>)
@@ -49,6 +56,14 @@ public class MasIntegrationProcessors {
                     .diagnosticCode(payload.getClaimDetail().getConditions().getDiagnosticCode())
                     .veteranIcn(payload.getVeteranIdentifiers().getIcn())
                     .build());
+  }
+
+  public static Processor covertToPdfReponse() {
+    return exchange -> {
+      String response = exchange.getMessage().getBody(String.class);
+      var pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
+      exchange.getMessage().setBody(pdfResponse);
+    };
   }
 
   public static Processor generatePdfProcessor() {

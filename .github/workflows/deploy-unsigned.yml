@@ -21,18 +21,20 @@ on:
         type: string
 
 env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   COMMIT_SHA: ${{ github.sha }}
-  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: ${{ inputs.target_env }}
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages
   DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
   DEPLOY_STATE_EMOJI: 'x'
 
 jobs:
-  deploy-images:
+  publish-images:
     # only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    outputs:
+      slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -40,12 +42,17 @@ jobs:
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: C04CA47HV96
+          slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
             to *${{env.TARGET_ENV}}* env \n\
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
+
+      - name: "Set output for use by deploy job"
+        id: slack-thread-id
+        run: |
+          echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -70,19 +77,28 @@ jobs:
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
 
+  deploy-images:
+    needs: publish-images
+    runs-on: ubuntu-latest
+    steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-text: ":panda_coffee: Deploying to ${{ env.TARGET_ENV }}..."
+
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
 
       - name: "Set up kube config"
         run: |
           mkdir ~/.kube
           echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          # Adjust file permission to address Kubernetes warning
+          chmod go-rw ~/.kube/config
 
       - name: "Deploy to ${{ env.TARGET_ENV }} env"
         env:
@@ -96,15 +112,24 @@ jobs:
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
             echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
             echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+          else
+            # Return nonzero error code so that workflow fails
+            exit 1
           fi
+
+      - name: "Cancelled workflow"
+        if: cancelled()
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
       - name: "Notify Slack: Thread deployment status"
         if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-text: ${{ env.DEPLOY_STATE_TEXT }}
 
       - name: "Notify Slack: React to top-level notification"
@@ -113,6 +138,6 @@ jobs:
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.channel }}
-          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-emoji-name: ${{ env.DEPLOY_STATE_EMOJI }}

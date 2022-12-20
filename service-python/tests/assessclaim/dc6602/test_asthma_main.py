@@ -18,6 +18,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {
                 "evidence": {
@@ -31,6 +32,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+                "claimSubmissionId": "1234"
             },
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -46,6 +48,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {
                 "evidence": {
@@ -59,6 +62,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 1, "totalMedCount": 1},
+                "claimSubmissionId": "1234"
             },
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
@@ -74,6 +78,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {
                 "evidence": {
@@ -87,6 +92,7 @@ from assessclaimdc6602.src.lib import main
                     ]
                 },
                 "evidenceSummary": {"relevantMedCount": 0, "totalMedCount": 1},
+                "claimSubmissionId": "1234"
             },
         ),
     ],

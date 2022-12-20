@@ -24,6 +24,7 @@ from assessclaimdc6522.src.lib import main
                     "procedures": []
                 },
                 "date_of_claim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {"evidence": {"medications": [{"authoredOn": "1952-04-06T04:00:00Z",
                                            "conditionRelated": False,
@@ -60,6 +61,7 @@ from assessclaimdc6522.src.lib import main
                     "procedures": []
                 },
                 "date_of_claim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {"evidence": {"medications": [{"authoredOn": "1952-04-06T04:00:00Z",
                                            "conditionRelated": False,
@@ -95,6 +97,7 @@ from assessclaimdc6522.src.lib import main
                     "procedures": []
                 },
                 "date_of_claim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {
                 "evidence": {

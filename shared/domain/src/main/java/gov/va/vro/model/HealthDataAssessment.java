@@ -16,6 +16,9 @@ public class HealthDataAssessment {
   @Schema(description = "Veteran medical internal control number (EHR id)", example = "90653535")
   private String veteranIcn;
 
+  @Schema(description = "Claim submission id", example = "1234")
+  private String claimSubmissionId;
+
   @NotBlank
   @Schema(description = "Diagnostic code for the claim contention", example = "7101")
   private String diagnosticCode;

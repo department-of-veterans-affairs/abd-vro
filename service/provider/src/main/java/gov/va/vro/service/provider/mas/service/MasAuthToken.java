@@ -19,7 +19,7 @@ public class MasAuthToken {
   private static final String PRINCIPAL_NAME = "MAS Service";
 
   // Inject the OAuth authorized client service and authorized client manager
-  // from the MasOauth2Config class (check the app folder)
+  // from the MasOauth2Config class (check the app folder).
   private final AuthorizedClientServiceOAuth2AuthorizedClientManager
       authorizedClientServiceAndManager;
 
@@ -28,7 +28,13 @@ public class MasAuthToken {
     return authorizedClientServiceAndManager;
   }
 
-  // Retrieve the authorized JWT from MAS
+  // Retrieve the authorized JWT from MAS.
+
+  /**
+   * Gets the MAS API token.
+   *
+   * @return token
+   */
   public OAuth2AccessToken getMasApiAuthToken() {
 
     // Build an OAuth2 request for the MAS Auth provider
@@ -38,12 +44,11 @@ public class MasAuthToken {
             .build();
 
     // Perform the actual authorization request using the authorized client service and authorized
-    // client
-    // manager. This is where the JWT is retrieved from the MAS Auth servers.
+    // client manager. This is where the JWT is retrieved from the MAS Auth servers.
     OAuth2AuthorizedClient authorizedClient =
         authorizedClientServiceAndManager.authorize(authorizeRequest);
 
-    // Get the token from the authorized client object
+    // Get the token from the authorized client object.
     return Objects.requireNonNull(authorizedClient).getAccessToken();
   }
 }
