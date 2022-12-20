@@ -57,7 +57,8 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                     },
                     "dateOfClaim": "2021-11-09",
-                    "disabilityActionType": "NEW"
+                    "disabilityActionType": "NEW",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -103,7 +104,8 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 1,
                                      'totalBpReadings': 2,
                                      'totalConditionsCount': 2},
-                 'sufficientForFastTracking': True}
+                 'sufficientForFastTracking': True,
+                 "claimSubmissionId": "1234"}
         ),
         # New claim with two recent BP both elevated and no condition
         (
@@ -150,7 +152,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "NEW"
+                    "disabilityActionType": "NEW",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -189,7 +192,8 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 0,
                                      'totalBpReadings': 2,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': True}
+                 'sufficientForFastTracking': True,
+                 "claimSubmissionId": "1234"}
         ),
         # New claim with relevant condition but no recent BP
         (
@@ -223,7 +227,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "NEW"
+                    "disabilityActionType": "NEW",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -260,7 +265,8 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 1,
                                      'totalBpReadings': 1,
                                      'totalConditionsCount': 2},
-                 'sufficientForFastTracking': False}
+                 'sufficientForFastTracking': False,
+                 "claimSubmissionId": "1234"}
         ),
         # New claim with no condition and no recent BP, BP not elevated
         (
@@ -300,7 +306,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "NEW"
+                    "disabilityActionType": "NEW",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -339,7 +346,8 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 0,
                                      'totalBpReadings': 2,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': None,
+                 "claimSubmissionId": "1234"}
         ),
         # Claim for increase, not enough BP readings
         (
@@ -375,7 +383,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "INCREASE"
+                    "disabilityActionType": "INCREASE",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -413,7 +422,8 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 0,
                                      'totalBpReadings': 2,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': None,
+                 "claimSubmissionId": "1234"}
         ),
         (
                 {
@@ -474,7 +484,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "INCREASE"
+                    "disabilityActionType": "INCREASE",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -540,7 +551,9 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 0,
                                      'totalBpReadings': 4,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': None,
+                 "claimSubmissionId": "1234"}
+
         ),
         # Claim for increase
         (
@@ -604,7 +617,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "INCREASE"
+                    "disabilityActionType": "INCREASE",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {'dateOfClaim': '2021-11-09',
@@ -671,7 +685,9 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsCount': 0,
                                      'totalBpReadings': 4,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': True}
+                 'sufficientForFastTracking': True,
+                 "claimSubmissionId": "1234"}
+
         ),
         (
 
@@ -683,7 +699,8 @@ from assessclaimdc7101.src.lib import main
                     },
                     "dateOfClaim": "2021-11-09",
                     "diagnosticCode": "7101",
-                    "disabilityActionType": "INCREASE"
+                    "disabilityActionType": "INCREASE",
+                    "claimSubmissionId": "1234"
                 }
                 ,
                 {"dateOfClaim": "2021-11-09",
@@ -695,7 +712,7 @@ from assessclaimdc7101.src.lib import main
                                      "recentBpReadings": 0,
                                      "totalConditionsCount": 0},
                  "sufficientForFastTracking": None,
-                }
+                 "claimSubmissionId": "1234"}
         ),
         # Bad data missing action type
         (
@@ -703,9 +720,11 @@ from assessclaimdc7101.src.lib import main
                     "evidence": {
                         "bp_readings": [],
                         "conditions": [],
-                    }
+                    },
+                    "claimSubmissionId": "1234"
                 },
-                {"errorMessage": "error validating request message data"}
+                {"errorMessage": "error validating request message data",
+                 "claimSubmissionId": "1234"}
         ),
         # Bad data:
         # - "diastolic" value is string instead of int
@@ -752,9 +771,11 @@ from assessclaimdc7101.src.lib import main
                         ],
                         "medications": []
                     },
-                    "dateOfClaim": "2021-11-09"
+                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
-                {"errorMessage": "error validating request message data"}
+                {"errorMessage": "error validating request message data",
+                 "claimSubmissionId": "1234"}
         ),
     ],
 )

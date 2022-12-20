@@ -55,6 +55,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                 },
                 "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {'evidence': {'bp_readings': [{'date': '2021-11-01',
                                            'dateFormatted': '11/01/2021',
@@ -89,7 +90,9 @@ from assessclaimdc7101.src.lib import main
                                            'status': 'active'}]},
              'evidenceSummary': {'medicationsCount': 1,
                                  'recentBpReadings': 2,
-                                 'totalBpReadings': 2}}
+                                 'totalBpReadings': 2},
+                "claimSubmissionId": "1234"
+            },
         ),
         (
             {
@@ -134,6 +137,7 @@ from assessclaimdc7101.src.lib import main
                 },
                 "dateOfClaim": "2021-11-09",
                 "diagnosticCode": "7101",
+                "claimSubmissionId": "1234"
             },
             # Blood pressue readings don't meet date specs
             {
@@ -143,6 +147,7 @@ from assessclaimdc7101.src.lib import main
                     "recentBpReadings": 0,
                     "totalBpReadings": 2,
                 },
+                "claimSubmissionId": "1234"
             },
         ),
         # Sufficiency and history algos fail
@@ -154,6 +159,7 @@ from assessclaimdc7101.src.lib import main
                 },
                 "dateOfClaim": "2021-11-09",
                 "diagnosticCode": "7101",
+                "claimSubmissionId": "1234"
             },
             {
                 "evidence": {"bp_readings": [], "medications": []},
@@ -162,6 +168,7 @@ from assessclaimdc7101.src.lib import main
                     "recentBpReadings": 0,
                     "totalBpReadings": 0,
                 },
+                "claimSubmissionId": "1234"
             },
         ),
         # Bad data: "systolic" key is missing in second reading
@@ -198,10 +205,12 @@ from assessclaimdc7101.src.lib import main
                             "organization": "LYONS VA MEDICAL CENTER",
                         },
                     ]
-                }
+                },
+                "claimSubmissionId": "1234"
             },
             {
-                "errorMessage": "error validating request message data"
+                "errorMessage": "error validating request message data",
+                "claimSubmissionId": "1234"
             },
         ),
         # Bad data:
@@ -250,9 +259,11 @@ from assessclaimdc7101.src.lib import main
                     "medications": [{"description": 11}],
                 },
                 "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
             },
             {
-                "errorMessage": "error validating request message data"
+                "errorMessage": "error validating request message data",
+                "claimSubmissionId": "1234"
             },
         ),
     ],

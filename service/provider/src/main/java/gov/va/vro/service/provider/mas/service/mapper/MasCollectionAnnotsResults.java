@@ -1,6 +1,11 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdBloodPressure;
+import gov.va.vro.model.AbdBpMeasurement;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.AbdProcedure;
 import gov.va.vro.model.mas.MasAnnotType;
 import gov.va.vro.model.mas.MasAnnotation;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -28,26 +33,31 @@ public class MasCollectionAnnotsResults {
   private static final String BP_UNIT = "mm[Hg]";
   private static final String BP_READING_REGEX = "^\\d{1,3}\\/\\d{1,3}$";
 
+  /**
+   * Maps annotations to evidence.
+   *
+   * @param masCollectionAnnotation annotation
+   * @return abd evidence
+   */
   public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation) {
 
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
-    List<AbdProcedure> procedures = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
-    boolean isConditionBP = false;
+    boolean isConditionBp = false;
     boolean isConditionAsthma = false;
 
     for (MasDocument masDocument : masCollectionAnnotation.getDocuments()) {
-      isConditionBP = masDocument.getCondition().equalsIgnoreCase(BP_CONDITION);
+      isConditionBp = masDocument.getCondition().equalsIgnoreCase(BP_CONDITION);
       isConditionAsthma = masDocument.getCondition().equalsIgnoreCase(ASTHMA_CONDITION);
       if (masDocument.getAnnotations() != null) {
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
               ">>>> Annotation Tpe <<<<<< : {} ",
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
-          MasAnnotType AnnotationType =
+          MasAnnotType annotationType =
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
-          switch (AnnotationType) {
+          switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
               medications.add(abdMedication);
@@ -57,7 +67,7 @@ public class MasCollectionAnnotsResults {
               conditions.add(abdCondition);
             }
             case LABRESULT -> {
-              if (isConditionBP && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
+              if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
                 AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
                 bpReadings.add(abdBloodPressure);
               }
@@ -68,7 +78,7 @@ public class MasCollectionAnnotsResults {
         }
       }
     }
-
+    List<AbdProcedure> procedures = new ArrayList<>();
     AbdEvidence abdEvidence = new AbdEvidence();
     abdEvidence.setMedications(medications);
     abdEvidence.setConditions(conditions);
