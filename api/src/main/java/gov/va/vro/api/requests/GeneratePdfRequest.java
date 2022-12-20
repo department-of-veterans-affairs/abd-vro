@@ -1,7 +1,6 @@
 package gov.va.vro.api.requests;
 
 import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.ClaimCondition;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
