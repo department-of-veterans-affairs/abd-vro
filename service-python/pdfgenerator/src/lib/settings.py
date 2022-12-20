@@ -24,6 +24,6 @@ queue_config = {
 
 codes = {
   "6602": "asthma",
-  "0000": "hypertension",
-  "7101": "hypertensionv2"
+  "7101": "hypertension",
+  "0000": "hypertensionv2"
 }
