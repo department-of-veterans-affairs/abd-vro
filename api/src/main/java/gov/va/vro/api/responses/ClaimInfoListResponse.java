@@ -1,5 +1,6 @@
 package gov.va.vro.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import gov.va.vro.api.model.ClaimInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +18,5 @@ import java.util.List;
 @Builder
 @ToString(includeFieldNames = true)
 public class ClaimInfoListResponse {
-  List<ClaimInfo> claims;
+  @JsonValue List<ClaimInfo> claims;
 }

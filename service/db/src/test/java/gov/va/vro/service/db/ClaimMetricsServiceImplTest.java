@@ -57,11 +57,30 @@ public class ClaimMetricsServiceImplTest {
   }
 
   @Test
-  void testClaimInfoForAll() throws IOException {
+  void testClaimInfoForVeteran() throws IOException {
     // Creates claim with contention, assessment results, and evidence summary documents.
     ClaimEntity claim = saveTestData("1234");
     // Run claim-info endpoint and test
     List<ClaimInfoData> claimInfoList = claimMetricsService.claimInfoForVeteran("v1");
+    ClaimInfoData result = claimInfoList.get(0);
+    assertEquals(result.getClaimSubmissionId(), claim.getClaimSubmissionId());
+    assertEquals(result.getContentionsCount(), claim.getContentions().size());
+    assertEquals(result.getVeteranIcn(), claim.getVeteran().getIcn());
+    assertEquals(
+        result.getAssessmentResultsCount(),
+        claim.getContentions().get(0).getAssessmentResults().size());
+    assertEquals(
+        result.getEvidenceSummary(),
+        claim.getContentions().get(0).getAssessmentResults().get(0).getEvidenceCountSummary());
+    assertEquals(result.getEvidenceSummaryDocumentsCount(), 1);
+  }
+
+  @Test
+  void testClaimInfoForAll() throws IOException {
+    // Creates claim with contention, assessment results, and evidence summary documents.
+    ClaimEntity claim = saveTestData("1234");
+    // Run claim-info endpoint and test
+    List<ClaimInfoData> claimInfoList = claimMetricsService.claimInfoWithPagination(0);
     ClaimInfoData result = claimInfoList.get(0);
     assertEquals(result.getClaimSubmissionId(), claim.getClaimSubmissionId());
     assertEquals(result.getContentionsCount(), claim.getContentions().size());
