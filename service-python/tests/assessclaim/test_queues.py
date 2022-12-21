@@ -12,9 +12,12 @@ from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
 from assessclaimdc6602v2.src.lib import queues as q6602v2
 from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
+from assessclaimdc7101.src import logging_setup
 from assessclaimdc7101.src.lib import queues as q7101
 from assessclaimcancer.src.lib.main import assess_cancer as maincancer
 from assessclaimcancer.src.lib import queues as qcancer
+
+logging_setup.set_format()
 
 
 @pytest.mark.parametrize(
