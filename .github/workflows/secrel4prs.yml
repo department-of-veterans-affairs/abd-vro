@@ -50,7 +50,6 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      # test TODO REMOVE
       - name: "Publish ${{ env.TARGET_ENV }} images to GHCR"
         id: publish-images
         uses: ./.github/actions/publish-images
