@@ -52,17 +52,15 @@ jobs:
       #    slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
       #    slack-text: ":panda_coffee: Deploying services to ${{ env.TARGET_ENV }}..."
 
-      - name: "Set up kube config nonprod"
-        if: ${{ inputs.target_env }} == 'dev' || ${{ inputs.target_env }} == 'qa' || ${{ inputs.target_env }} == 'sandbox'
+      - name: "Set up kube config"
         run: |
           mkdir ~/.kube
-          echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
-
-      - name: "Set up kube config prod"
-        if: ${{ inputs.target_env }} == 'prod' || ${{ inputs.target_env }} == 'prod-test'
-        run: |
-          mkdir ~/.kube
-          echo -n "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          if [ "${{ env.TARGET_ENV }}" == "sandbox" ] || [ "${{ env.TARGET_ENV }}" == "dev" ] || [ "${{ env.TARGET_ENV }}" == "qa" ]
+          then
+            echo -n "${{ secrets.DEV_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          else
+            echo -n "${{ secrets.PROD_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          fi
 
       - name: "Deploy core to ${{ env.TARGET_ENV }} env"
         env:
