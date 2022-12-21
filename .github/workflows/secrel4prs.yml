@@ -50,6 +50,10 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      # we are using the GitHub actor and token below instead of the PAT
+      # due to a signing issue in SecRel 4. for more details see
+      # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
+
       - name: "Publish ${{ env.TARGET_ENV }} images to GHCR"
         id: publish-images
         uses: ./.github/actions/publish-images
