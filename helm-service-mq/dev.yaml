@@ -1,0 +1,6 @@
+environment: dev
+
+rbac:
+  create: true
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: ""
