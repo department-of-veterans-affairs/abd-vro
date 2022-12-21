@@ -60,6 +60,7 @@ public class VroV1Tests {
       savePdfFile(pdf, setup.getName() + "-" + setup.getContentDispositionFilename());
     }
     PdfText pdfText = PdfText.getInstance(pdf);
+    log.info("PDF text: {}", pdfText.getPdfText());
 
     JsonNode bpReadings = setup.getBpReadingsNode();
     if (bpReadings != null) {
