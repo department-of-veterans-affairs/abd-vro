@@ -33,4 +33,8 @@ public class GeneratePdfRequest {
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
   private AbdEvidence evidence;
+
+  @NonNull
+  @Schema(description = "PDF template to generate", example = "v1")
+  private String pdfTemplate = "v1";
 }

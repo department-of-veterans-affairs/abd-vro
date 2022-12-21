@@ -75,6 +75,7 @@ public class MasIntegrationProcessors {
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(transferObject.getEvidence());
     generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
+    generatePdfPayload.setPdfTemplate("v2");
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
     VeteranInfo veteranInfo = new VeteranInfo();

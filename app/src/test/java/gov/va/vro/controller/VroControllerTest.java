@@ -249,6 +249,7 @@ class VroControllerTest extends BaseControllerTest {
     generatePdf.setClaimSubmissionId("1234");
     generatePdf.setVeteranInfo(new VeteranInfo());
     generatePdf.setEvidence(new AbdEvidence());
+    generatePdf.setPdfTemplate("v1");
     var response = post("/v1/evidence-pdf", generatePdf, ClaimProcessingError.class);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals(response.getBody().getMessage(), "diagnosticCode: must not be blank");
