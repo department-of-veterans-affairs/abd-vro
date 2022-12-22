@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 
 def pdf_helper_0000(data):
+    data["evidence"]["service_locations"] = data["evidence"]["serviceLocations"]
     return data
 
 
