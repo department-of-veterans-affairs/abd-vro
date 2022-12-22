@@ -14,6 +14,7 @@ on:
         - sandbox
         - prod-test
         - prod
+      
       target_service:
         description: 'Target LHDI environment'
         required: true
@@ -21,10 +22,11 @@ on:
         type: choice
         options:
         - all
+        - core
         - db
         - redis
         - mq
-        - core
+        
       target_release:
         description: 'Target release tag or SHA'
         required: true
@@ -84,7 +86,8 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "core" ]
           then
-            ./scripts/deploy-core.sh ${{ env.TARGET_ENV }}
+            pwd
+            scripts/deploy-core.sh ${{ env.TARGET_ENV }}
           fi  
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
@@ -114,5 +117,6 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "db" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            pwd
+            ../scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
           fi  
