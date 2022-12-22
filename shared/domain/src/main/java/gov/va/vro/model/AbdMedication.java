@@ -37,6 +37,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   private Boolean conditionRelated;
   private String suggestedCategory;
+  private String dateFormatted;
 
   @EqualsAndHashCode.Include
   @Schema(description = "Duration of the medication")
