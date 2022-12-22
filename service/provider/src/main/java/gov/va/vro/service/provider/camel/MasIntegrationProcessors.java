@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
@@ -88,5 +90,12 @@ public class MasIntegrationProcessors {
         generatePdfPayload.getClaimSubmissionId(),
         generatePdfPayload.getDiagnosticCode());
     return generatePdfPayload;
+  }
+
+  public static Processor auditProcessor(String routeId, String message) {
+    return exchange -> {
+      var auditable = exchange.getMessage().getBody(Auditable.class);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
   }
 }

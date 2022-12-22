@@ -45,7 +45,7 @@ public class MasOrderExamProcessor implements Processor {
       masOrderExamRequest.setConditions(listMasOrderExamConditions);
       var response = masApiService.orderExam(masOrderExamRequest);
       log.info("Order Exam Response :  " + response);
-      exchange.setProperty("OrderExamResponse", response);
+      exchange.setProperty("orderExamResponse", response);
 
     } catch (MasException e) {
       log.error("Error in calling Order Exam API ", e);

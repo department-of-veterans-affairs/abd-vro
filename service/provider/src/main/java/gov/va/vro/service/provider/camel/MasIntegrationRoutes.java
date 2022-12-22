@@ -48,6 +48,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
+  public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
 
   private final BipClaimService bipClaimService;
 
@@ -74,17 +75,26 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureAutomatedClaim() {
-    String routeId = "mas-claim-notification";
+    var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
-        .routeId(routeId)
+        .routeId(checkClaimRouteId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(
+            MasIntegrationProcessors.auditProcessor(
+                checkClaimRouteId, "Checking if claim is ready"))
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
 
+    var processClaimRouteId = "mas-claim-processing";
     from(ENDPOINT_MAS)
-        .routeId("mas-claim-processing")
+        .routeId(processClaimRouteId)
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(
+            MasIntegrationProcessors.auditProcessor(
+                processClaimRouteId, "Staring processing claim"))
         .setExchangePattern(ExchangePattern.InOnly);
   }
 
@@ -95,16 +105,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String orderExamEndpoint = "direct:order-exam";
 
     from(ENDPOINT_MAS_PROCESSING)
-        .routeId(routeId)
+        .routeId(routeId) // input: MasAutomatedClaimPayload
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Collecting evidence"))
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim", simple("${body}"))
         .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
-        // determine if evidence is sufficent
+        // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
-        .process(new HealthEvidenceProcessor())
+        .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         // Generate PDF
         .process(MasIntegrationProcessors.generatePdfProcessor())
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Generating PDF"))
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
         .setBody(simple("${exchangeProperty.claim}"))
         // Conditionally order exam
@@ -121,7 +135,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
-        .process(MasIntegrationProcessors.combineExchangesProcessor());
+        .process(
+            MasIntegrationProcessors.combineExchangesProcessor()); // returns HealthDataAssessment
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
@@ -130,18 +145,27 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
 
     // Call "Order Exam" in the absence of evidence
+    var orderExamRouteId = "mas-order-exam";
     from(orderExamEndpoint)
-        .routeId("mas-order-exam")
+        // input: MasAutomatedClaimPayload
+        .routeId(orderExamRouteId)
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         .process(masOrderExamProcessor)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(
+            MasIntegrationProcessors.auditProcessor(
+                orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .log("MAS Order Exam response: ${body}")
         .end();
   }
 
   private void configureUploadPdf() {
+    var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
-        .routeId("mas-upload-pdf")
+        .routeId(routeId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Uploading PDF"))
         .setBody(simple("${body.claimId}"))
         .convertBodyTo(String.class)
         .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
@@ -180,12 +204,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(transformUri);
 
     // intercept all MAS routes
-    interceptFrom("*")
-        .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
-        .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
-        .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
-        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
-        .to(transformUri);
+    //    interceptFrom("*")
+    //        .filter(exchange -> exchange.getFromRouteId().startsWith("mas-"))
+    //        .filter(exchange -> exchange.getMessage().getBody() instanceof Auditable)
+    //        .setProperty("originalRouteId", simple("${exchange.fromRouteId}"))
+    //        .setProperty("recipientList", constant(ENDPOINT_AUDIT_EVENT))
+    //        .to(transformUri);
+
+    from(ENDPOINT_AUDIT_WIRETAP)
+        .process(
+            exchange -> {
+              AuditEvent event = exchange.getMessage().getBody(AuditEvent.class);
+              auditEventService.logEvent(event);
+            });
 
     // Transform to an AuditEvent and send to recipients
     from(transformUri)
