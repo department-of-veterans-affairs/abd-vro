@@ -27,16 +27,16 @@ target/
 .java-version
 .venv
 
-helmchart/envsecrets.env
+helm-app/envsecrets.env
 tasks/config.temp.dev
 /bin
 !**/app/bin
 opa/ingress/test.rego
-helmchart/opa-policies/ingress/test.rego
+helm-app/opa-policies/ingress/test.rego
 
 # Created by scripts/image-names.sh
 .github/secrel/config-updated.yml
-helmchart/values-updated.yaml
+helm-app/values-updated.yaml
 
 api/bin/**/*.class
 app/bin/**/*.class
