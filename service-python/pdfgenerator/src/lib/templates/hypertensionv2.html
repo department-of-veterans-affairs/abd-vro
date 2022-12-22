@@ -186,7 +186,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for location in service_locations %}
+          {% for location in evidence.service_locations %}
           <tr>
             <th>{{ location.location }}</th>
             <td>{{ location.document }}</td>
@@ -195,7 +195,7 @@
             <td style="white-space: nowrap !important;">{{ location.documentId }}</td>
           </tr>
           {% endfor %}
-          {% if service_locations|length == 0 %}
+          {% if evidence.service_locations|length == 0 %}
           <tr>
             <td colspan="5" class="empty">No service locations found through automated review.</td>
           </tr>

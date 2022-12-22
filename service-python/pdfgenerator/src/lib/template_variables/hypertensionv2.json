@@ -10,11 +10,11 @@
     "suffix": "",
     "birthdate": "1935-06-15T00:00:00+00:00"
   },
-  "service_locations": [],
   "evidence": {
     "bp_readings": [],
     "conditions": [],
     "medications": [],
-    "procedures": []
+    "procedures": [],
+    "service_locations": []
   }
 }

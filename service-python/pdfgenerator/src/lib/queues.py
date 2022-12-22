@@ -24,7 +24,7 @@ def on_generate_callback(channel, method, properties, body):
         # logging.info(f" [x] {binding_key}: Received message: {message}")
         claim_id = message["claimSubmissionId"]
         message["veteran_info"] = message["veteranInfo"]
-        message["service_locations"] = message["serviceLocations"]
+        message["evidence"]["service_locations"] = message["evidence"]["serviceLocations"]
         code = message["diagnosticCode"]
         diagnosis_name = DIAGNOSTIC_CODE_MAPPING[code]
         variables = pdf_generator.generate_template_variables(diagnosis_name, message)
