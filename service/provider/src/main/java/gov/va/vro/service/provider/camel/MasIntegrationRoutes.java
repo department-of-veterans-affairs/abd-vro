@@ -10,6 +10,7 @@ import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -21,6 +22,8 @@ import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +52,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
+  private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
 
   private final BipClaimService bipClaimService;
 
@@ -69,6 +73,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureAuditing();
     configureAutomatedClaim();
     configureMasProcessing();
+    configureCollectEvidence();
     configureOrderExamStatus();
     configureCompleteProcessing();
     configureUploadPdf();
@@ -100,49 +105,37 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureMasProcessing() {
     String routeId = "mas-processing";
-    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
-    String collectEvidenceEndpoint = "direct:collect-evidence";
+
     String orderExamEndpoint = "direct:order-exam";
 
     from(ENDPOINT_MAS_PROCESSING)
-        .routeId(routeId) // input: MasAutomatedClaimPayload
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Collecting evidence"))
+        .routeId(routeId)
+        .process(
+            FunctionProcessor.fromFunction(
+                (Function<MasAutomatedClaimPayload, MasProcessingObject>)
+                    masAutomatedClaimPayload -> {
+                      var mpo = new MasProcessingObject();
+                      mpo.setClaimPayload(masAutomatedClaimPayload);
+                      return mpo;
+                    }))
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("claim", simple("${body}"))
-        .to(collectEvidenceEndpoint) // collect evidence from lighthouse and MAS
+        .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
-        // Generate PDF
-        .process(MasIntegrationProcessors.generatePdfProcessor())
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Generating PDF"))
+        // Generate PDF
+        .process(MasIntegrationProcessors.generatePdfProcessor())
         .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .setBody(simple("${exchangeProperty.claim}"))
+        .setBody(simple("${exchangeProperty.payload}"))
         // Conditionally order exam
         .to(orderExamEndpoint)
         // Upload PDF
         .to(ENDPOINT_UPLOAD_PDF)
         // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE);
-
-    from(collectEvidenceEndpoint)
-        .routeId("mas-automated-claim-collect-evidence")
-        .multicast(new GroupedExchangeAggregationStrategy())
-        .process(
-            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(lighthouseEndpoint) // call Lighthouse
-        .end() // end multicast
-        .process(
-            MasIntegrationProcessors.combineExchangesProcessor()); // returns HealthDataAssessment
-
-    from(lighthouseEndpoint)
-        .routeId("mas-automated-claim-lighthouse")
-        .process(MasIntegrationProcessors.payloadToClaimProcessor())
-        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
 
     // Call "Order Exam" in the absence of evidence
     var orderExamRouteId = "mas-order-exam";
@@ -160,18 +153,41 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end();
   }
 
+  private void configureCollectEvidence() {
+    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
+
+    String routeId = "mas-collect-evidence";
+    from(ENDPOINT_COLLECT_EVIDENCE)
+        .routeId(routeId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Collecting evidence"))
+        .setProperty("payload", simple("${body}"))
+        .multicast(new GroupedExchangeAggregationStrategy())
+        .process(
+            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .to(lighthouseEndpoint) // call Lighthouse
+        .end() // end multicast
+        .process(
+            MasIntegrationProcessors.combineExchangesProcessor()); // returns HealthDataAssessment
+
+    from(lighthouseEndpoint)
+        .routeId("mas-automated-claim-lighthouse")
+        .process(MasIntegrationProcessors.payloadToClaimProcessor())
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
+  }
+
   private void configureUploadPdf() {
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
-        .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Uploading PDF"))
         .setBody(simple("${body.claimId}"))
         .convertBodyTo(String.class)
         .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
-        .process(MasIntegrationProcessors.covertToPdfReponse())
+        .process(MasIntegrationProcessors.covertToPdfResponse())
         .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
-        .setBody(simple("${exchangeProperty.claim}"));
+        .setBody(simple("${exchangeProperty.payload}"));
   }
 
   private void configureOrderExamStatus() {
@@ -181,15 +197,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureCompleteProcessing() {
+    var routeId = "mas-complete-claim";
     from(ENDPOINT_MAS_COMPLETE)
-        .routeId("mas-complete-claim")
-        .log(" >> Request to complete claim received.")
+        .routeId(routeId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(MasIntegrationProcessors.auditProcessor(routeId, "Removing Special Issue"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking}"))
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(
+            MasIntegrationProcessors.auditProcessor(
+                routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
         .end()
-        .bean(bipClaimService, "completeProcessing");
+        .setBody(simple("${body.claimPayload}"))
+        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing));
   }
 
   /** Configure auditing. */

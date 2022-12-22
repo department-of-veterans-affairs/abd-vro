@@ -1,9 +1,9 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasOrderExamConditions;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,7 +12,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -22,14 +22,14 @@ public class MasOrderExamProcessor implements Processor {
 
   private final IMasApiService masApiService;
 
-  private static Map<String, String> masConditionCode =
+  private static final Map<String, String> MAS_CONDITION_CODES =
       Map.of("7101", "HYPERTENSION", "6602", "ASTHMA");
 
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {
 
-    var claimPayload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
+    var claimPayload = exchange.getMessage().getBody(MasProcessingObject.class);
 
     log.info("Ordering Exam for the collection {}.", claimPayload.getCollectionId());
     try {
@@ -37,12 +37,9 @@ public class MasOrderExamProcessor implements Processor {
       masOrderExamRequest.setCollectionsId(claimPayload.getCollectionId());
       MasOrderExamConditions masOrderExamConditions = new MasOrderExamConditions();
       masOrderExamConditions.setConditionCode(
-          masConditionCode.getOrDefault(claimPayload.getDiagnosticCode(), "NA"));
+          MAS_CONDITION_CODES.getOrDefault(claimPayload.getDiagnosticCode(), "NA"));
       masOrderExamConditions.setContentionText("HYPERTENSION");
-      ArrayList<MasOrderExamConditions> listMasOrderExamConditions =
-          new ArrayList<MasOrderExamConditions>();
-      listMasOrderExamConditions.add(masOrderExamConditions);
-      masOrderExamRequest.setConditions(listMasOrderExamConditions);
+      masOrderExamRequest.setConditions(List.of(masOrderExamConditions));
       var response = masApiService.orderExam(masOrderExamRequest);
       log.info("Order Exam Response :  " + response);
       exchange.setProperty("orderExamResponse", response);

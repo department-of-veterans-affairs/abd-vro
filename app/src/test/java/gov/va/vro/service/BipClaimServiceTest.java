@@ -10,6 +10,7 @@ import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -75,7 +76,9 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    claimService.removeSpecialIssue(payload);
+    var mpo = new MasProcessingObject();
+    mpo.setClaimPayload(payload);
+    claimService.removeSpecialIssue(mpo);
     // TODO: Verify result
   }
 
@@ -91,7 +94,9 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    claimService.removeSpecialIssue(payload);
+    var mpo = new MasProcessingObject();
+    mpo.setClaimPayload(payload);
+    claimService.removeSpecialIssue(mpo);
     // TODO: Verify arguments passed
     Mockito.verify(bipApiService)
         .updateClaimContention(Mockito.anyLong(), Mockito.any(UpdateContentionReq.class));

@@ -4,6 +4,7 @@ import gov.va.vro.model.bip.*;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -72,8 +73,8 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload removeSpecialIssue(MasAutomatedClaimPayload payload) {
-    var claimId = payload.getClaimId();
+  public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
+    var claimId = Long.parseLong(payload.getClaimId());
     log.info("Attempting to remove special issue for claim id = {}", claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
@@ -120,7 +121,7 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload markAsRfd(MasAutomatedClaimPayload payload) {
+  public MasProcessingObject markAsRfd(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
 

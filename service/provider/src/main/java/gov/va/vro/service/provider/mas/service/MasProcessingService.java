@@ -6,6 +6,7 @@ import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,9 @@ public class MasProcessingService {
   private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
     var auditEvent = buildAuditEvent(payload, message);
     camelEntrance.sendSlack(auditEvent);
-    camelEntrance.offRampClaim(payload);
+    var mpo = new MasProcessingObject();
+    mpo.setClaimPayload(payload);
+    camelEntrance.offRampClaim(mpo);
   }
 
   private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload, String message) {

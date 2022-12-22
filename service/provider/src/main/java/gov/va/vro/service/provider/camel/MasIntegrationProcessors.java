@@ -9,8 +9,8 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.mas.service.MasTransferObject;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
@@ -51,16 +51,16 @@ public class MasIntegrationProcessors {
    */
   public static Processor payloadToClaimProcessor() {
     return FunctionProcessor.fromFunction(
-        (Function<MasAutomatedClaimPayload, Claim>)
+        (Function<MasProcessingObject, Claim>)
             payload ->
                 Claim.builder()
-                    .claimSubmissionId(payload.getClaimDetail().getBenefitClaimId())
-                    .diagnosticCode(payload.getClaimDetail().getConditions().getDiagnosticCode())
-                    .veteranIcn(payload.getVeteranIdentifiers().getIcn())
+                    .claimSubmissionId(payload.getClaimId())
+                    .diagnosticCode(payload.getDiagnosticCode())
+                    .veteranIcn(payload.getVeteranIcn())
                     .build());
   }
 
-  public static Processor covertToPdfReponse() {
+  public static Processor covertToPdfResponse() {
     return exchange -> {
       String response = exchange.getMessage().getBody(String.class);
       var pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
@@ -72,7 +72,7 @@ public class MasIntegrationProcessors {
     return FunctionProcessor.fromFunction(MasIntegrationProcessors::getGeneratePdfPayload);
   }
 
-  private static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
+  private static GeneratePdfPayload getGeneratePdfPayload(MasProcessingObject transferObject) {
     MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(transferObject.getEvidence());

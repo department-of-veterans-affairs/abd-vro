@@ -5,6 +5,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -67,9 +68,8 @@ public class CamelEntrance {
         MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
   }
 
-  public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
+  public void offRampClaim(MasProcessingObject masProcessingObject) {
+    producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masProcessingObject);
   }
 
   public void sendSlack(AuditEvent auditEvent) {
