@@ -1,5 +1,5 @@
-from pdfgenerator.src.lib.settings import (pdf_options, queue_config,
-                                           redis_config, codes)
+from pdfgenerator.src.lib.settings import (codes, pdf_options, queue_config,
+                                           redis_config)
 
 valid_pdf = {
     "encoding": "",

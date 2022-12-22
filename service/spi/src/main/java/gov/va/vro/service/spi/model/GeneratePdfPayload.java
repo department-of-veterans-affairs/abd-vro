@@ -31,6 +31,7 @@ public class GeneratePdfPayload implements Auditable {
 
   private String status;
   private String reason;
+
   private String pdfTemplate;
 
   @Override
