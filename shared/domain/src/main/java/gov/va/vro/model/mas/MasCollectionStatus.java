@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** @author warren @Date 10/5/22 */
+/**
+ * MAS collection status class.
+ *
+ * @author warren @Date 10/5/22
+ */
 @Getter
 @Setter
 @NoArgsConstructor

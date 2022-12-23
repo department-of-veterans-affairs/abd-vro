@@ -6,7 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** @author warren @Date 10/11/22 */
+/**
+ * MAS order exam class.
+ *
+ * @author warren @Date 10/11/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter
