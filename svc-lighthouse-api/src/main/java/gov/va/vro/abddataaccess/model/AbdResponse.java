@@ -21,6 +21,11 @@ public class AbdResponse {
 
   public AbdResponse() {}
 
+  /**
+   * Constructs the object with the values provided.
+   *
+   * @param claim a claim.
+   */
   public AbdResponse(AbdClaim claim) {
     veteranIcn = claim.getVeteranIcn();
     diagnosticCode = claim.getDiagnosticCode();

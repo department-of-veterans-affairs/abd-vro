@@ -8,7 +8,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-/** @author warren @Date 10/5/22 */
+/**
+ * MAS document class.
+ *
+ * @author warren @Date 10/5/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter

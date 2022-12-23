@@ -9,7 +9,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-/** @author warren @Date 10/11/22 */
+/**
+ * MAS order exam request class.
+ *
+ * @author warren @Date 10/11/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter

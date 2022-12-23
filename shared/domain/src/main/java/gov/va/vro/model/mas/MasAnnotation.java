@@ -6,7 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** @author warren @Date 10/5/22 */
+/**
+ * MAS annotation class.
+ *
+ * @author warren @Date 10/5/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter

@@ -13,10 +13,10 @@ import lombok.RequiredArgsConstructor;
 public class BenefitClaimType {
   private String name;
   private String code;
-  private String attribute_one;
-  private String attribute_one_text;
-  private String attribute_two;
-  private String attribute_two_text;
-  private String attribute_three;
-  private String attribute_three_text;
+  private String attributeOne;
+  private String attributeOneText;
+  private String attributeTwo;
+  private String attributeTwoText;
+  private String attributeThree;
+  private String attributeThreeText;
 }
