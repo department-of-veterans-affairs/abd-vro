@@ -108,6 +108,41 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
+      summary = "Generate + Fetch Evidence PDF",
+      description =
+          "This endpoint generates the Evidence PDF for a specific patient and a diagnostic "
+              + "code. The endpoint will return the PDF but is also available from the "
+              + "'GET evidence-pdf' endpoint using claim submission id.")
+  @PostMapping("/generate-fetch-pdf")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "evidence-pdf")
+  @Tag(name = "Pdf Generation")
+  ResponseEntity<Object> generateFetchPdf(
+      @Parameter(
+              description = "metadata for generateFetchPdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
+      throws MethodArgumentNotValidException, ClaimProcessingException;
+
+  @Operation(
       summary = "Provides health data assessment",
       description =
           "This endpoint provides health data assessment for a Veteran claim "

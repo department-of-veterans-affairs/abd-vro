@@ -18,7 +18,7 @@ def pdf_helper_all(data):
     return data
 
 
-def toc_helper_all(toc_file_path, data):
+def toc_helper_all(toc_file_path, data):  # pragma: no cover
     file_data = None
 
     with open(toc_file_path, 'r') as file:

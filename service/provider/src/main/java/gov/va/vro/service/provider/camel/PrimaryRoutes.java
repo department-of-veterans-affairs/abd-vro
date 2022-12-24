@@ -19,10 +19,12 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
+  public static final String ENDPOINT_GENERATE_FETCH_PDF = "direct:generate-fetch-pdf";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
   private static final String FETCH_PDF_QUEUE = "fetch-pdf";
+  private static final String GENERATE_FETCH_PDF_QUEUE = "generate-fetch-pdf";
 
   // Base names for wiretap endpoints
   public static final String INCOMING_CLAIM_WIRETAP = "claim-submitted";
@@ -40,6 +42,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteClaimSubmitForFull();
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
+    configureRouteGenerateFetchPdf();
   }
 
   private void configureRouteClaimSubmit() {
@@ -79,6 +82,12 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private void configureRouteFetchPdf() {
     from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
+  }
+
+  private void configureRouteGenerateFetchPdf() {
+    from(ENDPOINT_GENERATE_FETCH_PDF)
+        .routeId("generate-fetch-pdf")
+        .to(pdfRoute(GENERATE_FETCH_PDF_QUEUE));
   }
 
   private String pdfRoute(String queueName) {

@@ -20,6 +20,7 @@ queue_config = {
     "exchange_name": "pdf-generator",
     "generate_queue_name": "generate-pdf",
     "fetch_queue_name": "fetch-pdf",
+    "generate_fetch_queue_name": "generate-fetch-pdf",
 }
 
 codes = {

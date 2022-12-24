@@ -104,6 +104,44 @@ public class VroController implements VroResource {
   }
 
   @Override
+  public ResponseEntity<Object> generateFetchPdf(GeneratePdfRequest request)
+      throws ClaimProcessingException {
+    log.info(
+        "Generating pdf for claim: {} and diagnostic code {}",
+        request.getClaimSubmissionId(),
+        request.getDiagnosticCode());
+    try {
+      GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
+      log.info(model.toString());
+      String response = camelEntrance.generateFetchPdf(model);
+      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
+      log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
+      if (pdfResponse.hasContent()) {
+        byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+        try (InputStream is = new ByteArrayInputStream(decoder)) {
+          InputStreamResource resource = new InputStreamResource(is);
+          String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
+          HttpHeaders headers = getHttpHeaders(diagnosis);
+          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+
+      } else {
+        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus().equals("ERROR")) {
+          log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
+      }
+    } catch (Exception ex) {
+      log.error("Error in generate fetch pdf", ex);
+      throw new ClaimProcessingException(
+          request.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+  }
+
+  @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> postFullHealthAssessment(
       HealthDataAssessmentRequest claim) throws ClaimProcessingException {
     log.info(
