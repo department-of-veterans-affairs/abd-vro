@@ -2,7 +2,6 @@ package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;

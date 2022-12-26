@@ -185,7 +185,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setBody(simple("${body.claimId}"))
         .convertBodyTo(String.class)
         .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
-        .process(MasIntegrationProcessors.covertToPdfResponse())
+        .process(MasIntegrationProcessors.convertToPdfResponse())
         .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
         .setBody(simple("${exchangeProperty.payload}"));
   }
