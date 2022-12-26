@@ -19,9 +19,7 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasExamOrderStatusPayload implements Auditable {
 
-  @JsonIgnore
-  @Setter
-  private String correlationId;
+  @JsonIgnore @Setter private String correlationId;
 
   @NotNull(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
