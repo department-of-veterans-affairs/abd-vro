@@ -24,6 +24,16 @@ import java.util.function.Function;
 @Slf4j
 public class MasIntegrationProcessors {
 
+  public static Processor convertToMasProcessingObject() {
+    return FunctionProcessor.fromFunction(
+        (Function<MasAutomatedClaimPayload, MasProcessingObject>)
+            masAutomatedClaimPayload -> {
+              var mpo = new MasProcessingObject();
+              mpo.setClaimPayload(masAutomatedClaimPayload);
+              return mpo;
+            });
+  }
+
   public static Processor combineExchangesProcessor() {
     return FunctionProcessor.fromFunction(combineExchangesFunction());
   }

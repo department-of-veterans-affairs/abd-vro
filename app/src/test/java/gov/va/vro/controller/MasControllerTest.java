@@ -1,7 +1,7 @@
 package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.MasTestData;
@@ -10,6 +10,7 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
@@ -17,6 +18,7 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -26,16 +28,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MasControllerTest extends BaseControllerTest {
 
-  @EndpointInject("mock:mas-notification")
-  private MockEndpoint mockMasNotificationEndpoint;
-
   @EndpointInject("mock:mas-offramp")
-  private MockEndpoint mockMasOffRampEndpoint;
+  private MockEndpoint mockMasOfframpEndpoint;
+
+  @EndpointInject("mock:mas-complete")
+  private MockEndpoint mockMasCompleteEndpoint;
 
   @Autowired private CamelContext camelContext;
 
@@ -71,17 +75,26 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void automatedClaimOutOfScope() throws Exception {
+    var offrampCalled = new AtomicBoolean(false);
+    var completeCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
-            "mas-slack-event",
+            "mas-offramp",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-notification"))
+                    .to("mock:mas-offramp"))
         .end();
     // The mock endpoint returns a valid response
-    mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
+    mockMasOfframpEndpoint.whenAnyExchangeReceived(
+        exchange -> {
+          AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
+          assertEquals(
+              "Request with [collection id = 123], [diagnostic code = 1233], and [disability action type = INCREASE] is not in scope.",
+              auditEvent.getMessage());
+          offrampCalled.set(true);
+        });
 
     adviceWith(
             camelContext,
@@ -90,15 +103,20 @@ public class MasControllerTest extends BaseControllerTest {
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-offramp"))
+                    .to("mock:mas-complete"))
         .end();
-    mockMasOffRampEndpoint.whenAnyExchangeReceived(exchange -> {});
+    mockMasCompleteEndpoint.whenAnyExchangeReceived(
+        exchange -> {
+          MasProcessingObject mpo = exchange.getMessage().getBody(MasProcessingObject.class);
+          assertNotNull(mpo.getClaimPayload());
+          completeCalled.set(true);
+        });
 
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    mockMasNotificationEndpoint.assertIsSatisfied();
-    mockMasOffRampEndpoint.assertIsSatisfied();
+    assertTrue(offrampCalled.get());
+    assertTrue(completeCalled.get());
   }
 
   @Test
@@ -114,12 +132,12 @@ public class MasControllerTest extends BaseControllerTest {
                     .to("mock:mas-notification"))
         .end();
     // The mock endpoint returns a valid response
-    mockMasNotificationEndpoint.whenAnyExchangeReceived(exchange -> {});
+    mockMasOfframpEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    mockMasNotificationEndpoint.expectedMessageCount(1);
+    mockMasOfframpEndpoint.expectedMessageCount(1);
   }
 
   @Test
@@ -131,10 +149,10 @@ public class MasControllerTest extends BaseControllerTest {
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals("123", response.getBody().getId());
     assertEquals("Received", response.getBody().getMessage());
-    // TODO: verify event logged
-    //    Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
-    //    var event = auditEventArgumentCaptor.getValue();
-    //    assertEquals("123", event.getEventId());
-    //    assertEquals("mas-exam-order-status", event.getRouteId());
+    // verify event logged
+    Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
+    var event = auditEventArgumentCaptor.getValue();
+    assertEquals("123", event.getEventId());
+    assertEquals("mas-exam-order-status", event.getRouteId());
   }
 }

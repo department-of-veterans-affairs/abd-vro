@@ -63,16 +63,31 @@ public class CamelEntrance {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
   }
 
+  /**
+   * Main entry point for processing an automated MAS claim
+   *
+   * @param masAutomatedClaimPayload the original payload
+   */
   public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     return producerTemplate.requestBody(
         MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
   }
 
-  public void offRampClaim(MasProcessingObject masProcessingObject) {
+  /**
+   * Last processing step for a MAS claim whether it has been accepted or off-ramped
+   *
+   * @param masProcessingObject the complete processing object
+   */
+  public void completeProcessing(MasProcessingObject masProcessingObject) {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masProcessingObject);
   }
 
-  public void sendSlack(AuditEvent auditEvent) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT, auditEvent);
+  /**
+   * Send appropriate notifications when a claim is off-ramped
+   *
+   * @param auditEvent the event to broadcast
+   */
+  public void offrampClaim(AuditEvent auditEvent) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_OFFRAMP, auditEvent);
   }
 }

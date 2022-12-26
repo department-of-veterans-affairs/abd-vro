@@ -62,10 +62,10 @@ public class MasProcessingService {
 
   private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
     var auditEvent = buildAuditEvent(payload, message);
-    camelEntrance.sendSlack(auditEvent);
+    camelEntrance.offrampClaim(auditEvent);
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
-    camelEntrance.offRampClaim(mpo);
+    camelEntrance.completeProcessing(mpo);
   }
 
   private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload, String message) {
