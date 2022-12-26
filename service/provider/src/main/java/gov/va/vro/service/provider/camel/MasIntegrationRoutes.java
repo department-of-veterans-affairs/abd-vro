@@ -86,7 +86,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready"))
+        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
@@ -97,7 +97,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(processClaimRouteId, "Staring processing claim"))
+        .onPrepare(auditProcessor(processClaimRouteId, "Started claim processing."))
         .setExchangePattern(ExchangePattern.InOnly);
   }
 

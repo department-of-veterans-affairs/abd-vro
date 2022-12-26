@@ -147,12 +147,14 @@ public class MasControllerTest extends BaseControllerTest {
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
-    assertEquals("123", response.getBody().getId());
-    assertEquals("Received", response.getBody().getMessage());
+    assertTrue(
+        response
+            .getBody()
+            .getMessage()
+            .startsWith("Received Exam Oder Status for collection Id 123. Correlation Id ="));
     // verify event logged
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
-    assertEquals("123", event.getEventId());
     assertEquals("mas-exam-order-status", event.getRouteId());
   }
 }

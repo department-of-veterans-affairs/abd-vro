@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ public class MasController implements MasResource {
   public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimPayload payload) {
     log.info(
         "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
+    String correlationId = UUID.randomUUID().toString();
+    payload.setCorrelationId(correlationId);
     String message = masProcessingService.processIncomingClaim(payload);
     MasResponse response =
         MasResponse.builder()
@@ -35,9 +39,15 @@ public class MasController implements MasResource {
   public ResponseEntity<MasResponse> examOrderingStatus(MasExamOrderStatusPayload payload) {
     int collectionId = payload.getCollectionId();
     log.info("Received MAS order status request with collection ID {}", collectionId);
+    String correlationId = UUID.randomUUID().toString();
+    payload.setCorrelationId(correlationId);
     masProcessingService.examOrderingStatus(payload);
+    String message =
+        String.format(
+            "Received Exam Oder Status for collection Id %d. Correlation Id = %s",
+            collectionId, correlationId);
     MasResponse response =
-        MasResponse.builder().id(Integer.toString(collectionId)).message("Received").build();
+        MasResponse.builder().id(Integer.toString(collectionId)).message(message).build();
     return ResponseEntity.ok(response);
   }
 }
