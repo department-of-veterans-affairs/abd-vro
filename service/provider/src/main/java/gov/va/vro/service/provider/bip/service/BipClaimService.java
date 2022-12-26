@@ -6,7 +6,6 @@ import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
@@ -141,7 +140,7 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return true if the status is updated, false otherwise
    */
-  public boolean completeProcessing(MasAutomatedClaimPayload payload) {
+  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
 
     // check again if TSOJ. If not, abandon route
@@ -151,12 +150,14 @@ public class BipClaimService {
           "Claim with collection Id = {} is in state {}. Not updating status",
           collectionId,
           claim.getTempStationOfJurisdiction());
-      return false;
+      payload.setTSOJ(false);
+      return payload;
     }
     // otherwise, update claim
     log.info("Updating claim status for claim with collection id = {}", collectionId);
     bipApiService.setClaimToRfdStatus(collectionId);
-    return true;
+    payload.setTSOJ(true);
+    return payload;
   }
 
   /**

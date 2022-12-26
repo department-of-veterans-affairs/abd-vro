@@ -12,6 +12,7 @@ import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -200,9 +201,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
+        .endChoice()
         .end()
-        .setBody(simple("${body.claimPayload}"))
-        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing));
+        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(
+            auditProcessor(
+                routeId,
+                auditable -> {
+                  MasProcessingObject mpo = (MasProcessingObject) auditable;
+                  return mpo.isTSOJ()
+                      ? "Claim satisfies TSOJ condition. Updated status."
+                      : "Claim does not satisfy TSOJ condition. Status not updated.";
+                }));
   }
 
   private void configureOffRamp() {

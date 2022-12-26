@@ -108,4 +108,13 @@ public class MasIntegrationProcessors {
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
     };
   }
+
+  public static Processor auditProcessor(
+      String routeId, Function<Auditable, String> messageExtractor) {
+    return exchange -> {
+      var auditable = exchange.getMessage().getBody(Auditable.class);
+      String message = messageExtractor.apply(auditable);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
+  }
 }

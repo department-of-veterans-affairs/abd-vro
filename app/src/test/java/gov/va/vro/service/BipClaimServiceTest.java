@@ -7,6 +7,7 @@ import gov.va.vro.MasTestData;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
@@ -110,7 +111,7 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    assertFalse(claimService.completeProcessing(payload));
+    assertFalse(claimService.completeProcessing(getMpo(payload)).isTSOJ());
   }
 
   @Test
@@ -121,7 +122,7 @@ class BipClaimServiceTest {
 
     BipClaimService claimService = new BipClaimService(bipApiService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    assertTrue(claimService.completeProcessing(payload));
+    assertTrue(claimService.completeProcessing(getMpo(payload)).isTSOJ());
     Mockito.verify(bipApiService).setClaimToRfdStatus(collectionId);
   }
 
@@ -136,5 +137,11 @@ class BipClaimServiceTest {
     claim.setClaimId(claimId);
     claim.setTempStationOfJurisdiction(station);
     return claim;
+  }
+
+  private MasProcessingObject getMpo(MasAutomatedClaimPayload payload) {
+    var mpo = new MasProcessingObject();
+    mpo.setClaimPayload(payload);
+    return mpo;
   }
 }

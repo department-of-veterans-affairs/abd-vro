@@ -12,6 +12,7 @@ public class MasProcessingObject implements Auditable {
   private MasAutomatedClaimPayload claimPayload;
   private AbdEvidence evidence;
   private HealthDataAssessment healthDataAssessment;
+  private boolean isTSOJ = false;
 
   public int getCollectionId() {
     return claimPayload.getCollectionId();
