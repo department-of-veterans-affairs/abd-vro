@@ -108,4 +108,16 @@ public class MasAutomatedClaimPayload implements Auditable {
   public Integer getClaimId() {
     return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
   }
+
+  @JsonIgnore
+  public String getVeteranIcn() {
+    return veteranIdentifiers == null ? null : veteranIdentifiers.getIcn();
+  }
+
+  @Override
+  public String getDetails() {
+    return String.format(
+        "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
+        collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
+  }
 }

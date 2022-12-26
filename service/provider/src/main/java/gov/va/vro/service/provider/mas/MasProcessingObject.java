@@ -23,7 +23,7 @@ public class MasProcessingObject implements Auditable {
   }
 
   public String getVeteranIcn() {
-    return claimPayload.getVeteranIdentifiers().getIcn();
+    return claimPayload.getVeteranIcn();
   }
 
   public String getDiagnosticCode() {
@@ -33,6 +33,11 @@ public class MasProcessingObject implements Auditable {
   @Override
   public String getEventId() {
     return claimPayload.getEventId();
+  }
+
+  @Override
+  public String getDetails() {
+    return claimPayload.getDetails();
   }
 
   public String getDisabilityActionType() {

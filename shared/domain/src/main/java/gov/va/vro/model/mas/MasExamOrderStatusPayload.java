@@ -32,4 +32,10 @@ public class MasExamOrderStatusPayload implements Auditable {
   public String getEventId() {
     return String.valueOf(collectionId);
   }
+
+  @Override
+  public String getDetails() {
+    return String.format(
+        "collectionId = %d, collectionStatus = %s", collectionId, collectionStatus);
+  }
 }

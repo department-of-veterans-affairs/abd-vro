@@ -40,6 +40,7 @@ public class AuditEvent {
         .routeId(routeId)
         .payloadType(body.getClass())
         .message(message)
+        .details(body.getDetails())
         .build();
   }
 
