@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 public class HealthEvidenceProcessor implements Processor {
 
-  /** Set the flag "sufficient for fast-tracking" */
+  /** Set the flag "sufficient for fast-tracking". */
   @Override
   public void process(Exchange exchange) {
     MasProcessingObject masTransferObject = (MasProcessingObject) exchange.getProperty("payload");

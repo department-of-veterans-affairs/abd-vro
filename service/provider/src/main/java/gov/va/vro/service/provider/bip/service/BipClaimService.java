@@ -1,6 +1,11 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.*;
+import gov.va.vro.model.bip.BipFileUploadPayload;
+import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
+import gov.va.vro.model.bip.FileIdType;
+import gov.va.vro.model.bip.UpdateContention;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
@@ -154,6 +159,12 @@ public class BipClaimService {
     return true;
   }
 
+  /**
+   * Uploads a pdf.
+   *
+   * @param pdfResponse pdf response.
+   * @return pdf response.
+   */
   public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());

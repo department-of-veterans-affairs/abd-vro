@@ -1,6 +1,10 @@
 package gov.va.vro.model.bip;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -35,6 +39,12 @@ public class ClaimContention {
   private boolean automationIndicator;
   private List<TrackedItems> associatedTrackedItems;
 
+  /**
+   * Update contention.
+   *
+   * @param action action.
+   * @return return.
+   */
   public UpdateContention toUpdateContention(String action) {
     return UpdateContention.builder()
         .medicalInd(medicalInd)

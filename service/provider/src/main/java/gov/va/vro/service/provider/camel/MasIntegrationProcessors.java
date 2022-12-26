@@ -60,7 +60,7 @@ public class MasIntegrationProcessors {
                     .build());
   }
 
-  public static Processor covertToPdfResponse() {
+  public static Processor convertToPdfResponse() {
     return exchange -> {
       String response = exchange.getMessage().getBody(String.class);
       var pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
