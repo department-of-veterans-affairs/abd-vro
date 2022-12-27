@@ -29,7 +29,6 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-    String correlationId = payload.getCorrelationId();
     if (!payload.isInScope()) {
       var message =
           String.format(
@@ -40,8 +39,7 @@ public class MasProcessingService {
               payload.getDisabilityActionType());
       offRampClaim(payload, message);
       return String.format(
-          "Claim with collection Id %s is out of scope (correlationId = %s).",
-          payload.getCollectionId(), correlationId);
+          "Claim with collection Id %s is out of scope.", payload.getCollectionId());
     }
     if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
       var message =
@@ -52,14 +50,11 @@ public class MasProcessingService {
       log.info(message);
       offRampClaim(payload, message);
       return String.format(
-          "Claim with collection Id %s is missing an anchor (correlationId = %s).",
-          payload.getCollectionId(), correlationId);
+          "Claim with collection Id %s is missing an anchor.", payload.getCollectionId());
     }
     camelEntrance.notifyAutomatedClaim(
         payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
-    return String.format(
-        "Received Claim for collection Id %d. Correlation Id = %s",
-        payload.getCollectionId(), correlationId);
+    return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
   public void examOrderingStatus(MasExamOrderStatusPayload payload) {

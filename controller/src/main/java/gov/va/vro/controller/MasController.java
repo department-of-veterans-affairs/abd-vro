@@ -27,11 +27,7 @@ public class MasController implements MasResource {
     String correlationId = UUID.randomUUID().toString();
     payload.setCorrelationId(correlationId);
     String message = masProcessingService.processIncomingClaim(payload);
-    MasResponse response =
-        MasResponse.builder()
-            .id(Integer.toString(payload.getCollectionId()))
-            .message(message)
-            .build();
+    MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
   }
 
@@ -42,12 +38,8 @@ public class MasController implements MasResource {
     String correlationId = UUID.randomUUID().toString();
     payload.setCorrelationId(correlationId);
     masProcessingService.examOrderingStatus(payload);
-    String message =
-        String.format(
-            "Received Exam Oder Status for collection Id %d. Correlation Id = %s",
-            collectionId, correlationId);
-    MasResponse response =
-        MasResponse.builder().id(Integer.toString(collectionId)).message(message).build();
+    String message = String.format("Received Exam Oder Status for collection Id %d.", collectionId);
+    MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
   }
 }

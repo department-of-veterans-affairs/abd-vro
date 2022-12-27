@@ -9,6 +9,7 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -44,6 +45,8 @@ public class MasControllerTest extends BaseControllerTest {
   @Autowired private CamelContext camelContext;
 
   @Autowired @SpyBean private AuditEventService auditEventService;
+
+  @Autowired private AuditEventRepository auditEventRepository;
 
   @Test
   @SneakyThrows
@@ -147,14 +150,19 @@ public class MasControllerTest extends BaseControllerTest {
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
-    assertTrue(
-        response
-            .getBody()
-            .getMessage()
-            .startsWith("Received Exam Oder Status for collection Id 123. Correlation Id ="));
+    assertEquals(
+        "Received Exam Oder Status for collection Id 123.", response.getBody().getMessage());
     // verify event logged
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
     assertEquals("mas-exam-order-status", event.getRouteId());
+    var masResponse = response.getBody();
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeDesc(masResponse.getId());
+    assertEquals(1, audits.size());
+    var audit = audits.get(0);
+    assertEquals(masResponse.getId(), audit.getEventId());
+    assertEquals(MasExamOrderStatusPayload.class.getSimpleName(), audit.getPayloadType());
+    assertEquals("mas-exam-order-status", audit.getRouteId());
+    assertEquals("Exam Order Status Called", audit.getMessage());
   }
 }
