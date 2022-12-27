@@ -3,6 +3,7 @@ package gov.va.vro.routes;
 import static gov.va.vro.service.provider.camel.PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
@@ -13,9 +14,11 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
+import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.VroCamelUtils;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import org.apache.camel.CamelContext;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
+import java.util.UUID;
 
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
@@ -39,6 +43,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @Autowired @InjectMocks MasCollectionService masCollectionService;
 
   @Autowired CamelContext camelContext;
+
+  @Autowired AuditEventRepository auditEventRepository;
 
   @EndpointInject("mock:sufficiency-assess")
   private MockEndpoint mockSufficiencyAssess;
@@ -51,15 +57,27 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   @Test
   void processClaimSufficientEvidence() throws Exception {
-    processClaim(true);
+    var mpo = processClaim(true);
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
+    assertTrue(
+        audits.stream()
+            .filter(audit -> audit.getMessage().startsWith("Sufficient evidence"))
+            .findFirst()
+            .isPresent());
   }
 
   @Test
   void processClaimInsufficientEvidence() throws Exception {
-    processClaim(false);
+    var mpo = processClaim(false);
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
+    assertTrue(
+        audits.stream()
+            .filter(audit -> audit.getMessage().startsWith("There is insufficient evidence"))
+            .findFirst()
+            .isPresent());
   }
 
-  private void processClaim(boolean sufficientEvidence) throws Exception {
+  private MasProcessingObject processClaim(boolean sufficientEvidence) throws Exception {
 
     // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
@@ -116,7 +134,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     Mockito.when(masApiService.getCollectionAnnotations(collectionId))
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
-    camelEntrance.processClaim(payload);
+    payload.setCorrelationId(UUID.randomUUID().toString());
+    var response = camelEntrance.processClaim(payload);
 
     // verify if order exam was called based on the sufficient evidence flag
     if (sufficientEvidence) {
@@ -127,6 +146,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
       MasOrderExamRequest orderExamRequest = argumentCaptor.getValue();
       assertEquals(collectionId, orderExamRequest.getCollectionsId());
     }
+    return response;
   }
 
   private void replaceEndpoint(String routeId, String fromUri, String toUri) throws Exception {

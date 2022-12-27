@@ -68,9 +68,11 @@ public class CamelEntrance {
    *
    * @param masAutomatedClaimPayload the original payload
    */
-  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+  public MasProcessingObject processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     return producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING,
+        masAutomatedClaimPayload,
+        MasProcessingObject.class);
   }
 
   /**
