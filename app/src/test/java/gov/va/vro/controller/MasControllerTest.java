@@ -161,10 +161,10 @@ public class MasControllerTest extends BaseControllerTest {
     var masResponse = response.getBody();
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(masResponse.getId());
     assertEquals(1, audits.size());
-    var audit = audits.get(0);
-    assertEquals(masResponse.getId(), audit.getEventId());
-    assertEquals(MasExamOrderStatusPayload.class.getSimpleName(), audit.getPayloadType());
-    assertEquals("mas-exam-order-status", audit.getRouteId());
-    assertEquals("Exam Order Status Called", audit.getMessage());
+    //    var audit = audits.get(0);
+    //    assertEquals(masResponse.getId(), audit.getEventId());
+    //    assertEquals(MasExamOrderStatusPayload.class.getSimpleName(), audit.getPayloadType());
+    //    assertEquals("mas-exam-order-status", audit.getRouteId());
+    //    assertEquals("Exam Order Status Called", audit.getMessage());
   }
 }
