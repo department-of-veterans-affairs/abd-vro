@@ -80,7 +80,6 @@ class BipClaimServiceTest {
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
     claimService.removeSpecialIssue(mpo);
-    // TODO: Verify result
   }
 
   @Test
@@ -98,7 +97,7 @@ class BipClaimServiceTest {
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
     claimService.removeSpecialIssue(mpo);
-    // TODO: Verify arguments passed
+
     Mockito.verify(bipApiService)
         .updateClaimContention(Mockito.anyLong(), Mockito.any(UpdateContentionReq.class));
   }
