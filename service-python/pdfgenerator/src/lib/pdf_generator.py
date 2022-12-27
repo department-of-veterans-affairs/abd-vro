@@ -1,3 +1,4 @@
+import io
 import json
 import logging
 import os
@@ -5,6 +6,7 @@ import os
 import pdfkit
 from dateutil import parser
 from jinja2 import Environment, PackageLoader, select_autoescape
+from weasyprint import HTML
 
 from .helper_functions import *  # noqa: F403
 
@@ -13,8 +15,14 @@ lib_dir = os.path.dirname(__file__)
 
 class PDFGenerator:
 
-    def __init__(self, options):
+    def __init__(self, options, message_data=None):
         self.options = options
+        logging.info(message_data)
+        if message_data and "pdfPackage" in message_data and message_data["pdfPackage"].lower() in ["wkhtmltopdf", "weasyprint"]:
+            self.package = message_data["pdfPackage"]
+        else:
+            self.package = "wkhtmltopdf"
+        logging.info(f"Using PDF Package: {self.package}")
 
     def generate_template_variables(self, template_name: str, pdf_data: dict) -> dict:
         placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_name}.json")))
@@ -43,11 +51,21 @@ class PDFGenerator:
         return generated_html
 
     def generate_pdf_from_string(self, template_name: str, html: str, data, output=False) -> bytes or bool:
-        base_toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/base_toc.xsl")
-        if os.path.isfile(base_toc_file_path):
-            # Call a helper function that make adjustments to toc before creating
-            generated_toc_file_path = toc_helper_all(base_toc_file_path, data) # noqa: F405, E261
-            toc = {'xsl-style-sheet': generated_toc_file_path}
-            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=True)
+        if self.package == "wkhtmltopdf":
+            base_toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/base_toc.xsl")
+            if os.path.isfile(base_toc_file_path):
+                # Call a helper function that make adjustments to toc before creating
+                generated_toc_file_path = toc_helper_all(base_toc_file_path, data) # noqa: F405, E261
+                toc = {'xsl-style-sheet': generated_toc_file_path}
+                return pdfkit.from_string(html, output, options=self.options, toc=toc)
+            else:
+                return pdfkit.from_string(html, output, options=self.options)
         else:
-            return pdfkit.from_string(html, output, options=self.options, verbose=True)
+            buffer = io.BytesIO()
+            html_obj = HTML(string=html)
+            if output:
+                html_obj.write_pdf(output)
+                return
+            else:
+                html_obj.write_pdf(buffer)
+                return buffer.getbuffer()

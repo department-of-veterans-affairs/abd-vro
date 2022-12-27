@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Send logs directly to container
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker
+RUN apk update && apk --no-cache add expat=2.5.0-r0 py3-pip gcc musl-dev python3-dev pango zlib-dev jpeg-dev openjpeg-dev g++ libffi-dev && mkdir -p /home/docker
 RUN adduser --disabled-password docker && chown -hR docker:docker /home/docker/
 
 # SERVICE_SRC_FOLDER is used by secrel/config.yml

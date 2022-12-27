@@ -23,6 +23,8 @@ public class GeneratePdfPayload implements Auditable {
 
   @NonNull private String diagnosticCode;
 
+  @NonNull private String pdfPackage;
+
   @JsonProperty("veteranInfo")
   private VeteranInfo veteranInfo;
 

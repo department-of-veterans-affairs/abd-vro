@@ -16,11 +16,11 @@ FETCH_QUEUE = queue_config["fetch_queue_name"]
 
 def on_generate_callback(channel, method, properties, body):
     try:
-        redis_client = RedisClient(redis_config)
-        pdf_generator = PDFGenerator(pdf_options)
-
-        # binding_key = method.routing_key
         message = json.loads(body)
+
+        redis_client = RedisClient(redis_config)
+        pdf_generator = PDFGenerator(pdf_options, message)
+        # binding_key = method.routing_key
         # logging.info(f" [x] {binding_key}: Received message: {message}")
         claim_id = message["claimSubmissionId"]
         message["veteran_info"] = message["veteranInfo"]
