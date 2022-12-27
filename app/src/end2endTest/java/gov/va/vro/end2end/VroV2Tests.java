@@ -53,7 +53,7 @@ public class VroV2Tests {
         restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received", masResponse.getMessage());
+    assertEquals("Received Exam Oder Status for collection Id 123.", masResponse.getMessage());
   }
 
   @Test
@@ -65,7 +65,7 @@ public class VroV2Tests {
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received", masResponse.getMessage());
+    assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
   }
 
   @Test
@@ -77,7 +77,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Out of scope", masResponse.getMessage());
+    assertEquals("Claim with collection Id 350 is out of scope.", masResponse.getMessage());
   }
 
   @Test
@@ -89,7 +89,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Missing anchor", masResponse.getMessage());
+    assertEquals("Claim with collection Id 351 is missing an anchor.", masResponse.getMessage());
   }
 
   @SneakyThrows
