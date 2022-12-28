@@ -53,7 +53,7 @@ public class VroV2Tests {
         restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received Exam Oder Status for collection Id 123.", masResponse.getMessage());
+    assertEquals("Received Exam Order Status for collection Id 123.", masResponse.getMessage());
   }
 
   @Test
