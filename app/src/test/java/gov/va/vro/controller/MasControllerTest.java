@@ -11,7 +11,6 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -47,8 +46,6 @@ public class MasControllerTest extends BaseControllerTest {
   @Autowired private CamelContext camelContext;
 
   @Autowired @SpyBean private AuditEventService auditEventService;
-
-  @Autowired private AuditEventRepository auditEventRepository;
 
   @Test
   @SneakyThrows
@@ -158,13 +155,5 @@ public class MasControllerTest extends BaseControllerTest {
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
     assertEquals("mas-exam-order-status", event.getRouteId());
-    var masResponse = response.getBody();
-    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(masResponse.getId());
-    assertEquals(1, audits.size());
-    //    var audit = audits.get(0);
-    //    assertEquals(masResponse.getId(), audit.getEventId());
-    //    assertEquals(MasExamOrderStatusPayload.class.getSimpleName(), audit.getPayloadType());
-    //    assertEquals("mas-exam-order-status", audit.getRouteId());
-    //    assertEquals("Exam Order Status Called", audit.getMessage());
   }
 }
