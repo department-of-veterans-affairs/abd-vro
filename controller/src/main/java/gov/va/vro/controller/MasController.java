@@ -38,7 +38,7 @@ public class MasController implements MasResource {
     String correlationId = UUID.randomUUID().toString();
     payload.setCorrelationId(correlationId);
     masProcessingService.examOrderingStatus(payload);
-    String message = String.format("Received Exam Oder Status for collection Id %d.", collectionId);
+    String message = String.format("Received Exam Order Status for collection Id %d.", collectionId);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
   }

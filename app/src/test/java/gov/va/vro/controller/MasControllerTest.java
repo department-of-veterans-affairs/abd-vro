@@ -150,7 +150,7 @@ public class MasControllerTest extends BaseControllerTest {
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals(
-        "Received Exam Oder Status for collection Id 123.", response.getBody().getMessage());
+        "Received Exam Order Status for collection Id 123.", response.getBody().getMessage());
     // verify event logged
     Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
     var event = auditEventArgumentCaptor.getValue();
