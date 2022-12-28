@@ -58,6 +58,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @Test
   void processClaimSufficientEvidence() throws Exception {
     var mpo = processClaim(true);
+    Thread.sleep(200);
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
@@ -69,6 +70,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @Test
   void processClaimInsufficientEvidence() throws Exception {
     var mpo = processClaim(false);
+    Thread.sleep(200);
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
