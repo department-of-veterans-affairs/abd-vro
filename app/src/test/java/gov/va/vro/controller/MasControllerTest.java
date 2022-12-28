@@ -20,7 +20,6 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -151,9 +150,5 @@ public class MasControllerTest extends BaseControllerTest {
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals(
         "Received Exam Order Status for collection Id 123.", response.getBody().getMessage());
-    // verify event logged
-    Mockito.verify(auditEventService).logEvent(auditEventArgumentCaptor.capture());
-    var event = auditEventArgumentCaptor.getValue();
-    assertEquals("mas-exam-order-status", event.getRouteId());
   }
 }
