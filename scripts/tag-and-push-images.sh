@@ -28,5 +28,5 @@ done
 
 # Pull, tag, and push these third-party images to work around https://www.docker.com/increase-rate-limits/
 docker pull rabbitmq:3
-docker tag rabbitmq:3 "ghcr.io/${REPO}/vro-rabbitmq:3"
-docker push "ghcr.io/${REPO}/vro-rabbitmq:3"
+docker tag rabbitmq:3 "ghcr.io/${REPO}/vro-rabbitmq-test:3"
+docker push "ghcr.io/${REPO}/vro-rabbitmq-test:3"
