@@ -60,8 +60,10 @@ jobs:
         with:
           target_env: ${{ env.TARGET_ENV }}
           access_token: ${{ secrets.ACCESS_TOKEN }}
-          ghcr_username: ${{ github.actor }}
-          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
+#          ghcr_username: ${{ github.actor }}
+#          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
+          ghcr_username: ${{ secrets.USERNAME }}
+          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
           run_tests: ${{ env.RUN_TESTS }}
 
   debug-job:
