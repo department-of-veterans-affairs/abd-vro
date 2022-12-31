@@ -1,5 +1,8 @@
 package gov.va.vro.service.db.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
@@ -14,9 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")

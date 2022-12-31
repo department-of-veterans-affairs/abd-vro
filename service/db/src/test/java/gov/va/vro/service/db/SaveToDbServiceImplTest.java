@@ -9,6 +9,7 @@ import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.spi.model.Claim;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
+@ActiveProfiles("test")
 class SaveToDbServiceImplTest {
 
   @Autowired private SaveToDbServiceImpl saveToDbService;
@@ -35,6 +38,8 @@ class SaveToDbServiceImplTest {
   @Autowired private VeteranRepository veteranRepository;
 
   @Autowired private ClaimRepository claimRepository;
+
+  @Autowired private AssessmentResultRepository assessmentResultRepository;
 
   @Value("classpath:test-data/evidence-summary-document-data.json")
   private Resource esdData;
@@ -78,20 +83,22 @@ class SaveToDbServiceImplTest {
     saveToDbService.insertClaim(claim);
     ClaimEntity claimBeforeAssessment =
         claimRepository.findByClaimSubmissionId("1234").orElseThrow();
-    ContentionEntity contention = new ContentionEntity("7101");
-    claimBeforeAssessment.addContention(contention);
+    // ContentionEntity contention = new ContentionEntity("7101");
+    // claimBeforeAssessment.addContention(contention);
     Map<String, Object> evidenceMap = new HashMap<>();
     evidenceMap.put("medicationsCount", "10");
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
     evidence.setEvidenceSummary(evidenceMap);
-    saveToDbService.insertAssessmentResult(
-        claimBeforeAssessment.getId(), evidence, contention.getDiagnosticCode());
+    saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
     ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
     AssessmentResultEntity assessmentResult =
         result.getContentions().get(0).getAssessmentResults().get(0);
     assertEquals(assessmentResult.getEvidenceCountSummary(), evidenceMap);
+
+    long c = assessmentResultRepository.count();
+    assertEquals(1, c);
   }
 
   @Test

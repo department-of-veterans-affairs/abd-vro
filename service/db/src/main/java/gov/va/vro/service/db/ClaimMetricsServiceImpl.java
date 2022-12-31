@@ -1,11 +1,14 @@
 package gov.va.vro.service.db;
 
+import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
 import gov.va.vro.service.spi.model.ClaimInfoData;
 import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -28,6 +31,8 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private final AssessmentResultRepository assessmentResultRepository;
 
   private final EvidenceSummaryDocumentRepository evidenceSummaryDocumentRepository;
+
+  private final ClaimInfoResponseMapper claimInfoResponseMapper;
 
   @Override
   public ClaimMetricsInfo claimMetrics() {
@@ -65,7 +70,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   public List<ClaimInfoData> claimInfoForVeteran(String veteranIcn) {
     List<ClaimInfoData> veteranClaims = new ArrayList<>();
     try {
-      List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn);
+      List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn, null).getContent();
       for (ClaimEntity claim : claims) {
         ClaimInfoData info = new ClaimInfoData();
         info.setVeteranIcn(veteranIcn);
@@ -137,5 +142,31 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       count += contention.getEvidenceSummaryDocuments().size();
     }
     info.setEvidenceSummaryDocumentsCount(count);
+  }
+
+  public ClaimInfoResponse getClaimInfo(String claimSubmissionId) {
+    ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
+      return null;
+    }
+    return claimInfoResponseMapper.toClaimInfoResponse(claim);
+  }
+
+  private Page<ClaimEntity> findAllClaimInfoPage(ClaimInfoQueryParams params) {
+    int size = params.getSize();
+    int page = params.getPage();
+    String icn = params.getIcn();
+    PageRequest pageRequest = PageRequest.of(page, size);
+    if (icn == null) {
+      return claimRepository.findAll(pageRequest);
+    } else {
+      return claimRepository.findAllByVeteranIcn(icn, pageRequest);
+    }
+  }
+
+  public List<ClaimInfoResponse> findAllClaimInfo(ClaimInfoQueryParams params) {
+    Page<ClaimEntity> claims = findAllClaimInfoPage(params);
+    return claimInfoResponseMapper.toClaimInfoResponses(claims);
   }
 }
