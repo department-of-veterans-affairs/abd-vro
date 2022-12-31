@@ -12,6 +12,8 @@ import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.Getter;
@@ -29,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ClaimMetricsTestCase {
   private static final AtomicInteger counter = new AtomicInteger(0);
 
-  private ServiceBundle serviceBundle;
+  // private ServiceBundle serviceBundle;
 
   private String claimSubmissionId;
 
@@ -56,25 +58,25 @@ public class ClaimMetricsTestCase {
    * This populates the database based on the simulation of generating medical assessment and
    * evidence summary pdf.
    */
-  public void populate() {
+  public void populate(SaveToDbService service, ClaimRepository repo) {
     Claim claim = new Claim();
     claim.setClaimSubmissionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
-    serviceBundle.getSaveToDbService().insertClaim(claim);
+    service.insertClaim(claim);
 
     ClaimEntity claimEntity =
-        serviceBundle.getClaimRepository().findByClaimSubmissionId(claimSubmissionId).orElseThrow();
+        repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
 
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());
 
     UUID claimEntityId = claimEntity.getId();
     AbdEvidenceWithSummary evidence = evidenceCase.getEvidenceWithSummary(claimSubmissionId);
-    serviceBundle.getSaveToDbService().insertAssessmentResult(claimEntityId, evidence, "7101");
+    service.insertAssessmentResult(claimEntityId, evidence, "7101");
 
     GeneratePdfPayload gpp = getPdfPayload(evidence.getEvidence());
-    serviceBundle.getSaveToDbService().insertEvidenceSummaryDocument(gpp, documentName);
+    service.insertEvidenceSummaryDocument(gpp, documentName);
   }
 
   private static VeteranInfo getVeteranInfo(int index) {
@@ -96,9 +98,8 @@ public class ClaimMetricsTestCase {
    *
    * @return newed TestSetup
    */
-  public ClaimMetricsTestCase newCaseForSameVeteran(ServiceBundle bundle) {
+  public ClaimMetricsTestCase newCaseForSameVeteran() {
     ClaimMetricsTestCase result = new ClaimMetricsTestCase();
-    result.serviceBundle = bundle;
 
     int counterValue = counter.getAndIncrement();
 
@@ -142,9 +143,8 @@ public class ClaimMetricsTestCase {
    *
    * @return newed TestSetup
    */
-  public static ClaimMetricsTestCase getInstance(ServiceBundle bundle) {
+  public static ClaimMetricsTestCase getInstance() {
     ClaimMetricsTestCase result = new ClaimMetricsTestCase();
-    result.serviceBundle = bundle;
 
     int counterValue = counter.getAndIncrement();
 

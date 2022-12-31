@@ -1,6 +1,7 @@
 package gov.va.vro.service.db;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
@@ -165,8 +166,9 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     }
   }
 
-  public List<ClaimInfoResponse> findAllClaimInfo(ClaimInfoQueryParams params) {
+  public ClaimsInfo findAllClaimInfo(ClaimInfoQueryParams params) {
     Page<ClaimEntity> claims = findAllClaimInfoPage(params);
-    return claimInfoResponseMapper.toClaimInfoResponses(claims);
+    List<ClaimInfoResponse> claimsInfo = claimInfoResponseMapper.toClaimInfoResponses(claims);
+    return new ClaimsInfo(claimsInfo, claims.getTotalElements());
   }
 }

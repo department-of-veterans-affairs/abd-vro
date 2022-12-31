@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
-import gov.va.vro.service.db.util.ServiceBundle;
 import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,9 @@ public class ClaimMetricsServiceImplTest {
     int size = params.getSize();
     int page = params.getPage();
     assertTrue(size > 0);
-    List<ClaimInfoResponse> responses = claimMetricsService.findAllClaimInfo(params);
+    ClaimsInfo claimsInfo = claimMetricsService.findAllClaimInfo(params);
+    assertEquals(cases.size(), claimsInfo.getTotal());
+    List<ClaimInfoResponse> responses = claimsInfo.getClaimInfoList();
     int expectedResponseSize =
         cases.size() < (page + 1) * size ? (page + 1) * size - cases.size() : size;
     assertEquals(expectedResponseSize, responses.size());
@@ -50,23 +52,21 @@ public class ClaimMetricsServiceImplTest {
 
   @Test
   void testAllMethodsHappyPath() {
-    ServiceBundle bundle = new ServiceBundle(claimMetricsService, saveToDbService, claimRepository);
-
-    Supplier f = () -> ClaimMetricsTestCase.getInstance(bundle);
+    Supplier<ClaimMetricsTestCase> f = () -> ClaimMetricsTestCase.getInstance();
 
     List<ClaimMetricsTestCase> cases =
-        IntStream.range(0, 15).boxed().map(i -> ClaimMetricsTestCase.getInstance(bundle)).toList();
+        IntStream.range(0, 15).boxed().map(i -> ClaimMetricsTestCase.getInstance()).toList();
 
     List<ClaimMetricsTestCase> secondClaimCases =
-        cases.stream().limit(5).map(c -> c.newCaseForSameVeteran(bundle)).toList();
+        cases.stream().limit(5).map(c -> c.newCaseForSameVeteran()).toList();
     List<ClaimMetricsTestCase> thirdClaimCases =
-        cases.stream().limit(2).map(c -> c.newCaseForSameVeteran(bundle)).toList();
+        cases.stream().limit(2).map(c -> c.newCaseForSameVeteran()).toList();
 
     ArrayList<ClaimMetricsTestCase> allCases = new ArrayList<>(cases);
     allCases.addAll(secondClaimCases);
     allCases.addAll(thirdClaimCases);
 
-    allCases.forEach(c -> c.populate());
+    allCases.forEach(c -> c.populate(saveToDbService, claimRepository));
 
     ClaimMetricsInfo metricsInfo = claimMetricsService.claimMetrics();
     assertEquals(allCases.size(), metricsInfo.getTotalClaims());
