@@ -9,7 +9,7 @@ import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
-import gov.va.vro.service.spi.model.ClaimMetricsInfo;
+import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,6 +51,12 @@ public class ClaimMetricsServiceImplTest {
             });
   }
 
+  private void verifyHappyPathClaimMetrics(int expectedSize) {
+    ClaimMetricsInfo actual = claimMetricsService.getClaimMetrics();
+    ClaimMetricsInfo expected = new ClaimMetricsInfo(expectedSize, expectedSize, expectedSize);
+    assertEquals(expected, actual);
+  }
+
   @Test
   void testAllMethodsHappyPath() {
     Supplier<ClaimMetricsTestCase> f = () -> ClaimMetricsTestCase.getInstance();
@@ -67,12 +73,9 @@ public class ClaimMetricsServiceImplTest {
     allCases.addAll(secondClaimCases);
     allCases.addAll(thirdClaimCases);
 
+    verifyHappyPathClaimMetrics(0);
     allCases.forEach(c -> c.populate(saveToDbService, claimRepository));
-
-    ClaimMetricsInfo metricsInfo = claimMetricsService.claimMetrics();
-    assertEquals(allCases.size(), metricsInfo.getTotalClaims());
-    assertEquals(allCases.size(), metricsInfo.getAssessmentResults());
-    assertEquals(allCases.size(), metricsInfo.getEvidenceSummaryDocuments());
+    verifyHappyPathClaimMetrics(22);
 
     allCases.forEach(
         c -> {

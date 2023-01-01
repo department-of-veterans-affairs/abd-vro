@@ -1,11 +1,9 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.ClaimInfoResponse;
-import gov.va.vro.api.responses.ClaimMetricsResponse;
+
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import io.micrometer.core.annotation.Timed;
@@ -153,32 +151,4 @@ public interface VroResource {
           @RequestBody
           HealthDataAssessmentRequest claim)
       throws MethodArgumentNotValidException, ClaimProcessingException;
-
-  @Operation(
-      summary = "Retrieves metrics on the previously processed claims",
-      description =
-          "This endpoint provides metrics on the previously processed claims. "
-              + "Currently only the number of the processed claims is provided.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Claim Metrics Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @GetMapping("/claim-metrics")
-  @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-metrics")
-  @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimMetricsResponse> claimMetrics()
-      throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
 }

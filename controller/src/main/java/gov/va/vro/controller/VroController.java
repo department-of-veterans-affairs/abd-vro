@@ -1,14 +1,10 @@
 package gov.va.vro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.model.ClaimInfo;
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.ClaimInfoResponse;
-import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.controller.mapper.ClaimInfoDataMapper;
@@ -18,8 +14,6 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
-import gov.va.vro.service.spi.model.ClaimInfoData;
-import gov.va.vro.service.spi.model.ClaimMetricsInfo;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -140,27 +134,6 @@ public class VroController implements VroResource {
       log.error("Error in full health assessment", ex);
       throw new ClaimProcessingException(
           claim.getClaimSubmissionId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
-    }
-  }
-
-  @Override
-  public ResponseEntity<ClaimMetricsResponse> claimMetrics() throws MetricsProcessingException {
-    ClaimMetricsResponse response = new ClaimMetricsResponse();
-    ClaimMetricsInfo info = claimMetricsService.claimMetrics();
-    try {
-      response.setTotalClaims(info.getTotalClaims());
-      response.setTotalEvidenceGenerations(info.getAssessmentResults());
-      response.setTotalPdfGenerations(info.getEvidenceSummaryDocuments());
-      if (info.getErrorMessage() != null) {
-        throw new MetricsProcessingException(
-            HttpStatus.INTERNAL_SERVER_ERROR, claimMetricsService.claimMetrics().getErrorMessage());
-      }
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (MetricsProcessingException mpe) {
-      throw mpe;
-    } catch (Exception e) {
-      log.error("Error in claim metrics services." + e.getMessage());
-      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 

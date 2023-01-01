@@ -3,15 +3,12 @@ package gov.va.vro.service.db;
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
-import gov.va.vro.service.spi.model.ClaimInfoData;
-import gov.va.vro.service.spi.model.ClaimMetricsInfo;
+import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,26 +32,14 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private final ClaimInfoResponseMapper claimInfoResponseMapper;
 
   @Override
-  public ClaimMetricsInfo claimMetrics() {
+  public ClaimMetricsInfo getClaimMetrics() {
     ClaimMetricsInfo metrics = new ClaimMetricsInfo();
-    try {
-      metrics.setTotalClaims(claimRepository.count());
-      metrics.setAssessmentResults(assessmentResultRepository.count());
-      metrics.setEvidenceSummaryDocuments(evidenceSummaryDocumentRepository.count());
-      return metrics;
-    } catch (Exception e) {
-      log.error("Could not get metrics in claim repository.", e);
-      metrics.setErrorMessage("Failure;" + e.getMessage());
-      return metrics;
-    }
-  }
 
-  private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimInfoData info) {
-    int count = 0;
-    for (ContentionEntity contention : claim.getContentions()) {
-      count += contention.getEvidenceSummaryDocuments().size();
-    }
-    info.setEvidenceSummaryDocumentsCount(count);
+    metrics.setTotalClaims(claimRepository.count());
+    metrics.setTotalEvidenceGenerations(assessmentResultRepository.count());
+    metrics.setTotalPdfGenerations(evidenceSummaryDocumentRepository.count());
+
+    return metrics;
   }
 
   @Override

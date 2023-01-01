@@ -1,7 +1,7 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.api.model.MetricsProcessingException;
+import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,33 @@ import javax.validation.constraints.Min;
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface ClaimMetricsResource {
+  @Operation(
+      summary = "Retrieves metrics on the previously processed claims",
+      description =
+          "This endpoint provides metrics on the previously processed claims. "
+              + "Currently only the number of the processed claims is provided.")
+  @ApiResponses(
+      value = {
+          @ApiResponse(responseCode = "201", description = "Successful"),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content = @Content(schema = @Schema(hidden = true))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema(hidden = true))),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Claim Metrics Server Error",
+              content = @Content(schema = @Schema(hidden = true)))
+      })
+  @GetMapping("/claim-metrics")
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "claim-metrics")
+  @Tag(name = "Claim Metrics")
+  ResponseEntity<ClaimMetricsInfo> claimMetrics();
+
   @Operation(
       summary = "Retrieves claim specific data.",
       description = "Gets claim info for a specific claim. ")
