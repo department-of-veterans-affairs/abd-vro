@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,19 +35,19 @@ public interface ClaimMetricsResource {
               + "Currently only the number of the processed claims is provided.")
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "201", description = "Successful"),
-          @ApiResponse(
-              responseCode = "400",
-              description = "Bad Request",
-              content = @Content(schema = @Schema(hidden = true))),
-          @ApiResponse(
-              responseCode = "401",
-              description = "Unauthorized",
-              content = @Content(schema = @Schema(hidden = true))),
-          @ApiResponse(
-              responseCode = "500",
-              description = "Claim Metrics Server Error",
-              content = @Content(schema = @Schema(hidden = true)))
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
@@ -62,26 +61,26 @@ public interface ClaimMetricsResource {
   @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "201", description = "Successful"),
-          @ApiResponse(
-              responseCode = "400",
-              description = "Bad Request",
-              content = @Content(schema = @Schema(hidden = true))),
-          @ApiResponse(
-              responseCode = "401",
-              description = "Unauthorized",
-              content = @Content(schema = @Schema(hidden = true))),
-          @ApiResponse(
-              responseCode = "500",
-              description = "Claim Metrics Server Error",
-              content = @Content(schema = @Schema(hidden = true)))
+        @ApiResponse(responseCode = "201", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Claim Metrics Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info-claim-id")
   @Tag(name = "Claim Metrics")
   @ResponseBody
-  ResponseEntity<gov.va.vro.model.claimmetrics.response.ClaimInfoResponse> claimInfoForClaimId(@PathVariable String claimSubmissionId)
-      throws ClaimProcessingException;
+  ResponseEntity<gov.va.vro.model.claimmetrics.response.ClaimInfoResponse> claimInfoForClaimId(
+      @PathVariable String claimSubmissionId) throws ClaimProcessingException;
 
   @Operation(
       summary = "Retrieves claim specific metrics for all claims.",

@@ -6,7 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
-import gov.va.vro.model.claimmetrics.*;
+import gov.va.vro.model.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
+import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.claimmetrics.ContentionInfo;
+import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
@@ -211,7 +216,8 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     // Return an expected exception if argument does not match.
     Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString()))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId))).thenReturn(claimInfo);
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId)))
+        .thenReturn(claimInfo);
 
     String path = "/v1/claim-info/" + claimSubmissionId;
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);

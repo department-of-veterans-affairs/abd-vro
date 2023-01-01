@@ -78,6 +78,12 @@ public class AbdEvidenceCase {
     return result;
   }
 
+  /**
+   * Generates the evidence summary for the test case.
+   *
+   * @param claimSubmissionId claim id for the evidence summary
+   * @return AbdEvidenceWithSummary
+   */
   public AbdEvidenceWithSummary getEvidenceWithSummary(String claimSubmissionId) {
     AbdEvidenceWithSummary result = new AbdEvidenceWithSummary();
 
@@ -96,12 +102,22 @@ public class AbdEvidenceCase {
     }
   }
 
+  /**
+   * Verifies the test case has the expected evidence summary.
+   *
+   * @param evidenceSummary Actual evidence summary to be verified.
+   */
   public void verifyEvidenceSummary(Map<String, String> evidenceSummary) {
     verifyEvidenceField(bpCount, evidenceSummary.get("totalBpReadings"));
     verifyEvidenceField(procedureCount, evidenceSummary.get("proceduresCount"));
     verifyEvidenceField(medCount, evidenceSummary.get("medicationsCount"));
   }
 
+  /**
+   * Generates an evidence summary test case.
+   *
+   * @return AbdEvidenceCase
+   */
   public static AbdEvidenceCase getInstance() {
     int index = counter.incrementAndGet();
 

@@ -112,6 +112,11 @@ public class ClaimMetricsTestCase {
     return result;
   }
 
+  /**
+   * Verifies if the actual claim information is as expected.
+   *
+   * @param claimInfo
+   */
   public void verifyClaimInfoResponse(ClaimInfoResponse claimInfo) {
     assertEquals(claimSubmissionId, claimInfo.getClaimSubmissionId());
     assertEquals(icn, claimInfo.getVeteranIcn());
