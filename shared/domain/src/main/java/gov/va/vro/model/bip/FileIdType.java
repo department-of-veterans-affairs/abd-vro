@@ -11,7 +11,13 @@ public enum FileIdType {
   PARTICIPANT_ID,
   EDIPI;
 
-  public static FileIdType getIDType(String idString) {
+  /**
+   * Get ID type.
+   *
+   * @param idString ID string.
+   * @return return.
+   */
+  public static FileIdType getIdType(String idString) {
     String value = idString.toUpperCase();
     if (FILENUMBER.name().equals(value)) {
       return FILENUMBER;

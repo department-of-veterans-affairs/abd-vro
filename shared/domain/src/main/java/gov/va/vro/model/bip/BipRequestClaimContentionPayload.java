@@ -10,7 +10,11 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
-/** @author warren @Date 11/16/22 */
+/**
+ * BIP request claim contention payload.
+ *
+ * @author warren @Date 11/16/22
+ */
 @Builder
 @Getter
 @Schema(name = "BIPClaimUpdateRequest", description = "Set a claim status to RFD request")
