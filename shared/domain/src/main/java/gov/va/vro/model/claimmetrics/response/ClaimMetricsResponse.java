@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 @EqualsAndHashCode
-@ToString(includeFieldNames = true)
+@ToString
 public class ClaimMetricsResponse {
   private long totalClaims;
   private long totalEvidenceGenerations;

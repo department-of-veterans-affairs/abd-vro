@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -61,17 +60,15 @@ public class ClaimMetricsServiceImplTest {
 
   @Test
   void testAllMethodsHappyPath() {
-    Supplier<ClaimMetricsTestCase> f = () -> ClaimMetricsTestCase.getInstance();
-
     List<ClaimMetricsTestCase> cases =
         IntStream.range(0, 15).boxed().map(i -> ClaimMetricsTestCase.getInstance()).toList();
 
     List<ClaimMetricsTestCase> secondClaimCases =
-        cases.stream().limit(5).map(c -> c.newCaseForSameVeteran()).toList();
+        cases.stream().limit(5).map(ClaimMetricsTestCase::newCaseForSameVeteran).toList();
     List<ClaimMetricsTestCase> thirdClaimCases =
-        cases.stream().limit(2).map(c -> c.newCaseForSameVeteran()).toList();
+        cases.stream().limit(2).map(ClaimMetricsTestCase::newCaseForSameVeteran).toList();
 
-    ArrayList<ClaimMetricsTestCase> allCases = new ArrayList<>(cases);
+    List<ClaimMetricsTestCase> allCases = new ArrayList<>(cases);
     allCases.addAll(secondClaimCases);
     allCases.addAll(thirdClaimCases);
 

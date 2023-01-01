@@ -31,10 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +44,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Autowired TestRestTemplate restTemplate;
 
-  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
 
   // Generates a generic ClaimInfoResponse object.
   private ClaimInfoResponse generateClaimInfoResponse() {
@@ -66,22 +63,22 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     AssessmentInfo assessmentInfo = new AssessmentInfo();
     assessmentInfo.setEvidenceInfo(summary);
-    contentionInfo.setAssessments(Arrays.asList(assessmentInfo));
+    contentionInfo.setAssessments(Collections.singletonList(assessmentInfo));
 
     DocumentInfo documentInfo = new DocumentInfo();
     documentInfo.setDocumentName("documentName_" + index);
     documentInfo.setEvidenceInfo(summary);
 
-    contentionInfo.setDocuments(Arrays.asList(documentInfo));
+    contentionInfo.setDocuments(Collections.singletonList(documentInfo));
 
-    result.setContentions(Arrays.asList(contentionInfo));
+    result.setContentions(Collections.singletonList(contentionInfo));
     return result;
   }
 
   // Generates a generic ClaimsInfo object.
   private ClaimsInfo generateClaimsInfo(int size) {
     ClaimsInfo result = new ClaimsInfo();
-    List<ClaimInfoResponse> claimInfoResponses = new ArrayList<ClaimInfoResponse>();
+    List<ClaimInfoResponse> claimInfoResponses = new ArrayList<>();
     for (int i = 0; i < size; ++i) {
       claimInfoResponses.add(generateClaimInfoResponse());
     }
