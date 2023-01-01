@@ -204,4 +204,37 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimInfoQueryParams params5 = new ClaimInfoQueryParams(2, 16, "11145");
     testClaimInfoAllQueryParamDefaults(uri5, params5);
   }
+
+  // Verifies happy path where service returns an expected object.
+  @Test
+  void testClaimInfo() throws JsonProcessingException {
+    ClaimInfoResponse claimInfo = generateClaimInfoResponse();
+
+    String claimSubmissionId = claimInfo.getClaimSubmissionId();
+
+    // Return an expected exception if argument does not match.
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString()))
+        .thenThrow(new IllegalStateException("Unexpected input to service."));
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId))).thenReturn(claimInfo);
+
+    String path = "/v1/claim-info/" + claimSubmissionId;
+    ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    String body = responseEntity.getBody();
+    assertNotNull(body);
+    ClaimInfoResponse actual = mapper.readValue(body, ClaimInfoResponse.class);
+    assertNotNull(actual);
+    assertEquals(claimInfo, actual);
+  }
+
+  @Test
+  void testClaimInfoNotValidId() {
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString())).thenReturn(null);
+
+    String path = "/v1/claim-info/not_an_id";
+    ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+  }
 }

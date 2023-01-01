@@ -181,31 +181,4 @@ public interface VroResource {
   @Tag(name = "Claim Metrics")
   ResponseEntity<ClaimMetricsResponse> claimMetrics()
       throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
-
-  @Operation(
-      summary = "Retrieves claim specific data.",
-      description = "Gets claim info for a specific claim. ")
-  @GetMapping(value = "/claim-info/{claimSubmissionId}")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Claim Metrics Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-info-claim-id")
-  @Tag(name = "Claim Metrics")
-  @ResponseBody
-  ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(@PathVariable String claimSubmissionId)
-      throws MetricsProcessingException;
 }

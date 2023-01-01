@@ -164,21 +164,6 @@ public class VroController implements VroResource {
     }
   }
 
-  @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId)
-      throws MetricsProcessingException {
-    ClaimInfoResponse response = new ClaimInfoResponse();
-    try {
-      ClaimInfoData info = claimMetricsService.claimInfoForClaimId(claimSubmissionId);
-      ClaimInfo claim = claimInfoDataMapper.toClaimInfo(info);
-      response.setClaim(claim);
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (Exception e) {
-      log.error("Error in claimInfoForClaimId services." + e.getMessage());
-      throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-  }
-
   private static HttpHeaders getHttpHeaders(String diagnosis) {
     String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
     ContentDisposition disposition =

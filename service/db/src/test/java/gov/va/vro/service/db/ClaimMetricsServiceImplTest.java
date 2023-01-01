@@ -1,6 +1,7 @@
 package gov.va.vro.service.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
@@ -76,7 +77,7 @@ public class ClaimMetricsServiceImplTest {
     allCases.forEach(
         c -> {
           String claimSubmissionId = c.getClaimSubmissionId();
-          ClaimInfoResponse cir = claimMetricsService.getClaimInfo(claimSubmissionId);
+          ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId);
           c.verifyClaimInfoResponse(cir);
         });
 
@@ -95,5 +96,15 @@ public class ClaimMetricsServiceImplTest {
 
     ClaimInfoQueryParams params4 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
     verifyFindAllClaimInfo(params4, icnCases);
+  }
+
+  @Test
+  void testFindClaimInfoInvalidId() {
+    // Put something in the database so that it is not empty
+    ClaimMetricsTestCase testCase = ClaimMetricsTestCase.getInstance();
+    testCase.populate(saveToDbService, claimRepository);
+
+    ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id");
+    assertNull(cir);
   }
 }

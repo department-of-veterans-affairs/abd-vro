@@ -50,93 +50,6 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     }
   }
 
-  @Override
-  public ClaimInfoData claimInfoForClaimId(String claimSubmissionId) {
-    ClaimInfoData info = new ClaimInfoData();
-    try {
-      ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
-      info.setClaimSubmissionId(claim.getClaimSubmissionId());
-      info.setVeteranIcn(claim.getVeteran().getIcn());
-      info.setContentionsCount(claim.getContentions().size());
-      setContentionsList(claim, info);
-      setAssessmentResultsAndCount(claim, info);
-      setEvidenceSummaryCounts(claim, info);
-    } catch (Exception e) {
-      log.error("Could not find claim with the given claimSubmissionId");
-    }
-    return info;
-  }
-
-  @Override
-  public List<ClaimInfoData> claimInfoForVeteran(String veteranIcn) {
-    List<ClaimInfoData> veteranClaims = new ArrayList<>();
-    try {
-      List<ClaimEntity> claims = claimRepository.findAllByVeteranIcn(veteranIcn, null).getContent();
-      for (ClaimEntity claim : claims) {
-        ClaimInfoData info = new ClaimInfoData();
-        info.setVeteranIcn(veteranIcn);
-        info.setClaimSubmissionId(claim.getClaimSubmissionId());
-        info.setContentionsCount(claim.getContentions().size());
-        setContentionsList(claim, info);
-        setAssessmentResultsAndCount(claim, info);
-        setEvidenceSummaryCounts(claim, info);
-        veteranClaims.add(info);
-      }
-      return veteranClaims;
-    } catch (Exception e) {
-      log.error("Could not find claim with the given veteranIcn");
-      ClaimInfoData info = new ClaimInfoData();
-      info.setErrorMessage("Could not find claim with the given veteranIcn: " + e.getMessage());
-      veteranClaims.add(info);
-      return veteranClaims;
-    }
-  }
-
-  @Override
-  public List<ClaimInfoData> claimInfoWithPagination(Integer offset) {
-    List<ClaimInfoData> infoList = new ArrayList<>();
-    int pageSize = 50;
-    try {
-      Page<ClaimEntity> entityList = claimRepository.findAll(PageRequest.of(offset, pageSize));
-      for (ClaimEntity claim : entityList) {
-        ClaimInfoData info = new ClaimInfoData();
-        info.setVeteranIcn(claim.getVeteran().getIcn());
-        info.setClaimSubmissionId(claim.getClaimSubmissionId());
-        info.setContentionsCount(claim.getContentions().size());
-        setContentionsList(claim, info);
-        setAssessmentResultsAndCount(claim, info);
-        setEvidenceSummaryCounts(claim, info);
-        infoList.add(info);
-      }
-      return infoList;
-    } catch (Exception e) {
-      log.error("Error getting page of claims in claimInfoWithPagination.");
-      ClaimInfoData info = new ClaimInfoData();
-      info.setErrorMessage("Could not find claim with the given veteranIcn: " + e.getMessage());
-      infoList.add(info);
-      return infoList;
-    }
-  }
-
-  private void setContentionsList(ClaimEntity entity, ClaimInfoData info) {
-    List<String> diagnosticCodes = new ArrayList<>();
-    for (ContentionEntity contention : entity.getContentions()) {
-      diagnosticCodes.add(contention.getDiagnosticCode());
-    }
-    info.setContentions(diagnosticCodes);
-  }
-
-  private void setAssessmentResultsAndCount(ClaimEntity entity, ClaimInfoData info) {
-    int count = 0;
-    for (ContentionEntity contention : entity.getContentions()) {
-      for (AssessmentResultEntity assessmentResult : contention.getAssessmentResults()) {
-        info.setEvidenceSummary(assessmentResult.getEvidenceCountSummary());
-        count++;
-      }
-    }
-    info.setAssessmentResultsCount(count);
-  }
-
   private void setEvidenceSummaryCounts(ClaimEntity claim, ClaimInfoData info) {
     int count = 0;
     for (ContentionEntity contention : claim.getContentions()) {
@@ -145,7 +58,8 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     info.setEvidenceSummaryDocumentsCount(count);
   }
 
-  public ClaimInfoResponse getClaimInfo(String claimSubmissionId) {
+  @Override
+  public ClaimInfoResponse findClaimInfo(String claimSubmissionId) {
     ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
     if (claim == null) {
       log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
