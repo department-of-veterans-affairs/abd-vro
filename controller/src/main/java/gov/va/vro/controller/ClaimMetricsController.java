@@ -3,9 +3,9 @@ package gov.va.vro.controller;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.resources.ClaimMetricsResource;
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,8 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   private final ClaimMetricsService claimMetricsService;
 
   @Override
-  public ResponseEntity<ClaimMetricsInfo> claimMetrics() {
-    ClaimMetricsInfo response = claimMetricsService.getClaimMetrics();
+  public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
+    ClaimMetricsResponse response = claimMetricsService.getClaimMetrics();
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 

@@ -1,9 +1,9 @@
 package gov.va.vro.service.db;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
@@ -32,8 +32,8 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private final ClaimInfoResponseMapper claimInfoResponseMapper;
 
   @Override
-  public ClaimMetricsInfo getClaimMetrics() {
-    ClaimMetricsInfo metrics = new ClaimMetricsInfo();
+  public ClaimMetricsResponse getClaimMetrics() {
+    ClaimMetricsResponse metrics = new ClaimMetricsResponse();
 
     metrics.setTotalClaims(claimRepository.count());
     metrics.setTotalEvidenceGenerations(assessmentResultRepository.count());

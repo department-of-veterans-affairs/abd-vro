@@ -7,12 +7,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -242,7 +242,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Test
   void testClaimMetrics() throws JsonProcessingException {
-    ClaimMetricsInfo info = new ClaimMetricsInfo(5, 4, 3);
+    ClaimMetricsResponse info = new ClaimMetricsResponse(5, 4, 3);
 
     Mockito.when(service.getClaimMetrics()).thenReturn(info);
 
@@ -252,7 +252,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     String body = responseEntity.getBody();
     assertNotNull(body);
-    ClaimMetricsInfo actual = mapper.readValue(body, ClaimMetricsInfo.class);
+    ClaimMetricsResponse actual = mapper.readValue(body, ClaimMetricsResponse.class);
     assertNotNull(actual);
     assertEquals(info, actual);
   }

@@ -1,4 +1,4 @@
-package gov.va.vro.model.claimmetrics;
+package gov.va.vro.model.claimmetrics.response;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 @ToString(includeFieldNames = true)
-public class ClaimMetricsInfo {
+public class ClaimMetricsResponse {
   private long totalClaims;
   private long totalEvidenceGenerations;
   private long totalPdfGenerations;

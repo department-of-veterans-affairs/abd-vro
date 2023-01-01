@@ -10,7 +10,7 @@ import java.util.List;
  * Contention base information
  *
  * @author warren @Date 12/9/22
- * */
+ */
 @Getter
 @Setter
 public class ContentionBaseInfo {

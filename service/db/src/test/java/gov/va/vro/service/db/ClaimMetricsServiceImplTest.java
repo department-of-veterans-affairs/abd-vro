@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
@@ -53,8 +53,9 @@ public class ClaimMetricsServiceImplTest {
   }
 
   private void verifyHappyPathClaimMetrics(int expectedSize) {
-    ClaimMetricsInfo actual = claimMetricsService.getClaimMetrics();
-    ClaimMetricsInfo expected = new ClaimMetricsInfo(expectedSize, expectedSize, expectedSize);
+    ClaimMetricsResponse actual = claimMetricsService.getClaimMetrics();
+    ClaimMetricsResponse expected =
+        new ClaimMetricsResponse(expectedSize, expectedSize, expectedSize);
     assertEquals(expected, actual);
   }
 

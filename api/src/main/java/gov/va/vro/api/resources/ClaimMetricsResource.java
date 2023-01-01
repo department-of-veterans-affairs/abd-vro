@@ -1,8 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.model.claimmetrics.ClaimMetricsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -16,11 +16,15 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 @RequestMapping(value = "/v1", produces = "application/json")
@@ -30,49 +34,43 @@ import javax.validation.constraints.Min;
 public interface ClaimMetricsResource {
   @Operation(
       summary = "Retrieves metrics on the previously processed claims",
-      description =
-          "This endpoint provides metrics on the previously processed claims. "
-              + "Currently only the number of the processed claims is provided.")
+      description = "This endpoint retrieves metrics on the previously processed claims.")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(responseCode = "200", description = "Successful"),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
-            description = "Claim Metrics Server Error",
+            description = "Internal service error",
             content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping("/claim-metrics")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-metrics")
   @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimMetricsInfo> claimMetrics();
+  ResponseEntity<ClaimMetricsResponse> claimMetrics();
 
   @Operation(
-      summary = "Retrieves claim specific data.",
-      description = "Gets claim info for a specific claim. ")
+      summary = "Retrieves claim specific information.",
+      description = "This endpoint retrieves metrics a specific claim.")
   @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(responseCode = "200", description = "Successful"),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
+            responseCode = "404",
+            description = "Not found",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
             responseCode = "500",
-            description = "Claim Metrics Server Error",
+            description = "Internal service error",
             content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
@@ -84,7 +82,7 @@ public interface ClaimMetricsResource {
 
   @Operation(
       summary = "Retrieves claim specific metrics for all claims.",
-      description = "Retrieves claim specific metrics for all claims page by page.")
+      description = "This endpoint retrieves claim specific metrics for all claims page by page.")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
@@ -98,23 +96,20 @@ public interface ClaimMetricsResource {
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
-            description = "Claim Metrics Server Error",
+            description = "Internal service error",
             content = @Content(schema = @Schema(hidden = true)))
       })
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "claim-info")
   @Tag(name = "Claim Metrics")
   @RequestMapping(value = "/claim-info", method = RequestMethod.GET)
-  @Validated
   @ResponseBody
   ResponseEntity<List<ClaimInfoResponse>> claimInfoForAll(
       @RequestParam(name = "page", required = false, defaultValue = "0")
           @Min(value = 0, message = "invalid page number")
-          @Valid
           Integer page,
       @RequestParam(name = "size", required = false, defaultValue = "10")
           @Min(value = 1, message = "invalid size")
-          @Valid
           Integer size,
       @RequestParam(name = "icn", required = false) String icn);
 }
