@@ -65,8 +65,7 @@ public class ClaimMetricsTestCase {
     claim.setDiagnosticCode("7101");
     service.insertClaim(claim);
 
-    ClaimEntity claimEntity =
-        repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
+    ClaimEntity claimEntity = repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
 
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());

@@ -6,7 +6,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-/** @author warren @Date 12/9/22 */
+/**
+ * Contention base information
+ *
+ * @author warren @Date 12/9/22
+ * */
 @Getter
 @Setter
 public class ContentionBaseInfo {

@@ -166,6 +166,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     }
   }
 
+  @Override
   public ClaimsInfo findAllClaimInfo(ClaimInfoQueryParams params) {
     Page<ClaimEntity> claims = findAllClaimInfoPage(params);
     List<ClaimInfoResponse> claimsInfo = claimInfoResponseMapper.toClaimInfoResponses(claims);

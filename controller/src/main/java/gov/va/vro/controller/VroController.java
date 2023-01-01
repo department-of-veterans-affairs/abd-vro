@@ -7,7 +7,6 @@ import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.resources.VroResource;
-import gov.va.vro.api.responses.ClaimInfoListResponse;
 import gov.va.vro.api.responses.ClaimInfoResponse;
 import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
@@ -36,10 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -179,82 +176,6 @@ public class VroController implements VroResource {
     } catch (Exception e) {
       log.error("Error in claimInfoForClaimId services." + e.getMessage());
       throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-  }
-
-  @Override
-  public ResponseEntity<ClaimInfoListResponse> claimInfoForAll(String veteranIcn, Integer offset)
-      throws MetricsProcessingException {
-    ClaimInfoListResponse response = new ClaimInfoListResponse();
-    // Search for veteranIcn
-    if (veteranIcn != null) {
-      try {
-        List<ClaimInfoData> info = claimMetricsService.claimInfoForVeteran(veteranIcn);
-        List<ClaimInfo> infoList = new ArrayList<>();
-        if (info.get(0).getErrorMessage() != null) {
-          throw new MetricsProcessingException(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              claimMetricsService.claimMetrics().getErrorMessage());
-        }
-        for (ClaimInfoData metricsInfo : info) {
-          ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
-          infoList.add(claim);
-        }
-        response.setClaims(infoList);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-      } catch (MetricsProcessingException mpe) {
-        throw mpe;
-      } catch (Exception e) {
-        log.error("Error in claimInfoForVeteran services." + e.getMessage());
-        throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-      }
-    }
-    // Getting the offset page.
-    else if (offset != null) {
-      try {
-        List<ClaimInfoData> info = claimMetricsService.claimInfoWithPagination(offset);
-        List<ClaimInfo> infoList = new ArrayList<>();
-        if (info.get(0).getErrorMessage() != null) {
-          throw new MetricsProcessingException(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              claimMetricsService.claimMetrics().getErrorMessage());
-        }
-        for (ClaimInfoData metricsInfo : info) {
-          ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
-          infoList.add(claim);
-        }
-        response.setClaims(infoList);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-      } catch (MetricsProcessingException mpe) {
-        throw mpe;
-      } catch (Exception e) {
-        log.error("Error in claimInfoWithPagination services." + e.getMessage());
-        throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-      }
-    }
-    // No offset specified, return the first page.
-    else {
-      offset = 0;
-      try {
-        List<ClaimInfoData> info = claimMetricsService.claimInfoWithPagination(offset);
-        List<ClaimInfo> infoList = new ArrayList<>();
-        if (info.get(0).getErrorMessage() != null) {
-          throw new MetricsProcessingException(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              claimMetricsService.claimMetrics().getErrorMessage());
-        }
-        for (ClaimInfoData metricsInfo : info) {
-          ClaimInfo claim = claimInfoDataMapper.toClaimInfo(metricsInfo);
-          infoList.add(claim);
-        }
-        response.setClaims(infoList);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-      } catch (MetricsProcessingException mpe) {
-        throw mpe;
-      } catch (Exception e) {
-        log.error("Error in claimInfoWithPagination services." + e.getMessage());
-        throw new MetricsProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-      }
     }
   }
 
