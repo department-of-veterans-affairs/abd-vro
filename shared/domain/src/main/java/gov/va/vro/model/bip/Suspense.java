@@ -3,7 +3,11 @@ package gov.va.vro.model.bip;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/** @author warren @Date 11/9/22 */
+/**
+ * Suspense class.
+ *
+ * @author warren @Date 11/9/22
+ */
 @RequiredArgsConstructor
 @Data
 public class Suspense {

@@ -66,6 +66,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     return collectionId == null ? null : Integer.toString(collectionId);
   }
 
+  /**
+   * Get diagnostic code.
+   *
+   * @return code.
+   */
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -74,6 +79,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
+  /**
+   * Get disability action type.
+   *
+   * @return type.
+   */
   @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -82,6 +92,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDisabilityActionType();
   }
 
+  /**
+   * Check if it is in scope.
+   *
+   * @return true or false.
+   */
   @JsonIgnore
   public boolean isInScope() {
     return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)

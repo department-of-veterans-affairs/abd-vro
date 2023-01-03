@@ -9,8 +9,17 @@ testSets {
   end2endTest
 }
 
-tasks.named("end2endTest") {
+tasks.withType(Test).named("end2endTest") {
   useJUnitPlatform()
+  testLogging {
+    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
+    showStandardStreams = true
+    events "skipped", "failed", "passed"
+    exceptionFormat = 'full'
+    showStackTraces = true
+    showExceptions = true
+    showCauses = true
+  }
 }
 
 dependencies {
@@ -70,12 +79,21 @@ dependencies {
 }
 
 openApi {
+  // Generates build/springdoc/openapi.json
   customBootRun {
     getClasspath().setFrom(sourceSets.test.runtimeClasspath)
+    args = [
+      "--spring.profiles.active=test"
+    ]
   }
 }
 
 afterEvaluate {
+  // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
+  // Not particularly useful
+  generateOpenApiDocs.enabled = false
+  forkedSpringBootRun.enabled = false
+
   tasks.named('forkedSpringBootRun').configure {
     dependsOn 'bootStartScripts'
     dependsOn 'checkstyleIntegrationTest'

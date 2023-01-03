@@ -13,12 +13,12 @@ SERVICE_QUEUE = queue_config["service_queue_name"]
 def on_request_callback(channel, method, properties, body):
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
-    logging.info(f" [x] {binding_key}: Received message.")
+    logging.info(f"claimSubmissionId: {message['claimSubmissionId']}, health data received by {binding_key} processor")
     try:
         response = main.assess_asthma(message)
     except Exception as e:
         logging.error(e, exc_info=True)
-        response = {"evidence": None, "evidenceSummary": None, "errorMessage": str(e)}
+        response = {"evidence": None, "evidenceSummary": None, "errorMessage": str(e), "claimSubmissionId": message['claimSubmissionId']}
 
     channel.basic_publish(
         exchange=EXCHANGE,
@@ -26,7 +26,7 @@ def on_request_callback(channel, method, properties, body):
         properties=pika.BasicProperties(correlation_id=properties.correlation_id),
         body=json.dumps(response),
     )
-    logging.info(f" [x] {binding_key}: Message sent.")
+    logging.info(f"claimSubmissionId: {response['claimSubmissionId']}, evaluation sent by {binding_key} processor")
 
 
 def queue_setup(channel):

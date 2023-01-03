@@ -1,12 +1,14 @@
 package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.camel.FunctionProcessor;
@@ -15,6 +17,7 @@ import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -199,6 +202,21 @@ class VroControllerTest extends BaseControllerTest {
             headers,
             ClaimProcessingError.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+  }
+
+  @Test
+  void serverResponseUnsupportedHttpMethod() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    String url = "/v1/claim-metrics";
+    String sampleRequestBody = "{ \"one\":\"one\", \"two\":\"two\",}";
+    var getResponseEntity = get(url, headers, ClaimProcessingError.class);
+    var postResponseEntity = post(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    var putResponseEntity = put(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    assertEquals(HttpStatus.OK, getResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, postResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, putResponseEntity.getStatusCode());
   }
 
   @Test

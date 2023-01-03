@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gov.va.vro.config.LhApiProps;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +64,14 @@ public class JwtValidator {
     if (isNull(jwtToken)) {
       throw new InvalidTokenException("Token has not been provided");
     }
-    DecodedJWT decodedJwt = JWT.decode(jwtToken);
-    log.info("Token decoded successfully");
-    return decodedJwt;
+    try {
+      DecodedJWT decodedJwt = JWT.decode(jwtToken);
+      log.info("Token decoded successfully");
+      return decodedJwt;
+    } catch (RuntimeException exception) {
+      throw new InvalidTokenException(
+          "Invalid JWT or JSON format of each of the jwt parts", exception);
+    }
   }
 
   /**
@@ -74,10 +80,13 @@ public class JwtValidator {
    * @param decodedJwt decoded jwt.
    */
   public void verifyTokenHeader(DecodedJWT decodedJwt) {
-    if (decodedJwt.getType().equals("JWT")) {
-      log.info("Token's header is correct");
+    if (isNull(decodedJwt.getHeader())) {
+      throw new InvalidTokenException("Invalid token, Header missing");
+    }
+    if (isNull((decodedJwt.getAlgorithm())) || isNull((decodedJwt.getKeyId()))) {
+      throw new InvalidTokenException("Invalid token, should have alg, kid claims in the header");
     } else {
-      throw new InvalidTokenException("Token is not JWT type");
+      log.info("Token's header is valid");
     }
   }
 
@@ -86,24 +95,28 @@ public class JwtValidator {
    *
    * @param decodedJwt decoded jwt.
    */
-  public void verifyPayload(DecodedJWT decodedJwt) {
+  public void verifyPayload(DecodedJWT decodedJwt, String methodName) {
     JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJwt);
     if (hasTokenExpired(payloadAsJson)) {
       throw new InvalidTokenException("Token has expired");
     }
     log.info("Token has not expired");
 
-    /*
-    if (!hasTokenRealmRolesClaim(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain claims with realm roles");
-    }
-    log.info("Token's payload contain claims with realm roles");
-
-    if (!hasTokenScopeInfo(payloadAsJson)) {
-      throw new InvalidTokenException("Token doesn't contain scope information");
+    Boolean validScope = false;
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
+      if (payloadAsJson.has("scp")) {
+        for (JsonElement scope : payloadAsJson.getAsJsonArray("scp")) {
+          log.info("Scope : " + scope);
+          if (scope.getAsString().toLowerCase().contains(methodName.toLowerCase())) {
+            validScope = true;
+          }
+        }
+      }
+      if (!validScope) {
+        throw new InvalidTokenException("Token doesn't contain valid scope information");
+      }
     }
     log.info("Token's payload contain scope information");
-    */
   }
 
   /**
@@ -157,7 +170,7 @@ public class JwtValidator {
    * @return true or false.
    */
   public boolean validateTokenUsingLh(String jwtToken) {
-    if (lhApiProps.getValidateToken().toLowerCase() == VALIDATE_TOKEN) {
+    if (VALIDATE_TOKEN.equalsIgnoreCase(lhApiProps.getValidateToken())) {
       try {
         HttpHeaders lhHttpHeaders = new HttpHeaders();
         lhHttpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -167,21 +180,20 @@ public class JwtValidator {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("aud", lhApiProps.getVroAudUrl());
 
-        HttpEntity formEntity =
-            new HttpEntity<MultiValueMap<String, String>>(requestBody, lhHttpHeaders);
+        HttpEntity formEntity = new HttpEntity<>(requestBody, lhHttpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> response =
             restTemplate.exchange(
                 lhApiProps.getTokenValidatorUrl(), HttpMethod.POST, formEntity, String.class);
-        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response));
+        JsonNode lhResp = new ObjectMapper().readTree(String.valueOf(response.getBody()));
         // Sample response
         // https://department-of-veterans-affairs.github.io/
         // lighthouse-api-standards/security/oauth/token-validation/#self-verification
-        if (lhResp.get("data") != null
-            && lhResp.get("data").get("type") != null
-            && lhResp.get("data").get("type").asText().toLowerCase() == IS_TOKEN_VALIDATED) {
+        if ((!isNull(lhResp.get("data")))
+            && (!isNull(lhResp.get("data").get("type")))
+            && IS_TOKEN_VALIDATED.equals(lhResp.get("data").get("type").asText().toLowerCase())) {
           // NOP
         } else {
           log.error("Could not validate token against LightHouse API.");
