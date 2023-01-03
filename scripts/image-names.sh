@@ -39,10 +39,10 @@ bash_var_prefix() {
 
 nonprod_image_name() {
   VROENV=${2:-dev}
-  echo "${VROENV}_$(secrel_image_name "$1")"
+  echo "${VROENV}_$(prod_image_name "$1")"
 }
 
-secrel_image_name() {
+prod_image_name() {
   case "$1" in
     svc-lighthouse-api) echo "vro-service-data-access";; # TODO: update image name
     pdfgenerator|featuretoggle|assessclaim*) echo "vro-service-$1";;
@@ -50,34 +50,8 @@ secrel_image_name() {
   esac
 }
 
-secrel_dockerfile() {
-  GRADLE_FOLDER=$(gradle_folder "$1")
-  case "$1" in
-    pdfgenerator|assessclaim*) echo "./service-python/Dockerfile";;
-    *) echo "$GRADLE_FOLDER/src/docker/Dockerfile";;
-  esac
-}
-
-secrel_docker_context() {
-  GRADLE_FOLDER=$(gradle_folder "$1")
-  case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "./service-python";;
-    *) echo "$GRADLE_FOLDER/build/docker";;
-  esac
-}
-
-secrel_docker_build_args() {
-  GRADLE_FOLDER=$(gradle_folder "$1")
-  case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "    - SERVICE_SRC_FOLDER=$1/build/docker";;
-    app|console|svc-lighthouse-api) echo "    - JAR_FILE=$1-*.jar
-    - ENTRYPOINT_FILE=entrypoint.sh";;
-    *) echo "";;
-  esac
-}
-
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+IMAGES=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -90,7 +64,6 @@ for IMG in "${IMAGES[@]}"; do
   echo "--- $IMG"
   GRADLE_FOLDER=$(gradle_folder "$IMG")
   ls "$GRADLE_FOLDER/build.gradle"
-  ls "$(secrel_dockerfile "$IMG")"
   echo
 done
 } >> /dev/null
@@ -145,10 +118,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "# --- $IMG in folder $GRADLE_FOLDER"
     PREFIX=$(bash_var_prefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
-    echo "export ${PREFIX}_IMG=\"$(secrel_image_name "$IMG")\""
-
-    echo "export ${PREFIX}_DOCKERFILE=\"$(secrel_dockerfile "$IMG")\""
-    echo "export ${PREFIX}_DOCKER_CONTEXT=\"$(secrel_docker_context "$IMG")\""
+    echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
 
     echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
@@ -157,23 +127,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
 }
 overwriteSrcFile > "$SRC_FILE"
 
-images_for_secrel_config_yml(){
-  echo '# BEGIN image-names.sh replacement block (do not modify this block)
-# The following image list is updated by image-names.sh'
-for IMG in "${IMAGES[@]}"; do
-  echo "- name: $(secrel_image_name "$IMG")
-  context: \"$(secrel_docker_context "$IMG")\"
-  path: \"$(secrel_dockerfile "$IMG")\""
-  BUILD_ARGS="$(secrel_docker_build_args "$IMG")"
-  if [ "$BUILD_ARGS" ]; then
-    echo "  args:
-$BUILD_ARGS"
-  fi
-done
-echo '# END image-names.sh replacement block (do not modify this block)'
-}
-
-images_for_helmchart_values_yaml(){
+images_for_helm-app_values_yaml(){
   local _ENV=$1
   echo '# BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh'
@@ -188,26 +142,16 @@ echo '# END image-names.sh replacement block (do not modify this block)'
 
 # shellcheck source=image_vars.src
 source "$SRC_FILE"
-SEC_CONFIG_IMAGES=$(images_for_secrel_config_yml)
-VALUES_YML_IMAGES=$(images_for_helmchart_values_yaml dev)
+VALUES_YML_IMAGES=$(images_for_helm-app_values_yaml dev)
 
 if which sed > /dev/null; then
-  echo "=== Writing images to .github/secrel/config-updated.yml"
+  echo "=== Writing images to helm-app/values-updated.yaml"
   sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
-    .github/secrel/config.yml <<< "$SEC_CONFIG_IMAGES" > .github/secrel/config-updated.yml
+    helmc-app/values.yaml <<< "$VALUES_YML_IMAGES" > helm-app/values-updated.yaml
   echo "Differences:"
-  diff .github/secrel/config.yml .github/secrel/config-updated.yml
-
-  echo "=== Writing images to helmchart/values-updated.yaml"
-  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
-    helmchart/values.yaml <<< "$VALUES_YML_IMAGES" > helmchart/values-updated.yaml
-  echo "Differences:"
-  diff helmchart/values.yaml helmchart/values-updated.yaml
+  diff helm-app/values.yaml helm-app/values-updated.yaml
 else
   echo
-  echo "=== Paste the following into .github/secrel/config.yml"
-  echo "$SEC_CONFIG_IMAGES"
-  echo
-  echo "=== Paste the following into helmchart/values.yaml"
+  echo "=== Paste the following into helm-app/values.yaml"
   echo "$VALUES_YML_IMAGES"
 fi

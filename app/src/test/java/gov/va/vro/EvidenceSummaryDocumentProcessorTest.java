@@ -31,7 +31,7 @@ import java.util.Date;
 @CamelSpringBootTest
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
-  @Value("classpath:test-data/pdf-generator-input-01.json")
+  @Value("classpath:test-data/pdf-generator-mas.json")
   private Resource pdfGeneratorInput01;
 
   @Autowired protected ClaimRepository claimRepository;

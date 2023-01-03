@@ -2,6 +2,7 @@ package gov.va.vro.api.requests;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.ClaimCondition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,8 @@ public class GeneratePdfRequest {
   @NotNull
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
+
+  private ClaimCondition conditions;
 
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
