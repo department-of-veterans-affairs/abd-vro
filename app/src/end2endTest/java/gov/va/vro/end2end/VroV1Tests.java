@@ -75,7 +75,7 @@ public class VroV1Tests {
     assertEquals(meds.size(), pdfText.countMedications());
 
     JsonNode vetInfo = setup.getVeteranInfoNode();
-    // assertTrue(pdfText.hasVeteranInfo(vetInfo));
+    assertTrue(pdfText.hasVeteranInfo(vetInfo));
   }
 
   private void savePdfFile(byte[] pdfContents, String filename) {
