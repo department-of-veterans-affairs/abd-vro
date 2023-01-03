@@ -101,7 +101,12 @@ def assess_sufficiency(event: Dict):
             medications = continuous_medication.filter_mas_medication(event)
             response_body["evidence"].update(
                 {
-                    "medications": medications
+                    "medications": medications["medications"]
+                }
+            )
+            response_body["evidenceSummary"].update(
+                {
+                    "medicationsCount": medications["medicationsCount"]
                 }
             )
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
