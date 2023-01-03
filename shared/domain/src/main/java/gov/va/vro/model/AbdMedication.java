@@ -58,7 +58,9 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";
 
-  @Schema(description = "Document Type Description", example = "Medical Treatment Record - Government Facility")
+  @Schema(
+      description = "Document Type Description",
+      example = "Medical Treatment Record - Government Facility")
   private String document;
 
   @Schema(description = "VBMS Receipt Date", example = "2021-04-05")

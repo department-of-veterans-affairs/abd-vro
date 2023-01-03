@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
+import static java.util.Objects.isNull;
+
 import gov.va.vro.model.*;
 import gov.va.vro.model.mas.MasAnnotType;
 import gov.va.vro.model.mas.MasAnnotation;
@@ -13,8 +15,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class MasCollectionAnnotsResults {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
-    List<ServiceLocation> serviceLocations = new ArrayList<>();
+    List<VeteranSrvcLocations> serviceLocations = new ArrayList<>();
     boolean isConditionBp = false;
     boolean isConditionAsthma = false;
 
@@ -75,8 +75,9 @@ public class MasCollectionAnnotsResults {
               }
             }
             case SERVICE -> {
-              ServiceLocation serviceLocation = createServiceLocation(masDocument, masAnnotation);
-              serviceLocations.add(serviceLocation);
+              VeteranSrvcLocations veteranService =
+                  createServiceLocation(masDocument, masAnnotation);
+              serviceLocations.add(veteranService);
             }
             default -> { // NOP
             }
@@ -153,33 +154,38 @@ public class MasCollectionAnnotsResults {
     }
     return abdCondition;
   }
-  private static ServiceLocation createServiceLocation(MasDocument masDocument, MasAnnotation masAnnotation) {
-    ServiceLocation serviceLocation = new ServiceLocation();
-    if(!isNull(masAnnotation.getAnnotVal())) {
-      serviceLocation.setLocation(masAnnotation.getAnnotVal());
+
+  private static VeteranSrvcLocations createServiceLocation(
+      MasDocument masDocument, MasAnnotation masAnnotation) {
+    VeteranSrvcLocations veteranService = new VeteranSrvcLocations();
+    if (!isNull(masAnnotation.getAnnotVal())) {
+      veteranService.setLocation(masAnnotation.getAnnotVal());
     } else {
-      serviceLocation.setLocation(NOT_AVAILABLE_STR);
+      veteranService.setLocation(NOT_AVAILABLE_STR);
     }
-    if(!isNull(masAnnotation.getPageNum())) {
-      serviceLocation.setPage(masAnnotation.getPageNum());
+    if (!isNull(masAnnotation.getPageNum())) {
+      veteranService.setPage(masAnnotation.getPageNum());
     } else {
-      serviceLocation.setPage(NOT_AVAILABLE_STR);
+      veteranService.setPage(NOT_AVAILABLE_STR);
     }
     if (!isNull(masDocument.getDocTypeDescription())) {
-      serviceLocation.setDocument(masDocument.getDocTypeDescription());
+      veteranService.setDocument(masDocument.getDocTypeDescription());
     } else {
-      serviceLocation.setDocument(NOT_AVAILABLE_STR);
-    };
+      veteranService.setDocument(NOT_AVAILABLE_STR);
+    }
+    ;
     if (!isNull(masDocument.getRecDate())) {
-      serviceLocation.setReceiptDate(masDocument.getRecDate().replaceAll("Z", ""));
+      veteranService.setReceiptDate(masDocument.getRecDate().replaceAll("Z", ""));
     } else {
-      serviceLocation.setReceiptDate(NOT_AVAILABLE_DT);
-    };
+      veteranService.setReceiptDate(NOT_AVAILABLE_DT);
+    }
+    ;
     if (!isNull(masDocument.getEfolderversionrefid())) {
-      serviceLocation.setDocumentId(masDocument.getEfolderversionrefid());
+      veteranService.setDocumentId(masDocument.getEfolderversionrefid());
     } else {
-      serviceLocation.setDocumentId(NOT_AVAILABLE_STR);
-    };
-    return serviceLocation;
+      veteranService.setDocumentId(NOT_AVAILABLE_STR);
+    }
+    ;
+    return veteranService;
   }
 }

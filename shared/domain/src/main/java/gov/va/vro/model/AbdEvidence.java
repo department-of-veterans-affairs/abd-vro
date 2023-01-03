@@ -28,5 +28,5 @@ public class AbdEvidence {
   private List<AbdBloodPressure> bloodPressures;
 
   @Schema(description = "List of relevant service locations")
-  private List<ServiceLocation> serviceLocations;
+  private List<VeteranSrvcLocations> serviceLocations;
 }
