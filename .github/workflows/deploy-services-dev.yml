@@ -80,7 +80,7 @@ jobs:
           fi
       - name: "Checkout source code"
         uses: actions/checkout@v3
-        
+
       - name: "Deploy core to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -120,5 +120,5 @@ jobs:
           if [ "${{ env.SERVICE }}" == "db" ]
           then
             pwd
-            ../scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
           fi  
