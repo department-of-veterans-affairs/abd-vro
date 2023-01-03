@@ -9,11 +9,15 @@ import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.service.db.util.AbdEvidenceCase;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ import java.util.stream.IntStream;
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
+@EnableJpaAuditing
+@ExtendWith(SpringExtension.class)
 public class ClaimMetricsServiceImplTest {
 
   @Autowired private ClaimMetricsServiceImpl claimMetricsService;
@@ -30,6 +36,8 @@ public class ClaimMetricsServiceImplTest {
   @Autowired private SaveToDbServiceImpl saveToDbService;
 
   @Autowired private ClaimRepository claimRepository;
+  private AbdEvidenceCase evidenceCase;
+  private String documentName;
 
   private void verifyFindAllClaimInfo(
       ClaimInfoQueryParams params, List<ClaimMetricsTestCase> cases) {
@@ -42,11 +50,16 @@ public class ClaimMetricsServiceImplTest {
     int expectedResponseSize =
         cases.size() < (page + 1) * size ? (page + 1) * size - cases.size() : size;
     assertEquals(expectedResponseSize, responses.size());
+    List<ClaimMetricsTestCase> casesReversed = new ArrayList<>();
+    for (int i = cases.size() - 1; i >= 0; i--) {
+      casesReversed.add(cases.get(i));
+    }
+
     IntStream.range(0, expectedResponseSize)
         .forEach(
             index -> {
               ClaimInfoResponse cir = responses.get(index);
-              ClaimMetricsTestCase c = cases.get(index + page * size);
+              ClaimMetricsTestCase c = casesReversed.get(index + page * size);
               c.verifyClaimInfoResponse(cir);
             });
   }
