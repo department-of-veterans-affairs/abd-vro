@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
-RESTART=$(tr '[0-1]' <<< "$2")
+RESTART=$2
 
 #verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ] && [ "${ENV}" != "prod-test" ]
@@ -41,10 +41,11 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 NAMESPACE="${TEAMNAME}-${ENV}"
 
 helm del $HELM_APP_NAME -n ${NAMESPACE}
-echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+
 if [ "${RESTART}" == "1" ]
 then
+echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
+sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helm-service-redis \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
