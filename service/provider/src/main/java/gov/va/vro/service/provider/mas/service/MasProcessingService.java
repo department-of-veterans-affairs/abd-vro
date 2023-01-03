@@ -72,7 +72,7 @@ public class MasProcessingService {
   private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload, String message) {
     return AuditEvent.builder()
         .eventId(Integer.toString(payload.getCollectionId()))
-        .payloadType(MasAutomatedClaimPayload.class)
+        .payloadType(payload.getDisplayName())
         .routeId("/automatedClaim")
         .message(message)
         .build();

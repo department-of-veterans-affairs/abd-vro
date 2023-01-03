@@ -11,7 +11,7 @@ public class AuditEvent {
 
   private String eventId;
   private String routeId;
-  private Class<?> payloadType;
+  private String payloadType;
   private Throwable throwable;
 
   // WARNING: DO NOT STORE PII/PHI
@@ -29,34 +29,34 @@ public class AuditEvent {
   /**
    * From auditable.
    *
-   * @param body body.
+   * @param auditable auditable.
    * @param routeId route ID.
    * @param message message.
    * @return return.
    */
-  public static AuditEvent fromAuditable(Auditable body, String routeId, String message) {
+  public static AuditEvent fromAuditable(Auditable auditable, String routeId, String message) {
     return AuditEvent.builder()
-        .eventId(body.getEventId())
+        .eventId(auditable.getEventId())
         .routeId(routeId)
-        .payloadType(body.getClass())
+        .payloadType(auditable.getDisplayName())
         .message(message)
-        .details(body.getDetails())
+        .details(auditable.getDetails())
         .build();
   }
 
   /**
    * From exception.
    *
-   * @param body body.
+   * @param auditable auditable.
    * @param routeId route ID.
    * @param exception exception.
    * @return return.
    */
-  public static AuditEvent fromException(Auditable body, String routeId, Throwable exception) {
+  public static AuditEvent fromException(Auditable auditable, String routeId, Throwable exception) {
     return AuditEvent.builder()
-        .eventId(body.getEventId())
+        .eventId(auditable.getEventId())
         .routeId(routeId)
-        .payloadType(body.getClass())
+        .payloadType(auditable.getDisplayName())
         .message(exception.getMessage())
         .throwable(exception)
         .message(exception.getMessage())
@@ -74,7 +74,7 @@ public class AuditEvent {
       return String.format(
           "Exception occurred on route %s for %s(id = %s): %s.\n"
               + "Please check the audit store for more information.",
-          routeId, payloadType.getSimpleName(), eventId, message);
+          routeId, payloadType, eventId, message);
     } else {
       return toSimpleString();
     }
@@ -91,7 +91,7 @@ public class AuditEvent {
         + routeId
         + '\''
         + ", payloadType="
-        + payloadType.getSimpleName()
+        + payloadType
         + ", message='"
         + message
         + '}';

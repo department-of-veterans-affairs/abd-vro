@@ -6,4 +6,6 @@ public interface Auditable {
   String getEventId();
 
   String getDetails();
+
+  String getDisplayName();
 }

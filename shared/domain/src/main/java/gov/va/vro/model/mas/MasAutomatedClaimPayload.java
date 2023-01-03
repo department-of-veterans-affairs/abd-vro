@@ -127,4 +127,9 @@ public class MasAutomatedClaimPayload implements Auditable {
         "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
         collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
   }
+
+  @Override
+  public String getDisplayName() {
+    return "Automated Claim";
+  }
 }

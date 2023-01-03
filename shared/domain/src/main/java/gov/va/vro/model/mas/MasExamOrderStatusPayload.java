@@ -44,4 +44,9 @@ public class MasExamOrderStatusPayload implements Auditable {
     return String.format(
         "collectionId = %d, collectionStatus = %s", collectionId, collectionStatus);
   }
+
+  @Override
+  public String getDisplayName() {
+    return "Exam Order Status";
+  }
 }
