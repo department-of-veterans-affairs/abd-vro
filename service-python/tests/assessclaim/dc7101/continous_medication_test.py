@@ -147,3 +147,137 @@ def test_continuous_medication_required(
         continuous_medication.continuous_medication_required(request_body)
         == continuous_medication_required_calculation
     )
+
+
+@pytest.mark.parametrize(
+    "request_body, mas_medication_calculation",
+    [
+        # Medication used to treat hypertension
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [
+                            {
+                                "description": "Benazepril",
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "relevant": True
+                            }
+                        ],
+                        "dateOfClaim": "2021-11-09",
+                    }
+                },
+                {
+                    "medications": [
+                        {
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/1950',
+                            "description": "Benazepril",
+                            "status": "active",
+                            "relevant": True
+                        }
+                    ],
+                    "medicationsCount": 1,
+                },
+        ),
+        # Medication used to treat hypertension
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [
+                            {
+                                "description": "Benazepril",
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "relevant": True
+                            }
+                        ],
+                        "dateOfClaim": "2021-11-09",
+                    }
+                },
+                {
+                    "medications": [
+                        {
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/1950',
+                            "description": "Benazepril",
+                            "status": "active",
+                            "relevant": True
+                        }
+                    ],
+                    "medicationsCount": 1,
+                },
+        ),
+        # Medication not used to treat hypertension
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [
+                            {
+                                "description": "Advil",
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z",
+                            }
+                        ],
+                        "dateOfClaim": "2021-11-09",
+                    }
+                },
+                {
+                    "medications": [
+                    ],
+                    "medicationsCount": 0,
+                },
+        ),
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [
+                            {
+                                "description": "Benazepril",
+                                "status": "active",
+                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "relevant": True
+                            },
+                            {
+                                "description": "Advil",
+                                "status": "active",
+                                "authoredOn": "1952-04-06T04:00:00Z",
+                            },
+                        ],
+                        "dateOfClaim": "2021-11-09",
+                    }
+                },
+                {
+                    "medications": [
+                        {
+                            "authoredOn": "1950-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/1950',
+                            "description": "Benazepril",
+                            "status": "active",
+                            "relevant": True
+                        },
+                    ],
+                    "medicationsCount": 1,
+                },
+        ),
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [],
+                    }
+                },
+                {"medications": [], "medicationsCount": 0},
+        ),
+    ],
+)
+def test_filter_mas_medication(request_body, mas_medication_calculation):
+
+    assert (
+            continuous_medication.filter_mas_medication(request_body)
+            == mas_medication_calculation
+    )
