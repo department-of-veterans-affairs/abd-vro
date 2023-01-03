@@ -124,8 +124,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
+        "dataSource": "LH",
+        "route": "As directed by physician."
       },
       {
         "status": "Active",
@@ -136,8 +136,8 @@
         "dosageInstructions": [
           "QD"
         ],
-        "route": "ORAL",
-        "dataSource": "LH"
+        "dataSource": "LH",
+        "route": "ORAL"
       },
       {
         "status": "Active",

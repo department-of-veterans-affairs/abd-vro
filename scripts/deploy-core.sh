@@ -39,13 +39,13 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
-./scripts/deploy-db ${ENV} 0
-./scripts/deploy-mq ${ENV} 0
-./scripts/deploy-redis ${ENV} 0
+./scripts/deploy-db.sh ${ENV} 0
+./scripts/deploy-mq.sh ${ENV} 0
+./scripts/deploy-redis.sh ${ENV} 0
 helm del $HELM_APP_NAME -n ${NAMESPACE}
 
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helm-service-core \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \

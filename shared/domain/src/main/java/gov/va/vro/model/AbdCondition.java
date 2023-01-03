@@ -20,6 +20,11 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String onsetDate;
   private String recordedDate;
+  private String relevant;
+  private String dateFormatted;
+
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
 
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +13,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class drives end-to-end tests based on two gold files in a resource directory. The file
@@ -20,17 +20,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * veteranInfo.json provides the veteran information needed for pdf generation.
  */
 @Getter
+@RequiredArgsConstructor
 public class TestSetup {
   private static final Map<String, String> diagnosticCodeToName =
       Map.ofEntries(
           new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
           new AbstractMap.SimpleEntry<>("6602", "Asthma"));
-  private static final AtomicInteger claimSubmissionCounter = new AtomicInteger(7000);
+
+  private final String name;
 
   private String assessment;
   private String veteranInfo;
-
-  private String claimSubmissionId;
 
   private JsonNode assessmentNode;
   private JsonNode veteranInfoNode;
@@ -46,6 +46,10 @@ public class TestSetup {
     return assessmentNode.get("diagnosticCode").asText();
   }
 
+  public String getClaimSubmissionId() {
+    return assessmentNode.get("claimSubmissionId").asText();
+  }
+
   /**
    * Provides assessment request for server.
    *
@@ -55,7 +59,7 @@ public class TestSetup {
     String veteranIcn = assessmentNode.get("veteranIcn").asText();
 
     ObjectNode result = mapper.createObjectNode();
-    result.put("claimSubmissionId", claimSubmissionId);
+    result.put("claimSubmissionId", getClaimSubmissionId());
     result.put("veteranIcn", veteranIcn);
     result.put("diagnosticCode", getDiagnosticCode());
 
@@ -71,7 +75,7 @@ public class TestSetup {
     JsonNode evidence = assessmentNode.get("evidence");
 
     ObjectNode result = mapper.createObjectNode();
-    result.put("claimSubmissionId", claimSubmissionId);
+    result.put("claimSubmissionId", getClaimSubmissionId());
     result.put("diagnosticCode", getDiagnosticCode());
     result.set("veteranInfo", veteranInfoNode);
     result.set("evidence", evidence);
@@ -86,7 +90,7 @@ public class TestSetup {
    */
   public String getGeneratePdfResponse() {
     ObjectNode result = mapper.createObjectNode();
-    result.put("claimSubmissionId", claimSubmissionId);
+    result.put("claimSubmissionId", getClaimSubmissionId());
     result.put("status", "COMPLETE");
 
     return result.toString();
@@ -126,7 +130,7 @@ public class TestSetup {
    * @throws Exception any error to fail the test
    */
   public static TestSetup getInstance(String resourceDir) throws Exception {
-    TestSetup result = new TestSetup();
+    TestSetup result = new TestSetup(resourceDir);
 
     String assessmentPath = String.format("/%s/assessment.json", resourceDir);
     result.assessment = result.getResource(assessmentPath);
@@ -135,9 +139,6 @@ public class TestSetup {
     String veteranInfoPath = String.format("/%s/veteranInfo.json", resourceDir);
     result.veteranInfo = result.getResource(veteranInfoPath);
     result.veteranInfoNode = result.mapper.readTree(result.veteranInfo);
-
-    int counterValue = claimSubmissionCounter.incrementAndGet();
-    result.claimSubmissionId = String.valueOf(counterValue);
 
     return result;
   }

@@ -209,7 +209,7 @@ class VroControllerTest extends BaseControllerTest {
     Map<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("content-type", "application/json");
-    String url = "/v1/fetch-claims";
+    String url = "/v1/claim-metrics";
     String sampleRequestBody = "{ \"one\":\"one\", \"two\":\"two\",}";
     var getResponseEntity = get(url, headers, ClaimProcessingError.class);
     var postResponseEntity = post(url, sampleRequestBody, headers, ClaimProcessingError.class);

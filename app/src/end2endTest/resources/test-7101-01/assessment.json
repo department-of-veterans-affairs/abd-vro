@@ -81,18 +81,18 @@
     ],
     "bp_readings": [
       {
-        "date": "2022-05-20",
+        "date": "2022-07-20",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
           "unit": "mm[Hg]",
-          "value": 104.0
+          "value": 93.0
         },
         "systolic": {
           "code": "8480-6",
           "display": "Systolic blood pressure",
           "unit": "mm[Hg]",
-          "value": 190.0
+          "value": 167.0
         },
         "practitioner": "DR. JOHN248 SMITH811 MD",
         "organization": "WASHINGTON VA MEDICAL CENTER",
@@ -117,18 +117,18 @@
         "dataSource": "LH"
       },
       {
-        "date": "2022-07-20",
+        "date": "2022-05-20",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
           "unit": "mm[Hg]",
-          "value": 93.0
+          "value": 104.0
         },
         "systolic": {
           "code": "8480-6",
           "display": "Systolic blood pressure",
           "unit": "mm[Hg]",
-          "value": 167.0
+          "value": 190.0
         },
         "practitioner": "DR. JOHN248 SMITH811 MD",
         "organization": "WASHINGTON VA MEDICAL CENTER",

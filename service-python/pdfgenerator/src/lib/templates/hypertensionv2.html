@@ -151,11 +151,12 @@
 </head>
 
 <body>
+  {% if conditions.disabilityActionType == "NEW" %}
   <!-- Relevant military service locations -->
   <div class="row m-0">
     <div class="col">
       <h1 class="mb-13"><b>Evidence for service connection</b></h1>
-      <p class="m-0 mb-13"><b>Claimed as:</b> high blood pressure<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
+      <p class="m-0 mb-13"><b>Claimed as:</b> {{ conditions.name }}<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
     </div>
   </div>
   <div class="row m-0">
@@ -184,15 +185,14 @@
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
-        {{ veteran_info['first'] }}
         <tbody>
-          {% for location in evidence.service_locations %}
+          {% for location in evidence.serviceLocations %}
           <tr>
-            <th>{{ location.key_term }}</th>
+            <th>{{ location.location }}</th>
             <td>{{ location.document }}</td>
-            <td>{{ location.receipt_date }}</td>
+            <td>{{ location.receiptDate }}</td>
             <td>{{ location.page }}</td>
-            <td style="white-space: nowrap !important;">{{ location.document_id }}</td>
+            <td style="white-space: nowrap !important;">{{ location.documentId }}</td>
           </tr>
           {% endfor %}
           {% if evidence.service_locations|length == 0 %}
@@ -217,16 +217,18 @@
       <table id="condition-history" class="table table-bordered" style="width: 400px !important;">
         <thead>
           <tr>
-            <th style="width: 310px !important;">Encounter Diagnosis<sup>*</sup></th>
-            <th style="width: 90px !important;">Recorded Date</th>
+            <th style="width: 310px !important;">Encounter diagnosis<sup>*</sup></th>
+            <th style="width: 90px !important;">Recorded date</th>
           </tr>
         </thead>
         <tbody>
           {% for condition in evidence.conditions %}
-          <tr>
-            <th>{{ condition.code }}</th>
-            <td>{{ condition.onsetDate }}</td>
-          </tr>
+            {% if condition.relevant and condition.dataSource == "LH" %}
+              <tr>
+                <th>{{ condition.text}}</th>
+                <td>{{ condition.dateFormatted }}</td>
+              </tr>
+            {% endif %}
           {% endfor %}
           {% if evidence.conditions|length == 0 %}
           <tr>
@@ -240,6 +242,7 @@
     </div>
   </div>
   <div class="pagebreak"> </div>
+  {% endif %}
   <!-- Hypertension -->
   <div class="row">
     <div class="col">
@@ -254,9 +257,9 @@
         <thead>
           <tr>
             <th style="width: 67px !important;">Blood pressure</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th>Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 70px !important;">Page(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
@@ -264,7 +267,7 @@
         <tbody>
           {% for bp_reading in evidence.bp_readings %}
           <tr>
-            <th>{{ bp_reading.systolic.value }} / {{ bp_reading.diastolic.value }}</th>
+            <th>{{ bp_reading.systolic.value | int }} / {{ bp_reading.diastolic.value | int }}</th>
             <th>{{ bp_reading.date }}</th>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td>{{ bp_reading.receipt_date }}</td>
@@ -288,26 +291,26 @@
       <table id="schedular-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key Terms</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th>Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 204px !important;">Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
-            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 70px !important;">Page number(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
-          {% for evidence in evidence.schedular_evidence %}
+          {% for medication in evidence.medications %}
           <tr>
-            <th>{{ evidence.key_term }}</th>
-            <td>{{ evidence.observation_date }}</td>
-            <td>{{ evidence.source }}</td>
-            <td>{{ evidence.receipt_date }}</td>
-            <td>{{ evidence.page }}</td>
-            <td>{{ evidence.document_id }}</td>
+            <th>{{ medication.description }}</th>
+            <td>{{ medication.dateFormatted }}</td>
+<!--            <td>{{ medication.source }}</td>-->
+<!--            <td>{{ medication.receipt_date }}</td>-->
+<!--            <td>{{ medication.page }}</td>-->
+<!--            <td>{{ medication.document_id }}</td>-->
           </tr>
           {% endfor %}
-          {% if evidence.schedular_evidence|length == 0 %}
+          {% if evidence.medications|length == 0 %}
           <tr>
             <td colspan="6" class="empty">No keywords found through automated review.</td>
           </tr>
@@ -328,24 +331,26 @@
       <table id="other-medical-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key Terms</th>
-            <th style="width: 90px !important;">Observation Date</th>
+            <th>Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 204px !important;">Source</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
-            <th style="width: 70px !important;">Page Number(s)</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 70px !important;">Page number(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
-          {% for evidence in evidence.other_evidence %}
-          <tr>
-            <th>{{ evidence.key_term }}</th>
-            <td>{{ evidence.observation_date }}</td>
-            <td>{{ evidence.source }}</td>
-            <td>{{ evidence.receipt_date }}</td>
-            <td>{{ evidence.page }}</td>
-            <td>{{ evidence.document_id }}</td>
-          </tr>
+          {% for condition in evidence.conditions %}
+            {% if condition.dataSource == "MAS" %}
+              <tr>
+                <th>{{ condition.text }}</th>
+                <td>{{ condition.dateFormatted }}</td>
+<!--                <td>{{ condition.source }}</td>-->
+<!--                <td>{{ condition.receipt_date }}</td>-->
+<!--                <td>{{ condition.page }}</td>-->
+<!--                <td>{{ condition.document_id }}</td>-->
+              </tr>
+            {% endif %}
           {% endfor %}
           {% if evidence.other_evidence|length == 0 %}
           <tr>
@@ -374,7 +379,7 @@
         <thead>
           <tr>
             <th style="width: 271px !important;">Document</th>
-            <th style="width: 90px !important;">VBMS Receipt Date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>

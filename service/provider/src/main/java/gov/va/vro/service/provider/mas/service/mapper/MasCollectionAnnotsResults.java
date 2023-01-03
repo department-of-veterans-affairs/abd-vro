@@ -45,7 +45,7 @@ public class MasCollectionAnnotsResults {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
-    List<VeteranSrvcLocations> serviceLocations = new ArrayList<>();
+    List<ServiceLocation> serviceLocations = new ArrayList<>();
     boolean isConditionBp = false;
     boolean isConditionAsthma = false;
 
@@ -75,7 +75,7 @@ public class MasCollectionAnnotsResults {
               }
             }
             case SERVICE -> {
-              VeteranSrvcLocations veteranService =
+              ServiceLocation veteranService =
                   createServiceLocation(masDocument, masAnnotation);
               serviceLocations.add(veteranService);
             }
@@ -155,9 +155,9 @@ public class MasCollectionAnnotsResults {
     return abdCondition;
   }
 
-  private static VeteranSrvcLocations createServiceLocation(
+  private static ServiceLocation createServiceLocation(
       MasDocument masDocument, MasAnnotation masAnnotation) {
-    VeteranSrvcLocations veteranService = new VeteranSrvcLocations();
+    ServiceLocation veteranService = new ServiceLocation();
     if (!isNull(masAnnotation.getAnnotVal())) {
       veteranService.setLocation(masAnnotation.getAnnotVal());
     } else {
