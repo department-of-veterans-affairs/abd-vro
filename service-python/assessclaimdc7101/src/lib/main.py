@@ -70,7 +70,7 @@ def assess_sufficiency(event: Dict):
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
-            if bp_calculation["oneYearBpReadings"] >= 4:
+            if bp_calculation["oneYearBpReadings"] >= 1:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
             if relevant_conditions["conditions"]:
@@ -97,6 +97,13 @@ def assess_sufficiency(event: Dict):
                 "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             })
+        if "medications" in event["evidence"].keys():
+            medications = continuous_medication.filter_mas_medication(event)
+            response_body["evidence"].update(
+                {
+                    "medications": medications
+                }
+            )
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")

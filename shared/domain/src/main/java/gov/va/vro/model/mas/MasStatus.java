@@ -3,7 +3,11 @@ package gov.va.vro.model.mas;
 import java.util.HashMap;
 import java.util.Map;
 
-/** @author warren @Date 10/12/22 */
+/**
+ * MAS status class.
+ *
+ * @author warren @Date 10/12/22
+ */
 public enum MasStatus {
   INPROGRESS("inProgress"),
   PROCESSED("processed"),
@@ -33,6 +37,12 @@ public enum MasStatus {
     return status;
   }
 
+  /**
+   * Gets MAS status.
+   *
+   * @param status status
+   * @return return.
+   */
   public static MasStatus getMasStatus1(String status) {
     for (MasStatus s : MasStatus.values()) {
       if (status.equals(s.getStatus())) {

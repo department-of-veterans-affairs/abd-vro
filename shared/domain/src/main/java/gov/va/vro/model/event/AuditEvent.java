@@ -26,6 +26,14 @@ public class AuditEvent {
     return throwable != null;
   }
 
+  /**
+   * From auditable.
+   *
+   * @param body body.
+   * @param routeId route ID.
+   * @param message message.
+   * @return return.
+   */
   public static AuditEvent fromAuditable(Auditable body, String routeId, String message) {
     return AuditEvent.builder()
         .eventId(body.getEventId())
@@ -35,6 +43,14 @@ public class AuditEvent {
         .build();
   }
 
+  /**
+   * From exception.
+   *
+   * @param body body.
+   * @param routeId route ID.
+   * @param exception exception.
+   * @return return.
+   */
   public static AuditEvent fromException(Auditable body, String routeId, Throwable exception) {
     return AuditEvent.builder()
         .eventId(body.getEventId())
@@ -46,6 +62,11 @@ public class AuditEvent {
         .build();
   }
 
+  /**
+   * To string.
+   *
+   * @return the string.
+   */
   @Override
   public String toString() {
     if (isException()) {
@@ -58,6 +79,11 @@ public class AuditEvent {
     }
   }
 
+  /**
+   * To simple string.
+   *
+   * @return return string.
+   */
   public String toSimpleString() {
     return "AuditEvent{"
         + "routeId='"

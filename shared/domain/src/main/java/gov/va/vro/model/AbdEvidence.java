@@ -26,4 +26,7 @@ public class AbdEvidence {
   @Schema(description = "List of relevant blood pressures")
   @JsonProperty("bp_readings")
   private List<AbdBloodPressure> bloodPressures;
+
+  @Schema(description = "Veteran service locations for the pdf")
+  private List<ServiceLocation> serviceLocations;
 }

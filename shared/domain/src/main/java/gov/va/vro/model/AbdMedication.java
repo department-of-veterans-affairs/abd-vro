@@ -37,6 +37,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   private Boolean conditionRelated;
   private String suggestedCategory;
+  private String dateFormatted;
 
   @EqualsAndHashCode.Include
   @Schema(description = "Duration of the medication")
@@ -54,6 +55,9 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @EqualsAndHashCode.Include
   @Schema(description = "Medication administration method", example = "INHALATION ORAL")
   private String route;
+
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
 
   @Override
   public int compareTo(AbdMedication otherMedication) {

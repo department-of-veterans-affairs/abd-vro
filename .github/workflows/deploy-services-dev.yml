@@ -14,6 +14,19 @@ on:
         - sandbox
         - prod-test
         - prod
+      
+      target_service:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - core
+        - db
+        - redis
+        - mq
+        
       target_release:
         description: 'Target release tag or SHA'
         required: true
@@ -26,12 +39,16 @@ on:
       target_env:
         required: true
         type: string
+      target_service:
+        required: true
+        type: string
       target_release:
         required: true
         type: string
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   COMMIT_SHA: ${{ inputs.target_release }}
+  SERVICE: ${{ inputs.target_service }}
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: ${{ inputs.target_env }}
   # Default to failure messages
@@ -67,25 +84,39 @@ jobs:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-          ./scripts/deploy-core.sh ${{ env.TARGET_ENV }}
+          if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "core" ]
+          then
+            pwd
+            scripts/deploy-core.sh ${{ env.TARGET_ENV }}
+          fi  
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-          ./scripts/deploy-redis.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA}
+          if [ "${{ env.SERVICE }}" == "redis" ]
+          then
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
+          fi  
       
       - name: "Deploy RabbitMQ to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-          ./scripts/deploy-mq.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA}
+          if [ "${{ env.SERVICE }}" == "mq" ]
+          then
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 
+          fi  
 
       - name: "Deploy DB to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-          ./scripts/deploy-db.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA}
+          if [ "${{ env.SERVICE }}" == "db" ]
+          then
+            pwd
+            ../scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
+          fi  
