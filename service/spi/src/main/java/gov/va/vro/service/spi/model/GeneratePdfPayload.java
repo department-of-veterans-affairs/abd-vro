@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.ClaimCondition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class GeneratePdfPayload implements Auditable {
+public class GeneratePdfPayload {
   @NonNull private String claimSubmissionId;
 
   @NonNull private String diagnosticCode;
@@ -41,9 +40,4 @@ public class GeneratePdfPayload implements Auditable {
 
   private String status;
   private String reason;
-
-  @Override
-  public String getEventId() {
-    return claimSubmissionId;
-  }
 }
