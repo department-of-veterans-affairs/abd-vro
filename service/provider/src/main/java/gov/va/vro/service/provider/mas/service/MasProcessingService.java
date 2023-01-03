@@ -6,6 +6,7 @@ import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-
     if (!payload.isInScope()) {
       var message =
           String.format(
@@ -38,7 +38,8 @@ public class MasProcessingService {
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType());
       offRampClaim(payload, message);
-      return "Out of scope";
+      return String.format(
+          "Claim with collection Id %s is out of scope.", payload.getCollectionId());
     }
     if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
       var message =
@@ -48,11 +49,12 @@ public class MasProcessingService {
               payload.getCollectionId());
       log.info(message);
       offRampClaim(payload, message);
-      return "Missing anchor";
+      return String.format(
+          "Claim with collection Id %s is missing an anchor.", payload.getCollectionId());
     }
     camelEntrance.notifyAutomatedClaim(
         payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
-    return "Received";
+    return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
   public void examOrderingStatus(MasExamOrderStatusPayload payload) {
@@ -61,14 +63,16 @@ public class MasProcessingService {
 
   private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
     var auditEvent = buildAuditEvent(payload, message);
-    camelEntrance.sendSlack(auditEvent);
-    camelEntrance.offRampClaim(payload);
+    camelEntrance.offrampClaim(auditEvent);
+    var mpo = new MasProcessingObject();
+    mpo.setClaimPayload(payload);
+    camelEntrance.completeProcessing(mpo);
   }
 
   private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload, String message) {
     return AuditEvent.builder()
         .eventId(Integer.toString(payload.getCollectionId()))
-        .payloadType(MasAutomatedClaimPayload.class)
+        .payloadType(payload.getDisplayName())
         .routeId("/automatedClaim")
         .message(message)
         .build();

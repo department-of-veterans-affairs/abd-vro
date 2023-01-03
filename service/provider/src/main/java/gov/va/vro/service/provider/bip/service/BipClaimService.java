@@ -6,9 +6,9 @@ import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -77,8 +77,8 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload removeSpecialIssue(MasAutomatedClaimPayload payload) {
-    var claimId = payload.getClaimId();
+  public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
+    var claimId = Long.parseLong(payload.getClaimId());
     log.info("Attempting to remove special issue for claim id = {}", claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
@@ -125,7 +125,7 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return the claim payload
    */
-  public MasAutomatedClaimPayload markAsRfd(MasAutomatedClaimPayload payload) {
+  public MasProcessingObject markAsRfd(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
 
@@ -140,7 +140,7 @@ public class BipClaimService {
    * @param payload the claim payload
    * @return true if the status is updated, false otherwise
    */
-  public boolean completeProcessing(MasAutomatedClaimPayload payload) {
+  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
 
     // check again if TSOJ. If not, abandon route
@@ -150,12 +150,14 @@ public class BipClaimService {
           "Claim with collection Id = {} is in state {}. Not updating status",
           collectionId,
           claim.getTempStationOfJurisdiction());
-      return false;
+      payload.setTSOJ(false);
+      return payload;
     }
     // otherwise, update claim
     log.info("Updating claim status for claim with collection id = {}", collectionId);
     bipApiService.setClaimToRfdStatus(collectionId);
-    return true;
+    payload.setTSOJ(true);
+    return payload;
   }
 
   /**
@@ -167,8 +169,9 @@ public class BipClaimService {
   public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
-    File file = new File(filename);
+    File file = null;
     try {
+      file = File.createTempFile(filename, "tmp", null);
       byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
       InputStream is = new ByteArrayInputStream(decoder);
       Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -182,7 +185,9 @@ public class BipClaimService {
     } catch (IOException ioe) {
       throw new BipException("Failed to upload evidence file.", ioe);
     } finally {
-      file.delete();
+      if (file != null) {
+        file.delete();
+      }
     }
   }
 }
