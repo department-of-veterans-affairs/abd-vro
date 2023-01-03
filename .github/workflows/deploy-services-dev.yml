@@ -78,7 +78,9 @@ jobs:
           else
             echo -n "${{ secrets.PROD_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
           fi
-
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        
       - name: "Deploy core to ${{ env.TARGET_ENV }} env"
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -87,7 +89,7 @@ jobs:
           if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "core" ]
           then
             pwd
-            ../scripts/deploy-core.sh ${{ env.TARGET_ENV }}
+            ./scripts/deploy-core.sh ${{ env.TARGET_ENV }}
           fi  
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
