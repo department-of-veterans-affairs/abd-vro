@@ -20,7 +20,7 @@ def on_generate_callback(channel, method, properties, body):
 
         # binding_key = method.routing_key
         message = json.loads(body)
-        # logging.info(f" [x] Received message: {message}")
+        # logging.info(f" [x] {binding_key}: Received message: {message}")
         claim_id = message["claimSubmissionId"]
         diagnosis_code = message["diagnosticCode"]
         message["veteran_info"] = message["veteranInfo"]
