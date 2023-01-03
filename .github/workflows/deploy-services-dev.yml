@@ -97,7 +97,7 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "redis" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
           fi  
       
       - name: "Deploy RabbitMQ to ${{ env.TARGET_ENV }} env"
@@ -107,7 +107,7 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "mq" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 
           fi  
 
       - name: "Deploy DB to ${{ env.TARGET_ENV }} env"
@@ -118,5 +118,5 @@ jobs:
           if [ "${{ env.SERVICE }}" == "db" ]
           then
             pwd
-            ../scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ../scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
           fi  
