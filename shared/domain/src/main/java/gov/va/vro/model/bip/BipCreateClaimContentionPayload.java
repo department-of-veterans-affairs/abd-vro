@@ -6,7 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** @author warren @Date 11/16/22 */
+/**
+ * BIP create claim contention payload.
+ *
+ * @author warren @Date 11/16/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter

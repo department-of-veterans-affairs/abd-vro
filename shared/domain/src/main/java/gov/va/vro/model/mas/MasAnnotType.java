@@ -22,6 +22,12 @@ public enum MasAnnotType {
     return this.masAnnotTypeText;
   }
 
+  /**
+   * Mas Annotation type from string.
+   *
+   * @param text text.
+   * @return type.
+   */
   public static MasAnnotType fromString(String text) {
     for (MasAnnotType masAnnotType : MasAnnotType.values()) {
       if (masAnnotType.masAnnotTypeText.equalsIgnoreCase(text)) {

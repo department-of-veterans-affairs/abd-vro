@@ -1,6 +1,10 @@
 package gov.va.vro.model.bip;
 
-/** @author warren @Date 12/9/22 */
+/**
+ * Claim Status.
+ *
+ * @author warren @Date 12/9/22
+ */
 public enum ClaimStatus {
   RFD("Ready for Decision"),
   OPEN("Open"),
@@ -27,6 +31,12 @@ public enum ClaimStatus {
     return description;
   }
 
+  /**
+   * Get status code.
+   *
+   * @param desc desc.
+   * @return return.
+   */
   public static ClaimStatus getStatusCode(String desc) {
     for (ClaimStatus s : values()) {
       if (s.getDescription().equals(desc)) {

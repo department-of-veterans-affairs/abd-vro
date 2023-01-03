@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
-RESTART=$(tr '[0-1]' <<< "$2")
+RESTART=$2
 
 #verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ] && [ "${ENV}" != "prod-test" ]
@@ -30,7 +30,7 @@ fi
 
 source scripts/image_vars_db.src
 generateImageArgs(){
-  local _IMAGE_TAG=$3
+  local _IMAGE_TAG=$2
 
   # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
@@ -74,6 +74,7 @@ then
 helm upgrade --install $HELM_APP_NAME helm-service-db \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
-              -n ${NAMESPACE} #--dry-run
+              -n ${NAMESPACE} 
+              #--dry-run
               #-f helm-service-db/"${ENV}".yaml
 fi

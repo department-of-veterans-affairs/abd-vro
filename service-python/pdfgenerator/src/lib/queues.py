@@ -18,7 +18,6 @@ def on_generate_callback(channel, method, properties, body):
         redis_client = RedisClient(redis_config)
         pdf_generator = PDFGenerator(pdf_options)
 
-        # binding_key = method.routing_key
         message = json.loads(body)
         # logging.info(f" [x] {binding_key}: Received message: {message}")
         claim_id = message["claimSubmissionId"]
