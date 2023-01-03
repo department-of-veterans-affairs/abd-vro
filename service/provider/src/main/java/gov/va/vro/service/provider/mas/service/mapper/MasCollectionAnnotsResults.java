@@ -75,8 +75,7 @@ public class MasCollectionAnnotsResults {
               }
             }
             case SERVICE -> {
-              ServiceLocation veteranService =
-                  createServiceLocation(masDocument, masAnnotation);
+              ServiceLocation veteranService = createServiceLocation(masDocument, masAnnotation);
               serviceLocations.add(veteranService);
             }
             default -> { // NOP

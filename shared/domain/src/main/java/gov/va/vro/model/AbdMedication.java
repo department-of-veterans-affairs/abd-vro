@@ -72,6 +72,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   @Schema(description = "Document Identifier", example = "")
   private String documentId;
+
   @Override
   public int compareTo(AbdMedication otherMedication) {
     return StringUtils.compare(authoredOn, otherMedication.authoredOn);
