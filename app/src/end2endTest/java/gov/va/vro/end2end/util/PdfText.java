@@ -1,6 +1,7 @@
 package gov.va.vro.end2end.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -11,6 +12,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
  * This class represents the text of the evidence pdf as extracted by Apache PDFBox. It is used for
  * sanity checks for now until a more sophisticated parser extracts all data.
  */
+@Getter
 public class PdfText {
   private String pdfText;
 
