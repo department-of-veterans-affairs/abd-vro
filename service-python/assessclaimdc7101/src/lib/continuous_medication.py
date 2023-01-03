@@ -53,4 +53,3 @@ def filter_mas_medication(event):
     response["medicationsCount"] = len(medication_with_date)
 
     return response
-
