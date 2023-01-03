@@ -13,8 +13,14 @@ def pdf_helper_all(data):
     # Starting date from when the data is fetched. Mainly to be used to display a range Ex: (start_date) to (timestamp)
     data["start_date"] = datetime.now() - relativedelta(years=1)
     data["timestamp"] = pytz.utc.localize(datetime.now())
+    if "veteranInfo" in data:
+        data["veteran_info"] = data["veteranInfo"]
+    data["evidence"] = data["evidence"]
     if data["veteran_info"]["birthdate"] != "":
         data["veteran_info"]["birthdate"] = parser.parse(data["veteran_info"]["birthdate"])
+    if "evidence" in data:
+        for medication_info in data["evidence"]["medications"]:
+            medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
     return data
 
 

@@ -25,3 +25,27 @@ def continuous_medication_required(request_body):
     response["medications"] = relevant_medications
     response["medicationsCount"] = len(relevant_medications)
     return response
+
+
+def filter_mas_medication(event):
+    """Filter MAS medication data"""
+    medication_with_date = []
+    medication_without_date = []
+    for medication in event["evidence"]["medications"]:
+        if medication["relevant"]:
+            if "authoredOn" in medication.keys():
+                medication_with_date.append(medication)
+                date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
+                medication["dateFormatted"] = date.strftime("%m/%d/%Y")
+            else:
+                medication_without_date.append(medication)
+
+    medication_with_date = sorted(
+        medication_with_date,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
+
+    medication_with_date.extend(medication_without_date)
+
+    return medication_with_date
