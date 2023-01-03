@@ -57,13 +57,17 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      # we are using the GitHub actor and token below instead of the PAT
+      # due to a signing issue in SecRel 4. for more details see
+      # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
+
       - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
           access_token: ${{ secrets.ACCESS_TOKEN }}
-          ghcr_username: ${{ secrets.USERNAME }}
-          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
+          ghcr_username: ${{ github.actor }}
+          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Cleanup ${{ env.TARGET_ENV }} images locally"
         run: |
