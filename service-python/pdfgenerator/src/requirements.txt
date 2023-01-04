@@ -1,6 +1,6 @@
 
 # Linting + Testing
-flake8==6.0.0
+flake8==5.0.4
 isort==5.11.4
 Jinja2==3.1.2
 pdfkit==1.0.0
