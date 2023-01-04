@@ -20,7 +20,7 @@ import java.util.List;
 
 /** Mock some claim data returned by the BIP API. */
 @Service
-@Conditional(LocalEnvCondition.class)
+@Conditional(BipConditions.LocalEnvCondition.class)
 public class MockBipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(long collectionId) {

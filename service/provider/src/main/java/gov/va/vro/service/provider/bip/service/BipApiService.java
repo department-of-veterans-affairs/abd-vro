@@ -55,7 +55,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(HigherEnvCondition.class)
+@Conditional(BipConditions.HigherEnvCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
@@ -297,7 +297,6 @@ public class BipApiService implements IBipApiService {
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", Header.JWT_TYPE);
 
-    String jwt;
     switch (api) {
       case CLAIM -> {
         claims.put("iss", bipApiProps.getClaimIssuer());
