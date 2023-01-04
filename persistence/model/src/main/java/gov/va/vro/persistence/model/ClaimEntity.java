@@ -27,6 +27,8 @@ public class ClaimEntity extends BaseEntity {
 
   private String incomingStatus = "submission";
 
+  private Boolean sufficientEvidenceFlag;
+
   @ManyToOne private VeteranEntity veteran;
 
   @OneToMany(

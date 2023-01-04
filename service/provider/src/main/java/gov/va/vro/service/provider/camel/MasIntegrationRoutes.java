@@ -15,6 +15,7 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.services.SufficientEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
+  private final SufficientEvidenceProcessor sufficientEvidenceProcessor;
+
   @Override
   public void configure() {
     configureAuditing();
@@ -115,6 +118,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
+        .process(sufficientEvidenceProcessor) // updates claim with sufficient evidence flag
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Generating PDF"))
         // Generate PDF

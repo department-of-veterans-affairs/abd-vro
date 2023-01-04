@@ -82,6 +82,21 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimRepository.save(claim);
   }
 
+  @Override
+  public void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag){
+    log.warn("Entered sufficient evidence >> " + claimSubmissionId + " >> " + flag);
+    ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
+    if(claim == null){
+      log.warn("Could not find claim to update flag with given claimSubmissionId.");
+      return;
+    }
+    if(flag == null){
+      log.warn("No evidence.");
+    }
+    claim.setSufficientEvidenceFlag(flag);
+    claimRepository.save(claim);
+  }
+
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
     AbdEvidence evidence = request.getEvidence();
     Map<String, String> evidenceCount = new HashMap<>();
