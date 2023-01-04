@@ -37,6 +37,9 @@ public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
       example = "WASHINGTON VA MEDICAL CENTER")
   private String organization;
 
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
+
   @Override
   public int compareTo(AbdBloodPressure otherBp) {
     return StringUtils.compare(date, otherBp.date);
