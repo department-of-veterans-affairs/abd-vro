@@ -6,6 +6,11 @@ Each folder in `service-python` contains the infrastructure necessary to build a
 
 [Plan to Deploy](https://github.com/department-of-veterans-affairs/abd-vro/wiki/(March-2022)-Plan-to-Deploy-to-LHDI#vro-software)
 
+## VRO version 1
+Claims for Hypertension (7101) or Asthma (6602) are sent to their corresponding assessment service. 
+
+## VRO version 2
+Hypertension claims that have two data sources, MAS and Lighthouse, are evaluated for RFD. 
 
 ## VRO prototype
 The folders not used in version 1.0 or 2.0 are outlines for logic to evaluate new conditions or update existing

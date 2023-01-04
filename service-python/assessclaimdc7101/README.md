@@ -11,12 +11,7 @@ The application connects to RabbitMQ with the binding key `7101`. Claims are sen
 Incoming messages are validated by Cerberus to avoid container shutdown from unexpected exceptions.
 
 ### VRO version 1.0
-
-MedicationRequest objects are evaluated by keyword matching. If any of the identified keywords appear in the medicationRequest object description, they are collected as evidence.
-
-Blood pressure readings are filtered upstream to be <1 year from the date of claim.
-
-Evidence under `calculated` in the response object is still under development and is not currently in use.
+Filters and sorts health data from Lighthouse before sending it to the PDF generator.
 
 ## VRO version 2.0
 
