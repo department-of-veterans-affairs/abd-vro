@@ -10,7 +10,7 @@ import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +20,7 @@ import java.util.List;
 
 /** Mock some claim data returned by the BIP API. */
 @Service
-@Profile("test")
+@Conditional(LocalEnvCondition.class)
 public class MockBipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(long collectionId) {
