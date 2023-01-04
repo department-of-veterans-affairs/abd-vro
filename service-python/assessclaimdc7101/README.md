@@ -25,21 +25,6 @@ on claim evidence sufficiency.
 
 ### Hypertension
 
-The `assessclaimdc7101` folder contains all logic for hypertension. This service builds two queues built, "health-assess.7101"
+The `assessclaimdc7101` folder contains all logic for hypertension. This service builds two queues, "health-assess.7101"
 and "health-sufficiency-assess.7101", the first of which is used in version 1.0 and the second is used in version 2.0. 
 
-
-## VRO prototype
-The folders not used in version 1.0 or 2.0 are outlines for logic to evaluate new conditions or update existing 
-processors.
-
-
-### Rhinitis, Sinusitis
-
-### Asthma
-
-### Cancer
-
-Tests for each service can be found in `tests/assessclaim`
-
-## Contributing
