@@ -95,7 +95,8 @@
           "value": 167.0
         },
         "practitioner": "DR. JOHN248 SMITH811 MD",
-        "organization": "WASHINGTON VA MEDICAL CENTER"
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
       },
       {
         "date": "2022-06-20",
@@ -112,7 +113,8 @@
           "value": 167.0
         },
         "practitioner": "DR. JOHN248 SMITH811 MD",
-        "organization": "WASHINGTON VA MEDICAL CENTER"
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
       },
       {
         "date": "2022-05-20",
@@ -129,7 +131,8 @@
           "value": 190.0
         },
         "practitioner": "DR. JOHN248 SMITH811 MD",
-        "organization": "WASHINGTON VA MEDICAL CENTER"
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
       }
     ]
   },
