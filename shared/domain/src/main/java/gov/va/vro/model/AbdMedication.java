@@ -37,6 +37,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   private Boolean conditionRelated;
   private String suggestedCategory;
+  @Schema(description = "Formatted date", example = "01/01/2023")
   private String dateFormatted;
 
   @EqualsAndHashCode.Include
@@ -70,7 +71,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Document Page Number", example = "55")
   private String page;
 
-  @Schema(description = "Document Identifier", example = "")
+  @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
   private String documentId;
 
   @Override
