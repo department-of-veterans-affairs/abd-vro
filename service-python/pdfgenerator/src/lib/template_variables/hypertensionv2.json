@@ -3,7 +3,7 @@
   "document_type": "hypertension",
   "conditions": [],
   "fileIdentifier": "12345",
-  "veteran_info": {
+  "veteranInfo": {
     "first": "Test",
     "middle": "",
     "last": "User",
