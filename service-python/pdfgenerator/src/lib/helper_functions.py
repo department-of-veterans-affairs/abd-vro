@@ -32,7 +32,7 @@ def toc_helper_all(toc_file_path, data):
     file_data = file_data.replace("{{file}}", data['fileIdentifier'])
     file_data = file_data.replace("{{date}}", f"{pytz.utc.localize(datetime.now()).strftime('%b. %d, %Y')}")
 
-    generated_toc_path = toc_file_path.replace("base_toc", "generated_toc")
+    generated_toc_path = toc_file_path.replace("base_toc", f"{data['claimSubmissionId']}_toc")
 
     with open(generated_toc_path, 'w') as file:
         file.write(file_data)
