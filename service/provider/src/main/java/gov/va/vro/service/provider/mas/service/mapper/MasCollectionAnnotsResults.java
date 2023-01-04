@@ -130,9 +130,9 @@ public class MasCollectionAnnotsResults {
     abdMedication.setAsthmaRelevant(null);
     abdMedication.setDuration(null);
     if (masAnnotation.getObservationDate() != null) {
-      abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", ""));
+      abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", "") + UTC_TM);
     } else {
-      abdMedication.setAuthoredOn(NOT_AVAILABLE_DT);
+      abdMedication.setAuthoredOn(NOT_AVAILABLE_DT + UTC_TM);
     }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
