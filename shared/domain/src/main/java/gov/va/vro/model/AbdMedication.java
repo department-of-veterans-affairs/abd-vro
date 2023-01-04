@@ -59,6 +59,20 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";
 
+  @Schema(
+      description = "Document Type Description",
+      example = "Medical Treatment Record - Government Facility")
+  private String document;
+
+  @Schema(description = "VBMS Receipt Date", example = "2021-04-05")
+  private String receiptDate;
+
+  @Schema(description = "Document Page Number", example = "55")
+  private String page;
+
+  @Schema(description = "Document Identifier", example = "")
+  private String documentId;
+
   @Override
   public int compareTo(AbdMedication otherMedication) {
     return StringUtils.compare(authoredOn, otherMedication.authoredOn);
