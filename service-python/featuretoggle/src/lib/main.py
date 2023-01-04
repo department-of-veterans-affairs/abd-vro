@@ -1,5 +1,4 @@
 import logging
-from typing import Dict
 
 from . import utils
 
@@ -12,12 +11,9 @@ def report_feature_toggles():
     :rtype: dict
     """
 
-    response_body = {}
-
-    response_body.update(
-        {
-            "features": utils.create_features_list()
-        })
+    response_body = {
+        "features": utils.create_features_list()
+    }
 
     logging.info("Message processed successfully")
 
