@@ -26,6 +26,6 @@ public class VeteranSrvcLocations {
   @Schema(description = "Document Page Number", example = "55")
   private String page;
 
-  @Schema(description = "Document Identifier", example = "")
+  @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
   private String documentId;
 }

@@ -37,6 +37,9 @@ public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
       example = "WASHINGTON VA MEDICAL CENTER")
   private String organization;
 
+  @Schema(description = "Formatted date", example = "01/01/2023")
+  private String dateFormatted;
+
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";
 
