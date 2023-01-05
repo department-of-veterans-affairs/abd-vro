@@ -162,7 +162,6 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
-                                "relevant": True
                             }
                         ],
                         "dateOfClaim": "2021-11-09",
@@ -175,7 +174,6 @@ def test_continuous_medication_required(
                             'dateFormatted': '04/06/1950',
                             "description": "Benazepril",
                             "status": "active",
-                            "relevant": True
                         }
                     ],
                     "medicationsCount": 1,
@@ -191,7 +189,6 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
-                                "relevant": True
                             }
                         ],
                         "dateOfClaim": "2021-11-09",
@@ -204,7 +201,6 @@ def test_continuous_medication_required(
                             'dateFormatted': '04/06/1950',
                             "description": "Benazepril",
                             "status": "active",
-                            "relevant": True
                         }
                     ],
                     "medicationsCount": 1,
@@ -226,9 +222,11 @@ def test_continuous_medication_required(
                     }
                 },
                 {
-                    "medications": [
-                    ],
-                    "medicationsCount": 0,
+                    'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                                                      'dateFormatted': '04/06/1950',
+                                                      'description': 'Advil',
+                                                      'status': 'active'}],
+                                     'medicationsCount': 1
                 },
         ),
         (
@@ -240,7 +238,6 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
-                                "relevant": True
                             },
                             {
                                 "description": "Advil",
@@ -254,14 +251,19 @@ def test_continuous_medication_required(
                 {
                     "medications": [
                         {
+                            "description": "Advil",
+                            "status": "active",
+                            'dateFormatted': '04/06/1952',
+                            "authoredOn": "1952-04-06T04:00:00Z",
+                        },
+                        {
                             "authoredOn": "1950-04-06T04:00:00Z",
                             'dateFormatted': '04/06/1950',
                             "description": "Benazepril",
                             "status": "active",
-                            "relevant": True
-                        },
+                        }
                     ],
-                    "medicationsCount": 1,
+                    "medicationsCount": 2,
                 },
         ),
         (
