@@ -8,14 +8,25 @@ import lombok.Setter;
 
 import java.util.List;
 
-/** @author warren @Date 10/5/22 */
+/**
+ * MAS document class.
+ *
+ * @author warren @Date 10/5/22
+ */
 @NoArgsConstructor
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasDocument {
+
+  @JsonProperty("docTypeDescription")
+  private String docTypeDescription;
+
   @JsonProperty("eFolderVersionRefId")
   private String efolderversionrefid;
+
+  @JsonProperty("recDate")
+  private String recDate;
 
   @JsonProperty("condition")
   private String condition;

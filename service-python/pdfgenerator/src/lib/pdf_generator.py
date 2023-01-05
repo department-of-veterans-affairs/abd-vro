@@ -3,7 +3,6 @@ import logging
 import os
 
 import pdfkit
-from dateutil import parser
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .helper_functions import *  # noqa: F403
@@ -26,9 +25,6 @@ class PDFGenerator:
             logging.info("No helper function found")
         # Call a helper function that gets run for all codes
         filled_variables = pdf_helper_all(filled_variables) # noqa: F405, E261
-        if "evidence" in filled_variables:
-            for medication_info in filled_variables["evidence"]["medications"]:
-                medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
         return filled_variables
 
     def generate_template_file(self, template_name: str, template_variables: dict, test_mode=False, loader="pdfgenerator.src.lib") -> str:
@@ -48,6 +44,6 @@ class PDFGenerator:
             # Call a helper function that make adjustments to toc before creating
             generated_toc_file_path = toc_helper_all(base_toc_file_path, data) # noqa: F405, E261
             toc = {'xsl-style-sheet': generated_toc_file_path}
-            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=False)
         else:
-            return pdfkit.from_string(html, output, options=self.options, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, verbose=False)

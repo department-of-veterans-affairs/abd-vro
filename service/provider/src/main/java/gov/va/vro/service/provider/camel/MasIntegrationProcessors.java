@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
-import gov.va.vro.service.provider.mas.service.MasTransferObject;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,16 @@ import java.util.function.Function;
 /** Helper processors for Mas Integration. */
 @Slf4j
 public class MasIntegrationProcessors {
+
+  public static Processor convertToMasProcessingObject() {
+    return FunctionProcessor.fromFunction(
+        (Function<MasAutomatedClaimPayload, MasProcessingObject>)
+            masAutomatedClaimPayload -> {
+              var mpo = new MasProcessingObject();
+              mpo.setClaimPayload(masAutomatedClaimPayload);
+              return mpo;
+            });
+  }
 
   public static Processor combineExchangesProcessor() {
     return FunctionProcessor.fromFunction(combineExchangesFunction());
@@ -49,16 +61,16 @@ public class MasIntegrationProcessors {
    */
   public static Processor payloadToClaimProcessor() {
     return FunctionProcessor.fromFunction(
-        (Function<MasAutomatedClaimPayload, Claim>)
+        (Function<MasProcessingObject, Claim>)
             payload ->
                 Claim.builder()
-                    .claimSubmissionId(payload.getClaimDetail().getBenefitClaimId())
-                    .diagnosticCode(payload.getClaimDetail().getConditions().getDiagnosticCode())
-                    .veteranIcn(payload.getVeteranIdentifiers().getIcn())
+                    .claimSubmissionId(payload.getClaimId())
+                    .diagnosticCode(payload.getDiagnosticCode())
+                    .veteranIcn(payload.getVeteranIcn())
                     .build());
   }
 
-  public static Processor covertToPdfReponse() {
+  public static Processor convertToPdfResponse() {
     return exchange -> {
       String response = exchange.getMessage().getBody(String.class);
       var pdfResponse = new ObjectMapper().readValue(response, FetchPdfResponse.class);
@@ -70,7 +82,7 @@ public class MasIntegrationProcessors {
     return FunctionProcessor.fromFunction(MasIntegrationProcessors::getGeneratePdfPayload);
   }
 
-  private static GeneratePdfPayload getGeneratePdfPayload(MasTransferObject transferObject) {
+  private static GeneratePdfPayload getGeneratePdfPayload(MasProcessingObject transferObject) {
     MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(transferObject.getEvidence());
@@ -88,5 +100,21 @@ public class MasIntegrationProcessors {
         generatePdfPayload.getClaimSubmissionId(),
         generatePdfPayload.getDiagnosticCode());
     return generatePdfPayload;
+  }
+
+  public static Processor auditProcessor(String routeId, String message) {
+    return exchange -> {
+      var auditable = exchange.getMessage().getBody(Auditable.class);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
+  }
+
+  public static Processor auditProcessor(
+      String routeId, Function<Auditable, String> messageExtractor) {
+    return exchange -> {
+      var auditable = exchange.getMessage().getBody(Auditable.class);
+      String message = messageExtractor.apply(auditable);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
   }
 }

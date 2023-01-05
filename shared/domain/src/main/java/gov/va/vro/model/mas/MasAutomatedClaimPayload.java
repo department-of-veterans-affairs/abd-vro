@@ -8,6 +8,7 @@ import gov.va.vro.model.event.Auditable;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,11 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
 
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
+
+  @Schema(hidden = true)
+  @Setter
+  @Getter
+  private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
   @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
@@ -60,12 +66,11 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Schema(description = "Veteran Flash Ids")
   private List<String> veteranFlashIds;
 
-  @Override
-  @JsonIgnore
-  public String getEventId() {
-    return collectionId == null ? null : Integer.toString(collectionId);
-  }
-
+  /**
+   * Get diagnostic code.
+   *
+   * @return code.
+   */
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -74,6 +79,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
+  /**
+   * Get disability action type.
+   *
+   * @return type.
+   */
   @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -82,6 +92,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDisabilityActionType();
   }
 
+  /**
+   * Check if it is in scope.
+   *
+   * @return true or false.
+   */
   @JsonIgnore
   public boolean isInScope() {
     return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
@@ -92,5 +107,29 @@ public class MasAutomatedClaimPayload implements Auditable {
   @JsonIgnore
   public Integer getClaimId() {
     return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
+  }
+
+  @JsonIgnore
+  public String getVeteranIcn() {
+    return veteranIdentifiers == null ? null : veteranIdentifiers.getIcn();
+  }
+
+  @Override
+  @JsonIgnore
+  public String getEventId() {
+    return correlationId;
+  }
+
+  @JsonIgnore
+  @Override
+  public String getDetails() {
+    return String.format(
+        "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
+        collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
+  }
+
+  @Override
+  public String getDisplayName() {
+    return "Automated Claim";
   }
 }

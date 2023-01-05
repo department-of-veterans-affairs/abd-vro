@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
+RESTART=$2
 
 #verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ] && [ "${ENV}" != "prod-test" ]
@@ -15,10 +16,10 @@ fi
 
 #get the current sha from github repository
 GIT_SHA=$(git rev-parse HEAD)
-if [ -n "$2" ]
+if [ -n "$3" ]
 then
-  IMAGE_TAG=$2
-  VERSION=$2
+  IMAGE_TAG=$3
+  VERSION=$3
 else
   IMAGE_TAG=${GIT_SHA:0:7}
   VERSION=${GIT_SHA:0:7}
@@ -40,10 +41,14 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 NAMESPACE="${TEAMNAME}-${ENV}"
 
 helm del $HELM_APP_NAME -n ${NAMESPACE}
+
+if [ "${RESTART}" == "1" ]
+then
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helm-service-redis \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run
               #-f helm-service-redis/"${ENV}".yaml
+fi

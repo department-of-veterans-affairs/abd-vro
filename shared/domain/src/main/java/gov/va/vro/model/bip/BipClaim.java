@@ -3,7 +3,11 @@ package gov.va.vro.model.bip;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/** @author warren @Date 11/8/22 */
+/**
+ * BIP claim.
+ *
+ * @author warren @Date 11/8/22
+ */
 @RequiredArgsConstructor
 @Data
 public class BipClaim {
