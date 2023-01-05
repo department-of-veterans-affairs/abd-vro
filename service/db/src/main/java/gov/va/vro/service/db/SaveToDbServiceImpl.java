@@ -83,14 +83,14 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag){
+  public void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag) {
     log.warn("Entered sufficient evidence >> " + claimSubmissionId + " >> " + flag);
     ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
-    if(claim == null){
+    if (claim == null) {
       log.warn("Could not find claim to update flag with given claimSubmissionId.");
       return;
     }
-    if(flag == null){
+    if (flag == null) {
       log.warn("No evidence.");
     }
     claim.setSufficientEvidenceFlag(flag);
