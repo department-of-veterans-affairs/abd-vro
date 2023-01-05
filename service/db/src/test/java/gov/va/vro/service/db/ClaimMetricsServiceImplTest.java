@@ -11,13 +11,16 @@ import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -25,6 +28,7 @@ import java.util.stream.IntStream;
 @Transactional
 @ActiveProfiles("test")
 @EnableJpaAuditing
+@ExtendWith(SpringExtension.class)
 public class ClaimMetricsServiceImplTest {
 
   @Autowired private ClaimMetricsServiceImpl claimMetricsService;
@@ -44,15 +48,11 @@ public class ClaimMetricsServiceImplTest {
     int expectedResponseSize =
         cases.size() < (page + 1) * size ? (page + 1) * size - cases.size() : size;
     assertEquals(expectedResponseSize, responses.size());
-    List<ClaimMetricsTestCase> casesReversed = new ArrayList<>();
-    for (int i = cases.size() - 1; i >= 0; i--) {
-      casesReversed.add(cases.get(i));
-    }
     IntStream.range(0, expectedResponseSize)
         .forEach(
             index -> {
               ClaimInfoResponse cir = responses.get(index);
-              ClaimMetricsTestCase c = casesReversed.get(index + page * size);
+              ClaimMetricsTestCase c = cases.get(index + page * size);
               c.verifyClaimInfoResponse(cir);
             });
   }
@@ -88,22 +88,23 @@ public class ClaimMetricsServiceImplTest {
           ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId);
           c.verifyClaimInfoResponse(cir);
         });
-
-    ClaimInfoQueryParams params0 = ClaimInfoQueryParams.builder().build();
-    verifyFindAllClaimInfo(params0, allCases);
-
-    ClaimInfoQueryParams params1 = ClaimInfoQueryParams.builder().size(7).page(1).build();
-    verifyFindAllClaimInfo(params1, allCases);
-
+    // Reverse the icnCases to get the last updated claims for that ICN.
     List<ClaimMetricsTestCase> icnCases =
-        IntStream.of(1, 16, 21).boxed().map(index -> allCases.get(index)).toList();
+        new ArrayList<>(IntStream.of(1, 16, 21).boxed().map(allCases::get).toList());
     String icn = allCases.get(21).getIcn();
+    Collections.reverse(icnCases);
+    ClaimInfoQueryParams params0 = ClaimInfoQueryParams.builder().size(2).icn(icn).build();
+    verifyFindAllClaimInfo(params0, icnCases);
 
-    ClaimInfoQueryParams params3 = ClaimInfoQueryParams.builder().size(2).icn(icn).build();
-    verifyFindAllClaimInfo(params3, icnCases);
+    ClaimInfoQueryParams params1 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
+    verifyFindAllClaimInfo(params1, icnCases);
+    // We expect the results to be in order of last updated.
+    Collections.reverse(allCases);
+    ClaimInfoQueryParams params2 = ClaimInfoQueryParams.builder().build();
+    verifyFindAllClaimInfo(params2, allCases);
 
-    ClaimInfoQueryParams params4 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
-    verifyFindAllClaimInfo(params4, icnCases);
+    ClaimInfoQueryParams params3 = ClaimInfoQueryParams.builder().size(7).page(1).build();
+    verifyFindAllClaimInfo(params3, allCases);
   }
 
   @Test
