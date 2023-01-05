@@ -16,7 +16,7 @@ on:
         - prod
       
       target_service:
-        description: 'Target LHDI environment'
+        description: 'Target LHDI Service'
         required: true
         default: 'all'
         type: choice
@@ -78,6 +78,8 @@ jobs:
           else
             echo -n "${{ secrets.PROD_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
           fi
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
 
       - name: "Deploy core to ${{ env.TARGET_ENV }} env"
         env:
@@ -87,7 +89,7 @@ jobs:
           if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "core" ]
           then
             pwd
-            scripts/deploy-core.sh ${{ env.TARGET_ENV }}
+            ./scripts/deploy-core.sh ${{ env.TARGET_ENV }}
           fi  
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
@@ -97,7 +99,7 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "redis" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
           fi  
       
       - name: "Deploy RabbitMQ to ${{ env.TARGET_ENV }} env"
@@ -107,7 +109,7 @@ jobs:
         run: |
           if [ "${{ env.SERVICE }}" == "mq" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 
           fi  
 
       - name: "Deploy DB to ${{ env.TARGET_ENV }} env"
@@ -118,5 +120,5 @@ jobs:
           if [ "${{ env.SERVICE }}" == "db" ]
           then
             pwd
-            ../scripts/deploy-${{ env.SERVICE }}.sh 1 ${{ env.TARGET_ENV }}
+            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
           fi  

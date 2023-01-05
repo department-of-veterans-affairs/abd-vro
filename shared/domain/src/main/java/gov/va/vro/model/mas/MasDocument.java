@@ -18,8 +18,15 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasDocument {
+
+  @JsonProperty("docTypeDescription")
+  private String docTypeDescription;
+
   @JsonProperty("eFolderVersionRefId")
   private String efolderversionrefid;
+
+  @JsonProperty("recDate")
+  private String recDate;
 
   @JsonProperty("condition")
   private String condition;

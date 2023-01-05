@@ -5,6 +5,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
@@ -67,17 +68,33 @@ public class CamelEntrance {
     producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_STATUS, payload);
   }
 
-  public String processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
+  /**
+   * Main entry point for processing an automated MAS claim
+   *
+   * @param masAutomatedClaimPayload the original payload
+   */
+  public MasProcessingObject processClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
     return producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING, masAutomatedClaimPayload, String.class);
+        MasIntegrationRoutes.ENDPOINT_MAS_PROCESSING,
+        masAutomatedClaimPayload,
+        MasProcessingObject.class);
   }
 
-  public void offRampClaim(MasAutomatedClaimPayload masAutomatedClaimPayload) {
-    producerTemplate.requestBody(
-        MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masAutomatedClaimPayload);
+  /**
+   * Last processing step for a MAS claim whether it has been accepted or off-ramped
+   *
+   * @param masProcessingObject the complete processing object
+   */
+  public void completeProcessing(MasProcessingObject masProcessingObject) {
+    producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masProcessingObject);
   }
 
-  public void sendSlack(AuditEvent auditEvent) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_SLACK_EVENT, auditEvent);
+  /**
+   * Send appropriate notifications when a claim is off-ramped
+   *
+   * @param auditEvent the event to broadcast
+   */
+  public void offrampClaim(AuditEvent auditEvent) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_OFFRAMP, auditEvent);
   }
 }

@@ -33,10 +33,10 @@ def test_default_template_variables(template_code):
     del generated_variables["start_date"]
 
     # reset this field because it gets turned into a datetime object so it wont match
-    generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
+    generated_variables["veteranInfo"]["birthdate"] = default_variables["veteranInfo"]["birthdate"]
 
     # reset this field because it gets turned into a datetime object so it wont match
-    generated_variables["veteran_info"]["birthdate"] = default_variables["veteran_info"]["birthdate"]
+    generated_variables["veteranInfo"]["birthdate"] = default_variables["veteranInfo"]["birthdate"]
 
     assert default_variables == generated_variables
 
@@ -48,12 +48,12 @@ def test_replaced_template_variables(template_code):
     template = settings.codes[template_code]
 
     first_name = "test"
-    rabbitmq_data = {"veteran_info": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
+    rabbitmq_data = {"veteranInfo": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
 
-    assert generated_variables["veteran_info"]["first"] == first_name
+    assert generated_variables["veteranInfo"]["first"] == first_name
 
 
 @pytest.mark.parametrize("template_code", ["6602"])
@@ -78,7 +78,7 @@ def test_valid_variables_in_html_file(template_code):
     template = settings.codes[template_code]
 
     first_name = "test"
-    rabbitmq_data = {"veteran_info": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
+    rabbitmq_data = {"veteranInfo": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
@@ -112,7 +112,7 @@ def test_pdf_generation(pdfkit_mock, template_code):
     pdf_generator = PDFGenerator({})
     template = settings.codes[template_code]
 
-    rabbitmq_data = {"veteran_info": {"birthdate": "1935-06-15T00:00:00+00:00"}}
+    rabbitmq_data = {"veteranInfo": {"birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
