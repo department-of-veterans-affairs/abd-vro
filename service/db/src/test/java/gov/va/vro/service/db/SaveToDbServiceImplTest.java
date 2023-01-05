@@ -15,14 +15,12 @@ import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
@@ -35,7 +33,6 @@ import java.util.Map;
 @Transactional
 @ActiveProfiles("test")
 @EnableJpaAuditing
-@ExtendWith(SpringExtension.class)
 class SaveToDbServiceImplTest {
 
   @Autowired private SaveToDbServiceImpl saveToDbService;

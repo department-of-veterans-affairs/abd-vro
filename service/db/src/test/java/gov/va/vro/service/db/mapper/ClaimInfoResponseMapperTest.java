@@ -15,22 +15,15 @@ import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.service.db.TestConfig;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Transactional
 @ActiveProfiles("test")
-@EnableJpaAuditing
-@ExtendWith(SpringExtension.class)
 public class ClaimInfoResponseMapperTest {
   @Autowired ClaimInfoResponseMapper mapper;
 
