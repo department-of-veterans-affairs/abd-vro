@@ -267,7 +267,7 @@
           {% for bp_reading in evidence.bp_readings %}
           <tr>
             <th>{{ bp_reading.systolic.value |int }} / {{ bp_reading.diastolic.value |int }}</th>
-            <th>{{ bp_reading.date }}</th>
+            <th>{{ bp_reading.dateFormatted }}</th>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
