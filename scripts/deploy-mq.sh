@@ -29,7 +29,7 @@ else
 fi
 
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
---set-string info.vekrsion=${IMAGE_TAG} \
+--set-string info.version=${IMAGE_TAG} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \

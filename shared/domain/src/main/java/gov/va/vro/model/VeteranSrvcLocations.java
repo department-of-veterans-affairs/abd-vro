@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ServiceLocation {
+public class VeteranSrvcLocations {
 
   @Schema(description = "Veteran service location", example = "Vietnam")
   private String location;
@@ -20,10 +20,10 @@ public class ServiceLocation {
       example = "VA 21-3101 Request for Information")
   private String document;
 
-  @Schema(description = "Receipt date", example = "01/01/2023")
+  @Schema(description = "VBMS Receipt Date", example = "2021-04-05")
   private String receiptDate;
 
-  @Schema(description = "Page", example = "1")
+  @Schema(description = "Document Page Number", example = "55")
   private String page;
 
   @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
