@@ -150,11 +150,13 @@ services:
       - "8081:8081"
     environment:
       # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
       <<: *common-vars
       <<: *rabbitmq-placeholder-vars
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
+      PERSIST_TRACKING_FOLDER: ${PERSIST_TRACKING_FOLDER}
     depends_on:
       - postgres-service
       - rabbitmq-service
