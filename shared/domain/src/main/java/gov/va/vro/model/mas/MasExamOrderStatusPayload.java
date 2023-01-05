@@ -23,7 +23,7 @@ public class MasExamOrderStatusPayload implements Auditable {
 
   @NotNull(message = "Collection ID cannot be empty")
   @Schema(description = "Collection ID", example = "999")
-  private int collectionId;
+  private Integer collectionId;
 
   @NotBlank(message = "Collection Status is required")
   @Schema(description = "Collection Status", example = "DRAFT")
