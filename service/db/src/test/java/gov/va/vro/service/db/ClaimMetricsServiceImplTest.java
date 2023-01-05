@@ -11,12 +11,10 @@ import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import java.util.stream.IntStream;
 @Transactional
 @ActiveProfiles("test")
 @EnableJpaAuditing
-@ExtendWith(SpringExtension.class)
 public class ClaimMetricsServiceImplTest {
 
   @Autowired private ClaimMetricsServiceImpl claimMetricsService;
@@ -92,14 +89,18 @@ public class ClaimMetricsServiceImplTest {
     List<ClaimMetricsTestCase> icnCases =
         new ArrayList<>(IntStream.of(1, 16, 21).boxed().map(allCases::get).toList());
     String icn = allCases.get(21).getIcn();
+
+    // We expect the results to be in order of last updated.
     Collections.reverse(icnCases);
     ClaimInfoQueryParams params0 = ClaimInfoQueryParams.builder().size(2).icn(icn).build();
     verifyFindAllClaimInfo(params0, icnCases);
 
     ClaimInfoQueryParams params1 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
     verifyFindAllClaimInfo(params1, icnCases);
+
     // We expect the results to be in order of last updated.
     Collections.reverse(allCases);
+
     ClaimInfoQueryParams params2 = ClaimInfoQueryParams.builder().build();
     verifyFindAllClaimInfo(params2, allCases);
 

@@ -13,14 +13,10 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
-import gov.va.vro.service.db.TestConfig;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.Getter;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,9 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Claim Metrics functionality.
  */
 @Getter
-@SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Transactional
-@ActiveProfiles("test")
 public class ClaimMetricsTestCase {
   private static final AtomicInteger counter = new AtomicInteger(0);
 
