@@ -67,12 +67,16 @@ def assess_sufficiency(event: Dict):
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
+        bp_display = bp_calculation["twoYearsBp"]
+        conditions_display = relevant_conditions["conditionsTwoYears"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
             if bp_calculation["oneYearBpReadings"] >= 1:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
+            bp_display = event["evidence"]["bp_readings"]  # For new claims include all bp readings to display
+            conditions_display = relevant_conditions["conditions"]
             if relevant_conditions["conditions"]:
                 sufficient = False
                 if bp_calculation["twoYearsBpReadings"] >= 2:
@@ -83,8 +87,8 @@ def assess_sufficiency(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "bp_readings": bp_calculation["twoYearsBp"],
-                    "conditions": relevant_conditions["conditions"]
+                    "bp_readings": bp_display,
+                    "conditions": conditions_display
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
@@ -109,7 +113,8 @@ def assess_sufficiency(event: Dict):
                     "medicationsCount": medications["medicationsCount"]
                 }
             )
-        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, sufficientForFastTracking: {sufficient}, "
+                     f"summary of evidence: {response_body['evidenceSummary']}")
     else:
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
