@@ -1,9 +1,10 @@
 {
+  "claimSubmissionId": "1234",
   "code": "7101",
   "document_type": "hypertension",
   "conditions": [],
   "fileIdentifier": "12345",
-  "veteran_info": {
+  "veteranInfo": {
     "first": "Test",
     "middle": "",
     "last": "User",
