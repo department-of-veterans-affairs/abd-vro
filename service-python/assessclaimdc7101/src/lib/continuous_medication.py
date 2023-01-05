@@ -34,13 +34,12 @@ def filter_mas_medication(event):
     medication_without_date = []
 
     for medication in event["evidence"]["medications"]:
-        if "relevant" in medication.keys():
-            if "authoredOn" in medication.keys():
-                date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
-                medication["dateFormatted"] = date.strftime("%m/%d/%Y")
-                medication_with_date.append(medication)
-            else:
-                medication_without_date.append(medication)
+        if "authoredOn" in medication.keys():
+            date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
+            medication["dateFormatted"] = date.strftime("%m/%d/%Y")
+            medication_with_date.append(medication)
+        else:
+            medication_without_date.append(medication)
 
     medication_with_date = sorted(
         medication_with_date,

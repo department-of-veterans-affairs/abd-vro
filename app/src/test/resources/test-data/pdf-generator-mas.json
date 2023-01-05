@@ -21,7 +21,7 @@
         "documentId": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"}],
     "conditions": [{"code": "I10",
       "text": "Essential (primary) hypertension",
-      "recordedDate": "1950-04-06T04:00:00Z",
+      "recordedDate": "04-06-1950",
       "dateFormatted": "04/06/1950",
       "relevant": true,
       "dataSource":  "LH"
