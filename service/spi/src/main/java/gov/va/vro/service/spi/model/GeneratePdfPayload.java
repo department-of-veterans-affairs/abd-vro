@@ -40,4 +40,6 @@ public class GeneratePdfPayload {
 
   private String status;
   private String reason;
+
+  private String pdfTemplate;
 }
