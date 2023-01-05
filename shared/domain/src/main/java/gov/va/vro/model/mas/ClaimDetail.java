@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -26,5 +27,7 @@ public class ClaimDetail {
   @NotBlank
   private String claimSubmissionSource = "VA.GOV";
 
-  @NotNull private ClaimCondition conditions;
+  @NotNull
+  @Valid
+  private ClaimCondition conditions;
 }

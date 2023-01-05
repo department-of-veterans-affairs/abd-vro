@@ -34,6 +34,7 @@ public class MasTestData {
     ClaimCondition conditions = new ClaimCondition();
     conditions.setDiagnosticCode(diagnosticCode);
     conditions.setDisabilityActionType("INCREASE");
+    conditions.setDisabilityClassificationCode("3460");
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setClaimSubmissionDateTime("2022-02-04");
     claimDetail.setConditions(conditions);
