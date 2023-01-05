@@ -114,7 +114,7 @@ def assess_sufficiency(event: Dict):
                 }
             )
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, sufficientForFastTracking: {sufficient}, "
-                     f"summary of evidence: {response_body['evidenceSummary']}")
+                     f"evidenceSummary: {response_body['evidenceSummary']}")
     else:
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
