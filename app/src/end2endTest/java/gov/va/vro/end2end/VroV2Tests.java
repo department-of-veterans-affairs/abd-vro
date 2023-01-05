@@ -40,7 +40,7 @@ public class VroV2Tests {
       fail("Should have thrown exception");
     } catch (Exception e) {
       assertEquals(
-          "400 : \"{\"message\":\"collectionStatus: Collection Status is required\"}\"",
+          "400 : \"{\"message\":\"collectionId: Collection ID is required\\ncollectionStatus: Collection Status is required\"}\"",
           e.getMessage());
     }
   }
