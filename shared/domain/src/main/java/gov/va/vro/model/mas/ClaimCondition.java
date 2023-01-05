@@ -22,11 +22,9 @@ public class ClaimCondition {
   @NotBlank(message = "Diagnostic Code is required")
   private String diagnosticCode;
 
-  @NotNull
   @Schema(description = "Disability action type", example = "INCREASE")
   private String disabilityActionType;
 
-  @NotNull
   @Schema(description = "Disability classification code", example = "3460")
   private String disabilityClassificationCode;
 
