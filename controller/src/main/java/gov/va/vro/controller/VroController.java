@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.resources.ClaimMetricsResource;
 import gov.va.vro.api.resources.VroResource;
+import gov.va.vro.api.responses.FeatureFlagToggleResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.controller.mapper.GeneratePdfRequestMapper;
@@ -23,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
@@ -145,5 +148,41 @@ public class VroController implements VroResource {
     headers.setContentType(MediaType.APPLICATION_PDF);
     headers.setContentDisposition(disposition);
     return headers;
+  }
+
+  @Override
+  public ResponseEntity<Object> featureFlagToggle(String key) throws Exception {
+    
+    log.info("Fetching feature flag for key: {}", key);
+    try {
+      String response = camelEntrance.featureFlagToggle(key);
+      FeatureFlagToggleResponse featureFlagResponse = objectMapper.readValue(response, FeatureFlagToggleResponse.class);
+      // log.info("RESPONSE from feature flag returned status: {}", pdfResponse.getStatus());
+      if (featureFlagResponse.hasContent()) {
+        byte[] decoder = Base64.getDecoder().decode(featureFlagResponse.getValue());
+        try (InputStream is = new ByteArrayInputStream(decoder)) {
+          InputStreamResource resource = new InputStreamResource(is);
+          String diagnosis = StringUtils.capitalize(featureFlagResponse.getDiagnosis());
+          HttpHeaders headers = getHttpHeaders(diagnosis);
+          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+      } else {
+        if (featureFlagResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(featureFlagResponse, HttpStatus.NOT_FOUND);
+        } else if (featureFlagResponse.getStatus().equals("ERROR")) {
+          log.info("RESPONSE from feature flag toggle returned error reason: {}", featureFlagResponse.getReason());
+          return new ResponseEntity<>(featureFlagResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(featureFlagResponse, HttpStatus.OK);
+      }
+    } catch (Exception ex) {
+      log.error("Error in Redis data value read", ex);
+      throw new Exception(ex);
+    }
+    
+    // RedisClient client = RedisClient.create("redis://localhost");
+    // RedisStringReactiveCommands<String, String> commands = client.connect().reactive();
+    // commands.get("key").subscribe()
+  
   }
 }

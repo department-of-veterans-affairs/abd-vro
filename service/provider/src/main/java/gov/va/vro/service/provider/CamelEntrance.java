@@ -41,6 +41,11 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
+  public String featureFlagToggle(String key) {
+    return producerTemplate.requestBody(
+        PrimaryRoutes.ENDPOINT_FEATURE_FLAG_TOGGLE, key, String.class);
+  }
+
   /**
    * Notify automated claim.
    *

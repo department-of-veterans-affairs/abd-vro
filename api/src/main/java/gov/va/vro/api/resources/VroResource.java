@@ -149,4 +149,36 @@ public interface VroResource {
           @RequestBody
           HealthDataAssessmentRequest claim)
       throws MethodArgumentNotValidException, ClaimProcessingException;
+
+  @Operation(
+      summary = "Retrieves feature flag on a claim from redis",
+      description =
+          "Subscribing to the changes of feature flag return the value of the flag initially and after any changes.")
+  @GetMapping(
+      value = "/feature-flag-toggle/{featureFlagKey}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF generation for specified claimSubmissionID not requested",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "feature-flag-toggle")
+  @Tag(name = "Feature Flag Toggle")
+  ResponseEntity<Object> featureFlagToggle(@PathVariable String featureFlagKey)
+      throws MethodArgumentNotValidException, Exception;
 }

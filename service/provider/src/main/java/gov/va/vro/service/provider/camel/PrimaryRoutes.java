@@ -19,6 +19,7 @@ public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
+  public static final String ENDPOINT_FEATURE_FLAG_TOGGLE = "direct:feature-flag-toggle";
 
   private static final String PDF_EXCHANGE = "pdf-generator";
   private static final String GENERATE_PDF_QUEUE = "generate-pdf";
