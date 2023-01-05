@@ -27,7 +27,5 @@ public class ClaimDetail {
   @NotBlank
   private String claimSubmissionSource = "VA.GOV";
 
-  @NotNull
-  @Valid
-  private ClaimCondition conditions;
+  @NotNull @Valid private ClaimCondition conditions;
 }
