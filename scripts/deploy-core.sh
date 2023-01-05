@@ -28,7 +28,7 @@ else
 fi
 
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
---set-string info.vekrsion=${IMAGE_TAG} \
+--set-string info.version=${IMAGE_TAG} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
@@ -45,7 +45,7 @@ NAMESPACE="${TEAMNAME}-${ENV}"
 helm del $HELM_APP_NAME -n ${NAMESPACE}
 
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helm-service-core \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \

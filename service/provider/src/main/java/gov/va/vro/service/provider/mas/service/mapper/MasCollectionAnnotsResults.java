@@ -1,11 +1,8 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdBpMeasurement;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import static java.util.Objects.isNull;
+
+import gov.va.vro.model.*;
 import gov.va.vro.model.mas.MasAnnotType;
 import gov.va.vro.model.mas.MasAnnotation;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -24,6 +21,10 @@ import java.util.List;
 @Slf4j
 public class MasCollectionAnnotsResults {
 
+  private static final String DATA_SOURCE = "MAS";
+  private static final String UTC_TM = "T00:00:00Z";
+  private static final String NOT_AVAILABLE_STR = "N/A";
+  private static final String NOT_AVAILABLE_DT = "9999-12-31";
   private static final String BP_CONDITION = "Hypertension";
   private static final String ASTHMA_CONDITION = "Asthma";
   private static final String BP_SYSTOLIC_CODE = "8480-6";
@@ -44,6 +45,7 @@ public class MasCollectionAnnotsResults {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
+    List<ServiceLocation> serviceLocations = new ArrayList<>();
     boolean isConditionBp = false;
     boolean isConditionAsthma = false;
 
@@ -53,7 +55,7 @@ public class MasCollectionAnnotsResults {
       if (masDocument.getAnnotations() != null) {
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
-              ">>>> Annotation Tpe <<<<<< : {} ",
+              ">>>> Annotation Type <<<<<< : {} ",
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
           MasAnnotType annotationType =
               MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
@@ -72,6 +74,10 @@ public class MasCollectionAnnotsResults {
                 bpReadings.add(abdBloodPressure);
               }
             }
+            case SERVICE -> {
+              ServiceLocation veteranService = createServiceLocation(masDocument, masAnnotation);
+              serviceLocations.add(veteranService);
+            }
             default -> { // NOP
             }
           }
@@ -84,6 +90,7 @@ public class MasCollectionAnnotsResults {
     abdEvidence.setConditions(conditions);
     abdEvidence.setProcedures(procedures);
     abdEvidence.setBloodPressures(bpReadings);
+    abdEvidence.setServiceLocations(serviceLocations);
     return abdEvidence;
   }
 
@@ -103,7 +110,8 @@ public class MasCollectionAnnotsResults {
     diastolicReading.setUnit(BP_UNIT);
 
     AbdBloodPressure abdBloodPressure = new AbdBloodPressure();
-    abdBloodPressure.setDate(masAnnotation.getObservationDate());
+    abdBloodPressure.setDataSource(DATA_SOURCE);
+    abdBloodPressure.setDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
     abdBloodPressure.setSystolic(systolicReading);
     abdBloodPressure.setDiastolic(diastolicReading);
     abdBloodPressure.setOrganization(null);
@@ -114,6 +122,7 @@ public class MasCollectionAnnotsResults {
   private static AbdMedication createMedication(
       boolean isConditionAsthma, MasAnnotation masAnnotation) {
     AbdMedication abdMedication = new AbdMedication();
+    abdMedication.setDataSource(DATA_SOURCE);
     abdMedication.setStatus(null);
     abdMedication.setNotes(null);
     abdMedication.setDescription(masAnnotation.getAnnotVal().toLowerCase());
@@ -121,9 +130,9 @@ public class MasCollectionAnnotsResults {
     abdMedication.setAsthmaRelevant(null);
     abdMedication.setDuration(null);
     if (masAnnotation.getObservationDate() != null) {
-      abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", ""));
+      abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", "") + UTC_TM);
     } else {
-      abdMedication.setAuthoredOn("9999-12-31");
+      abdMedication.setAuthoredOn(NOT_AVAILABLE_DT + UTC_TM);
     }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
@@ -132,11 +141,50 @@ public class MasCollectionAnnotsResults {
 
   private static AbdCondition createCondition(MasAnnotation masAnnotation) {
     AbdCondition abdCondition = new AbdCondition();
+    abdCondition.setDataSource(DATA_SOURCE);
     abdCondition.setCode(masAnnotation.getAnnotVal());
     abdCondition.setText(masAnnotation.getAcdPrefName());
     abdCondition.setStatus(null);
     abdCondition.setAbatementDate(null);
-    abdCondition.setOnsetDate(masAnnotation.getObservationDate());
+    if (masAnnotation.getObservationDate() != null) {
+      abdCondition.setOnsetDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
+    } else {
+      abdCondition.setOnsetDate(NOT_AVAILABLE_DT);
+    }
     return abdCondition;
+  }
+
+  private static ServiceLocation createServiceLocation(
+      MasDocument masDocument, MasAnnotation masAnnotation) {
+    ServiceLocation veteranService = new ServiceLocation();
+    if (!isNull(masAnnotation.getAnnotVal())) {
+      veteranService.setLocation(masAnnotation.getAnnotVal());
+    } else {
+      veteranService.setLocation(NOT_AVAILABLE_STR);
+    }
+    if (!isNull(masAnnotation.getPageNum())) {
+      veteranService.setPage(masAnnotation.getPageNum());
+    } else {
+      veteranService.setPage(NOT_AVAILABLE_STR);
+    }
+    if (!isNull(masDocument.getDocTypeDescription())) {
+      veteranService.setDocument(masDocument.getDocTypeDescription());
+    } else {
+      veteranService.setDocument(NOT_AVAILABLE_STR);
+    }
+    ;
+    if (!isNull(masDocument.getRecDate())) {
+      veteranService.setReceiptDate(masDocument.getRecDate().replaceAll("Z", ""));
+    } else {
+      veteranService.setReceiptDate(NOT_AVAILABLE_DT);
+    }
+    ;
+    if (!isNull(masDocument.getEfolderversionrefid())) {
+      veteranService.setDocumentId(masDocument.getEfolderversionrefid());
+    } else {
+      veteranService.setDocumentId(NOT_AVAILABLE_STR);
+    }
+    ;
+    return veteranService;
   }
 }
