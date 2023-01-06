@@ -13,16 +13,19 @@ import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
+@EnableJpaAuditing
 public class ClaimMetricsServiceImplTest {
 
   @Autowired private ClaimMetricsServiceImpl claimMetricsService;
@@ -82,22 +85,27 @@ public class ClaimMetricsServiceImplTest {
           ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId);
           c.verifyClaimInfoResponse(cir);
         });
-
-    ClaimInfoQueryParams params0 = ClaimInfoQueryParams.builder().build();
-    verifyFindAllClaimInfo(params0, allCases);
-
-    ClaimInfoQueryParams params1 = ClaimInfoQueryParams.builder().size(7).page(1).build();
-    verifyFindAllClaimInfo(params1, allCases);
-
+    // Reverse the icnCases to get the last updated claims for that ICN.
     List<ClaimMetricsTestCase> icnCases =
-        IntStream.of(1, 16, 21).boxed().map(index -> allCases.get(index)).toList();
+        new ArrayList<>(IntStream.of(1, 16, 21).boxed().map(allCases::get).toList());
     String icn = allCases.get(21).getIcn();
 
-    ClaimInfoQueryParams params3 = ClaimInfoQueryParams.builder().size(2).icn(icn).build();
-    verifyFindAllClaimInfo(params3, icnCases);
+    // We expect the results to be in order of last updated.
+    Collections.reverse(icnCases);
+    ClaimInfoQueryParams params0 = ClaimInfoQueryParams.builder().size(2).icn(icn).build();
+    verifyFindAllClaimInfo(params0, icnCases);
 
-    ClaimInfoQueryParams params4 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
-    verifyFindAllClaimInfo(params4, icnCases);
+    ClaimInfoQueryParams params1 = ClaimInfoQueryParams.builder().page(1).size(2).icn(icn).build();
+    verifyFindAllClaimInfo(params1, icnCases);
+
+    // We expect the results to be in order of last updated.
+    Collections.reverse(allCases);
+
+    ClaimInfoQueryParams params2 = ClaimInfoQueryParams.builder().build();
+    verifyFindAllClaimInfo(params2, allCases);
+
+    ClaimInfoQueryParams params3 = ClaimInfoQueryParams.builder().size(7).page(1).build();
+    verifyFindAllClaimInfo(params3, allCases);
   }
 
   @Test
