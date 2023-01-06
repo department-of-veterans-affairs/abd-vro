@@ -40,6 +40,7 @@ def filter_mas_medication(event):
                 medication["dateFormatted"] = date.strftime("%m/%d/%Y")
                 medication_with_date.append(medication)
             else:
+                medication["dateFormatted"] = ""
                 medication_without_date.append(medication)
         else:
             medication_without_date.append(medication)

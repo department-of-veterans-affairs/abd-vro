@@ -21,9 +21,13 @@ def conditions_calculation(request_body):
     for condition in veterans_conditions:
         condition_code = condition["code"]
         if "recordedDate" in condition.keys():
-            date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
-            condition["dateFormatted"] = date.strftime("%m/%d/%Y")
-            condition_with_date.append(condition)
+            if condition["recordedDate"]:
+                date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
+                condition["dateFormatted"] = date.strftime("%m/%d/%Y")
+                condition_with_date.append(condition)
+            else:
+                condition["dateFormatted"] = ""
+                condition_without_date.append(condition)
 
         else:
             condition_without_date.append(condition)
