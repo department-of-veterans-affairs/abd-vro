@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +40,11 @@ public class VroV2Tests {
       restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
     } catch (Exception e) {
-      assertEquals(
-          "400 : \"{\"message\":\"collectionStatus: Collection Status is required\"}\"",
-          e.getMessage());
+      assertTrue(
+          "400 : \"{\"message\":\"collectionId: Collection ID is required\\ncollectionStatus: Collection Status is required\"}\""
+                  .equals(e.getMessage())
+              || "400 : \"{\"message\":\"collectionStatus: Collection Status is required\\ncollectionId: Collection ID is required\"}\""
+                  .equals(e.getMessage()));
     }
   }
 
