@@ -63,8 +63,12 @@ jobs:
       # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
 
       - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
-        run: |
-          exit 1
+        uses: ./.github/actions/publish-images
+        with:
+          target_env: ${{ env.TARGET_ENV }}
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          ghcr_username: ${{ github.actor }}
+          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Cleanup ${{ env.TARGET_ENV }} images locally"
         run: |
