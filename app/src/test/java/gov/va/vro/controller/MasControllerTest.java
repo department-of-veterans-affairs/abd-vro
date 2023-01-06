@@ -151,4 +151,13 @@ public class MasControllerTest extends BaseControllerTest {
     assertEquals(
         "Received Exam Order Status for collection Id 123.", response.getBody().getMessage());
   }
+
+  @Test
+  void orderExamStatusMissingCollectionId() {
+    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+    var payload = MasExamOrderStatusPayload.builder().collectionStatus("UNKNOWN").build();
+    ResponseEntity<MasResponse> response =
+        post("/v2/examOrderingStatus", payload, MasResponse.class);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
 }
