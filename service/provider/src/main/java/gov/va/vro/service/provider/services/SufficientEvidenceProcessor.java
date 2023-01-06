@@ -19,7 +19,8 @@ public class SufficientEvidenceProcessor implements Processor {
   public void process(Exchange exchange) {
     MasProcessingObject payload = (MasProcessingObject) exchange.getProperty("payload");
     Boolean flag = (Boolean) exchange.getProperty("sufficientForFastTracking");
+    String diagnosticCode = (String) exchange.getProperty("diagnosticCode");
     String claimSubmissionId = payload.getClaimId();
-    saveToDbService.updateSufficientEvidenceFlag(claimSubmissionId, flag);
+    saveToDbService.updateSufficientEvidenceFlag(claimSubmissionId, flag, diagnosticCode);
   }
 }
