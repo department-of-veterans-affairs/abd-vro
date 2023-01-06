@@ -25,7 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /** It contains the functions to extract data from FHIR objects for Abd data models. */
@@ -62,47 +61,55 @@ public class FieldExtractor {
   public static AbdCondition extractCondition(Condition condition) {
     AbdCondition result = new AbdCondition();
 
-    if (Objects.equals(condition.getCategory().get(0).getText(), "Encounter Diagnosis")) {
+    if (condition.hasCode()) {
+      CodeableConcept code = condition.getCode();
+      if (code.hasCoding()) {
+        Coding coding = code.getCodingFirstRep();
 
-      if (condition.hasCode()) {
-        CodeableConcept code = condition.getCode();
-        if (code.hasCoding()) {
-          Coding coding = code.getCodingFirstRep();
-
-          if (coding.hasCode()) {
-            result.setCode(coding.getCode());
-          }
-
-          if (coding.hasDisplay()) {
-            result.setText(coding.getDisplay());
-          }
+        if (coding.hasCode()) {
+          result.setCode(coding.getCode());
         }
 
-        String textFound = result.getText();
-
-        if ((textFound == null || textFound.isEmpty()) && code.hasText()) {
-          result.setText(code.getText());
+        if (coding.hasDisplay()) {
+          result.setText(coding.getDisplay());
         }
       }
 
-      if (condition.hasAbatementDateTimeType()) {
-        result.setAbatementDate(FieldExtractor.toDate(condition.getAbatementDateTimeType()));
-      }
-      if (condition.hasOnsetDateTimeType()) {
-        result.setOnsetDate(FieldExtractor.toDate(condition.getOnsetDateTimeType()));
-      }
-      if (condition.hasRecordedDateElement()) {
-        result.setRecordedDate(FieldExtractor.toDate(condition.getRecordedDateElement()));
-      }
+      String textFound = result.getText();
 
-      if (condition.hasClinicalStatus()) {
-        CodeableConcept clinicalStatus = condition.getClinicalStatus();
-        if (clinicalStatus.hasCoding()) {
-          Coding coding = clinicalStatus.getCodingFirstRep();
-          if (coding.hasCode()) {
-            String code = coding.getCode();
-            result.setStatus(code);
-          }
+      if ((textFound == null || textFound.isEmpty()) && code.hasText()) {
+        result.setText(code.getText());
+      }
+    }
+
+    if (condition.hasAbatementDateTimeType()) {
+      result.setAbatementDate(FieldExtractor.toDate(condition.getAbatementDateTimeType()));
+    }
+    if (condition.hasOnsetDateTimeType()) {
+      result.setOnsetDate(FieldExtractor.toDate(condition.getOnsetDateTimeType()));
+    }
+    if (condition.hasRecordedDateElement()) {
+      result.setRecordedDate(FieldExtractor.toDate(condition.getRecordedDateElement()));
+    }
+
+    if (condition.hasClinicalStatus()) {
+      CodeableConcept clinicalStatus = condition.getClinicalStatus();
+      if (clinicalStatus.hasCoding()) {
+        Coding coding = clinicalStatus.getCodingFirstRep();
+        if (coding.hasCode()) {
+          String code = coding.getCode();
+          result.setStatus(code);
+        }
+      }
+    }
+
+    if (condition.hasCategory()) {
+      List<CodeableConcept> conditionCategory = condition.getCategory();
+      if (conditionCategory.size() == 1) {
+        CodeableConcept category = condition.getCategory().get(0);
+        if (category.hasText()) {
+          String text = category.getText();
+          result.setCategory(text);
         }
       }
     }

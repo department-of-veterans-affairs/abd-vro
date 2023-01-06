@@ -28,7 +28,7 @@ def conditions_calculation(request_body):
         else:
             condition_without_date.append(condition)
 
-        if condition_code in hypertension_conditions.conditions:
+        if condition_code in hypertension_conditions.conditions and condition["category"] == "Encounter Diagnosis":
             condition["relevant"] = True
             count += 1
         else:
