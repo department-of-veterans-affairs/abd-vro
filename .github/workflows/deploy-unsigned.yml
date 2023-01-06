@@ -120,8 +120,8 @@ jobs:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
         run: |
-#          ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
-          # TODO: Fail for now
+#           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
+#           TODO: Fail for now
           exit 1
 
       - name: "Wait for LHDI deployment"
