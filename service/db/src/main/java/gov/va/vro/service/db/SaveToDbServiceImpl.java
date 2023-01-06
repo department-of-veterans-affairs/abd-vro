@@ -6,6 +6,7 @@ import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
@@ -27,6 +28,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
   private final ClaimMapper mapper;
 
   @Override
@@ -83,18 +86,25 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag) {
-    log.warn("Entered sufficient evidence >> " + claimSubmissionId + " >> " + flag);
+  public void updateSufficientEvidenceFlag(
+      String claimSubmissionId, Boolean flag, String diagnosticCode) {
     ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
     if (claim == null) {
-      log.warn("Could not find claim to update flag with given claimSubmissionId.");
+      log.warn("Could not find claim with given claimSubmissionId.");
       return;
     }
+    ContentionEntity contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      log.warn("Could not find contention with given diagnostic code.");
+      return;
+    }
+    AssessmentResultEntity assessmentResult =
+        assessmentResultRepository.findByContentionId(contention.getId());
     if (flag == null) {
       log.warn("No evidence.");
     }
-    claim.setSufficientEvidenceFlag(flag);
-    claimRepository.save(claim);
+    assessmentResult.setSufficientEvidenceFlag(flag);
+    assessmentResultRepository.save(assessmentResult);
   }
 
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {

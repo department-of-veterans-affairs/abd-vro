@@ -21,6 +21,8 @@ public class AssessmentResultEntity extends BaseEntity {
 
   @ManyToOne private ContentionEntity contention;
 
+  private Boolean sufficientEvidenceFlag;
+
   @Type(type = "json")
   @Column(columnDefinition = "jsonb")
   private Map<String, String> evidenceCountSummary;

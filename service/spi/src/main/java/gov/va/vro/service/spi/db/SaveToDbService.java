@@ -13,5 +13,5 @@ public interface SaveToDbService {
 
   void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName);
 
-  void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag);
+  void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag, String diagnosticCode);
 }
