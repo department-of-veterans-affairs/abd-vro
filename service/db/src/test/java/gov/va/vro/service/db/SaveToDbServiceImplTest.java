@@ -92,12 +92,16 @@ class SaveToDbServiceImplTest {
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
     evidence.setEvidenceSummary(evidenceMap);
     saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
+    Boolean flag = false;
+    saveToDbService.updateSufficientEvidenceFlag(
+        claimBeforeAssessment.getClaimSubmissionId(), flag, "7101");
     ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
     AssessmentResultEntity assessmentResult =
         result.getContentions().get(0).getAssessmentResults().get(0);
     assertEquals(assessmentResult.getEvidenceCountSummary(), evidenceMap);
+    assertEquals(assessmentResult.getSufficientEvidenceFlag(), flag);
 
     long c = assessmentResultRepository.count();
     assertEquals(1, c);
