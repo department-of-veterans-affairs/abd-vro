@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,4 +37,8 @@ public class GeneratePdfRequest {
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
   private AbdEvidence evidence;
+
+  @Nullable
+  @Schema(description = "PDF template to generate", example = "v1")
+  private String pdfTemplate;
 }

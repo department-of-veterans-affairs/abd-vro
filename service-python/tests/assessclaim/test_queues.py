@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from assessclaimcancer.src.lib import queues as qcancer
 from assessclaimdc6510.src.lib import queues as q6510
 from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 from assessclaimdc6522.src.lib import queues as q6522
@@ -23,7 +24,8 @@ logging_setup.set_format()
         (q6602v2, "6602v2"),
         (q6602, "6602"),
         (q7101, "7101"),
-        (q6522, "6522")
+        (q6522, "6522"),
+        (qcancer, "cancer")
     ]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
@@ -61,7 +63,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
         (q6510, "6510", {"evidence": "some medical data body",
                          "claimSubmissionId": "1234"}, main6510),
         (q6522, "6522", {"evidence": "some medical data body",
-                         "claimSubmissionId": "1234"}, main6522),
+                         "claimSubmissionId": "1234"}, main6522)
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
