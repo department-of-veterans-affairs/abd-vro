@@ -148,3 +148,5 @@ export BIP_EVIDENCE_URL=4b043eb6-1b96-45f6-9b47-7941cdf33a44.mock.pstmn.io/api/v
 export BIP_EVIDENCE_ISS=VRO
 export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=281
+export BIP_TRUSTSTORE=bipcert.jks
+export BIP_PASSWORD=vropassword
