@@ -8,8 +8,6 @@ features:
   foo:
     description: an example feature flag
     enabled: true
-    env:
   bar:
     description: another example feature flag
     enabled: false
-    env:

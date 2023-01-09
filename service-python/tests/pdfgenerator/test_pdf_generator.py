@@ -11,11 +11,10 @@ from pdfgenerator.src.lib.pdf_generator import PDFGenerator
 lib_dir = os.path.dirname(__file__)
 
 
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_default_template_variables(template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_default_template_variables(template):
     """Test if default values all get added into the template."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     default_variables = json.load(
         open(
@@ -41,11 +40,10 @@ def test_default_template_variables(template_code):
     assert default_variables == generated_variables
 
 
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_replaced_template_variables(template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_replaced_template_variables(template):
     """Test if the default values get replaced."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     first_name = "test"
     rabbitmq_data = {"veteranInfo": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
@@ -56,11 +54,10 @@ def test_replaced_template_variables(template_code):
     assert generated_variables["veteranInfo"]["first"] == first_name
 
 
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_generate_html_file(template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_generate_html_file(template):
     """Test if the PDF HTML file gets generated."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     generated_variables = pdf_generator.generate_template_variables(template, {})
     html_file = pdf_generator.generate_template_file(
@@ -71,11 +68,10 @@ def test_generate_html_file(template_code):
     assert document_title in html_file
 
 
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_valid_variables_in_html_file(template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_valid_variables_in_html_file(template):
     """Test that the replaced variable appears in the HTML file."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     first_name = "test"
     rabbitmq_data = {"veteranInfo": {"first": first_name, "birthdate": "1935-06-15T00:00:00+00:00"}}
@@ -89,11 +85,10 @@ def test_valid_variables_in_html_file(template_code):
     assert first_name in html_file
 
 
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_medication_date_conversion(template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_medication_date_conversion(template):
     """Test if 'authoredOn' in 'medications' is a datetime."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     rabbitmq_data = {"evidence": {"medications": [{"authoredOn": "1935-06-15T00:00:00+00:00"}]}}
     generated_variables = pdf_generator.generate_template_variables(
@@ -106,11 +101,10 @@ def test_medication_date_conversion(template_code):
 
 
 @patch("pdfkit.from_string")
-@pytest.mark.parametrize("template_code", ["6602"])
-def test_pdf_generation(pdfkit_mock, template_code):
+@pytest.mark.parametrize("template", ["asthma-v1"])
+def test_pdf_generation(pdfkit_mock, template):
     """Test if the generate PDF function gets called."""
     pdf_generator = PDFGenerator({})
-    template = settings.codes[template_code]
 
     rabbitmq_data = {"veteranInfo": {"birthdate": "1935-06-15T00:00:00+00:00"}}
     generated_variables = pdf_generator.generate_template_variables(
