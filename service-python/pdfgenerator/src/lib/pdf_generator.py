@@ -44,6 +44,6 @@ class PDFGenerator:
             # Call a helper function that make adjustments to toc before creating
             generated_toc_file_path = toc_helper_all(base_toc_file_path, data) # noqa: F405, E261
             toc = {'xsl-style-sheet': generated_toc_file_path}
-            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=False)
         else:
-            return pdfkit.from_string(html, output, options=self.options, verbose=True)
+            return pdfkit.from_string(html, output, options=self.options, verbose=False)

@@ -2,6 +2,7 @@ package gov.va.vro.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,9 @@ public class AbdProcedure implements Comparable<AbdProcedure> {
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String performedDate;
   @EqualsAndHashCode.Include private String codeSystem;
+
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
 
   @Override
   public int compareTo(AbdProcedure otherProcedure) {

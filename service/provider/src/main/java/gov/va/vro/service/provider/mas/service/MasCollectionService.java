@@ -2,11 +2,11 @@ package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +64,7 @@ public class MasCollectionService {
    * @return health assessment
    * @throws MasException exception
    */
-  public HealthDataAssessment collectAnnotations(MasAutomatedClaimPayload claimPayload)
+  public HealthDataAssessment collectAnnotations(MasProcessingObject claimPayload)
       throws MasException {
 
     log.info(
@@ -93,9 +93,8 @@ public class MasCollectionService {
     HealthDataAssessment healthDataAssessment = new HealthDataAssessment();
     healthDataAssessment.setDiagnosticCode(claimPayload.getDiagnosticCode());
     healthDataAssessment.setEvidence(abdEvidence);
-    healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIdentifiers().getIcn());
-    healthDataAssessment.setDisabilityActionType(
-        claimPayload.getClaimDetail().getConditions().getDisabilityActionType());
+    healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIcn());
+    healthDataAssessment.setDisabilityActionType(claimPayload.getDisabilityActionType());
     return healthDataAssessment;
   }
 
@@ -130,9 +129,13 @@ public class MasCollectionService {
         merge(
             lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
             masApiEvidence != null ? masApiEvidence.getProcedures() : null));
-    lighthouseAssessment.setEvidence(compositeEvidence);
-
-    return lighthouseAssessment;
+    HealthDataAssessment combinedAssessment = new HealthDataAssessment();
+    combinedAssessment.setClaimSubmissionId(masApiAssessment.getClaimSubmissionId());
+    combinedAssessment.setDiagnosticCode(masApiAssessment.getDiagnosticCode());
+    combinedAssessment.setVeteranIcn(masApiAssessment.getVeteranIcn());
+    combinedAssessment.setDisabilityActionType(lighthouseAssessment.getDisabilityActionType());
+    combinedAssessment.setEvidence(compositeEvidence);
+    return combinedAssessment;
   }
 
   private static <T> List<T> merge(List<T> list1, List<T> list2) {
