@@ -237,7 +237,7 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "",
+                                "authoredOn": "1952-?-06T04:00:00Z",  # malformed
                             },
                             {
                                 "description": "Advil",
@@ -257,7 +257,7 @@ def test_continuous_medication_required(
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                         {
-                            "authoredOn": "",
+                            "authoredOn": "1952-?-06T04:00:00Z",
                             'dateFormatted': '',
                             "description": "Benazepril",
                             "status": "active",
