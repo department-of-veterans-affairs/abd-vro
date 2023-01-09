@@ -1,4 +1,6 @@
-from .codesets import emphysema_condition_codesets
+from datetime import datetime
+
+from .codesets import emphysema_condition_codesets, bronchitis_condition_codesets, copd_condition_codesets, secondary_condition_codesets
 
 
 def conditions_calculation(request_body):
@@ -17,10 +19,22 @@ def conditions_calculation(request_body):
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "relapse", "recurrence"]:
             condition_code = condition["code"]
-            if condition_code in condition_codesets.asthma_conditions:
+            if condition_code in bronchitis_condition_codesets.bronchitis_conditions:
                 relevant_conditions.append(condition)
-            elif condition_code in condition_codesets.persistent_asthma:
+            if condition_code in copd_condition_codesets.copd_conditions:
                 relevant_conditions.append(condition)
+            if condition_code in emphysema_condition_codesets.emphysema_conditions:
+                relevant_conditions.append(condition)
+            if condition_code in secondary_condition_codesets.secondary_diagnosis:
+                relevant_conditions.append(condition)
+
+            try:
+                date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
+                condition["dateFormatted"] = date.strftime("%m/%d/%Y")
+                condition_with_date.append(condition)
+            except ValueError:
+                condition["dateFormatted"] = ""
+                condition_without_date.append(condition)
 
     response.update(
         {

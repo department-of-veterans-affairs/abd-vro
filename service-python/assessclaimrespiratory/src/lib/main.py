@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from . import condition, medication, utils
+from . import condition, utils
 
 
 def assess_respiratory_condition(event: Dict):
@@ -17,14 +17,14 @@ def assess_respiratory_condition(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        active_medications = medication.medication_required(event)
-        active_conditions = condition.conditions_calculation(event)
+        conditions = condition.conditions_calculation(event)
+        procedures
 
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications["medications"],
-                    "conditions": active_conditions["conditions"],
+                    "procedures": procedures["medications"],
+                    "conditions": conditions["conditions"],
                 },
                 "evidenceSummary": {
                     "relevantMedCount": active_medications["relevantMedCount"],
