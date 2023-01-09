@@ -6,7 +6,6 @@ from assessclaimdc7101.src.lib import continuous_medication
 @pytest.mark.parametrize(
     "request_body, continuous_medication_required_calculation",
     [
-        # Service connected and medication used to treat hypertension
         (
             {
                 "evidence": {
@@ -15,7 +14,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                         {
                             "description": "Benazepril",
                             "status": "active",
-                            "authoredOn": "1950-04-06T04:00:00Z",
+                            "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
                     "dateOfClaim": "2021-11-09",
@@ -24,7 +23,7 @@ from assessclaimdc7101.src.lib import continuous_medication
             {
                 "medications": [
                     {
-                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "authoredOn": "2020-04-06T04:00:00Z",
                         "description": "Benazepril",
                         "status": "active",
                     }
@@ -32,7 +31,6 @@ from assessclaimdc7101.src.lib import continuous_medication
                 "medicationsCount": 1,
             },
         ),
-        # Not service connected but uses medication used to treat hypertension
         (
             {
                 "evidence": {
@@ -41,7 +39,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                         {
                             "description": "Benazepril",
                             "status": "active",
-                            "authoredOn": "1950-04-06T04:00:00Z",
+                            "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
                     "dateOfClaim": "2021-11-09",
@@ -50,7 +48,7 @@ from assessclaimdc7101.src.lib import continuous_medication
             {
                 "medications": [
                     {
-                        "authoredOn": "1950-04-06T04:00:00Z",
+                        "authoredOn": "2020-04-06T04:00:00Z",
                         "description": "Benazepril",
                         "status": "active",
                     }
@@ -58,7 +56,6 @@ from assessclaimdc7101.src.lib import continuous_medication
                 "medicationsCount": 1,
             },
         ),
-        # Service connected but doesn't use medication used to treat hypertension
         (
             {
                 "evidence": {
@@ -84,7 +81,6 @@ from assessclaimdc7101.src.lib import continuous_medication
                 "medicationsCount": 1,
             },
         ),
-        # Service connected, multiple medications, some to treat and others not to treat hypertension
         (
             {
                 "evidence": {
@@ -161,17 +157,18 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "authoredOn": "2020-04-06T04:00:00Z",
                             }
-                        ],
-                        "dateOfClaim": "2021-11-09",
-                    }
+                        ]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "INCREASE"
                 },
                 {
                     "medications": [
                         {
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/1950',
+                            "authoredOn": "2020-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/2020',
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -188,17 +185,18 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "authoredOn": "2020-04-06T04:00:00Z",
                             }
-                        ],
-                        "dateOfClaim": "2021-11-09",
-                    }
+                        ]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "INCREASE"
                 },
                 {
                     "medications": [
                         {
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/1950',
+                            "authoredOn": "2020-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/2020',
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -217,16 +215,14 @@ def test_continuous_medication_required(
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
                             }
-                        ],
-                        "dateOfClaim": "2021-11-09",
-                    }
+                        ]
+                    },
+                    "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "INCREASE"
                 },
                 {
-                    'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                                                      'dateFormatted': '04/06/1950',
-                                                      'description': 'Advil',
-                                                      'status': 'active'}],
-                                     'medicationsCount': 1
+                    'medications': [],
+                    'medicationsCount': 0
                 },
         ),
         (
@@ -237,28 +233,29 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "1950-04-06T04:00:00Z",
+                                "authoredOn": "2020-04-06T04:00:00Z",
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
-                                "authoredOn": "1952-04-06T04:00:00Z",
+                                "authoredOn": "2021-04-06T04:00:00Z",
                             },
                         ],
-                        "dateOfClaim": "2021-11-09",
-                    }
+                    },
+                    "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "INCREASE"
                 },
                 {
                     "medications": [
                         {
                             "description": "Advil",
                             "status": "active",
-                            'dateFormatted': '04/06/1952',
-                            "authoredOn": "1952-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/2021',
+                            "authoredOn": "2021-04-06T04:00:00Z",
                         },
                         {
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/1950',
+                            "authoredOn": "2020-04-06T04:00:00Z",
+                            'dateFormatted': '04/06/2020',
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -271,7 +268,9 @@ def test_continuous_medication_required(
                     "evidence": {
                         "bp_readings": [],
                         "medications": [],
-                    }
+                    },
+                    "dateOfClaim": "2021-11-09",
+                    "disabilityActionType": "INCREASE"
                 },
                 {"medications": [], "medicationsCount": 0},
         ),
