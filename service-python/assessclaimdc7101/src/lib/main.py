@@ -75,7 +75,7 @@ def assess_sufficiency(event: Dict):
             if bp_calculation["oneYearBpReadings"] >= 1:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
-            bp_display = event["evidence"]["bp_readings"]  # For new claims include all bp readings to display
+            bp_display = bp_calculator.sort_bp(event["evidence"]["bp_readings"])  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
             if relevant_conditions["conditions"]:
                 sufficient = False
