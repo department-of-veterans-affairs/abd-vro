@@ -98,11 +98,25 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * handles json parsing.
+   * Detects unallowed character sequences in JSON Request Body input data.
    *
-   * @param exception the exception
-   * @return returns claim processing error
+   * @param exception exception
+   * @return new exception.
    */
+  @ExceptionHandler(DisallowedPatternException.class)
+  public ResponseEntity<ClaimProcessingError> handleUnallowedPatternException(
+      DisallowedPatternException exception) {
+    log.error("Unallowed patterns were found in the Request Body.", exception);
+    ClaimProcessingError cpe = new ClaimProcessingError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
+  }
+
+  // /**
+  //  * handles json parsing.
+  //  *
+  //  * @param exception the exception
+  //  * @return returns claim processing error
+  //  */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ClaimProcessingError> handleJsonParseException(
       JsonParseException exception) {
