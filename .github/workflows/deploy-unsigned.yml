@@ -161,7 +161,7 @@ jobs:
 
       - name: "Notify Slack: React to top-level notification"
         if: always()
-        uses: archive/github-actions-slack@v2.0.0
+        uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
