@@ -72,24 +72,10 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles exception.
-   *
-   * @param exception the exception
-   * @return returns new exception
-   */
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
-    log.error("Unexpected error", exception);
-    ClaimProcessingError cpe =
-        new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-    return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  /**
    * Handles claim processing exception.
    *
-   * @param exception exception.
-   * @return returns claim processing error
+   * @param exception the exception
+   * @return returns exception
    */
   @ExceptionHandler(ClaimProcessingException.class)
   public ResponseEntity<ClaimProcessingError> handleClaimProcessingException(
@@ -100,8 +86,8 @@ public class GlobalExceptionHandler {
   /**
    * Detects unallowed character sequences in JSON Request Body input data.
    *
-   * @param exception exception
-   * @return new exception.
+   * @param exception the exception
+   * @return returns exception
    */
   @ExceptionHandler(DisallowedPatternException.class)
   public ResponseEntity<ClaimProcessingError> handleUnallowedPatternException(
@@ -111,12 +97,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
-  // /**
-  //  * handles json parsing.
-  //  *
-  //  * @param exception the exception
-  //  * @return returns claim processing error
-  //  */
+  /**
+   * Handles JSON parsing.
+   *
+   * @param exception the exception
+   * @return returns exception
+   */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ClaimProcessingError> handleJsonParseException(
       JsonParseException exception) {
@@ -126,9 +112,9 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles unsupported Http Methods.
+   * Handles unsupported HTTP Methods.
    *
-   * @param exception exception
+   * @param exception the exception
    * @return new exception
    */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -138,5 +124,19 @@ public class GlobalExceptionHandler {
     ClaimProcessingError cpe =
         new ClaimProcessingError(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
     return new ResponseEntity<ClaimProcessingError>(cpe, HttpStatus.METHOD_NOT_ALLOWED);
+  }
+
+  /**
+   * Handles general, unspecified exceptions (catch-all)
+   *
+   * @param exception the exception
+   * @return returns exception
+   */
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
+    log.error("Unexpected error", exception);
+    ClaimProcessingError cpe =
+        new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+    return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
