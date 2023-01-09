@@ -70,12 +70,17 @@ helm del $HELM_APP_NAME -n ${NAMESPACE}
 
 if [ "${RESTART}" == "1" ]
 then
-echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-sleep 60 # wait for Persistent Volume Claim to be deleted
+# If SLACK_THREAD_TS is set, the notification will be in a Slack thread
+NOTIFY_SLACK_OUT=$(scripts/notify-slack.sh "\`$0\`: ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\` ...")
+# If SLACK_THREAD_TS is not set, run eval so that SLACK_THREAD_TS env var is available for subsequent notifications in a Slack thread
+[ "$SLACK_THREAD_TS" ] || eval "$NOTIFY_SLACK_OUT"
+
+# echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
+# sleep 60 # wait for Persistent Volume Claim to be deleted
 helm upgrade --install $HELM_APP_NAME helm-service-db \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
-              -n ${NAMESPACE} 
+              -n ${NAMESPACE}
               #--dry-run
               #-f helm-service-db/"${ENV}".yaml
 fi
