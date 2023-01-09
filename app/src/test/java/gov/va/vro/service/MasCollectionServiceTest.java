@@ -18,20 +18,22 @@ public class MasCollectionServiceTest {
 
   @Test
   void combineEvidence() {
-    var lighthouseAssessment = createAssessment();
+    var lighthouseAssessment = createAssessment(null);
+    lighthouseAssessment.setDisabilityActionType("INCREASE");
     lighthouseAssessment.setEvidence(
         createEvidence(
             Arrays.asList(createMedication("med1"), createMedication("med2")),
             Collections.singletonList(createCondition("cond2"))));
-    var masAssessment = createAssessment();
+    var masAssessment = createAssessment("123");
     masAssessment.setEvidence(
         createEvidence(
             Collections.singletonList(createMedication("med1")),
             Collections.singletonList(createCondition("cond1"))));
     var result = MasCollectionService.combineEvidence(lighthouseAssessment, masAssessment);
-    assertEquals("D", result.getDisabilityActionType());
+    assertEquals("INCREASE", result.getDisabilityActionType());
     assertEquals("12345", result.getDiagnosticCode());
     assertEquals("icn", result.getVeteranIcn());
+    assertEquals("123", result.getClaimSubmissionId());
     var evidence = result.getEvidence();
     assertTrue(evidence.getBloodPressures().isEmpty());
     assertTrue(evidence.getProcedures().isEmpty());
@@ -61,9 +63,9 @@ public class MasCollectionServiceTest {
     return evidence;
   }
 
-  private HealthDataAssessment createAssessment() {
+  private HealthDataAssessment createAssessment(String claimId) {
     var assessment = new HealthDataAssessment();
-    assessment.setDisabilityActionType("D");
+    assessment.setClaimSubmissionId(claimId);
     assessment.setDiagnosticCode("12345");
     assessment.setVeteranIcn("icn");
     return assessment;

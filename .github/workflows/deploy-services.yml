@@ -16,7 +16,7 @@ on:
         - prod
       
       target_service:
-        description: 'Target LHDI environment'
+        description: 'Target LHDI Service'
         required: true
         default: 'all'
         type: choice

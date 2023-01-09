@@ -129,9 +129,13 @@ public class MasCollectionService {
         merge(
             lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
             masApiEvidence != null ? masApiEvidence.getProcedures() : null));
-    lighthouseAssessment.setEvidence(compositeEvidence);
-
-    return lighthouseAssessment;
+    HealthDataAssessment combinedAssessment = new HealthDataAssessment();
+    combinedAssessment.setClaimSubmissionId(masApiAssessment.getClaimSubmissionId());
+    combinedAssessment.setDiagnosticCode(masApiAssessment.getDiagnosticCode());
+    combinedAssessment.setVeteranIcn(masApiAssessment.getVeteranIcn());
+    combinedAssessment.setDisabilityActionType(lighthouseAssessment.getDisabilityActionType());
+    combinedAssessment.setEvidence(compositeEvidence);
+    return combinedAssessment;
   }
 
   private static <T> List<T> merge(List<T> list1, List<T> list2) {

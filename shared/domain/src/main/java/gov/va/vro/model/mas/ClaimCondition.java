@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ public class ClaimCondition {
 
   private String name;
 
+  @NotNull
   @Schema(description = "Diagnostic code", example = "7101")
   @NotBlank(message = "Diagnostic Code is required")
   private String diagnosticCode;
