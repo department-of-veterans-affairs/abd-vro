@@ -142,7 +142,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: "Cancelled jobs"
-        if: ${{ needs.publish-images.outputs.cancelled_job == "true" || needs.deploy-images.outputs.cancelled_job == "true" }}
+        if: ${{ needs.publish-images.outputs.cancelled_job == 'true' || needs.deploy-images.outputs.cancelled_job == 'true' }}
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
