@@ -3,6 +3,6 @@ package gov.va.vro.controller.exception;
 public class DisallowedPatternException extends IllegalArgumentException {
   public DisallowedPatternException() {
     super(
-        "Unallowed patterns were found in the Request Body. Please sanitize your Request Body input data and try again.");
+        "Disallowed patterns were found in the Request Body. Please sanitize your Request Body input data and try again.");
   }
 }
