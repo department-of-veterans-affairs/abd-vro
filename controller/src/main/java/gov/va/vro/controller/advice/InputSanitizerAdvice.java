@@ -1,7 +1,6 @@
 package gov.va.vro.controller.advice;
 
 import gov.va.vro.controller.exception.DisallowedPatternException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
 @ControllerAdvice
 @ComponentScan
 public class InputSanitizerAdvice implements RequestBodyAdvice {

@@ -33,7 +33,6 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-// @RequestBodyAdvice(InputSanitizerAdvice.class)
 public class VroController implements VroResource {
 
   private final CamelEntrance camelEntrance;
