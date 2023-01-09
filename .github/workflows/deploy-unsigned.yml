@@ -86,7 +86,7 @@ jobs:
         id: cancelled-job
         if: cancelled()
         run: |
-          echo "cancelled_job=${{ true }}" >> $GITHUB_OUTPUT
+          echo "cancelled_job=true" >> $GITHUB_OUTPUT
 
   deploy-images:
     needs: publish-images
@@ -134,7 +134,7 @@ jobs:
         id: cancelled-job
         if: cancelled()
         run: |
-          echo "cancelled_job=${{ true }}" >> $GITHUB_OUTPUT      
+          echo "cancelled_job=true" >> $GITHUB_OUTPUT      
 
   notify-slack:
     needs: [publish-images, deploy-images]
@@ -142,7 +142,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: "Cancelled jobs"
-        if: ${{ needs.publish-images.outputs.cancelled_job || needs.deploy-images.outputs.cancelled_job}}
+        if: ${{ needs.publish-images.outputs.cancelled_job == "true" || needs.deploy-images.outputs.cancelled_job == "true" }}
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
