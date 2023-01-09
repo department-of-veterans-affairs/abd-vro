@@ -2,6 +2,7 @@ package gov.va.vro.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,14 @@ public class AbdCondition implements Comparable<AbdCondition> {
   private String abatementDate;
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String onsetDate;
+  private String recordedDate;
+  private String relevant;
+
+  @Schema(description = "Formatted date", example = "01/01/2023")
+  private String dateFormatted;
+
+  @Schema(description = "Source of this data", example = "LH")
+  private String dataSource = "LH";
 
   @Override
   public int compareTo(AbdCondition otherCondition) {

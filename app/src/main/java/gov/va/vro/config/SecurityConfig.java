@@ -23,11 +23,17 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Value("${apiauth.hdr-key-name}")
+  @Value("${apiauth.hdr-key-name-v1}")
   private String apiKeyAuthHeaderName;
 
-  @Value("${apiauth.url-context}")
-  private String urlContext;
+  @Value("${apiauth.url-context-v1}")
+  private String urlContextV1;
+
+  @Value("${apiauth.hdr-key-name-v2}")
+  private String jwtAuthHeaderName;
+
+  @Value("${apiauth.url-context-v2}")
+  private String urlContextV2;
 
   private final ApiAuthKeyManager apiAuthKeyManager;
 
@@ -39,7 +45,8 @@ public class SecurityConfig {
    * @throws Exception when error occurs.
    */
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+  public SecurityFilterChain apikeyFilterChain(HttpSecurity httpSecurity) throws Exception {
+
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(apiKeyAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
@@ -48,7 +55,39 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .antMatcher(urlContext)
+        .antMatcher(urlContextV1)
+        .csrf()
+        .disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(apiAuthKeyFilter)
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated();
+    return httpSecurity.build();
+  }
+
+  /**
+   * Sets the security filter chain.
+   *
+   * @param httpSecurity http security.
+   * @return a security build.
+   * @throws Exception when error occurs.
+   */
+  @Bean
+  public SecurityFilterChain jwtFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+    ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(jwtAuthHeaderName);
+    apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
+
+    httpSecurity
+        .exceptionHandling()
+        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+
+    // Secure end point
+    httpSecurity
+        .antMatcher(urlContextV2)
         .csrf()
         .disable()
         .sessionManagement()

@@ -134,6 +134,7 @@ ext {
     dockerModules.add(':service-python:assessclaimdc6602v2')
     dockerModules.add(':service-python:assessclaimdc6510')
     dockerModules.add(':service-python:assessclaimdc6522')
+    dockerModules.add(':service-python:assessclaimcancer')
   }
 }
 
@@ -147,7 +148,7 @@ scmVersion {
     pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
-    pre("fileUpdate", [file       : "helmchart/Chart.yaml",
+    pre("fileUpdate", [file       : "helm-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")

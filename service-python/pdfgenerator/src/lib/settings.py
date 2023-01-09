@@ -1,15 +1,10 @@
 import os
 
 pdf_options = {
-    "page-size": "Letter",
-    "margin-top": "0.5in",
-    "margin-right": "0.5in",
-    "margin-bottom": "0.5in",
-    "margin-left": "0.5in",
     "encoding": "UTF-8",
-    "zoom": "1.1",
     "print-media-type": None,
     "enable-local-file-access": None,
+    "disable-smart-shrinking": None,
 }
 
 redis_config = {
@@ -30,5 +25,4 @@ queue_config = {
 codes = {
   "6602": "asthma",
   "7101": "hypertension",
-  "0000": "summary"
 }

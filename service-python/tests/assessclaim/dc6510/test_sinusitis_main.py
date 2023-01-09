@@ -20,6 +20,7 @@ from assessclaimdc6510.src.lib import main
                         "procedures": []
                     },
                     "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
                 {
                     "evidence": {
@@ -40,9 +41,8 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": False,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False},
+                    "sufficientForFastTracking": None,
+                    "claimSubmissionId": "1234"
                 }
         ),
         # demonstrates ability to match substrings in medication["text"] property
@@ -63,6 +63,7 @@ from assessclaimdc6510.src.lib import main
                         "procedures": []
                     },
                     "dateOfClaim": "2021-06-09",
+                    "claimSubmissionId": "1234"
                 },
                 {
                     "evidence": {
@@ -86,10 +87,8 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "calculated": {"constantSinusitis": True,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False,
-                                   },
+                    "sufficientForFastTracking": True,
+                    "claimSubmissionId": "1234"
                 },
         ),
         (
@@ -119,6 +118,7 @@ from assessclaimdc6510.src.lib import main
                                        ]
                     },
                     "dateOfClaim": "2021-11-09",
+                    "claimSubmissionId": "1234"
                 },
                 {
                     "evidence": {
@@ -152,9 +152,8 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 1,
                                         "totalProceduresCount": 1},
-                    "calculated": {"constantSinusitis": False,
-                                   "multipleSurgery": False,
-                                   "radicalSurgery": False},
+                    "sufficientForFastTracking": False,
+                    "claimSubmissionId": "1234"
                 },
         ),
     ],

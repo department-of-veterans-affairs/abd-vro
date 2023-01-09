@@ -2,12 +2,14 @@ package gov.va.vro.api.requests;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.ClaimCondition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,7 +32,13 @@ public class GeneratePdfRequest {
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
 
+  private ClaimCondition conditions;
+
   @NonNull
   @Schema(description = "Medical evidence supporting assessment")
   private AbdEvidence evidence;
+
+  @Nullable
+  @Schema(description = "PDF template to generate", example = "v1")
+  private String pdfTemplate;
 }

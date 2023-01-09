@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from . import conditions, medication, procedure, utils
@@ -20,6 +21,12 @@ def assess_rhinitis(event: Dict):
         relevant_conditions = conditions.conditions_calculation(event)
         procedures = procedure.procedures_calculation(event)
 
+        sufficient = None
+        if len(relevant_conditions["conditions"]) >= 1:
+            if "6523" in relevant_conditions["diagnosticCodes"] or relevant_conditions["nasalPolyps"]:
+                sufficient = True
+            else:
+                sufficient = False
         response_body.update(
             {
                 "evidence": {
@@ -36,9 +43,13 @@ def assess_rhinitis(event: Dict):
                     "relevantProceduresCount": procedures["relevantProceduresCount"],
                     "totalProceduresCount": procedures["totalProceduresCount"],
                 },
+                "sufficientForFastTracking": sufficient,
             }
         )
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body

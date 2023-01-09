@@ -48,10 +48,10 @@ public class OpenApiConfiguration {
 
     final List<Tag> tags =
         Arrays.asList(
-            new Tag().name("Health Assessment"),
             new Tag().name("Pdf Generation"),
             new Tag().name("Full Health Assessment"),
             new Tag().name("Claim Metrics"),
+            new Tag().name("BIP Integration"),
             new Tag().name("MAS Integration"));
 
     OpenAPI config =

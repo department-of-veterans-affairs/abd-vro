@@ -1,3 +1,6 @@
+# This file contains shared properties across all environments; it is always loaded by Spring
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+
 info:
   app:
     name: abd_vro
@@ -5,8 +8,10 @@ info:
 
 # API Auth
 apiauth:
-  hdr-key-name: X-API-Key
-  url-context: /v1/**
+  hdr-key-name-v1: X-API-Key
+  url-context-v1: /v1/**
+  hdr-key-name-v2: Authorization
+  url-context-v2: /v2/**
 
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
@@ -80,7 +85,22 @@ spring:
   application:
     name: "abd-vro"
   profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
     active: ${ENV:default}
+    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
+    group:
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
+      local: nonprod
+      end2end-test: nonprod
+      # Remaining profiles are for deployment to LHDI's EKS environments
+      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
+      # along with application-$ENV.yml
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      # For prod, only load application-prod.yml and application-k8s.yml
+      prod: k8s
+
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -95,6 +115,21 @@ spring:
   http:
     encoding:
       force: true
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      jdbc-url: ${POSTGRES_URL}
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      schema: ${POSTGRES_SCHEMA}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
   security:
     oauth2:
       client:
@@ -107,22 +142,18 @@ spring:
             client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
             scope: "${MAS_API_AUTH_SCOPE:openid}"
             grant-type: client_credentials
+
 masAPIProvider:
   baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
   createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
 
-
-slack:
-  exception:
-    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
-    channel: "${SLACK_EXCEPTION_CHANNEL:#{null}}"
-  
-opentracing:
-  zipkin:
-    enabled: false
-    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "${VALIDATE_TOKEN:NO}"
 
 springdoc:
   writer-with-default-pretty-printer: true
@@ -133,14 +164,16 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-    enabled: ${VRO_NON_PROD:false}
 
 vro:
+  # Deployment environment
+  env: ${ENV:local}
+
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
       description: This API provides functionality to improve benefit delivery to Veterans using health data.
-      version: v1
+      version: v2
       contact:
         name: Premal Shah
         email: "premal.shah@va.gov"
@@ -164,6 +197,19 @@ spring.redis:
   host: ${REDIS_PLACEHOLDERS_HOST}
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+bip:
+  claimClientId: "${BIP_CLAIM_USERID}"
+  claimSecret: "${BIP_CLAIM_SECRET}"
+  claimBaseURL: "${BIP_CLAIM_URL:2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io}"
+  claimIssuer: "${BIP_CLAIM_ISS}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL:4b043eb6-1b96-45f6-9b47-7941cdf33a44.mock.pstmn.io/api/v1/rest}"
+  evidenceIssuer: "${BIP_EVIDENCE_ISS}"
+  applicationName: "${BIP_APPLICATION_ISS}"
+  applicationId: "${BIP_APPLICATION_ID}"
+  stationId: "${BIP_STATION_ID}"
 
 spring.config.import: >
   conf-camel.yml,

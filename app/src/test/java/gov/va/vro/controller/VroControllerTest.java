@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.FetchPdfResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import gov.va.vro.camel.FunctionProcessor;
@@ -17,8 +16,8 @@ import gov.va.vro.config.AppTestConfig;
 import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -98,7 +97,8 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit-full"));
     // The mock endpoint returns a valid response
     mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, true)));
+        FunctionProcessor.<Claim, String>fromFunction(
+            claim -> util.claimToResponse(claim, true, null)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -107,7 +107,6 @@ class VroControllerTest extends BaseControllerTest {
 
     var responseEntity1 =
         post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
-
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertNotNull(response1);
@@ -116,9 +115,9 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, HealthDataAssessment.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
-    HealthDataAssessment response2 = responseEntity2.getBody();
+    FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
@@ -155,7 +154,9 @@ class VroControllerTest extends BaseControllerTest {
                 .to("mock:claim-submit-full"));
 
     mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(claim -> util.claimToResponse(claim, false)));
+        FunctionProcessor.<Claim, String>fromFunction(
+            claim ->
+                util.claimToResponse(claim, false, "Internal error while processing claim data.")));
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");
@@ -166,7 +167,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    assertEquals("No evidence found.", claimProcessingError.getMessage());
+    assertEquals("Internal error while processing claim data.", claimProcessingError.getMessage());
     assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
@@ -187,6 +188,35 @@ class VroControllerTest extends BaseControllerTest {
       "diagnosticCode: Diagnostic code cannot be empty"
     };
     assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  void fullHealthAssessmentMalformedJson() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    var responseEntity =
+        post(
+            "/v1/full-health-data-assessment",
+            "{ \"one\":\"one\", \"two\":\"two\",}",
+            headers,
+            ClaimProcessingError.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+  }
+
+  @Test
+  void serverResponseUnsupportedHttpMethod() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("content-type", "application/json");
+    String url = "/v1/claim-metrics";
+    String sampleRequestBody = "{ \"one\":\"one\", \"two\":\"two\",}";
+    var getResponseEntity = get(url, headers, ClaimProcessingError.class);
+    var postResponseEntity = post(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    var putResponseEntity = put(url, sampleRequestBody, headers, ClaimProcessingError.class);
+    assertEquals(HttpStatus.OK, getResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, postResponseEntity.getStatusCode());
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, putResponseEntity.getStatusCode());
   }
 
   @Test
