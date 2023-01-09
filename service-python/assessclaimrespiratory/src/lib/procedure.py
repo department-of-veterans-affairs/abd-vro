@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from .codesets import emphysema_procedure_codesets, bronchitis_procedures_codeset, copd_procedures_codesets
+from .codesets import procedures_codeset
 
 
 def procedures_calculation(request_body):
@@ -13,18 +13,18 @@ def procedures_calculation(request_body):
     """
     response = {}
     relevant_procedures = []
+    resp_procedure = []
 
     procedures = request_body["evidence"]["procedures"]
     procedures_count = len(procedures)
     for procedure in procedures:
         if procedure["status"].lower() in ["in-progress", "on-hold", "stopped", "completed"]:
             procedure_code = procedure["code"]
-            if procedure_code in bronchitis_procedures_codeset.bronchitis_procedures:
-                relevant_procedures.append(procedure)
-            if procedure_code in copd_procedures_codesets.copd_procedures:
-                relevant_procedures.append(procedure)
-            if procedure_code in emphysema_procedure_codesets.procedures_cpt:
-                relevant_procedures.append(procedure)
+            for category_id in list(procedures_codeset.resp_procedures.keys()):
+                if procedure_code in procedures_codeset.resp_procedures[category_id]:
+                    resp_procedure.append(category_id)
+                    relevant_procedures.append(procedure)
+                    break
 
     relevant_procedures = sorted(
         relevant_procedures,
@@ -36,6 +36,7 @@ def procedures_calculation(request_body):
         "procedures": relevant_procedures,
         "relevantProceduresCount": len(relevant_procedures),
         "totalProceduresCount": procedures_count,
+        "respProcedure": resp_procedure
     })
 
     return response

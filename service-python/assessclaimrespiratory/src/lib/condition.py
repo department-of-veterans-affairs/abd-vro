@@ -16,6 +16,9 @@ def conditions_calculation(request_body):
 
     veterans_conditions = request_body["evidence"]["conditions"]
     total_conditions_count = len(veterans_conditions)
+    secondary_condition_present = []
+    active_oxygen_therapy = False
+
     for condition in veterans_conditions:
         if condition["status"].lower() in ["active", "relapse", "recurrence"]:
             condition_code = condition["code"]
@@ -25,22 +28,22 @@ def conditions_calculation(request_body):
                 relevant_conditions.append(condition)
             if condition_code in emphysema_condition_codesets.emphysema_conditions:
                 relevant_conditions.append(condition)
-            if condition_code in secondary_condition_codesets.secondary_diagnosis:
-                relevant_conditions.append(condition)
 
-            try:
-                date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
-                condition["dateFormatted"] = date.strftime("%m/%d/%Y")
-                condition_with_date.append(condition)
-            except ValueError:
-                condition["dateFormatted"] = ""
-                condition_without_date.append(condition)
+            for category_id in list(secondary_condition_codesets.secondary_diagnosis.keys()):
+                if condition_code in secondary_condition_codesets.secondary_diagnosis[category_id]:
+                    secondary_condition_present.append(category_id)
+                    relevant_conditions.append(condition)
+                    if category_id == "Oxygen Therapy" and condition["performedDate"]:
+                        active_oxygen_therapy = True
+                    break
 
     response.update(
         {
             "conditions": relevant_conditions,
             "relevantConditionsCount": len(relevant_conditions),
             "totalConditionsCount": total_conditions_count,
+            "secondaryConditions": secondary_condition_present,
+            "oxygenTherapy": active_oxygen_therapy
         }
     )
 

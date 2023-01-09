@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from . import condition, utils
+from . import condition, utils, procedure
 
 
 def assess_respiratory_condition(event: Dict):
@@ -15,23 +15,36 @@ def assess_respiratory_condition(event: Dict):
     """
     validation_results = utils.validate_request_body(event)
     response_body = {}
+    sufficient = None
 
     if validation_results["is_valid"]:
         conditions = condition.conditions_calculation(event)
-        procedures
+        procedures = procedure.procedures_calculation(event)
+
+        if conditions["relevantConditionsCount"] > 0:
+            sufficient = False
+            if "Cor pulmonale" or "Right Ventricular Hypertrophy" or "Acute Respiratory Failure" \
+                    in conditions["secondaryConditions"]:
+                sufficient = True
+            if "Pulmonary Hypertension" in conditions["secondaryConditions"] and \
+                    "Echocardiogram" or "Cardiac Catheterization" in procedures["respProcedure"]:
+                sufficient = True
 
         response_body.update(
             {
                 "evidence": {
-                    "procedures": procedures["medications"],
+                    "procedures": procedures["procedures"],
                     "conditions": conditions["conditions"],
                 },
                 "evidenceSummary": {
-                    "relevantMedCount": active_medications["relevantMedCount"],
-                    "totalMedCount": active_medications["totalMedCount"],
-                    "relevantConditionsCount": active_conditions["relevantConditionsCount"],
-                    "totalConditionsCount": active_conditions["totalConditionsCount"],
+                    "relevantProceduresCount": procedures["relevantProceduresCount"],
+                    "totalProceduresCount": procedures["totalProceduresCount"],
+                    "respProcedurePresent": procedures["respProcedurePresent"],
+                    "secondaryConditionPresent": conditions["secondaryConditions"],
+                    "relevantConditionsCount": conditions["relevantConditionsCount"],
+                    "totalConditionsCount": conditions["totalConditionsCount"],
                 },
+                "sufficientForFastTracking": sufficient,
             }
         )
         logging.info("Message processed successfully")
