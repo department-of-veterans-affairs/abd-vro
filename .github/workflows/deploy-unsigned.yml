@@ -35,7 +35,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
-      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled-job }}
+      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -92,7 +92,7 @@ jobs:
     needs: publish-images
     runs-on: ubuntu-latest
     outputs:
-      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled-job }}
+      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
