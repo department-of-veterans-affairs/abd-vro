@@ -35,6 +35,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
+      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -85,12 +86,13 @@ jobs:
         id: cancelled-job
         if: cancelled()
         run: |
-          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
-          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+          echo "cancelled_job=true" >> $GITHUB_OUTPUT
 
   deploy-images:
     needs: publish-images
     runs-on: ubuntu-latest
+    outputs:
+      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
@@ -132,14 +134,19 @@ jobs:
         id: cancelled-job
         if: cancelled()
         run: |
-          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
-          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV     
+          echo "cancelled_job=true" >> $GITHUB_OUTPUT      
 
   notify-slack:
     needs: [publish-images, deploy-images]
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
+      - name: "Cancelled jobs"
+        if: ${{ needs.publish-images.outputs.cancelled_job == 'true' || needs.deploy-images.outputs.cancelled_job == 'true' }}
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
       # if either of the deploy jobs fail,
       # the DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI should not change from its default "failure" state
       # and the message should be sent out as such
