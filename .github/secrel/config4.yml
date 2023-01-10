@@ -3,14 +3,14 @@
 snyk:
   java-version: 17
   additional-args:
-  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+  - -PGITHUB_ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
 languages:
   java:
     version: 17.0
     build-source: false
     build-args:
-      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+      - -PGITHUB_ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }}
   python:
     version: 3.9
     requirements:

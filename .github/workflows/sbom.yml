@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   trivy-scan:
@@ -22,4 +22,4 @@ jobs:
           scan-type: 'fs'
           format: 'github'
           output: 'dependency-results.sbom.json'
-          github-pat: ${{ secrets.ACCESS_TOKEN }}
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
