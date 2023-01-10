@@ -25,7 +25,7 @@ public class InputSanitizerAdvice implements RequestBodyAdvice {
   private static final Pattern NON_PRINTABLE = Pattern.compile("\\P{Print}&&[^{}]");
   private static final Pattern NUL_CHARACTER = Pattern.compile("(\\u0000|%00)");
 
-  @Overridegit 
+  @Override
   public boolean supports(
       MethodParameter methodParameter,
       Type targetType,
