@@ -106,12 +106,12 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
-      summary = "Generate + Fetch Evidence PDF",
+      summary = "Immediate PDF",
       description =
           "This endpoint generates the Evidence PDF for a specific patient and a diagnostic "
               + "code. The endpoint will return the PDF but is also available from the "
               + "'GET evidence-pdf' endpoint using claim submission id.")
-  @PostMapping("/generate-fetch-pdf")
+  @PostMapping("/immediate-pdf")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
