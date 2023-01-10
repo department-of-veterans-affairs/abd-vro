@@ -6,8 +6,7 @@ import pika
 
 from .pdf_generator import PDFGenerator
 from .redis_client import RedisClient
-from .settings import codes as DIAGNOSTIC_CODE_MAPPING
-from .settings import pdf_options, queue_config, redis_config
+from .settings import codes, pdf_options, queue_config, redis_config
 
 EXCHANGE = queue_config["exchange_name"]
 GENERATE_QUEUE = queue_config["generate_queue_name"]
@@ -23,13 +22,19 @@ def on_generate_callback(channel, method, properties, body):
         message = json.loads(body)
         # logging.info(f" [x] {binding_key}: Received message: {message}")
         claim_id = message["claimSubmissionId"]
-        code = message["diagnosticCode"]
-        diagnosis_name = DIAGNOSTIC_CODE_MAPPING[code]
-        variables = pdf_generator.generate_template_variables(diagnosis_name, message)
+        diagnosis_code = message["diagnosticCode"]
+        message["veteran_info"] = message["veteranInfo"]
+        if message['pdfTemplate'] in ['v1', 'v2']:
+            pdf_template = message['pdfTemplate']
+        else:
+            # Default to version 1
+            pdf_template = "v1"
+        template_name = codes[diagnosis_code] + "-" + pdf_template
+        variables = pdf_generator.generate_template_variables(template_name, message)
         # logging.info(f"Variables: {variables}")
-        template = pdf_generator.generate_template_file(diagnosis_name, variables)
-        pdf = pdf_generator.generate_pdf_from_string(diagnosis_name, template, variables)
-        redis_client.save_hash_data(f"{claim_id}-pdf", mapping={"contents": base64.b64encode(pdf).decode("ascii"), "diagnosis": diagnosis_name})
+        template = pdf_generator.generate_template_file(template_name, variables)
+        pdf = pdf_generator.generate_pdf_from_string(template_name, template, variables)
+        redis_client.save_hash_data(f"{claim_id}-pdf", mapping={"contents": base64.b64encode(pdf).decode("ascii"), "diagnosis": codes[diagnosis_code]})
         logging.info(f"Claim {claim_id}: Saved PDF")
         response = {"claimSubmissionId": claim_id, "status": "COMPLETE"}
     except Exception as e:

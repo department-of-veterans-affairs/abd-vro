@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from dateutil.relativedelta import relativedelta
+
 from .codesets import hypertension_conditions
 
 
@@ -14,17 +16,20 @@ def conditions_calculation(request_body):
     response = {}
     condition_with_date = []
     condition_without_date = []
+    conditions_two_years = []
     count = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
+    date_of_claim_date = datetime.strptime(request_body["dateOfClaim"], "%Y-%m-%d").date()
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
         if "recordedDate" in condition.keys():
-            date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
-            condition["dateFormatted"] = date.strftime("%m/%d/%Y")
+            condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
+            condition["dateFormatted"] = condition_date.strftime("%m/%d/%Y")
             condition_with_date.append(condition)
-
+            if condition_date >= date_of_claim_date - relativedelta(years=2):
+                conditions_two_years.append(condition)
         else:
             condition_without_date.append(condition)
 
@@ -40,10 +45,17 @@ def conditions_calculation(request_body):
         reverse=True,
     )
 
+    conditions_two_years = sorted(
+        conditions_two_years,
+        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
+        reverse=True,
+    )
+
     condition_with_date.extend(condition_without_date)
 
     response.update({
         "conditions": condition_with_date,
+        "conditionsTwoYears": conditions_two_years,
         "totalConditionsCount": len(veterans_conditions),
         "relevantConditionsCount": count
         }

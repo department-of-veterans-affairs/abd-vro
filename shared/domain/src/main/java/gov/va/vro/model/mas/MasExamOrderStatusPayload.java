@@ -21,9 +21,9 @@ public class MasExamOrderStatusPayload implements Auditable {
 
   @JsonIgnore @Setter private String correlationId;
 
-  @NotNull(message = "Collection ID cannot be empty")
+  @NotNull(message = "Collection ID is required")
   @Schema(description = "Collection ID", example = "999")
-  private int collectionId;
+  private Integer collectionId;
 
   @NotBlank(message = "Collection Status is required")
   @Schema(description = "Collection Status", example = "DRAFT")
