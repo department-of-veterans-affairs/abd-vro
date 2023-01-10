@@ -40,13 +40,16 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
+source scripts/notify-slack.src "\`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\`"
 helm del $HELM_APP_NAME -n ${NAMESPACE}
 
 if [ "${RESTART}" == "1" ]
 then
-echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-sleep 60 # wait for Persistent Volume Claim to be deleted
-helm upgrade --install $HELM_APP_NAME helm-service-redis \
+  source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\`"
+
+  # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
+  # sleep 60 # wait for Persistent Volume Claim to be deleted
+  helm upgrade --install $HELM_APP_NAME helm-service-redis \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run
