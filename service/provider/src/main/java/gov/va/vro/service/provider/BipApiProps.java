@@ -2,6 +2,7 @@ package gov.va.vro.service.provider;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Properties used in BIP API service.
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ConfigurationProperties(prefix = "bip")
 public class BipApiProps {
 
   private String claimBaseUrl;
