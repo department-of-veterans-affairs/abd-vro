@@ -22,6 +22,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -41,12 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -67,7 +63,12 @@ public class BipApiService implements IBipApiService {
 
   private static final String UPLOAD_FILE = "/files";
 
+  @Qualifier("bipRestTemplate")
   private final RestTemplate restTemplate;
+
+  @Qualifier("bipCERestTemplate")
+  private final RestTemplate ceRestTemplate;
+
   private final BipApiProps bipApiProps;
 
   private enum API {
@@ -81,6 +82,7 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader(API.CLAIM);
+      log.info("jwt: {}", headers.get("Authorization")); // TODO: remove it after test.
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
@@ -153,6 +155,7 @@ public class BipApiService implements IBipApiService {
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+      log.info("Call {} to get claim contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
@@ -182,6 +185,7 @@ public class BipApiService implements IBipApiService {
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+      log.info("Call {} to update contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
       ObjectMapper mapper = new ObjectMapper();
       String updtContention = mapper.writeValueAsString(contention);
@@ -200,6 +204,7 @@ public class BipApiService implements IBipApiService {
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+      log.info("Call {} to add claim contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
       ObjectMapper mapper = new ObjectMapper();
       String createContention = mapper.writeValueAsString(contention);
@@ -216,8 +221,10 @@ public class BipApiService implements IBipApiService {
   @Override
   public BipFileUploadResp uploadEvidence(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
-      throws BipException { // TODO: to be finished.
+      throws BipException { // TODO: to be finished with certificate set.
     try {
+      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
+      log.info("call {} to uploadEvidence file for {} : {}", url, idtype.name(), fileId);
       HttpHeaders headers = getBipHeader(API.EVIDENCE);
       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
@@ -227,7 +234,7 @@ public class BipApiService implements IBipApiService {
       body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
       body.add("file", new FileSystemResource(file));
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
-      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
+
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       BipFileUploadResp resp = new BipFileUploadResp();
@@ -245,6 +252,8 @@ public class BipApiService implements IBipApiService {
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
       throws BipException {
     try {
+      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
+      log.info("Call {} to uploadEvidenceFile for {} : {}", url, idtype.name(), fileId);
       HttpHeaders headers = getBipHeader(API.EVIDENCE);
       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
@@ -252,9 +261,9 @@ public class BipApiService implements IBipApiService {
       ObjectMapper mapper = new ObjectMapper();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
       body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
-      body.add("file", new FileSystemResource(String.valueOf(file.getBytes())));
+      body.add("file", new FileSystemResource(Arrays.toString(file.getBytes())));
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
-      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
+
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       BipFileUploadResp resp = new BipFileUploadResp();
@@ -290,7 +299,6 @@ public class BipApiService implements IBipApiService {
     claims.put("applicationID", bipApiProps.getApplicationId());
     claims.put("stationID", bipApiProps.getStationId());
     claims.put("userID", bipApiProps.getClaimClientId());
-    // claims.put("iss", bipApiProps.getApplicationName());
     Date now = cal.getTime();
     claims.put("iat", now.getTime());
     claims.put("expires", expired.getTime());

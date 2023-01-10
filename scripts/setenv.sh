@@ -142,9 +142,11 @@ exportSecretIfUnset BIP_EVIDENCE_USERID
 exportSecretIfUnset BIP_EVIDENCE_SECRET
 
 # TODO: Move all? of these to application*.yml
-export BIP_CLAIM_URL=2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io
+export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
 export BIP_CLAIM_ISS=virtual_regional_office
-export BIP_EVIDENCE_URL=4b043eb6-1b96-45f6-9b47-7941cdf33a44.mock.pstmn.io/api/v1/rest
+export BIP_EVIDENCE_URL=vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 export BIP_EVIDENCE_ISS=VRO
 export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=281
+export BIP_TRUSTSTORE=bipcert.jks
+export BIP_PASSWORD=vropassword
