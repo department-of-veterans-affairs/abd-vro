@@ -21,7 +21,7 @@ public class MasAuditConfig {
             .masProcessingInitialDelay(masProcessingInitialDelay)
             .masProcessingSubsequentDelay(masProcessingSubsequentDelay)
             .masRetryCount(masRetryCount);
-    if (slackExceptionChannel != null && slackExceptionChannel != null) {
+    if (slackExceptionChannel != null && slackExceptionWebhook != null) {
       builder
           .slackExceptionChannel(slackExceptionChannel)
           .slackExceptionWebhook(slackExceptionWebhook);
