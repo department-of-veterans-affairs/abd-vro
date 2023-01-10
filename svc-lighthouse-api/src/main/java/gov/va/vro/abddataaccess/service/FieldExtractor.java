@@ -103,6 +103,17 @@ public class FieldExtractor {
       }
     }
 
+    if (condition.hasCategory()) {
+      List<CodeableConcept> conditionCategory = condition.getCategory();
+      if (conditionCategory.size() == 1) {
+        CodeableConcept category = condition.getCategory().get(0);
+        if (category.hasText()) {
+          String text = category.getText();
+          result.setCategory(text);
+        }
+      }
+    }
+
     return result;
   }
 
