@@ -21,7 +21,11 @@ import java.util.regex.Pattern;
 @ComponentScan
 public class InputSanitizerAdvice implements RequestBodyAdvice {
 
-  @Override
+  // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html
+  private static final Pattern NON_PRINTABLE = Pattern.compile("\\P{Print}&&[^{}]");
+  private static final Pattern NUL_CHARACTER = Pattern.compile("(\\u0000|%00)");
+
+  @Overridegit 
   public boolean supports(
       MethodParameter methodParameter,
       Type targetType,
@@ -47,13 +51,10 @@ public class InputSanitizerAdvice implements RequestBodyAdvice {
         String requestBody =
             new String(inputMessage.getBody().readAllBytes(), StandardCharsets.UTF_8);
 
-        // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html
-        Pattern nonPrintablePattern = Pattern.compile("\\P{Print}&&[^{}]");
-        Matcher nonPrintableMatcher = nonPrintablePattern.matcher(requestBody);
+        Matcher nonPrintableMatcher = NON_PRINTABLE.matcher(requestBody);
         boolean nonPrintableMatches = nonPrintableMatcher.find();
 
-        Pattern nullCharacterPattern = Pattern.compile("(\\u0000|%00)");
-        Matcher nullCharacterMatcher = nullCharacterPattern.matcher(requestBody);
+        Matcher nullCharacterMatcher = NUL_CHARACTER.matcher(requestBody);
         boolean nullCharacterMatches = nullCharacterMatcher.find();
 
         if (nonPrintableMatches || nullCharacterMatches) {
