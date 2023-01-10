@@ -63,10 +63,12 @@ public class PrimaryRoutes extends RouteBuilder {
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("claim-id", simple("${body.recordId}"))
+        .setProperty("claimSubmissionId", simple("${body.claimSubmissionId}"))
+        .setProperty("idType", simple("${body.idType}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
         .process(assessmentResultProcessor);
+
   }
 
   private void configureRouteGeneratePdf() {

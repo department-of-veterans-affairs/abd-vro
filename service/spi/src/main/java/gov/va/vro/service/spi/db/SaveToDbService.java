@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface SaveToDbService {
   Claim insertClaim(Claim claim);
 
-  void insertAssessmentResult(UUID claimId, AbdEvidenceWithSummary evidence, String diagnosticCode);
+  void insertAssessmentResult(String claimSubmissionId, String idType, AbdEvidenceWithSummary evidence, String diagnosticCode);
 
   void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName);
 }

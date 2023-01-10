@@ -19,8 +19,9 @@ public class AssessmentResultProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    UUID claimId = exchange.getProperty("claim-id", UUID.class);
-    if (claimId == null) {
+    String claimSubmissionId = exchange.getProperty("claimSubmissionId", String.class);
+    String idType = exchange.getProperty("idType", String.class);
+    if (claimSubmissionId == null) {
       log.warn("Claim Id was empty, exiting");
       return;
     }
@@ -34,6 +35,6 @@ public class AssessmentResultProcessor implements Processor {
       log.warn("Evidence was empty, exiting");
       return;
     }
-    saveToDbService.insertAssessmentResult(claimId, evidence, diagnosticCode);
+    saveToDbService.insertAssessmentResult(claimSubmissionId, idType, evidence, diagnosticCode);
   }
 }

@@ -42,8 +42,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(
-      UUID claimId, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
-    ClaimEntity claimEntity = claimRepository.findById(claimId).orElse(null);
+          String claimSubmissionId, String idType, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
+    ClaimEntity claimEntity =
+            claimRepository.findByClaimSubmissionIdAndIdType(claimSubmissionId, idType).orElse(null);
     if (claimEntity == null) {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
