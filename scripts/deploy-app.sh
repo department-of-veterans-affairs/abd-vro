@@ -76,7 +76,7 @@ helm del $HELM_APP_NAME -n ${NAMESPACE}
 # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
 # sleep 60 # wait for Persistent Volume Claim to be deleted
 
-source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
+source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
 helm upgrade --install $HELM_APP_NAME helm-app \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \

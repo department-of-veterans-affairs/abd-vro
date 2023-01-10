@@ -48,7 +48,7 @@ helm del $HELM_APP_NAME -n ${NAMESPACE}
 
 if [ "${RESTART}" == "1" ]
 then
-  source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
+  source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\`"
 
   # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
   # sleep 60 # wait for Persistent Volume Claim to be deleted
