@@ -4,14 +4,12 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
-
-from pdfgenerator.src.lib import settings
 from pdfgenerator.src.lib.pdf_generator import PDFGenerator
 
 lib_dir = os.path.dirname(__file__)
 
 
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_default_template_variables(template):
     """Test if default values all get added into the template."""
     pdf_generator = PDFGenerator({})
@@ -40,7 +38,7 @@ def test_default_template_variables(template):
     assert default_variables == generated_variables
 
 
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_replaced_template_variables(template):
     """Test if the default values get replaced."""
     pdf_generator = PDFGenerator({})
@@ -54,7 +52,7 @@ def test_replaced_template_variables(template):
     assert generated_variables["veteranInfo"]["first"] == first_name
 
 
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_generate_html_file(template):
     """Test if the PDF HTML file gets generated."""
     pdf_generator = PDFGenerator({})
@@ -68,7 +66,7 @@ def test_generate_html_file(template):
     assert document_title in html_file
 
 
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_valid_variables_in_html_file(template):
     """Test that the replaced variable appears in the HTML file."""
     pdf_generator = PDFGenerator({})
@@ -85,7 +83,7 @@ def test_valid_variables_in_html_file(template):
     assert first_name in html_file
 
 
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_medication_date_conversion(template):
     """Test if 'authoredOn' in 'medications' is a datetime."""
     pdf_generator = PDFGenerator({})
@@ -101,7 +99,7 @@ def test_medication_date_conversion(template):
 
 
 @patch("pdfkit.from_string")
-@pytest.mark.parametrize("template", ["asthma-v1"])
+@pytest.mark.parametrize("template", ["6602-v1"])
 def test_pdf_generation(pdfkit_mock, template):
     """Test if the generate PDF function gets called."""
     pdf_generator = PDFGenerator({})
