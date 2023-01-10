@@ -36,7 +36,7 @@ def procedures_calculation(request_body):
         "procedures": relevant_procedures,
         "relevantProceduresCount": len(relevant_procedures),
         "totalProceduresCount": procedures_count,
-        "respProcedure": resp_procedure
+        "respProcedures": resp_procedure
     })
 
     return response

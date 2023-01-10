@@ -27,7 +27,7 @@ def assess_respiratory_condition(event: Dict):
                     in conditions["secondaryConditions"]:
                 sufficient = True
             if "Pulmonary Hypertension" in conditions["secondaryConditions"] and \
-                    "Echocardiogram" or "Cardiac Catheterization" in procedures["respProcedure"]:
+                    "Echocardiogram" or "Cardiac Catheterization" in procedures["respProcedures"]:
                 sufficient = True
 
         response_body.update(
@@ -39,8 +39,8 @@ def assess_respiratory_condition(event: Dict):
                 "evidenceSummary": {
                     "relevantProceduresCount": procedures["relevantProceduresCount"],
                     "totalProceduresCount": procedures["totalProceduresCount"],
-                    "respProcedurePresent": procedures["respProcedurePresent"],
-                    "secondaryConditionPresent": conditions["secondaryConditions"],
+                    "respProcedures": procedures["respProcedures"],
+                    "secondaryConditions": conditions["secondaryConditions"],
                     "relevantConditionsCount": conditions["relevantConditionsCount"],
                     "totalConditionsCount": conditions["totalConditionsCount"],
                 },

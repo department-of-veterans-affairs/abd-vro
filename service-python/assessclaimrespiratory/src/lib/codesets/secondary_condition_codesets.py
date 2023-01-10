@@ -1,5 +1,4 @@
 secondary_diagnosis = {
-    {
         "Acute Respiratory Failure": [
             "10672271000119100",
             "20091000175107",
@@ -127,5 +126,4 @@ secondary_diagnosis = {
             "I50.814",
             "I51.7"
         ]
-    }
 }

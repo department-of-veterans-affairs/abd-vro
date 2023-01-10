@@ -4,7 +4,6 @@ from cerberus import Validator
 def validate_request_body(request_body):
     """
     Validates that the request body conforms to the expected data format
-
     :param request_body: request body converted from json
     :type request_body: dict
     :return: dict with boolean result showing if request is valid and if not, any applicable errors
@@ -12,13 +11,12 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "dateOfClaim": {"type": "string"},
+        "date_of_claim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "evidence": {
             "type": "dict",
             "schema": {
                 "medications": {
-                    "required": True,
                     "type": "list",
                     "schema": {
                         "type": "dict",
@@ -38,6 +36,32 @@ def validate_request_body(request_body):
                                 "type": "list",
                                 "nullable": True,
                                 "schema": {"type": "string"},
+                            },
+                        },
+                    },
+                },
+                "procedures": {
+                    "type": "list",
+                    "required": True,
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "required": True
+                            },
+                            "codeSystem": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                                "required": True
                             },
                         },
                     },
@@ -67,5 +91,6 @@ def validate_request_body(request_body):
         },
     }
     v = Validator(schema)
+    v.allow_unknown = True
 
     return {"is_valid": v.validate(request_body), "errors": v.errors}
