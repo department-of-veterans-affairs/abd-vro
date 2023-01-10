@@ -39,26 +39,19 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
-# If SLACK_THREAD_TS is set, the notification will be in a Slack thread
-NOTIFY_SLACK_OUT=$(scripts/notify-slack.sh "\`$0\`: ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\` ...")
-# If SLACK_THREAD_TS is not set, run eval so that SLACK_THREAD_TS env var is available for subsequent notifications in a Slack thread
-[ "$SLACK_THREAD_TS" ] || eval "$NOTIFY_SLACK_OUT"
-
-# Uninstall services dependent on the core
+# Uninstall services that are dependent on the core
 ./scripts/deploy-db.sh ${ENV} 0
 ./scripts/deploy-mq.sh ${ENV} 0
 ./scripts/deploy-redis.sh ${ENV} 0
 
-scripts/notify-slack.sh "Removing old \`core\`"
+source scripts/notify-slack.src "\`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\`"
 helm del $HELM_APP_NAME -n ${NAMESPACE}
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
 sleep 60 # wait for Persistent Volume Claim to be deleted
 
-scripts/notify-slack.sh "Deploying new \`core\`"
+source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
 helm upgrade --install $HELM_APP_NAME helm-service-core \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run
               #-f helm-service-core/"${ENV}".yaml
-
-scripts/notify-slack.sh "\`$0\`: Done"

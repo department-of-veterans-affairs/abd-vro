@@ -1,12 +1,15 @@
 #!/bin/bash
-
-: ${MESSAGE_TEXT:=$1}
-
-# Set if posting in a Slack thread
-: ${SLACK_THREAD_TS:=""}
+# Usage: source scripts/notify-slack.src <Slack message text>
+# $1 is expected to be the Slack message text
+# This script is sourced so that env variables (e.g., SLACK_THREAD_TS and SLACK_BOT_USER_OAUTH_ACCESS_TOKEN)
+# are accessible for subsequent calls to this script.
 
 # Default: C04CA47HV96 is #benefits-vro-devops
 : ${SLACK_CHANNEL:=C04CA47HV96}
+
+# Needed if posting in a Slack thread
+# If a new Slack post is desired, set SLACK_THREAD_TS to empty string
+: ${SLACK_THREAD_TS:=""}
 
 # Retrieve 'devops' secrets from Kubernetes and set environment vars
 setEnvVarsFromK8sSecrets(){
@@ -17,8 +20,6 @@ setEnvVarsFromK8sSecrets(){
 }
 if [ -z "$SLACK_BOT_USER_OAUTH_ACCESS_TOKEN" ] && [ -z "$SLACK_BOT_ACCESS_TOKEN_DEVOPS" ]; then
   setEnvVarsFromK8sSecrets
-  # Make it available for export it so that we don't need to query K8s for subsequent runs
-  echo "export SLACK_BOT_ACCESS_TOKEN_DEVOPS=$SLACK_BOT_ACCESS_TOKEN_DEVOPS"
 fi
 
 # Use SLACK_BOT_ACCESS_TOKEN_DEVOPS by default, but a different one could be used
@@ -28,10 +29,9 @@ fi
 # https://api.slack.com/tutorials/tracks/posting-messages-with-curl
 # https://api.slack.com/methods/chat.postMessage
 # >&2 echo "Posting to Slack"
-CURL_RESP=$(curl -s -d "text=$MESSAGE_TEXT" -d "channel=$SLACK_CHANNEL" -d "thread_ts=$SLACK_THREAD_TS" \
+CURL_RESP=$(curl -s -d "text=$1" -d "channel=$SLACK_CHANNEL" -d "thread_ts=$SLACK_THREAD_TS" \
   -H "Authorization: Bearer $SLACK_BOT_USER_OAUTH_ACCESS_TOKEN" -X POST https://slack.com/api/chat.postMessage)
 
 if [ -z "$SLACK_THREAD_TS" ]; then
   SLACK_THREAD_TS=$(echo $CURL_RESP | jq '.ts')
-  echo "export SLACK_THREAD_TS=$SLACK_THREAD_TS"
 fi
