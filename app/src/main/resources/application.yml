@@ -100,6 +100,7 @@ spring:
       sandbox: nonprod,k8s
       # For prod, only load application-prod.yml and application-k8s.yml
       prod: k8s
+      prod-test: k8s
 
   servlet:
     multipart:
@@ -168,6 +169,11 @@ springdoc:
 vro:
   # Deployment environment
   env: ${ENV:local}
+  persist:
+    tracking:
+      enabled: true
+      # Dependent on the mountPath configured in Kubernetes
+      base_folder: ${PERSIST_TRACKING_FOLDER}
 
   openapi:
     info:
