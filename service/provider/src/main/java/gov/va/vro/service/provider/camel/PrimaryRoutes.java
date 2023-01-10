@@ -68,7 +68,6 @@ public class PrimaryRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
         .process(assessmentResultProcessor);
-
   }
 
   private void configureRouteGeneratePdf() {

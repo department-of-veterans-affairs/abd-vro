@@ -82,21 +82,27 @@ class SaveToDbServiceImplTest {
     claim.setClaimSubmissionId("1234");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
-    saveToDbService.insertClaim(claim);
+    var result = saveToDbService.insertClaim(claim);
     ClaimEntity claimBeforeAssessment =
-        claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .orElseThrow();
     // ContentionEntity contention = new ContentionEntity("7101");
     // claimBeforeAssessment.addContention(contention);
     Map<String, Object> evidenceMap = new HashMap<>();
     evidenceMap.put("medicationsCount", "10");
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
     evidence.setEvidenceSummary(evidenceMap);
-    saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
-    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
-    assertNotNull(result);
-    assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
+    saveToDbService.insertAssessmentResult(
+        claimBeforeAssessment.getClaimSubmissionId(),
+        claimBeforeAssessment.getIdType(),
+        evidence,
+        "7101");
+    ClaimEntity result2 = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    assertNotNull(result2);
+    assertNotNull(result2.getContentions().get(0).getAssessmentResults().get(0));
     AssessmentResultEntity assessmentResult =
-        result.getContentions().get(0).getAssessmentResults().get(0);
+        result2.getContentions().get(0).getAssessmentResults().get(0);
     assertEquals(assessmentResult.getEvidenceCountSummary(), evidenceMap);
 
     long c = assessmentResultRepository.count();
@@ -110,7 +116,7 @@ class SaveToDbServiceImplTest {
     claim.setClaimSubmissionId("1234");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
-    saveToDbService.insertClaim(claim);
+    var result = saveToDbService.insertClaim(claim);
     // Build evidence
     InputStream stream = esdData.getInputStream();
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
@@ -122,11 +128,14 @@ class SaveToDbServiceImplTest {
         String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
     // Save evidence summary document.
     saveToDbService.insertEvidenceSummaryDocument(input, documentName);
-    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ClaimEntity result2 =
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(result.getClaimSubmissionId(), result.getIdType())
+            .orElseThrow();
     // Verify evidence is correct
-    assertNotNull(result);
+    assertNotNull(result2);
     EvidenceSummaryDocumentEntity esd =
-        result.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
+        result2.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
     assertNotNull(esd);
     assertEquals(esd.getDocumentName(), documentName);
     assertEquals(esd.getEvidenceCount().size(), 2);

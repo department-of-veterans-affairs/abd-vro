@@ -19,7 +19,6 @@ import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -69,9 +68,10 @@ public class ClaimMetricsTestCase {
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());
 
-    UUID claimEntityId = claimEntity.getId();
+    String claimSubmissionId = claimEntity.getClaimSubmissionId();
+    String idType = claimEntity.getIdType();
     AbdEvidenceWithSummary evidence = evidenceCase.getEvidenceWithSummary(claimSubmissionId);
-    service.insertAssessmentResult(claimEntityId, evidence, "7101");
+    service.insertAssessmentResult(claimSubmissionId, idType, evidence, "7101");
 
     GeneratePdfPayload gpp = getPdfPayload(evidence.getEvidence());
     service.insertEvidenceSummaryDocument(gpp, documentName);

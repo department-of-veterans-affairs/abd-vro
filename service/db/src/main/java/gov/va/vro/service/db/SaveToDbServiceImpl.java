@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,9 +41,12 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(
-          String claimSubmissionId, String idType, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
+      String claimSubmissionId,
+      String idType,
+      AbdEvidenceWithSummary evidenceResponse,
+      String diagnosticCode) {
     ClaimEntity claimEntity =
-            claimRepository.findByClaimSubmissionIdAndIdType(claimSubmissionId, idType).orElse(null);
+        claimRepository.findByClaimSubmissionIdAndIdType(claimSubmissionId, idType).orElse(null);
     if (claimEntity == null) {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
