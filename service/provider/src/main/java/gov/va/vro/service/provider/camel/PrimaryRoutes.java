@@ -42,7 +42,7 @@ public class PrimaryRoutes extends RouteBuilder {
     configureRouteClaimSubmitForFull();
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
-    configureRouteGenerateFetchPdf();
+    configureRouteimmediatePdf();
   }
 
   private void configureRouteClaimSubmit() {
@@ -84,7 +84,7 @@ public class PrimaryRoutes extends RouteBuilder {
     from(ENDPOINT_FETCH_PDF).routeId("fetch-pdf").to(pdfRoute(FETCH_PDF_QUEUE));
   }
 
-  private void configureRouteGenerateFetchPdf() {
+  private void configureRouteimmediatePdf() {
     from(ENDPOINT_GENERATE_FETCH_PDF)
         .routeId("generate-fetch-pdf")
         .to(pdfRoute(GENERATE_FETCH_PDF_QUEUE));

@@ -41,7 +41,7 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
-  public String generateFetchPdf(GeneratePdfPayload resource) {
+  public String immediatePdf(GeneratePdfPayload resource) {
     return producerTemplate.requestBody(
         PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF, resource, String.class);
   }

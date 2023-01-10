@@ -130,9 +130,9 @@ public interface VroResource {
       })
   @Timed(value = "evidence-pdf")
   @Tag(name = "Pdf Generation")
-  ResponseEntity<Object> generateFetchPdf(
+  ResponseEntity<Object> immediatePdf(
       @Parameter(
-              description = "metadata for generateFetchPdf",
+              description = "metadata for immediatePdf",
               required = true,
               schema = @Schema(implementation = GeneratePdfRequest.class))
           @Valid

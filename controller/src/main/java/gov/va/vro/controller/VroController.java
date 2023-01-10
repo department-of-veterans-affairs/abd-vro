@@ -41,6 +41,34 @@ public class VroController implements VroResource {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  public ResponseEntity fetchProcess(String claimSubmissionId, String response)
+      throws ClaimProcessingException {
+    try {
+      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
+      log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
+      if (pdfResponse.hasContent()) {
+        byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+        try (InputStream is = new ByteArrayInputStream(decoder)) {
+          InputStreamResource resource = new InputStreamResource(is);
+          String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
+          HttpHeaders headers = getHttpHeaders(diagnosis);
+          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+      } else {
+        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
+          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+        } else if (pdfResponse.getStatus().equals("ERROR")) {
+          log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
+          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
+      }
+    } catch (Exception ex) {
+      log.error("Error in fetch pdf", ex);
+      throw new ClaimProcessingException(claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+  }
+
   @Override
   public ResponseEntity<GeneratePdfResponse> generatePdf(GeneratePdfRequest request)
       throws ClaimProcessingException {
@@ -73,26 +101,7 @@ public class VroController implements VroResource {
     log.info("Fetching pdf for claim: {}", claimSubmissionId);
     try {
       String response = camelEntrance.fetchPdf(claimSubmissionId);
-      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
-      log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
-      if (pdfResponse.hasContent()) {
-        byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
-        try (InputStream is = new ByteArrayInputStream(decoder)) {
-          InputStreamResource resource = new InputStreamResource(is);
-          String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-          HttpHeaders headers = getHttpHeaders(diagnosis);
-          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-        }
-
-      } else {
-        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
-          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
-        } else if (pdfResponse.getStatus().equals("ERROR")) {
-          log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
-          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
-      }
+      return fetchProcess(claimSubmissionId, response);
     } catch (Exception ex) {
       log.error("Error in fetch pdf", ex);
       throw new ClaimProcessingException(claimSubmissionId, HttpStatus.INTERNAL_SERVER_ERROR, ex);
@@ -100,7 +109,7 @@ public class VroController implements VroResource {
   }
 
   @Override
-  public ResponseEntity<Object> generateFetchPdf(GeneratePdfRequest request)
+  public ResponseEntity<Object> immediatePdf(GeneratePdfRequest request)
       throws ClaimProcessingException {
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
@@ -109,27 +118,8 @@ public class VroController implements VroResource {
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
       log.info(model.toString());
-      String response = camelEntrance.generateFetchPdf(model);
-      FetchPdfResponse pdfResponse = objectMapper.readValue(response, FetchPdfResponse.class);
-      log.info("RESPONSE from fetchPdf returned status: {}", pdfResponse.getStatus());
-      if (pdfResponse.hasContent()) {
-        byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
-        try (InputStream is = new ByteArrayInputStream(decoder)) {
-          InputStreamResource resource = new InputStreamResource(is);
-          String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-          HttpHeaders headers = getHttpHeaders(diagnosis);
-          return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-        }
-
-      } else {
-        if (pdfResponse.getStatus().equals("NOT_FOUND")) {
-          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
-        } else if (pdfResponse.getStatus().equals("ERROR")) {
-          log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
-          return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(pdfResponse, HttpStatus.OK);
-      }
+      String response = camelEntrance.immediatePdf(model);
+      return fetchProcess(request.getClaimSubmissionId(), response);
     } catch (Exception ex) {
       log.error("Error in generate fetch pdf", ex);
       throw new ClaimProcessingException(
