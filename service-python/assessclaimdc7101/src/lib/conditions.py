@@ -25,15 +25,20 @@ def conditions_calculation(request_body):
     for condition in veterans_conditions:
         condition_code = condition["code"]
         if "recordedDate" in condition.keys():
-            condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
-            condition["dateFormatted"] = condition_date.strftime("%m/%d/%Y")
-            condition_with_date.append(condition)
-            if condition_date >= date_of_claim_date - relativedelta(years=2):
-                conditions_two_years.append(condition)
+            try:
+                condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
+                condition["dateFormatted"] = condition_date.strftime("%m/%d/%Y")
+                condition_with_date.append(condition)
+                if condition_date >= date_of_claim_date - relativedelta(years=2):
+                    conditions_two_years.append(condition)
+            except ValueError:
+                condition["dateFormatted"] = ""
+                condition_without_date.append(condition)
         else:
+            condition["dateFormatted"] = ""
             condition_without_date.append(condition)
 
-        if condition_code in hypertension_conditions.conditions:
+        if condition_code in hypertension_conditions.conditions and condition["category"] == "Encounter Diagnosis":
             condition["relevant"] = True
             count += 1
         else:

@@ -13,6 +13,7 @@ public class AbdCondition implements Comparable<AbdCondition> {
   private String status;
   private String onsetDate;
   private String recordedDate;
+  private String category;
 
   @Override
   public int compareTo(AbdCondition otherCondition) {
