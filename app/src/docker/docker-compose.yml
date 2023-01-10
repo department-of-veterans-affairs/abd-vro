@@ -224,6 +224,21 @@ services:
       - internal
     profiles: [ "prototype" ]
 
+  svc-assessor-respiratory:
+    image: va/abd_vro-assessclaimrespiratory:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+    profiles: [ "prototype" ]
+
   svc-feature-toggle:
     image: va/abd_vro-featuretoggle:latest
     <<: *common-security-opt

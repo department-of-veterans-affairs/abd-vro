@@ -1,4 +1,5 @@
 import pytest
+
 from assessclaimrespiratory.src.lib import main
 
 
@@ -61,6 +62,42 @@ from assessclaimrespiratory.src.lib import main
                                     "totalConditionsCount": 2},
                 'sufficientForFastTracking': True
             },
+        ),
+        (
+            {
+                "evidence": {
+                    "procedures": [
+                    ],
+                    "conditions": [{
+                        "text": "Emphysema",
+                        "code": "J43",
+                        "recordedDate": "1990-04-06",
+                        "status": "active"
+                    }]
+                },
+                "dateOfClaim": "2021-11-09",
+                "claimSubmissionId": "1234"
+            },
+            {
+                "evidence": {
+                    "procedures": [
+
+                    ],
+                    "conditions": [{
+                        "text": "Emphysema",
+                        "code": "J43",
+                        "recordedDate": "1990-04-06",
+                        "status": "active"
+                    }]
+                },
+                "evidenceSummary": {"relevantProceduresCount": 0,
+                                    "totalProceduresCount": 0,
+                                    "respProcedures": [],
+                                    "secondaryConditions": [],
+                                    "relevantConditionsCount": 1,
+                                    "totalConditionsCount": 1},
+                'sufficientForFastTracking': False
+            }
         )
     ]
 )

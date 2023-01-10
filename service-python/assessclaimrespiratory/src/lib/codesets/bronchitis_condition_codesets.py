@@ -68,4 +68,3 @@ bronchitis_conditions = {
         "J44.9"
     }
 }
-

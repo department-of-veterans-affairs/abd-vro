@@ -1,6 +1,7 @@
-from datetime import datetime
 
-from .codesets import emphysema_condition_codesets, bronchitis_condition_codesets, copd_condition_codesets, secondary_condition_codesets
+from .codesets import (bronchitis_condition_codesets, copd_condition_codesets,
+                       emphysema_condition_codesets,
+                       secondary_condition_codesets)
 
 
 def conditions_calculation(request_body):

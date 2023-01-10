@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from . import condition, utils, procedure
+from . import condition, procedure, utils
 
 
 def assess_respiratory_condition(event: Dict):
@@ -23,11 +23,12 @@ def assess_respiratory_condition(event: Dict):
 
         if conditions["relevantConditionsCount"] > 0:
             sufficient = False
-            if "Cor pulmonale" or "Right Ventricular Hypertrophy" or "Acute Respiratory Failure" \
+            if "Cor pulmonale" in conditions["secondaryConditions"] or "Right Ventricular Hypertrophy" \
+                    in conditions["secondaryConditions"] or "Acute Respiratory Failure" \
                     in conditions["secondaryConditions"]:
                 sufficient = True
             if "Pulmonary Hypertension" in conditions["secondaryConditions"] and \
-                    "Echocardiogram" or "Cardiac Catheterization" in procedures["respProcedures"]:
+                    "Echocardiogram" in procedures["respProcedures"] or "Cardiac Catheterization" in procedures["respProcedures"]:
                 sufficient = True
 
         response_body.update(
