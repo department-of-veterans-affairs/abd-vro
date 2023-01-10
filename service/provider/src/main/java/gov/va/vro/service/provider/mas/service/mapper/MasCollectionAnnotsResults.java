@@ -24,7 +24,6 @@ public class MasCollectionAnnotsResults {
   private static final String DATA_SOURCE = "MAS";
   private static final String UTC_TM = "T00:00:00Z";
   private static final String NOT_AVAILABLE_STR = "N/A";
-  private static final String NOT_AVAILABLE_DT = "9999-12-31";
   private static final String BP_CONDITION = "Hypertension";
   private static final String ASTHMA_CONDITION = "Asthma";
   private static final String BP_SYSTOLIC_CODE = "8480-6";
@@ -132,7 +131,7 @@ public class MasCollectionAnnotsResults {
     if (masAnnotation.getObservationDate() != null) {
       abdMedication.setAuthoredOn(masAnnotation.getObservationDate().replaceAll("Z", "") + UTC_TM);
     } else {
-      abdMedication.setAuthoredOn(NOT_AVAILABLE_DT + UTC_TM);
+      abdMedication.setAuthoredOn("");
     }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
@@ -149,7 +148,7 @@ public class MasCollectionAnnotsResults {
     if (masAnnotation.getObservationDate() != null) {
       abdCondition.setOnsetDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
     } else {
-      abdCondition.setOnsetDate(NOT_AVAILABLE_DT);
+      abdCondition.setOnsetDate("");
     }
     return abdCondition;
   }
@@ -176,7 +175,7 @@ public class MasCollectionAnnotsResults {
     if (!isNull(masDocument.getRecDate())) {
       veteranService.setReceiptDate(masDocument.getRecDate().replaceAll("Z", ""));
     } else {
-      veteranService.setReceiptDate(NOT_AVAILABLE_DT);
+      veteranService.setReceiptDate("");
     }
     ;
     if (!isNull(masDocument.getEfolderversionrefid())) {
