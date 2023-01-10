@@ -96,7 +96,10 @@ public class FhirClient {
                 AbdDomain.MEDICATION
               }),
           new AbstractMap.SimpleEntry<>(
-              "7101", new AbdDomain[] {AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION}),
+              "7101",
+              new AbdDomain[] {
+                AbdDomain.BLOOD_PRESSURE, AbdDomain.MEDICATION, AbdDomain.CONDITION
+              }),
           new AbstractMap.SimpleEntry<>("6602", new AbdDomain[] {AbdDomain.MEDICATION}),
           new AbstractMap.SimpleEntry<>(
               "6522",
@@ -106,11 +109,6 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<>(
               "6510",
               new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.PROCEDURE, AbdDomain.CONDITION}),
-          new AbstractMap.SimpleEntry<>(
-              "7101v2",
-              new AbdDomain[] {
-                AbdDomain.MEDICATION, AbdDomain.BLOOD_PRESSURE, AbdDomain.CONDITION
-              }),
           new AbstractMap.SimpleEntry<>(
               "cancer", new AbdDomain[] {AbdDomain.MEDICATION, AbdDomain.CONDITION}));
 
