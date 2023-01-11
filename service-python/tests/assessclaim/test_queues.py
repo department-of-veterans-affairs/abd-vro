@@ -4,7 +4,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from assessclaimcancer.src.lib import queues as qcancer
+from pdfgenerator.src.lib import queues as pdf_queues
+from assessclaimcancer.src.lib import queues as q_cancer
+from assessclaimrespiratory.src.lib import queues as q_respiratory
 from assessclaimdc6510.src.lib import queues as q6510
 from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 from assessclaimdc6522.src.lib import queues as q6522
@@ -20,22 +22,23 @@ logging_setup.set_format()
 
 
 @pytest.mark.parametrize(
-    "queue, service_queue_name", [
-        (q6602v2, "6602v2"),
-        (q6602, "6602"),
-        (q7101, "7101"),
-        (q6522, "6522"),
-        (qcancer, "cancer")
+    "queue, service_queue_name, exchange", [
+        (q6602v2, "health-assess.6602v2", "health-assess-exchange"),
+        (q6602, "health-assess.6602", "health-assess-exchange"),
+        (q7101, "health-assess.7101", "health-assess-exchange"),
+        (q6522, "health-assess.6522", "health-assess-exchange"),
+        (q_cancer, "health-assess.cancer", "health-assess-exchange"),
+        (q_respiratory, "health-assess.respiratory", "health-assess-exchange"),
     ]
 )
-def test_queue_setup(queue, service_queue_name, caplog):
-    queue_name = f"health-assess.{service_queue_name}"
+def test_queue_setup(queue, service_queue_name, exchange, caplog):
+    queue_name = service_queue_name
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
         queue.queue_setup(channel=channel)
 
     channel.exchange_declare.assert_called_with(
-        exchange="health-assess-exchange",
+        exchange=exchange,
         exchange_type="direct",
         durable=True,
         auto_delete=True,
@@ -43,7 +46,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
 
     channel.queue_declare.assert_called_with(queue=queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
-        queue=queue_name, exchange="health-assess-exchange"
+        queue=queue_name, exchange=exchange
     )
     assert channel.basic_consume
 

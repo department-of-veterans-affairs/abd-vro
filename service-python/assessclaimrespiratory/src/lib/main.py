@@ -46,6 +46,7 @@ def assess_respiratory_condition(event: Dict):
                     "totalConditionsCount": conditions["totalConditionsCount"],
                 },
                 "sufficientForFastTracking": sufficient,
+                "claimSubmissionId": event['claimSubmissionId']
             }
         )
         logging.info("Message processed successfully")
