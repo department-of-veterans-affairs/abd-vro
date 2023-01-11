@@ -27,6 +27,8 @@ public class GeneratePdfPayload {
 
   @NonNull private String diagnosticCode;
 
+  private String idType;
+
   @JsonProperty("veteranInfo")
   private VeteranInfo veteranInfo;
 

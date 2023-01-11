@@ -43,7 +43,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     var veteran = TestDataSupplier.createVeteran("X", "Y");
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    var claim = TestDataSupplier.createClaim("1234", "va.gov-Form256", veteran);
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

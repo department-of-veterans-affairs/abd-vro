@@ -1,6 +1,7 @@
 {
   "claimSubmissionId": "1234",
   "diagnosticCode": "7101",
+  "idType": "va.gov-Form256",
   "conditions":  {
     "disabilityActionType": "NEW",
     "name": "high blood pressure"

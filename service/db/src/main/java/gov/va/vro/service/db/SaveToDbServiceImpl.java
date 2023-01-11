@@ -70,7 +70,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
     ClaimEntity claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
+        claimRepository
+            .findByClaimSubmissionIdAndIdType(request.getClaimSubmissionId(), request.getIdType())
+            .orElse(null);
     if (claim == null) {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;

@@ -71,6 +71,7 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureRouteGeneratePdf() {
+    String test = "test";
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
         .wireTap(VroCamelUtils.wiretapProducer(GENERATE_PDF_WIRETAP))

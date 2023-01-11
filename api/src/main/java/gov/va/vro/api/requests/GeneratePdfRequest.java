@@ -25,6 +25,10 @@ public class GeneratePdfRequest {
   private String claimSubmissionId;
 
   @NotBlank
+  @Schema(description = "Claim submission ID type", example = "va.gov-Form256")
+  private String idType;
+
+  @NotBlank
   @Schema(description = "Diagnostic code", example = "7101")
   private String diagnosticCode;
 
