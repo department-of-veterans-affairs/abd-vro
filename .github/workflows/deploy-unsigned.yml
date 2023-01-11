@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
-      deploy_success: ${{ steps.cancelled-job.outputs.cancelled_job }}
+      deploy_success: ${{ steps.lhdi_deployment.outputs.deploy_success }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
@@ -119,6 +119,7 @@ jobs:
         run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
+        id: lhdi_deployment
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
             echo "deploy_success=true" >> $GITHUB_OUTPUT      
