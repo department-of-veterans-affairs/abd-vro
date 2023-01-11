@@ -114,7 +114,7 @@ class SaveToDbServiceImplTest {
     // Save claim
     Claim claim = new Claim();
     claim.setClaimSubmissionId("1234");
-    claim.setIdType("va.gov-Form256");
+    claim.setIdType("va.gov-Form526Submission");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     var result = saveToDbService.insertClaim(claim);

@@ -1,6 +1,6 @@
 {
   "claimSubmissionId": "1234",
-  "idType": "va.gov-Form256",
+  "idType": "va.gov-Form526Submission",
   "diagnosticCode": "7101",
   "veteranInfo": {
     "first": "Joe",

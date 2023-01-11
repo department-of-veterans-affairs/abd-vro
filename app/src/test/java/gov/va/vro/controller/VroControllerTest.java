@@ -247,7 +247,7 @@ class VroControllerTest extends BaseControllerTest {
   void generatePdfInvalidInput() {
     var generatePdf = new GeneratePdfRequest();
     generatePdf.setClaimSubmissionId("1234");
-    generatePdf.setIdType("va.gov-Form256");
+    generatePdf.setIdType("va.gov-Form526Submission");
     generatePdf.setVeteranInfo(new VeteranInfo());
     generatePdf.setEvidence(new AbdEvidence());
     var response = post("/v1/evidence-pdf", generatePdf, ClaimProcessingError.class);
