@@ -76,6 +76,7 @@ public class TestSetup {
 
     ObjectNode result = mapper.createObjectNode();
     result.put("claimSubmissionId", getClaimSubmissionId());
+    result.put("idType", "va.gov-Form526Submission");
     result.put("diagnosticCode", getDiagnosticCode());
     result.set("veteranInfo", veteranInfoNode);
     result.set("evidence", evidence);
