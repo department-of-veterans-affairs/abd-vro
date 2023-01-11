@@ -52,8 +52,7 @@ jobs:
 
       - name: "Set output for use by deploy job"
         id: slack-thread-id
-        run: |
-          echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
+        run: echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -92,6 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
+      deploy_success: ${{ steps.cancelled-job.outputs.cancelled_job }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
@@ -116,14 +116,12 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
-        run: |
-          ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
+        run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
-            echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
-            echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+            echo "deploy_success=true" >> $GITHUB_OUTPUT      
           else
             # Return nonzero error code so that workflow fails
             exit 1
@@ -144,6 +142,12 @@ jobs:
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
+      - name: "Set Successful Deployment Message"
+        if: ${{ needs.deploy-images.outputs.deploy_success == 'true' }}
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
 
       # if either of the deploy jobs fail,
       # the DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI should not change from its default "failure" state
