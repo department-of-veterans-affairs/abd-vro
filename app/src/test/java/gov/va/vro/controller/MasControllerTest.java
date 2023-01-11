@@ -11,9 +11,10 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.persistence.repository.AuditEventRepository;
+import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
-import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,9 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Autowired private CamelContext camelContext;
 
-  @Autowired @SpyBean private AuditEventService auditEventService;
+  @Autowired private ClaimRepository claimRepository;
+
+  @Autowired private AuditEventRepository auditEventRepository;
 
   @Test
   @SneakyThrows
@@ -118,6 +120,8 @@ public class MasControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertTrue(offrampCalled.get());
     assertTrue(completeCalled.get());
+
+    verifyClaimPersisted(request);
   }
 
   @Test
@@ -139,6 +143,12 @@ public class MasControllerTest extends BaseControllerTest {
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasOfframpEndpoint.expectedMessageCount(1);
+
+    verifyClaimPersisted(request);
+
+    var response = responseEntity.getBody();
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
+    assertTrue(audits.size() > 0);
   }
 
   @Test
@@ -159,5 +169,17 @@ public class MasControllerTest extends BaseControllerTest {
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  private void verifyClaimPersisted(MasAutomatedClaimPayload request) {
+    var claim =
+        claimRepository.findByClaimSubmissionId(Integer.toString(request.getClaimId())).get();
+    assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
+    assertEquals(request.getVeteranIcn(), claim.getVeteran().getIcn());
+    var contentions = claim.getContentions();
+    assertEquals(1, contentions.size());
+    var contention = contentions.get(0);
+    assertEquals(request.getDiagnosticCode(), contention.getDiagnosticCode());
+    claimRepository.delete(claim);
   }
 }
