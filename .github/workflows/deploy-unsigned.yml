@@ -85,8 +85,7 @@ jobs:
       - name: "Cancelled Deploy Images Job"
         id: cancelled-job
         if: cancelled()
-        run: |
-          echo "cancelled_job=true" >> $GITHUB_OUTPUT
+        run: echo "cancelled_job=true" >> $GITHUB_OUTPUT
 
   deploy-images:
     needs: publish-images
@@ -130,16 +129,15 @@ jobs:
             exit 1
           fi
 
-      - name: "Cancelled Deploy Images Job"
+      - name: "Cancelled Publish Images Job"
         id: cancelled-job
         if: cancelled()
-        run: |
-          echo "cancelled_job=true" >> $GITHUB_OUTPUT      
+        run: echo "cancelled_job=true" >> $GITHUB_OUTPUT      
 
   notify-slack:
     needs: [publish-images, deploy-images]
     runs-on: ubuntu-latest
-    if: ${{ always() }}
+    if: always()
     steps:
       - name: "Cancelled jobs"
         if: ${{ needs.publish-images.outputs.cancelled_job == 'true' || needs.deploy-images.outputs.cancelled_job == 'true' }}
