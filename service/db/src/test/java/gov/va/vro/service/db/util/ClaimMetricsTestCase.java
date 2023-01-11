@@ -36,6 +36,8 @@ public class ClaimMetricsTestCase {
 
   private String icn;
 
+  private String idType;
+
   private AbdEvidenceCase evidenceCase;
 
   private String documentName;
@@ -47,6 +49,7 @@ public class ClaimMetricsTestCase {
 
     result.setEvidence(evidence);
     result.setDiagnosticCode("7101");
+    result.setIdType("va.gov-Form256");
     result.setClaimSubmissionId(claimSubmissionId);
     result.setVeteranInfo(veteranInfo);
 
@@ -62,6 +65,7 @@ public class ClaimMetricsTestCase {
     claim.setClaimSubmissionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
+    claim.setIdType("va.gov-Form256");
     service.insertClaim(claim);
 
     ClaimEntity claimEntity = repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
