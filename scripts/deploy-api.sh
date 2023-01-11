@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Ryan says this file can be deleted
 
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
