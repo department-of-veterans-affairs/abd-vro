@@ -35,7 +35,6 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
-      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -81,16 +80,10 @@ jobs:
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
 
-      - name: "Cancelled Deploy Images Job"
-        id: cancelled-job
-        if: cancelled()
-        run: echo "cancelled_job=true" >> $GITHUB_OUTPUT
-
   deploy-images:
     needs: publish-images
     runs-on: ubuntu-latest
     outputs:
-      cancelled_job: ${{ steps.cancelled-job.outputs.cancelled_job }}
       deploy_success: ${{ steps.lhdi_deployment.outputs.deploy_success }}
     steps:
       - name: "Notify Slack: Deploying..."
@@ -119,7 +112,7 @@ jobs:
         run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
-        id: lhdi_deployment
+        id: lhdi-deployment
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
             echo "deploy_success=true" >> $GITHUB_OUTPUT      
@@ -128,18 +121,13 @@ jobs:
             exit 1
           fi
 
-      - name: "Cancelled Publish Images Job"
-        id: cancelled-job
-        if: cancelled()
-        run: echo "cancelled_job=true" >> $GITHUB_OUTPUT      
-
   notify-slack:
     needs: [publish-images, deploy-images]
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: "Cancelled jobs"
-        if: ${{ needs.publish-images.outputs.cancelled_job == 'true' || needs.deploy-images.outputs.cancelled_job == 'true' }}
+      - name: "Cancelled workflow"
+        if: cancelled()
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
