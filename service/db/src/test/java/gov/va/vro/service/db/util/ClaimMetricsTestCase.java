@@ -49,7 +49,7 @@ public class ClaimMetricsTestCase {
 
     result.setEvidence(evidence);
     result.setDiagnosticCode("7101");
-    result.setIdType("va.gov-Form256");
+    result.setIdType("va.gov-Form526Submission");
     result.setClaimSubmissionId(claimSubmissionId);
     result.setVeteranInfo(veteranInfo);
 
@@ -65,10 +65,11 @@ public class ClaimMetricsTestCase {
     claim.setClaimSubmissionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
-    claim.setIdType("va.gov-Form256");
+    claim.setIdType("va.gov-Form526Submission");
     service.insertClaim(claim);
 
-    ClaimEntity claimEntity = repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
+    ClaimEntity claimEntity =
+        repo.findByClaimSubmissionIdAndIdType(claimSubmissionId, claim.getIdType()).orElseThrow();
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());
 
