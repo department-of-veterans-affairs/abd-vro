@@ -29,7 +29,8 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   docker push -a "ghcr.io/${REPO}/${IMG_NAME}"
 done
 
+# TODO: replace this with a `add-3rd-party-image.sh` script to be run manually for each new version
 # Pull, tag, and push these third-party images to work around https://www.docker.com/increase-rate-limits/
-docker pull rabbitmq:3
-docker tag rabbitmq:3 "ghcr.io/${REPO}/vro-rabbitmq:3"
-docker push "ghcr.io/${REPO}/vro-rabbitmq:3"
+#docker pull rabbitmq:3
+#docker tag rabbitmq:3 "ghcr.io/${REPO}/vro-rabbitmq:3"
+#docker push "ghcr.io/${REPO}/vro-rabbitmq:3"
