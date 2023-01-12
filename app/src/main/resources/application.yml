@@ -218,6 +218,8 @@ bip:
   stationId: "${BIP_STATION_ID}"
 truststore: "${BIP_TRUSTSTORE}"
 truststore_password: "${BIP_PASSWORD}"
+keystore: "${BIP_KEYSTORE}"
+bipalias: "${BIP_ALIAS}"
 
 spring.config.import: >
   conf-camel.yml,

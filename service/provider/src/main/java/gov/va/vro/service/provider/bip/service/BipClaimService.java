@@ -1,11 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.FileIdType;
-import gov.va.vro.model.bip.UpdateContention;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bip.*;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
@@ -179,7 +174,7 @@ public class BipClaimService {
       bipApiService.uploadEvidence(
           FileIdType.FILENUMBER,
           pdfResponse.getClaimSubmissionId(),
-          new BipFileUploadPayload(),
+          BipFileUploadPayload.builder().build(),
           file);
       return pdfResponse;
     } catch (IOException ioe) {

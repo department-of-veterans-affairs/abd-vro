@@ -38,7 +38,7 @@ class BipApiConfigTest {
     }
 
     try {
-      config.setTrustStore("bipcert.jks");
+      config.setTrustStore("biptruststore.jks");
       config.setPassword("bad");
       RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
