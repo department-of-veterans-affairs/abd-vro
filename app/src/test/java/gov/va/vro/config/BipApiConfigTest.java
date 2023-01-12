@@ -2,6 +2,7 @@ package gov.va.vro.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import gov.va.vro.service.provider.bip.BipException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,11 +40,23 @@ class BipApiConfigTest {
 
     try {
       config.setTrustStore("biptruststore.jks");
+      config.setKeystore("biptruststore.jks");
       config.setPassword("bad");
       RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
-    } catch (Exception e) {
+    } catch (BipException e) {
       assertTrue(true);
+    } catch (Exception e) {
+      fail();
+    }
+
+    try {
+      config.setTrustStore("");
+      config.setPassword("");
+      RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
+      assertNotNull(temp);
+    } catch (Exception e) {
+      fail();
     }
   }
 }

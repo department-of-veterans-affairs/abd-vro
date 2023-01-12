@@ -146,9 +146,9 @@ exportSecretIfUnset BIP_PASSWORD
 exportSecretIfUnset BIP_ALIAS
 
 # TODO: Move all? of these to application*.yml
-export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
-export BIP_CLAIM_ISS=virtual_regional_office
-export BIP_EVIDENCE_URL=vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
-export BIP_EVIDENCE_ISS=VRO
-export BIP_APPLICATION_ID=VRO
-export BIP_STATION_ID=281
+#export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
+#export BIP_CLAIM_ISS=virtual_regional_office
+#export BIP_EVIDENCE_URL=vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
+#export BIP_EVIDENCE_ISS=VRO
+#export BIP_APPLICATION_ID=VRO
+#export BIP_STATION_ID=281
