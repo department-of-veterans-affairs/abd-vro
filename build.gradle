@@ -108,7 +108,7 @@ subprojects {
 
 ext {
   jacoco_enforce_violations = true
-  jacoco_minimum_coverage = 0.6
+  jacoco_minimum_coverage = 0.8
   codeModules = [
     ':app',
     ':api',
