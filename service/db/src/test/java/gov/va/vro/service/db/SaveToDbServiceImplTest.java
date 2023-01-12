@@ -132,7 +132,8 @@ class SaveToDbServiceImplTest {
 
   @Test
   void multipleRequests() {
-    Claim claim1 = Claim.builder()
+    Claim claim1 =
+        Claim.builder()
             .claimSubmissionId("1234")
             .collectionId("111")
             .veteranIcn("v1")
@@ -147,7 +148,8 @@ class SaveToDbServiceImplTest {
     ContentionEntity contentionEntity = claimEntity1.getContentions().get(0);
     assertEquals(claim1.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
 
-    Claim claim2 = Claim.builder()
+    Claim claim2 =
+        Claim.builder()
             .claimSubmissionId("1234")
             .collectionId("111")
             .veteranIcn("v1")
@@ -155,9 +157,9 @@ class SaveToDbServiceImplTest {
             .build();
     saveToDbService.insertClaim(claim2);
     ClaimEntity claimEntity2 =
-            claimRepository
-                    .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
-                    .orElseThrow();
+        claimRepository
+            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
+            .orElseThrow();
     assertEquals(2, claimEntity2.getContentions().size());
   }
 }
