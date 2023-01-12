@@ -90,8 +90,7 @@ jobs:
     needs: publish-images
     runs-on: ubuntu-latest
     outputs:
-      deploy_status: ${{ steps.lhdi-deployment.outputs.job_status }}
-      job_status: ${{ steps.cancelled-job.outputs.job_status }}
+      job_status: ${{ steps.lhdi-deployment.outputs.job_status }} || ${{ steps.cancelled-job.outputs.job_status }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
