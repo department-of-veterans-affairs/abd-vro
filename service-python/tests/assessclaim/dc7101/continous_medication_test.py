@@ -256,7 +256,7 @@ def test_continuous_medication_required(
                         {
                             "description": "Benazepril",
                             "status": "active",
-                            "dateFormatted": "1952-?-06T04:00:00Z",
+                            "dateFormatted": "unparsed (1952-?-06T04:00:00Z)",
                             "authoredOn": "1952-?-06T04:00:00Z",  # malformed
                         },
                     ],
