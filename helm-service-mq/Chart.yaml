@@ -1,6 +1,5 @@
 apiVersion: v2
 # `name` affects container hostnames, so references to those hostnames must be updated too
-# TODO: Update these values for all the `helm-service-*` folders
 name: vro-api
 description: Message Queue service used by VRO and its microservices
 
