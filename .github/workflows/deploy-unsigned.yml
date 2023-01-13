@@ -126,7 +126,7 @@ jobs:
         id: lhdi-deployment
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
-            echo "JOB_STATUS=success" >> $GITHUB_ENV    
+            echo "JOB_STATUS=success" >> $GITHUB_ENV   
           else
             # Return nonzero error code so that workflow fails
             exit 1
@@ -149,7 +149,7 @@ jobs:
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
       - name: "Set Successful Deployment Message"
-        if: ${{ needs.deploy-images.outputs.deploy_status == 'success' }}
+        if: ${{ needs.deploy-images.outputs.job_status == 'success' }}
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
