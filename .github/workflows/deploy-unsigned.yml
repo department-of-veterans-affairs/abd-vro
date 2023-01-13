@@ -106,8 +106,8 @@ jobs:
 
       - name: "Deploy to ${{ env.TARGET_ENV }} env"
         env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+          SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
+          SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
         run: |
           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
