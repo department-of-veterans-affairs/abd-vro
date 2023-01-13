@@ -102,7 +102,7 @@ services:
     image: va/abd_vro-postgres
     hostname: postgres-service
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: "pg_isready -U $$FLYWAY_USER -d $$FLYWAY_DB"
       interval: 10s
       timeout: 5s
       retries: 5
