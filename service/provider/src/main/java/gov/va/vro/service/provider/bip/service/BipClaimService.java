@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.bip.BipFileProviderData;
 import gov.va.vro.model.bip.BipFileUploadPayload;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
@@ -175,11 +176,36 @@ public class BipClaimService {
       byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
       InputStream is = new ByteArrayInputStream(decoder);
       Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      List<String> contentionList = new ArrayList<>(); // find contention related
+      BipFileProviderData providerData =
+          BipFileProviderData.builder()
+              .contentSource("VRO")
+              .claimantFirstName("") // Get first name
+              .claimantMiddleInitial("") // Get middle,
+              .claimantLastName("") // Get ast name
+              .claimantSsn("") // Get ssn
+              .benefitTypeId(10)
+              .documentTypeId(131)
+              .dateVaReceivedDocument("1900-01-01") // don't know what data is
+              .subject(pdfResponse.getDiagnosis()) // get a subject
+              .contentions(contentionList)
+              .alternativeDocmentTypeIds(List.of(1))
+              .actionable(false)
+              .associatedClaimIds(List.of("1"))
+              .notes(List.of(pdfResponse.getReason()))
+              .payeeCode("00")
+              .endProductCode("130DPNDCY")
+              .regionalProcessingOffice("Buffalo") // get an office.
+              .facilityCode("Facility")
+              .claimantParticipantId("601108526") // get a participant ID
+              .sourceComment("upload from VRO")
+              .claimantDateOfBirth("1900-01-01") // get DOB
+              .build();
       // TODO: I don't know what parameters should be passed here. A BIP expert will address this
       bipApiService.uploadEvidence(
           FileIdType.FILENUMBER,
           pdfResponse.getClaimSubmissionId(),
-          new BipFileUploadPayload(),
+          BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
           file);
       return pdfResponse;
     } catch (IOException ioe) {
