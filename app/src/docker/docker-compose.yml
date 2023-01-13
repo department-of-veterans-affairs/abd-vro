@@ -54,6 +54,17 @@ x-common-security-opt: &common-security-opt
   security_opt:
     - no-new-privileges:true
 
+x-common-sde-security: &common-sde-security
+  ulimits:
+    nproc: 65535
+
+x-python-healthcheck: &python-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "pgrep python || exit 1"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
 services:
 
   rabbitmq-service:
@@ -90,6 +101,11 @@ services:
   postgres-service:
     image: va/abd_vro-postgres
     hostname: postgres-service
+    healthcheck:
+      test: "pg_isready -U $$FLYWAY_USER -d $$FLYWAY_DB"
+      interval: 10s
+      timeout: 5s
+      retries: 5
     expose:
       - "5432"
     environment:
@@ -127,17 +143,28 @@ services:
   app:
     image: va/abd_vro-app:latest
     <<: *common-security-opt
+    <<: *common-sde-security
     hostname: app
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
       # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
       <<: *common-vars
       <<: *rabbitmq-placeholder-vars
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
+      PERSIST_TRACKING_FOLDER: ${PERSIST_TRACKING_FOLDER}
+      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_PASSWORD: ${BIP_PASSWORD}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+      BIP_ALIAS: ${BIP_ALIAS}
     depends_on:
       - postgres-service
       - rabbitmq-service
@@ -150,6 +177,8 @@ services:
   svc-assessor-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -162,6 +191,8 @@ services:
   svc-assessor-dc6602:
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -174,6 +205,8 @@ services:
   svc-assessor-dc6602v2:
     image: va/abd_vro-assessclaimdc6602v2:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -187,6 +220,8 @@ services:
   svc-assessor-cancer:
     image: va/abd_vro-assessclaimcancer:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -200,6 +235,7 @@ services:
   svc-feature-toggle:
     image: va/abd_vro-featuretoggle:latest
     <<: *common-security-opt
+    <<: *common-sde-security
     environment:
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
@@ -215,6 +251,8 @@ services:
   svc-assessor-dc6510:
     image: va/abd_vro-assessclaimdc6510:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -228,6 +266,8 @@ services:
   svc-assessor-dc6522:
     image: va/abd_vro-assessclaimdc6522:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -241,6 +281,8 @@ services:
   svc-pdf-generator:
     image: va/abd_vro-pdfgenerator:latest
     <<: *common-security-opt
+    <<: *common-sde-security
+    <<: *python-healthcheck
     environment:
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
@@ -256,6 +298,7 @@ services:
   svc-lighthouse-api:
     image: va/abd_vro-service-data-access:latest
     <<: *common-security-opt
+    <<: *common-sde-security
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
@@ -271,6 +314,7 @@ services:
   console:
     image: va/abd_vro-console:latest
     <<: *common-security-opt
+    <<: *common-sde-security
     profiles: ["debug"]
     # stdin and tty are needed for user interaction
     stdin_open: true

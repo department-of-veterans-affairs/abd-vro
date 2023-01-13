@@ -8,11 +8,6 @@ then
   echo "Please enter valid environment (dev, sandbox, qa, prod, prod-test)" && exit 1
 fi
 
-if [ "${GITHUB_ACCESS_TOKEN}" == "" ]
-then
-  echo "please set your github access token environment variable (export GITHUB_ACCESS_TOKEN=XXXXXX)" && exit 2
-fi
-
 #get the current sha from github repository
 GIT_SHA=$(git rev-parse HEAD)
 if [ -n "$2" ]
@@ -28,7 +23,7 @@ else
 fi
 
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
---set-string info.vekrsion=${IMAGE_TAG} \
+--set-string info.version=${IMAGE_TAG} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
@@ -39,13 +34,21 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
-./scripts/deploy-db ${ENV} 0
-./scripts/deploy-mq ${ENV} 0
-./scripts/deploy-redis ${ENV} 0
-helm del $HELM_APP_NAME -n ${NAMESPACE}
+# Post an initial message so that Slack notifications from deploy-*.sh are threaded
+# and SLACK_BOT_USER_OAUTH_ACCESS_TOKEN is retrieved only once from Kubernetes
+source scripts/notify-slack.src "\`$0\`: ENV=\`${ENV}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
 
+# Uninstall services that are dependent on the core
+./scripts/deploy-db.sh ${ENV} 0
+./scripts/deploy-mq.sh ${ENV} 0
+./scripts/deploy-redis.sh ${ENV} 0
+
+source scripts/notify-slack.src "\`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\`"
+helm del $HELM_APP_NAME -n ${NAMESPACE}
 echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+sleep 60 # wait for Persistent Volume Claim to be deleted
+
+source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\`"
 helm upgrade --install $HELM_APP_NAME helm-service-core \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \

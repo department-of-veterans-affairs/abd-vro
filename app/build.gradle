@@ -9,8 +9,17 @@ testSets {
   end2endTest
 }
 
-tasks.named("end2endTest") {
+tasks.withType(Test).named("end2endTest") {
   useJUnitPlatform()
+  testLogging {
+    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
+    showStandardStreams = true
+    events "skipped", "failed", "passed"
+    exceptionFormat = 'full'
+    showStackTraces = true
+    showExceptions = true
+    showCauses = true
+  }
 }
 
 dependencies {
@@ -53,6 +62,7 @@ dependencies {
   // https://mvnrepository.com/artifact/com.google.code.gson/gson
   implementation "com.google.code.gson:gson:${gson_version}"
 
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
 
   // Needed?
   // implementation "org.postgresql:postgresql:${postgresql_version}"

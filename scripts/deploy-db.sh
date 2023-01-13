@@ -1,17 +1,12 @@
 #!/bin/bash
 
 ENV=$(tr '[A-Z]' '[a-z]' <<< "$1")
-RESTART=$(tr '[0-1]' <<< "$2")
+RESTART=$2
 
 #verify we have an environment set
 if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] && [ "${ENV}" != "prod" ] && [ "${ENV}" != "prod-test" ]
 then
   echo "Please enter valid environment (dev, sandbox, qa, prod, prod-test)" && exit 1
-fi
-
-if [ "${GITHUB_ACCESS_TOKEN}" == "" ]
-then
-  echo "please set your github access token environment variable (export GITHUB_ACCESS_TOKEN=XXXXXX)" && exit 2
 fi
 
 #get the current sha from github repository
@@ -30,7 +25,7 @@ fi
 
 source scripts/image_vars_db.src
 generateImageArgs(){
-  local _IMAGE_TAG=$3
+  local _IMAGE_TAG=$2
 
   # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
@@ -66,14 +61,19 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
+source scripts/notify-slack.src "\`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\`"
 helm del $HELM_APP_NAME -n ${NAMESPACE}
-echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
-#sleep 60 # wait for Persistent Volume Claim to be deleted
+
 if [ "${RESTART}" == "1" ]
 then
-helm upgrade --install $HELM_APP_NAME helm-service-db \
+  source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\` IMAGE_TAG=\`${IMAGE_TAG}\`"
+
+  # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
+  # sleep 60 # wait for Persistent Volume Claim to be deleted
+  helm upgrade --install $HELM_APP_NAME helm-service-db \
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
-              -n ${NAMESPACE} #--dry-run
+              -n ${NAMESPACE}
+              #--dry-run
               #-f helm-service-db/"${ENV}".yaml
 fi

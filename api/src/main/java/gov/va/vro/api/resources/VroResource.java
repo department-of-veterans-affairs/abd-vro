@@ -1,10 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.api.model.MetricsProcessingException;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.ClaimMetricsResponse;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
 import io.micrometer.core.annotation.Timed;
@@ -108,6 +106,41 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
+      summary = "Immediate PDF",
+      description =
+          "This endpoint generates the Evidence PDF for a specific patient and a diagnostic "
+              + "code. The endpoint will return the PDF but is also available from the "
+              + "'GET evidence-pdf' endpoint using claim submission id.")
+  @PostMapping("/immediate-pdf")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "evidence-pdf")
+  @Tag(name = "Pdf Generation")
+  ResponseEntity<Object> immediatePdf(
+      @Parameter(
+              description = "metadata for immediatePdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
+      throws MethodArgumentNotValidException, ClaimProcessingException;
+
+  @Operation(
       summary = "Provides health data assessment",
       description =
           "This endpoint provides health data assessment for a Veteran claim "
@@ -151,32 +184,4 @@ public interface VroResource {
           @RequestBody
           HealthDataAssessmentRequest claim)
       throws MethodArgumentNotValidException, ClaimProcessingException;
-
-  @Operation(
-      summary = "Retrieves metrics on the previously processed claims",
-      description =
-          "This endpoint provides metrics on the previously processed claims. "
-              + "Currently only the number of the processed claims is provided.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Claim Metrics Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @GetMapping("/claim-metrics")
-  @ResponseStatus(HttpStatus.OK)
-  @Timed(value = "claim-metrics")
-  @Tag(name = "Claim Metrics")
-  ResponseEntity<ClaimMetricsResponse> claimMetrics()
-      throws MethodArgumentNotValidException, ClaimProcessingException, MetricsProcessingException;
 }

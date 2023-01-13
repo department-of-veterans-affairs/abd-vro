@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class VroV2Tests {
 
   private static final String BASE_URL = "http://localhost:8080/v2";
-  private static final String EXAM_ORDERING_URL = BASE_URL + "/examOrderingStatus";
+  private static final String EXAM_ORDERING_STATUS_URL = BASE_URL + "/examOrderingStatus";
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
 
   private static final String JWT_TOKEN =
@@ -31,17 +32,36 @@ public class VroV2Tests {
 
   private final RestTemplate restTemplate = new RestTemplate();
 
+  /*
+   * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
+   * Eventually we should refactor this out into its own test suite with other endpoints
+   * for any security-related HTTP tests.
+   */
+  @Test
+  void testExamOrderingStatus_disallowedCharacters() {
+    var request = getOrderingStatusDisallowedCharacters();
+    var requestEntity = getEntity(request);
+    try {
+      restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
+      fail("Should have thrown exception");
+    } catch (Exception e) {
+      assertTrue("400 : \"{\"message\":\"Bad Request\"}\"".equals(e.getMessage()));
+    }
+  }
+
   @Test
   void testExamOrderingStatus_invalidRequest() {
     var request = getOrderingStatusInvalidRequest();
     var requestEntity = getEntity(request);
     try {
-      restTemplate.postForEntity(EXAM_ORDERING_URL, requestEntity, String.class);
+      restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
     } catch (Exception e) {
-      assertEquals(
-          "400 : \"{\"message\":\"collectionStatus: Collection Status is required\"}\"",
-          e.getMessage());
+      assertTrue(
+          "400 : \"{\"message\":\"collectionId: Collection ID is required\\ncollectionStatus: Collection Status is required\"}\""
+                  .equals(e.getMessage())
+              || "400 : \"{\"message\":\"collectionStatus: Collection Status is required\\ncollectionId: Collection ID is required\"}\""
+                  .equals(e.getMessage()));
     }
   }
 
@@ -49,10 +69,11 @@ public class VroV2Tests {
   void testExamOrderingStatus() {
     var request = getOrderingStatusValidRequest();
     var requestEntity = getEntity(request);
-    var response = restTemplate.postForEntity(EXAM_ORDERING_URL, requestEntity, MasResponse.class);
+    var response =
+        restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received", masResponse.getMessage());
+    assertEquals("Received Exam Order Status for collection Id 123.", masResponse.getMessage());
   }
 
   @Test
@@ -64,7 +85,7 @@ public class VroV2Tests {
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received", masResponse.getMessage());
+    assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
   }
 
   @Test
@@ -76,7 +97,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Out of scope", masResponse.getMessage());
+    assertEquals("Claim with collection Id 350 is out of scope.", masResponse.getMessage());
   }
 
   @Test
@@ -88,7 +109,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Missing anchor", masResponse.getMessage());
+    assertEquals("Claim with collection Id 351 is missing an anchor.", masResponse.getMessage());
   }
 
   @SneakyThrows
@@ -97,6 +118,16 @@ public class VroV2Tests {
     try (Reader reader = new InputStreamReader(io)) {
       return FileCopyUtils.copyToString(reader);
     }
+  }
+
+  @SneakyThrows
+  private String getOrderingStatusDisallowedCharacters() {
+    return objectMapper.writeValueAsString(
+        Map.of(
+            "collectionId", "999",
+            "collectionStatus",
+                "http://localhost:8080/v1/fetch-claims/%00%255c%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/windows/system.ini\b\u007F\u0081\u0088/%00",
+            "examOrderDateTime", "2018-11-04T17:45:61Z"));
   }
 
   @SneakyThrows

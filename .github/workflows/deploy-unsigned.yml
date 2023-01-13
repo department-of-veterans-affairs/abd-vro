@@ -20,6 +20,10 @@ on:
         required: true
         type: string
 
+# Ensures that only one deploy per env will run at a time.
+concurrency:
+  group: deploy-unsigned-${{ inputs.target_env }}
+
 env:
   COMMIT_SHA: ${{ github.sha }}
   TARGET_ENV: ${{ inputs.target_env }}
@@ -57,13 +61,17 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      # we are using the GitHub actor and token below instead of the PAT
+      # due to a signing issue in SecRel 4. for more details see
+      # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
+
       - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
-          access_token: ${{ secrets.ACCESS_TOKEN }}
-          ghcr_username: ${{ secrets.USERNAME }}
-          ghcr_password: ${{ secrets.ACCESS_TOKEN }}
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          ghcr_username: ${{ github.actor }}
+          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Cleanup ${{ env.TARGET_ENV }} images locally"
         run: |
@@ -102,8 +110,8 @@ jobs:
 
       - name: "Deploy to ${{ env.TARGET_ENV }} env"
         env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+          SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
+          SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
         run: |
           ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 

@@ -3,6 +3,9 @@
 # For debugging, print out each command
 set -x
 
+# Fail fast when any command fails, i.e., pushing image to ghcr
+set -e
+
 # ${{ github.repository }}
 REPO="$1"
 # A tag label for all the images, e.g., ${COMMIT_SHA:0:7}

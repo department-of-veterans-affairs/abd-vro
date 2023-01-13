@@ -4,6 +4,21 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
+def sort_bp(bp_readings):
+    """
+    Sort bp readings by date
+    :param bp_readings: List of bp readings
+    :return:
+    """
+
+    bp_readings = sorted(
+        bp_readings,
+        key=lambda i: datetime.strptime(i["date"], "%Y-%m-%d").date(),
+        reverse=True,
+    )
+    return bp_readings
+
+
 def bp_reader(request_body):
     """
     Determine if there is enough BP data to calculate a predominant reading,
@@ -20,9 +35,12 @@ def bp_reader(request_body):
     bp_readings_in_past_two_years = []
     elevated_bp = []
     date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
+    bp_readings = request_body["evidence"]["bp_readings"]
+    bp_readings = sort_bp(bp_readings)
 
-    for reading in request_body["evidence"]["bp_readings"]:
+    for reading in bp_readings:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
+        reading["dateFormatted"] = bp_reading_date.strftime("%m/%d/%Y")
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):
