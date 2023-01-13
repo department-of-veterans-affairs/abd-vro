@@ -20,6 +20,10 @@ on:
         required: true
         type: string
 
+# Ensures that only one deploy per env will run at a time.
+concurrency:
+  group: deploy-unsigned-${{ inputs.target_env }}
+
 env:
   COMMIT_SHA: ${{ github.sha }}
   TARGET_ENV: ${{ inputs.target_env }}
@@ -66,7 +70,7 @@ jobs:
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
-          access_token: ${{ secrets.ACCESS_TOKEN }}
+          access_token: ${{ secrets.GITHUB_TOKEN }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -114,8 +118,8 @@ jobs:
 
       - name: "Deploy to ${{ env.TARGET_ENV }} env"
         env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+          SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
+          SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
         run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
