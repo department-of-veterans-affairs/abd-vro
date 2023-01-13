@@ -53,3 +53,4 @@ truststore: "${BIP_TRUSTSTORE:}"
 truststore_password: "${BIP_PASSWORD:}"
 keystore: "${BIP_KEYSTORE:}"
 bipalias: "${BIP_ALIAS:}"
+

@@ -224,3 +224,4 @@ bipalias: "${BIP_ALIAS}"
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
+

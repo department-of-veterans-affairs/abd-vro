@@ -152,3 +152,4 @@ exportSecretIfUnset BIP_ALIAS
 #export BIP_EVIDENCE_ISS=VRO
 #export BIP_APPLICATION_ID=VRO
 #export BIP_STATION_ID=281
+
