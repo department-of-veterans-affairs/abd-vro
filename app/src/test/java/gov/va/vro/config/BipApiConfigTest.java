@@ -2,6 +2,7 @@ package gov.va.vro.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import gov.va.vro.service.provider.bip.BipException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.InputStream;
 
 /** @author warren @Date 1/5/23 */
 @ActiveProfiles("test")
@@ -38,12 +41,37 @@ class BipApiConfigTest {
     }
 
     try {
-      config.setTrustStore("bipcert.jks");
+      config.setTrustStore("biptruststore.jks");
+      config.setKeystore("biptruststore.jks");
       config.setPassword("bad");
       RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
-    } catch (Exception e) {
+    } catch (BipException e) {
       assertTrue(true);
+    } catch (Exception e) {
+      fail();
+    }
+
+    try {
+      config.setTrustStore("");
+      config.setPassword("");
+      RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
+      assertNotNull(temp);
+    } catch (Exception e) {
+      fail();
+    }
+
+    try {
+      InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
+      String store = new String(sourceStream.readAllBytes());
+      config.setTrustStore(store);
+      config.setKeystore(store);
+      config.setPassword("vropassword");
+      config.setAlias("alias");
+      RestTemplate template = config.getHttpsRestTemplate(new RestTemplateBuilder());
+      assertNotNull(template);
+    } catch (Exception e) {
+      fail();
     }
   }
 }

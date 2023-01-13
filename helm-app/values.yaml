@@ -208,6 +208,11 @@ bip:
   bipEvidenceUrl: bipEvidenceUrl
   bipEvidenceUserId: bipEvidenceUserId
   bipStationId: bipStationId
+  bipKeyStore: bipKeystore
+  bipTrustStore: bipTruststore
+  bipPassword: bipPassword
+  bipAlias: bipAlias
+
 
 redis:
   secretName: redis

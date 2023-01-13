@@ -3,6 +3,7 @@ package gov.va.vro.api.responses;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Bip file upload response.
@@ -11,6 +12,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@Setter
 @Schema(
     name = "BipFileUploadResponse",
     description = "Indicate that the claim evidence file upload result.")
