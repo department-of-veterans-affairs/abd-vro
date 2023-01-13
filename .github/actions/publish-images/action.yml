@@ -3,7 +3,7 @@ description: Builds, tags, and publish VRO's Docker images
 
 inputs:
   access_token:
-    description: 'GITHUB_ACCESS_TOKEN'
+    description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
     required: true
   target_env:
     description: 'TARGET_ENV like dev or qa'

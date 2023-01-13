@@ -32,6 +32,23 @@ public class VroV2Tests {
 
   private final RestTemplate restTemplate = new RestTemplate();
 
+  /*
+   * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
+   * Eventually we should refactor this out into its own test suite with other endpoints
+   * for any security-related HTTP tests.
+   */
+  @Test
+  void testExamOrderingStatus_disallowedCharacters() {
+    var request = getOrderingStatusDisallowedCharacters();
+    var requestEntity = getEntity(request);
+    try {
+      restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
+      fail("Should have thrown exception");
+    } catch (Exception e) {
+      assertTrue("400 : \"{\"message\":\"Bad Request\"}\"".equals(e.getMessage()));
+    }
+  }
+
   @Test
   void testExamOrderingStatus_invalidRequest() {
     var request = getOrderingStatusInvalidRequest();
@@ -101,6 +118,16 @@ public class VroV2Tests {
     try (Reader reader = new InputStreamReader(io)) {
       return FileCopyUtils.copyToString(reader);
     }
+  }
+
+  @SneakyThrows
+  private String getOrderingStatusDisallowedCharacters() {
+    return objectMapper.writeValueAsString(
+        Map.of(
+            "collectionId", "999",
+            "collectionStatus",
+                "http://localhost:8080/v1/fetch-claims/%00%255c%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/%252e%252e%255c/windows/system.ini\b\u007F\u0081\u0088/%00",
+            "examOrderDateTime", "2018-11-04T17:45:61Z"));
   }
 
   @SneakyThrows
