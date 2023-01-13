@@ -4,11 +4,14 @@ import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.PrivateKeyDetails;
+import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,13 +21,17 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.net.Socket;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 import javax.net.ssl.SSLContext;
 
 /**
@@ -43,6 +50,12 @@ public class BipApiConfig {
   @Value("${truststore_password}")
   private String password;
 
+  @Value("${keystore}")
+  private String keystore;
+
+  @Value("${bipalias}")
+  private String alias;
+
   @Bean
   public BipApiProps getBipApiProps() {
     return new BipApiProps();
@@ -51,12 +64,51 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try { // TODO: keep log for testing, remove it later.
-      log.info("truststore: {}, password: {}", trustStore, password);
-      URL url = getClass().getClassLoader().getResource(trustStore);
+      log.info(
+          "truststore: {}, password: {}, keystore: {}, alias: {}",
+          trustStore.length(),
+          password,
+          keystore.length(),
+          alias);
+      if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
+        log.info("No valid BIP mTLS setup. Skip related setup.");
+        return new RestTemplate();
+      }
+      byte[] keystoreBytes = Base64.decodeBase64(keystore.getBytes());
+      byte[] truststoreBytes = Base64.decodeBase64(trustStore.getBytes());
+      InputStream keystoreStream = new ByteArrayInputStream(keystoreBytes);
+      InputStream truststoreStream = new ByteArrayInputStream(truststoreBytes);
 
+      KeyStore trustKeyStore = KeyStore.getInstance("jks");
+
+      log.info("-------load truststore");
+      trustKeyStore.load(truststoreStream, password.toCharArray());
+
+      KeyStore identityKeyStore = KeyStore.getInstance("jks");
+
+      log.info("-------load keystore");
+      identityKeyStore.load(keystoreStream, password.toCharArray());
+
+      log.info("------build SSLContext");
       SSLContext sslContext =
-          new SSLContextBuilder().loadTrustMaterial(url, password.toCharArray()).build();
-      SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext);
+          new SSLContextBuilder()
+              .loadKeyMaterial(
+                  identityKeyStore,
+                  password.toCharArray(),
+                  new PrivateKeyStrategy() {
+                    @Override
+                    public String chooseAlias(Map<String, PrivateKeyDetails> map, Socket socket) {
+                      return alias;
+                    }
+                  })
+              .loadTrustMaterial(trustKeyStore, null)
+              .build();
+      SSLConnectionSocketFactory socketFactory =
+          new SSLConnectionSocketFactory(
+              sslContext,
+              new String[] {"TLSv1.3", "TLSv1.2", "TLSv1.1"},
+              null,
+              SSLConnectionSocketFactory.getDefaultHostnameVerifier());
       HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
       return builder
           .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(httpClient))

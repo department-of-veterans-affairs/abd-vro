@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   security:
