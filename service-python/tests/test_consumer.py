@@ -1,11 +1,14 @@
+import logging
 from unittest import mock
 
-import logging
 import pytest
 
-from assessclaimdc7101.src import main_consumer as hypertension_consumer, logging_setup as hypertension_logging
-from assessclaimdc6602.src import main_consumer as asthma_consumer, logging_setup as asthma_logging
-from pdfgenerator.src import main_consumer as pdf_consumer, logging_setup as pdf_logging
+from assessclaimdc6602.src import logging_setup as asthma_logging
+from assessclaimdc6602.src import main_consumer as asthma_consumer
+from assessclaimdc7101.src import logging_setup as hypertension_logging
+from assessclaimdc7101.src import main_consumer as hypertension_consumer
+from pdfgenerator.src import logging_setup as pdf_logging
+from pdfgenerator.src import main_consumer as pdf_consumer
 
 
 @pytest.mark.parametrize(

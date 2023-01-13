@@ -2,8 +2,9 @@ import logging
 import os
 from time import sleep, time
 
-from . import logging_setup
 import pika
+
+from . import logging_setup
 from .lib.queues import queue_setup
 
 logger = logging_setup.set_format()
