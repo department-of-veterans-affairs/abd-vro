@@ -28,6 +28,7 @@ env:
   # Default to failure messages
   DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
   DEPLOY_STATE_EMOJI: 'x'
+  JOB_STATUS: 'failed'
 
 jobs:
   publish-images:
@@ -35,7 +36,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
-      job_status: ${{ steps.cancelled-job.outputs.job_status }}
+      job_status: ${{ env.JOB_STATUS }}
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -84,13 +85,13 @@ jobs:
       - name: "Cancelled Publish Images Job"
         id: cancelled-job
         if: cancelled()
-        run: echo "job_status=cancelled" >> $GITHUB_OUTPUT
+        run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
     needs: publish-images
     runs-on: ubuntu-latest
     outputs:
-      job_status: ${{ steps.lhdi-deployment.outputs.job_status }} || ${{ steps.cancelled-job.outputs.job_status }}
+      job_status: ${{ env.JOB_STATUS }}
     steps:
       - name: "Notify Slack: Deploying..."
         id: notify-slack-deploying
@@ -121,7 +122,7 @@ jobs:
         id: lhdi-deployment
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
-            echo "job_status=success" >> $GITHUB_OUTPUT      
+            echo "JOB_STATUS=success" >> $GITHUB_ENV    
           else
             # Return nonzero error code so that workflow fails
             exit 1
@@ -130,7 +131,7 @@ jobs:
       - name: "Cancelled Deploy Images Job"
         id: cancelled-job
         if: cancelled()
-        run: echo "job_status=cancelled" >> $GITHUB_OUTPUT
+        run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   notify-slack:
     needs: [ publish-images, deploy-images ]
