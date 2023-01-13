@@ -46,7 +46,7 @@ def filter_mas_medication(event):
                 if date >= date_of_claim_date - relativedelta(years=2):
                     medication_two_years.append(medication)
             except ValueError:
-                medication["dateFormatted"] = ""
+                medication["dateFormatted"] = medication["authoredOn"]
                 medication_without_date.append(medication)
         else:
             medication["dateFormatted"] = ""

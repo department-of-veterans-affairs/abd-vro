@@ -32,7 +32,7 @@ def conditions_calculation(request_body):
                 if condition_date >= date_of_claim_date - relativedelta(years=2):
                     conditions_two_years.append(condition)
             except ValueError:
-                condition["dateFormatted"] = ""
+                condition["dateFormatted"] = condition["recordedDate"]
                 condition_without_date.append(condition)
         else:
             condition["dateFormatted"] = ""
