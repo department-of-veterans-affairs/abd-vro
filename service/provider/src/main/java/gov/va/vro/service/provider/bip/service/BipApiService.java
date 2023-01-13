@@ -2,17 +2,7 @@ package gov.va.vro.service.provider.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipClaimResp;
-import gov.va.vro.model.bip.BipContentionResp;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
-import gov.va.vro.model.bip.BipUpdateClaimResp;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
-import gov.va.vro.model.bip.FileIdType;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bip.*;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -25,12 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -236,7 +221,7 @@ public class BipApiService implements IBipApiService {
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
       ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+          ceRestTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       BipFileUploadResp resp = new BipFileUploadResp();
       resp.setStatus(bipResponse.getStatusCode());
       resp.setMessage(bipResponse.getBody());
@@ -265,8 +250,12 @@ public class BipApiService implements IBipApiService {
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
       ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+          ceRestTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
       BipFileUploadResp resp = new BipFileUploadResp();
+      log.info(
+          "bip response for upload: status: {}, message: {}",
+          bipResponse.getStatusCode(),
+          bipResponse.getBody());
       resp.setStatus(bipResponse.getStatusCode());
       resp.setMessage(bipResponse.getBody());
       return resp;
