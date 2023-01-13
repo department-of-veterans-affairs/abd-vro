@@ -11,6 +11,7 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -20,7 +21,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -115,7 +115,7 @@ public class MasControllerTest extends BaseControllerTest {
           completeCalled.set(true);
         });
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
+    var request = MasTestData.getMasAutomatedClaimRequest();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertTrue(offrampCalled.get());
@@ -139,7 +139,7 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
+    var request = MasTestData.getMasAutomatedClaimRequest(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasOfframpEndpoint.expectedMessageCount(1);
@@ -153,7 +153,6 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void orderExamStatus() {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
@@ -164,22 +163,23 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void orderExamStatusMissingCollectionId() {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload = MasExamOrderStatusPayload.builder().collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
-  private void verifyClaimPersisted(MasAutomatedClaimPayload request) {
+  private void verifyClaimPersisted(MasAutomatedClaimRequest request) {
     var claim =
-        claimRepository.findByClaimSubmissionId(Integer.toString(request.getClaimId())).get();
+        claimRepository.findByClaimSubmissionId(request.getClaimDetail().getBenefitClaimId()).get();
     assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
-    assertEquals(request.getVeteranIcn(), claim.getVeteran().getIcn());
+    assertEquals(request.getVeteranIdentifiers().getIcn(), claim.getVeteran().getIcn());
     var contentions = claim.getContentions();
     assertEquals(1, contentions.size());
     var contention = contentions.get(0);
-    assertEquals(request.getDiagnosticCode(), contention.getDiagnosticCode());
+    assertEquals(
+        request.getClaimDetail().getConditions().getDiagnosticCode(),
+        contention.getDiagnosticCode());
     claimRepository.delete(claim);
   }
 }
