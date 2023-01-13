@@ -316,12 +316,12 @@ spec:
                   name: {{ .Values.mas.keyName }}
                   key: {{ .Values.mas.masCreateExamOrderPath }}
 
-            - name: bipApplicationId
+            - name: BIP_APPLICATION_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipApplicationId }}
-            - name: bipApplicationIss
+            - name: BIP_APPLICATION_ISS
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
@@ -331,7 +331,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipClaimSecret }}
-            - name: bipClaimUrl
+            - name: BIP_CLAIM_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
@@ -346,7 +346,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipEvidenceSecret }}
-            - name: bipEvidenceUrl
+            - name: BIP_EVIDENCE_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
@@ -356,32 +356,31 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipEvidenceUserId }}
-            - name: bipStationId
+            - name: BIP_STATION_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipStationId }}
             - name: BIP_KEYSTORE
-                valueFrom:
-                  secretKeyRef:
-                    name: { { .Values.bip.keyName } }
-                    key: { { .Values.bip.bipKeystore } }
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipKeyStore }}
             - name: BIP_TRUSTSTORE
-                valueFrom:
-                  secretKeyRef:
-                    name: { { .Values.bip.keyName } }
-                    key: { { .Values.bip.bipTruststore } }
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipTrustStore }}
             - name: BIP_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: { { .Values.bip.keyName } }
-                    key: { { .Values.bip.bipPassword } }
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipPassword }}
             - name: BIP_ALIAS
-                valueFrom:
-                  secretKeyRef:
-                    name: { { .Values.bip.keyName } }
-                    key: { { .Values.bip.bipAlias } }
-
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipAlias }}
           resources:
             requests:
               cpu: 150m
