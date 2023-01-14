@@ -263,7 +263,7 @@ from assessclaimdc7101.src.lib import main
                                    'text': 'Essential (primary) hypertension',
                                    "category": "Encounter Diagnosis"},
                                   {'code': '1234',
-                                   'dateFormatted': '',
+                                   'dateFormatted': "unparsed ()",
                                    'relevant': False,
                                    'text': 'snomed diagnosis',
                                    "recordedDate": ""
