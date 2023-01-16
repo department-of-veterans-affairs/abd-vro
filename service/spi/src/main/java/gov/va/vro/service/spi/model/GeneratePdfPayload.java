@@ -27,8 +27,6 @@ public class GeneratePdfPayload {
 
   @NonNull private String diagnosticCode;
 
-  @NonNull private String pdfPackage;
-
   @JsonProperty("veteranInfo")
   private VeteranInfo veteranInfo;
 
@@ -44,4 +42,5 @@ public class GeneratePdfPayload {
   private String reason;
 
   private String pdfTemplate;
+  private String pdfLibrary;
 }

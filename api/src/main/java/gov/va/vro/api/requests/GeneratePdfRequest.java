@@ -28,9 +28,8 @@ public class GeneratePdfRequest {
   @Schema(description = "Diagnostic code", example = "7101")
   private String diagnosticCode;
 
-  @NotBlank
-  @Schema(description = "PDF package", example = "wkhtmltopdf")
-  private String pdfPackage;
+  @Schema(description = "PDF library", example = "wkhtmltopdf")
+  private String pdfLibrary;
 
   @NotNull
   @Schema(description = "Veteran data for the pdf")

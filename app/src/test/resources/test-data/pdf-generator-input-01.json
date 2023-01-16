@@ -1,7 +1,6 @@
 {
   "claimSubmissionId": "1234",
   "diagnosticCode": "7101",
-  "pdfPackage": "wkhtmltopdf",
   "veteranInfo": {
     "first": "Joe",
     "middle": "M",
@@ -10,6 +9,7 @@
     "birthdate": "01/04/1971"
   },
   "pdfTemplate": "v1",
+  "pdfLibrary": "wkhtmltopdf",
   "evidence": {
     "medications": [
       {

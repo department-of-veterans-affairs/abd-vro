@@ -1,7 +1,7 @@
 {
   "claimSubmissionId": "1234",
   "diagnosticCode": "7101",
-  "pdfPackage": "wkhtmltopdf",
+  "pdfLibrary": "wkhtmltopdf",
   "veteranInfo": {
     "first": "Joe",
     "middle": "M",

@@ -17,11 +17,11 @@ class PDFGenerator:
     def __init__(self, options, message_data=None):
         self.options = options
         logging.info(message_data)
-        if message_data and "pdfPackage" in message_data and message_data["pdfPackage"].lower() in ["wkhtmltopdf", "weasyprint"]:
-            self.package = message_data["pdfPackage"]
+        if message_data and "pdfLibrary" in message_data and message_data["pdfLibrary"].lower() in ["wkhtmltopdf", "weasyprint"]:
+            self.library = message_data["pdfLibrary"]
         else:
-            self.package = "wkhtmltopdf"
-        logging.info(f"Using PDF Package: {self.package}")
+            self.library = "wkhtmltopdf"
+        logging.info(f"Using PDF Library: {self.library}")
 
     def generate_template_variables(self, template_name: str, pdf_data: dict) -> dict:
         placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_name}.json")))
@@ -47,7 +47,7 @@ class PDFGenerator:
         return generated_html
 
     def generate_pdf_from_string(self, template_name: str, html: str, data, output=False) -> bytes or bool:
-        if self.package == "wkhtmltopdf":
+        if self.library == "wkhtmltopdf":
             base_toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/base_toc.xsl")
             if os.path.isfile(base_toc_file_path):
                 # Call a helper function that make adjustments to toc before creating
