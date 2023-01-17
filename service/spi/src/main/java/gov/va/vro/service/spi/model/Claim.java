@@ -28,6 +28,8 @@ public class Claim {
 
   @NotNull private String claimSubmissionId;
 
+  private String collectionId;
+
   // At the moment, this is the only id type
   @Builder.Default @NotNull private String idType = DEFAULT_ID_TYPE;
 
