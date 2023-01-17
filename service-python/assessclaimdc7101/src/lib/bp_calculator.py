@@ -40,7 +40,7 @@ def bp_reader(request_body):
 
     for reading in bp_readings:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
-        reading["dateFormatted"] = bp_reading_date.strftime("%m/%d/%Y")
+        reading["dateFormatted"] = bp_reading_date.strftime('X%m/X%d/%Y').replace('X0', 'X').replace('X', '')
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):

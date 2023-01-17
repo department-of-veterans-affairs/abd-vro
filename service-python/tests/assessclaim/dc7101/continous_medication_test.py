@@ -168,7 +168,7 @@ def test_continuous_medication_required(
                     "medications": [
                         {
                             "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "04/06/2020",
+                            "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -196,7 +196,7 @@ def test_continuous_medication_required(
                     "medications": [
                         {
                             "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "04/06/2020",
+                            "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -250,7 +250,7 @@ def test_continuous_medication_required(
                         {
                             "description": "Advil",
                             "status": "active",
-                            "dateFormatted": "04/06/2021",
+                            "dateFormatted": "4/6/2021",
                             "authoredOn": "2021-04-06T04:00:00Z",
                         },
                         {

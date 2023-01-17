@@ -40,7 +40,7 @@ def filter_mas_medication(event):
     for medication in event["evidence"]["medications"]:
         try:
             date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
-            medication["dateFormatted"] = date.strftime("%m/%d/%Y")
+            medication["dateFormatted"] = date.strftime('X%m/X%d/%Y').replace('X0', 'X').replace('X', '')
             medication_with_date.append(medication)
             if date >= date_of_claim_date - relativedelta(years=2):
                 medication_two_years.append(medication)
