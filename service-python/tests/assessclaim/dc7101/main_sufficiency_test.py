@@ -93,7 +93,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 120}},
                                               {'date': '2021-10-01',
-                                               'dateFormatted': '10/01/2021',
+                                               'dateFormatted': '10/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
