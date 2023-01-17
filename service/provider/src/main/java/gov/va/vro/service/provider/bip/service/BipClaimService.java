@@ -9,6 +9,7 @@ import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -169,6 +170,9 @@ public class BipClaimService {
    */
   public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
+    if (pdfResponse.getPdfData() == null) {
+      throw new MasException("PDF Response does not contain any data");
+    }
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
     File file = null;
     try {
@@ -192,7 +196,7 @@ public class BipClaimService {
               .alternativeDocmentTypeIds(List.of(1))
               .actionable(false)
               .associatedClaimIds(List.of("1"))
-              .notes(List.of(pdfResponse.getReason()))
+              .notes(pdfResponse.getReason() == null ? List.of() : List.of(pdfResponse.getReason()))
               .payeeCode("00")
               .endProductCode("130DPNDCY")
               .regionalProcessingOffice("Buffalo") // get an office.

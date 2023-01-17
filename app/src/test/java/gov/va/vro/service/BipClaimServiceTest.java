@@ -1,20 +1,23 @@
 package gov.va.vro.service;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import gov.va.vro.MasTestData;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 class BipClaimServiceTest {
@@ -123,6 +126,29 @@ class BipClaimServiceTest {
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertTrue(claimService.completeProcessing(getMpo(payload)).isTSOJ());
     Mockito.verify(bipApiService).setClaimToRfdStatus(collectionId);
+  }
+
+  @Test
+  void uploadPdf_missingData() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
+    try {
+      claimService.uploadPdf(fetchPdfResponse);
+      fail();
+    } catch (MasException e) {
+
+    }
+  }
+
+  @Test
+  void uploadPdf() {
+    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+    BipClaimService claimService = new BipClaimService(bipApiService);
+    FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
+    var data = Base64.getEncoder().encode("Hello!".getBytes(StandardCharsets.UTF_8));
+    fetchPdfResponse.setPdfData(new String(data));
+    claimService.uploadPdf(fetchPdfResponse);
   }
 
   private ClaimContention createContention(List<String> codes) {
