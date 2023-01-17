@@ -7,6 +7,8 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.spi.db.SaveToDbService;
+import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class MasProcessingService {
 
   private final BipClaimService bipClaimService;
 
+  private final SaveToDbService saveToDbService;
+
   /**
    * Processes incoming claim.
    *
@@ -29,6 +33,7 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
+    saveToDbService.insertClaim(toClaim(payload));
     if (!payload.isInScope()) {
       var message =
           String.format(
@@ -75,6 +80,15 @@ public class MasProcessingService {
         .payloadType(payload.getDisplayName())
         .routeId("/automatedClaim")
         .message(message)
+        .build();
+  }
+
+  private Claim toClaim(MasAutomatedClaimPayload payload) {
+    return Claim.builder()
+        .claimSubmissionId(Integer.toString(payload.getClaimId()))
+        .collectionId(Integer.toString(payload.getCollectionId()))
+        .diagnosticCode(payload.getDiagnosticCode())
+        .veteranIcn(payload.getVeteranIcn())
         .build();
   }
 }

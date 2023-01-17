@@ -85,8 +85,6 @@ class SaveToDbServiceImplTest {
     saveToDbService.insertClaim(claim);
     ClaimEntity claimBeforeAssessment =
         claimRepository.findByClaimSubmissionId("1234").orElseThrow();
-    // ContentionEntity contention = new ContentionEntity("7101");
-    // claimBeforeAssessment.addContention(contention);
     Map<String, Object> evidenceMap = new HashMap<>();
     evidenceMap.put("medicationsCount", "10");
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
@@ -130,5 +128,38 @@ class SaveToDbServiceImplTest {
     assertNotNull(esd);
     assertEquals(esd.getDocumentName(), documentName);
     assertEquals(esd.getEvidenceCount().size(), 2);
+  }
+
+  @Test
+  void multipleRequests() {
+    Claim claim1 =
+        Claim.builder()
+            .claimSubmissionId("1234")
+            .collectionId("111")
+            .veteranIcn("v1")
+            .diagnosticCode("7101")
+            .build();
+    saveToDbService.insertClaim(claim1);
+    ClaimEntity claimEntity1 =
+        claimRepository
+            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
+            .orElseThrow();
+    assertEquals(1, claimEntity1.getContentions().size());
+    ContentionEntity contentionEntity = claimEntity1.getContentions().get(0);
+    assertEquals(claim1.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+
+    Claim claim2 =
+        Claim.builder()
+            .claimSubmissionId("1234")
+            .collectionId("111")
+            .veteranIcn("v1")
+            .diagnosticCode("8181")
+            .build();
+    saveToDbService.insertClaim(claim2);
+    ClaimEntity claimEntity2 =
+        claimRepository
+            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
+            .orElseThrow();
+    assertEquals(2, claimEntity2.getContentions().size());
   }
 }
