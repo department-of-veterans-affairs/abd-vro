@@ -38,18 +38,17 @@ def filter_mas_medication(event):
     date_of_claim_date = datetime.strptime(event["dateOfClaim"], "%Y-%m-%d").date()
 
     for medication in event["evidence"]["medications"]:
-        if "authoredOn" in medication.keys():
-            try:
-                date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
-                medication["dateFormatted"] = date.strftime("%m/%d/%Y")
-                medication_with_date.append(medication)
-                if date >= date_of_claim_date - relativedelta(years=2):
-                    medication_two_years.append(medication)
-            except ValueError:
-                medication["dateFormatted"] = ""
-                medication_without_date.append(medication)
-        else:
-            medication["dateFormatted"] = ""
+        try:
+            date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
+            medication["dateFormatted"] = date.strftime("%m/%d/%Y")
+            medication_with_date.append(medication)
+            if date >= date_of_claim_date - relativedelta(years=2):
+                medication_two_years.append(medication)
+        except ValueError:
+            medication["dateFormatted"] = f'unparsed ({medication["authoredOn"]})'
+            medication_without_date.append(medication)
+        except KeyError:
+            medication["dateFormatted"] = ''
             medication_without_date.append(medication)
 
     medication_with_date = sorted(
