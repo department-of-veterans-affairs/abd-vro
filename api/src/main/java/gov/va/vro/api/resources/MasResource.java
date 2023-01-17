@@ -1,8 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,10 +59,10 @@ public interface MasResource {
       @Parameter(
               description = "Request a MAS Automated Claim",
               required = true,
-              schema = @Schema(implementation = MasAutomatedClaimPayload.class))
+              schema = @Schema(implementation = MasAutomatedClaimRequest.class))
           @Valid
           @RequestBody
-          MasAutomatedClaimPayload request);
+          MasAutomatedClaimRequest request);
 
   @Operation(
       summary = "MAS Exam Ordering Status",
