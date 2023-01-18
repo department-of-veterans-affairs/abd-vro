@@ -11,18 +11,18 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.persistence.repository.AuditEventRepository;
+import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
-import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,9 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Autowired private CamelContext camelContext;
 
-  @Autowired @SpyBean private AuditEventService auditEventService;
+  @Autowired private ClaimRepository claimRepository;
+
+  @Autowired private AuditEventRepository auditEventRepository;
 
   @Test
   @SneakyThrows
@@ -113,11 +115,13 @@ public class MasControllerTest extends BaseControllerTest {
           completeCalled.set(true);
         });
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload();
+    var request = MasTestData.getMasAutomatedClaimRequest();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertTrue(offrampCalled.get());
     assertTrue(completeCalled.get());
+
+    verifyClaimPersisted(request);
   }
 
   @Test
@@ -135,15 +139,20 @@ public class MasControllerTest extends BaseControllerTest {
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(exchange -> {});
 
-    MasAutomatedClaimPayload request = MasTestData.getMasAutomatedClaimPayload(567, "7101", "999");
+    var request = MasTestData.getMasAutomatedClaimRequest(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasOfframpEndpoint.expectedMessageCount(1);
+
+    verifyClaimPersisted(request);
+
+    var response = responseEntity.getBody();
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
+    assertTrue(audits.size() > 0);
   }
 
   @Test
   void orderExamStatus() {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload =
         MasExamOrderStatusPayload.builder().collectionId(123).collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
@@ -154,10 +163,23 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Test
   void orderExamStatusMissingCollectionId() {
-    ArgumentCaptor<AuditEvent> auditEventArgumentCaptor = ArgumentCaptor.forClass(AuditEvent.class);
     var payload = MasExamOrderStatusPayload.builder().collectionStatus("UNKNOWN").build();
     ResponseEntity<MasResponse> response =
         post("/v2/examOrderingStatus", payload, MasResponse.class);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  private void verifyClaimPersisted(MasAutomatedClaimRequest request) {
+    var claim =
+        claimRepository.findByClaimSubmissionId(request.getClaimDetail().getBenefitClaimId()).get();
+    assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
+    assertEquals(request.getVeteranIdentifiers().getIcn(), claim.getVeteran().getIcn());
+    var contentions = claim.getContentions();
+    assertEquals(1, contentions.size());
+    var contention = contentions.get(0);
+    assertEquals(
+        request.getClaimDetail().getConditions().getDiagnosticCode(),
+        contention.getDiagnosticCode());
+    claimRepository.delete(claim);
   }
 }

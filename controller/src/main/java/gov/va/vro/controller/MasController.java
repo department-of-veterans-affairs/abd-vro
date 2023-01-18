@@ -4,6 +4,7 @@ import gov.va.vro.api.resources.MasResource;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +22,23 @@ public class MasController implements MasResource {
 
   /** Initiate MAS integration. */
   @Override
-  public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimPayload payload) {
+  public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimRequest request) {
     log.info(
-        "Received MAS automated claim request with collection ID {}", payload.getCollectionId());
+        "Received MAS automated claim request with collection ID {}", request.getCollectionId());
     String correlationId = UUID.randomUUID().toString();
-    payload.setCorrelationId(correlationId);
+    var payload =
+        MasAutomatedClaimPayload.builder()
+            .claimDetail(request.getClaimDetail())
+            .collectionId(request.getCollectionId())
+            .correlationId(correlationId)
+            .firstName(request.getFirstName())
+            .gender(request.getGender())
+            .lastName(request.getLastName())
+            .dateOfBirth(request.getDateOfBirth())
+            .veteranIdentifiers(request.getVeteranIdentifiers())
+            .veteranFlashIds(request.getVeteranFlashIds())
+            .build();
+
     String message = masProcessingService.processIncomingClaim(payload);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
