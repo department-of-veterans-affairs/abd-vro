@@ -224,6 +224,10 @@ dataservice:
   lhPrivateKey: lhPrivateKey
   lhAssertionUrl: lhAssertionUrl
   lhAccessClientId: lhAccessClientId
+  lhApiAuthUrl: lhApiAuthUrl
+  vroAudUrl: vroAudUrl
+  lhVroApiKey: lhVroApiKey
+  validateToken: validateToken
 
 dbinit:
   secretName: dbinit
