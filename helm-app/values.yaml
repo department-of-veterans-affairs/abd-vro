@@ -208,6 +208,11 @@ bip:
   bipEvidenceUrl: bipEvidenceUrl
   bipEvidenceUserId: bipEvidenceUserId
   bipStationId: bipStationId
+  bipKeyStore: bipKeystore
+  bipTrustStore: bipTruststore
+  bipPassword: bipPassword
+  bipAlias: bipAlias
+
 
 redis:
   secretName: redis
@@ -219,6 +224,10 @@ dataservice:
   lhPrivateKey: lhPrivateKey
   lhAssertionUrl: lhAssertionUrl
   lhAccessClientId: lhAccessClientId
+  lhApiAuthUrl: lhApiAuthUrl
+  vroAudUrl: vroAudUrl
+  lhVroApiKey: lhVroApiKey
+  validateToken: validateToken
 
 dbinit:
   secretName: dbinit
