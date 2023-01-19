@@ -375,16 +375,12 @@
       <table id="unavailable-automated-review" class="table table-bordered">
         <thead>
           <tr>
-            <th style="width: 271px !important;">Document</th>
-            <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 240px !important;">Document ID</th>
+            <th>Document ID</th>
           </tr>
         </thead>
         <tbody>
           {% for review in evidence.unavailable_reviews %}
           <tr>
-            <td>{{ review.document }}</td>
-            <td>{{ review.receipt_date }}</td>
             <td>{{ review.document_id }}</td>
           </tr>
           {% endfor %}
