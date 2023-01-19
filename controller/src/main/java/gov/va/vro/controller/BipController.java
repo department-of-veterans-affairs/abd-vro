@@ -31,10 +31,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
 
 /**
  * It provides all the endpoints for BIP API services.
@@ -116,7 +116,7 @@ public class BipController implements BipResource {
   public ResponseEntity<BipContentionUpdateResponse> updateContentions(
       @Valid BipUpdateClaimContentionPayload payload) {
     log.info("update a contention for claim ID {}", payload.getClaimId());
-    log.info("contention to update:\n {}", payload.getContention());
+//    log.info("contention to update:\n {}", payload.getContention());
 
     try {
       UpdateContention contention = payload.getContention();
@@ -143,7 +143,7 @@ public class BipController implements BipResource {
   public ResponseEntity<BipContentionCreationResponse> createContentions(
       @Valid BipCreateClaimContentionPayload payload) {
     log.info("Create a contention for claim ID {}", payload.getClaimId());
-    log.info("contention to create: \n {}", payload.getContention());
+//    log.info("contention to create: \n {}", payload.getContention());
 
     try {
       List<CreateContention> contentions = Collections.singletonList(payload.getContention());
