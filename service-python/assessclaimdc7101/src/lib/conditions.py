@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from .utils import format_date
 
 from .codesets import hypertension_conditions
+from .utils import format_date
 
 
 def conditions_calculation(request_body):
