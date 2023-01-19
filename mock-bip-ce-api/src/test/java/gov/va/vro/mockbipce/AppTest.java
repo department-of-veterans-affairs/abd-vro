@@ -26,6 +26,10 @@ public class AppTest {
   @Qualifier("httpsRestTemplate")
   private RestTemplate restTemplate;
 
+  @Autowired
+  @Qualifier("httpsNoCertificationRestTemplate")
+  private RestTemplate restNoCertTemplate;
+
   @Test
   void postFileTest() {
     BipFileProviderData request = BipFileProviderData.builder()
@@ -33,6 +37,18 @@ public class AppTest {
 
     ResponseEntity<BipCeFileUploadResponse> response = restTemplate.postForEntity(
       "https://localhost:" + port + "/mock-bip-ce/files", request, BipCeFileUploadResponse.class
+    );
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void postNoCertFileTest() {
+    BipFileProviderData request = BipFileProviderData.builder()
+        .claimantLastName("Doe").claimantFirstName("Joe").build();
+
+    ResponseEntity<BipCeFileUploadResponse> response = restNoCertTemplate.postForEntity(
+        "https://localhost:" + port + "/mock-bip-ce/files", request, BipCeFileUploadResponse.class
     );
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

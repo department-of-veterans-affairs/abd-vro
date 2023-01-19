@@ -2,6 +2,7 @@ package gov.va.vro.mockbipce;
 
 import lombok.SneakyThrows;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
 import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 
 @TestConfiguration
 public class TestConfig {
@@ -38,6 +40,24 @@ public class TestConfig {
     keyStore.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
     SSLContext sslContext = new SSLContextBuilder()
         .loadTrustMaterial(trustStore.getURL(), trustStorePassword.toCharArray())
+        .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
+        .build();
+
+    SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
+
+    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
+    ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    return new RestTemplate(requestFactory);
+  }
+  @SneakyThrows
+  @Bean(name = "httpsNoCertificationRestTemplate")
+  public RestTemplate getHttpsNoCertificationRestTemplate(RestTemplateBuilder builder) {
+    TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+    keyStore.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
+    SSLContext sslContext = new SSLContextBuilder()
+        .loadTrustMaterial(null, acceptingTrustStrategy)
         .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
         .build();
 
