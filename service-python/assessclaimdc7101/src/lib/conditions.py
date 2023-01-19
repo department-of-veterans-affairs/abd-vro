@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
+from utils import format_date
 
 from .codesets import hypertension_conditions
 
@@ -26,7 +27,7 @@ def conditions_calculation(request_body):
         condition_code = condition["code"]
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
-            condition["dateFormatted"] = condition_date.strftime('X%m/X%d/%Y').replace('X0', 'X').replace('X', '')
+            condition["dateFormatted"] = format_date(condition_date)
             condition_with_date.append(condition)
             if condition_date >= date_of_claim_date - relativedelta(years=2):
                 conditions_two_years.append(condition)

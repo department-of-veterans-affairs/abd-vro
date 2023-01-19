@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
+from utils import format_date
 
 
 def sort_bp(bp_readings):
@@ -40,7 +41,7 @@ def bp_reader(request_body):
 
     for reading in bp_readings:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
-        reading["dateFormatted"] = bp_reading_date.strftime('X%m/X%d/%Y').replace('X0', 'X').replace('X', '')
+        reading["dateFormatted"] = format_date(bp_reading_date)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):

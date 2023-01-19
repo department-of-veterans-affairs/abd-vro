@@ -1,6 +1,17 @@
 from cerberus import Validator
 
 
+def format_date(date_obj):
+    """
+    Reformat date object by rearranging and cutting out leading zeroes
+    :param date_obj:
+    :return:
+    """
+    date_formatted = date_obj.strftime('X%m/X%d/%Y').replace('X0', 'X').replace('X', '')
+
+    return date_formatted
+
+
 def validate_request_body(request_body):
     """
     Validates that the request body conforms to the expected data format
