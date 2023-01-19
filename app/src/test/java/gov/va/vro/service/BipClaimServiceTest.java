@@ -11,7 +11,6 @@ import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
-import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -136,8 +135,8 @@ class BipClaimServiceTest {
     try {
       claimService.uploadPdf(fetchPdfResponse);
       fail();
-    } catch (MasException e) {
-
+    } catch (BipException e) {
+      assertEquals("PDF Response does not contain any data", e.getMessage());
     }
   }
 
