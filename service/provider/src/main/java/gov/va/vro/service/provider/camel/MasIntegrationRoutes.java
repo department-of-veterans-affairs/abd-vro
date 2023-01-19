@@ -14,6 +14,7 @@ import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasCollectionService masCollectionService;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
+
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
   @Override
   public void configure() {
@@ -165,11 +168,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_UPLOAD_PDF)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Generating PDF"))
-        .process(generatePdfProcessor())
+        .process(generatePdfProcessor()) // convert to PDF payload
+        .process(evidenceSummaryDocumentProcessor) // store evidence in DB
         .to(PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF)
         .process(convertToPdfResponse())
         .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
-        .setBody(simple("${exchangeProperty.payload}"));
+        .setBody(simple("${exchangeProperty.payload}"))
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(routeId, "Uploaded PDF"));
   }
 
   private void configureOrderExamStatus() {
