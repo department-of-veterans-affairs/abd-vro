@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from utils import format_date
+from .utils import format_date
 
 
 def continuous_medication_required(request_body):
