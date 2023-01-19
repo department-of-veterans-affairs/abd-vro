@@ -64,7 +64,8 @@ public class MockBipApiService implements IBipApiService {
   @Override
   public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException {
-    String message = String.format("This is a mock response to create a contetion for claim %d.", claimId);
+    String message =
+        String.format("This is a mock response to create a contetion for claim %d.", claimId);
     return new BipUpdateClaimResp(HttpStatus.OK, message);
   }
 
@@ -72,7 +73,9 @@ public class MockBipApiService implements IBipApiService {
   public BipFileUploadResp uploadEvidence(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException {
-    String message = String.format("This is a mock response to upload evidence file for %s.",
+    String message =
+        String.format(
+            "This is a mock response to upload evidence file for %s.",
             idtype.name() + ":" + fileId);
     return new BipFileUploadResp(HttpStatus.OK, message);
   }
@@ -81,7 +84,9 @@ public class MockBipApiService implements IBipApiService {
   public BipFileUploadResp uploadEvidenceFile(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
       throws BipException {
-    String message = String.format("This is a mock response to upload multipart file for %s.",
+    String message =
+        String.format(
+            "This is a mock response to upload multipart file for %s.",
             idtype.name() + ":" + fileId);
     return new BipFileUploadResp(HttpStatus.OK, message);
   }
