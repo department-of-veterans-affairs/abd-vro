@@ -107,7 +107,7 @@ public interface BipResource {
   @ResponseStatus(HttpStatus.OK)
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
