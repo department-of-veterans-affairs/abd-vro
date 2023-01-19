@@ -66,6 +66,7 @@ public class BipClaimService {
     // collect all special issues
     var specialIssues =
         contentions.stream()
+            .filter(BipClaimService::hasSpecialIssues)
             .map(ClaimContention::getSpecialIssueCodes)
             .flatMap(Collection::stream)
             .map(String::toLowerCase) // Ignore case
@@ -219,5 +220,9 @@ public class BipClaimService {
         file.delete();
       }
     }
+  }
+
+  private static boolean hasSpecialIssues(ClaimContention claimContention) {
+    return claimContention.getSpecialIssueCodes() != null;
   }
 }
