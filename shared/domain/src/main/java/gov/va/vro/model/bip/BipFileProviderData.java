@@ -1,6 +1,7 @@
 package gov.va.vro.model.bip;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author warren @Date 11/11/22
  */
+@Builder
 @Getter
 @Setter
 public class BipFileProviderData {
@@ -43,6 +45,9 @@ public class BipFileProviderData {
 
   @Schema(description = "Contention list", example = "[ \"contention 1\" ]")
   private List<String> contentions;
+
+  @Schema(description = "Alternative document type IDs", example = "[ 1, 2]")
+  private List<Integer> alternativeDocmentTypeIds;
 
   @Schema(description = "Social Security Number", example = "204972342")
   private boolean actionable;
