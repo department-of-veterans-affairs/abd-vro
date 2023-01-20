@@ -9,6 +9,7 @@ import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 
 import java.util.Collections;
+import java.util.UUID;
 
 public class MasTestData {
 
@@ -40,6 +41,7 @@ public class MasTestData {
         .lastName("Smith")
         .veteranIdentifiers(veteranIdentifiers)
         .claimDetail(claimDetail)
+        .correlationId(UUID.randomUUID().toString())
         .build();
   }
 
