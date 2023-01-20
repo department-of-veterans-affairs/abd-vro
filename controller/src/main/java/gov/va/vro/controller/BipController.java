@@ -52,7 +52,6 @@ public class BipController implements BipResource {
   public ResponseEntity<BipClaimStatusResponse> setClaimRfd(@Valid BipUpdateClaimPayload request) {
     log.info("Set the claim status to RFD for claim ID {}", request.getClaimId());
 
-    // TODO: route to call BipApiService
     long claimId = Long.parseLong(request.getClaimId());
     try {
       BipUpdateClaimResp resp = service.setClaimToRfdStatus(claimId);
@@ -75,8 +74,6 @@ public class BipController implements BipResource {
       long claimId = Long.parseLong(id);
       log.info("Received claim info for claim ID {}", claimId);
 
-      // TODO: route to call BipApiService
-
       BipClaim response = service.getClaimDetails(claimId);
       BipClaimResponse resp = BipClaimResponse.builder().claimId(claimId).claim(response).build();
       return ResponseEntity.ok(resp);
@@ -96,8 +93,6 @@ public class BipController implements BipResource {
     long claimId = Long.parseLong(id);
     log.info("Retrieve contentions for claim ID {} from {}", claimId, id);
     try {
-      // TODO: route to call BipApiService
-
       List<ClaimContention> resp = service.getClaimContentions(claimId);
       BipClaimContentionsResponse response =
           BipClaimContentionsResponse.builder().contentions(resp).claimId(claimId).build();
@@ -116,7 +111,6 @@ public class BipController implements BipResource {
   public ResponseEntity<BipContentionUpdateResponse> updateContentions(
       @Valid BipUpdateClaimContentionPayload payload) {
     log.info("update a contention for claim ID {}", payload.getClaimId());
-    //    log.info("contention to update:\n {}", payload.getContention());
 
     try {
       UpdateContention contention = payload.getContention();
@@ -143,7 +137,6 @@ public class BipController implements BipResource {
   public ResponseEntity<BipContentionCreationResponse> createContentions(
       @Valid BipCreateClaimContentionPayload payload) {
     log.info("Create a contention for claim ID {}", payload.getClaimId());
-    //    log.info("contention to create: \n {}", payload.getContention());
 
     try {
       List<CreateContention> contentions = Collections.singletonList(payload.getContention());
