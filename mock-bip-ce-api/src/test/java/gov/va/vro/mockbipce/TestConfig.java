@@ -37,19 +37,20 @@ public class TestConfig {
   private String keyStoreBase64;
 
   @SneakyThrows
+  private KeyStore getKeyStore(String base64, String password) {
+    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+    String noSpaceBase64 = base64.replaceAll("\\s+", "");
+    byte[] decodedBytes = Base64.getDecoder().decode(noSpaceBase64);
+    InputStream stream = new ByteArrayInputStream(decodedBytes);
+    keyStore.load(stream, password.toCharArray());
+    return keyStore;
+  }
+
+  @SneakyThrows
   @Bean(name = "httpsRestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) {
-    KeyStore keyStore = KeyStore.getInstance("PKCS12");
-    String noSpaceKeyStoreBase64 = keyStoreBase64.replaceAll("\\s+", "");
-    byte[] decodedKeyStoreBytes = Base64.getDecoder().decode(noSpaceKeyStoreBase64);
-    InputStream keyStoreStream = new ByteArrayInputStream(decodedKeyStoreBytes);
-    keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
-
-    KeyStore trustStore = KeyStore.getInstance("PKCS12");
-    String noSpaceTrustStoreBase64 = trustStoreBase64.replaceAll("\\s+", "");
-    byte[] decodedTrustStoreBytes = Base64.getDecoder().decode(noSpaceTrustStoreBase64);
-    InputStream trustStoreStream = new ByteArrayInputStream(decodedTrustStoreBytes);
-    trustStore.load(trustStoreStream, trustStorePassword.toCharArray());
+    KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
+    KeyStore trustStore = getKeyStore(trustStoreBase64, trustStorePassword);
 
     SSLContext sslContext = new SSLContextBuilder()
         .loadTrustMaterial(trustStore, null)
@@ -66,13 +67,7 @@ public class TestConfig {
   @Bean(name = "httpsNoCertificationRestTemplate")
   public RestTemplate getHttpsNoCertificationRestTemplate(RestTemplateBuilder builder) {
     TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-    KeyStore keyStore = KeyStore.getInstance("PKCS12");
-    String noSpaceKeyStoreBase64 = keyStoreBase64.replaceAll("\\s+", "");
-    byte[] decodedKeyStoreBytes = Base64.getDecoder().decode(noSpaceKeyStoreBase64);
-    InputStream keyStoreStream = new ByteArrayInputStream(decodedKeyStoreBytes);
-    keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
-
+    KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
     SSLContext sslContext = new SSLContextBuilder()
         .loadTrustMaterial(null, acceptingTrustStrategy)
         .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
