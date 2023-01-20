@@ -86,10 +86,15 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
-  db:
+  pgIsready:
+    # TODO: reduce resources since this container requires very little
     limits:
       cpu: 10m
       memory: 256Mi
+#  db:
+#    limits:
+#      cpu: 10m
+#      memory: 256Mi
 #  redis:
 #    limits:
 #      cpu: 10m
@@ -107,6 +112,7 @@ service:
     type: ClusterIP
     sourcePort: 8080
     targetPort: 8080
+  # used by `pg-isready` container:
   db:
     type: ClusterIP
     sourcePort: 5432

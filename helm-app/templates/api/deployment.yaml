@@ -53,10 +53,10 @@ spec:
                   sleep 5
                 done
               "
-          resources: {{- toYaml .Values.resources.db | nindent 12 }}
+          resources: {{- toYaml .Values.resources.pgIsready | nindent 12 }}
         - name: db-init
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
-          imagePullPolicy: {{ .Values.images.dbInit.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.images.dbinit.imagePullPolicy }}
           env:
             - name: ENV
               value: {{ .Values.environment }}
