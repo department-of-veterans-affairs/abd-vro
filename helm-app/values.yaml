@@ -34,12 +34,11 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
+# This and similar services should probably be removed from this file since these services are deployed separately
 #  redis:
 #    imageName: redis
 #    tag: latest
 #    imagePullPolicy: Always
-# TODO: Have the new `add-3rd-party-image.sh` script generate a new helm-service-S folder
-# This and similar services should probably be removed from this file since these services are deployed separately
 #  mq:
 #    imageName: vro-rabbitmq
 #    tag: 3
