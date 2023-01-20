@@ -1,0 +1,9 @@
+# ssl client settings
+
+http:
+  client:
+    ssl:
+      trust-store: classpath:truststore_all.p12
+      trust-store-password: truststore_all_pw
+      key-store: classpath:client_keystore.p12
+      key-store-password: client_keystore_pw

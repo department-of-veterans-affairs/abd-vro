@@ -40,3 +40,10 @@ Keytool can be used
 keytool -import -file client_root_ca.pem -alias client_root_ca -keystore client_truststore.p12
 ```
 password is client_truststore.p12
+
+PKS12 files can be overted to base64
+```bash
+openssl base64 -in <infile> -out <outfile>
+```
+
+exported to environment variables MOCK_BIP_CE_TRUSTSTORE, MOCK_BIP_CE_KEYSTORE
