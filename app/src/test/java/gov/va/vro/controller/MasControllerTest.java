@@ -54,7 +54,7 @@ public class MasControllerTest extends BaseControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     var request =
         objectMapper.readValue(
-            new ClassPathResource("mas-request.json").getFile(), MasAutomatedClaimPayload.class);
+            new ClassPathResource("mas-request.json").getFile(), MasAutomatedClaimRequest.class);
     assertEquals("Rick", request.getFirstName());
     assertEquals("Smith", request.getLastName());
     assertEquals(123, request.getCollectionId());
