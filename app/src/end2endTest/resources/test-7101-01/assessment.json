@@ -82,7 +82,7 @@
     "bp_readings": [
       {
         "date": "2022-07-20",
-        "dateFormatted": "07/20/2022",
+        "dateFormatted": "7/20/2022",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
@@ -101,7 +101,7 @@
       },
       {
         "date": "2022-06-20",
-        "dateFormatted": "06/20/2022",
+        "dateFormatted": "6/20/2022",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
@@ -120,7 +120,7 @@
       },
       {
         "date": "2022-05-20",
-        "dateFormatted": "05/20/2022",
+        "dateFormatted": "5/20/2022",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
