@@ -29,6 +29,7 @@ spec:
             claimName: {{ .Values.volumes.tracking.claimName }}
       initContainers:
         - name: pg-isready
+          # TODO: This simple container does not need to use the big `db` image
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
           env:
             - name: ENV
@@ -53,7 +54,7 @@ spec:
                   sleep 5
                 done
               "
-          resources: {{- toYaml .Values.resources.pgIsready | nindent 12 }}
+          resources: {{- toYaml .Values.resources.pgIsReady | nindent 12 }}
         - name: db-init
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag }}
           imagePullPolicy: {{ .Values.images.dbinit.imagePullPolicy }}
