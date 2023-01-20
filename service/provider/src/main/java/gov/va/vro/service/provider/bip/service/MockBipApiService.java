@@ -37,7 +37,7 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
@@ -52,33 +52,43 @@ public class MockBipApiService implements IBipApiService {
   @Override
   public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
   public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
   public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException {
-    return null;
+    String message =
+        String.format("This is a mock response to create a contetion for claim %d.", claimId);
+    return new BipUpdateClaimResp(HttpStatus.OK, message);
   }
 
   @Override
   public BipFileUploadResp uploadEvidence(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
       throws BipException {
-    return new BipFileUploadResp();
+    String message =
+        String.format(
+            "This is a mock response to upload evidence file for %s.",
+            idtype.name() + ":" + fileId);
+    return new BipFileUploadResp(HttpStatus.OK, message);
   }
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
       FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
       throws BipException {
-    return new BipFileUploadResp();
+    String message =
+        String.format(
+            "This is a mock response to upload multipart file for %s.",
+            idtype.name() + ":" + fileId);
+    return new BipFileUploadResp(HttpStatus.OK, message);
   }
 
   private BipClaim buildClaim(int claimId, String station) {
