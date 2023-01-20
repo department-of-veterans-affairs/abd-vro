@@ -16,30 +16,43 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 
 @TestConfiguration
 public class TestConfig {
-  @Value("${http.client.ssl.trust-store}")
-  private Resource trustStore;
-
   @Value("${http.client.ssl.trust-store-password}")
   private String trustStorePassword;
 
-  @Value("${http.client.ssl.key-store}")
-  private Resource keyStoreResource;
-
   @Value("${http.client.ssl.key-store-password}")
   private String keyStorePassword;
+
+  @Value("${vro-mock-bip-ce-truststore}")
+  private String trustStoreBase64;
+
+  @Value("${vro-mock-bip-ce-keystore}")
+  private String keyStoreBase64;
 
   @SneakyThrows
   @Bean(name = "httpsRestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
-    keyStore.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
+    String noSpaceKeyStoreBase64 = keyStoreBase64.replaceAll("\\s+", "");
+    byte[] decodedKeyStoreBytes = Base64.getDecoder().decode(noSpaceKeyStoreBase64);
+    InputStream keyStoreStream = new ByteArrayInputStream(decodedKeyStoreBytes);
+    keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
+
+    KeyStore trustStore = KeyStore.getInstance("PKCS12");
+    String noSpaceTrustStoreBase64 = trustStoreBase64.replaceAll("\\s+", "");
+    byte[] decodedTrustStoreBytes = Base64.getDecoder().decode(noSpaceTrustStoreBase64);
+    InputStream trustStoreStream = new ByteArrayInputStream(decodedTrustStoreBytes);
+    trustStore.load(trustStoreStream, trustStorePassword.toCharArray());
+
     SSLContext sslContext = new SSLContextBuilder()
-        .loadTrustMaterial(trustStore.getURL(), trustStorePassword.toCharArray())
+        .loadTrustMaterial(trustStore, null)
         .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
         .build();
 
@@ -55,7 +68,11 @@ public class TestConfig {
     TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
-    keyStore.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
+    String noSpaceKeyStoreBase64 = keyStoreBase64.replaceAll("\\s+", "");
+    byte[] decodedKeyStoreBytes = Base64.getDecoder().decode(noSpaceKeyStoreBase64);
+    InputStream keyStoreStream = new ByteArrayInputStream(decodedKeyStoreBytes);
+    keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
+
     SSLContext sslContext = new SSLContextBuilder()
         .loadTrustMaterial(null, acceptingTrustStrategy)
         .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())

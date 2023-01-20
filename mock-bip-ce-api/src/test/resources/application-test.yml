@@ -7,3 +7,7 @@ http:
       trust-store-password: truststore_all_pw
       key-store: classpath:client_keystore.p12
       key-store-password: client_keystore_pw
+
+spring.config.import: >
+  truststore.yml,
+  client-keystore.yml
