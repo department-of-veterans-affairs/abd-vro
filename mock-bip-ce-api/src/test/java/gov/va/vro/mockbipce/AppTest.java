@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 @Import(TestConfig.class)
 @ActiveProfiles("test")
 public class AppTest {
-
   @LocalServerPort int port;
 
   @Autowired
