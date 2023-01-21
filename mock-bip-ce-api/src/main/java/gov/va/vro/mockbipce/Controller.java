@@ -15,8 +15,8 @@ public class Controller {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<BipCeFileUploadResponse> postFile(@RequestBody BipFileProviderData data) {
     log.info("Entered mock-bip-ce post file");
-    BipCeFileUploadResponse response = BipCeFileUploadResponse.builder()
-        .owner( "VETERAN:FILENUMBER:987267855").build();
+    BipCeFileUploadResponse response =
+        BipCeFileUploadResponse.builder().owner("VETERAN:FILENUMBER:987267855").build();
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

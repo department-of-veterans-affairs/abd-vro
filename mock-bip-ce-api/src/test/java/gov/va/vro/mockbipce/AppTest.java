@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
 @ActiveProfiles("test")
@@ -31,24 +30,28 @@ public class AppTest {
 
   @Test
   void postFileTest() {
-    BipFileProviderData request = BipFileProviderData.builder()
-        .claimantLastName("Doe").claimantFirstName("Joe").build();
+    BipFileProviderData request =
+        BipFileProviderData.builder().claimantLastName("Doe").claimantFirstName("Joe").build();
 
-    ResponseEntity<BipCeFileUploadResponse> response = restTemplate.postForEntity(
-      "https://localhost:" + port + "/mock-bip-ce/files", request, BipCeFileUploadResponse.class
-    );
+    ResponseEntity<BipCeFileUploadResponse> response =
+        restTemplate.postForEntity(
+            "https://localhost:" + port + "/mock-bip-ce/files",
+            request,
+            BipCeFileUploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
   void postNoCertFileTest() {
-    BipFileProviderData request = BipFileProviderData.builder()
-        .claimantLastName("Doe").claimantFirstName("Joe").build();
+    BipFileProviderData request =
+        BipFileProviderData.builder().claimantLastName("Doe").claimantFirstName("Joe").build();
 
-    ResponseEntity<BipCeFileUploadResponse> response = restNoCertTemplate.postForEntity(
-        "https://localhost:" + port + "/mock-bip-ce/files", request, BipCeFileUploadResponse.class
-    );
+    ResponseEntity<BipCeFileUploadResponse> response =
+        restNoCertTemplate.postForEntity(
+            "https://localhost:" + port + "/mock-bip-ce/files",
+            request,
+            BipCeFileUploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }

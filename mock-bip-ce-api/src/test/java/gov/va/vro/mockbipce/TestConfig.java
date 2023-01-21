@@ -10,17 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import javax.net.ssl.SSLContext;
 
 @TestConfiguration
 public class TestConfig {
@@ -52,31 +51,38 @@ public class TestConfig {
     KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
     KeyStore trustStore = getKeyStore(trustStoreBase64, trustStorePassword);
 
-    SSLContext sslContext = new SSLContextBuilder()
-        .loadTrustMaterial(trustStore, null)
-        .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
-        .build();
+    SSLContext sslContext =
+        new SSLContextBuilder()
+            .loadTrustMaterial(trustStore, null)
+            .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
+            .build();
 
     SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
-    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-    ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    CloseableHttpClient httpClient =
+        HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
+    ClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
     return new RestTemplate(requestFactory);
   }
+
   @SneakyThrows
   @Bean(name = "httpsNoCertificationRestTemplate")
   public RestTemplate getHttpsNoCertificationRestTemplate(RestTemplateBuilder builder) {
     TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
     KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
-    SSLContext sslContext = new SSLContextBuilder()
-        .loadTrustMaterial(null, acceptingTrustStrategy)
-        .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
-        .build();
+    SSLContext sslContext =
+        new SSLContextBuilder()
+            .loadTrustMaterial(null, acceptingTrustStrategy)
+            .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
+            .build();
 
     SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
-    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-    ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    CloseableHttpClient httpClient =
+        HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
+    ClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
     return new RestTemplate(requestFactory);
   }
 }
