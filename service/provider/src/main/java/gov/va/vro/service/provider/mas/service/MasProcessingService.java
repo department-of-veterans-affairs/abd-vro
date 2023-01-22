@@ -46,6 +46,21 @@ public class MasProcessingService {
       return String.format(
           "Claim with collection Id %s is out of scope.", payload.getCollectionId());
     }
+
+    if (payload.isPresumptive() != null && !payload.isPresumptive()) {
+      var message =
+              String.format(
+                      "Request with [collection id = %s], [diagnostic code = %s],"
+                              + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
+                      payload.getCollectionId(),
+                      payload.getDiagnosticCode(),
+                      payload.getDisabilityActionType(),
+                      payload.getVeteranFlashIds());
+      offRampClaim(payload, message);
+      return String.format(
+              "Claim with collection Id %s is not presumptive.", payload.getCollectionId());
+    }
+
     if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
       var message =
           String.format(

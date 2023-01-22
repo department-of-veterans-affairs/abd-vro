@@ -10,13 +10,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class MasAutomatedClaimPayload implements Auditable {
 
   public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
+  public static final String AGENT_ORANGE_FLASH_ID = "266";
 
   private String correlationId;
 
@@ -63,6 +64,13 @@ public class MasAutomatedClaimPayload implements Auditable {
     return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
         && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
             || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
+  }
+
+  public Boolean isPresumptive() {
+    if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
+      return  (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
+    }
+    return null;
   }
 
   public Integer getClaimId() {
