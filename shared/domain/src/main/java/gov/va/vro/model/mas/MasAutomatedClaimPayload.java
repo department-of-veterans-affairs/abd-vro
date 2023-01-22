@@ -1,8 +1,10 @@
 package gov.va.vro.model.mas;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.event.Auditable;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +20,8 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
+
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   private String correlationId;
 
@@ -68,7 +72,7 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   public Boolean isPresumptive() {
     if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
-      return  (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
+      return (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
     }
     return null;
   }
@@ -87,10 +91,23 @@ public class MasAutomatedClaimPayload implements Auditable {
   }
 
   @Override
+  @SneakyThrows
   public String getDetails() {
-    return String.format(
-        "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
-        collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
+    var details =
+        MasEventDetails.builder()
+            .claimId(Objects.toString(getClaimId()))
+            .collectionId(Objects.toString(getCollectionId()))
+            .diagnosticCode(getDiagnosticCode())
+            .veteranIcn(getVeteranIcn())
+            .disabilityActionType(getDisabilityActionType())
+            .flashIds(getVeteranFlashIds())
+            .inScope(isInScope())
+            .presumptive(isPresumptive())
+            .submissionSource(claimDetail == null ? null : claimDetail.getClaimSubmissionSource())
+            .submissionDate(claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime())
+            // TODO: .offRampReason()
+            .build();
+    return objectMapper.writeValueAsString(details);
   }
 
   @Override
