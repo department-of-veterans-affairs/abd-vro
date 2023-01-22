@@ -1,9 +1,11 @@
 package gov.va.vro.model.mas;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.event.Auditable;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  @JsonIgnore private final ObjectMapper objectMapper = new ObjectMapper();
 
   private String correlationId;
 
@@ -43,8 +45,11 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   @NotNull @Valid private ClaimDetail claimDetail;
 
+  @Setter private String offRampReason;
+
   private List<String> veteranFlashIds;
 
+  @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
@@ -52,6 +57,7 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
+  @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
@@ -64,12 +70,14 @@ public class MasAutomatedClaimPayload implements Auditable {
    *
    * @return true or false.
    */
+  @JsonIgnore
   public boolean isInScope() {
     return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
         && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
             || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
   }
 
+  @JsonIgnore
   public Boolean isPresumptive() {
     if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
       return (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
@@ -77,14 +85,17 @@ public class MasAutomatedClaimPayload implements Auditable {
     return null;
   }
 
+  @JsonIgnore
   public Integer getClaimId() {
     return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
   }
 
+  @JsonIgnore
   public String getVeteranIcn() {
     return veteranIdentifiers == null ? null : veteranIdentifiers.getIcn();
   }
 
+  @JsonIgnore
   @Override
   public String getEventId() {
     return correlationId;
@@ -92,6 +103,7 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   @Override
   @SneakyThrows
+  @JsonIgnore
   public String getDetails() {
     var details =
         MasEventDetails.builder()
@@ -105,11 +117,12 @@ public class MasAutomatedClaimPayload implements Auditable {
             .presumptive(isPresumptive())
             .submissionSource(claimDetail == null ? null : claimDetail.getClaimSubmissionSource())
             .submissionDate(claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime())
-            // TODO: .offRampReason()
+            .offRampReason(getOffRampReason())
             .build();
     return objectMapper.writeValueAsString(details);
   }
 
+  @JsonIgnore
   @Override
   public String getDisplayName() {
     return "Automated Claim";
