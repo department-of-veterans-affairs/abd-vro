@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce;
+package gov.va.vro.mockbipce.controller;
 
 import gov.va.vro.model.bip.BipFileProviderData;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/mock-bip-ce")
-public class Controller {
-  @PostMapping(value = "files", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/")
+public class FilesController {
+  @PostMapping(value = "/files", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<BipCeFileUploadResponse> postFile(@RequestBody BipFileProviderData data) {
     log.info("Entered mock-bip-ce post file");

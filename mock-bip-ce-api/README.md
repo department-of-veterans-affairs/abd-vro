@@ -11,9 +11,16 @@ In particular the following functionality is of interest
 
 The mock server is a HTTPS enabled Spring Boot Java application.
 
+### Local Usage
+
+The server can be run from the parent directory
+```bash
+./gradlew :mock-bip-ce-api:bootRun
+```
+
 ### Server Certificates
 
-The mock server use self-signed SSL certificate for the Root Certifying Authority (CA). An
+The mock server uses self-signed SSL certificate for the Root Certifying Authority (CA). An
 additional Intermediate CA is also used based on experimentation on GFE. 
 
 The private key `root_ca.key` for Root CA is generated using `openssl`

@@ -17,6 +17,11 @@ server:
     trust-store-password: client_truststore_pw
     trust-store-type: PKCS12
 
+## Logging
+logging:
+  level:
+    root: DEBUG
+
 ## Health
 
 management:
@@ -36,5 +41,4 @@ management:
     web:
       exposure:
         include: health
-  server:
-    port: 8092
+

@@ -2,6 +2,7 @@ package gov.va.vro.mockbipce;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import gov.va.vro.mockbipce.controller.BipCeFileUploadResponse;
 import gov.va.vro.model.bip.BipFileProviderData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class AppTest {
 
     ResponseEntity<BipCeFileUploadResponse> response =
         restTemplate.postForEntity(
-            "https://localhost:" + port + "/mock-bip-ce/files",
+            "https://localhost:" + port + "/files",
             request,
             BipCeFileUploadResponse.class);
 
@@ -49,7 +50,7 @@ public class AppTest {
 
     ResponseEntity<BipCeFileUploadResponse> response =
         restNoCertTemplate.postForEntity(
-            "https://localhost:" + port + "/mock-bip-ce/files",
+            "https://localhost:" + port + "/files",
             request,
             BipCeFileUploadResponse.class);
 
