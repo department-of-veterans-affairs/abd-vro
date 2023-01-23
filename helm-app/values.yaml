@@ -114,7 +114,7 @@ service:
     sourcePort: 8080
     targetPort: 8080
   db:
-    # used by `pg-isready` container
+    # Being used as the `pg-isready` container
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
