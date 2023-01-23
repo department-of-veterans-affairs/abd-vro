@@ -79,7 +79,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
-                                               'dateFormatted': '11/01/2021',
+                                               'dateFormatted': '11/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -93,7 +93,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 120}},
                                               {'date': '2021-10-01',
-                                               'dateFormatted': '10/01/2021',
+                                               'dateFormatted': '10/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -108,7 +108,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 200.0}
                                                },
                                               {'date': '2021-09-01',
-                                               'dateFormatted': '09/01/2021',
+                                               'dateFormatted': '9/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -123,7 +123,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 200.0}}
                                               ],
                               'conditions': [{'code': 'I10',
-                                              'dateFormatted': '04/06/1950',
+                                              'dateFormatted': '4/6/1950',
                                               'recordedDate': '1950-04-06',
                                               'relevant': True,
                                               'text': 'Essential (primary) hypertension',
@@ -193,7 +193,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -207,7 +207,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}},
                                               {'date': '2020-09-01',
-                                               'dateFormatted': '09/01/2020',
+                                               'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -272,7 +272,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -287,7 +287,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 180}}],
                               'conditions': [
                                   {'code': 'I10',
-                                   'dateFormatted': '04/06/1950',
+                                   'dateFormatted': '4/6/1950',
                                    'recordedDate': '1950-04-06',
                                    'relevant': True,
                                    'text': 'Essential (primary) hypertension',
@@ -299,7 +299,7 @@ from assessclaimdc7101.src.lib import main
                                    "recordedDate": ""
                                    }],
                               'medications': [{'authoredOn': '1950-04-06T07:24:55Z',
-                                               'dateFormatted': '04/06/1950',
+                                               'dateFormatted': '4/6/1950',
                                                'relevant': True,
                                                'text': 'some medication'}]},
                  'evidenceSummary': {'medicationsCount': 1,
@@ -355,7 +355,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -369,7 +369,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 100}},
                                               {'date': '2020-09-01',
-                                               'dateFormatted': '09/01/2020',
+                                               'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -434,7 +434,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -448,7 +448,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}},
                                               {'date': '2020-09-01',
-                                               'dateFormatted': '09/01/2020',
+                                               'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -536,7 +536,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -550,7 +550,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}},
                                               {'date': '2020-11-01',
-                                               'dateFormatted': '11/01/2020',
+                                               'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -564,7 +564,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}},
                                               {'date': '2020-09-01',
-                                               'dateFormatted': '09/01/2020',
+                                               'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -578,7 +578,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {'date': '2020-09-01',
-                                               'dateFormatted': '09/01/2020',
+                                               'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -670,7 +670,7 @@ from assessclaimdc7101.src.lib import main
                 {'dateOfClaim': '2021-11-09',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
-                                               'dateFormatted': '11/01/2021',
+                                               'dateFormatted': '11/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -684,7 +684,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}},
                                               {'date': '2021-10-01',
-                                               'dateFormatted': '10/01/2021',
+                                               'dateFormatted': '10/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -698,7 +698,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {'date': '2021-09-01',
-                                               'dateFormatted': '09/01/2021',
+                                               'dateFormatted': '9/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -712,7 +712,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {'date': '2021-08-01',
-                                               'dateFormatted': '08/01/2021',
+                                               'dateFormatted': '8/1/2021',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',

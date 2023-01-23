@@ -45,6 +45,10 @@ public interface MasResource {
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
         @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
             content = @Content(schema = @Schema(hidden = true))),
@@ -72,6 +76,10 @@ public interface MasResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
