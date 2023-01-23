@@ -42,7 +42,6 @@ then
   # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
   # sleep 60 # wait for Persistent Volume Claim to be deleted
   helm upgrade --install $HELM_APP_NAME helm-service-redis \
-
               ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run

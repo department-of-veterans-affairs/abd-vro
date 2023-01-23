@@ -25,27 +25,31 @@ GHCR_PATH="ghcr.io/${REPO_PATH}/$TARGET_IMAGE:$IMG_TAG"
 set -e
 
 # Pull, tag, and push these third-party images
-echo "# Pulling $IMAGE:$IMG_TAG"
+echo "
+# Pulling $IMAGE:$IMG_TAG"
 docker pull "$IMAGE:$IMG_TAG"
 
-echo ""
-echo "# Pushing/Publishing image $IMAGE:$IMG_TAG to $GHCR_PATH and tagged as 'latest'"
+echo "
+# Pushing/Publishing image $IMAGE:$IMG_TAG to $GHCR_PATH and tagged as 'latest'"
 docker tag "$IMAGE:$IMG_TAG" "$GHCR_PATH"
 docker push "$GHCR_PATH"
 
 docker tag "$IMAGE:$IMG_TAG" "ghcr.io/${REPO_PATH}/$TARGET_IMAGE:latest"
 docker push "ghcr.io/${REPO_PATH}/$TARGET_IMAGE:latest"
 
-echo ""
-echo "# Published $GHCR_PATH"
-echo "Check for package at https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=$REPO"
-echo "It should be at https://github.com/department-of-veterans-affairs/$REPO/pkgs/container/$REPO%2F$IMAGE"
-echo ""
-echo "Next, you must do the following:"
-echo "1. Manually set the package to "Inherit access from source repository" as instructed by LHDI doc:"
-echo "https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility"
-echo "Also see https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages"
-echo ""
-echo "2. Create a Helm configuration for the service -- mimic files in helm-service-* folders."
-echo ""
-echo "3. Create and test scripts/deploy-$IMAGE.sh"
+echo "
+# Published $GHCR_PATH
+Check for package at https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=$REPO
+It should be at https://github.com/department-of-veterans-affairs/$REPO/pkgs/container/$REPO%2F$IMAGE
+"
+echo "
+Next, you must do the following:
+1. Manually connect the package to the $REPO repo and
+   set the package to "Inherit access from source repository" as instructed by LHDI doc:
+   https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility
+   Also see https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages
+
+2. Create a Helm configuration for the service -- mimic files in helm-service-* folders.
+
+3. Create and test scripts/deploy-$IMAGE.sh
+"
