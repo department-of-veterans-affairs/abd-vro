@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.validation.Valid;
 
-/** UploadResponse */
+/** UploadResponse. */
 @JsonTypeName("uploadResponse")
 public class UploadResponse {
 
@@ -34,7 +34,7 @@ public class UploadResponse {
   }
 
   /**
-   * String representation of the document's owner
+   * String representation of the document's owner.
    *
    * @return owner
    */
@@ -129,7 +129,7 @@ public class UploadResponse {
   }
 
   /**
-   * Get conversionInformation
+   * Get conversionInformation.
    *
    * @return conversionInformation
    */

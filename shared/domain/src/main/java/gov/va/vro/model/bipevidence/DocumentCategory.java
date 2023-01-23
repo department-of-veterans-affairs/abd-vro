@@ -34,7 +34,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Get id
+   * Get id.
    *
    * @return id
    */
@@ -53,7 +53,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Get createDateTime
+   * Get createDateTime.
    *
    * @return createDateTime
    */
@@ -72,7 +72,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Get modifiedDateTime
+   * Get modifiedDateTime.
    *
    * @return modifiedDateTime
    */
@@ -91,7 +91,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Get description
+   * Get description.
    *
    * @return description
    */
@@ -110,7 +110,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Get subDescription
+   * Get subDescription.
    *
    * @return subDescription
    */

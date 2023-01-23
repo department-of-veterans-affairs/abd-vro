@@ -14,7 +14,10 @@ import javax.validation.Valid;
 @Schema(
     name = "conversionInformation",
     description =
-        "Details about a file's conversion. This is optional, and will only be present on responses where the file has been converted.")
+        """
+       Information only present if the document has been converted.
+       Details the previous version mime type, md5, and time of file conversion.
+        """)
 @JsonTypeName("conversionInformation")
 public class ConversionInformation {
 
@@ -30,7 +33,7 @@ public class ConversionInformation {
   }
 
   /**
-   * Get preprocessed
+   * Get preprocessed.
    *
    * @return preprocessed
    */
@@ -50,7 +53,7 @@ public class ConversionInformation {
   }
 
   /**
-   * Get converted
+   * Get converted.
    *
    * @return converted
    */

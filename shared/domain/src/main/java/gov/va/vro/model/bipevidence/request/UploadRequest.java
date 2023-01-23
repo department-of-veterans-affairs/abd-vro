@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import javax.validation.Valid;
 
-/** UploadRequest */
+/** UploadRequest. */
 @JsonTypeName("uploadRequest")
 public class UploadRequest {
 
@@ -24,7 +24,7 @@ public class UploadRequest {
   }
 
   /**
-   * Get payload
+   * Get payload.
    *
    * @return payload
    */
@@ -44,7 +44,7 @@ public class UploadRequest {
   }
 
   /**
-   * Get file
+   * Get file.
    *
    * @return file
    */

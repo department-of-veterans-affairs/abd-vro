@@ -30,7 +30,7 @@ public class VefsErrorResponse {
   }
 
   /**
-   * UUID used to trace the error response
+   * UUID used to trace the error response.
    *
    * @return uuid
    */

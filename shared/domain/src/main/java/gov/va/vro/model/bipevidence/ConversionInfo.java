@@ -15,7 +15,10 @@ import javax.validation.Valid;
 @Schema(
     name = "conversionInfo",
     description =
-        "Information only present if the document has been converted. Details the previous version mime type, md5, and time of file conversion.")
+        """
+       Information only present if the document has been converted.
+       Details the previous version mime type, md5, and time of file conversion.
+        """)
 @JsonTypeName("conversionInfo")
 public class ConversionInfo {
 

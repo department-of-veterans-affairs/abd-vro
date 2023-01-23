@@ -15,7 +15,7 @@ import java.util.Objects;
 @JsonTypeName("associatedClaimId")
 public class AssociatedClaimId {
 
-  /** Gets or Sets evaluationType */
+  /** Gets or Sets evaluationType. */
   public enum EvaluationTypeEnum {
     EQUALS("EQUALS");
 
@@ -35,6 +35,12 @@ public class AssociatedClaimId {
       return String.valueOf(value);
     }
 
+    /**
+     * Creates enum version of the input.
+     *
+     * @param value Evaludation type name
+     * @return EvaluationTypeEnum
+     */
     @JsonCreator
     public static EvaluationTypeEnum fromValue(String value) {
       for (EvaluationTypeEnum b : EvaluationTypeEnum.values()) {
@@ -58,7 +64,7 @@ public class AssociatedClaimId {
   }
 
   /**
-   * Get evaluationType
+   * Get evaluationType.
    *
    * @return evaluationType
    */
@@ -77,7 +83,7 @@ public class AssociatedClaimId {
   }
 
   /**
-   * Get value
+   * Get value.
    *
    * @return value
    */

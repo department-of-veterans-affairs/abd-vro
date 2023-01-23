@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /** Payload containing content name and the provider specific data. */
 @Schema(
@@ -39,7 +40,11 @@ public class Payload {
   @Schema(
       name = "contentName",
       description =
-          "The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321.",
+          """
+          The content name of the document being uploaded.
+          For instance the document \\"pdf.pdf\\" cannot be uploaded twice for
+          fileNumber 987654321.
+          """,
       required = false)
   public String getContentName() {
     return contentName;
@@ -55,7 +60,7 @@ public class Payload {
   }
 
   /**
-   * Get providerData
+   * Get providerData.
    *
    * @return providerData
    */
