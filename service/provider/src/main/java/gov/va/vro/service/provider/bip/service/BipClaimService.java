@@ -46,31 +46,36 @@ public class BipClaimService {
    */
   public boolean hasAnchors(int collectionId) {
 
-    var claimDetails = bipApiService.getClaimDetails(collectionId);
-    if (claimDetails == null) {
-      log.warn("Claim with collection Id {} not found in BIP", collectionId);
-      return false;
-    }
-    if (!TSOJ.equals(claimDetails.getTempStationOfJurisdiction())) {
-      log.info("Claim with collection Id {} does not have TSOJ = {}", collectionId, TSOJ);
-      return false;
-    }
-    int claimId = Integer.parseInt(claimDetails.getClaimId());
-    var contentions = bipApiService.getClaimContentions(claimId);
-    if (contentions == null) {
-      log.info("Claim with collection Id {} does not have contentions.", collectionId);
-      return false;
-    }
+    try {
+      var claimDetails = bipApiService.getClaimDetails(collectionId);
+      if (claimDetails == null) {
+        log.warn("Claim with collection Id {} not found in BIP", collectionId);
+        return false;
+      }
+      if (!TSOJ.equals(claimDetails.getTempStationOfJurisdiction())) {
+        log.info("Claim with collection Id {} does not have TSOJ = {}", collectionId, TSOJ);
+        return false;
+      }
+      int claimId = Integer.parseInt(claimDetails.getClaimId());
+      var contentions = bipApiService.getClaimContentions(claimId);
+      if (contentions == null) {
+        log.info("Claim with collection Id {} does not have contentions.", collectionId);
+        return false;
+      }
 
-    // collect all special issues
-    var specialIssues =
-        contentions.stream()
-            .filter(BipClaimService::hasSpecialIssues)
-            .map(ClaimContention::getSpecialIssueCodes)
-            .flatMap(Collection::stream)
-            .map(String::toLowerCase) // Ignore case
-            .collect(Collectors.toSet());
-    return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
+      // collect all special issues
+      var specialIssues =
+          contentions.stream()
+              .filter(BipClaimService::hasSpecialIssues)
+              .map(ClaimContention::getSpecialIssueCodes)
+              .flatMap(Collection::stream)
+              .map(String::toLowerCase) // Ignore case
+              .collect(Collectors.toSet());
+      return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
+    } catch (BipException e) {
+      log.error("BIP service call responds with exception. {}", e.getMessage(), e);
+      return false;
+    }
   }
 
   /**
