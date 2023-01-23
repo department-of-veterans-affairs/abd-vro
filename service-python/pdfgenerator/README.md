@@ -15,7 +15,7 @@ Both functions work off the same endpoint. The main difference being that the `P
 
 - [Immediate PDF - GET http://localhost:8080/v1/immediate-pdf](http://localhost:8080/v1/immediate-pdf)
 
-This endpoint is just a combined version of the original 2. Just pass it the `POST` request body and it will spit back the PDF without a secondary call with the `claimSubmissionID`
+This endpoint is a combined version of the `generate-pdf` and`fetch-pdf`. Pass it the `POST` request body and it will respond with the PDF associated with the `claimSubmissionID`
 
 ## How it works
 
