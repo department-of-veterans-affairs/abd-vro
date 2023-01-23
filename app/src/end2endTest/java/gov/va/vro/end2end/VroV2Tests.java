@@ -97,7 +97,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Claim with collection Id 350 is out of scope.", masResponse.getMessage());
+    assertEquals("Claim with [collection id = 350], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.", masResponse.getMessage());
   }
 
   @Test
@@ -109,7 +109,7 @@ public class VroV2Tests {
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Claim with collection Id 351 is missing an anchor.", masResponse.getMessage());
+    assertEquals("Claim with [collection id = 351] does not qualify for automated processing because it is missing anchors.", masResponse.getMessage());
   }
 
   @SneakyThrows
