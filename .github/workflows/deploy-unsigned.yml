@@ -10,8 +10,8 @@ on:
         default: 'dev'
         type: choice
         options:
-        - dev
-        - qa
+          - dev
+          - qa
 
   # Allow other workflows to call this one
   workflow_call:
@@ -32,6 +32,7 @@ env:
   # Default to failure messages
   DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
   DEPLOY_STATE_EMOJI: 'x'
+  JOB_STATUS: 'failed'
 
 jobs:
   publish-images:
@@ -39,8 +40,13 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
+      job_status: ${{ env.JOB_STATUS }}
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      # Delay this step to allow notify-push-to-branch.yml to post to Slack first
       - name: "Notify Slack"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
@@ -53,19 +59,15 @@ jobs:
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
-      - name: "Set output for use by deploy job"
+      - name: "Set slack-thread-id output for later use"
         id: slack-thread-id
-        run: |
-          echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
-
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
+        run: echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
 
       # we are using the GitHub actor and token below instead of the PAT
       # due to a signing issue in SecRel 4. for more details see
       # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
 
-      - name: "Build, test, and publish ${{ env.TARGET_ENV }} images to GHCR"
+      - name: "Test and publish ${{ env.TARGET_ENV }} images to GHCR"
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
@@ -73,7 +75,8 @@ jobs:
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Cleanup ${{ env.TARGET_ENV }} images locally"
+      # TODO: Is this really needed?
+      - name: "Remove images locally"
         run: |
           docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
 
@@ -85,21 +88,26 @@ jobs:
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
 
+      - name: "Publish-images job cancelled"
+        if: cancelled()
+        run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
+
   deploy-images:
     needs: publish-images
     runs-on: ubuntu-latest
+    outputs:
+      job_status: ${{ env.JOB_STATUS }}
     steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
       - name: "Notify Slack: Deploying..."
-        id: notify-slack-deploying
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-text: ":panda_coffee: Deploying to ${{ env.TARGET_ENV }}..."
-
-      - name: "Checkout source code"
-        uses: actions/checkout@v3
 
       - name: "Set up kube config"
         run: |
@@ -112,26 +120,41 @@ jobs:
         env:
           SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
           SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
-        run: |
-          ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
+        run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
         run: |
           if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
-            echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
-            echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+            echo "JOB_STATUS=success" >> $GITHUB_ENV
           else
             # Return nonzero error code so that workflow fails
             exit 1
           fi
 
-      - name: "Cancelled workflow"
+      - name: "Deploy-images job cancelled"
         if: cancelled()
+        run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
+
+  notify-slack:
+    needs: [ publish-images, deploy-images ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: "Set cancelled deployment message"
+        if: ${{ needs.publish-images.outputs.job_status == 'cancelled' || needs.deploy-images.outputs.job_status == 'cancelled' }}
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_blank: Deployment cancelled!' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
-      - name: "Notify Slack: Thread deployment status"
+      - name: "Set successful deployment message"
+        if: ${{ needs.deploy-images.outputs.job_status == 'success' }}
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+
+      # If either of the deploy jobs fail,
+      # the DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI should not change from its default "failure" state
+      - name: "Post deployment status in Slack thread"
         if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -140,9 +163,9 @@ jobs:
           slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-text: ${{ env.DEPLOY_STATE_TEXT }}
 
-      - name: "Notify Slack: React to top-level notification"
+      - name: "Emoji react to top-level Slack notification"
         if: always()
-        uses: archive/github-actions-slack@v2.0.0
+        uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}

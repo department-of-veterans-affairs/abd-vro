@@ -58,7 +58,7 @@ from assessclaimdc7101.src.lib import main
                 "claimSubmissionId": "1234"
             },
             {'evidence': {'bp_readings': [{'date': '2021-11-01',
-                                           'dateFormatted': '11/01/2021',
+                                           'dateFormatted': '11/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
                                                                     'pressure',
@@ -72,7 +72,7 @@ from assessclaimdc7101.src.lib import main
                                                         'unit': 'mm[Hg]',
                                                         'value': 180}},
                                           {'date': '2021-09-01',
-                                           'dateFormatted': '09/01/2021',
+                                           'dateFormatted': '9/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
                                                                     'pressure',
