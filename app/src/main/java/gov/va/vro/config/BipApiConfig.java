@@ -3,16 +3,11 @@ package gov.va.vro.config;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.PrivateKeyDetails;
-import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -26,14 +21,12 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 import javax.net.ssl.SSLContext;
 
 /**
@@ -142,7 +135,7 @@ public class BipApiConfig {
 
   @Primary
   @Bean(name = "bipCERestTemplate")
-  public RestTemplate getHttpsP12RestTemplate(RestTemplateBuilder builder) throws BipException {
+  public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try { // TODO: keep log for testing, remove it later.
       log.info(
           "truststore: {}, password: {}, keystore: {}, alias: {}",

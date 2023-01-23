@@ -1,15 +1,15 @@
 package gov.va.vro.model.bipevidence;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Document type category information for UI consumption.
- */
+import java.util.Objects;
 
-@Schema(name = "documentCategory", description = "Document type category information for UI consumption.")
+/** Document type category information for UI consumption. */
+@Schema(
+    name = "documentCategory",
+    description = "Document type category information for UI consumption.")
 @JsonTypeName("documentCategory")
 public class DocumentCategory {
 
@@ -35,9 +35,9 @@ public class DocumentCategory {
 
   /**
    * Get id
+   *
    * @return id
-  */
-  
+   */
   @Schema(name = "id", required = false)
   public Long getId() {
     return id;
@@ -54,9 +54,9 @@ public class DocumentCategory {
 
   /**
    * Get createDateTime
+   *
    * @return createDateTime
-  */
-  
+   */
   @Schema(name = "createDateTime", required = false)
   public String getCreateDateTime() {
     return createDateTime;
@@ -73,9 +73,9 @@ public class DocumentCategory {
 
   /**
    * Get modifiedDateTime
+   *
    * @return modifiedDateTime
-  */
-  
+   */
   @Schema(name = "modifiedDateTime", required = false)
   public String getModifiedDateTime() {
     return modifiedDateTime;
@@ -92,9 +92,9 @@ public class DocumentCategory {
 
   /**
    * Get description
+   *
    * @return description
-  */
-  
+   */
   @Schema(name = "description", required = false)
   public String getDescription() {
     return description;
@@ -111,9 +111,9 @@ public class DocumentCategory {
 
   /**
    * Get subDescription
+   *
    * @return subDescription
-  */
-  
+   */
   @Schema(name = "subDescription", required = false)
   public String getSubDescription() {
     return subDescription;
@@ -132,11 +132,11 @@ public class DocumentCategory {
       return false;
     }
     DocumentCategory documentCategory = (DocumentCategory) o;
-    return Objects.equals(this.id, documentCategory.id) &&
-        Objects.equals(this.createDateTime, documentCategory.createDateTime) &&
-        Objects.equals(this.modifiedDateTime, documentCategory.modifiedDateTime) &&
-        Objects.equals(this.description, documentCategory.description) &&
-        Objects.equals(this.subDescription, documentCategory.subDescription);
+    return Objects.equals(this.id, documentCategory.id)
+        && Objects.equals(this.createDateTime, documentCategory.createDateTime)
+        && Objects.equals(this.modifiedDateTime, documentCategory.modifiedDateTime)
+        && Objects.equals(this.description, documentCategory.description)
+        && Objects.equals(this.subDescription, documentCategory.subDescription);
   }
 
   @Override
@@ -158,8 +158,7 @@ public class DocumentCategory {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -168,4 +167,3 @@ public class DocumentCategory {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

@@ -1,16 +1,20 @@
 package gov.va.vro.model.bipevidence;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Details about a file&#39;s conversion. This is optional, and will only be present on responses where the file has been converted.
- */
+import java.util.Objects;
+import javax.validation.Valid;
 
-@Schema(name = "conversionInformation", description = "Details about a file's conversion. This is optional, and will only be present on responses where the file has been converted.")
+/**
+ * Details about a file&#39;s conversion. This is optional, and will only be present on responses
+ * where the file has been converted.
+ */
+@Schema(
+    name = "conversionInformation",
+    description =
+        "Details about a file's conversion. This is optional, and will only be present on responses where the file has been converted.")
 @JsonTypeName("conversionInformation")
 public class ConversionInformation {
 
@@ -27,9 +31,10 @@ public class ConversionInformation {
 
   /**
    * Get preprocessed
+   *
    * @return preprocessed
-  */
-  @Valid 
+   */
+  @Valid
   @Schema(name = "preprocessed", required = false)
   public ConversionInfo getPreprocessed() {
     return preprocessed;
@@ -46,9 +51,10 @@ public class ConversionInformation {
 
   /**
    * Get converted
+   *
    * @return converted
-  */
-  @Valid 
+   */
+  @Valid
   @Schema(name = "converted", required = false)
   public ConversionInfo getConverted() {
     return converted;
@@ -67,8 +73,8 @@ public class ConversionInformation {
       return false;
     }
     ConversionInformation conversionInformation = (ConversionInformation) o;
-    return Objects.equals(this.preprocessed, conversionInformation.preprocessed) &&
-        Objects.equals(this.converted, conversionInformation.converted);
+    return Objects.equals(this.preprocessed, conversionInformation.preprocessed)
+        && Objects.equals(this.converted, conversionInformation.converted);
   }
 
   @Override
@@ -87,8 +93,7 @@ public class ConversionInformation {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -97,4 +102,3 @@ public class ConversionInformation {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

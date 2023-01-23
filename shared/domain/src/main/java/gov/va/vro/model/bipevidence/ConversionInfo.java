@@ -1,17 +1,21 @@
 package gov.va.vro.model.bipevidence;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.UUID;
-import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Information only present if the document has been converted. Details the previous version mime type, md5, and time of file conversion.
- */
+import java.util.Objects;
+import java.util.UUID;
+import javax.validation.Valid;
 
-@Schema(name = "conversionInfo", description = "Information only present if the document has been converted. Details the previous version mime type, md5, and time of file conversion.")
+/**
+ * Information only present if the document has been converted. Details the previous version mime
+ * type, md5, and time of file conversion.
+ */
+@Schema(
+    name = "conversionInfo",
+    description =
+        "Information only present if the document has been converted. Details the previous version mime type, md5, and time of file conversion.")
 @JsonTypeName("conversionInfo")
 public class ConversionInfo {
 
@@ -34,10 +38,14 @@ public class ConversionInfo {
 
   /**
    * UUID identifying the particular version.
+   *
    * @return versionUuid
-  */
-  @Valid 
-  @Schema(name = "versionUuid", description = "UUID identifying the particular version.", required = false)
+   */
+  @Valid
+  @Schema(
+      name = "versionUuid",
+      description = "UUID identifying the particular version.",
+      required = false)
   public UUID getVersionUuid() {
     return versionUuid;
   }
@@ -53,10 +61,13 @@ public class ConversionInfo {
 
   /**
    * Mime Type of the indicated versionUuid.
+   *
    * @return mimeType
-  */
-  
-  @Schema(name = "mimeType", description = "Mime Type of the indicated versionUuid.", required = false)
+   */
+  @Schema(
+      name = "mimeType",
+      description = "Mime Type of the indicated versionUuid.",
+      required = false)
   public String getMimeType() {
     return mimeType;
   }
@@ -72,9 +83,9 @@ public class ConversionInfo {
 
   /**
    * MD5 hash code of the particular version.
+   *
    * @return md5
-  */
-  
+   */
   @Schema(name = "md5", description = "MD5 hash code of the particular version.", required = false)
   public String getMd5() {
     return md5;
@@ -91,10 +102,13 @@ public class ConversionInfo {
 
   /**
    * Date and time the document was uploaded.
+   *
    * @return uploadedDateTime
-  */
-  
-  @Schema(name = "uploadedDateTime", description = "Date and time the document was uploaded.", required = false)
+   */
+  @Schema(
+      name = "uploadedDateTime",
+      description = "Date and time the document was uploaded.",
+      required = false)
   public String getUploadedDateTime() {
     return uploadedDateTime;
   }
@@ -112,10 +126,10 @@ public class ConversionInfo {
       return false;
     }
     ConversionInfo conversionInfo = (ConversionInfo) o;
-    return Objects.equals(this.versionUuid, conversionInfo.versionUuid) &&
-        Objects.equals(this.mimeType, conversionInfo.mimeType) &&
-        Objects.equals(this.md5, conversionInfo.md5) &&
-        Objects.equals(this.uploadedDateTime, conversionInfo.uploadedDateTime);
+    return Objects.equals(this.versionUuid, conversionInfo.versionUuid)
+        && Objects.equals(this.mimeType, conversionInfo.mimeType)
+        && Objects.equals(this.md5, conversionInfo.md5)
+        && Objects.equals(this.uploadedDateTime, conversionInfo.uploadedDateTime);
   }
 
   @Override
@@ -136,8 +150,7 @@ public class ConversionInfo {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -146,4 +159,3 @@ public class ConversionInfo {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

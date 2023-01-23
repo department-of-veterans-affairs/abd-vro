@@ -1,15 +1,14 @@
-package gov.va.vro.model.bipevidence;
+package gov.va.vro.model.bipevidence.request;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import javax.validation.Valid;
+import gov.va.vro.model.bipevidence.Payload;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * UploadRequest
- */
+import java.util.Objects;
+import javax.validation.Valid;
 
+/** UploadRequest */
 @JsonTypeName("uploadRequest")
 public class UploadRequest {
 
@@ -26,9 +25,10 @@ public class UploadRequest {
 
   /**
    * Get payload
+   *
    * @return payload
-  */
-  @Valid 
+   */
+  @Valid
   @Schema(name = "payload", required = false)
   public Payload getPayload() {
     return payload;
@@ -45,9 +45,10 @@ public class UploadRequest {
 
   /**
    * Get file
+   *
    * @return file
-  */
-  @Valid 
+   */
+  @Valid
   @Schema(name = "file", required = false)
   public org.springframework.core.io.Resource getFile() {
     return file;
@@ -66,8 +67,8 @@ public class UploadRequest {
       return false;
     }
     UploadRequest uploadRequest = (UploadRequest) o;
-    return Objects.equals(this.payload, uploadRequest.payload) &&
-        Objects.equals(this.file, uploadRequest.file);
+    return Objects.equals(this.payload, uploadRequest.payload)
+        && Objects.equals(this.file, uploadRequest.file);
   }
 
   @Override
@@ -86,8 +87,7 @@ public class UploadRequest {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -96,4 +96,3 @@ public class UploadRequest {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

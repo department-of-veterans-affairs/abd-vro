@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.*;
 import gov.va.vro.model.bipevidence.Payload;
-import gov.va.vro.model.bipevidence.UploadProviderDataRequest;
-import gov.va.vro.model.bipevidence.UploadResponse;
+import gov.va.vro.model.bipevidence.request.UploadProviderDataRequest;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -53,10 +53,12 @@ public class BipApiService implements IBipApiService {
 
   private static final String UPLOAD_FILE = "/files";
 
-  @Qualifier("bipRestTemplate") @NonNull
+  @Qualifier("bipRestTemplate")
+  @NonNull
   private final RestTemplate restTemplate;
 
-  @Qualifier("bipCERestTemplate") @NonNull
+  @Qualifier("bipCERestTemplate")
+  @NonNull
   private final RestTemplate ceRestTemplate;
 
   private final BipApiProps bipApiProps;
@@ -264,15 +266,16 @@ public class BipApiService implements IBipApiService {
       ObjectMapper mapper = new ObjectMapper();
       // body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
 
-      ByteArrayResource contentsAsResource = new ByteArrayResource(file.getBytes()) {
-        @Override
-        public String getFilename() {
-          return "example.pdf"; // Filename has to be returned in order to be able to post.
-        }
-      };
+      ByteArrayResource contentsAsResource =
+          new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+              return "example.pdf"; // Filename has to be returned in order to be able to post.
+            }
+          };
 
       body.add("file", contentsAsResource);
-      HttpEntity<MultiValueMap<String, Object>> httpEntity =  new HttpEntity<>(body, headers);
+      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
       ResponseEntity<UploadResponse> bipResponse =
           ceRestTemplate.postForEntity(url, httpEntity, UploadResponse.class);

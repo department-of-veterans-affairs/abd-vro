@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Generated;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.annotation.Generated;
 
 @Generated(
     value = "org.openapitools.codegen.languages.SpringCodegen",
@@ -28,10 +28,10 @@ public class FilesApiController implements FilesApi {
       log.info("File {} being written to temp location.", filename);
       String targetName = FilenameUtils.getBaseName(filename);
       String extension = FilenameUtils.getExtension(filename);
-      Path testFile = Files.createTempFile (targetName, "." + extension);
+      Path testFile = Files.createTempFile(targetName, "." + extension);
       Files.write(testFile, file.getBytes());
       log.info("Temp file is written to {}.", testFile.toString());
-    } catch(IOException ex) {
+    } catch (IOException ex) {
       log.error("Unable to write the file", ex);
     }
 

@@ -1,23 +1,21 @@
 package gov.va.vro.model.bipevidence;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Filter based on the claims associated to the documents.
- */
+import java.util.Objects;
 
-@Schema(name = "associatedClaimId", description = "Filter based on the claims associated to the documents.")
+/** Filter based on the claims associated to the documents. */
+@Schema(
+    name = "associatedClaimId",
+    description = "Filter based on the claims associated to the documents.")
 @JsonTypeName("associatedClaimId")
 public class AssociatedClaimId {
 
-  /**
-   * Gets or Sets evaluationType
-   */
+  /** Gets or Sets evaluationType */
   public enum EvaluationTypeEnum {
     EQUALS("EQUALS");
 
@@ -61,9 +59,9 @@ public class AssociatedClaimId {
 
   /**
    * Get evaluationType
+   *
    * @return evaluationType
-  */
-  
+   */
   @Schema(name = "evaluationType", required = false)
   public EvaluationTypeEnum getEvaluationType() {
     return evaluationType;
@@ -80,9 +78,9 @@ public class AssociatedClaimId {
 
   /**
    * Get value
+   *
    * @return value
-  */
-  
+   */
   @Schema(name = "value", example = "[137]", required = false)
   public String getValue() {
     return value;
@@ -101,8 +99,8 @@ public class AssociatedClaimId {
       return false;
     }
     AssociatedClaimId associatedClaimId = (AssociatedClaimId) o;
-    return Objects.equals(this.evaluationType, associatedClaimId.evaluationType) &&
-        Objects.equals(this.value, associatedClaimId.value);
+    return Objects.equals(this.evaluationType, associatedClaimId.evaluationType)
+        && Objects.equals(this.value, associatedClaimId.value);
   }
 
   @Override
@@ -121,8 +119,7 @@ public class AssociatedClaimId {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -131,4 +128,3 @@ public class AssociatedClaimId {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

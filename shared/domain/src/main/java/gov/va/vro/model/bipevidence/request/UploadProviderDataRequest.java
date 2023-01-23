@@ -1,15 +1,13 @@
-package gov.va.vro.model.bipevidence;
+package gov.va.vro.model.bipevidence.request;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Claim Evidence API Provider Data.
- */
+import java.util.Objects;
+import javax.validation.constraints.*;
 
+/** Claim Evidence API Provider Data. */
 @Schema(name = "uploadProviderDataRequest", description = "Claim Evidence API Provider Data.")
 @JsonTypeName("uploadProviderDataRequest")
 public class UploadProviderDataRequest {
@@ -45,10 +43,16 @@ public class UploadProviderDataRequest {
 
   /**
    * String field designating the originating source of the content being uploaded.
+   *
    * @return contentSource
-  */
-  @NotNull @Pattern(regexp = "^[a-zA-Z0-9\\'\\,\\s.\\-\\_\\|/@\\(\\)]*$") 
-  @Schema(name = "contentSource", description = "String field designating the originating source of the content being uploaded.", required = true)
+   */
+  @NotNull
+  @Pattern(regexp = "^[a-zA-Z0-9\\'\\,\\s.\\-\\_\\|/@\\(\\)]*$")
+  @Schema(
+      name = "contentSource",
+      description =
+          "String field designating the originating source of the content being uploaded.",
+      required = true)
   public String getContentSource() {
     return contentSource;
   }
@@ -63,12 +67,18 @@ public class UploadProviderDataRequest {
   }
 
   /**
-   * Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents.
-   * minimum: 1
+   * Number field correlating to a Claim Evidence document type ID. Document types primary use is
+   * loosely categorizing their contents. minimum: 1
+   *
    * @return documentTypeId
-  */
-  @NotNull @Min(1) 
-  @Schema(name = "documentTypeId", description = "Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents.", required = true)
+   */
+  @NotNull
+  @Min(1)
+  @Schema(
+      name = "documentTypeId",
+      description =
+          "Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents.",
+      required = true)
   public Integer getDocumentTypeId() {
     return documentTypeId;
   }
@@ -83,11 +93,19 @@ public class UploadProviderDataRequest {
   }
 
   /**
-   * Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today
+   * Date field indicating the date the VA received the document. This can be any date in format of
+   * YYYY-MM-DD from 1900 until today
+   *
    * @return dateVaReceivedDocument
-  */
-  @NotNull @Pattern(regexp = "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))") @Size(min = 10, max = 10) 
-  @Schema(name = "dateVaReceivedDocument", description = "Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today", required = true)
+   */
+  @NotNull
+  @Pattern(regexp = "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))")
+  @Size(min = 10, max = 10)
+  @Schema(
+      name = "dateVaReceivedDocument",
+      description =
+          "Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today",
+      required = true)
   public String getDateVaReceivedDocument() {
     return dateVaReceivedDocument;
   }
@@ -103,10 +121,16 @@ public class UploadProviderDataRequest {
 
   /**
    * Free text describing the document. This is primarily notes used to assist claim developers.
+   *
    * @return subject
-  */
-  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$") @Size(max = 256) 
-  @Schema(name = "subject", description = "Free text describing the document. This is primarily notes used to assist claim developers.", required = false)
+   */
+  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$")
+  @Size(max = 256)
+  @Schema(
+      name = "subject",
+      description =
+          "Free text describing the document. This is primarily notes used to assist claim developers.",
+      required = false)
   public String getSubject() {
     return subject;
   }
@@ -122,10 +146,16 @@ public class UploadProviderDataRequest {
 
   /**
    * Contention name associated to the document. The document type must be a 526 type ID.
+   *
    * @return contention
-  */
-  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$") @Size(min = 1, max = 128) 
-  @Schema(name = "contention", description = "Contention name associated to the document. The document type must be a 526 type ID.", required = false)
+   */
+  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$")
+  @Size(min = 1, max = 128)
+  @Schema(
+      name = "contention",
+      description =
+          "Contention name associated to the document. The document type must be a 526 type ID.",
+      required = false)
   public String getContention() {
     return contention;
   }
@@ -140,12 +170,15 @@ public class UploadProviderDataRequest {
   }
 
   /**
-   * Integer which relates to a document type Id.
-   * minimum: 0
+   * Integer which relates to a document type Id. minimum: 0
+   *
    * @return alternativeDocumentTypeId
-  */
-  @Min(0) 
-  @Schema(name = "alternativeDocumentTypeId", description = "Integer which relates to a document type Id.", required = false)
+   */
+  @Min(0)
+  @Schema(
+      name = "alternativeDocumentTypeId",
+      description = "Integer which relates to a document type Id.",
+      required = false)
   public Integer getAlternativeDocumentTypeId() {
     return alternativeDocumentTypeId;
   }
@@ -160,11 +193,16 @@ public class UploadProviderDataRequest {
   }
 
   /**
-   * Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.
+   * Boolean true/false for if the document is considered 'actionable' or whether claim action can
+   * be taken based on the content.
+   *
    * @return actionable
-  */
-  
-  @Schema(name = "actionable", description = "Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.", required = false)
+   */
+  @Schema(
+      name = "actionable",
+      description =
+          "Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.",
+      required = false)
   public Boolean getActionable() {
     return actionable;
   }
@@ -180,9 +218,11 @@ public class UploadProviderDataRequest {
 
   /**
    * Id of associated claim.
+   *
    * @return associatedClaimId
-  */
-  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$") @Size(min = 1, max = 128) 
+   */
+  @Pattern(regexp = "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\Q/\\E]*$")
+  @Size(min = 1, max = 128)
   @Schema(name = "associatedClaimId", description = "Id of associated claim.", required = false)
   public String getAssociatedClaimId() {
     return associatedClaimId;
@@ -201,19 +241,29 @@ public class UploadProviderDataRequest {
       return false;
     }
     UploadProviderDataRequest uploadProviderDataRequest = (UploadProviderDataRequest) o;
-    return Objects.equals(this.contentSource, uploadProviderDataRequest.contentSource) &&
-        Objects.equals(this.documentTypeId, uploadProviderDataRequest.documentTypeId) &&
-        Objects.equals(this.dateVaReceivedDocument, uploadProviderDataRequest.dateVaReceivedDocument) &&
-        Objects.equals(this.subject, uploadProviderDataRequest.subject) &&
-        Objects.equals(this.contention, uploadProviderDataRequest.contention) &&
-        Objects.equals(this.alternativeDocumentTypeId, uploadProviderDataRequest.alternativeDocumentTypeId) &&
-        Objects.equals(this.actionable, uploadProviderDataRequest.actionable) &&
-        Objects.equals(this.associatedClaimId, uploadProviderDataRequest.associatedClaimId);
+    return Objects.equals(this.contentSource, uploadProviderDataRequest.contentSource)
+        && Objects.equals(this.documentTypeId, uploadProviderDataRequest.documentTypeId)
+        && Objects.equals(
+            this.dateVaReceivedDocument, uploadProviderDataRequest.dateVaReceivedDocument)
+        && Objects.equals(this.subject, uploadProviderDataRequest.subject)
+        && Objects.equals(this.contention, uploadProviderDataRequest.contention)
+        && Objects.equals(
+            this.alternativeDocumentTypeId, uploadProviderDataRequest.alternativeDocumentTypeId)
+        && Objects.equals(this.actionable, uploadProviderDataRequest.actionable)
+        && Objects.equals(this.associatedClaimId, uploadProviderDataRequest.associatedClaimId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(contentSource, documentTypeId, dateVaReceivedDocument, subject, contention, alternativeDocumentTypeId, actionable, associatedClaimId);
+    return Objects.hash(
+        contentSource,
+        documentTypeId,
+        dateVaReceivedDocument,
+        subject,
+        contention,
+        alternativeDocumentTypeId,
+        actionable,
+        associatedClaimId);
   }
 
   @Override
@@ -222,10 +272,14 @@ public class UploadProviderDataRequest {
     sb.append("class UploadProviderDataRequest {\n");
     sb.append("    contentSource: ").append(toIndentedString(contentSource)).append("\n");
     sb.append("    documentTypeId: ").append(toIndentedString(documentTypeId)).append("\n");
-    sb.append("    dateVaReceivedDocument: ").append(toIndentedString(dateVaReceivedDocument)).append("\n");
+    sb.append("    dateVaReceivedDocument: ")
+        .append(toIndentedString(dateVaReceivedDocument))
+        .append("\n");
     sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
     sb.append("    contention: ").append(toIndentedString(contention)).append("\n");
-    sb.append("    alternativeDocumentTypeId: ").append(toIndentedString(alternativeDocumentTypeId)).append("\n");
+    sb.append("    alternativeDocumentTypeId: ")
+        .append(toIndentedString(alternativeDocumentTypeId))
+        .append("\n");
     sb.append("    actionable: ").append(toIndentedString(actionable)).append("\n");
     sb.append("    associatedClaimId: ").append(toIndentedString(associatedClaimId)).append("\n");
     sb.append("}");
@@ -233,8 +287,7 @@ public class UploadProviderDataRequest {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -243,4 +296,3 @@ public class UploadProviderDataRequest {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
