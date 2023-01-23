@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
 import java.util.Objects;
 import javax.annotation.Generated;
 
@@ -39,7 +38,7 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Get id
+   * Get id.
    *
    * @return id
    */
@@ -58,7 +57,7 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Get createDateTime
+   * Get createDateTime.
    *
    * @return createDateTime
    */
@@ -77,7 +76,7 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Get modifiedDateTime
+   * Get modifiedDateTime.
    *
    * @return modifiedDateTime
    */
@@ -96,7 +95,7 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Get name
+   * Get name.
    *
    * @return name
    */
@@ -115,7 +114,7 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Get description
+   * Get description.
    *
    * @return description
    */

@@ -45,6 +45,12 @@ public class TestConfig {
     return keyStore;
   }
 
+  /**
+   * Gets the https rest template.
+   *
+   * @param builder Rest template builder
+   * @return RestTemplate
+   */
   @SneakyThrows
   @Bean(name = "httpsRestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) {
@@ -66,6 +72,12 @@ public class TestConfig {
     return new RestTemplate(requestFactory);
   }
 
+  /**
+   * Gets the https rest template without validation of the certificate.
+   *
+   * @param builder Rest template builder
+   * @return RestTemplate
+   */
   @SneakyThrows
   @Bean(name = "httpsNoCertificationRestTemplate")
   public RestTemplate getHttpsNoCertificationRestTemplate(RestTemplateBuilder builder) {

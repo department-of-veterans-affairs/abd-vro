@@ -9,7 +9,7 @@ import java.util.UUID;
 import javax.annotation.Generated;
 import javax.validation.Valid;
 
-/** UploadResponse */
+/** UploadResponse. */
 @JsonTypeName("uploadResponse")
 @Generated(
     value = "org.openapitools.codegen.languages.SpringCodegen",
@@ -37,7 +37,7 @@ public class UploadResponse {
   }
 
   /**
-   * String representation of the document's owner
+   * String representation of the document's owner.
    *
    * @return owner
    */
@@ -132,7 +132,7 @@ public class UploadResponse {
   }
 
   /**
-   * Get conversionInformation
+   * Get conversionInformation.
    *
    * @return conversionInformation
    */

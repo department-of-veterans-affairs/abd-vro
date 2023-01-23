@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
 import java.util.Objects;
 import javax.annotation.Generated;
 
@@ -20,7 +19,7 @@ import javax.annotation.Generated;
     date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 public class AssociatedClaimId {
 
-  /** Gets or Sets evaluationType */
+  /** Gets or Sets evaluationType. */
   public enum EvaluationTypeEnum {
     EQUALS("EQUALS");
 
@@ -40,6 +39,12 @@ public class AssociatedClaimId {
       return String.valueOf(value);
     }
 
+    /**
+     * Creates enum version of the input.
+     *
+     * @param value Evaludation type name
+     * @return EvaluationTypeEnum
+     */
     @JsonCreator
     public static EvaluationTypeEnum fromValue(String value) {
       for (EvaluationTypeEnum b : EvaluationTypeEnum.values()) {
@@ -63,7 +68,7 @@ public class AssociatedClaimId {
   }
 
   /**
-   * Get evaluationType
+   * Get evaluationType.
    *
    * @return evaluationType
    */
@@ -82,7 +87,7 @@ public class AssociatedClaimId {
   }
 
   /**
-   * Get value
+   * Get value.
    *
    * @return value
    */

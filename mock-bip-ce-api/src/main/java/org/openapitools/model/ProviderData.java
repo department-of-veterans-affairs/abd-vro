@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.validation.Valid;
@@ -62,7 +61,7 @@ public class ProviderData {
   }
 
   /**
-   * Get modifiedDateTime
+   * Get modifiedDateTime.
    *
    * @return modifiedDateTime
    */
@@ -81,7 +80,7 @@ public class ProviderData {
   }
 
   /**
-   * Get dateVaReceivedDocument
+   * Get dateVaReceivedDocument.
    *
    * @return dateVaReceivedDocument
    */
@@ -100,7 +99,7 @@ public class ProviderData {
   }
 
   /**
-   * Get actionable
+   * Get actionable.
    *
    * @return actionable
    */
@@ -119,7 +118,7 @@ public class ProviderData {
   }
 
   /**
-   * Get certified
+   * Get certified.
    *
    * @return certified
    */
@@ -138,7 +137,7 @@ public class ProviderData {
   }
 
   /**
-   * Get documentTypeId
+   * Get documentTypeId.
    *
    * @return documentTypeId
    */
@@ -157,7 +156,7 @@ public class ProviderData {
   }
 
   /**
-   * Get documentType
+   * Get documentType.
    *
    * @return documentType
    */
@@ -177,7 +176,7 @@ public class ProviderData {
   }
 
   /**
-   * Get endProductCode
+   * Get endProductCode.
    *
    * @return endProductCode
    */
@@ -196,7 +195,7 @@ public class ProviderData {
   }
 
   /**
-   * Get subject
+   * Get subject.
    *
    * @return subject
    */
@@ -215,7 +214,7 @@ public class ProviderData {
   }
 
   /**
-   * Get systemSource
+   * Get systemSource.
    *
    * @return systemSource
    */
@@ -234,7 +233,7 @@ public class ProviderData {
   }
 
   /**
-   * Get veteranFirstName
+   * Get veteranFirstName.
    *
    * @return veteranFirstName
    */
@@ -253,7 +252,7 @@ public class ProviderData {
   }
 
   /**
-   * Get veteranLastName
+   * Get veteranLastName.
    *
    * @return veteranLastName
    */
@@ -272,7 +271,7 @@ public class ProviderData {
   }
 
   /**
-   * Get veteranMiddleName
+   * Get veteranMiddleName.
    *
    * @return veteranMiddleName
    */
@@ -291,7 +290,7 @@ public class ProviderData {
   }
 
   /**
-   * Get veteranSuffix
+   * Get veteranSuffix.
    *
    * @return veteranSuffix
    */

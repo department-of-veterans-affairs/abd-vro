@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Generated;
@@ -35,7 +34,7 @@ public class VefsErrorResponse {
   }
 
   /**
-   * UUID used to trace the error response
+   * UUID used to trace the error response.
    *
    * @return uuid
    */

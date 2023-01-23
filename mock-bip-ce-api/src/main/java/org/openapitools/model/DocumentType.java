@@ -43,7 +43,7 @@ public class DocumentType {
   }
 
   /**
-   * Get id
+   * Get id.
    *
    * @return id
    */
@@ -62,7 +62,7 @@ public class DocumentType {
   }
 
   /**
-   * Get createDateTime
+   * Get createDateTime.
    *
    * @return createDateTime
    */
@@ -81,7 +81,7 @@ public class DocumentType {
   }
 
   /**
-   * Get modifiedDateTime
+   * Get modifiedDateTime.
    *
    * @return modifiedDateTime
    */
@@ -100,7 +100,7 @@ public class DocumentType {
   }
 
   /**
-   * Get name
+   * Get name.
    *
    * @return name
    */
@@ -119,7 +119,7 @@ public class DocumentType {
   }
 
   /**
-   * Get description
+   * Get description.
    *
    * @return description
    */
@@ -138,7 +138,7 @@ public class DocumentType {
   }
 
   /**
-   * Get isUserUploadable
+   * Get isUserUploadable.
    *
    * @return isUserUploadable
    */
@@ -157,7 +157,7 @@ public class DocumentType {
   }
 
   /**
-   * Get documentCategory
+   * Get documentCategory.
    *
    * @return documentCategory
    */

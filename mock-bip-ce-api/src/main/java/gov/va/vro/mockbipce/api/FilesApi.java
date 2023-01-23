@@ -16,7 +16,11 @@ import org.openapitools.model.UploadResponse;
 import org.openapitools.model.VefsErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Generated;
@@ -35,7 +39,7 @@ public interface FilesApi {
    * data provided. Information on how to properly creae a payload object for this endpoint is
    * available in the schema section.
    *
-   * @param xFolderURI The Folder Identifier that the file will be associated to. The example
+   * @param xFolderUri The Folder Identifier that the file will be associated to. The example
    *     provided is for identifying a veteran.&lt;br&gt;&lt;br&gt;**Header Format**:
    *     folder-type:identifier-type:ID&lt;br&gt;&lt;br&gt;**Valid Folder
    *     Types**:&lt;br&gt;&lt;br&gt;* VETERAN&lt;br&gt;&lt;br&gt;**Valid Identifier
@@ -64,7 +68,10 @@ public interface FilesApi {
         @ApiResponse(
             responseCode = "200",
             description =
-                "Response containing the file UUID, the owner, and the calculated MD5 Hash. As well as conversion information if the document has been converted.",
+                """
+                Response containing the file UUID, the owner, and the calculated MD5 Hash.
+                As well as conversion information if the document has been converted.
+                """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -73,7 +80,11 @@ public interface FilesApi {
         @ApiResponse(
             responseCode = "400",
             description =
-                "Server was unable to understand the request. This may come back as an empty response if the json is malformed or not understood by the server.",
+                """
+                Server was unable to understand the request.
+                This may come back as an empty response if the json is
+                malformed or not understood by the server.
+                """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -82,7 +93,10 @@ public interface FilesApi {
         @ApiResponse(
             responseCode = "401",
             description =
-                "JWT contains claims which indicate the consumer is not authorized to access the resource.",
+                """
+                JWT contains claims which indicate the consumer
+                is not authorized to access the resource.
+                """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -91,7 +105,10 @@ public interface FilesApi {
         @ApiResponse(
             responseCode = "403",
             description =
-                "JWT contains claims which indicate the consumer is not authorized to access the resource",
+                """
+                JWT contains claims which indicate the consumer
+                is not authorized to access the resource
+                """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -125,7 +142,12 @@ public interface FilesApi {
         @ApiResponse(
             responseCode = "500",
             description =
-                "There was an error encountered processing the Request.  Response will contain a  \"messages\" element that will provide further information on the error.  Please retry.  If problem persists, please contact support with a copy of the Response.",
+                """
+                There was an error encountered processing the Request.
+                Response will contain a \\"messages\\" element that will
+                provide further information on the error. Please retry.
+                If problem persists, please contact support with a copy of the Response.
+                """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -150,9 +172,15 @@ public interface FilesApi {
       @Parameter(
               name = "X-Folder-URI",
               description =
-                  "The Folder Identifier that the file will be associated to. The example provided is for identifying a veteran.<br><br>**Header Format**: folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>* VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI")
+                  """
+                  The Folder Identifier that the file will be associated to.
+                  The example provided is for identifying a veteran.<br><br>**Header Format**:
+                  folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>*
+                  VETERAN<br><br>**Valid  Identifier Types**:
+                  <br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI
+                  """)
           @RequestHeader(value = "X-Folder-URI", required = false)
-          String xFolderURI,
+          String xFolderUri,
       @Parameter(name = "payload", description = "")
           @Valid
           @RequestParam(value = "payload", required = false)

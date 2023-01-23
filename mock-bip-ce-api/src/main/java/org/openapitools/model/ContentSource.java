@@ -30,7 +30,7 @@ public class ContentSource {
   }
 
   /**
-   * Get id
+   * Get id.
    *
    * @return id
    */
@@ -49,7 +49,7 @@ public class ContentSource {
   }
 
   /**
-   * Get createDateTime
+   * Get createDateTime.
    *
    * @return createDateTime
    */
@@ -68,7 +68,7 @@ public class ContentSource {
   }
 
   /**
-   * Get name
+   * Get name.
    *
    * @return name
    */

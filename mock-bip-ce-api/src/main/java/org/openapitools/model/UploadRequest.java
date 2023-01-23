@@ -8,7 +8,7 @@ import java.util.Objects;
 import javax.annotation.Generated;
 import javax.validation.Valid;
 
-/** UploadRequest */
+/** UploadRequest. */
 @JsonTypeName("uploadRequest")
 @Generated(
     value = "org.openapitools.codegen.languages.SpringCodegen",
@@ -27,7 +27,7 @@ public class UploadRequest {
   }
 
   /**
-   * Get payload
+   * Get payload.
    *
    * @return payload
    */
@@ -47,7 +47,7 @@ public class UploadRequest {
   }
 
   /**
-   * Get file
+   * Get file.
    *
    * @return file
    */

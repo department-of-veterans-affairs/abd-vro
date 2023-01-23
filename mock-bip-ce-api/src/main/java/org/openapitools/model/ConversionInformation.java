@@ -15,7 +15,10 @@ import javax.validation.Valid;
 @Schema(
     name = "conversionInformation",
     description =
-        "Details about a file's conversion. This is optional, and will only be present on responses where the file has been converted.")
+        """
+      Details about a file's conversion.
+      This is optional, and will only be present on responses where the file has been converted.
+      """)
 @JsonTypeName("conversionInformation")
 @Generated(
     value = "org.openapitools.codegen.languages.SpringCodegen",
@@ -34,7 +37,7 @@ public class ConversionInformation {
   }
 
   /**
-   * Get preprocessed
+   * Get preprocessed.
    *
    * @return preprocessed
    */
@@ -54,7 +57,7 @@ public class ConversionInformation {
   }
 
   /**
-   * Get converted
+   * Get converted.
    *
    * @return converted
    */

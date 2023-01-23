@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 import javax.annotation.Generated;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /** Claim Evidence API Provider Data. */
 @Schema(name = "uploadProviderDataRequest", description = "Claim Evidence API Provider Data.")
@@ -81,7 +84,10 @@ public class UploadProviderDataRequest {
   @Schema(
       name = "documentTypeId",
       description =
-          "Number field correlating to a Claim Evidence document type ID. Document types primary use is loosely categorizing their contents.",
+          """
+          Number field correlating to a Claim Evidence document type ID.
+          Document types primary use is loosely categorizing their contents.
+          """,
       required = true)
   public Integer getDocumentTypeId() {
     return documentTypeId;
@@ -108,7 +114,10 @@ public class UploadProviderDataRequest {
   @Schema(
       name = "dateVaReceivedDocument",
       description =
-          "Date field indicating the date the VA received the document. This can be any date in format of YYYY-MM-DD from 1900 until today",
+          """
+          Date field indicating the date the VA received the document.
+          This can be any date in format of YYYY-MM-DD from 1900 until today.
+          """,
       required = true)
   public String getDateVaReceivedDocument() {
     return dateVaReceivedDocument;
@@ -133,7 +142,10 @@ public class UploadProviderDataRequest {
   @Schema(
       name = "subject",
       description =
-          "Free text describing the document. This is primarily notes used to assist claim developers.",
+          """
+          Free text describing the document.
+          This is primarily notes used to assist claim developers.
+          """,
       required = false)
   public String getSubject() {
     return subject;
@@ -205,7 +217,10 @@ public class UploadProviderDataRequest {
   @Schema(
       name = "actionable",
       description =
-          "Boolean true/false for if the document is considered 'actionable' or whether claim action can be taken based on the content.",
+          """
+          Boolean true/false for if the document is considered 'actionable'
+          or whether claim action can be taken based on the content.
+          """,
       required = false)
   public Boolean getActionable() {
     return actionable;

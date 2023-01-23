@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 public class FilesApiController implements FilesApi {
   @Override
   public ResponseEntity<UploadResponse> upload(
-      String xFolderURI, Payload payload, MultipartFile file) {
+      String xFolderUri, Payload payload, MultipartFile file) {
     try {
       String filename = file.getOriginalFilename();
       log.info("File {} being written to temp location.", filename);
