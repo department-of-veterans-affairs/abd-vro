@@ -48,6 +48,7 @@ images:
     tag: tagPlaceholder
     imagePullPolicy: Always
   db:
+    # Being used as the `pg-isready` container
     imageName: dev_vro-postgres
     tag: tagPlaceholder
     imagePullPolicy: Always
@@ -85,10 +86,15 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
-  db:
+  pgIsReady:
+    # TODO: reduce resources since this container requires very little
     limits:
       cpu: 10m
       memory: 256Mi
+#  db:
+#    limits:
+#      cpu: 10m
+#      memory: 256Mi
 #  redis:
 #    limits:
 #      cpu: 10m
@@ -107,6 +113,7 @@ service:
     sourcePort: 8080
     targetPort: 8080
   db:
+    # Being used as the `pg-isready` container
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
