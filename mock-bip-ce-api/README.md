@@ -7,6 +7,14 @@ In particular the following functionality is of interest
 - Jwt verification (under development)
 - File upload to E-Folder (under development)
 
+## Code Generation
+
+Certain piece of the code is automatically created from Open API Specification using. In particular
+```bash
+npm install @openapitools/openapi-generator-cli -g 
+npx @openapitools/openapi-generator-cli -i claimevidence_1.1.1_openapi.json -g spring -o code
+```
+
 ## Mock BIP CE Server
 
 The mock server is a HTTPS enabled Spring Boot Java application.

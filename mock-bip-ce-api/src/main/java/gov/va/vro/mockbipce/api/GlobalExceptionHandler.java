@@ -1,7 +1,8 @@
-package gov.va.vro.mockbipce.controller;
+package gov.va.vro.mockbipce.api;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.VefsErrorResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<VefsErrorResponse> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException exception) {
     log.error("Validation error", exception);
     final StringBuffer errors = new StringBuffer();
@@ -36,7 +37,8 @@ public class GlobalExceptionHandler {
       }
       errors.append(error.getField() + ": " + error.getDefaultMessage());
     }
-    ErrorResponse cpe = new ErrorResponse(errors.toString());
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage(errors.toString());
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
@@ -47,12 +49,13 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<VefsErrorResponse> handleMethodArgumentNotValidException(
       MethodArgumentTypeMismatchException exception) {
     log.error("Validation error", exception);
     MethodParameter parameter = exception.getParameter();
     String name = parameter.getParameterName() + " is of wrong type.";
-    ErrorResponse cpe = new ErrorResponse(name);
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage(name);
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
@@ -63,10 +66,11 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<VefsErrorResponse> handleMethodArgumentNotValidException(
       ConstraintViolationException exception) {
     log.error("Validation error", exception);
-    ErrorResponse cpe = new ErrorResponse("invalid parameters");
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage("invalid parameters");
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
@@ -77,9 +81,10 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorResponse> handleJsonParseException(JsonParseException exception) {
+  public ResponseEntity<VefsErrorResponse> handleJsonParseException(JsonParseException exception) {
     log.error("Bad Request: Malformed JSON", exception);
-    ErrorResponse cpe = new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage(HttpStatus.BAD_REQUEST.getReasonPhrase());
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
@@ -90,11 +95,12 @@ public class GlobalExceptionHandler {
    * @return new exception
    */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-  public ResponseEntity<ErrorResponse> handleUnsupportedHttpMethodException(
+  public ResponseEntity<VefsErrorResponse> handleUnsupportedHttpMethodException(
       HttpRequestMethodNotSupportedException exception) {
     log.error("HTTP Method Not Supported");
-    ErrorResponse cpe = new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
-    return new ResponseEntity<ErrorResponse>(cpe, HttpStatus.METHOD_NOT_ALLOWED);
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
+    return new ResponseEntity<VefsErrorResponse>(cpe, HttpStatus.METHOD_NOT_ALLOWED);
   }
 
   /**
@@ -104,9 +110,10 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+  public ResponseEntity<VefsErrorResponse> handleException(Exception exception) {
     log.error("Unexpected error", exception);
-    ErrorResponse cpe = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+    VefsErrorResponse cpe = new VefsErrorResponse();
+    cpe.setMessage(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
     return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

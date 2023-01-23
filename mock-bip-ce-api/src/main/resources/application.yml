@@ -4,6 +4,9 @@
 spring:
   profiles:
     active: ${ENV:default}
+  jackson:
+    date-format: org.openapitools.RFC3339DateFormat
+    serialization.WRITE_DATES_AS_TIMESTAMPS: false
 
 server:
   port: 8094
