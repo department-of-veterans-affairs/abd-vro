@@ -266,8 +266,8 @@
         <tbody>
           {% for bp_reading in evidence.bp_readings %}
           <tr>
-            <th>{{ bp_reading.systolic.value |int }} / {{ bp_reading.diastolic.value |int }}</th>
-            <th>{{ bp_reading.dateFormatted }}</th>
+            <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
+            <td {% if bp_reading.dateFormatted == "" or "unparsed" in bp_reading.dateFormatted %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == "" %}No associated date{% elif "unparsed" in bp_reading.dateFormatted == "" %}No confident date {{bp_reading.dateFormatted.replace("unparsed ")}}{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
@@ -302,7 +302,7 @@
           {% for medication in evidence.medications %}
           <tr>
             <th>{{ medication.description }}</th>
-            <td>{{ medication.dateFormatted }}</td>
+            <td {% if medication.dateFormatted == "" or "unparsed" in medication.dateFormatted %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" %}No associated date{% elif "unparsed" in medication.dateFormatted == "" %}No confident date {{medication.dateFormatted.replace("unparsed ", )}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
             <td>Source Sample</td>
             <td>1/3/2023</td>
             <td>20, 21</td>
@@ -375,12 +375,16 @@
       <table id="unavailable-automated-review" class="table table-bordered">
         <thead>
           <tr>
-            <th>Document ID</th>
+            <th style="width: 271px !important;">Document</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
           {% for review in evidence.unavailable_reviews %}
           <tr>
+            <td class="empty">n.a.</td>
+            <td class="empty">n.a.</td>
             <td>{{ review.document_id }}</td>
           </tr>
           {% endfor %}
