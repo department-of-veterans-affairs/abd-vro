@@ -65,6 +65,7 @@ public class BipClaimService {
     // collect all special issues
     var specialIssues =
         contentions.stream()
+            .filter(BipClaimService::hasSpecialIssues)
             .map(ClaimContention::getSpecialIssueCodes)
             .flatMap(Collection::stream)
             .map(String::toLowerCase) // Ignore case
@@ -90,6 +91,9 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
+      if (!hasSpecialIssues(contention)) {
+        continue;
+      }
       var codes =
           contention.getSpecialIssueCodes().stream()
               .map(String::toLowerCase)
@@ -130,17 +134,15 @@ public class BipClaimService {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
 
-    var response = bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
-    // TODO: check response, catch exceptions etc
+    try {
+      bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
+    } catch (Exception e) {
+      throw new BipException("BIP update claim status resulted in an exception", e);
+    }
     return payload;
   }
 
-  /**
-   * Check if claim is still eligible for fast tracking, and if so, update status.
-   *
-   * @param payload the claim payload
-   * @return true if the status is updated, false otherwise
-   */
+  /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
 
@@ -166,9 +168,13 @@ public class BipClaimService {
    *
    * @param pdfResponse pdf response.
    * @return pdf response.
+   * @throws BipException if anything goes wrong
    */
-  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
+  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) throws BipException {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
+    if (pdfResponse.getPdfData() == null) {
+      throw new BipException("PDF Response does not contain any data");
+    }
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
     File file = null;
     try {
@@ -192,7 +198,7 @@ public class BipClaimService {
               .alternativeDocmentTypeIds(List.of(1))
               .actionable(false)
               .associatedClaimIds(List.of("1"))
-              .notes(List.of(pdfResponse.getReason()))
+              .notes(pdfResponse.getReason() == null ? List.of() : List.of(pdfResponse.getReason()))
               .payeeCode("00")
               .endProductCode("130DPNDCY")
               .regionalProcessingOffice("Buffalo") // get an office.
@@ -201,7 +207,7 @@ public class BipClaimService {
               .sourceComment("upload from VRO")
               .claimantDateOfBirth("1900-01-01") // get DOB
               .build();
-      // TODO: I don't know what parameters should be passed here. A BIP expert will address this
+
       bipApiService.uploadEvidence(
           FileIdType.FILENUMBER,
           pdfResponse.getClaimSubmissionId(),
@@ -215,5 +221,9 @@ public class BipClaimService {
         file.delete();
       }
     }
+  }
+
+  private static boolean hasSpecialIssues(ClaimContention claimContention) {
+    return claimContention.getSpecialIssueCodes() != null;
   }
 }

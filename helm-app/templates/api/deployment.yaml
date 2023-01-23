@@ -223,6 +223,26 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.api.apiKeySecret}}
                   key: {{ .Values.api.apiKey02 }}
+            - name: LH_API_AUTH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhApiAuthUrl }}
+            - name: VRO_AUD_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.vroAudUrl }}
+            - name: LH_VRO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.lhVroApiKey }}
+            - name: VALIDATE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.validateToken }}
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
@@ -518,6 +538,112 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.name }}
                   key: {{ .Values.dataservice.lhFhirUrl }}
+            - name: MAS_API_AUTH_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientId }}
+            - name: MAS_API_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientSecret }}
+            - name: MAS_API_AUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthScope }}
+            - name: MAS_API_AUTH_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BAS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiBaseUrl }}
+            - name: MAS_COLLECTION_ANNOTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
+            - name: MAS_COLLECTION_STATUS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionStatusPath }}
+            - name: MAS_CREATE_EXAM_ORDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
+
+            - name: BIP_APPLICATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationId }}
+            - name: BIP_APPLICATION_ISS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationIss }}
+            - name: BIP_CLAIM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimSecret }}
+            - name: BIP_CLAIM_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUrl }}
+            - name: BIP_CLAIM_USERID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUserId }}
+            - name: BIP_EVIDENCE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceSecret }}
+            - name: BIP_EVIDENCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUrl }}
+            - name: BIP_EVIDENCE_USERID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUserId }}
+            - name: BIP_STATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipStationId }}
+            - name: BIP_KEYSTORE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipKeyStore }}
+            - name: BIP_TRUSTSTORE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipTrustStore }}
+            - name: BIP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipPassword }}
+            - name: BIP_ALIAS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipAlias }}
           resources:
             requests:
               cpu: 150m
