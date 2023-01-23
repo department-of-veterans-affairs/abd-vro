@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.bip.BipFileProviderData;
 import gov.va.vro.model.bip.BipFileUploadPayload;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
@@ -64,6 +65,7 @@ public class BipClaimService {
     // collect all special issues
     var specialIssues =
         contentions.stream()
+            .filter(BipClaimService::hasSpecialIssues)
             .map(ClaimContention::getSpecialIssueCodes)
             .flatMap(Collection::stream)
             .map(String::toLowerCase) // Ignore case
@@ -89,6 +91,9 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
+      if (!hasSpecialIssues(contention)) {
+        continue;
+      }
       var codes =
           contention.getSpecialIssueCodes().stream()
               .map(String::toLowerCase)
@@ -129,17 +134,15 @@ public class BipClaimService {
     int collectionId = payload.getCollectionId();
     log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
 
-    var response = bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
-    // TODO: check response, catch exceptions etc
+    try {
+      bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
+    } catch (Exception e) {
+      throw new BipException("BIP update claim status resulted in an exception", e);
+    }
     return payload;
   }
 
-  /**
-   * Check if claim is still eligible for fast tracking, and if so, update status.
-   *
-   * @param payload the claim payload
-   * @return true if the status is updated, false otherwise
-   */
+  /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
 
@@ -165,9 +168,13 @@ public class BipClaimService {
    *
    * @param pdfResponse pdf response.
    * @return pdf response.
+   * @throws BipException if anything goes wrong
    */
-  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) {
+  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) throws BipException {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
+    if (pdfResponse.getPdfData() == null) {
+      throw new BipException("PDF Response does not contain any data");
+    }
     String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
     File file = null;
     try {
@@ -175,11 +182,36 @@ public class BipClaimService {
       byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
       InputStream is = new ByteArrayInputStream(decoder);
       Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-      // TODO: I don't know what parameters should be passed here. A BIP expert will address this
+      List<String> contentionList = new ArrayList<>(); // find contention related
+      BipFileProviderData providerData =
+          BipFileProviderData.builder()
+              .contentSource("VRO")
+              .claimantFirstName("") // Get first name
+              .claimantMiddleInitial("") // Get middle,
+              .claimantLastName("") // Get ast name
+              .claimantSsn("") // Get ssn
+              .benefitTypeId(10)
+              .documentTypeId(131)
+              .dateVaReceivedDocument("1900-01-01") // don't know what data is
+              .subject(pdfResponse.getDiagnosis()) // get a subject
+              .contentions(contentionList)
+              .alternativeDocmentTypeIds(List.of(1))
+              .actionable(false)
+              .associatedClaimIds(List.of("1"))
+              .notes(pdfResponse.getReason() == null ? List.of() : List.of(pdfResponse.getReason()))
+              .payeeCode("00")
+              .endProductCode("130DPNDCY")
+              .regionalProcessingOffice("Buffalo") // get an office.
+              .facilityCode("Facility")
+              .claimantParticipantId("601108526") // get a participant ID
+              .sourceComment("upload from VRO")
+              .claimantDateOfBirth("1900-01-01") // get DOB
+              .build();
+
       bipApiService.uploadEvidence(
           FileIdType.FILENUMBER,
           pdfResponse.getClaimSubmissionId(),
-          new BipFileUploadPayload(),
+          BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
           file);
       return pdfResponse;
     } catch (IOException ioe) {
@@ -189,5 +221,9 @@ public class BipClaimService {
         file.delete();
       }
     }
+  }
+
+  private static boolean hasSpecialIssues(ClaimContention claimContention) {
+    return claimContention.getSpecialIssueCodes() != null;
   }
 }

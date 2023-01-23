@@ -25,6 +25,8 @@ public class ClaimEntity extends BaseEntity {
   // domain of the id, e.g. "va.gov-Form526Submission"
   @NotNull private String idType;
 
+  private String collectionId;
+
   private String incomingStatus = "submission";
 
   @ManyToOne private VeteranEntity veteran;

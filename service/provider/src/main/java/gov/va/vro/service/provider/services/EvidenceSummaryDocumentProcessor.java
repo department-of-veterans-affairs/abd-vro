@@ -24,13 +24,13 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    GeneratePdfPayload response = exchange.getIn().getBody(GeneratePdfPayload.class);
-    if (response == null) {
-      log.warn("Response from camel was null, returning.");
+    GeneratePdfPayload payload = exchange.getIn().getBody(GeneratePdfPayload.class);
+    if (payload == null) {
+      log.warn("Payload is empty, returning...");
       return;
     }
     String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
-    String diagnosis = matchDiagnosticCode(response.getDiagnosticCode());
+    String diagnosis = matchDiagnosticCode(payload.getDiagnosticCode());
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
       return;
@@ -38,7 +38,7 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
     String documentName =
         String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
 
-    saveToDbService.insertEvidenceSummaryDocument(response, documentName);
+    saveToDbService.insertEvidenceSummaryDocument(payload, documentName);
   }
 
   private String matchDiagnosticCode(String diagnosticCode) {

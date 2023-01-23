@@ -167,10 +167,15 @@ class FhirClientTest {
     Mockito.doReturn(bpBundleInfo.getBundle())
         .when(jsonParser)
         .parseResource(Bundle.class, bpBundleInfo.getResponseBody());
+    Mockito.doReturn(conditionBundleInfo.getBundle())
+        .when(jsonParser)
+        .parseResource(Bundle.class, conditionBundleInfo.getResponseBody());
     ResponseEntity<String> medicationResp = ResponseEntity.ok(medBundleInfo.getResponseBody());
     ResponseEntity<String> bpResp = ResponseEntity.ok(bpBundleInfo.getResponseBody());
+    ResponseEntity<String> conditionResp = ResponseEntity.ok(conditionBundleInfo.getResponseBody());
     mockRest(medicationResp, "MedicationRequest");
     mockRest(bpResp, "Observation");
+    mockRest(conditionResp, "Condition");
     AbdEvidence evidence = client.getMedicalEvidence(testClaim);
     assertNotNull(evidence);
     assertTrue(evidence.getBloodPressures().size() > 0);

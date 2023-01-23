@@ -5,6 +5,7 @@ import gov.va.vro.api.responses.BipClaimResponse;
 import gov.va.vro.api.responses.BipClaimStatusResponse;
 import gov.va.vro.api.responses.BipContentionCreationResponse;
 import gov.va.vro.api.responses.BipContentionUpdateResponse;
+import gov.va.vro.api.responses.BipFileUploadResponse;
 import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
@@ -15,7 +16,6 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,8 +27,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -104,7 +107,7 @@ public interface BipResource {
   @ResponseStatus(HttpStatus.OK)
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -180,4 +183,34 @@ public interface BipResource {
           @Valid
           @RequestBody
           BipCreateClaimContentionPayload payload);
+
+  @Operation(summary = "Upload evidence file", description = "Upload evidence PDF file.")
+  @PostMapping(
+      value = "/evidence/file/{claimid}",
+      consumes = {"multipart/form-data"})
+  @ResponseStatus(HttpStatus.OK)
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Data Access Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "bip-evidence-fileupload")
+  @Tag(name = "BIP Integration")
+  ResponseEntity<BipFileUploadResponse> fileUpload(
+      @Parameter(description = "file ID", required = true, schema = @Schema(type = "string"))
+          @Valid
+          @RequestParam(value = "fileid")
+          String fileid,
+      @Parameter(description = "file ID type", required = true, schema = @Schema(type = "string"))
+          @Valid
+          @RequestParam(value = "fileidtype")
+          String fileidtype,
+      @Parameter(description = "file", required = true) MultipartFile file);
 }

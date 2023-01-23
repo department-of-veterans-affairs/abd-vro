@@ -1,7 +1,7 @@
 apiVersion: v2
 # `name` affects container hostnames, so references to those hostnames must be updated too
 name: vro-api
-description: ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
+description: Database service used by VRO
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -15,10 +15,10 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.1.2
+# TODO discuss: How can we enforce or automate incrementing this?
+version: 0.1.3
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-# This is updated automatically when running `./gradlew release -Prelease.forceVersion=$NEW_VERSION`
-# Refer to https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO
+# TODO decide: This should probably match the Postgres Docker-image version
 appVersion: 1.0.25

@@ -1,5 +1,6 @@
 package gov.va.vro.model.bip;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
  *
  * @author warren @Date 11/10/22
  */
+@Builder
 @Getter
 @Setter
 public class BipFileUploadPayload {
