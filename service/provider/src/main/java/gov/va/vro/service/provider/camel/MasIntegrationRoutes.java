@@ -14,6 +14,7 @@ import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.SufficientEvidenceProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -72,6 +73,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final SufficientEvidenceProcessor sufficientEvidenceProcessor;
 
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
+
+
   @Override
   public void configure() {
     configureAuditing();
@@ -99,8 +103,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(processClaimRouteId)
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(processClaimRouteId, "Started claim processing."))
         .setExchangePattern(ExchangePattern.InOnly);
   }
 
@@ -111,6 +113,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
@@ -119,12 +123,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .process(sufficientEvidenceProcessor) // updates claim with sufficient evidence flag
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Generating PDF"))
-        // Generate PDF
-        .process(generatePdfProcessor())
-        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .setBody(simple("${exchangeProperty.payload}"))
         // Conditionally order exam
         .to(orderExamEndpoint)
         // Upload PDF
@@ -174,13 +172,15 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Uploading PDF"))
-        .setBody(simple("${body.claimId}"))
-        .convertBodyTo(String.class)
-        .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+        .onPrepare(auditProcessor(routeId, "Generating PDF"))
+        .process(generatePdfProcessor()) // convert to PDF payload
+        .process(evidenceSummaryDocumentProcessor) // store evidence in DB
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF)
         .process(convertToPdfResponse())
         .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
-        .setBody(simple("${exchangeProperty.payload}"));
+        .setBody(simple("${exchangeProperty.payload}"))
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(routeId, "Uploaded PDF"));
   }
 
   private void configureOrderExamStatus() {

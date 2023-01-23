@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +34,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ClaimMapper mapper;
 
   @Override
+  @Transactional
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
-    ClaimEntity entity =
+    ClaimEntity claimEntity =
         claimRepository
             .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
             .orElseGet(() -> createClaim(claim, veteranEntity));
-    claim.setRecordId(entity.getId());
+    ensureContentionExists(claimEntity, claim.getDiagnosticCode());
+    claim.setRecordId(claimEntity.getId());
     return claim;
   }
 
@@ -136,6 +139,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return result;
   }
 
+  private ContentionEntity ensureContentionExists(ClaimEntity claim, String diagnosticCode) {
+    var contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      contention = createContention(claim, diagnosticCode);
+      claimRepository.save(claim);
+    }
+    return contention;
+  }
+
   private ContentionEntity findContention(ClaimEntity claim, String diagnosticCode) {
     for (ContentionEntity contention : claim.getContentions()) {
       if (contention.getDiagnosticCode().equals(diagnosticCode)) {
@@ -148,10 +160,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
     ClaimEntity claimEntity = mapper.toClaimEntity(claim);
     claimEntity.setVeteran(veteranEntity);
-    ContentionEntity contentionEntity = new ContentionEntity();
-    contentionEntity.setDiagnosticCode(claim.getDiagnosticCode());
-    claimEntity.addContention(contentionEntity);
+    createContention(claimEntity, claim.getDiagnosticCode());
     return claimRepository.save(claimEntity);
+  }
+
+  private ContentionEntity createContention(ClaimEntity claim, String diagnosticCode) {
+    ContentionEntity contentionEntity = new ContentionEntity();
+    contentionEntity.setDiagnosticCode(diagnosticCode);
+    claim.addContention(contentionEntity);
+    return contentionEntity;
   }
 
   private VeteranEntity findOrCreateVeteran(String veteranIcn) {
