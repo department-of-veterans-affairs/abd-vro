@@ -26,5 +26,5 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   docker tag "$GRADLE_IMG_NAME" "ghcr.io/${REPO}/${IMG_NAME}:latest"
 
   echo "Pushing all tags for image '$IMG_NAME'"
-  docker push -a "ghcr.io/${REPO}/${IMG_NAME}"
+  docker push --all-tags "ghcr.io/${REPO}/${IMG_NAME}"
 done
