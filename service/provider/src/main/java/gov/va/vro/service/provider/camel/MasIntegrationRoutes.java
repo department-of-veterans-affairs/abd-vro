@@ -75,7 +75,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
-
   @Override
   public void configure() {
     configureAuditing();
