@@ -1,18 +1,16 @@
-package org.openapitools.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.swagger.v3.oas.annotations.media.Schema;
+package gov.va.vro.model.bipevidence;
 
 import java.util.Objects;
-import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javax.validation.Valid;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/** UploadRequest */
+/**
+ * UploadRequest
+ */
+
 @JsonTypeName("uploadRequest")
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T15:12:32.549348-05:00[America/New_York]")
 public class UploadRequest {
 
   @JsonProperty("payload")
@@ -28,10 +26,9 @@ public class UploadRequest {
 
   /**
    * Get payload
-   *
    * @return payload
-   */
-  @Valid
+  */
+  @Valid 
   @Schema(name = "payload", required = false)
   public Payload getPayload() {
     return payload;
@@ -48,10 +45,9 @@ public class UploadRequest {
 
   /**
    * Get file
-   *
    * @return file
-   */
-  @Valid
+  */
+  @Valid 
   @Schema(name = "file", required = false)
   public org.springframework.core.io.Resource getFile() {
     return file;
@@ -70,8 +66,8 @@ public class UploadRequest {
       return false;
     }
     UploadRequest uploadRequest = (UploadRequest) o;
-    return Objects.equals(this.payload, uploadRequest.payload)
-        && Objects.equals(this.file, uploadRequest.file);
+    return Objects.equals(this.payload, uploadRequest.payload) &&
+        Objects.equals(this.file, uploadRequest.file);
   }
 
   @Override
@@ -90,7 +86,8 @@ public class UploadRequest {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -99,3 +96,4 @@ public class UploadRequest {
     return o.toString().replace("\n", "\n    ");
   }
 }
+

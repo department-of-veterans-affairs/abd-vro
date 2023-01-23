@@ -2,7 +2,6 @@ package gov.va.vro.mockbipce;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.model.bip.BipFileProviderData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.Payload;
@@ -62,10 +61,7 @@ public class AppTest {
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
     ResponseEntity<UploadResponse> response =
-        rt.postForEntity(
-            "https://localhost:" + port + "/files",
-            request,
-            UploadResponse.class);
+        rt.postForEntity("https://localhost:" + port + "/files", request, UploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }

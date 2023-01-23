@@ -1,18 +1,16 @@
-package org.openapitools.model;
+package gov.va.vro.model.bipevidence;
 
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Objects;
-import javax.annotation.Generated;
+/**
+ * Content sources for UI consumption.
+ */
 
-/** Content sources for UI consumption. */
 @Schema(name = "contentSource", description = "Content sources for UI consumption.")
 @JsonTypeName("contentSource")
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 public class ContentSource {
 
   @JsonProperty("id")
@@ -31,9 +29,9 @@ public class ContentSource {
 
   /**
    * Get id
-   *
    * @return id
-   */
+  */
+  
   @Schema(name = "id", required = false)
   public Long getId() {
     return id;
@@ -50,9 +48,9 @@ public class ContentSource {
 
   /**
    * Get createDateTime
-   *
    * @return createDateTime
-   */
+  */
+  
   @Schema(name = "createDateTime", required = false)
   public String getCreateDateTime() {
     return createDateTime;
@@ -69,9 +67,9 @@ public class ContentSource {
 
   /**
    * Get name
-   *
    * @return name
-   */
+  */
+  
   @Schema(name = "name", required = false)
   public String getName() {
     return name;
@@ -90,9 +88,9 @@ public class ContentSource {
       return false;
     }
     ContentSource contentSource = (ContentSource) o;
-    return Objects.equals(this.id, contentSource.id)
-        && Objects.equals(this.createDateTime, contentSource.createDateTime)
-        && Objects.equals(this.name, contentSource.name);
+    return Objects.equals(this.id, contentSource.id) &&
+        Objects.equals(this.createDateTime, contentSource.createDateTime) &&
+        Objects.equals(this.name, contentSource.name);
   }
 
   @Override
@@ -112,7 +110,8 @@ public class ContentSource {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -121,3 +120,4 @@ public class ContentSource {
     return o.toString().replace("\n", "\n    ");
   }
 }
+

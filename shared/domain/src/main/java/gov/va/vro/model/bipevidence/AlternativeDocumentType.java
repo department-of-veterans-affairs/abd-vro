@@ -1,21 +1,16 @@
-package org.openapitools.model;
+package gov.va.vro.model.bipevidence;
 
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
-import java.util.Objects;
-import javax.annotation.Generated;
+/**
+ * Alternative document type information for UI consumption.
+ */
 
-/** Alternative document type information for UI consumption. */
-@Schema(
-    name = "alternativeDocumentType",
-    description = "Alternative document type information for UI consumption.")
+@Schema(name = "alternativeDocumentType", description = "Alternative document type information for UI consumption.")
 @JsonTypeName("alternativeDocumentType")
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 public class AlternativeDocumentType {
 
   @JsonProperty("id")
@@ -40,9 +35,9 @@ public class AlternativeDocumentType {
 
   /**
    * Get id
-   *
    * @return id
-   */
+  */
+  
   @Schema(name = "id", required = false)
   public Long getId() {
     return id;
@@ -59,9 +54,9 @@ public class AlternativeDocumentType {
 
   /**
    * Get createDateTime
-   *
    * @return createDateTime
-   */
+  */
+  
   @Schema(name = "createDateTime", required = false)
   public String getCreateDateTime() {
     return createDateTime;
@@ -78,9 +73,9 @@ public class AlternativeDocumentType {
 
   /**
    * Get modifiedDateTime
-   *
    * @return modifiedDateTime
-   */
+  */
+  
   @Schema(name = "modifiedDateTime", required = false)
   public String getModifiedDateTime() {
     return modifiedDateTime;
@@ -97,9 +92,9 @@ public class AlternativeDocumentType {
 
   /**
    * Get name
-   *
    * @return name
-   */
+  */
+  
   @Schema(name = "name", required = false)
   public String getName() {
     return name;
@@ -116,9 +111,9 @@ public class AlternativeDocumentType {
 
   /**
    * Get description
-   *
    * @return description
-   */
+  */
+  
   @Schema(name = "description", required = false)
   public String getDescription() {
     return description;
@@ -137,11 +132,11 @@ public class AlternativeDocumentType {
       return false;
     }
     AlternativeDocumentType alternativeDocumentType = (AlternativeDocumentType) o;
-    return Objects.equals(this.id, alternativeDocumentType.id)
-        && Objects.equals(this.createDateTime, alternativeDocumentType.createDateTime)
-        && Objects.equals(this.modifiedDateTime, alternativeDocumentType.modifiedDateTime)
-        && Objects.equals(this.name, alternativeDocumentType.name)
-        && Objects.equals(this.description, alternativeDocumentType.description);
+    return Objects.equals(this.id, alternativeDocumentType.id) &&
+        Objects.equals(this.createDateTime, alternativeDocumentType.createDateTime) &&
+        Objects.equals(this.modifiedDateTime, alternativeDocumentType.modifiedDateTime) &&
+        Objects.equals(this.name, alternativeDocumentType.name) &&
+        Objects.equals(this.description, alternativeDocumentType.description);
   }
 
   @Override
@@ -163,7 +158,8 @@ public class AlternativeDocumentType {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -172,3 +168,4 @@ public class AlternativeDocumentType {
     return o.toString().replace("\n", "\n    ");
   }
 }
+

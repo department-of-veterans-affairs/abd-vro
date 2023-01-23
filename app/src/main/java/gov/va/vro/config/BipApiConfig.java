@@ -3,6 +3,7 @@ package gov.va.vro.config;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
@@ -18,6 +19,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -61,7 +63,8 @@ public class BipApiConfig {
     return new BipApiProps();
   }
 
-  @Bean(name = "bipCERestTemplate")
+  /*
+  Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try { // TODO: keep log for testing, remove it later.
       log.info(
@@ -125,8 +128,63 @@ public class BipApiConfig {
       throw new BipException(e.getMessage(), e);
     }
   }
+  */
+
+  private KeyStore getKeyStore(String base64, String password)
+      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+    String noSpaceBase64 = base64.replaceAll("\\s+", "");
+    byte[] decodedBytes = java.util.Base64.getDecoder().decode(noSpaceBase64);
+    InputStream stream = new ByteArrayInputStream(decodedBytes);
+    keyStore.load(stream, password.toCharArray());
+    return keyStore;
+  }
 
   @Primary
+  @Bean(name = "bipCERestTemplate")
+  public RestTemplate getHttpsP12RestTemplate(RestTemplateBuilder builder) throws BipException {
+    try { // TODO: keep log for testing, remove it later.
+      log.info(
+          "truststore: {}, password: {}, keystore: {}, alias: {}",
+          trustStore.length(),
+          password,
+          keystore.length(),
+          alias);
+      if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
+        log.info("No valid BIP mTLS setup. Skip related setup.");
+        return new RestTemplate();
+      }
+
+      log.info("-------load keystore");
+      log.info(keystore);
+      KeyStore keyStoreObj = getKeyStore(keystore, password);
+      log.info("-------load truststore");
+      log.info(trustStore);
+      KeyStore trustStoreObj = getKeyStore(trustStore, password);
+
+      log.info("------build SSLContext");
+      SSLContext sslContext =
+          new SSLContextBuilder()
+              .loadTrustMaterial(trustStoreObj, null)
+              .loadKeyMaterial(keyStoreObj, password.toCharArray())
+              .build();
+
+      SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
+
+      CloseableHttpClient httpClient =
+          HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
+      ClientHttpRequestFactory requestFactory =
+          new HttpComponentsClientHttpRequestFactory(httpClient);
+      return new RestTemplate(requestFactory);
+    } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+      log.error("Failed to create SSL context for VA certificate. {}", e.getMessage(), e);
+      throw new BipException("Failed to create SSL context.", e);
+    } catch (Exception e) {
+      log.error("Unexpected error.", e);
+      throw new BipException(e.getMessage(), e);
+    }
+  }
+
   @Bean(name = "bipRestTemplate")
   public RestTemplate restTemplate() throws BipException {
     try {

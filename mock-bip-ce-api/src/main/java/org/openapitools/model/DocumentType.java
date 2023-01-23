@@ -1,20 +1,19 @@
 package org.openapitools.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Objects;
 import javax.annotation.Generated;
+import javax.validation.Valid;
 
-/**
- * Document types for UI consumption.
- */
-
+/** Document types for UI consumption. */
 @Schema(name = "documentType", description = "Document types for UI consumption.")
 @JsonTypeName("documentType")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
+@Generated(
+    value = "org.openapitools.codegen.languages.SpringCodegen",
+    date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 public class DocumentType {
 
   @JsonProperty("id")
@@ -45,9 +44,9 @@ public class DocumentType {
 
   /**
    * Get id
+   *
    * @return id
-  */
-  
+   */
   @Schema(name = "id", required = false)
   public Long getId() {
     return id;
@@ -64,9 +63,9 @@ public class DocumentType {
 
   /**
    * Get createDateTime
+   *
    * @return createDateTime
-  */
-  
+   */
   @Schema(name = "createDateTime", required = false)
   public String getCreateDateTime() {
     return createDateTime;
@@ -83,9 +82,9 @@ public class DocumentType {
 
   /**
    * Get modifiedDateTime
+   *
    * @return modifiedDateTime
-  */
-  
+   */
   @Schema(name = "modifiedDateTime", required = false)
   public String getModifiedDateTime() {
     return modifiedDateTime;
@@ -102,9 +101,9 @@ public class DocumentType {
 
   /**
    * Get name
+   *
    * @return name
-  */
-  
+   */
   @Schema(name = "name", required = false)
   public String getName() {
     return name;
@@ -121,9 +120,9 @@ public class DocumentType {
 
   /**
    * Get description
+   *
    * @return description
-  */
-  
+   */
   @Schema(name = "description", required = false)
   public String getDescription() {
     return description;
@@ -140,9 +139,9 @@ public class DocumentType {
 
   /**
    * Get isUserUploadable
+   *
    * @return isUserUploadable
-  */
-  
+   */
   @Schema(name = "isUserUploadable", required = false)
   public Boolean getIsUserUploadable() {
     return isUserUploadable;
@@ -159,9 +158,10 @@ public class DocumentType {
 
   /**
    * Get documentCategory
+   *
    * @return documentCategory
-  */
-  @Valid 
+   */
+  @Valid
   @Schema(name = "documentCategory", required = false)
   public DocumentCategory getDocumentCategory() {
     return documentCategory;
@@ -180,18 +180,25 @@ public class DocumentType {
       return false;
     }
     DocumentType documentType = (DocumentType) o;
-    return Objects.equals(this.id, documentType.id) &&
-        Objects.equals(this.createDateTime, documentType.createDateTime) &&
-        Objects.equals(this.modifiedDateTime, documentType.modifiedDateTime) &&
-        Objects.equals(this.name, documentType.name) &&
-        Objects.equals(this.description, documentType.description) &&
-        Objects.equals(this.isUserUploadable, documentType.isUserUploadable) &&
-        Objects.equals(this.documentCategory, documentType.documentCategory);
+    return Objects.equals(this.id, documentType.id)
+        && Objects.equals(this.createDateTime, documentType.createDateTime)
+        && Objects.equals(this.modifiedDateTime, documentType.modifiedDateTime)
+        && Objects.equals(this.name, documentType.name)
+        && Objects.equals(this.description, documentType.description)
+        && Objects.equals(this.isUserUploadable, documentType.isUserUploadable)
+        && Objects.equals(this.documentCategory, documentType.documentCategory);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, createDateTime, modifiedDateTime, name, description, isUserUploadable, documentCategory);
+    return Objects.hash(
+        id,
+        createDateTime,
+        modifiedDateTime,
+        name,
+        description,
+        isUserUploadable,
+        documentCategory);
   }
 
   @Override
@@ -210,8 +217,7 @@ public class DocumentType {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -220,4 +226,3 @@ public class DocumentType {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

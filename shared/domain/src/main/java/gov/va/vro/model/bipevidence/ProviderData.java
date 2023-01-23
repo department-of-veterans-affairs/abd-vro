@@ -1,20 +1,17 @@
-package org.openapitools.model;
+package gov.va.vro.model.bipevidence;
 
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.*;
-import java.util.Objects;
-import javax.annotation.Generated;
-import javax.validation.Valid;
+/**
+ * Provider Data associated to file.
+ */
 
-/** Provider Data associated to file. */
 @Schema(name = "providerData", description = "Provider Data associated to file.")
 @JsonTypeName("providerData")
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 public class ProviderData {
 
   @JsonProperty("modifiedDateTime")
@@ -63,9 +60,9 @@ public class ProviderData {
 
   /**
    * Get modifiedDateTime
-   *
    * @return modifiedDateTime
-   */
+  */
+  
   @Schema(name = "modifiedDateTime", required = false)
   public String getModifiedDateTime() {
     return modifiedDateTime;
@@ -82,9 +79,9 @@ public class ProviderData {
 
   /**
    * Get dateVaReceivedDocument
-   *
    * @return dateVaReceivedDocument
-   */
+  */
+  
   @Schema(name = "dateVaReceivedDocument", required = false)
   public String getDateVaReceivedDocument() {
     return dateVaReceivedDocument;
@@ -101,9 +98,9 @@ public class ProviderData {
 
   /**
    * Get actionable
-   *
    * @return actionable
-   */
+  */
+  
   @Schema(name = "actionable", required = false)
   public Boolean getActionable() {
     return actionable;
@@ -120,9 +117,9 @@ public class ProviderData {
 
   /**
    * Get certified
-   *
    * @return certified
-   */
+  */
+  
   @Schema(name = "certified", required = false)
   public Boolean getCertified() {
     return certified;
@@ -139,9 +136,9 @@ public class ProviderData {
 
   /**
    * Get documentTypeId
-   *
    * @return documentTypeId
-   */
+  */
+  
   @Schema(name = "documentTypeId", required = false)
   public Long getDocumentTypeId() {
     return documentTypeId;
@@ -158,10 +155,9 @@ public class ProviderData {
 
   /**
    * Get documentType
-   *
    * @return documentType
-   */
-  @Valid
+  */
+  @Valid 
   @Schema(name = "documentType", required = false)
   public DocumentType getDocumentType() {
     return documentType;
@@ -178,9 +174,9 @@ public class ProviderData {
 
   /**
    * Get endProductCode
-   *
    * @return endProductCode
-   */
+  */
+  
   @Schema(name = "endProductCode", required = false)
   public String getEndProductCode() {
     return endProductCode;
@@ -197,9 +193,9 @@ public class ProviderData {
 
   /**
    * Get subject
-   *
    * @return subject
-   */
+  */
+  
   @Schema(name = "subject", required = false)
   public String getSubject() {
     return subject;
@@ -216,9 +212,9 @@ public class ProviderData {
 
   /**
    * Get systemSource
-   *
    * @return systemSource
-   */
+  */
+  
   @Schema(name = "systemSource", required = false)
   public String getSystemSource() {
     return systemSource;
@@ -235,9 +231,9 @@ public class ProviderData {
 
   /**
    * Get veteranFirstName
-   *
    * @return veteranFirstName
-   */
+  */
+  
   @Schema(name = "veteranFirstName", required = false)
   public String getVeteranFirstName() {
     return veteranFirstName;
@@ -254,9 +250,9 @@ public class ProviderData {
 
   /**
    * Get veteranLastName
-   *
    * @return veteranLastName
-   */
+  */
+  
   @Schema(name = "veteranLastName", required = false)
   public String getVeteranLastName() {
     return veteranLastName;
@@ -273,9 +269,9 @@ public class ProviderData {
 
   /**
    * Get veteranMiddleName
-   *
    * @return veteranMiddleName
-   */
+  */
+  
   @Schema(name = "veteranMiddleName", required = false)
   public String getVeteranMiddleName() {
     return veteranMiddleName;
@@ -292,9 +288,9 @@ public class ProviderData {
 
   /**
    * Get veteranSuffix
-   *
    * @return veteranSuffix
-   */
+  */
+  
   @Schema(name = "veteranSuffix", required = false)
   public String getVeteranSuffix() {
     return veteranSuffix;
@@ -313,37 +309,24 @@ public class ProviderData {
       return false;
     }
     ProviderData providerData = (ProviderData) o;
-    return Objects.equals(this.modifiedDateTime, providerData.modifiedDateTime)
-        && Objects.equals(this.dateVaReceivedDocument, providerData.dateVaReceivedDocument)
-        && Objects.equals(this.actionable, providerData.actionable)
-        && Objects.equals(this.certified, providerData.certified)
-        && Objects.equals(this.documentTypeId, providerData.documentTypeId)
-        && Objects.equals(this.documentType, providerData.documentType)
-        && Objects.equals(this.endProductCode, providerData.endProductCode)
-        && Objects.equals(this.subject, providerData.subject)
-        && Objects.equals(this.systemSource, providerData.systemSource)
-        && Objects.equals(this.veteranFirstName, providerData.veteranFirstName)
-        && Objects.equals(this.veteranLastName, providerData.veteranLastName)
-        && Objects.equals(this.veteranMiddleName, providerData.veteranMiddleName)
-        && Objects.equals(this.veteranSuffix, providerData.veteranSuffix);
+    return Objects.equals(this.modifiedDateTime, providerData.modifiedDateTime) &&
+        Objects.equals(this.dateVaReceivedDocument, providerData.dateVaReceivedDocument) &&
+        Objects.equals(this.actionable, providerData.actionable) &&
+        Objects.equals(this.certified, providerData.certified) &&
+        Objects.equals(this.documentTypeId, providerData.documentTypeId) &&
+        Objects.equals(this.documentType, providerData.documentType) &&
+        Objects.equals(this.endProductCode, providerData.endProductCode) &&
+        Objects.equals(this.subject, providerData.subject) &&
+        Objects.equals(this.systemSource, providerData.systemSource) &&
+        Objects.equals(this.veteranFirstName, providerData.veteranFirstName) &&
+        Objects.equals(this.veteranLastName, providerData.veteranLastName) &&
+        Objects.equals(this.veteranMiddleName, providerData.veteranMiddleName) &&
+        Objects.equals(this.veteranSuffix, providerData.veteranSuffix);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        modifiedDateTime,
-        dateVaReceivedDocument,
-        actionable,
-        certified,
-        documentTypeId,
-        documentType,
-        endProductCode,
-        subject,
-        systemSource,
-        veteranFirstName,
-        veteranLastName,
-        veteranMiddleName,
-        veteranSuffix);
+    return Objects.hash(modifiedDateTime, dateVaReceivedDocument, actionable, certified, documentTypeId, documentType, endProductCode, subject, systemSource, veteranFirstName, veteranLastName, veteranMiddleName, veteranSuffix);
   }
 
   @Override
@@ -351,9 +334,7 @@ public class ProviderData {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProviderData {\n");
     sb.append("    modifiedDateTime: ").append(toIndentedString(modifiedDateTime)).append("\n");
-    sb.append("    dateVaReceivedDocument: ")
-        .append(toIndentedString(dateVaReceivedDocument))
-        .append("\n");
+    sb.append("    dateVaReceivedDocument: ").append(toIndentedString(dateVaReceivedDocument)).append("\n");
     sb.append("    actionable: ").append(toIndentedString(actionable)).append("\n");
     sb.append("    certified: ").append(toIndentedString(certified)).append("\n");
     sb.append("    documentTypeId: ").append(toIndentedString(documentTypeId)).append("\n");
@@ -370,7 +351,8 @@ public class ProviderData {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -379,3 +361,4 @@ public class ProviderData {
     return o.toString().replace("\n", "\n    ");
   }
 }
+

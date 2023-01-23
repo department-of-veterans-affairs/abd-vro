@@ -1,22 +1,18 @@
-package org.openapitools.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.swagger.v3.oas.annotations.media.Schema;
+package gov.va.vro.model.bipevidence;
 
 import java.util.Objects;
-import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/** Payload containing content name and the provider specific data. */
-@Schema(
-    name = "payload",
-    description = "Payload containing content name and the provider specific data.")
+/**
+ * Payload containing content name and the provider specific data.
+ */
+
+@Schema(name = "payload", description = "Payload containing content name and the provider specific data.")
 @JsonTypeName("payload")
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T15:12:32.549348-05:00[America/New_York]")
 public class Payload {
 
   @JsonProperty("contentName")
@@ -31,19 +27,11 @@ public class Payload {
   }
 
   /**
-   * The content name of the document being uploaded. This must be unique for the folder being
-   * uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber
-   * 987654321.
-   *
+   * The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321.
    * @return contentName
-   */
-  @Pattern(regexp = "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$")
-  @Size(min = 4, max = 256)
-  @Schema(
-      name = "contentName",
-      description =
-          "The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321.",
-      required = false)
+  */
+  @Pattern(regexp = "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$") @Size(min = 4, max = 256) 
+  @Schema(name = "contentName", description = "The content name of the document being uploaded. This must be unique for the folder being uploaded to. For instance the document \"pdf.pdf\" cannot be uploaded twice for fileNumber 987654321.", required = false)
   public String getContentName() {
     return contentName;
   }
@@ -59,10 +47,9 @@ public class Payload {
 
   /**
    * Get providerData
-   *
    * @return providerData
-   */
-  @Valid
+  */
+  @Valid 
   @Schema(name = "providerData", required = false)
   public UploadProviderDataRequest getProviderData() {
     return providerData;
@@ -81,8 +68,8 @@ public class Payload {
       return false;
     }
     Payload payload = (Payload) o;
-    return Objects.equals(this.contentName, payload.contentName)
-        && Objects.equals(this.providerData, payload.providerData);
+    return Objects.equals(this.contentName, payload.contentName) &&
+        Objects.equals(this.providerData, payload.providerData);
   }
 
   @Override
@@ -101,7 +88,8 @@ public class Payload {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
    */
   private String toIndentedString(Object o) {
     if (o == null) {
@@ -110,3 +98,4 @@ public class Payload {
     return o.toString().replace("\n", "\n    ");
   }
 }
+
