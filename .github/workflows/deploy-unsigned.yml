@@ -71,7 +71,7 @@ jobs:
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 

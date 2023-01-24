@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
-import java.util.UUID;
 
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
@@ -136,7 +135,6 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     Mockito.when(masApiService.getCollectionAnnotations(collectionId))
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
-    payload.setCorrelationId(UUID.randomUUID().toString());
     var response = camelEntrance.processClaim(payload);
 
     // verify if order exam was called based on the sufficient evidence flag

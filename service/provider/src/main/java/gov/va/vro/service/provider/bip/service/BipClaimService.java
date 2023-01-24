@@ -195,10 +195,10 @@ public class BipClaimService {
               .dateVaReceivedDocument("1900-01-01") // don't know what data is
               .subject(pdfResponse.getDiagnosis()) // get a subject
               .contentions(contentionList)
-              .alternativeDocmentTypeIds(List.of(1))
+              .alternativeDocumentTypeIds(List.of(1))
               .actionable(false)
               .associatedClaimIds(List.of("1"))
-              .notes(pdfResponse.getReason() == null ? List.of() : List.of(pdfResponse.getReason()))
+              .notes(pdfResponse.getReason() == null ? null : pdfResponse.getReason())
               .payeeCode("00")
               .endProductCode("130DPNDCY")
               .regionalProcessingOffice("Buffalo") // get an office.
