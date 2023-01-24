@@ -61,6 +61,7 @@ def assess_sufficiency(event: Dict):
 
     validation_results = utils.validate_request_body(event)
     response_body = {}
+    logging.info(event)
     if "dateOfClaim" not in event:
         event["dateOfClaim"] = str(date.today())
 

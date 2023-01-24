@@ -5,6 +5,7 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.ClaimCondition;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,9 @@ public class GeneratePdfPayload {
   private List<ServiceLocation> serviceLocations;
 
   @NotNull private ClaimCondition conditions;
+
+  @Schema(description = "Documents unavailable for automated review")
+  private List<String> documentsWithoutAnnotationsChecked;
 
   @JsonProperty("evidence")
   private AbdEvidence evidence;

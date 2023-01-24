@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -41,4 +42,7 @@ public class GeneratePdfRequest {
   @Nullable
   @Schema(description = "PDF template to generate", example = "v1")
   private String pdfTemplate;
+
+  @Schema(description = "Documents unavailable for automated review")
+  private List<String> documentsWithoutAnnotationsChecked;
 }
