@@ -13,6 +13,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -177,7 +179,8 @@ public class BipClaimService {
     }
     String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
     String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
-    String filename = String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+    String filename =
+        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
     File file = null;
     try {
       file = File.createTempFile(filename, "tmp", null);
