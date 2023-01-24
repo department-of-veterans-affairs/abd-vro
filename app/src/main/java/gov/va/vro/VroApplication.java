@@ -23,9 +23,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
     })
 public class VroApplication {
   public static void main(String[] args) {
-    System.setProperty(
-        "javax.net.debug",
-        "ssl:handshake"); // TODO: add this for debugging purpose. Remove it later.
     new SpringApplication(VroApplication.class).run(args);
     log.info("\n-------- VRO App Started ---------");
   }
