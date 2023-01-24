@@ -1,17 +1,16 @@
 #!/bin/bash
-
 # To work around https://www.docker.com/increase-rate-limits/, this script publishes the specified image to GHCR
-
-if [ -z "$2" ]; then
-  echo "Usage: $0 <image> <imageTag> [repo]"
-  echo "  repo: default value is abd-vro"
-  exit 1
-fi
 
 # Image to publish
 IMAGE="$1"
 IMG_TAG="$2"
-REPO=${3:-abd-vro}
+REPO=${3:-abd-vro-internal}
+
+if [ -z "$IMG_TAG" ]; then
+  echo "Usage: $0 <image> <imageTag> [repo]"
+  echo "  repo: default value is $REPO"
+  exit 1
+fi
 
 # ${{ github.repository }}
 : ${REPO_PATH:=department-of-veterans-affairs/$REPO}
@@ -40,7 +39,6 @@ docker push "ghcr.io/${REPO_PATH}/$TARGET_IMAGE:latest"
 echo "
 # Published $GHCR_PATH
 Check for package at https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=$REPO
-It should be at https://github.com/department-of-veterans-affairs/$REPO/pkgs/container/$REPO%2F$IMAGE
 "
 echo "
 Next, you must do the following:
@@ -48,6 +46,7 @@ Next, you must do the following:
    set the package to "Inherit access from source repository" as instructed by LHDI doc:
    https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility
    Also see https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages
+   The package should now be found at https://github.com/department-of-veterans-affairs/$REPO/pkgs/container/$REPO%2Fvro-$IMAGE
 
 2. Create a Helm configuration for the service -- mimic files in helm-service-* folders.
 
