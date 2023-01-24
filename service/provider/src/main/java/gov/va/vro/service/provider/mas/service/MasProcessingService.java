@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,32 +36,53 @@ public class MasProcessingService {
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
     saveToDbService.insertClaim(toClaim(payload));
-    if (!payload.isInScope()) {
-      var message =
-          String.format(
-              "Request with [collection id = %s], [diagnostic code = %s],"
-                  + " and [disability action type = %s] is not in scope.",
-              payload.getCollectionId(),
-              payload.getDiagnosticCode(),
-              payload.getDisabilityActionType());
-      offRampClaim(payload, message);
-      return String.format(
-          "Claim with collection Id %s is out of scope.", payload.getCollectionId());
-    }
-    if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
-      var message =
-          String.format(
-              "Request with [collection id = %s] does not qualify for"
-                  + " automated processing because it is missing anchors",
-              payload.getCollectionId());
-      log.info(message);
-      offRampClaim(payload, message);
-      return String.format(
-          "Claim with collection Id %s is missing an anchor.", payload.getCollectionId());
+    var offRampReasonOptional = getOffRampReason(payload);
+    if (offRampReasonOptional.isPresent()) {
+      var offRampReason = offRampReasonOptional.get();
+      payload.setOffRampReason(offRampReason);
+      offRampClaim(payload, offRampReason);
+      return offRampReason;
     }
     camelEntrance.notifyAutomatedClaim(
         payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
+  }
+
+  private Optional<String> getOffRampReason(MasAutomatedClaimPayload payload) {
+    if (!payload.isInScope()) {
+      var message =
+          String.format(
+              "Claim with [collection id = %s], [diagnostic code = %s],"
+                  + " and [disability action type = %s] is not in scope.",
+              payload.getCollectionId(),
+              payload.getDiagnosticCode(),
+              payload.getDisabilityActionType());
+      return Optional.of(message);
+    }
+
+    if (payload.isPresumptive() != null && !payload.isPresumptive()) {
+      var message =
+          String.format(
+              "Claim with [collection id = %s], [diagnostic code = %s],"
+                  + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
+              payload.getCollectionId(),
+              payload.getDiagnosticCode(),
+              payload.getDisabilityActionType(),
+              payload.getVeteranFlashIds());
+      return Optional.of(message);
+    }
+
+    if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
+      var message =
+          String.format(
+              "Claim with [collection id = %s] does not qualify for"
+                  + " automated processing because it is missing anchors.",
+              payload.getCollectionId());
+      log.info(message);
+      offRampClaim(payload, message);
+      return Optional.of(message);
+    }
+    return Optional.empty();
   }
 
   public void examOrderingStatus(MasExamOrderStatusPayload payload) {
