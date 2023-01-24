@@ -56,73 +56,6 @@ public class BipApiConfig {
     return new BipApiProps();
   }
 
-  /*
-  Bean(name = "bipCERestTemplate")
-  public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
-    try { // TODO: keep log for testing, remove it later.
-      log.info(
-          "truststore: {}, password: {}, keystore: {}, alias: {}",
-          trustStore.length(),
-          password,
-          keystore.length(),
-          alias);
-      if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
-        log.info("No valid BIP mTLS setup. Skip related setup.");
-        return new RestTemplate();
-      }
-      byte[] keystoreBytes = Base64.decodeBase64(keystore.getBytes());
-      byte[] truststoreBytes = Base64.decodeBase64(trustStore.getBytes());
-      InputStream keystoreStream = new ByteArrayInputStream(keystoreBytes);
-      InputStream truststoreStream = new ByteArrayInputStream(truststoreBytes);
-
-      KeyStore trustKeyStore = KeyStore.getInstance("jks");
-
-      log.info("-------load truststore");
-      trustKeyStore.load(truststoreStream, password.toCharArray());
-
-      KeyStore identityKeyStore = KeyStore.getInstance("jks");
-
-      log.info("-------load keystore");
-      identityKeyStore.load(keystoreStream, password.toCharArray());
-
-      log.info("------build SSLContext");
-      SSLContext sslContext =
-          new SSLContextBuilder()
-              .loadKeyMaterial(
-                  identityKeyStore,
-                  password.toCharArray(),
-                  new PrivateKeyStrategy() {
-                    @Override
-                    public String chooseAlias(Map<String, PrivateKeyDetails> map, Socket socket) {
-                      return alias;
-                    }
-                  })
-              .loadTrustMaterial(trustKeyStore, null)
-              .build();
-      SSLConnectionSocketFactory socketFactory =
-          new SSLConnectionSocketFactory(
-              sslContext,
-              new String[] {"TLSv1.3", "TLSv1.2", "TLSv1.1"},
-              null,
-              SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-      HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
-      return builder
-          .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(httpClient))
-          .build();
-    } catch (IOException
-        | CertificateException
-        | NoSuchAlgorithmException
-        | KeyStoreException
-        | KeyManagementException e) {
-      log.error("Failed to create SSL context for VA certificate. {}", e.getMessage(), e);
-      throw new BipException("Failed to create SSL context.", e);
-    } catch (Exception e) {
-      log.error("Unexpected error.", e);
-      throw new BipException(e.getMessage(), e);
-    }
-  }
-  */
-
   private KeyStore getKeyStore(String base64, String password)
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
@@ -136,23 +69,15 @@ public class BipApiConfig {
   @Primary
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
-    try { // TODO: keep log for testing, remove it later.
-      log.info(
-          "truststore: {}, password: {}, keystore: {}, alias: {}",
-          trustStore.length(),
-          password,
-          keystore.length(),
-          alias);
+    try {
       if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
 
       log.info("-------load keystore");
-      log.info(keystore);
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");
-      log.info(trustStore);
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
 
       log.info("------build SSLContext");
