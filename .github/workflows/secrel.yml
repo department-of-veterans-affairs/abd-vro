@@ -13,6 +13,9 @@ on:
   workflow_dispatch:
 
 env:
+  # If SecRel can't push signed images, revert to use `secrets.ACCESS_TOKEN` instead.
+  # secrets.ACCESS_TOKEN_GRADLE_BUILD only has `read:packages` permission
+  # while secrets.ACCESS_TOKEN has `repo` and `write:packages` permission
   GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
 jobs:
