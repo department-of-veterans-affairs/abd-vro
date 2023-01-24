@@ -201,7 +201,7 @@ public class BipController implements BipResource {
               .build();
       BipFileUploadPayload payload =
           BipFileUploadPayload.builder()
-              .contentName(file.getName())
+              .contentName(file.getOriginalFilename())
               .providerData(providerData)
               .build();
       BipFileUploadResp resp = service.uploadEvidenceFile(type, fileid, payload, file);
