@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.openapitools.model.Payload;
 import org.openapitools.model.UploadResponse;
 import org.openapitools.model.VefsErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -184,7 +183,7 @@ public interface FilesApi {
       @Parameter(name = "payload", description = "")
           @Valid
           @RequestParam(value = "payload", required = false)
-          Payload payload,
+          String payload,
       @Parameter(name = "file", description = "") @RequestPart(value = "file", required = false)
           MultipartFile file);
 }

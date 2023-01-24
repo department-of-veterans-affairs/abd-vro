@@ -69,23 +69,15 @@ public class BipApiConfig {
   @Primary
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
-    try { // TODO: keep log for testing, remove it later.
-      log.info(
-          "truststore: {}, password: {}, keystore: {}, alias: {}",
-          trustStore.length(),
-          password,
-          keystore.length(),
-          alias);
+    try {
       if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
 
       log.info("-------load keystore");
-      log.info(keystore);
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");
-      log.info(trustStore);
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
 
       log.info("------build SSLContext");

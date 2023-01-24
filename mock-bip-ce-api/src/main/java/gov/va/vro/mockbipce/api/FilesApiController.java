@@ -2,7 +2,6 @@ package gov.va.vro.mockbipce.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.openapitools.model.Payload;
 import org.openapitools.model.UploadResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ import javax.annotation.Generated;
 public class FilesApiController implements FilesApi {
   @Override
   public ResponseEntity<UploadResponse> upload(
-      String xFolderUri, Payload payload, MultipartFile file) {
+      String xFolderUri, String payload, MultipartFile file) {
     try {
       String filename = file.getOriginalFilename();
       log.info("File {} being written to temp location.", filename);
@@ -34,6 +33,10 @@ public class FilesApiController implements FilesApi {
     } catch (IOException ex) {
       log.error("Unable to write the file", ex);
     }
+
+    log.info("========= Payload Start ======");
+    log.info(payload);
+    log.info("========== Payload End ========");
 
     UploadResponse ur = new UploadResponse();
     ur.setOwner("VETERAN:FILENUMBER:987267855");
