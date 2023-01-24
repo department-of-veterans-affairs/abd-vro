@@ -346,7 +346,7 @@ public class BipApiService implements IBipApiService {
             .setIssuedAt(now)
             .setExpiration(expired)
             .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS256, bipApiProps.getEvidenceSecret())
+            .signWith(SignatureAlgorithm.HS256, signingKey)
             .setHeaderParams(headerType)
             .compact();
       }
