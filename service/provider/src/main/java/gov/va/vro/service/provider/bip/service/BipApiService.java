@@ -3,7 +3,6 @@ package gov.va.vro.service.provider.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.*;
-import gov.va.vro.model.bipevidence.Payload;
 import gov.va.vro.model.bipevidence.request.UploadProviderDataRequest;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
@@ -61,6 +60,8 @@ public class BipApiService implements IBipApiService {
 
   private final BipApiProps bipApiProps;
 
+  private final ObjectMapper mapper = new ObjectMapper();
+
   private enum API {
     CLAIM,
     EVIDENCE
@@ -77,7 +78,6 @@ public class BipApiService implements IBipApiService {
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        ObjectMapper mapper = new ObjectMapper();
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
         return result.getClaim();
       } else {
@@ -151,7 +151,6 @@ public class BipApiService implements IBipApiService {
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       if (HttpStatus.OK.equals(bipResponse.getStatusCode())) {
-        ObjectMapper mapper = new ObjectMapper();
         BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
         return resp.getContentions();
       } else if (HttpStatus.NO_CONTENT.equals(bipResponse.getStatusCode())) {
@@ -177,7 +176,6 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
-      ObjectMapper mapper = new ObjectMapper();
       String updtContention = mapper.writeValueAsString(contention);
       HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
       ResponseEntity<String> bipResponse =
@@ -196,7 +194,6 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to add claim contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader(API.CLAIM);
-      ObjectMapper mapper = new ObjectMapper();
       String createContention = mapper.writeValueAsString(contention);
       HttpEntity<String> request = new HttpEntity<>(createContention, headers);
       log.info("createContesion: \n {}", createContention);
@@ -210,7 +207,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidence(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
+      FileIdType idtype, String fileId, BipFileUploadPayload fileUploadPayload, File file)
       throws BipException { // TODO: to be finished with certificate set.
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
@@ -219,9 +216,8 @@ public class BipApiService implements IBipApiService {
       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
 
-      ObjectMapper mapper = new ObjectMapper();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
+      body.add("payLoad", mapper.writeValueAsString(fileUploadPayload));
       body.add("file", new FileSystemResource(file));
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
@@ -256,14 +252,7 @@ public class BipApiService implements IBipApiService {
       updr.documentTypeId(131);
 
       String filename = file.getOriginalFilename();
-
-      Payload payload = new Payload();
-      payload.setProviderData(updr);
-      payload.setContentName(filename);
-
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      // body.add("payload", payload);
-      ObjectMapper mapper = new ObjectMapper();
       body.add("payload", mapper.writeValueAsString(uploadEvidenceReq));
 
       ByteArrayResource contentsAsResource =

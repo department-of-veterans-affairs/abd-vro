@@ -11,6 +11,8 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -177,7 +179,9 @@ public class BipClaimService {
     if (pdfResponse.getPdfData() == null) {
       throw new BipException("PDF Response does not contain any data");
     }
-    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
+    String filename =
+        GeneratePdfPayload.createPdfFilename(
+            DiagnosisLookup.getDiagnosis(payload.getDiagnosticCode()));
     File file = null;
     try {
       file = File.createTempFile(filename, "tmp", null);
@@ -193,7 +197,7 @@ public class BipClaimService {
               .claimantSsn(payload.getVeteranIdentifiers().getSsn())
               .benefitTypeId(10)
               .documentTypeId(131)
-              .dateVaReceivedDocument("1900-01-01") // don't know what data is
+              // TODO .dateVaReceivedDocument("1900-01-01") // don't know what data is
               .subject(pdfResponse.getDiagnosis()) // get a subject
               .contentions(contentionList)
               .alternativeDocumentTypeIds(List.of(1))
