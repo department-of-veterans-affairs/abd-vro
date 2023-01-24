@@ -197,6 +197,7 @@ public class BipClaimService {
               .claimantSsn(payload.getVeteranIdentifiers().getSsn())
               .benefitTypeId(10)
               .documentTypeId(131)
+              .claimantDateOfBirth("1900-01-01")
               .dateVaReceivedDocument("1900-01-01") // don't know what data is
               .subject(pdfResponse.getDiagnosis()) // get a subject
               .contentions(contentionList)
