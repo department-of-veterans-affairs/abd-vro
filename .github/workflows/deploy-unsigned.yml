@@ -37,7 +37,7 @@ env:
 jobs:
   publish-images:
     # only run this job in the abd-vro repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    # if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
       job_status: ${{ env.JOB_STATUS }}
