@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Contention base information
+ * Contention base information.
  *
  * @author warren @Date 12/9/22
  */
