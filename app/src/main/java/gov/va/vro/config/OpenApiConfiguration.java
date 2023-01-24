@@ -50,6 +50,7 @@ public class OpenApiConfiguration {
         Arrays.asList(
             new Tag().name("Pdf Generation"),
             new Tag().name("Claim Metrics"),
+            new Tag().name("Health Assessment"),
             new Tag().name("BIP Integration"),
             new Tag().name("MAS Integration"));
 
