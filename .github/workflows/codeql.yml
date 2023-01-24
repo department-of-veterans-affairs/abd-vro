@@ -17,9 +17,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   analyze:
     name: Analyze
@@ -43,7 +40,7 @@ jobs:
         uses: ./.github/actions/setup-vro
 
       - name: Build VRO
-        run: ./gradlew build
+        run: ./gradlew build -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
