@@ -131,9 +131,10 @@ class BipClaimServiceTest {
   void uploadPdf_missingData() {
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
     BipClaimService claimService = new BipClaimService(bipApiService);
+    var payload = MasTestData.getMasAutomatedClaimPayload();
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     try {
-      claimService.uploadPdf(fetchPdfResponse);
+      claimService.uploadPdf(payload, fetchPdfResponse);
       fail();
     } catch (BipException e) {
       assertEquals("PDF Response does not contain any data", e.getMessage());
@@ -147,7 +148,8 @@ class BipClaimServiceTest {
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     var data = Base64.getEncoder().encode("Hello!".getBytes(StandardCharsets.UTF_8));
     fetchPdfResponse.setPdfData(new String(data));
-    claimService.uploadPdf(fetchPdfResponse);
+    var payload = MasTestData.getMasAutomatedClaimPayload();
+    claimService.uploadPdf(payload, fetchPdfResponse);
   }
 
   private ClaimContention createContention(List<String> codes) {

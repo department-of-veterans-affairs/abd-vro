@@ -7,9 +7,12 @@ import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -170,12 +173,15 @@ public class BipClaimService {
    * @return pdf response.
    * @throws BipException if anything goes wrong
    */
-  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) throws BipException {
+  public FetchPdfResponse uploadPdf(MasAutomatedClaimPayload payload, FetchPdfResponse pdfResponse)
+      throws BipException {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     if (pdfResponse.getPdfData() == null) {
       throw new BipException("PDF Response does not contain any data");
     }
-    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
+    String filename =
+        GeneratePdfPayload.createPdfFilename(
+            DiagnosisLookup.getDiagnosis(payload.getDiagnosticCode()));
     File file = null;
     try {
       file = File.createTempFile(filename, "tmp", null);
@@ -186,12 +192,12 @@ public class BipClaimService {
       BipFileProviderData providerData =
           BipFileProviderData.builder()
               .contentSource("VRO")
-              .claimantFirstName("") // Get first name
-              .claimantMiddleInitial("") // Get middle,
-              .claimantLastName("") // Get ast name
-              .claimantSsn("") // Get ssn
+              .claimantFirstName(payload.getFirstName())
+              .claimantLastName(payload.getLastName())
+              .claimantSsn(payload.getVeteranIdentifiers().getSsn())
               .benefitTypeId(10)
               .documentTypeId(131)
+              .claimantDateOfBirth("1900-01-01")
               .dateVaReceivedDocument("1900-01-01") // don't know what data is
               .subject(pdfResponse.getDiagnosis()) // get a subject
               .contentions(contentionList)
@@ -203,9 +209,9 @@ public class BipClaimService {
               .endProductCode("130DPNDCY")
               .regionalProcessingOffice("Buffalo") // get an office.
               .facilityCode("Facility")
-              .claimantParticipantId("601108526") // get a participant ID
+              .claimantParticipantId(payload.getVeteranIdentifiers().getParticipantId())
               .sourceComment("upload from VRO")
-              .claimantDateOfBirth("1900-01-01") // get DOB
+              .claimantDateOfBirth(payload.getDateOfBirth())
               .build();
 
       bipApiService.uploadEvidence(
