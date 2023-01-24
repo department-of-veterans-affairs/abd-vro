@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.*;
 import gov.va.vro.model.bipevidence.Payload;
 import gov.va.vro.model.bipevidence.request.UploadProviderDataRequest;
-import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -256,28 +255,30 @@ public class BipApiService implements IBipApiService {
       updr.setDateVaReceivedDocument(inputProviderData.getDateVaReceivedDocument());
       updr.documentTypeId(131);
 
+      String filename = file.getOriginalFilename();
+
       Payload payload = new Payload();
       payload.setProviderData(updr);
-      payload.setContentName(file.getOriginalFilename());
+      payload.setContentName(filename);
 
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payLoad", payload);
+      // body.add("payload", payload);
       ObjectMapper mapper = new ObjectMapper();
-      // body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
+      body.add("payload", mapper.writeValueAsString(uploadEvidenceReq));
 
       ByteArrayResource contentsAsResource =
           new ByteArrayResource(file.getBytes()) {
             @Override
             public String getFilename() {
-              return "example.pdf"; // Filename has to be returned in order to be able to post.
+              return filename; // Filename has to be returned in order to be able to post.
             }
           };
 
       body.add("file", contentsAsResource);
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
-      ResponseEntity<UploadResponse> bipResponse =
-          ceRestTemplate.postForEntity(url, httpEntity, UploadResponse.class);
+      ResponseEntity<String> bipResponse =
+          ceRestTemplate.postForEntity(url, httpEntity, String.class);
 
       BipFileUploadResp resp = new BipFileUploadResp();
       log.info(
