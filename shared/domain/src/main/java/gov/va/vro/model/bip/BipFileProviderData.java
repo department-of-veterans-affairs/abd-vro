@@ -47,7 +47,7 @@ public class BipFileProviderData {
   private List<String> contentions;
 
   @Schema(description = "Alternative document type IDs", example = "[ 1, 2]")
-  private List<Integer> alternativeDocmentTypeIds;
+  private List<Integer> alternativeDocumentTypeIds;
 
   @Schema(description = "Social Security Number", example = "204972342")
   private boolean actionable;
@@ -55,7 +55,8 @@ public class BipFileProviderData {
   @Schema(description = "A list of associate claim IDs", example = "[ \"139278345\" ]")
   private List<String> associatedClaimIds;
 
-  private List<String> notes;
+  @Schema(description = "Document Notes", example = "Joe Doe had previous exam.")
+  private String notes;
 
   @Schema(description = "Payee Code", example = "00")
   private String payeeCode;

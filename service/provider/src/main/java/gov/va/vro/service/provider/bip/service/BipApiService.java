@@ -3,17 +3,20 @@ package gov.va.vro.service.provider.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.*;
+import gov.va.vro.model.bipevidence.Payload;
+import gov.va.vro.model.bipevidence.request.UploadProviderDataRequest;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.TextCodec;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -49,9 +52,11 @@ public class BipApiService implements IBipApiService {
   private static final String UPLOAD_FILE = "/files";
 
   @Qualifier("bipRestTemplate")
+  @NonNull
   private final RestTemplate restTemplate;
 
   @Qualifier("bipCERestTemplate")
+  @NonNull
   private final RestTemplate ceRestTemplate;
 
   private final BipApiProps bipApiProps;
@@ -239,25 +244,49 @@ public class BipApiService implements IBipApiService {
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
       log.info("Call {} to uploadEvidenceFile for {} : {}", url, idtype.name(), fileId);
+
       HttpHeaders headers = getBipHeader(API.EVIDENCE);
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
 
-      ObjectMapper mapper = new ObjectMapper();
+      UploadProviderDataRequest updr = new UploadProviderDataRequest();
+      updr.setContentSource("VRO");
+      BipFileProviderData inputProviderData = uploadEvidenceReq.getProviderData();
+      updr.setDateVaReceivedDocument(inputProviderData.getDateVaReceivedDocument());
+      updr.documentTypeId(131);
+
+      String filename = file.getOriginalFilename();
+
+      Payload payload = new Payload();
+      payload.setProviderData(updr);
+      payload.setContentName(filename);
+
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payLoad", mapper.writeValueAsString(uploadEvidenceReq));
-      body.add("file", new FileSystemResource(Arrays.toString(file.getBytes())));
+      // body.add("payload", payload);
+      ObjectMapper mapper = new ObjectMapper();
+      body.add("payload", mapper.writeValueAsString(uploadEvidenceReq));
+
+      ByteArrayResource contentsAsResource =
+          new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+              return filename; // Filename has to be returned in order to be able to post.
+            }
+          };
+
+      body.add("file", contentsAsResource);
       HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
       ResponseEntity<String> bipResponse =
-          ceRestTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+          ceRestTemplate.postForEntity(url, httpEntity, String.class);
+
       BipFileUploadResp resp = new BipFileUploadResp();
       log.info(
           "bip response for upload: status: {}, message: {}",
           bipResponse.getStatusCode(),
           bipResponse.getBody());
       resp.setStatus(bipResponse.getStatusCode());
-      resp.setMessage(bipResponse.getBody());
+      resp.setMessage(mapper.writeValueAsString(bipResponse.getBody()));
       return resp;
     } catch (RestClientException | IOException e) {
       log.error("failed to upload file.", e);
@@ -309,14 +338,16 @@ public class BipApiService implements IBipApiService {
             .compact();
       }
       case EVIDENCE -> {
+        byte[] signSecretBytes = bipApiProps.getEvidenceSecret().getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec signingKey =
+            new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
         claims.put("iss", bipApiProps.getEvidenceIssuer());
         return Jwts.builder()
             .setSubject("Evidence")
             .setIssuedAt(now)
             .setExpiration(expired)
             .setClaims(claims)
-            .signWith(
-                SignatureAlgorithm.HS256, TextCodec.BASE64.decode(bipApiProps.getEvidenceSecret()))
+            .signWith(SignatureAlgorithm.HS256, signingKey)
             .setHeaderParams(headerType)
             .compact();
       }
