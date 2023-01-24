@@ -49,7 +49,9 @@ If this is a new image (i.e., not just a different version), you must do the fol
    Also see https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages
    The package should now be found at https://github.com/department-of-veterans-affairs/$REPO/pkgs/container/$REPO%2Fvro-$IMAGE
 
-2. Create a Helm configuration for the service -- mimic files in helm-service-* folders.
+2. Add it to the MANUAL_IMGS_ARRAY in .github/workflows/secrel4prs.yml
 
-3. Create and test scripts/deploy-$IMAGE.sh
+3. Create a Helm configuration for the service -- mimic files in helm-service-* folders.
+
+4. Create and test scripts/deploy-$IMAGE.sh
 "
