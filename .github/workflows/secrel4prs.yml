@@ -64,6 +64,11 @@ jobs:
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ env.RUN_TESTS }}
 
+      - name: "Debugging"
+        if: always()
+        run: |
+          ls -alR ~/.gradle/caches/modules-2/files-2.1/gov.va.starter
+
   images-for-secrel:
     runs-on: ubuntu-latest
     needs:
