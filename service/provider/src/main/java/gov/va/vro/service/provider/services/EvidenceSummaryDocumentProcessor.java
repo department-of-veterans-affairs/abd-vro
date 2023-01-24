@@ -8,18 +8,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class EvidenceSummaryDocumentProcessor implements Processor {
   private final SaveToDbService saveToDbService;
-  private static final Map<String, String> diagnosisMap =
-      Map.ofEntries(
-          new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
-          new AbstractMap.SimpleEntry<>("6602", "Asthma"));
 
   @Override
   public void process(Exchange exchange) {
@@ -38,7 +31,7 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
   }
 
   private String matchDiagnosticCode(String diagnosticCode) {
-    String diagnosis = diagnosisMap.get(diagnosticCode);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode);
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
       return null;

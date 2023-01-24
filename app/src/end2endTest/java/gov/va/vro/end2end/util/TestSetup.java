@@ -3,6 +3,7 @@ package gov.va.vro.end2end.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import gov.va.vro.service.provider.services.DiagnosisLookup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,8 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
-import java.util.Map;
 
 /**
  * This class drives end-to-end tests based on two gold files in a resource directory. The file
@@ -22,10 +21,6 @@ import java.util.Map;
 @Getter
 @RequiredArgsConstructor
 public class TestSetup {
-  private static final Map<String, String> diagnosticCodeToName =
-      Map.ofEntries(
-          new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
-          new AbstractMap.SimpleEntry<>("6602", "Asthma"));
 
   private final String name;
 
@@ -116,7 +111,7 @@ public class TestSetup {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
     String date = dtf.format(instant);
     String diagnosticCode = getDiagnosticCode();
-    String dcName = diagnosticCodeToName.get(diagnosticCode);
+    String dcName = DiagnosisLookup.getDiagnosis(diagnosticCode);
     return "VAMC_" + dcName + "_Rapid_Decision_Evidence--" + date + ".pdf";
   }
 
