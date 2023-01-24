@@ -2,8 +2,17 @@ package gov.va.vro.service.provider.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.bip.*;
-import gov.va.vro.model.bipevidence.request.UploadProviderDataRequest;
+import gov.va.vro.model.bip.BipClaim;
+import gov.va.vro.model.bip.BipClaimResp;
+import gov.va.vro.model.bip.BipContentionResp;
+import gov.va.vro.model.bip.BipFileUploadPayload;
+import gov.va.vro.model.bip.BipFileUploadResp;
+import gov.va.vro.model.bip.BipUpdateClaimResp;
+import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
+import gov.va.vro.model.bip.CreateContentionReq;
+import gov.va.vro.model.bip.FileIdType;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -244,12 +253,6 @@ public class BipApiService implements IBipApiService {
       HttpHeaders headers = getBipHeader(API.EVIDENCE);
       headers.setContentType(MediaType.MULTIPART_FORM_DATA);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
-
-      UploadProviderDataRequest updr = new UploadProviderDataRequest();
-      updr.setContentSource("VRO");
-      BipFileProviderData inputProviderData = uploadEvidenceReq.getProviderData();
-      updr.setDateVaReceivedDocument(inputProviderData.getDateVaReceivedDocument());
-      updr.documentTypeId(131);
 
       String filename = file.getOriginalFilename();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
