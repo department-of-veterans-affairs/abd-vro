@@ -175,7 +175,9 @@ public class BipClaimService {
     if (pdfResponse.getPdfData() == null) {
       throw new BipException("PDF Response does not contain any data");
     }
-    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
+    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+    String diagnosis = StringUtils.capitalize(pdfResponse.getDiagnosis());
+    String filename = String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
     File file = null;
     try {
       file = File.createTempFile(filename, "tmp", null);
