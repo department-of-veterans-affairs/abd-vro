@@ -12,7 +12,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.TextCodec;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -338,14 +337,16 @@ public class BipApiService implements IBipApiService {
             .compact();
       }
       case EVIDENCE -> {
+        byte[] signSecretBytes = bipApiProps.getEvidenceSecret().getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec signingKey =
+            new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
         claims.put("iss", bipApiProps.getEvidenceIssuer());
         return Jwts.builder()
             .setSubject("Evidence")
             .setIssuedAt(now)
             .setExpiration(expired)
             .setClaims(claims)
-            .signWith(
-                SignatureAlgorithm.HS256, TextCodec.BASE64.decode(bipApiProps.getEvidenceSecret()))
+            .signWith(SignatureAlgorithm.HS256, bipApiProps.getEvidenceSecret())
             .setHeaderParams(headerType)
             .compact();
       }
