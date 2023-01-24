@@ -4,6 +4,7 @@
 # Image to publish
 IMAGE="$1"
 IMG_TAG="$2"
+# SecRel can only pull images from non-public repos, so publish to abd-vro-internal be default
 REPO=${3:-abd-vro-internal}
 
 if [ -z "$IMG_TAG" ]; then
@@ -41,7 +42,7 @@ echo "
 Check for package at https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=$REPO
 "
 echo "
-Next, you must do the following:
+If this is a new image (i.e., not just a different version), you must do the following:
 1. Manually connect the package to the $REPO repo and
    set the package to "Inherit access from source repository" as instructed by LHDI doc:
    https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility
