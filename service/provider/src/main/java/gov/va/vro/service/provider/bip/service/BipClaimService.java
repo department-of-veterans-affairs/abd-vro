@@ -171,7 +171,8 @@ public class BipClaimService {
    * @return pdf response.
    * @throws BipException if anything goes wrong
    */
-  public FetchPdfResponse uploadPdf(MasAutomatedClaimPayload payload, FetchPdfResponse pdfResponse) throws BipException {
+  public FetchPdfResponse uploadPdf(MasAutomatedClaimPayload payload, FetchPdfResponse pdfResponse)
+      throws BipException {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     if (pdfResponse.getPdfData() == null) {
       throw new BipException("PDF Response does not contain any data");
