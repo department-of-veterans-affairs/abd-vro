@@ -106,7 +106,7 @@ class VroControllerTest extends BaseControllerTest {
     request.setDiagnosticCode("7101");
 
     var responseEntity1 =
-        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertNotNull(response1);
@@ -115,7 +115,7 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
@@ -162,8 +162,7 @@ class VroControllerTest extends BaseControllerTest {
     request.setVeteranIcn("icn");
     request.setDiagnosticCode("7101");
 
-    var responseEntity =
-        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+    var responseEntity = post("/v2/health-data-assessment", request, ClaimProcessingError.class);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
@@ -176,8 +175,7 @@ class VroControllerTest extends BaseControllerTest {
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setVeteranIcn("icn");
 
-    var responseEntity =
-        post("/v1/full-health-data-assessment", request, ClaimProcessingError.class);
+    var responseEntity = post("/v2/health-data-assessment", request, ClaimProcessingError.class);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
@@ -197,7 +195,7 @@ class VroControllerTest extends BaseControllerTest {
     headers.put("content-type", "application/json");
     var responseEntity =
         post(
-            "/v1/full-health-data-assessment",
+            "/v2/health-data-assessment",
             "{ \"one\":\"one\", \"two\":\"two\",}",
             headers,
             ClaimProcessingError.class);

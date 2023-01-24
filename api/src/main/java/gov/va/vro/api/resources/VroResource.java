@@ -145,7 +145,8 @@ public interface VroResource {
       description =
           "This endpoint provides health data assessment for a Veteran claim "
               + "in the form of patient medical data relevant to the specific diagnostic code. "
-              + "Claim id is only used for tracking purposes.")
+              + "Claim id is only used for tracking purposes.",
+      hidden = true)
   @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
