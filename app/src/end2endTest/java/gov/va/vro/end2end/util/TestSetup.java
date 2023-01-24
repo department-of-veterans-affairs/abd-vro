@@ -35,7 +35,7 @@ public class TestSetup {
   private JsonNode assessmentNode;
   private JsonNode veteranInfoNode;
 
-  private ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
 
   private String getResource(String path) throws Exception {
     InputStream stream = this.getClass().getResourceAsStream(path);
@@ -117,9 +117,7 @@ public class TestSetup {
     String date = dtf.format(instant);
     String diagnosticCode = getDiagnosticCode();
     String dcName = diagnosticCodeToName.get(diagnosticCode);
-
-    String filename = "VAMC_" + dcName + "_Rapid_Decision_Evidence--" + date + ".pdf";
-    return filename;
+    return "VAMC_" + dcName + "_Rapid_Decision_Evidence--" + date + ".pdf";
   }
 
   /**
