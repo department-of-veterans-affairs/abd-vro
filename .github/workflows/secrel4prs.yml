@@ -67,7 +67,7 @@ jobs:
       - name: "Debugging"
         if: always()
         run: |
-          ls -alR ~/.gradle/caches/modules-2/files-2.1/gov.va.starter
+          ls -al ~/.gradle/caches/modules-2/files-2.1
 
   images-for-secrel:
     runs-on: ubuntu-latest
