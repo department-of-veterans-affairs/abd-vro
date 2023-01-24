@@ -91,6 +91,7 @@ include ':service-python:assessclaimdc6602'
 include ':service-python:pdfgenerator'
 include ':service-python:featuretoggle'
 include ':svc-lighthouse-api'
+include ':mock-bip-ce-api'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
