@@ -134,5 +134,4 @@ public interface VroResource {
           @RequestBody
           GeneratePdfRequest request)
       throws MethodArgumentNotValidException, ClaimProcessingException;
-
 }
