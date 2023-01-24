@@ -1,14 +1,12 @@
 package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.event.Auditable;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,61 +14,41 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
-@Schema(name = "MASClaimDetailsRequest", description = "Initiate a MAS request")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MasAutomatedClaimPayload implements Auditable {
 
   public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
-
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
+  public static final String AGENT_ORANGE_FLASH_ID = "266";
 
-  @Schema(hidden = true)
-  @Setter
-  @Getter
+  @JsonIgnore private final ObjectMapper objectMapper = new ObjectMapper();
+
   private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
-  @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
-  @JsonProperty("dob")
   private String dateOfBirth;
 
   @NotBlank(message = "First Name cannot be empty")
-  @Schema(description = "Veteran First  Name", example = "Rick")
   private String firstName;
 
   @NotBlank(message = "Last Name cannot be empty")
-  @Schema(description = "Veteran Last  Name", example = "Smith")
   private String lastName;
 
-  @Schema(description = "Veteran Gender")
   private String gender;
 
   @NotNull(message = "Collection ID cannot be empty")
-  @Schema(description = "Collection ID", example = "350")
   private Integer collectionId;
 
-  @NotNull
-  @Valid
-  @Schema(description = "Veteran Identifiers")
-  private VeteranIdentifiers veteranIdentifiers;
+  @NotNull @Valid private VeteranIdentifiers veteranIdentifiers;
 
-  @NotNull
-  @Valid
-  @Schema(description = "Details of the Claim")
-  private ClaimDetail claimDetail;
+  @NotNull @Valid private ClaimDetail claimDetail;
 
-  @Schema(description = "Veteran Flash Ids")
+  @Setter private String offRampReason;
+
   private List<String> veteranFlashIds;
 
-  /**
-   * Get diagnostic code.
-   *
-   * @return code.
-   */
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -79,11 +57,6 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
-  /**
-   * Get disability action type.
-   *
-   * @return type.
-   */
   @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -105,6 +78,14 @@ public class MasAutomatedClaimPayload implements Auditable {
   }
 
   @JsonIgnore
+  public Boolean isPresumptive() {
+    if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
+      return (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
+    }
+    return null;
+  }
+
+  @JsonIgnore
   public Integer getClaimId() {
     return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
   }
@@ -114,20 +95,34 @@ public class MasAutomatedClaimPayload implements Auditable {
     return veteranIdentifiers == null ? null : veteranIdentifiers.getIcn();
   }
 
-  @Override
   @JsonIgnore
+  @Override
   public String getEventId() {
     return correlationId;
   }
 
-  @JsonIgnore
   @Override
+  @SneakyThrows
+  @JsonIgnore
   public String getDetails() {
-    return String.format(
-        "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
-        collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
+    var details =
+        MasEventDetails.builder()
+            .claimId(Objects.toString(getClaimId()))
+            .collectionId(Objects.toString(getCollectionId()))
+            .diagnosticCode(getDiagnosticCode())
+            .veteranIcn(getVeteranIcn())
+            .disabilityActionType(getDisabilityActionType())
+            .flashIds(getVeteranFlashIds())
+            .inScope(isInScope())
+            .presumptive(isPresumptive())
+            .submissionSource(claimDetail == null ? null : claimDetail.getClaimSubmissionSource())
+            .submissionDate(claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime())
+            .offRampReason(getOffRampReason())
+            .build();
+    return objectMapper.writeValueAsString(details);
   }
 
+  @JsonIgnore
   @Override
   public String getDisplayName() {
     return "Automated Claim";
