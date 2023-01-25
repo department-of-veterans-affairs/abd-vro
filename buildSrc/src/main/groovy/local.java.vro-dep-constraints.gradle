@@ -20,5 +20,11 @@ dependencies {
 
         // for mockserver-netty and hapi-fhir
         implementation 'org.apache.commons:commons-text:1.10.0'
+
+        // for hapi-fhir-server-openapi
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.utilities:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r5:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
     }
 }

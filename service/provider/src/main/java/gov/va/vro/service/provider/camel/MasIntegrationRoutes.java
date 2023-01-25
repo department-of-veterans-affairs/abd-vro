@@ -8,6 +8,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -172,7 +173,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(evidenceSummaryDocumentProcessor) // store evidence in DB
         .to(PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF)
         .process(convertToPdfResponse())
-        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
+        .process(
+            exchange -> {
+              var pdfResponse = exchange.getMessage().getBody(FetchPdfResponse.class);
+              var masProcessingObject = exchange.getProperty("payload", MasProcessingObject.class);
+              bipClaimService.uploadPdf(masProcessingObject.getClaimPayload(), pdfResponse);
+            })
         .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Uploaded PDF"));
