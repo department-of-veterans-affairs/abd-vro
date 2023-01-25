@@ -44,13 +44,14 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public ClaimInfoResponse findClaimInfo(String claimSubmissionId) {
-    ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
-    if (claim == null) {
+  public ClaimsInfo findClaimInfo(String claimSubmissionId) {
+    List<ClaimEntity> claims = claimRepository.findByClaimSubmissionId(claimSubmissionId);
+    if (claims.size() == 0) {
       log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
       return null;
     }
-    return claimInfoResponseMapper.toClaimInfoResponse(claim);
+    List<ClaimInfoResponse> claimsInfo = claimInfoResponseMapper.toClaimInfoResponses(claims);
+    return new ClaimsInfo(claimsInfo, claims.size());
   }
 
   private Page<ClaimEntity> findAllClaimInfoPage(ClaimInfoQueryParams params) {

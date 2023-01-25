@@ -97,7 +97,10 @@ class SaveToDbServiceImplTest {
         claimBeforeAssessment.getIdType(),
         evidence,
         "7101");
-    ClaimEntity result2 = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ClaimEntity result2 =
+        claimRepository
+            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
+            .orElse(null);
     assertNotNull(result2);
     assertNotNull(result2.getContentions().get(0).getAssessmentResults().get(0));
     AssessmentResultEntity assessmentResult =

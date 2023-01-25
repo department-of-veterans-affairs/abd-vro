@@ -30,9 +30,9 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId)
+  public ResponseEntity<ClaimsInfo> claimInfoForClaimId(String claimSubmissionId)
       throws ClaimProcessingException {
-    ClaimInfoResponse response = claimMetricsService.findClaimInfo(claimSubmissionId);
+    ClaimsInfo response = claimMetricsService.findClaimInfo(claimSubmissionId);
     if (response == null) {
       log.warn("Claim {} not found", claimSubmissionId);
       String msg = HttpStatus.NOT_FOUND.getReasonPhrase();

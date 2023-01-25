@@ -7,6 +7,7 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
@@ -119,9 +120,10 @@ public class ClaimMetricsTestCase {
   /**
    * Verifies if the actual claim information is as expected.
    *
-   * @param claimInfo
+   * @param claim claim.
    */
-  public void verifyClaimInfoResponse(ClaimInfoResponse claimInfo) {
+  public void verifyClaimInfoResponse(ClaimsInfo claim) {
+    ClaimInfoResponse claimInfo = claim.getClaimInfoList().get(0);
     assertEquals(claimSubmissionId, claimInfo.getClaimSubmissionId());
     assertEquals(icn, claimInfo.getVeteranIcn());
 

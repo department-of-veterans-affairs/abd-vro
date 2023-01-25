@@ -1,6 +1,7 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import io.micrometer.core.annotation.Timed;
@@ -77,8 +78,8 @@ public interface ClaimMetricsResource {
   @Timed(value = "claim-info-claim-id")
   @Tag(name = "Claim Metrics")
   @ResponseBody
-  ResponseEntity<gov.va.vro.model.claimmetrics.response.ClaimInfoResponse> claimInfoForClaimId(
-      @PathVariable String claimSubmissionId) throws ClaimProcessingException;
+  ResponseEntity<ClaimsInfo> claimInfoForClaimId(@PathVariable String claimSubmissionId)
+      throws ClaimProcessingException;
 
   @Operation(
       summary = "Retrieves claim specific metrics for all claims.",

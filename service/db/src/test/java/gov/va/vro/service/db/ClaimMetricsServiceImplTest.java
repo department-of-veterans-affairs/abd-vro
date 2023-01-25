@@ -50,7 +50,11 @@ public class ClaimMetricsServiceImplTest {
             index -> {
               ClaimInfoResponse cir = responses.get(index);
               ClaimMetricsTestCase c = cases.get(index + page * size);
-              c.verifyClaimInfoResponse(cir);
+              ClaimsInfo info = new ClaimsInfo();
+              List<ClaimInfoResponse> list = new ArrayList<>();
+              list.add(cir);
+              info.setClaimInfoList(list);
+              c.verifyClaimInfoResponse(info);
             });
   }
 
@@ -82,7 +86,7 @@ public class ClaimMetricsServiceImplTest {
     allCases.forEach(
         c -> {
           String claimSubmissionId = c.getClaimSubmissionId();
-          ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId);
+          ClaimsInfo cir = claimMetricsService.findClaimInfo(claimSubmissionId);
           c.verifyClaimInfoResponse(cir);
         });
     // Reverse the icnCases to get the last updated claims for that ICN.
@@ -114,7 +118,7 @@ public class ClaimMetricsServiceImplTest {
     ClaimMetricsTestCase testCase = ClaimMetricsTestCase.getInstance();
     testCase.populate(saveToDbService, claimRepository);
 
-    ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id");
+    ClaimsInfo cir = claimMetricsService.findClaimInfo("not_id");
     assertNull(cir);
   }
 }
