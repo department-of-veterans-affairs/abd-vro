@@ -7,7 +7,6 @@ all-secrets.txt
 #Ignoring cache folders
 .cache
 .monokle
-.idea/
 .gradle/
 .gradletasknamecache
 build/
@@ -67,6 +66,7 @@ HELP.md
 *.iws
 *.iml
 *.ipr
+.run/*
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/

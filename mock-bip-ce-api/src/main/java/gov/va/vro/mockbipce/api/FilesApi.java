@@ -4,6 +4,8 @@
  */
 package gov.va.vro.mockbipce.api;
 
+import gov.va.vro.model.bipevidence.UploadResponse;
+import gov.va.vro.model.bipevidence.VefsErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,8 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.openapitools.model.UploadResponse;
-import org.openapitools.model.VefsErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;

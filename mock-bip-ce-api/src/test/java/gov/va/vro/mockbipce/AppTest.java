@@ -2,11 +2,11 @@ package gov.va.vro.mockbipce;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import gov.va.vro.model.bip.BipFileProviderData;
+import gov.va.vro.model.bip.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.UploadResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.Payload;
-import org.openapitools.model.UploadProviderDataRequest;
-import org.openapitools.model.UploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,14 +45,16 @@ public class AppTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-    UploadProviderDataRequest updr = new UploadProviderDataRequest();
-    updr.setContentSource("VRO");
-    updr.setDateVaReceivedDocument("2023-01-19");
-    updr.documentTypeId(131);
+    BipFileProviderData updr = BipFileProviderData.builder()
+        .contentSource("VRO")
+        .dateVaReceivedDocument("2023-01-19")
+        .documentTypeId(131)
+        .build();
 
-    Payload payload = new Payload();
-    payload.setProviderData(updr);
-    payload.setContentName("example.pdf");
+    BipFileUploadPayload payload = BipFileUploadPayload.builder()
+        .providerData(updr)
+        .contentName("example.pdf")
+        .build();
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     body.add("payLoad", payload);

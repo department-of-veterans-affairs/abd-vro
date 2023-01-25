@@ -1,8 +1,8 @@
 package gov.va.vro.mockbipce.api;
 
+import gov.va.vro.model.bipevidence.UploadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.openapitools.model.UploadResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.annotation.Generated;
 
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-01-22T14:21:59.944759-05:00[America/New_York]")
 @Controller
 @Slf4j
 public class FilesApiController implements FilesApi {
@@ -38,8 +34,9 @@ public class FilesApiController implements FilesApi {
     log.info(payload);
     log.info("========== Payload End ========");
 
-    UploadResponse ur = new UploadResponse();
-    ur.setOwner("VETERAN:FILENUMBER:987267855");
+    UploadResponse ur = UploadResponse.builder()
+        .uuid("046b6c7f-0b8a-43b9-b35d-6489e6daee91")
+        .build();
     return new ResponseEntity<>(ur, HttpStatus.OK);
   }
 }
