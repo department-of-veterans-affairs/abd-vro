@@ -10,37 +10,12 @@ replicaCount: 1
 labels:
   api:
     app: abd_vro
-  db:
-    global: &labels-db-global
-      app: postgres-db
-    pod:
-      <<: *labels-db-global
-      sidecar.istio.io/inject: "false"
-  redis:
-    global: &labels-redis-global
-      app: redis-cache
-    pod:
-      <<: *labels-redis-global
-      sidecar.istio.io/inject: "false"
-  mq:
-    global: &labels-mq-global
-      app: rabbit-mq
-    pod:
-      <<: *labels-mq-global
-      sidecar.istio.io/inject: "false"
 
 images:
   registry: ghcr.io
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
-  redis:
-    imageName: redis
-    tag: latest
-    imagePullPolicy: Always
-  mq:
-    imageName: vro-rabbitmq
-    tag: 3
 # BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
   app:
@@ -48,6 +23,7 @@ images:
     tag: tagPlaceholder
     imagePullPolicy: Always
   db:
+    # Being used as the `pg-isready` container
     imageName: dev_vro-postgres
     tag: tagPlaceholder
     imagePullPolicy: Always
@@ -85,21 +61,11 @@ resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
-  db:
+  pgIsReady:
+    # TODO: reduce resources since this container requires very little
     limits:
       cpu: 10m
       memory: 256Mi
-  redis:
-    limits:
-      cpu: 10m
-      memory: 256Mi
-  mq:
-    requests:
-      cpu: 150m
-      memory: 512Mi
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
 
 service:
   api:
@@ -107,21 +73,10 @@ service:
     sourcePort: 8080
     targetPort: 8080
   db:
+    # Being used as the `pg-isready` container
     type: ClusterIP
     sourcePort: 5432
     targetPort: 5432
-  redis:
-    type: ClusterIP
-    sourcePort: 6379
-    targetPort: 6379
-  mq:
-    type: ClusterIP
-    sourcePort: 5672
-    targetPort: 5672
-  mqManagement:
-    type: ClusterIP
-    sourcePort: 15672
-    targetPort: 15672
 
 ports:
   - name: http
@@ -169,6 +124,7 @@ api:
   apiKey02: apiKey02
   vroNonProdKey: vroNonProd
 
+# Needed to connect to DB and for the `db-init` container
 postgres:
   dbName: vro
   secretName: postgres
@@ -181,6 +137,7 @@ postgres:
   urlKey: url
   schemaKey: schema
 
+# Needed to connect to MQ
 rabbitmq:
   secretName: rabbitmq
   usernameKey: User
@@ -213,7 +170,7 @@ bip:
   bipPassword: bipPassword
   bipAlias: bipAlias
 
-
+# Needed to connect to Redis
 redis:
   secretName: redis
   passwordKey: redisPassword

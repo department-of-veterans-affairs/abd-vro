@@ -36,7 +36,7 @@ env:
 
 jobs:
   publish-images:
-    # only run this job in the abd-vro repo
+    # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
@@ -71,15 +71,13 @@ jobs:
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
 
       # TODO: Is this really needed?
       - name: "Remove images locally"
         run: |
-          docker rmi "ghcr.io/${{ github.repository }}/vro-rabbitmq:3"
-
           source scripts/image_vars.src
           for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=${{ env.TARGET_ENV }}_$(getVarValue ${PREFIX} _IMG)
