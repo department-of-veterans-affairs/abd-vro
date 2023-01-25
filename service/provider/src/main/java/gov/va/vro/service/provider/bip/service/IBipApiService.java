@@ -1,16 +1,15 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -100,12 +99,12 @@ public interface IBipApiService {
    *
    * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
    * @param fileId id
-   * @param uploadEvidenceReq upload payload data.
-   * @param file the file to be uploaded.
+   * @param payload upload payload data.
+   * @param fileContent the file to be uploaded.
    * @return an object for the upload status.
    * @throws BipException exception
    */
   BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException;
 }
