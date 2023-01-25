@@ -17,15 +17,15 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol inhaler',
                               'status': 'active',
-                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
-                                                    'Failure']}],
+                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
+                                                    'Failure'}],
              'relevantMedCount': 1,
              'totalMedCount': 1},
         ),
@@ -40,15 +40,15 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol',
                               'status': 'active',
-                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
-                                                    'Failure']}],
+                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
+                                                    'Failure'}],
              'relevantMedCount': 1,
              'totalMedCount': 1},
         ),
@@ -63,14 +63,13 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'false',
+                              'conditionRelated': False,
                               'description': 'Advil',
-                              'status': 'active',
-                              'suggestedCategory': []}],
+                              'status': 'active'}],
              'relevantMedCount': 0,
              'totalMedCount': 1},
         ),
@@ -90,20 +89,20 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': 'Albuterol',
                               'status': 'active',
-                              'suggestedCategory': ['Bronchodilator/Used in Respiratory '
-                                                    'Failure']},
+                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
+                                                    'Failure'},
                              {'authoredOn': '1952-04-06T04:00:00Z',
-                              'conditionRelated': 'false',
+                              'conditionRelated': False,
                               'description': 'Advil',
                               'status': 'active',
-                              'suggestedCategory': []}],
+                              }],
              'relevantMedCount': 1,
              'totalMedCount': 2},
         ),
@@ -119,16 +118,16 @@ from assessclaimdc6602v2.src.lib import medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         },
                     ],
-                    "date_of_claim": "2021-11-09",
+                    "dateOfClaim": "2021-11-09",
                 }
             },
             {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': 'true',
+                              'conditionRelated': True,
                               'description': '14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT '
                                              '/ vilanterol 0.025 MG/ACTUAT Dry Powder '
                                              'Inhaler',
                               'status': 'active',
-                              'suggestedCategory': ['Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive']}],
+                              'suggestedCategory': 'Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive'}],
              'relevantMedCount': 1,
              'totalMedCount': 1}
         ),
@@ -153,13 +152,13 @@ def test_continuous_medication_required(
 @pytest.mark.parametrize(
     "medication_display, expected",
     [
-        ("Albuterol", ["Bronchodilator/Used in Respiratory Failure"]),
-        ("Advil", []),
+        ("Albuterol", "Bronchodilator/Used in Respiratory Failure"),
+        ("Advil", ''),
         # medication description contains multiple keywords,
         # returns the most general category for any medication in description
         (
             "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
-            ["Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive"],
+            "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive",
         ),
     ],
 )

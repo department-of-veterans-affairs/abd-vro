@@ -1,0 +1,56 @@
+# This file is loaded when a test is annotated with @ActiveProfiles("test")
+# Spring will load main/resources/application.yml, followed by this file.
+# Since we want tests to be as close as possible to the deployed app, don't create test/resources/application.yml.
+# If test/resources/application.yml exists, it will override main/resources/application.yml.
+
+# Load main/resources/application-nonprod.yml and main/resources/application-local.yml
+spring.config.import: >
+  application-nonprod.yml,
+  application-local.yml
+
+# Since this is for tests, override some main/resources/application.yml Spring settings
+spring:
+  datasource:
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;
+    username: skuser
+    password: localT3st!
+    # Disable hikari for tests -- https://stackoverflow.com/a/71408822
+    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          mas:
+            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
+            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "NO"
+bip:
+  claimClientId: "${BIP_CLAIM_USERID:claimuser}"
+  claimSecret: "${BIP_CLAIM_SECRET:secret}"
+  claimBaseURL: "${BIP_CLAIM_URL:2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io}"
+  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID:evidenceuser}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET:secret}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL:4b043eb6-1b96-45f6-9b47-7941cdf33a44.mock.pstmn.io/api/v1/rest}"
+  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
+  applicationName: "${BIP_APPLICATION_ISS:VRO}"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:281}"
+truststore: "${BIP_TRUSTSTORE:}"
+truststore_password: "${BIP_PASSWORD:}"
+keystore: "${BIP_KEYSTORE:}"
+bipalias: "${BIP_ALIAS:}"
+

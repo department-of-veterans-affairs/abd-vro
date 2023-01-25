@@ -12,7 +12,7 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "date_of_claim": {"type": "string"},
+        "dateOfClaim": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "evidence": {
             "type": "dict",
@@ -67,5 +67,6 @@ def validate_request_body(request_body):
         },
     }
     v = Validator(schema)
+    v.allow_unknown = True
 
     return {"is_valid": v.validate(request_body), "errors": v.errors}

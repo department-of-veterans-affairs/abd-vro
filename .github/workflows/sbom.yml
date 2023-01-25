@@ -7,9 +7,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
 jobs:
   trivy-scan:
     runs-on: ubuntu-latest
@@ -22,4 +19,4 @@ jobs:
           scan-type: 'fs'
           format: 'github'
           output: 'dependency-results.sbom.json'
-          github-pat: ${{ secrets.ACCESS_TOKEN }}
+          github-pat: ${{ secrets.GITHUB_TOKEN }}

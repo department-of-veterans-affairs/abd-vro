@@ -54,12 +54,20 @@ public class SlipClaimSubmitRouter {
     return route;
   }
 
+  /**
+   * Route health sufficiency.
+   *
+   * @param body body object
+   * @param props exchange properties map
+   * @return string
+   */
   @SneakyThrows
-  public String routeHealthAssessV2(Object body, @ExchangeProperties Map<String, Object> props) {
+  public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
     String route =
         String.format(
-            "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.%s&requestTimeout=%d",
+            "rabbitmq:health-assess-exchange?routingKey=health"
+                + "-sufficiency-assess.%s&requestTimeout=%d",
             diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;

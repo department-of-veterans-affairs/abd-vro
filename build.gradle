@@ -32,7 +32,7 @@ plugins {
 
   // Apply these
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '17.7.1'
+  id('nebula.lint') version '17.8.0'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
   // VA's starter plugins
   // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
@@ -132,6 +132,9 @@ ext {
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
+    dockerModules.add(':service-python:assessclaimdc6510')
+    dockerModules.add(':service-python:assessclaimdc6522')
+    dockerModules.add(':service-python:assessclaimcancer')
   }
 }
 
@@ -145,7 +148,8 @@ scmVersion {
     pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
-    pre("fileUpdate", [file       : "helmchart/Chart.yaml",
+    // Here is where the appVersion is updated with each release
+    pre("fileUpdate", [file       : "helm-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")

@@ -1,8 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,9 +24,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 
-@RequestMapping(value = "/v1", produces = "application/json")
-@SecurityRequirement(name = "X-API-Key")
-@SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
+@RequestMapping(value = "/v2", produces = "application/json")
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme(
+    name = "Bearer Authentication",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer",
+    in = SecuritySchemeIn.HEADER)
 @Timed
 public interface MasResource {
 
@@ -39,6 +44,10 @@ public interface MasResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
@@ -54,10 +63,10 @@ public interface MasResource {
       @Parameter(
               description = "Request a MAS Automated Claim",
               required = true,
-              schema = @Schema(implementation = MasAutomatedClaimPayload.class))
+              schema = @Schema(implementation = MasAutomatedClaimRequest.class))
           @Valid
           @RequestBody
-          MasAutomatedClaimPayload request);
+          MasAutomatedClaimRequest request);
 
   @Operation(
       summary = "MAS Exam Ordering Status",
@@ -66,7 +75,11 @@ public interface MasResource {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",

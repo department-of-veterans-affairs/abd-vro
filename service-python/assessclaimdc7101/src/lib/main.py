@@ -37,12 +37,14 @@ def assess_hypertension(event: Dict):
                     "recentBpReadings": bp_readings["oneYearBpReadings"],
                     "medicationsCount": relevant_medication["medicationsCount"],
                 },
+                "claimSubmissionId": event['claimSubmissionId']
             }
         )
-        logging.info("Message processed successfully")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
-        logging.info(f"Message failed to process due to: {validation_results['errors']}")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body
 
@@ -65,24 +67,28 @@ def assess_sufficiency(event: Dict):
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
+        bp_display = bp_calculation["twoYearsBp"]
+        conditions_display = relevant_conditions["conditionsTwoYears"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
-            if bp_calculation["oneYearBpReadings"] >= 4:
+            if bp_calculation["oneYearBpReadings"] >= 3:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
-            if relevant_conditions["conditions"]:
+            bp_display = bp_calculator.sort_bp(event["evidence"]["bp_readings"])  # Include all bp readings to display
+            conditions_display = relevant_conditions["conditions"]
+            if relevant_conditions["relevantConditionsCount"] >= 1:
                 sufficient = False
-                if bp_calculation["twoYearsBpReadings"] >= 2:
+                if bp_calculation["twoYearsBpReadings"] >= 3:
                     sufficient = True
-            if bp_calculation["recentElevatedBpReadings"] >= 2:
+            if bp_calculation["recentElevatedBpReadings"] >= 1 and bp_calculation["twoYearsBpReadings"] >= 3:
                 sufficient = True
 
         response_body.update(
             {
                 "evidence": {
-                    "bp_readings": bp_calculation["twoYearsBp"],
-                    "conditions": relevant_conditions["conditions"]
+                    "bp_readings": bp_display,
+                    "conditions": conditions_display
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
@@ -93,10 +99,25 @@ def assess_sufficiency(event: Dict):
                 "sufficientForFastTracking": sufficient,
                 "dateOfClaim": event["dateOfClaim"],
                 "disabilityActionType": event["disabilityActionType"],
+                "claimSubmissionId": event['claimSubmissionId']
             })
-        logging.info("Message processed successfully")
+        if "medications" in event["evidence"].keys():
+            medications = continuous_medication.filter_mas_medication(event)
+            response_body["evidence"].update(
+                {
+                    "medications": medications["medications"]
+                }
+            )
+            response_body["evidenceSummary"].update(
+                {
+                    "medicationsCount": medications["medicationsCount"]
+                }
+            )
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, sufficientForFastTracking: {sufficient}, "
+                     f"evidenceSummary: {response_body['evidenceSummary']}")
     else:
-        logging.info(f"Message failed to process due to: {validation_results['errors']}")
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
 
     return response_body

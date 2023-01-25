@@ -85,9 +85,11 @@ public class FieldExtractor {
     if (condition.hasAbatementDateTimeType()) {
       result.setAbatementDate(FieldExtractor.toDate(condition.getAbatementDateTimeType()));
     }
-
     if (condition.hasOnsetDateTimeType()) {
       result.setOnsetDate(FieldExtractor.toDate(condition.getOnsetDateTimeType()));
+    }
+    if (condition.hasRecordedDateElement()) {
+      result.setRecordedDate(FieldExtractor.toDate(condition.getRecordedDateElement()));
     }
 
     if (condition.hasClinicalStatus()) {
@@ -97,6 +99,17 @@ public class FieldExtractor {
         if (coding.hasCode()) {
           String code = coding.getCode();
           result.setStatus(code);
+        }
+      }
+    }
+
+    if (condition.hasCategory()) {
+      List<CodeableConcept> conditionCategory = condition.getCategory();
+      if (conditionCategory.size() == 1) {
+        CodeableConcept category = condition.getCategory().get(0);
+        if (category.hasText()) {
+          String text = category.getText();
+          result.setCategory(text);
         }
       }
     }

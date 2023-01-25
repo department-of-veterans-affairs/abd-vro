@@ -3,6 +3,9 @@
 # For debugging, print out each command
 set -x
 
+# Fail fast when any command fails, i.e., pushing image to ghcr
+set -e
+
 # ${{ github.repository }}
 REPO="$1"
 # A tag label for all the images, e.g., ${COMMIT_SHA:0:7}
@@ -23,10 +26,5 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   docker tag "$GRADLE_IMG_NAME" "ghcr.io/${REPO}/${IMG_NAME}:latest"
 
   echo "Pushing all tags for image '$IMG_NAME'"
-  docker push -a "ghcr.io/${REPO}/${IMG_NAME}"
+  docker push --all-tags "ghcr.io/${REPO}/${IMG_NAME}"
 done
-
-# Pull, tag, and push these third-party images to work around https://www.docker.com/increase-rate-limits/
-docker pull rabbitmq:3
-docker tag rabbitmq:3 "ghcr.io/${REPO}/vro-rabbitmq:3"
-docker push "ghcr.io/${REPO}/vro-rabbitmq:3"

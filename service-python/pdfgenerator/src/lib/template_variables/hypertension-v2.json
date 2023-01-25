@@ -1,0 +1,21 @@
+{
+  "claimSubmissionId": "1234",
+  "code": "7101",
+  "document_type": "hypertension",
+  "conditions": [],
+  "fileIdentifier": "12345",
+  "veteranInfo": {
+    "first": "Test",
+    "middle": "",
+    "last": "User",
+    "suffix": "",
+    "birthdate": "1935-06-15T00:00:00+00:00"
+  },
+  "evidence": {
+    "bp_readings": [],
+    "conditions": [],
+    "medications": [],
+    "procedures": [],
+    "serviceLocations": []
+  }
+}

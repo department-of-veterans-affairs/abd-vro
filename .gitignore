@@ -1,14 +1,12 @@
 #Ignoring the password file
 all-secrets.txt
 
-# Files copied from repo abd-vro-dev-secrets
-private.pem
-setenv.sh
+# Files possibly copied from repo abd-vro-dev-secrets
+./setenv.sh
 
 #Ignoring cache folders
 .cache
 .monokle
-.idea/
 .gradle/
 .gradletasknamecache
 build/
@@ -28,16 +26,16 @@ target/
 .java-version
 .venv
 
-helmchart/envsecrets.env
+helm-app/envsecrets.env
 tasks/config.temp.dev
 /bin
 !**/app/bin
 opa/ingress/test.rego
-helmchart/opa-policies/ingress/test.rego
+helm-app/opa-policies/ingress/test.rego
 
 # Created by scripts/image-names.sh
 .github/secrel/config-updated.yml
-helmchart/values-updated.yaml
+helm-app/values-updated.yaml
 
 api/bin/**/*.class
 app/bin/**/*.class
@@ -68,6 +66,7 @@ HELP.md
 *.iws
 *.iml
 *.ipr
+.run/*
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -99,3 +98,8 @@ __pycache__
 /.vs/abd-vro/FileContentIndex/d645400a-4168-45dd-9581-09680a72a8ce.vsidx
 /.vs/abd-vro/FileContentIndex/c3518251-e5db-40fa-ae34-3e693cabee02.vsidx
 /.vs/abd-vro/FileContentIndex/95bd278b-111f-47e3-ba07-4bd218c9f0f2.vsidx
+
+### PDF Generator Specific Files
+test.pdf
+test.html
+generated_toc.xsl

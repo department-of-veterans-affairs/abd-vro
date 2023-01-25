@@ -3,7 +3,7 @@ description: Builds, tags, and publish VRO's Docker images
 
 inputs:
   access_token:
-    description: 'GITHUB_ACCESS_TOKEN'
+    description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
     required: true
   target_env:
     description: 'TARGET_ENV like dev or qa'
@@ -14,6 +14,14 @@ inputs:
   ghcr_password:
     description: 'GHCR password or access token'
     required: true
+  run_tests:
+    description: 'Run test before publishing images'
+    default: 'true'
+
+outputs:
+  images_list:
+    description: 'list of URLs to published images'
+    value: ${{ steps.published-images.outputs.images }}
 
 runs:
   using: composite
@@ -25,8 +33,9 @@ runs:
         access_token: ${{ inputs.access_token }}
 
     - name: "Test code"
+      if: inputs.run_tests == 'true'
       shell: bash
-      run: ./gradlew check
+      run: ./gradlew check -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
 
     - name: "Login to GitHub Container Registry"
       uses: docker/login-action@v2.1.0
@@ -41,6 +50,18 @@ runs:
         COMMIT_SHA: ${{ github.sha }}
       run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}"
 
-    - name: "List images"
+    - name: "Published images list"
+      id: published-images
       shell: bash
-      run: docker image list
+      env:
+        COMMIT_SHA: ${{ github.sha }}
+      run: |
+        docker image list
+        IMG_TAG=${COMMIT_SHA:0:7}
+        source scripts/image_vars.src
+        echo "images<<EOF" >> $GITHUB_OUTPUT
+        for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+          IMG_NAME=${{ inputs.target_env }}_$(getVarValue "${PREFIX}" _IMG)
+          echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" >> $GITHUB_OUTPUT
+        done
+        echo "EOF" >> $GITHUB_OUTPUT

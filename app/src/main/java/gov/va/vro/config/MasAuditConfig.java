@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** Configure mas queues and slack notifications */
+/** Configure mas queues and slack notifications. */
 @Configuration
 public class MasAuditConfig {
 
@@ -21,7 +21,7 @@ public class MasAuditConfig {
             .masProcessingInitialDelay(masProcessingInitialDelay)
             .masProcessingSubsequentDelay(masProcessingSubsequentDelay)
             .masRetryCount(masRetryCount);
-    if (slackExceptionChannel != null && slackExceptionChannel != null) {
+    if (slackExceptionChannel != null && slackExceptionWebhook != null) {
       builder
           .slackExceptionChannel(slackExceptionChannel)
           .slackExceptionWebhook(slackExceptionWebhook);
