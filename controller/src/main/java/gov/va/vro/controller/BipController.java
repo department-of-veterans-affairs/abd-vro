@@ -168,7 +168,11 @@ public class BipController implements BipResource {
 
   @Override
   public ResponseEntity<BipFileUploadResponse> fileUpload(
-      @Valid String fileId, @Valid String fileIdType, BipFileProviderData providerData, MultipartFile file) throws BipException {
+      @Valid String fileId,
+      @Valid String fileIdType,
+      BipFileProviderData providerData,
+      MultipartFile file)
+      throws BipException {
     log.info("upload evidence file, fileID: {}, ID type: {}", fileId, fileIdType);
     try {
       FileIdType type = FileIdType.getIdType(fileIdType);

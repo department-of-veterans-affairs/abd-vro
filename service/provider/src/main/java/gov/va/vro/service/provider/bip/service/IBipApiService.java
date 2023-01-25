@@ -10,7 +10,6 @@ import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;

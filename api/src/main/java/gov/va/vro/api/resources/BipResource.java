@@ -215,9 +215,11 @@ public interface BipResource {
           @RequestParam(value = "fileIdType")
           String fileIdType,
       @RequestPart(value = "providerData")
-      @Parameter(description = "provider data", required = true, schema = @Schema(type = "string", format = "binary"))
-      final BipFileProviderData providerData,
-      @RequestPart(value = "file")
-      @Parameter(description = "file", required = true)
-      final MultipartFile file);
+          @Parameter(
+              description = "provider data",
+              required = true,
+              schema = @Schema(type = "string", format = "binary"))
+          final BipFileProviderData providerData,
+      @RequestPart(value = "file") @Parameter(description = "file", required = true)
+          final MultipartFile file);
 }
