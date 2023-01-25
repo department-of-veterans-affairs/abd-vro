@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipClaimResp;
 import gov.va.vro.model.bip.BipContentionResp;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -32,7 +32,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -244,7 +243,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
@@ -254,12 +253,12 @@ public class BipApiService implements IBipApiService {
       headers.setContentType(MediaType.MULTIPART_FORM_DATA);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
 
-      String filename = file.getOriginalFilename();
+      String filename = payload.getContentName();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payload", mapper.writeValueAsString(uploadEvidenceReq));
+      body.add("payload", mapper.writeValueAsString(payload));
 
       ByteArrayResource contentsAsResource =
-          new ByteArrayResource(file.getBytes()) {
+          new ByteArrayResource(fileContent) {
             @Override
             public String getFilename() {
               return filename; // Filename has to be returned in order to be able to post.
