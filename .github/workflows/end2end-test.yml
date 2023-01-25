@@ -28,7 +28,7 @@ jobs:
       - name: "Build the images"
         uses: ./.github/actions/build-images
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
       - name: "Start the containers"
         run: |
