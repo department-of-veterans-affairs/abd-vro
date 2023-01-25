@@ -4,7 +4,8 @@
 # Image to publish
 IMAGE="$1"
 IMG_TAG="$2"
-# SecRel can only pull images from non-public repos, so publish to abd-vro-internal be default
+# SecRel will not sign images outside the scope of the repository that's calling SecRel,
+# so the image must exist in abd-vro-internal for deploying signed images (i.e., for sandbox and prod environments).
 REPO=${3:-abd-vro-internal}
 
 if [ -z "$IMG_TAG" ]; then
