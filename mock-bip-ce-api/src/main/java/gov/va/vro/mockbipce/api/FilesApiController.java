@@ -34,9 +34,8 @@ public class FilesApiController implements FilesApi {
     log.info(payload);
     log.info("========== Payload End ========");
 
-    UploadResponse ur = UploadResponse.builder()
-        .uuid("046b6c7f-0b8a-43b9-b35d-6489e6daee91")
-        .build();
+    UploadResponse ur =
+        UploadResponse.builder().uuid("046b6c7f-0b8a-43b9-b35d-6489e6daee91").build();
     return new ResponseEntity<>(ur, HttpStatus.OK);
   }
 }
