@@ -23,6 +23,7 @@ import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
+import gov.va.vro.service.provider.bip.service.IBipCeApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -49,6 +50,8 @@ import javax.validation.Valid;
 @Profile("!qa & !sandbox & !prod")
 public class BipController implements BipResource {
   private final IBipApiService service;
+
+  private final IBipCeApiService ceService;
 
   @Override
   public ResponseEntity<BipClaimStatusResponse> setClaimRfd(@Valid BipUpdateClaimPayload request) {
@@ -187,7 +190,7 @@ public class BipController implements BipResource {
               .providerData(providerData)
               .build();
       providerData.setDateVaReceivedDocument(LocalDate.now().toString());
-      BipFileUploadResp resp = service.uploadEvidenceFile(type, fileId, payload, file.getBytes());
+      BipFileUploadResp resp = ceService.uploadEvidenceFile(type, fileId, payload, file.getBytes());
       BipFileUploadResponse result =
           BipFileUploadResponse.builder()
               .uploaded(resp.getStatus() == HttpStatus.OK)

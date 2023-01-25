@@ -9,10 +9,7 @@ import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
-import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -24,17 +21,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.*;
@@ -53,34 +44,23 @@ public class BipApiService implements IBipApiService {
   private static final String CLAIM_DETAILS = "/claims/%s";
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CONTENTION = "/claims/%s/contentions";
-  private static final String X_FOLDER_URI = "VETERAN:%s:%s";
-  private static final String HTTPS = "https://";
 
-  private static final String UPLOAD_FILE = "/files";
+  private static final String HTTPS = "https://";
 
   @Qualifier("bipRestTemplate")
   @NonNull
   private final RestTemplate restTemplate;
 
-  @Qualifier("bipCERestTemplate")
-  @NonNull
-  private final RestTemplate ceRestTemplate;
-
   private final BipApiProps bipApiProps;
 
   private final ObjectMapper mapper = new ObjectMapper();
-
-  private enum API {
-    CLAIM,
-    EVIDENCE
-  }
 
   @Override
   public BipClaim getClaimDetails(long claimId) throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       log.info("jwt: {}", headers.get("Authorization")); // TODO: remove it after test.
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
@@ -115,7 +95,7 @@ public class BipApiService implements IBipApiService {
       String url =
           HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
       log.info("call {} to set claim RFD status.", url);
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       Map<String, String> requestBody = new HashMap<>();
       requestBody.put("claimLifecycleStatus", ClaimStatus.RFD.getDescription());
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
@@ -136,7 +116,7 @@ public class BipApiService implements IBipApiService {
           HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
       log.info("call {} to update claim status to {}.", url, status);
 
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       Map<String, String> requestBody = new HashMap<>();
       requestBody.put("claimLifecycleStatus", status.getDescription());
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
@@ -154,7 +134,7 @@ public class BipApiService implements IBipApiService {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to get claim contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
@@ -183,7 +163,7 @@ public class BipApiService implements IBipApiService {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       String updtContention = mapper.writeValueAsString(contention);
       HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
       ResponseEntity<String> bipResponse =
@@ -201,7 +181,7 @@ public class BipApiService implements IBipApiService {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to add claim contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader(API.CLAIM);
+      HttpHeaders headers = getBipHeader();
       String createContention = mapper.writeValueAsString(contention);
       HttpEntity<String> request = new HttpEntity<>(createContention, headers);
       log.info("createContesion: \n {}", createContention);
@@ -213,84 +193,12 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  @Override
-  public BipFileUploadResp uploadEvidence(
-      FileIdType idtype, String fileId, BipFileUploadPayload fileUploadPayload, File file)
-      throws BipException { // TODO: to be finished with certificate set.
-    try {
-      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
-      log.info("call {} to uploadEvidence file for {} : {}", url, idtype.name(), fileId);
-      HttpHeaders headers = getBipHeader(API.EVIDENCE);
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
-
-      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payLoad", mapper.writeValueAsString(fileUploadPayload));
-      body.add("file", new FileSystemResource(file));
-      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
-
-      ResponseEntity<String> bipResponse =
-          ceRestTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-      BipFileUploadResp resp = new BipFileUploadResp();
-      resp.setStatus(bipResponse.getStatusCode());
-      resp.setMessage(bipResponse.getBody());
-      return resp;
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to upload file.", e);
-      throw new BipException(e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
-      throws BipException {
-    try {
-      String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
-      log.info("Call {} to uploadEvidenceFile for {} : {}", url, idtype.name(), fileId);
-
-      HttpHeaders headers = getBipHeader(API.EVIDENCE);
-      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
-
-      String filename = payload.getContentName();
-      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payload", mapper.writeValueAsString(payload));
-
-      ByteArrayResource contentsAsResource =
-          new ByteArrayResource(fileContent) {
-            @Override
-            public String getFilename() {
-              return filename; // Filename has to be returned in order to be able to post.
-            }
-          };
-
-      body.add("file", contentsAsResource);
-      HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
-
-      ResponseEntity<String> bipResponse =
-          ceRestTemplate.postForEntity(url, httpEntity, String.class);
-
-      BipFileUploadResp resp = new BipFileUploadResp();
-      log.info(
-          "bip response for upload: status: {}, message: {}",
-          bipResponse.getStatusCode(),
-          bipResponse.getBody());
-      resp.setStatus(bipResponse.getStatusCode());
-      resp.setMessage(mapper.writeValueAsString(bipResponse.getBody()));
-      return resp;
-    } catch (RestClientException | IOException e) {
-      log.error("failed to upload file.", e);
-      throw new BipException(e.getMessage(), e);
-    }
-  }
-
-  private HttpHeaders getBipHeader(API api) throws BipException {
+  private HttpHeaders getBipHeader() throws BipException {
     try {
       HttpHeaders bipHttpHeaders = new HttpHeaders();
       bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-      String jwt = createJwt(api);
+      String jwt = createJwt();
       bipHttpHeaders.add("Authorization", "Bearer " + jwt);
       return bipHttpHeaders;
     } catch (Exception e) {
@@ -299,50 +207,21 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  private String createJwt(API api) throws BipException {
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.MINUTE, 30);
-    Date expired = cal.getTime();
-    Claims claims = Jwts.claims();
-    claims.put("jti", bipApiProps.getJti());
-    claims.put("applicationID", bipApiProps.getApplicationId());
-    claims.put("stationID", bipApiProps.getStationId());
-    claims.put("userID", bipApiProps.getClaimClientId());
-    Date now = cal.getTime();
-    claims.put("iat", now.getTime());
-    claims.put("expires", expired.getTime());
+  private String createJwt() throws BipException {
+    Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", Header.JWT_TYPE);
 
-    switch (api) {
-      case CLAIM -> {
-        claims.put("iss", bipApiProps.getClaimIssuer());
-        byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
-        Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
-        return Jwts.builder()
-            .setSubject("Claim")
-            .setIssuedAt(now)
-            .setExpiration(expired)
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS256, signingKey)
-            .setHeaderParams(headerType)
-            .compact();
-      }
-      case EVIDENCE -> {
-        byte[] signSecretBytes = bipApiProps.getEvidenceSecret().getBytes(StandardCharsets.UTF_8);
-        SecretKeySpec signingKey =
-            new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
-        claims.put("iss", bipApiProps.getEvidenceIssuer());
-        return Jwts.builder()
-            .setSubject("Evidence")
-            .setIssuedAt(now)
-            .setExpiration(expired)
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS256, signingKey)
-            .setHeaderParams(headerType)
-            .compact();
-      }
-      default -> throw new BipException("Invalid API specification. " + api.name());
-    }
+    claims.put("iss", bipApiProps.getClaimIssuer());
+    byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
+    Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    return Jwts.builder()
+        .setSubject("Claim")
+        .setIssuedAt(Calendar.getInstance().getTime())
+        .setExpiration(claims.getExpiration())
+        .setClaims(claims)
+        .signWith(SignatureAlgorithm.HS256, signingKey)
+        .setHeaderParams(headerType)
+        .compact();
   }
 }
