@@ -67,6 +67,7 @@ public class MasIntegrationProcessors {
                     .claimSubmissionId(payload.getClaimId())
                     .diagnosticCode(payload.getDiagnosticCode())
                     .veteranIcn(payload.getVeteranIcn())
+                    .claimSubmissionDateTime(payload.getClaimSubmissionDateTime())
                     .build());
   }
 
