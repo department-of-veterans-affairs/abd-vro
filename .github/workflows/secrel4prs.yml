@@ -78,6 +78,8 @@ jobs:
           echo "${{ needs.publish-images.outputs.vro-images }}" >> $GITHUB_OUTPUT
           MANUAL_IMGS_ARRAY=( vro-rabbitmq:latest vro-redis:latest )
           for MANUAL_IMAGE in ${MANUAL_IMGS_ARRAY[@]}; do
+            # SecRel will not sign images outside the scope of the repository that's calling SecRel,
+            # so the image must exist in abd-vro-internal
             echo "ghcr.io/department-of-veterans-affairs/abd-vro-internal/${MANUAL_IMAGE}" >> $GITHUB_OUTPUT
           done
           echo "EOF" >> $GITHUB_OUTPUT

@@ -5,17 +5,13 @@ import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
-import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
 
-import java.io.File;
 import java.util.List;
 
 /**
- * BIP Claims and Evidence API services.
+ * BIP Claims API service.
  *
  * @author warren @Date 11/8/22
  */
@@ -78,33 +74,5 @@ public interface IBipApiService {
    * @throws BipException error occurs.
    */
   BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
-      throws BipException;
-
-  /**
-   * Uploads a file for the claim.
-   *
-   * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
-   * @param fileId id
-   * @param uploadEvidenceReq upload payload data.
-   * @param file file to be uploaded.
-   * @return an object for the upload status.
-   * @throws BipException exception
-   */
-  BipFileUploadResp uploadEvidence(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
-      throws BipException;
-
-  /**
-   * Uploads an evidence file for the claim.
-   *
-   * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
-   * @param fileId id
-   * @param payload upload payload data.
-   * @param fileContent the file to be uploaded.
-   * @return an object for the upload status.
-   * @throws BipException exception
-   */
-  BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException;
 }
