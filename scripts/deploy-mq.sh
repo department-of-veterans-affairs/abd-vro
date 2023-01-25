@@ -28,9 +28,6 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
-\
---set-string images.mq.imageName=ghcr.io/department-of-veterans-affairs/abd-vro/rabbitmq \
---set-string images.mq.tag=latest \
 "
 
 : "${TEAMNAME:=va-abd-rrd}"
