@@ -1,26 +1,24 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.BipFileProviderData;
-import gov.va.vro.model.bip.BipFileUploadPayload;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bipevidence.BipFileProviderData;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -37,6 +35,8 @@ public class BipClaimService {
   public static final String SPECIAL_ISSUE_2 = "rrd";
 
   private final IBipApiService bipApiService;
+
+  private final IBipCeApiService bipCeApiService;
 
   /**
    * Check if all the anchors for fast-tracking are satisfied.
@@ -170,57 +170,38 @@ public class BipClaimService {
    * @return pdf response.
    * @throws BipException if anything goes wrong
    */
-  public FetchPdfResponse uploadPdf(FetchPdfResponse pdfResponse) throws BipException {
+  public FetchPdfResponse uploadPdf(MasAutomatedClaimPayload payload, FetchPdfResponse pdfResponse)
+      throws BipException {
     log.info("Uploading pdf for claim {}...", pdfResponse.getClaimSubmissionId());
     if (pdfResponse.getPdfData() == null) {
       throw new BipException("PDF Response does not contain any data");
     }
-    String filename = String.format("temp_evidence-%s.pdf", pdfResponse.getClaimSubmissionId());
-    File file = null;
-    try {
-      file = File.createTempFile(filename, "tmp", null);
-      byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
-      InputStream is = new ByteArrayInputStream(decoder);
-      Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-      List<String> contentionList = new ArrayList<>(); // find contention related
-      BipFileProviderData providerData =
-          BipFileProviderData.builder()
-              .contentSource("VRO")
-              .claimantFirstName("") // Get first name
-              .claimantMiddleInitial("") // Get middle,
-              .claimantLastName("") // Get ast name
-              .claimantSsn("") // Get ssn
-              .benefitTypeId(10)
-              .documentTypeId(131)
-              .dateVaReceivedDocument("1900-01-01") // don't know what data is
-              .subject(pdfResponse.getDiagnosis()) // get a subject
-              .contentions(contentionList)
-              .alternativeDocmentTypeIds(List.of(1))
-              .actionable(false)
-              .associatedClaimIds(List.of("1"))
-              .notes(pdfResponse.getReason() == null ? List.of() : List.of(pdfResponse.getReason()))
-              .payeeCode("00")
-              .endProductCode("130DPNDCY")
-              .regionalProcessingOffice("Buffalo") // get an office.
-              .facilityCode("Facility")
-              .claimantParticipantId("601108526") // get a participant ID
-              .sourceComment("upload from VRO")
-              .claimantDateOfBirth("1900-01-01") // get DOB
-              .build();
+    String filename =
+        GeneratePdfPayload.createPdfFilename(
+            DiagnosisLookup.getDiagnosis(payload.getDiagnosticCode()));
 
-      bipApiService.uploadEvidence(
-          FileIdType.FILENUMBER,
-          pdfResponse.getClaimSubmissionId(),
-          BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-          file);
-      return pdfResponse;
-    } catch (IOException ioe) {
-      throw new BipException("Failed to upload evidence file.", ioe);
-    } finally {
-      if (file != null) {
-        file.delete();
-      }
-    }
+    byte[] decoder = Base64.getDecoder().decode(pdfResponse.getPdfData());
+    BipFileProviderData providerData =
+        BipFileProviderData.builder()
+            .contentSource("VRO")
+            .claimantFirstName(payload.getFirstName())
+            .claimantLastName(payload.getLastName())
+            .claimantSsn(payload.getVeteranIdentifiers().getSsn())
+            .documentTypeId(1489)
+            .dateVaReceivedDocument(LocalDate.now().toString())
+            .subject(pdfResponse.getDiagnosis()) // get a subject
+            .notes(pdfResponse.getReason() == null ? null : pdfResponse.getReason())
+            .claimantParticipantId(payload.getVeteranIdentifiers().getParticipantId())
+            .sourceComment("upload from VRO")
+            .claimantDateOfBirth(payload.getDateOfBirth())
+            .build();
+
+    bipCeApiService.uploadEvidenceFile(
+        FileIdType.FILENUMBER,
+        payload.getVeteranIdentifiers().getVeteranFileId(),
+        BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
+        decoder);
+    return pdfResponse;
   }
 
   private static boolean hasSpecialIssues(ClaimContention claimContention) {

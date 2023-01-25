@@ -9,6 +9,7 @@ import gov.va.vro.api.responses.BipFileUploadResponse;
 import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
+import gov.va.vro.model.bipevidence.BipFileProviderData;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -186,7 +188,7 @@ public interface BipResource {
 
   @Operation(summary = "Upload evidence file", description = "Upload evidence PDF file.")
   @PostMapping(
-      value = "/evidence/file/{claimid}",
+      value = "/evidence/files",
       consumes = {"multipart/form-data"})
   @ResponseStatus(HttpStatus.OK)
   @ApiResponses(
@@ -206,11 +208,18 @@ public interface BipResource {
   ResponseEntity<BipFileUploadResponse> fileUpload(
       @Parameter(description = "file ID", required = true, schema = @Schema(type = "string"))
           @Valid
-          @RequestParam(value = "fileid")
-          String fileid,
+          @RequestParam(value = "fileId")
+          String fileId,
       @Parameter(description = "file ID type", required = true, schema = @Schema(type = "string"))
           @Valid
-          @RequestParam(value = "fileidtype")
-          String fileidtype,
-      @Parameter(description = "file", required = true) MultipartFile file);
+          @RequestParam(value = "fileIdType")
+          String fileIdType,
+      @RequestPart(value = "providerData")
+          @Parameter(
+              description = "provider data",
+              required = true,
+              schema = @Schema(type = "string", format = "binary"))
+          final BipFileProviderData providerData,
+      @RequestPart(value = "file") @Parameter(description = "file", required = true)
+          final MultipartFile file);
 }
