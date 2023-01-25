@@ -1,19 +1,18 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -82,12 +81,12 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType fileIdType, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException {
     String message =
         String.format(
             "This is a mock response to upload multipart file for %s.",
-            idtype.name() + ":" + fileId);
+            fileIdType.name() + ":" + fileId);
     return new BipFileUploadResp(HttpStatus.OK, message);
   }
 
