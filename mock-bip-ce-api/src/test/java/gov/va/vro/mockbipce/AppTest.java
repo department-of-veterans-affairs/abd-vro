@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.UploadResponse;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +45,15 @@ public class AppTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-    BipFileProviderData updr = BipFileProviderData.builder()
-        .contentSource("VRO")
-        .dateVaReceivedDocument("2023-01-19")
-        .documentTypeId(131)
-        .build();
+    BipFileProviderData updr =
+        BipFileProviderData.builder()
+            .contentSource("VRO")
+            .dateVaReceivedDocument("2023-01-19")
+            .documentTypeId(131)
+            .build();
 
-    BipFileUploadPayload payload = BipFileUploadPayload.builder()
-        .providerData(updr)
-        .contentName("example.pdf")
-        .build();
+    BipFileUploadPayload payload =
+        BipFileUploadPayload.builder().providerData(updr).contentName("example.pdf").build();
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     body.add("payLoad", payload);

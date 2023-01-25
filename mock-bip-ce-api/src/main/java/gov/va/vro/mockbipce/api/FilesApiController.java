@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.api;
 
-import gov.va.vro.model.bipevidence.UploadResponse;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;

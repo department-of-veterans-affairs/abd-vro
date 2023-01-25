@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class BipFileProviderData {
-  @Schema(description = "Content Source", example = "VBMS")
+  @Schema(description = "Content Source", example = "VRO")
   private String contentSource;
 
   @Schema(description = "Claimant First Name", example = "John")
@@ -31,10 +31,10 @@ public class BipFileProviderData {
   @Schema(description = "Social Security Number", example = "204972342")
   private String claimantSsn;
 
-  @Schema(description = "Benefit Type ID Number", example = "10")
+  @Schema(description = "Benefit Type ID Number")
   private int benefitTypeId;
 
-  @Schema(description = "Document Type ID", example = "131")
+  @Schema(description = "Document Type ID", example = "")
   private int documentTypeId;
 
   @Schema(description = "Date VA Received Document", example = "2022-02-01")
@@ -43,39 +43,39 @@ public class BipFileProviderData {
   @Schema(description = "Subject", example = "subject")
   private String subject;
 
-  @Schema(description = "Contention list", example = "[ \"contention 1\" ]")
+  @Schema(description = "Contention list")
   private List<String> contentions;
 
-  @Schema(description = "Alternative document type IDs", example = "[ 1, 2]")
+  @Schema(description = "Alternative document type IDs")
   private List<Integer> alternativeDocumentTypeIds;
 
-  @Schema(description = "Social Security Number", example = "204972342")
+  @Schema(description = "Actionable flag")
   private boolean actionable;
 
-  @Schema(description = "A list of associate claim IDs", example = "[ \"139278345\" ]")
+  @Schema(description = "A list of associate claim IDs")
   private List<String> associatedClaimIds;
 
   @Schema(description = "Document Notes", example = "Joe Doe had previous exam.")
   private String notes;
 
-  @Schema(description = "Payee Code", example = "00")
+  @Schema(description = "Payee Code")
   private String payeeCode;
 
-  @Schema(description = "End Product Code", example = "30DPNDCY")
+  @Schema(description = "End Product Code")
   private String endProductCode;
 
-  @Schema(description = "Regional Processing Office", example = "Buffalo")
+  @Schema(description = "Regional Processing Office")
   private String regionalProcessingOffice;
 
-  @Schema(description = "facility Code", example = "Facility")
+  @Schema(description = "facility Code")
   private String facilityCode;
 
   @Schema(description = "claimant ParticipantId", example = "9320497233")
   private String claimantParticipantId;
 
-  @Schema(description = "Source comment", example = "source comment")
+  @Schema(description = "Source comment")
   private String sourceComment; // "source comment",
 
-  @Schema(description = "Claimant Date of Birth", example = "1972-01-01")
+  @Schema(description = "Claimant Date of Birth")
   private String claimantDateOfBirth;
 }

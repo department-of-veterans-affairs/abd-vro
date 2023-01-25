@@ -1,15 +1,10 @@
-package gov.va.vro.model.bipevidence;
-
+package gov.va.vro.model.bipevidence.response;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
-/**
- * Simplified version of BIP Claims Evidence API happy return payload.
- **/
+/** Simplified version of BIP Claims Evidence API happy return payload. */
 @Getter
 @Setter
 @Builder
