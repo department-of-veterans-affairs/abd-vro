@@ -166,7 +166,7 @@ public class BipController implements BipResource {
 
   @Override
   public ResponseEntity<BipFileUploadResponse> fileUpload(
-      @Valid String fileid, @Valid String fileidtype, MultipartFile file) throws BipException {
+      @Valid String fileid, @Valid String fileidtype, BipFileProviderData providerData, MultipartFile file) throws BipException {
     log.info("upload evidence file, fileID: {}, ID type: {}", fileid, fileidtype);
     try {
       FileIdType type = FileIdType.getIdType(fileidtype);
@@ -175,30 +175,6 @@ public class BipController implements BipResource {
             BipFileUploadResponse.builder().message("Invalid ID type: " + fileidtype).build();
         return ResponseEntity.badRequest().body(badResp);
       }
-      BipFileProviderData providerData =
-          BipFileProviderData.builder()
-              .contentSource("VBMS")
-              .claimantFirstName("John")
-              .claimantMiddleInitial("M")
-              .claimantLastName("Smith")
-              .claimantSsn("123456789")
-              .benefitTypeId(10)
-              .documentTypeId(131)
-              .dateVaReceivedDocument("2023-01-09")
-              .subject("subject")
-              .contentions(List.of("contention1"))
-              .alternativeDocumentTypeIds(List.of(1))
-              .actionable(false)
-              .associatedClaimIds(List.of("1"))
-              .notes("[This is a note for a document. These replace editing the summary]")
-              .payeeCode("00")
-              .endProductCode("130DPNDCY")
-              .regionalProcessingOffice("Buffalo")
-              .facilityCode("Facility")
-              .claimantParticipantId("601108526")
-              .sourceComment("source comment")
-              .claimantDateOfBirth("1955-02-23")
-              .build();
       BipFileUploadPayload payload =
           BipFileUploadPayload.builder()
               .contentName(file.getOriginalFilename())

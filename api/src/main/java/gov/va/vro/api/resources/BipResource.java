@@ -9,6 +9,7 @@ import gov.va.vro.api.responses.BipFileUploadResponse;
 import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
+import gov.va.vro.model.bipevidence.BipFileProviderData;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -212,5 +214,10 @@ public interface BipResource {
           @Valid
           @RequestParam(value = "fileidtype")
           String fileidtype,
-      @Parameter(description = "file", required = true) MultipartFile file);
+      @RequestPart(value = "payload")
+      @Parameter(description = "payload", required = true, schema = @Schema(type = "string", format = "binary"))
+      final BipFileProviderData providerData,
+      @RequestPart(value = "file")
+      @Parameter(description = "file", required = true)
+      final MultipartFile file);
 }
