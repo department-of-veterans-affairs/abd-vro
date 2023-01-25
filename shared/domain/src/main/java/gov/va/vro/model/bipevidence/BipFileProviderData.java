@@ -1,4 +1,4 @@
-package gov.va.vro.model.bip;
+package gov.va.vro.model.bipevidence;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

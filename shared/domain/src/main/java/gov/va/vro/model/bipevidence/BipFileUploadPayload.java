@@ -1,5 +1,6 @@
-package gov.va.vro.model.bip;
+package gov.va.vro.model.bipevidence;
 
+import gov.va.vro.model.bipevidence.BipFileProviderData;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

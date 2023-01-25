@@ -2,8 +2,8 @@ package gov.va.vro.mockbipce;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.model.bip.BipFileProviderData;
-import gov.va.vro.model.bip.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileProviderData;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.UploadResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
