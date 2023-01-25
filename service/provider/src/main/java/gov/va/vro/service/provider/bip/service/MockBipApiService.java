@@ -82,12 +82,12 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType fileIdType, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException {
     String message =
         String.format(
             "This is a mock response to upload multipart file for %s.",
-            idtype.name() + ":" + fileId);
+            fileIdType.name() + ":" + fileId);
     return new BipFileUploadResp(HttpStatus.OK, message);
   }
 

@@ -31,6 +31,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -166,13 +168,13 @@ public class BipController implements BipResource {
 
   @Override
   public ResponseEntity<BipFileUploadResponse> fileUpload(
-      @Valid String fileid, @Valid String fileidtype, BipFileProviderData providerData, MultipartFile file) throws BipException {
-    log.info("upload evidence file, fileID: {}, ID type: {}", fileid, fileidtype);
+      @Valid String fileId, @Valid String fileIdType, BipFileProviderData providerData, MultipartFile file) throws BipException {
+    log.info("upload evidence file, fileID: {}, ID type: {}", fileId, fileIdType);
     try {
-      FileIdType type = FileIdType.getIdType(fileidtype);
+      FileIdType type = FileIdType.getIdType(fileIdType);
       if (type == null) {
         BipFileUploadResponse badResp =
-            BipFileUploadResponse.builder().message("Invalid ID type: " + fileidtype).build();
+            BipFileUploadResponse.builder().message("Invalid ID type: " + fileIdType).build();
         return ResponseEntity.badRequest().body(badResp);
       }
       BipFileUploadPayload payload =
@@ -180,7 +182,8 @@ public class BipController implements BipResource {
               .contentName(file.getOriginalFilename())
               .providerData(providerData)
               .build();
-      BipFileUploadResp resp = service.uploadEvidenceFile(type, fileid, payload, file);
+      providerData.setDateVaReceivedDocument(LocalDate.now().toString());
+      BipFileUploadResp resp = service.uploadEvidenceFile(type, fileId, payload, file.getBytes());
       BipFileUploadResponse result =
           BipFileUploadResponse.builder()
               .uploaded(resp.getStatus() == HttpStatus.OK)
@@ -189,7 +192,7 @@ public class BipController implements BipResource {
       return ResponseEntity.status(
               resp.getStatus() != null ? resp.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR)
           .body(result);
-    } catch (BipException e) {
+    } catch (BipException | IOException e) {
       BipFileUploadResponse badResult =
           BipFileUploadResponse.builder().uploaded(false).message(e.getMessage()).build();
       return ResponseEntity.internalServerError().body(badResult);

@@ -244,7 +244,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
@@ -254,12 +254,12 @@ public class BipApiService implements IBipApiService {
       headers.setContentType(MediaType.MULTIPART_FORM_DATA);
       headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
 
-      String filename = file.getOriginalFilename();
+      String filename = payload.getContentName();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      body.add("payload", mapper.writeValueAsString(uploadEvidenceReq));
+      body.add("payload", mapper.writeValueAsString(payload));
 
       ByteArrayResource contentsAsResource =
-          new ByteArrayResource(file.getBytes()) {
+          new ByteArrayResource(fileContent) {
             @Override
             public String getFilename() {
               return filename; // Filename has to be returned in order to be able to post.

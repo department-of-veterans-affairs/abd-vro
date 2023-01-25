@@ -100,12 +100,12 @@ public interface IBipApiService {
    *
    * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
    * @param fileId id
-   * @param uploadEvidenceReq upload payload data.
-   * @param file the file to be uploaded.
+   * @param payload upload payload data.
+   * @param fileContent the file to be uploaded.
    * @return an object for the upload status.
    * @throws BipException exception
    */
   BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
+      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException;
 }

@@ -1,5 +1,6 @@
 package gov.va.vro.model.bipevidence;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BipFileProviderData {
   @Schema(description = "Content Source", example = "VRO")
   private String contentSource;
@@ -32,7 +34,7 @@ public class BipFileProviderData {
   private String claimantSsn;
 
   @Schema(description = "Benefit Type ID Number")
-  private int benefitTypeId;
+  private Integer benefitTypeId;
 
   @Schema(description = "Document Type ID", example = "")
   private int documentTypeId;
