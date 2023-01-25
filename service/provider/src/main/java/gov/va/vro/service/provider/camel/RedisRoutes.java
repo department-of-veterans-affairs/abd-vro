@@ -21,12 +21,13 @@ class RedisRoutes extends RouteBuilder {
 
     // for v2
     saveToRedis(MasIntegrationRoutes.MAS_CLAIM_WIRETAP, "collectionId", "mas-claim");
-    saveToRedis(MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP, "collectionId", "exam-order-status");
+    saveToRedis(
+        MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP, "collectionId", "exam-order-status");
   }
 
   private void saveToRedis(String tapBasename, String idField, String hashKey) throws Exception {
-    RouteDefinition routeDef = from(VroCamelUtils.wiretapConsumer("redis", tapBasename))
-        .routeId("redis-" + tapBasename);
+    RouteDefinition routeDef =
+        from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
     appendRedisCommand(routeDef, "HSET", redisKey(idField), hashKey).to(REDIS_ENDPOINT);
   }
 
