@@ -148,6 +148,7 @@ scmVersion {
     pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
+    // Here is where the appVersion is updated with each release
     pre("fileUpdate", [file       : "helm-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])

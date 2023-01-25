@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AppConfig {
-  private static final FhirContext fhirContext = FhirContext.forR4();
+  private final FhirContext fhirContext = FhirContext.forR4();
 
   @Autowired private AppProperties properties;
 
