@@ -10,6 +10,8 @@ import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public class MasProcessingServiceTest extends BaseIntegrationTest {
 
   @Autowired MasProcessingService masProcessingService;
@@ -43,6 +45,57 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId2);
     masProcessingService.processIncomingClaim(request3);
     verifyClaimPersisted(request3);
+  }
+
+  @Test
+  public void testNotInScope() {
+    var collectionId1 = 123;
+    var claimId1 = "123";
+    var diagnosticCode1 = "71";
+    var request1 =
+        MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
+    var response1 = masProcessingService.processIncomingClaim(request1);
+    // wrong diagnostic code
+    assertEquals(
+        "Claim with [collection id = 123], [diagnostic code = 71], and [disability action type = INCREASE] is not in scope.",
+        response1);
+
+    var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
+    request2.getClaimDetail().getConditions().setDisabilityActionType("OTHER");
+    var response2 = masProcessingService.processIncomingClaim(request2);
+    // wrong disability action
+    assertEquals(
+        "Claim with [collection id = 123], [diagnostic code = 7101], and [disability action type = OTHER] is not in scope.",
+        response2);
+  }
+
+  @Test
+  public void testInScopeButNotPresumptive() {
+    var collectionId1 = 123;
+    var claimId1 = "123";
+    var diagnosticCode1 = "7101";
+    var request1 =
+        MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
+    request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
+    var response = masProcessingService.processIncomingClaim(request1);
+    assertEquals(
+        "Claim with [collection id = 123], [diagnostic code = 7101], [disability action type = NEW] and [flashIds = null] is not presumptive.",
+        response);
+  }
+
+  @Test
+  public void testInScopeAndPresumptiveButMissingAnchors() {
+    var collectionId1 = 123;
+    var claimId1 = "123";
+    var diagnosticCode1 = "7101";
+    var request1 =
+        MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
+    request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
+    request1 = request1.toBuilder().veteranFlashIds(List.of("123", "266")).build();
+    var response = masProcessingService.processIncomingClaim(request1);
+    assertEquals(
+        "Claim with [collection id = 123] does not qualify for automated processing because it is missing anchors.",
+        response);
   }
 
   private ClaimEntity verifyClaimPersisted(MasAutomatedClaimPayload request) {
