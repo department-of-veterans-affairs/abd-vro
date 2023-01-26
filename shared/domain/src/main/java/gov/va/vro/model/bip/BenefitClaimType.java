@@ -1,5 +1,7 @@
 package gov.va.vro.model.bip;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +13,14 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BenefitClaimType {
   private String name;
   private String code;
+
+  @JsonProperty("description")
+  private String description;
 
   @JsonProperty("attribute_one")
   private String attributeOne;
