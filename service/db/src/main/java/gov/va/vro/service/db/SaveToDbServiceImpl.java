@@ -54,6 +54,26 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
       return;
     }
+    insertAssessmentResult(claimEntity, evidenceResponse, diagnosticCode);
+  }
+
+  @Override
+  public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
+    var claimEntity =
+        claimRepository.findByClaimSubmissionIdAndIdType(
+            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+    if (claimEntity.isEmpty()) {
+      log.warn(
+          "Claim not found for claimEntity submission id = {} and id type = {}",
+          evidence.getClaimSubmissionId(),
+          Claim.DEFAULT_ID_TYPE);
+      return;
+    }
+    insertAssessmentResult(claimEntity.get(), evidence, diagnosticCode);
+  }
+
+  private void insertAssessmentResult(
+      ClaimEntity claimEntity, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
     Map<String, String> summary = convertMap(evidenceResponse.getEvidenceSummary());
     if (summary == null || summary.isEmpty()) {
       log.warn("Evidence Summary is empty, exiting.");

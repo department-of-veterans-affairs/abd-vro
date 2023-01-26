@@ -74,7 +74,7 @@ public class BipApiService implements IBipApiService {
             claimId,
             bipResponse.getStatusCode(),
             bipResponse.getBody());
-        throw new BipException(bipResponse.getStatusCode() + " " + bipResponse.getBody());
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
     } catch (RestClientException | JsonProcessingException e) {
       log.error("failed to get claim info for claim ID {}.", claimId, e);
@@ -149,7 +149,7 @@ public class BipApiService implements IBipApiService {
             bipResponse.getStatusCode(),
             claimId,
             bipResponse.getBody());
-        throw new BipException(bipResponse.getBody());
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
     } catch (RestClientException | JsonProcessingException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
