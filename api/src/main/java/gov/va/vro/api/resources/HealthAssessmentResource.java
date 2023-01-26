@@ -1,14 +1,15 @@
 package gov.va.vro.api.resources;
 
-import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +35,19 @@ import javax.validation.Valid;
     scheme = "bearer",
     in = SecuritySchemeIn.HEADER)
 @Timed
-public interface MasResource {
+public interface HealthAssessmentResource {
 
   @Operation(
-      summary = "MAS Claim Request",
+      summary = "Provides health data assessment",
       description =
-          "Receives an initial request for a MAS claim and starts collecting the evidence")
-  @PostMapping("/automatedClaim")
+          "This endpoint provides health data assessment for a Veteran claim "
+              + "in the form of patient medical data relevant to the specific diagnostic code. "
+              + "Claim id is only used for tracking purposes.")
+  @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(responseCode = "201", description = "Successful Request"),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -54,49 +58,27 @@ public interface MasResource {
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
-            description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @Timed(value = "mas-automated-claim")
-  @Tag(name = "MAS Integration")
-  ResponseEntity<MasResponse> automatedClaim(
-      @Parameter(
-              description = "Request a MAS Automated Claim",
-              required = true,
-              schema = @Schema(implementation = MasAutomatedClaimRequest.class))
-          @Valid
-          @RequestBody
-          MasAutomatedClaimRequest request);
-
-  @Operation(
-      summary = "MAS Exam Ordering Status",
-      description = "Request Ordering Status for an exam")
-  @PostMapping("/examOrderingStatus")
-  @ResponseStatus(HttpStatus.CREATED)
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
+            description = "Claim Processing Server Error",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
-            description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
+            description = "No evidence found",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples =
+                        @ExampleObject(
+                            value = "{claimSubmissionId: 1234, message = No evidence found}")))
       })
-  @Timed(value = "exam-ordering-status")
-  @Tag(name = "MAS Integration")
-  ResponseEntity<MasResponse> examOrderingStatus(
+  @Timed(value = "health-data-assessment")
+  @Tag(name = "Health Assessment")
+  ResponseEntity<FullHealthDataAssessmentResponse> postHealthAssessment(
       @Parameter(
-              description = "Request Exam ordering status",
+              description = "Claim for which health data assessment requested",
               required = true,
-              schema = @Schema(implementation = MasExamOrderStatusPayload.class))
+              schema = @Schema(implementation = HealthDataAssessmentRequest.class))
           @Valid
           @RequestBody
-          MasExamOrderStatusPayload payload);
+          HealthDataAssessmentRequest claim)
+      throws MethodArgumentNotValidException, ClaimProcessingException;
 }

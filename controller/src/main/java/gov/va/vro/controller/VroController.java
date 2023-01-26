@@ -37,7 +37,6 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
-
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   public ResponseEntity fetchProcess(String claimSubmissionId, String response)
