@@ -1,1 +1,0 @@
-ALTER TABLE  claim ADD COLUMN sufficient_evidence_flag BOOLEAN;

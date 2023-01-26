@@ -28,6 +28,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
   void testPersist() throws Exception {
     String claimSubmissionId = "666";
     String diagnosticCode = "999";
+    String flag = "false";
 
     Claim claim = new Claim();
 
@@ -45,6 +46,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     var exchange = Mockito.mock(Exchange.class);
     Mockito.when(exchange.getMessage()).thenReturn(message);
     Mockito.when(exchange.getProperty("diagnosticCode", String.class)).thenReturn(diagnosticCode);
+    Mockito.when(exchange.getProperty("sufficientForFastTracking", String.class)).thenReturn(flag);
 
     Mockito.when(message.getBody(AbdEvidenceWithSummary.class)).thenReturn(evidence);
     processor.process(exchange);
@@ -60,5 +62,6 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     var result = results.get(0);
     var summary = result.getEvidenceCountSummary();
     assertEquals("10", summary.get("Hello"));
+    assertEquals(false, result.getSufficientEvidenceFlag());
   }
 }
