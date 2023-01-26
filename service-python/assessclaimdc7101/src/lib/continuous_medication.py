@@ -37,7 +37,7 @@ def filter_mas_medication(event):
     medication_with_date = []
     medication_without_date = []
     medication_two_years = []
-    date_of_claim_date = datetime.strptime(event["claimSubmissionDateTime"], "%Y-%m-%d").date()
+    date_of_claim_date = datetime.strptime(event["claimSubmissionDateTime"], "%Y-%m-%dT%H:%M:%SZ").date()
 
     for medication in event["evidence"]["medications"]:
         try:

@@ -35,7 +35,7 @@ from assessclaimdc7101.src.lib import utils
                                              "asthmaRelevant": "false"}],
                             "conditions": []
                         },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "veteranIcn": "1234567890V123456",
                     "disabilityActionType": "NEW"

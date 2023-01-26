@@ -36,7 +36,7 @@ def bp_reader(request_body):
     bp_reading_in_past_year = []
     bp_readings_in_past_two_years = []
     elevated_bp = []
-    date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
+    date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%dT%H:%M:%SZ").date()
     bp_readings = request_body["evidence"]["bp_readings"]
     bp_readings = sort_bp(bp_readings)
 

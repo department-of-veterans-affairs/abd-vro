@@ -54,7 +54,7 @@ from assessclaimdc7101.src.lib import main
                         }
                     ],
                 },
-                "claimSubmissionDateTime": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "claimSubmissionId": "1234"
             },
             {'evidence': {'bp_readings': [{'date': '2021-11-01',
@@ -135,7 +135,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                     "medications": [],
                 },
-                "claimSubmissionDateTime": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "diagnosticCode": "7101",
                 "claimSubmissionId": "1234"
             },
@@ -157,7 +157,7 @@ from assessclaimdc7101.src.lib import main
                     "bp_readings": [],
                     "medications": [],
                 },
-                "claimSubmissionDateTime": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "diagnosticCode": "7101",
                 "claimSubmissionId": "1234"
             },
@@ -258,7 +258,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                     "medications": [{"description": 11}],
                 },
-                "claimSubmissionDateTime": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "claimSubmissionId": "1234"
             },
             {

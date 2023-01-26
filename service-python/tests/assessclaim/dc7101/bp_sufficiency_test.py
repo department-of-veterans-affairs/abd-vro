@@ -31,7 +31,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ]
                 }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-11-01',
                                 'dateFormatted': '11/1/2021',
@@ -89,7 +89,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                     ]
                 }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-09-01',
                                 'dateFormatted': '9/1/2021',
@@ -183,7 +183,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-10-14',
                                 'dateFormatted': '10/14/2021',
@@ -308,7 +308,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-10-14',
                                 'dateFormatted': '10/14/2021',
@@ -434,7 +434,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-10-14',
                                 'dateFormatted': '10/14/2021',
@@ -535,7 +535,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-10-01',
                                 'dateFormatted': '10/1/2021',
@@ -632,7 +632,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-10-10',
                                 'dateFormatted': '10/10/2021',
@@ -713,7 +713,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                         ]
                     }
                     ,
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [{'date': '2021-11-01',
                                 'dateFormatted': '11/1/2021',
@@ -750,7 +750,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                     "evidence": {
                         "bp_readings": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'oneYearBp': [],
                  'oneYearBpReadings': 0,

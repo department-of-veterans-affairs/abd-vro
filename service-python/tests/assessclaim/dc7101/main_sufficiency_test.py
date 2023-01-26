@@ -71,12 +71,12 @@ from assessclaimdc7101.src.lib import main
                         "procedures": [],
                         "medications": [],
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
                                                'dateFormatted': '11/1/2021',
@@ -184,13 +184,13 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                         "medications": [],
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -263,13 +263,13 @@ from assessclaimdc7101.src.lib import main
                             "authoredOn": "1950-04-06T07:24:55Z"
                         }]
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -346,13 +346,13 @@ from assessclaimdc7101.src.lib import main
                             "relevant": True
                         }]
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -425,13 +425,13 @@ from assessclaimdc7101.src.lib import main
                                                       "value": 200}}],
                         "conditions": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -527,13 +527,13 @@ from assessclaimdc7101.src.lib import main
                                                       "value": 200}}],
                         "conditions": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -661,13 +661,13 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                         "conditions": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'claimSubmissionDateTime': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
                                                'dateFormatted': '11/1/2021',
@@ -744,13 +744,13 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                         "conditions": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {"claimSubmissionDateTime": "2021-11-09",
+                {"claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                  "disabilityActionType": "INCREASE",
                  "evidence": {"bp_readings": [], "conditions": [], "medications": []},
                  "evidenceSummary": {
@@ -819,7 +819,7 @@ from assessclaimdc7101.src.lib import main
                         ],
                         "medications": []
                     },
-                    "claimSubmissionDateTime": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "claimSubmissionId": "1234"
                 },
                 {"errorMessage": "error validating request message data",

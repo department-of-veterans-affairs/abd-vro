@@ -19,7 +19,7 @@ def assess_hypertension(event: Dict):
     response_body = {}
 
     if "claimSubmissionDateTime" not in event:
-        event["claimSubmissionDateTime"] = str(date.today())
+        event["claimSubmissionDateTime"] = str(f"{date.today()}T00:00:00Z")
 
     if validation_results["is_valid"]:
         relevant_medication = continuous_medication.continuous_medication_required(
@@ -62,7 +62,7 @@ def assess_sufficiency(event: Dict):
     validation_results = utils.validate_request_body(event)
     response_body = {}
     if "claimSubmissionDateTime" not in event:
-        event["claimSubmissionDateTime"] = str(date.today())
+        event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.bp_reader(event)
