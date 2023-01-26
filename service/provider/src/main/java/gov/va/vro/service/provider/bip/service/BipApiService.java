@@ -85,8 +85,8 @@ public class BipApiService implements IBipApiService {
   /**
    * Updates claim status.
    *
-   * @param claimId claim ID for the claim to be updated // * @param statusCodeMsg the new status.
-   * @return a list of messages.
+   * @param claimId claim ID for the claim to be updated.
+   * @return an object with status and message.
    * @throws BipException error occurs
    */
   @Override
