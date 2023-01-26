@@ -78,13 +78,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
+    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
-    configureOrderExamStatus();
-    configureCompleteProcessing();
     configureUploadPdf();
-    configureOffRamp();
+    configureCompleteProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
