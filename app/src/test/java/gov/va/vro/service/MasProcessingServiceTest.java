@@ -85,14 +85,13 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
 
   @Test
   public void testInScopeAndPresumptiveButMissingAnchors() {
-    var collectionId1 = 123;
-    var claimId1 = "123";
-    var diagnosticCode1 = "7101";
-    var request1 =
-        MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
-    request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
-    request1 = request1.toBuilder().veteranFlashIds(List.of("123", "266")).build();
-    var response = masProcessingService.processIncomingClaim(request1);
+    var collectionId = 123;
+    var claimId = "123";
+    var diagnosticCode = "7101";
+    var request = MasTestData.getMasAutomatedClaimPayload(collectionId, diagnosticCode, claimId);
+    request.getClaimDetail().getConditions().setDisabilityActionType("NEW");
+    request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
+    var response = masProcessingService.processIncomingClaim(request);
     assertEquals(
         "Claim with [collection id = 123] does not qualify for automated processing because it is missing anchors.",
         response);
