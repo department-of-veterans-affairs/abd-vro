@@ -135,7 +135,8 @@ public class MasCollectionService {
     combinedAssessment.setDiagnosticCode(masApiAssessment.getDiagnosticCode());
     combinedAssessment.setVeteranIcn(masApiAssessment.getVeteranIcn());
     combinedAssessment.setDisabilityActionType(lighthouseAssessment.getDisabilityActionType());
-    combinedAssessment.setClaimSubmissionDateTime(masApiAssessment.getClaimSubmissionDateTime());
+    combinedAssessment.setClaimSubmissionDateTime(
+        lighthouseAssessment.getClaimSubmissionDateTime());
     combinedAssessment.setEvidence(compositeEvidence);
     return combinedAssessment;
   }
