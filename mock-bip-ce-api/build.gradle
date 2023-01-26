@@ -70,14 +70,8 @@ test {
 task integrationTest(type: Test) {
   description = 'Runs the integration tests.'
   useJUnitPlatform()
-  testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
   finalizedBy jacocoTestReport {
     executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
   }
-}
-
-docker {
-  // TODO: remove this line after renaming the image
-  name "${dockerRegistry}/${rootProject.name}-service-data-access"
 }

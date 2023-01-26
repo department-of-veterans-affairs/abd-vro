@@ -330,3 +330,18 @@ services:
         condition: service_healthy
     networks:
       - internal
+
+  mock-bip-ce-api:
+    image: va/abd_vro-mock-bip-ce-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    environment:
+      <<: *common-vars
+      <<: *redis-placeholder-vars
+    depends_on:
+      redis-service:
+        condition: service_started
+    networks:
+      - internal
+    ports:
+      - "8094:8094"
