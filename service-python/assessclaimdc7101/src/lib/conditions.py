@@ -21,7 +21,7 @@ def conditions_calculation(request_body):
     count = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
-    date_of_claim_date = datetime.strptime(request_body["dateOfClaim"], "%Y-%m-%d").date()
+    date_of_claim_date = datetime.strptime(request_body["claimSubmissionDateTime"], "%Y-%m-%d").date()
 
     for condition in veterans_conditions:
         condition_code = condition["code"]

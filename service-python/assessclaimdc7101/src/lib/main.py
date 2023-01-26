@@ -18,8 +18,8 @@ def assess_hypertension(event: Dict):
     validation_results = utils.validate_request_body(event)
     response_body = {}
 
-    if "dateOfClaim" not in event:
-        event["dateOfClaim"] = str(date.today())
+    if "claimSubmissionDateTime" not in event:
+        event["claimSubmissionDateTime"] = str(date.today())
 
     if validation_results["is_valid"]:
         relevant_medication = continuous_medication.continuous_medication_required(
@@ -58,11 +58,11 @@ def assess_sufficiency(event: Dict):
     :return: response body
     :rtype: dict
     """
-    # logging.info(event)
+    logging.info(event)
     validation_results = utils.validate_request_body(event)
     response_body = {}
-    if "dateOfClaim" not in event:
-        event["dateOfClaim"] = str(date.today())
+    if "claimSubmissionDateTime" not in event:
+        event["claimSubmissionDateTime"] = str(date.today())
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.bp_reader(event)
@@ -97,7 +97,7 @@ def assess_sufficiency(event: Dict):
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
                 "sufficientForFastTracking": sufficient,
-                "dateOfClaim": event["dateOfClaim"],
+                "claimSubmissionDateTime": event["claimSubmissionDateTime"],
                 "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             })
@@ -120,5 +120,5 @@ def assess_sufficiency(event: Dict):
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
-    # logging.info(response_body)
+    logging.info(response_body)
     return response_body

@@ -31,7 +31,7 @@ def bp_reader(request_body):
     :return: response body indicating success or failure with additional attributes
     :rtype: dict
     """
-    date_of_claim = request_body["dateOfClaim"]
+    date_of_claim = request_body["claimSubmissionDateTime"]
 
     bp_reading_in_past_year = []
     bp_readings_in_past_two_years = []
