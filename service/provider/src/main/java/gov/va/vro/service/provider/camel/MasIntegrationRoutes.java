@@ -17,6 +17,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasOrderExamProcessor masOrderExamProcessor;
 
   private final MasCollectionService masCollectionService;
+  private final MasAssessmentResultProcessor masAssessmentResultProcessor;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
@@ -76,13 +78,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
+    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
-    configureOrderExamStatus();
-    configureCompleteProcessing();
     configureUploadPdf();
-    configureOffRamp();
+    configureCompleteProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
@@ -118,6 +120,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         // Conditionally order exam
         .to(orderExamEndpoint)
