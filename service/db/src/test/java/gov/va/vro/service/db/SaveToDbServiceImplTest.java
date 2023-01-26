@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,10 +117,8 @@ class SaveToDbServiceImplTest {
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     ObjectMapper mapper = new ObjectMapper();
     GeneratePdfPayload input = mapper.readValue(inputAsString, GeneratePdfPayload.class);
-    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
     String diagnosis = "Hypertension";
-    String documentName =
-        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+    String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     // Save evidence summary document.
     saveToDbService.insertEvidenceSummaryDocument(input, documentName);
     ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();

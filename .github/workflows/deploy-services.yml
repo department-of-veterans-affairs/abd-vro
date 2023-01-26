@@ -78,21 +78,21 @@ jobs:
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "redis" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "redis" ]
           then
             ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
           fi
 
       - name: "Deploy RabbitMQ to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "mq" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "mq" ]
           then
             ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
           fi
 
       - name: "Deploy DB to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "db" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "db" ]
           then
             pwd
             ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}

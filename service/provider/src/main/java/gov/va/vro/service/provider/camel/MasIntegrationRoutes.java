@@ -8,6 +8,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -17,6 +18,7 @@ import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.SufficientEvidenceProcessor;
+import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +70,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasOrderExamProcessor masOrderExamProcessor;
 
   private final MasCollectionService masCollectionService;
+  private final MasAssessmentResultProcessor masAssessmentResultProcessor;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
@@ -78,13 +81,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
+    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
-    configureOrderExamStatus();
-    configureCompleteProcessing();
     configureUploadPdf();
-    configureOffRamp();
+    configureCompleteProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
@@ -120,6 +123,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .process(sufficientEvidenceProcessor) // updates claim with sufficient evidence flag
         // Conditionally order exam
@@ -176,7 +180,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(evidenceSummaryDocumentProcessor) // store evidence in DB
         .to(PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF)
         .process(convertToPdfResponse())
-        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
+        .process(
+            exchange -> {
+              var pdfResponse = exchange.getMessage().getBody(FetchPdfResponse.class);
+              var masProcessingObject = exchange.getProperty("payload", MasProcessingObject.class);
+              bipClaimService.uploadPdf(masProcessingObject.getClaimPayload(), pdfResponse);
+            })
         .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Uploaded PDF"));

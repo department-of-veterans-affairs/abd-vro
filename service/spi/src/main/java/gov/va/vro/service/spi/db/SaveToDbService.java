@@ -11,6 +11,8 @@ public interface SaveToDbService {
 
   void insertAssessmentResult(UUID claimId, AbdEvidenceWithSummary evidence, String diagnosticCode);
 
+  void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode);
+
   void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName);
 
   void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag, String diagnosticCode);
