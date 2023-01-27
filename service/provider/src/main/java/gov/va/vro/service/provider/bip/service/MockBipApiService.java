@@ -1,21 +1,16 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.CreateContentionReq;
-import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /** Mock some claim data returned by the BIP API. */
@@ -30,14 +25,29 @@ public class MockBipApiService implements IBipApiService {
     } else if (collectionId == 351) {
       // wrong station
       return buildClaim(999, "OTHER");
-    } else {
+    } else if (collectionId < 100000) {
       return buildClaim(555, BipClaimService.TSOJ);
+    } else { // invalid, throw BipException
+      String errMsg =
+          "{\n"
+              + "  \"messages\": [\n"
+              + "    {\n"
+              + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
+              + "      \"key\": \"bip.vetservices.claims.request.claimId.NotValid\",\n"
+              + "      \"severity\": \"ERROR\",\n"
+              + "      \"status\": \"404\",\n"
+              + "      \"text\": \"ClaimInfoRequest.claimId is not valid\",\n"
+              + "      \"httpStatus\": \"NOT_FOUND\"\n"
+              + "    }\n"
+              + "  ]\n"
+              + "}";
+      throw new BipException(HttpStatus.NOT_FOUND, errMsg);
     }
   }
 
   @Override
   public BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
@@ -52,33 +62,21 @@ public class MockBipApiService implements IBipApiService {
   @Override
   public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
   public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
-    return new BipUpdateClaimResp(HttpStatus.OK, "OK");
+    return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
   }
 
   @Override
   public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException {
-    return null;
-  }
-
-  @Override
-  public BipFileUploadResp uploadEvidence(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
-      throws BipException {
-    return new BipFileUploadResp();
-  }
-
-  @Override
-  public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
-      throws BipException {
-    return new BipFileUploadResp();
+    String message =
+        String.format("This is a mock response to create a contetion for claim %d.", claimId);
+    return new BipUpdateClaimResp(HttpStatus.OK, message);
   }
 
   private BipClaim buildClaim(int claimId, String station) {

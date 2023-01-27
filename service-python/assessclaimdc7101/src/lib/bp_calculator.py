@@ -3,6 +3,8 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
+from .utils import extract_date, format_date
+
 
 def sort_bp(bp_readings):
     """
@@ -29,18 +31,17 @@ def bp_reader(request_body):
     :return: response body indicating success or failure with additional attributes
     :rtype: dict
     """
-    date_of_claim = request_body["dateOfClaim"]
 
     bp_reading_in_past_year = []
     bp_readings_in_past_two_years = []
     elevated_bp = []
-    date_of_claim_date = datetime.strptime(date_of_claim, "%Y-%m-%d").date()
+    date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
     bp_readings = request_body["evidence"]["bp_readings"]
     bp_readings = sort_bp(bp_readings)
 
     for reading in bp_readings:
         bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
-        reading["dateFormatted"] = bp_reading_date.strftime("%m/%d/%Y")
+        reading["dateFormatted"] = format_date(bp_reading_date)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):

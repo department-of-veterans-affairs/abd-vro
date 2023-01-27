@@ -2,6 +2,7 @@ package gov.va.vro.controller.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.service.provider.bip.BipException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -138,5 +139,12 @@ public class GlobalExceptionHandler {
     ClaimProcessingError cpe =
         new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
     return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(BipException.class)
+  public ResponseEntity<ClaimProcessingError> handleBipClaimException(BipException exception) {
+    log.error("BIP exception: {}", exception.getMessage(), exception);
+    ClaimProcessingError cpe = new ClaimProcessingError(exception.getMessage());
+    return new ResponseEntity<>(cpe, exception.getStatus());
   }
 }

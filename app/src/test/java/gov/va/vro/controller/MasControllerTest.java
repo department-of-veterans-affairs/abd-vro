@@ -10,6 +10,7 @@ import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.MasEventDetails;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
@@ -47,6 +48,8 @@ public class MasControllerTest extends BaseControllerTest {
   @Autowired private ClaimRepository claimRepository;
 
   @Autowired private AuditEventRepository auditEventRepository;
+  private ObjectMapper objectMapper = new ObjectMapper();
+  ;
 
   @Test
   @SneakyThrows
@@ -54,7 +57,7 @@ public class MasControllerTest extends BaseControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     var request =
         objectMapper.readValue(
-            new ClassPathResource("mas-request.json").getFile(), MasAutomatedClaimPayload.class);
+            new ClassPathResource("mas-request.json").getFile(), MasAutomatedClaimRequest.class);
     assertEquals("Rick", request.getFirstName());
     assertEquals("Smith", request.getLastName());
     assertEquals(123, request.getCollectionId());
@@ -94,7 +97,7 @@ public class MasControllerTest extends BaseControllerTest {
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Request with [collection id = 123], [diagnostic code = 1233], and [disability action type = INCREASE] is not in scope.",
+              "Claim with [collection id = 123], [diagnostic code = 1233], and [disability action type = INCREASE] is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
@@ -149,6 +152,14 @@ public class MasControllerTest extends BaseControllerTest {
     var response = responseEntity.getBody();
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
     assertTrue(audits.size() > 0);
+    var audit = audits.get(0);
+    var details = objectMapper.readValue(audit.getDetails(), MasEventDetails.class);
+    assertEquals("999", details.getClaimId());
+    assertEquals("567", details.getCollectionId());
+    assertEquals("7101", details.getDiagnosticCode());
+    assertEquals("X", details.getVeteranIcn());
+    assertEquals("VA.GOV", details.getSubmissionSource());
+    assertTrue(details.isInScope());
   }
 
   @Test

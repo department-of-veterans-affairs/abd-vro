@@ -1,5 +1,6 @@
 package gov.va.vro.service.spi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.ServiceLocation;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 
@@ -46,4 +48,10 @@ public class GeneratePdfPayload {
   private String reason;
 
   private String pdfTemplate;
+
+  @JsonIgnore
+  public static String createPdfFilename(String diagnosis) {
+    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+    return String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+  }
 }

@@ -17,7 +17,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -42,7 +42,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -67,7 +67,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -97,7 +97,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -161,14 +161,14 @@ def test_continuous_medication_required(
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
                 {
                     "medications": [
                         {
                             "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "04/06/2020",
+                            "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -189,14 +189,14 @@ def test_continuous_medication_required(
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
                 {
                     "medications": [
                         {
                             "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "04/06/2020",
+                            "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
                         }
@@ -217,7 +217,7 @@ def test_continuous_medication_required(
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
                 {
@@ -242,7 +242,7 @@ def test_continuous_medication_required(
                             },
                         ],
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW"
                 },
                 {
@@ -250,7 +250,7 @@ def test_continuous_medication_required(
                         {
                             "description": "Advil",
                             "status": "active",
-                            "dateFormatted": "04/06/2021",
+                            "dateFormatted": "4/6/2021",
                             "authoredOn": "2021-04-06T04:00:00Z",
                         },
                         {
@@ -269,7 +269,7 @@ def test_continuous_medication_required(
                         "bp_readings": [],
                         "medications": [],
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
                 {"medications": [], "medicationsCount": 0},

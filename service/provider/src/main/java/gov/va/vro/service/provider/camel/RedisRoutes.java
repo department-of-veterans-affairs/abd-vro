@@ -15,24 +15,20 @@ class RedisRoutes extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
-    saveIncomingClaimToRedis();
-    savePdfRequestToRedis();
+    // for v1
+    saveToRedis(PrimaryRoutes.INCOMING_CLAIM_WIRETAP, "claimSubmissionId", "submitted-claim");
+    saveToRedis(PrimaryRoutes.GENERATE_PDF_WIRETAP, "claimSubmissionId", "submitted-pdf");
+
+    // for v2
+    saveToRedis(MasIntegrationRoutes.MAS_CLAIM_WIRETAP, "collectionId", "mas-claim");
+    saveToRedis(
+        MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP, "collectionId", "exam-order-status");
   }
 
-  void saveIncomingClaimToRedis() throws Exception {
-    String tapBasename = PrimaryRoutes.INCOMING_CLAIM_WIRETAP;
+  private void saveToRedis(String tapBasename, String idField, String hashKey) throws Exception {
     RouteDefinition routeDef =
         from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
-    appendRedisCommand(routeDef, "HSET", redisKey("claimSubmissionId"), "submitted-claim")
-        .to(REDIS_ENDPOINT);
-  }
-
-  void savePdfRequestToRedis() throws Exception {
-    String tapBasename = PrimaryRoutes.GENERATE_PDF_WIRETAP;
-    RouteDefinition routeDef =
-        from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
-    appendRedisCommand(routeDef, "HSET", redisKey("claimSubmissionId"), "submitted-pdf")
-        .to(REDIS_ENDPOINT);
+    appendRedisCommand(routeDef, "HSET", redisKey(idField), hashKey).to(REDIS_ENDPOINT);
   }
 
   private ValueBuilder redisKey(String idField) {
