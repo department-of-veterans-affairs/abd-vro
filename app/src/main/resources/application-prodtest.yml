@@ -22,5 +22,4 @@ springdoc:
     enabled: true
 
 lhAPIProvider:
-  validateToken: "${VALIDATE_TOKEN:NO}"
-  # Should I 
+  validateToken: NO
