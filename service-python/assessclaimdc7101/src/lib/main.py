@@ -58,7 +58,6 @@ def assess_sufficiency(event: Dict):
     :return: response body
     :rtype: dict
     """
-    logging.info(event)
     validation_results = utils.validate_request_body(event)
     response_body = {}
     if "claimSubmissionDateTime" not in event:
@@ -120,5 +119,4 @@ def assess_sufficiency(event: Dict):
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
-    logging.info(response_body)
     return response_body
