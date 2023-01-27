@@ -8,7 +8,7 @@ plugins {
   id 'jacoco'
 }
 
-description = 'Automated Benefit Delivery Data Access Service'
+description = 'Mock Bip Claim Evidence Service'
 
 configurations.all {
   resolutionStrategy.dependencySubstitution {
@@ -19,13 +19,6 @@ configurations.all {
 ext {
   // TODO: improve test code coverage so that the following can be removed
   jacoco_minimum_coverage = 0
-}
-
-sourceSets {
-  integrationTest {
-    compileClasspath += sourceSets.main.output
-    runtimeClasspath += sourceSets.main.output
-  }
 }
 
 dependencies {
@@ -40,38 +33,15 @@ dependencies {
   implementation 'org.apache.httpcomponents:httpclient:4.5'
 
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
-  implementation 'org.projectlombok:lombok:1.18.24'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+  // Redis
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
   // https://mvnrepository.com/artifact/commons-io/commons-io
   implementation 'commons-io:commons-io:2.6'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-
-
-  integrationTestImplementation "org.testcontainers:testcontainers:${testcontainers_version}"
-  integrationTestImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-  integrationTestImplementation "org.testcontainers:rabbitmq:${testcontainers_version}"
-  integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
-  integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
 
-configurations {
-  integrationTestImplementation.extendsFrom implementation
-  integrationTestRuntimeOnly.extendsFrom runtimeOnly
-}
-
-test {
-  useJUnitPlatform()
-  exclude '**/integrationTest'
-}
-
-task integrationTest(type: Test) {
-  description = 'Runs the integration tests.'
-  useJUnitPlatform()
-  classpath = sourceSets.integrationTest.runtimeClasspath
-  finalizedBy jacocoTestReport {
-    executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
-  }
-}

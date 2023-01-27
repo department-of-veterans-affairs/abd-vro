@@ -1,8 +1,13 @@
 package gov.va.vro.mockbipce.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.mockbipce.model.EvidenceFile;
+import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,10 +20,21 @@ import java.nio.file.Path;
 @Controller
 @Slf4j
 public class FilesApiController implements FilesApi {
+  @Autowired
+  private EvidenceFileRepository repository;
+
+
   @Override
   public ResponseEntity<UploadResponse> upload(
       String xFolderUri, String payload, MultipartFile file) {
     try {
+      byte[] content = file.getBytes();
+
+      ObjectMapper mapper = new ObjectMapper();
+      BipFileUploadPayload payloadObj = mapper.readValue(payload, BipFileUploadPayload.class);
+      EvidenceFile evidenceFile = new EvidenceFile("34", payloadObj, content);
+      repository.save(evidenceFile);
+
       String filename = file.getOriginalFilename();
       log.info("File {} being written to temp location.", filename);
       String targetName = FilenameUtils.getBaseName(filename);
