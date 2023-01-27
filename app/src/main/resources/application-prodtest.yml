@@ -23,3 +23,7 @@ springdoc:
 
 lhAPIProvider:
   validateToken: NO
+
+logging:
+  level:
+    root: DEBUG
