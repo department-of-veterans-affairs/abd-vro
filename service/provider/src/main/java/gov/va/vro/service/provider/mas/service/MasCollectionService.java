@@ -94,6 +94,7 @@ public class MasCollectionService {
     healthDataAssessment.setDiagnosticCode(claimPayload.getDiagnosticCode());
     healthDataAssessment.setEvidence(abdEvidence);
     healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIcn());
+    healthDataAssessment.setClaimSubmissionDateTime(claimPayload.getClaimSubmissionDateTime());
     healthDataAssessment.setDisabilityActionType(claimPayload.getDisabilityActionType());
     return healthDataAssessment;
   }
@@ -134,6 +135,8 @@ public class MasCollectionService {
     combinedAssessment.setDiagnosticCode(masApiAssessment.getDiagnosticCode());
     combinedAssessment.setVeteranIcn(masApiAssessment.getVeteranIcn());
     combinedAssessment.setDisabilityActionType(lighthouseAssessment.getDisabilityActionType());
+    combinedAssessment.setClaimSubmissionDateTime(
+        lighthouseAssessment.getClaimSubmissionDateTime());
     combinedAssessment.setEvidence(compositeEvidence);
     return combinedAssessment;
   }
