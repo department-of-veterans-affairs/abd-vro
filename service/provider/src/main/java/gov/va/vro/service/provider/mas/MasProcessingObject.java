@@ -48,4 +48,8 @@ public class MasProcessingObject implements Auditable {
   public String getDisplayName() {
     return claimPayload.getDisplayName();
   }
+
+  public String getClaimSubmissionDateTime() {
+    return claimPayload.getClaimDetail().getClaimSubmissionDateTime();
+  }
 }
