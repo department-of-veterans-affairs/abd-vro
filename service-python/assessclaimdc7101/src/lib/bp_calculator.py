@@ -3,7 +3,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import format_date, extract_date
+from .utils import extract_date, format_date
 
 
 def sort_bp(bp_readings):
