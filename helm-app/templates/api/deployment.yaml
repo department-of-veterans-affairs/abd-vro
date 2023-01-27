@@ -14,7 +14,7 @@ spec:
     matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.our-app.pod | nindent 8 }}
+      labels: {{- toYaml .Values.labels.ourapp.pod | nindent 8 }}
       annotations:
         app.kubernetes.io/podname: {{ .Values.name }}
         app.kubernetes.io/podversion: {{ .Values.version | quote }}
