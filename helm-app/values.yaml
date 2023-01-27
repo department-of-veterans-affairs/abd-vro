@@ -10,6 +10,13 @@ replicaCount: 1
 labels:
   api:
     app: abd_vro
+  our-app:
+    # This is a workaround -- see https://dsva.slack.com/archives/C04CA47HV96/p1674829709129239?thread_ts=1674772120.997269&cid=C04CA47HV96
+    global: &labels-app-global
+      app: abd_vro
+    pod:
+      <<: *labels-app-global
+      sidecar.istio.io/inject: "false"
 
 images:
   registry: ghcr.io
