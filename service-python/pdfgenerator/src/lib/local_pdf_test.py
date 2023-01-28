@@ -2,8 +2,8 @@ from .pdf_generator import PDFGenerator
 from .settings import pdf_options
 
 if __name__ == '__main__':
-    diagnosis_name = "hypertensionv2"
-    message = {"pdfPackage": "weasyprint"}
+    diagnosis_name = "hypertension-v2-weasyprint"
+    message = {"pdfLibrary": "weasyprint"}
     pdf_generator = PDFGenerator(pdf_options, message)
     variables = pdf_generator.generate_template_variables(diagnosis_name, message)
     # print("Variables: ", variables)
