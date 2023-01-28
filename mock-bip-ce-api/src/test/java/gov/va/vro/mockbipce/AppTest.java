@@ -56,7 +56,7 @@ public class AppTest {
         BipFileUploadPayload.builder().providerData(updr).contentName("example.pdf").build();
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("payLoad", payload);
+    body.add("payload", payload);
 
     Path testFile = Files.createTempFile("test-file", ".txt");
     Files.write(testFile, "Hello World !!, This is a test file.".getBytes());
