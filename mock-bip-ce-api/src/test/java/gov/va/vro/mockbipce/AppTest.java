@@ -44,8 +44,11 @@ public class AppTest {
 
   @SneakyThrows
   private void postFileCommon(RestTemplate rt) {
+    final String veteranFileNumber = "763789990";
+
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.set("X-Folder-URI", veteranFileNumber);
 
     BipFileProviderData updr =
         BipFileProviderData.builder()

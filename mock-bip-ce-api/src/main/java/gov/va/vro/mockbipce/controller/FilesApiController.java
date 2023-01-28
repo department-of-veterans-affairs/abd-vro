@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -48,6 +47,7 @@ public class FilesApiController implements FilesApi {
     repository.save(evidenceFile);
 
     log.info("========= Payload Start ======");
+    log.info(xFolderUri);
     log.info(payload);
     log.info("========== Payload End ========");
 
