@@ -6,6 +6,7 @@ import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
+@Slf4j
 @ActiveProfiles("test")
 public class AppTest {
   @LocalServerPort int port;
@@ -69,6 +71,9 @@ public class AppTest {
         rt.postForEntity("https://localhost:" + port + "/files", request, UploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    UploadResponse ur = response.getBody();
+    log.info("UUID: " + ur.getUuid());
   }
 
   @Test
