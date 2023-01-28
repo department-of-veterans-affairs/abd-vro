@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce.api;
+package gov.va.vro.mockbipce.controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
