@@ -14,9 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 @Controller
 @Slf4j
@@ -28,8 +30,6 @@ public class FilesApiController implements FilesApi {
   @Override
   public ResponseEntity<UploadResponse> upload(
       String xFolderUri, String payload, MultipartFile file) {
-
-
     byte[] content = file.getBytes();
     String filename = file.getOriginalFilename();
     log.info("File {} being written to temp location.", filename);
@@ -39,9 +39,19 @@ public class FilesApiController implements FilesApi {
     Files.write(testFile, file.getBytes());
     log.info("Temp file is written to {}.", testFile.toString());
 
+    String[] folderInfo = xFolderUri.split(":");
+    if (folderInfo.length < 2 ) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid X-Folder-URI header");
+    }
+    if (!"FILENUMBER".equals(folderInfo[0])) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only file numbers supported");
+    }
+
     ObjectMapper mapper = new ObjectMapper();
     BipFileUploadPayload payloadObj = mapper.readValue(payload, BipFileUploadPayload.class);
     EvidenceFile evidenceFile = new EvidenceFile();
+    evidenceFile.setId(folderInfo[1]);
+    evidenceFile.setUuid(UUID.randomUUID());
     evidenceFile.setPayload(payloadObj);
     evidenceFile.setContent(content);
     repository.save(evidenceFile);
@@ -51,7 +61,7 @@ public class FilesApiController implements FilesApi {
     log.info(payload);
     log.info("========== Payload End ========");
 
-    String uuidValue = evidenceFile.getId().toString();
+    String uuidValue = evidenceFile.getUuid().toString();
     UploadResponse ur = UploadResponse.builder().uuid(uuidValue).build();
     return new ResponseEntity<>(ur, HttpStatus.OK);
   }

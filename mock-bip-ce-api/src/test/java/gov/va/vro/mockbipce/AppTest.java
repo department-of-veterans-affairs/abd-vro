@@ -1,7 +1,10 @@
 package gov.va.vro.mockbipce;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import gov.va.vro.mockbipce.model.EvidenceFile;
+import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
@@ -42,13 +47,33 @@ public class AppTest {
   @Qualifier("httpsNoCertificationRestTemplate")
   private RestTemplate restNoCertTemplate;
 
+  @Autowired
+  private EvidenceFileRepository repository;
+
+  private String getUrl(String endPoint) {
+    return "https://localhost:" + port + endPoint;
+  }
+
+  private void verifyFile(RestTemplate rt, byte[] content, String filename, String fileNumber) {
+    String baseUrl = getUrl("/received-files/");
+    String url = baseUrl + fileNumber;
+    ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertArrayEquals(content, response.getBody());
+
+    HttpHeaders headers = response.getHeaders();
+    ContentDisposition disposition = headers.getContentDisposition();
+    assertEquals(filename, disposition.getFilename());
+  }
+
   @SneakyThrows
   private void postFileCommon(RestTemplate rt) {
     final String veteranFileNumber = "763789990";
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    headers.set("X-Folder-URI", veteranFileNumber);
+    headers.set("X-Folder-URI", "FILENUMBER:" + veteranFileNumber);
 
     BipFileProviderData updr =
         BipFileProviderData.builder()
@@ -63,8 +88,9 @@ public class AppTest {
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     body.add("payload", payload);
 
+    byte[] fileContent = "Hello World !!, This is a test file.".getBytes();
     Path testFile = Files.createTempFile("test-file", ".txt");
-    Files.write(testFile, "Hello World !!, This is a test file.".getBytes());
+    Files.write(testFile, fileContent);
     FileSystemResource fsr = new FileSystemResource(testFile.toFile());
     body.add("file", fsr);
 
@@ -77,6 +103,8 @@ public class AppTest {
 
     UploadResponse ur = response.getBody();
     log.info("UUID: " + ur.getUuid());
+
+    verifyFile(rt, fileContent, "example.pdf", veteranFileNumber);
   }
 
   @Test

@@ -18,9 +18,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class EvidenceFile implements Serializable {
   @Id
-  @GeneratedValue(generator = "uuid")
-  private UUID id;
-  private String fileNumber;
+  private String id; // FileNumber
+
+  private UUID uuid;
+
   private BipFileUploadPayload payload;
   private byte[] content;
 }

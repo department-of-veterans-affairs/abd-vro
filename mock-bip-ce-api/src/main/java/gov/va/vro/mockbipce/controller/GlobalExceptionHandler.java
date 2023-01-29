@@ -12,7 +12,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -100,6 +102,22 @@ public class GlobalExceptionHandler {
             .message(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
             .build();
     return new ResponseEntity<VefsErrorResponse>(cpe, HttpStatus.METHOD_NOT_ALLOWED);
+  }
+
+  /**
+   * Handles response status exceptions from controllers.
+   *
+   * @param exception the exception
+   * @return http response
+   */
+  @ExceptionHandler(ResponseStatusException.class)
+  public ResponseEntity<VefsErrorResponse> handleException(ResponseStatusException exception) {
+    log.info("Expected thrown exception", exception);
+    VefsErrorResponse cpe =
+        VefsErrorResponse.builder()
+            .message(exception.getReason())
+            .build();
+    return new ResponseEntity<>(cpe, exception.getStatus());
   }
 
   /**
