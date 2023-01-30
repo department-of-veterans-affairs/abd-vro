@@ -17,6 +17,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_OFFRAMP = "seda:offramp";
 
+  // Base names for wiretap endpoints
+  public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
+  public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
+
   private final BipClaimService bipClaimService;
 
   private final AuditEventService auditEventService;
@@ -68,6 +73,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasOrderExamProcessor masOrderExamProcessor;
 
   private final MasCollectionService masCollectionService;
+  private final MasAssessmentResultProcessor masAssessmentResultProcessor;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
@@ -76,19 +82,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
+    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
-    configureOrderExamStatus();
-    configureCompleteProcessing();
     configureUploadPdf();
-    configureOffRamp();
+    configureCompleteProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
+        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         .delay(header(MAS_DELAY_PARAM))
@@ -118,6 +125,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         // Conditionally order exam
         .to(orderExamEndpoint)
@@ -189,6 +197,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
+        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);

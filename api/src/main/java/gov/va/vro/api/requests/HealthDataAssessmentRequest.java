@@ -30,4 +30,7 @@ public class HealthDataAssessmentRequest {
 
   @Schema(description = "MAS", example = "NEW")
   private String disabilityActionType;
+
+  @Schema(description = "Date of the Claim")
+  private String claimSubmissionDateTime;
 }

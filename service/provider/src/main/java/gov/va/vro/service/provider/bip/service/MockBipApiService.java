@@ -25,8 +25,23 @@ public class MockBipApiService implements IBipApiService {
     } else if (collectionId == 351) {
       // wrong station
       return buildClaim(999, "OTHER");
-    } else {
+    } else if (collectionId < 100000) {
       return buildClaim(555, BipClaimService.TSOJ);
+    } else { // invalid, throw BipException
+      String errMsg =
+          "{\n"
+              + "  \"messages\": [\n"
+              + "    {\n"
+              + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
+              + "      \"key\": \"bip.vetservices.claims.request.claimId.NotValid\",\n"
+              + "      \"severity\": \"ERROR\",\n"
+              + "      \"status\": \"404\",\n"
+              + "      \"text\": \"ClaimInfoRequest.claimId is not valid\",\n"
+              + "      \"httpStatus\": \"NOT_FOUND\"\n"
+              + "    }\n"
+              + "  ]\n"
+              + "}";
+      throw new BipException(HttpStatus.NOT_FOUND, errMsg);
     }
   }
 

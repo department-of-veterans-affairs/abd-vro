@@ -33,4 +33,7 @@ public class HealthDataAssessment {
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String disabilityActionType;
+
+  @Schema(description = "date of the Claim")
+  private String claimSubmissionDateTime;
 }
