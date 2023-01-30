@@ -45,7 +45,7 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
   // https://mvnrepository.com/artifact/commons-io/commons-io
-  implementation 'commons-io:commons-io:2.6'
+  implementation 'commons-io:commons-io:2.11.0'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 
