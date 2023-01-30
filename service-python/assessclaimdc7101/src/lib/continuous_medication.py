@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import format_date
+from .utils import extract_date, format_date
 
 
 def continuous_medication_required(request_body):
@@ -31,15 +31,15 @@ def continuous_medication_required(request_body):
     return response
 
 
-def filter_mas_medication(event):
+def filter_mas_medication(request_body):
     """Filter MAS medication data"""
     response = {}
     medication_with_date = []
     medication_without_date = []
     medication_two_years = []
-    date_of_claim_date = datetime.strptime(event["dateOfClaim"], "%Y-%m-%d").date()
+    date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
-    for medication in event["evidence"]["medications"]:
+    for medication in request_body["evidence"]["medications"]:
         try:
             date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
             medication["dateFormatted"] = format_date(date)
@@ -68,7 +68,7 @@ def filter_mas_medication(event):
     medication_with_date.extend(medication_without_date)
     medication_display = medication_with_date
 
-    if event["disabilityActionType"] == "INCREASE":
+    if request_body["disabilityActionType"] == "INCREASE":
         medication_display = medication_two_years
 
     response["medications"] = medication_display

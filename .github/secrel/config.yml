@@ -23,6 +23,12 @@ snyk:
   - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
 images:
+# Comment out this workaround once we have SecRel signed images for them
+- name: vro-rabbitmq
+  path: "./ratelimit-workaround/Dockerfile-rabbitmq"
+- name: vro-redis
+  path: "./ratelimit-workaround/Dockerfile-redis"
+
 # BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
 - name: vro-app
