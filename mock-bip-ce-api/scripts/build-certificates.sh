@@ -2,13 +2,28 @@
 
 # Builds full set of self-signed certificates to simulate the Mutual TLS environment where VRO
 # uses the BIP Claim Evidence API.
+#
+# This script has already been run to generate certificates in `certificates` directory
+# which are also copied to main and test resources. Running this again will generate a new
+# set.
 
-targetPath=$1
+pwdPath=$(pwd)
+basePath=$(basename "${pwdPath}")
+
+if [ "${basePath}" != "mock-bip-ce-api" ]
+then
+  echo "This script must be run in mock-bip-ce-api directory." && exit 1
+fi
+
+targetPath="certificates"
+srcMainPath="src/main/resources"
+srcTestPath="src/test/resources"
 
 mkdir -p "$targetPath"
 rm -f "${targetPath}"/*
 
-# Next lines create all the private keys.
+# Next lines create all five private keys. These are for Server Root CA, Server Intermediate CA,
+# Server, Client Root CA and Client.
 #
 # The keys are not encrypted. You can get encrypted keys by specifying a cipher argument such as
 # -des3 and a password argument using -passout. If keys are encrypted, some of the rest of the
@@ -19,7 +34,7 @@ openssl genrsa -out "${targetPath}/server.key" 2048
 openssl genrsa -out "${targetPath}/client_root_ca.key" 2048
 openssl genrsa -out "${targetPath}/client.key" 2048
 
-# Next lines create the self-signed public keys for server and client CA's.
+# Next lines create the self-signed public keys for Server Root CA and Client Root CA.
 openssl req -x509 -new -nodes -key "${targetPath}/server_root_ca.key" -sha256 -days 365 \
   -out "${targetPath}/server_root_ca.pem" \
   -subj "/C=US/ST=MD/L=Olney/O=./OU=./CN=localhost"
@@ -27,7 +42,7 @@ openssl req -x509 -new -nodes -key "${targetPath}/client_root_ca.key" -sha256 -d
   -out "${targetPath}/client_root_ca.pem" \
   -subj "/C=US/ST=MD/L=Rockville/O=./OU=./CN=localhost"
 
-# Next lines create the certificate signing request (CSR) files for server intermediate CA,
+# Next lines create the Certificate Signing Request (CSR) files for Server Intermediate CA,
 # Server, and Client.
 openssl req -new -sha256 -key "${targetPath}/server_intermediate_ca.key" \
   -out "${targetPath}/server_intermediate_ca.csr" \
@@ -94,16 +109,13 @@ openssl base64 -in "${targetPath}/client_keystore.p12" -out "${targetPath}/clien
 
 # Next line copies PKCS#12 files for Server keystore and Client truststore to resource directory.
 # Spring Boot directly uses these files in the mock server as specified in application.yml.
-cp "${targetPath}/server_keystore.p12" mock-bip-ce-api/src/main/resources
-cp "${targetPath}/client_truststore.p12" mock-bip-ce-api/src/main/resources
+cp "${targetPath}/server_keystore.p12" ${srcMainPath}
+cp "${targetPath}/client_truststore.p12" ${srcMainPath}
 
 # Next line copies PKCS#12 file base 64 content to yml files as Client keystore and Server
-# truststore. These contents are used by RestTemplate in unit tests to complete Mutulal TLS.
+# truststore. These contents are used by RestTemplate in unit tests to complete Mutual TLS.
 # The same contents need to be used from VRO application when this mock server is used.
-echo "vro-mock-bip-ce-keystore: >" > mock-bip-ce-api/src/test/resources/client-keystore.yml
-sed 's_^_  _' "${targetPath}/client_keystore.b64" >> mock-bip-ce-api/src/test/resources/client-keystore.yml
-echo "vro-mock-bip-ce-truststore: >" > mock-bip-ce-api/src/test/resources/server-truststore.yml
-sed 's_^_  _' "${targetPath}/server_truststore.b64" >> mock-bip-ce-api/src/test/resources/server-truststore.yml
-
-
-
+echo "vro-mock-bip-ce-keystore: >" > "${srcTestPath}/client-keystore.yml"
+sed 's_^_  _' "${targetPath}/client_keystore.b64" >> "${srcTestPath}/client-keystore.yml"
+echo "vro-mock-bip-ce-truststore: >" > "${srcTestPath}/server-truststore.yml"
+sed 's_^_  _' "${targetPath}/server_truststore.b64" >> "${srcTestPath}/server-truststore.yml"
