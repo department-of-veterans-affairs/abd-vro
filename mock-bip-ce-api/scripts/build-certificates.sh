@@ -64,7 +64,7 @@ openssl pkcs12 -export -password pass:server_keystore_pw -name server -nodes \
   -in "${targetPath}/server.pem" \
   -out "${targetPath}/server_keystore.p12" \
   -inkey "${targetPath}/server.key"
-openssl pkcs12 -export -password pass:client_truststore_pw -name client -nodes \
+openssl pkcs12 -export -password pass:keystore_pw -name client -nodes \
   -in "${targetPath}/client.pem" \
   -out "${targetPath}/client_keystore.p12" \
   -inkey "${targetPath}/client.key"
@@ -79,10 +79,10 @@ cat "${targetPath}/server_intermediate_ca.pem" "${targetPath}/server_root_ca.pem
 # are necessary since Java appears not to be able to read the pem files directly. Java reads
 # PKCS#12 files to populate Java trust stores for TLS. Same password used here to match
 # previous implementation in VRO.
-keytool -alias server_all_cas -noprompt \
+keytool -alias server_all_cas -noprompt -storepass keystore_pw \
   -import -file "${targetPath}/server_all_cas.pem" \
   -keystore "${targetPath}/server_truststore.p12"
-keytool -alias client_root_ca -noprompt \
+keytool -alias client_root_ca -noprompt -storepass client_truststore_pw \
   -import -file "${targetPath}/client_root_ca.pem" \
   -keystore "${targetPath}/client_truststore.p12"
 

@@ -7,5 +7,5 @@ http:
       key-store-password: keystore_pw
 
 spring.config.import: >
-  truststore.yml,
+  server-truststore.yml,
   client-keystore.yml
