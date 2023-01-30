@@ -60,7 +60,7 @@ def assess_sufficiency(event: Dict):
     """
     validation_results = utils.validate_request_body(event)
     response_body = {}
-    
+
     if "claimSubmissionDateTime" not in event:
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
