@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangeProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,6 +20,13 @@ public class SlipClaimSubmitRouter {
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
   public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
+  public static final Map<String, String> diagnoses;
+  static{
+    diagnoses = new HashMap<>();
+    diagnoses.put("7101", "hypertension");
+    diagnoses.put("6202", "asthma");
+  }
+
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -27,11 +35,12 @@ public class SlipClaimSubmitRouter {
    */
   public String routeClaimSubmit(Claim claim) {
     String diagnosticCode = claim.getDiagnosticCode();
+    String diagnosis = getDiagnosis(diagnosticCode);
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
                 + "routingKey=code.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -46,10 +55,11 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = getDiagnosis(diagnosticCode);
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+                diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -64,11 +74,12 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = getDiagnosis(diagnosticCode);
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health"
                 + "-sufficiency-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -80,5 +91,9 @@ public class SlipClaimSubmitRouter {
       throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     return diagnosticCodeObj.toString();
+  }
+
+  private static String getDiagnosis(String diagnosticCode){
+    return diagnoses.get(diagnosticCode);
   }
 }
