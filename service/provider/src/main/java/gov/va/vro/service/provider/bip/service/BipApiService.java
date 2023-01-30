@@ -47,7 +47,7 @@ public class BipApiService implements IBipApiService {
 
   private static final String HTTPS = "https://";
 
-  @Qualifier("bipRestTemplate")
+  @Qualifier("bipCERestTemplate")
   @NonNull
   private final RestTemplate restTemplate;
 

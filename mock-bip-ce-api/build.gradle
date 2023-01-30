@@ -40,7 +40,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
   // https://mvnrepository.com/artifact/commons-io/commons-io
-  implementation 'commons-io:commons-io:2.6'
+  implementation 'commons-io:commons-io:2.11.0'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }
