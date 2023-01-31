@@ -1,4 +1,4 @@
-name: "SecRel check for PRs"
+name: "SecRel 4 pipeline"
 
 on:
   # Trigger on every code push to all branches
