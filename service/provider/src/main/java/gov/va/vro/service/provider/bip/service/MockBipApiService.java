@@ -62,7 +62,7 @@ public class MockBipApiService implements IBipApiService {
           + "      \"key\": \"UNAUTHORIZED\",\n"
           + "      \"severity\": \"ERROR\",\n"
           + "      \"status\": \"401\",\n"
-          + "      \"text\": \"BNo JWT Token in Header.\",\n"
+          + "      \"text\": \"No JWT Token in Header.\",\n"
           + "      \"httpStatus\": \"UNAUTHORIZED\"\n"
           + "    }\n"
           + "  ]\n"
@@ -182,7 +182,7 @@ public class MockBipApiService implements IBipApiService {
     } else if (claimId == CLAIM_ID_501) { // 501 error, throw BipException
       throw new BipException(HttpStatus.UNAUTHORIZED, ERR_MSG_501);
     } else {
-      return new BipUpdateClaimResp(HttpStatus.OK, "OK from mock service.");
+      return new BipUpdateClaimResp(HttpStatus.CREATED, "OK from mock service.");
     }
   }
 
@@ -200,7 +200,7 @@ public class MockBipApiService implements IBipApiService {
     } else {
       String message =
           String.format("This is a mock response to create a contetion for claim %d.", claimId);
-      return new BipUpdateClaimResp(HttpStatus.OK, message);
+      return new BipUpdateClaimResp(HttpStatus.CREATED, message);
     }
   }
 

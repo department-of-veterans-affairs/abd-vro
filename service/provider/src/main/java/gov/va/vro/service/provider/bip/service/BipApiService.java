@@ -181,7 +181,7 @@ public class BipApiService implements IBipApiService {
       log.info("createContesion: \n {}", createContention);
       ResponseEntity<String> bipResponse = restTemplate.postForEntity(url, request, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.CREATED) {
-        return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
+        return new BipUpdateClaimResp(HttpStatus.CREATED, bipResponse.getBody());
       } else {
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
