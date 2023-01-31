@@ -35,7 +35,7 @@ runs:
     - name: "Test code"
       if: inputs.run_tests == 'true'
       shell: bash
-      run: ./gradlew check
+      run: ./gradlew check -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
 
     - name: "Login to GitHub Container Registry"
       uses: docker/login-action@v2.1.0

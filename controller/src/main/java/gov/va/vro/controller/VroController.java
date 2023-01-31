@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
-import java.util.Date;
 
 @Slf4j
 @RestController
@@ -38,7 +37,6 @@ public class VroController implements VroResource {
   private final CamelEntrance camelEntrance;
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
-
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   public ResponseEntity fetchProcess(String claimSubmissionId, String response)
@@ -56,7 +54,7 @@ public class VroController implements VroResource {
         }
       } else {
         if (pdfResponse.getStatus().equals("NOT_FOUND")) {
-          return new ResponseEntity<>(pdfResponse, HttpStatus.NOT_FOUND);
+          return new ResponseEntity<>(pdfResponse, HttpStatus.BAD_REQUEST);
         } else if (pdfResponse.getStatus().equals("ERROR")) {
           log.info("RESPONSE from generatePdf returned error reason: {}", pdfResponse.getReason());
           return new ResponseEntity<>(pdfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -163,11 +161,10 @@ public class VroController implements VroResource {
   }
 
   private static HttpHeaders getHttpHeaders(String diagnosis) {
-    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
+
     ContentDisposition disposition =
         ContentDisposition.attachment()
-            .filename(
-                String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp))
+            .filename(GeneratePdfPayload.createPdfFilename(diagnosis))
             .build();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_PDF);

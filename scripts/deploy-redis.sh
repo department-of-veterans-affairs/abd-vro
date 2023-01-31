@@ -25,9 +25,6 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
-\
---set-string images.redis.imageName=ghcr.io/department-of-veterans-affairs/abd-vro/redis \
---set-string images.redis.tag=latest \
 "
 
 : "${TEAMNAME:=va-abd-rrd}"
@@ -45,8 +42,7 @@ then
   # echo "Allowing time for helm to delete $HELM_APP_NAME before creating a new one"
   # sleep 60 # wait for Persistent Volume Claim to be deleted
   helm upgrade --install $HELM_APP_NAME helm-service-redis \
-
-              ${COMMON_HELM_ARGS} ${VRO_IMAGE_ARGS} \
+              ${COMMON_HELM_ARGS} \
               --debug \
               -n ${NAMESPACE} #--dry-run
               #-f helm-service-redis/"${ENV}".yaml

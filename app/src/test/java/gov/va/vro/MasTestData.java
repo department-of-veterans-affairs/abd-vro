@@ -9,6 +9,7 @@ import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 
 import java.util.Collections;
+import java.util.UUID;
 
 public class MasTestData {
 
@@ -40,6 +41,7 @@ public class MasTestData {
         .lastName("Smith")
         .veteranIdentifiers(veteranIdentifiers)
         .claimDetail(claimDetail)
+        .correlationId(UUID.randomUUID().toString())
         .build();
   }
 
@@ -63,7 +65,7 @@ public class MasTestData {
     conditions.setDiagnosticCode(diagnosticCode);
     conditions.setDisabilityActionType("INCREASE");
     ClaimDetail claimDetail = new ClaimDetail();
-    claimDetail.setClaimSubmissionDateTime("2022-02-04");
+    claimDetail.setClaimSubmissionDateTime("2022-02-04T17:45:59Z");
     claimDetail.setConditions(conditions);
     claimDetail.setBenefitClaimId(claimId);
     return claimDetail;

@@ -11,6 +11,7 @@ import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
+import gov.va.vro.service.provider.bip.service.IBipCeApiService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,7 +32,7 @@ class BipClaimServiceTest {
     Mockito.when(bipApiService.getClaimDetails(collectionId))
         .thenReturn(createClaim("123", "King Cross"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertFalse(claimService.hasAnchors(collectionId));
   }
 
@@ -47,7 +48,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertFalse(claimService.hasAnchors(collectionId));
   }
 
@@ -63,7 +64,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertTrue(claimService.hasAnchors(collectionId));
   }
 
@@ -77,7 +78,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
@@ -94,7 +95,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
@@ -110,7 +111,7 @@ class BipClaimServiceTest {
     Mockito.when(bipApiService.getClaimDetails(collectionId))
         .thenReturn(createClaim(claimId, "Short Line"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertFalse(claimService.completeProcessing(getMpo(payload)).isTSOJ());
   }
@@ -121,7 +122,7 @@ class BipClaimServiceTest {
     Mockito.when(bipApiService.getClaimDetails(collectionId))
         .thenReturn(createClaim(claimId, "398"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertTrue(claimService.completeProcessing(getMpo(payload)).isTSOJ());
     Mockito.verify(bipApiService).setClaimToRfdStatus(collectionId);
@@ -129,11 +130,12 @@ class BipClaimServiceTest {
 
   @Test
   void uploadPdf_missingData() {
-    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    IBipCeApiService bipCeApiService = Mockito.mock(IBipCeApiService.class);
+    BipClaimService claimService = new BipClaimService(null, bipCeApiService);
+    var payload = MasTestData.getMasAutomatedClaimPayload();
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     try {
-      claimService.uploadPdf(fetchPdfResponse);
+      claimService.uploadPdf(payload, fetchPdfResponse);
       fail();
     } catch (BipException e) {
       assertEquals("PDF Response does not contain any data", e.getMessage());
@@ -142,12 +144,13 @@ class BipClaimServiceTest {
 
   @Test
   void uploadPdf() {
-    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    BipClaimService claimService = new BipClaimService(bipApiService);
+    IBipCeApiService bipCeApiService = Mockito.mock(IBipCeApiService.class);
+    BipClaimService claimService = new BipClaimService(null, bipCeApiService);
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     var data = Base64.getEncoder().encode("Hello!".getBytes(StandardCharsets.UTF_8));
     fetchPdfResponse.setPdfData(new String(data));
-    claimService.uploadPdf(fetchPdfResponse);
+    var payload = MasTestData.getMasAutomatedClaimPayload();
+    claimService.uploadPdf(payload, fetchPdfResponse);
   }
 
   private ClaimContention createContention(List<String> codes) {

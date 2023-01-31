@@ -11,6 +11,7 @@ import gov.va.vro.controller.BaseControllerTest;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -63,10 +63,8 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
         claim2.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
     assertEquals(evidenceSummaryDocument.getEvidenceCount().get("medicationsCount"), "2");
     assertEquals(evidenceSummaryDocument.getEvidenceCount().get("totalBpReadings"), "3");
-    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
     String diagnosis = "Hypertension";
-    String documentName =
-        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+    String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     assertEquals(evidenceSummaryDocument.getDocumentName(), documentName);
     assertEquals(evidenceSummaryDocument.getContention().getId(), contention.getId());
   }

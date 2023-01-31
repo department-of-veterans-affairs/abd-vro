@@ -40,4 +40,6 @@ public class Claim {
   @NotNull private String diagnosticCode;
 
   private Set<String> contentions;
+
+  private String claimSubmissionDateTime;
 }

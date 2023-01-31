@@ -8,13 +8,16 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +58,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_OFFRAMP = "seda:offramp";
 
+  // Base names for wiretap endpoints
+  public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
+  public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
+
   private final BipClaimService bipClaimService;
 
   private final AuditEventService auditEventService;
@@ -66,25 +73,29 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasOrderExamProcessor masOrderExamProcessor;
 
   private final MasCollectionService masCollectionService;
+  private final MasAssessmentResultProcessor masAssessmentResultProcessor;
 
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
+
+  private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
   @Override
   public void configure() {
     configureAuditing();
+    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
-    configureOrderExamStatus();
-    configureCompleteProcessing();
     configureUploadPdf();
-    configureOffRamp();
+    configureCompleteProcessing();
+    configureOrderExamStatus();
   }
 
   private void configureAutomatedClaim() {
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
+        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         .delay(header(MAS_DELAY_PARAM))
@@ -96,8 +107,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(processClaimRouteId)
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(processClaimRouteId, "Started claim processing."))
         .setExchangePattern(ExchangePattern.InOnly);
   }
 
@@ -108,19 +117,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Generating PDF"))
-        // Generate PDF
-        .process(generatePdfProcessor())
-        .to(PrimaryRoutes.ENDPOINT_GENERATE_PDF)
-        .setBody(simple("${exchangeProperty.payload}"))
         // Conditionally order exam
         .to(orderExamEndpoint)
         // Upload PDF
@@ -170,13 +176,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Uploading PDF"))
-        .setBody(simple("${body.claimId}"))
-        .convertBodyTo(String.class)
-        .to(PrimaryRoutes.ENDPOINT_FETCH_PDF)
+        .onPrepare(auditProcessor(routeId, "Generating PDF"))
+        .process(generatePdfProcessor()) // convert to PDF payload
+        .process(evidenceSummaryDocumentProcessor) // store evidence in DB
+        .to(PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF)
         .process(convertToPdfResponse())
-        .process(FunctionProcessor.fromFunction(bipClaimService::uploadPdf))
-        .setBody(simple("${exchangeProperty.payload}"));
+        .process(
+            exchange -> {
+              var pdfResponse = exchange.getMessage().getBody(FetchPdfResponse.class);
+              var masProcessingObject = exchange.getProperty("payload", MasProcessingObject.class);
+              bipClaimService.uploadPdf(masProcessingObject.getClaimPayload(), pdfResponse);
+            })
+        .setBody(simple("${exchangeProperty.payload}"))
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(routeId, "Uploaded PDF"));
   }
 
   private void configureOrderExamStatus() {
@@ -184,6 +197,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
+        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
