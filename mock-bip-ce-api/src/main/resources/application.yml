@@ -51,3 +51,13 @@ spring.redis:
   host: ${REDIS_PLACEHOLDERS_HOST:localhost}
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD:vro_redis_password}
+
+## mock specific
+
+mock-bip-cce-api:
+  jwt:
+    userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
+    secret: "${BIP_EVIDENCE_SECRET:theSecret}"
+    issuer: "${BIP_EVIDENCE_ISS:VRO}"
+    stationId: "${BIP_STATION_ID:281}"
+    expirationSeconds: 900

@@ -50,6 +50,9 @@ public class AppTest {
   @Autowired
   private EvidenceFileRepository repository;
 
+  @Autowired
+  private JwtGenerator jwtGenerator;
+
   private String getUrl(String endPoint) {
     return "https://localhost:" + port + endPoint;
   }
@@ -74,6 +77,8 @@ public class AppTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     headers.set("X-Folder-URI", "FILENUMBER:" + veteranFileNumber);
+    String jwt = jwtGenerator.generate();
+    headers.set("Authorization", "Bearer " + jwt);
 
     BipFileProviderData updr =
         BipFileProviderData.builder()
