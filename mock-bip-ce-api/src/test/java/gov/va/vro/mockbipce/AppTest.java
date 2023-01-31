@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.mockbipce.model.EvidenceFile;
 import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
+import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
@@ -44,10 +45,7 @@ public class AppTest {
   private RestTemplate restTemplate;
 
   @Autowired
-  private EvidenceFileRepository repository;
-
-  @Autowired
-  private JwtGenerator jwtGenerator;
+  private TestHelper helper;
 
   private void verifyFile(TestSpec spec) {
     String baseUrl = spec.getUrl("/received-files/");
@@ -63,41 +61,16 @@ public class AppTest {
     assertEquals(spec.getFileName(), disposition.getFilename());
   }
 
-  @SneakyThrows
-  private void postFileCommon(TestSpec spec) {
-    final String veteranFileNumber = spec.getVeteranFileNumber();
+  @Test
+  void postFilesPositiveTest() {
+    TestSpec spec = TestSpec.builder()
+        .veteranFileNumber("763789990")
+        .fileContent("Hello World !!, This is a test file.")
+        .fileName("example.pdf")
+        .port(port)
+        .build();
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    headers.set("X-Folder-URI", "FILENUMBER:" + veteranFileNumber);
-    String jwt = jwtGenerator.generate();
-    headers.set("Authorization", "Bearer " + jwt);
-
-    BipFileProviderData updr =
-        BipFileProviderData.builder()
-            .contentSource("VRO")
-            .dateVaReceivedDocument("2023-01-19")
-            .documentTypeId(131)
-            .build();
-
-    final String filename = spec.getFileName();
-    BipFileUploadPayload payload =
-        BipFileUploadPayload.builder().providerData(updr).contentName(filename).build();
-
-    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("payload", payload);
-
-    byte[] fileContent = spec.getFileContent().getBytes();
-    Path testFile = Files.createTempFile("test-file", ".txt");
-    Files.write(testFile, fileContent);
-    FileSystemResource fsr = new FileSystemResource(testFile.toFile());
-    body.add("file", fsr);
-
-    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
-
-    String url = spec.getUrl("/files");
-    ResponseEntity<UploadResponse> response =
-        restTemplate.postForEntity(url, request, UploadResponse.class);
+    ResponseEntity<UploadResponse> response = helper.postFiles(spec, UploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -106,16 +79,4 @@ public class AppTest {
 
     verifyFile(spec);
   }
-
-  @Test
-  void postFileTest() {
-    TestSpec spec = TestSpec.builder()
-        .veteranFileNumber("763789990")
-        .fileContent("Hello World !!, This is a test file.")
-        .fileName("example.pdf")
-        .port(port)
-        .build();
-    postFileCommon(spec);
-  }
-
 }
