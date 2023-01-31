@@ -2,11 +2,11 @@ name: "SecRel check for PRs"
 
 on:
   # Trigger on every code push to all branches
-  push:
+  # push:
 
   # Trigger on all published GitHub Releases
-  release:
-    types: [ "created" ]
+  # release:
+  #  types: [ "created" ]
 
   # Trigger manually
   workflow_dispatch:
