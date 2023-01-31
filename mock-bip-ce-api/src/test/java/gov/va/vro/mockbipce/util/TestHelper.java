@@ -1,11 +1,7 @@
 package gov.va.vro.mockbipce.util;
 
-import gov.va.vro.mockbipce.JwtGenerator;
-import gov.va.vro.mockbipce.TestSpec;
-import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

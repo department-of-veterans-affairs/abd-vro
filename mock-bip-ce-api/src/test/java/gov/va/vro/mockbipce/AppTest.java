@@ -3,13 +3,9 @@ package gov.va.vro.mockbipce;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.mockbipce.model.EvidenceFile;
-import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import gov.va.vro.mockbipce.util.TestHelper;
-import gov.va.vro.model.bipevidence.BipFileProviderData;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +13,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)

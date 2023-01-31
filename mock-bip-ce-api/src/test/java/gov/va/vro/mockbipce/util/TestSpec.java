@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce;
+package gov.va.vro.mockbipce.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

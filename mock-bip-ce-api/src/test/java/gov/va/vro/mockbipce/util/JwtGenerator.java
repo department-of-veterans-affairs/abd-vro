@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce;
+package gov.va.vro.mockbipce.util;
 
 import gov.va.vro.mockbipce.config.JwtProps;
 import io.jsonwebtoken.JwtBuilder;
