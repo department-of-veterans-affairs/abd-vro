@@ -3,6 +3,7 @@ package gov.va.vro.mockbipce;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import gov.va.vro.mockbipce.config.TestConfig;
 import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
@@ -24,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @Import(TestConfig.class)
 @Slf4j
 @ActiveProfiles("test")
-public class AppTest {
+public class FilesTest {
   @LocalServerPort int port;
 
   @Autowired
