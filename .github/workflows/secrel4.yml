@@ -1,14 +1,15 @@
-name: "SecRel 4 pipeline"
+name: "SecRel 4"
 
 on:
-  # Trigger on every code push to all branches
-  # push:
+  # Trigger on every code push to main and develop branches
+  push:
+    branches: [ main, qa, develop ]
 
   # Trigger on all published GitHub Releases
-  # release:
-  #  types: [ "created" ]
+  release:
+    types: [ "created" ]
 
-  # Trigger manually
+  # Allow manual runs
   workflow_dispatch:
 
 env:
@@ -86,8 +87,7 @@ jobs:
 
   debug-job:
     runs-on: ubuntu-latest
-    needs:
-      - images-for-secrel
+    needs: [publish-images, images-for-secrel]
     steps:
       - name: show vars
         run: |
