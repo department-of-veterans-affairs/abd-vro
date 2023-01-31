@@ -44,35 +44,28 @@ public class AppTest {
   private RestTemplate restTemplate;
 
   @Autowired
-  @Qualifier("httpsNoCertificationRestTemplate")
-  private RestTemplate restNoCertTemplate;
-
-  @Autowired
   private EvidenceFileRepository repository;
 
   @Autowired
   private JwtGenerator jwtGenerator;
 
-  private String getUrl(String endPoint) {
-    return "https://localhost:" + port + endPoint;
-  }
-
-  private void verifyFile(RestTemplate rt, byte[] content, String filename, String fileNumber) {
-    String baseUrl = getUrl("/received-files/");
-    String url = baseUrl + fileNumber;
+  private void verifyFile(TestSpec spec) {
+    String baseUrl = spec.getUrl("/received-files/");
+    String url = baseUrl + spec.getVeteranFileNumber();
     ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
 
+    byte[] content = spec.getFileContent().getBytes();
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertArrayEquals(content, response.getBody());
 
     HttpHeaders headers = response.getHeaders();
     ContentDisposition disposition = headers.getContentDisposition();
-    assertEquals(filename, disposition.getFilename());
+    assertEquals(spec.getFileName(), disposition.getFilename());
   }
 
   @SneakyThrows
-  private void postFileCommon(RestTemplate rt) {
-    final String veteranFileNumber = "763789990";
+  private void postFileCommon(TestSpec spec) {
+    final String veteranFileNumber = spec.getVeteranFileNumber();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -87,13 +80,14 @@ public class AppTest {
             .documentTypeId(131)
             .build();
 
+    final String filename = spec.getFileName();
     BipFileUploadPayload payload =
-        BipFileUploadPayload.builder().providerData(updr).contentName("example.pdf").build();
+        BipFileUploadPayload.builder().providerData(updr).contentName(filename).build();
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     body.add("payload", payload);
 
-    byte[] fileContent = "Hello World !!, This is a test file.".getBytes();
+    byte[] fileContent = spec.getFileContent().getBytes();
     Path testFile = Files.createTempFile("test-file", ".txt");
     Files.write(testFile, fileContent);
     FileSystemResource fsr = new FileSystemResource(testFile.toFile());
@@ -101,24 +95,27 @@ public class AppTest {
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
+    String url = spec.getUrl("/files");
     ResponseEntity<UploadResponse> response =
-        rt.postForEntity("https://localhost:" + port + "/files", request, UploadResponse.class);
+        restTemplate.postForEntity(url, request, UploadResponse.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     UploadResponse ur = response.getBody();
     log.info("UUID: " + ur.getUuid());
 
-    verifyFile(rt, fileContent, "example.pdf", veteranFileNumber);
+    verifyFile(spec);
   }
 
   @Test
   void postFileTest() {
-    postFileCommon(restTemplate);
+    TestSpec spec = TestSpec.builder()
+        .veteranFileNumber("763789990")
+        .fileContent("Hello World !!, This is a test file.")
+        .fileName("example.pdf")
+        .port(port)
+        .build();
+    postFileCommon(spec);
   }
 
-  @Test
-  void postNoCertFileTest() {
-    postFileCommon(restNoCertTemplate);
-  }
 }
