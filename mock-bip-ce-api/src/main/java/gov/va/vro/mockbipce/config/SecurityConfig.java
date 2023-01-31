@@ -1,17 +1,22 @@
 package gov.va.vro.mockbipce.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
-  private JwtRequestFilter filter;
+  private final JwtRequestFilter filter;
+
+  @Qualifier("delegatedAuthenticationEntryPoint")
+  private final AuthenticationEntryPoint authEntryPoint;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -20,6 +25,7 @@ public class SecurityConfig {
     http.authorizeRequests().antMatchers("/received-files/*").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+    http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
     return http.build();
   }
 }

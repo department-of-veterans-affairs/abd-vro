@@ -7,14 +7,17 @@ import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 
@@ -41,6 +44,22 @@ public class GlobalExceptionHandler {
     }
     VefsErrorResponse cpe = VefsErrorResponse.builder().message(errors.toString()).build();
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({ AuthenticationException.class })
+  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+    log.error("Authentication error", ex);
+    VefsErrorResponse cpe =
+        VefsErrorResponse.builder().message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build();
+    return new ResponseEntity<>(cpe, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler({  HttpClientErrorException.class })
+  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(HttpClientErrorException ex) {
+    log.error("Authentication error", ex);
+    VefsErrorResponse cpe =
+        VefsErrorResponse.builder().message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build();
+    return new ResponseEntity<>(cpe, HttpStatus.UNAUTHORIZED);
   }
 
   /**

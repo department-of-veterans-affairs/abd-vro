@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class TestSpec {
@@ -17,5 +18,14 @@ public class TestSpec {
 
   public String getUrl(String endPoint) {
     return "https://localhost:" + port + endPoint;
+  }
+
+  public static TestSpec getBasicExample() {
+    return TestSpec.builder()
+        .veteranFileNumber("763789990")
+        .fileContent("Hello World !!, This is a test file.")
+        .fileName("example.pdf")
+        .port(8094)
+        .build();
   }
 }

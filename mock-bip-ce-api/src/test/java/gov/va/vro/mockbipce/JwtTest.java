@@ -1,0 +1,65 @@
+package gov.va.vro.mockbipce;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.mockbipce.config.JwtProps;
+import gov.va.vro.mockbipce.config.TestConfig;
+import gov.va.vro.mockbipce.util.TestHelper;
+import gov.va.vro.mockbipce.util.TestSpec;
+import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.impl.BHttpConnectionBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfig.class)
+@Slf4j
+@ActiveProfiles("test")
+public class JwtTest {
+  @LocalServerPort int port;
+
+  @Autowired
+  private TestHelper helper;
+
+  @MockBean
+  private JwtProps props;
+
+  @Test
+  void invalidJwtSecretTest() {
+    Mockito.when(props.getSecret()).thenReturn("Not the secret");
+
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+
+    try {
+      ResponseEntity<VefsErrorResponse> response = helper.postFiles(spec, VefsErrorResponse.class);
+      fail("Expected 4xx error");
+    } catch (HttpStatusCodeException exception) {
+      HttpStatus statusCode = exception.getStatusCode();
+      assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        mapper.readValue(exception.getResponseBodyAsString(), VefsErrorResponse.class);
+      } catch (Exception jsonException) {
+        fail("Expected a VefsErrorResponse object", jsonException);
+      }
+    } catch (RestClientException exception) {
+      fail("Unexpected runtime exception", exception);
+    }
+  }
+}
