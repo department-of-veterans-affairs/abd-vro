@@ -21,10 +21,14 @@ public class SlipClaimSubmitRouter {
   public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
   public static final Map<String, String> diagnoses;
-  static{
+
+  static {
     diagnoses = new HashMap<>();
     diagnoses.put("7101", "hypertension");
-    diagnoses.put("6202", "asthma");
+    diagnoses.put("7101v2", "hypertension");
+    diagnoses.put("6602v2", "asthma");
+    diagnoses.put("6602", "asthma");
+    diagnoses.put("1233", "1233");
   }
 
   /**
@@ -59,7 +63,7 @@ public class SlipClaimSubmitRouter {
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
-                diagnosis, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -93,7 +97,7 @@ public class SlipClaimSubmitRouter {
     return diagnosticCodeObj.toString();
   }
 
-  private static String getDiagnosis(String diagnosticCode){
+  private static String getDiagnosis(String diagnosticCode) {
     return diagnoses.get(diagnosticCode);
   }
 }
