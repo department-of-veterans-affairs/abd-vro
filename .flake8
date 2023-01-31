@@ -2,5 +2,6 @@
 max-line-length = 255
 exclude =
     .git,
+    .venv,
     __pycache__,
     service-python/tests
