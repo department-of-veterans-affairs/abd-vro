@@ -1,7 +1,8 @@
 package gov.va.vro.mockbipce;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.config.JwtProps;
 import gov.va.vro.mockbipce.config.TestConfig;
@@ -9,7 +10,6 @@ import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.BHttpConnectionBase;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
 @Slf4j
@@ -33,11 +30,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class JwtTest {
   @LocalServerPort int port;
 
-  @Autowired
-  private TestHelper helper;
+  @Autowired private TestHelper helper;
 
-  @MockBean
-  private JwtProps props;
+  @MockBean private JwtProps props;
 
   @Test
   void invalidJwtSecretTest() {

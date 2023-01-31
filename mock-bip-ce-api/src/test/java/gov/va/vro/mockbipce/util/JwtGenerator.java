@@ -7,19 +7,24 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
+import javax.crypto.spec.SecretKeySpec;
 
 @Service
 @RequiredArgsConstructor
 public class JwtGenerator {
   private final JwtProps props;
 
+  /**
+   * Henerates the JWT.
+   *
+   * @return The JWT
+   */
   public String generate() {
     JwtBuilder builder = addClaims();
     signJwt(builder);
@@ -29,9 +34,8 @@ public class JwtGenerator {
   private void signJwt(JwtBuilder builder) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     String secret = props.getSecret();
-    Key signingKey = new SecretKeySpec(
-        secret.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getJcaName()
-    );
+    Key signingKey =
+        new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getJcaName());
     builder.signWith(signatureAlgorithm, signingKey);
   }
 

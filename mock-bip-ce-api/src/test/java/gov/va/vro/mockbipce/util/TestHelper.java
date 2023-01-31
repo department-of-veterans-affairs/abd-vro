@@ -24,9 +24,16 @@ public class TestHelper {
   @Qualifier("httpsRestTemplate")
   private RestTemplate restTemplate;
 
-  @Autowired
-  private JwtGenerator jwtGenerator;
+  @Autowired private JwtGenerator jwtGenerator;
 
+  /**
+   * Posts the file specified by spec.
+   *
+   * @param spec Test Specification
+   * @param clazz Class for outpur
+   * @return Response Entity
+   * @param <T> Type of response
+   */
   @SneakyThrows
   public <T> ResponseEntity<T> postFiles(TestSpec spec, Class<T> clazz) {
     final String veteranFileNumber = spec.getVeteranFileNumber();

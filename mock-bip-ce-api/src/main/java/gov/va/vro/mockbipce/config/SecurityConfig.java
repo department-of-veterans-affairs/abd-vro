@@ -18,6 +18,11 @@ public class SecurityConfig {
   @Qualifier("delegatedAuthenticationEntryPoint")
   private final AuthenticationEntryPoint authEntryPoint;
 
+  /**
+   * @param http HttpSecurity
+   * @return SecurityFilterChain
+   * @throws Exception
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf().disable();

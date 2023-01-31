@@ -32,8 +32,7 @@ public class FilesTest {
   @Qualifier("httpsRestTemplate")
   private RestTemplate restTemplate;
 
-  @Autowired
-  private TestHelper helper;
+  @Autowired private TestHelper helper;
 
   private void verifyFile(TestSpec spec) {
     String baseUrl = spec.getUrl("/received-files/");
@@ -51,12 +50,8 @@ public class FilesTest {
 
   @Test
   void postFilesPositiveTest() {
-    TestSpec spec = TestSpec.builder()
-        .veteranFileNumber("763789990")
-        .fileContent("Hello World !!, This is a test file.")
-        .fileName("example.pdf")
-        .port(port)
-        .build();
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
 
     ResponseEntity<UploadResponse> response = helper.postFiles(spec, UploadResponse.class);
 

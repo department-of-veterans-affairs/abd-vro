@@ -13,11 +13,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 
@@ -46,16 +44,30 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler({ AuthenticationException.class })
-  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+  /**
+   * Handles authentication errors.
+   *
+   * @param ex the exception
+   * @return returns exception
+   */
+  @ExceptionHandler({AuthenticationException.class})
+  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(
+      AuthenticationException ex) {
     log.error("Authentication error", ex);
     VefsErrorResponse cpe =
         VefsErrorResponse.builder().message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build();
     return new ResponseEntity<>(cpe, HttpStatus.UNAUTHORIZED);
   }
 
-  @ExceptionHandler({  HttpClientErrorException.class })
-  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(HttpClientErrorException ex) {
+  /**
+   * Handles http client errors.
+   *
+   * @param ex the exception
+   * @return returns exception
+   */
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<VefsErrorResponse> handleAuthenticationException(
+      HttpClientErrorException ex) {
     log.error("Authentication error", ex);
     VefsErrorResponse cpe =
         VefsErrorResponse.builder().message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build();
@@ -132,10 +144,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<VefsErrorResponse> handleException(ResponseStatusException exception) {
     log.info("Expected thrown exception", exception);
-    VefsErrorResponse cpe =
-        VefsErrorResponse.builder()
-            .message(exception.getReason())
-            .build();
+    VefsErrorResponse cpe = VefsErrorResponse.builder().message(exception.getReason()).build();
     return new ResponseEntity<>(cpe, exception.getStatus());
   }
 

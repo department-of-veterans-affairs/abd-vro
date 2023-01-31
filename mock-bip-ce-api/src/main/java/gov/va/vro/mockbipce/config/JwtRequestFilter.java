@@ -11,13 +11,13 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 
 @Component
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   private static String getToken(HttpServletRequest request) {
     String header = request.getHeader("Authorization");
-    if (header == null ||  header.isEmpty() || !header.startsWith("Bearer ")) {
+    if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
       return null;
     }
 
@@ -39,8 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request,
-                                  HttpServletResponse response, FilterChain filterChain)
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
     String token = getToken(request);
@@ -50,60 +50,53 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     byte[] secretBytes = props.getSecret().getBytes(StandardCharsets.UTF_8);
-    Claims claims = Jwts
-        .parser()
-        .setSigningKey(secretBytes)
-        .parseClaimsJws(token)
-        .getBody();
+    Claims claims = Jwts.parser().setSigningKey(secretBytes).parseClaimsJws(token).getBody();
 
-    UserDetails details = new UserDetails() {
-      @Override
-      public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-      }
+    UserDetails details =
+        new UserDetails() {
+          @Override
+          public Collection<? extends GrantedAuthority> getAuthorities() {
+            return null;
+          }
 
-      @Override
-      public String getPassword() {
-        return null;
-      }
+          @Override
+          public String getPassword() {
+            return null;
+          }
 
-      @Override
-      public String getUsername() {
-        return null;
-      }
+          @Override
+          public String getUsername() {
+            return null;
+          }
 
-      @Override
-      public boolean isAccountNonExpired() {
-        return false;
-      }
+          @Override
+          public boolean isAccountNonExpired() {
+            return false;
+          }
 
-      @Override
-      public boolean isAccountNonLocked() {
-        return false;
-      }
+          @Override
+          public boolean isAccountNonLocked() {
+            return false;
+          }
 
-      @Override
-      public boolean isCredentialsNonExpired() {
-        return false;
-      }
+          @Override
+          public boolean isCredentialsNonExpired() {
+            return false;
+          }
 
-      @Override
-      public boolean isEnabled() {
-        return false;
-      }
-    };
+          @Override
+          public boolean isEnabled() {
+            return false;
+          }
+        };
 
-    UsernamePasswordAuthenticationToken
-        authentication = new UsernamePasswordAuthenticationToken(details, null, null);
+    UsernamePasswordAuthenticationToken authentication =
+        new UsernamePasswordAuthenticationToken(details, null, null);
 
-    authentication.setDetails(
-        new WebAuthenticationDetailsSource().buildDetails(request));
+    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     filterChain.doFilter(request, response);
   }
-
-
-
 }

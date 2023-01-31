@@ -19,8 +19,7 @@ import java.util.Optional;
 @Controller
 @Slf4j
 public class ReceivedApiController implements ReceivedApi {
-  @Autowired
-  private EvidenceFileRepository repository;
+  @Autowired private EvidenceFileRepository repository;
 
   @SneakyThrows
   @Override
@@ -35,9 +34,7 @@ public class ReceivedApiController implements ReceivedApi {
     byte[] content = evidenceFile.getContent();
     String filename = evidenceFile.getPayload().getContentName();
 
-    ContentDisposition disposition = ContentDisposition.attachment()
-            .filename(filename)
-            .build();
+    ContentDisposition disposition = ContentDisposition.attachment().filename(filename).build();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
     headers.setContentDisposition(disposition);

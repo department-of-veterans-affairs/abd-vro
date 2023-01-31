@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/")
 public interface ReceivedApi {
   /**
-   * GET /received-files/{fileNumber}: Returns the evidence file uploaded by POST /files.
-   * Provides access to the file for testing purposes.
+   * GET /received-files/{fileNumber}: Returns the evidence file uploaded by POST /files. Provides
+   * access to the file for testing purposes.
    *
    * @param fileNumber The file number of the veteran whose evidence files has been uploaded.
    * @return The file
@@ -130,11 +130,8 @@ public interface ReceivedApi {
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/received-files/{fileNumber}",
-      produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE })
+      produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
   ResponseEntity<byte[]> download(
-      @Parameter(
-              name = "fileNumber",
-              description = "The file number of the Veteran")
-          @PathVariable
+      @Parameter(name = "fileNumber", description = "The file number of the Veteran") @PathVariable
           String fileNumber);
 }

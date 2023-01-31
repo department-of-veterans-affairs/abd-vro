@@ -23,14 +23,12 @@ import java.util.UUID;
 @Controller
 @Slf4j
 public class FilesApiController implements FilesApi {
-  @Autowired
-  private EvidenceFileRepository repository;
+  @Autowired private EvidenceFileRepository repository;
 
   @SneakyThrows
   @Override
   public ResponseEntity<UploadResponse> upload(
       String xFolderUri, String payload, MultipartFile file) {
-    byte[] content = file.getBytes();
     String filename = file.getOriginalFilename();
     log.info("File {} being written to temp location.", filename);
     String targetName = FilenameUtils.getBaseName(filename);
@@ -40,7 +38,7 @@ public class FilesApiController implements FilesApi {
     log.info("Temp file is written to {}.", testFile.toString());
 
     String[] folderInfo = xFolderUri.split(":");
-    if (folderInfo.length < 2 ) {
+    if (folderInfo.length < 2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid X-Folder-URI header");
     }
     if (!"FILENUMBER".equals(folderInfo[0])) {
@@ -53,7 +51,7 @@ public class FilesApiController implements FilesApi {
     evidenceFile.setId(folderInfo[1]);
     evidenceFile.setUuid(UUID.randomUUID());
     evidenceFile.setPayload(payloadObj);
-    evidenceFile.setContent(content);
+    evidenceFile.setContent(file.getBytes());
     repository.save(evidenceFile);
 
     log.info("========= Payload Start ======");

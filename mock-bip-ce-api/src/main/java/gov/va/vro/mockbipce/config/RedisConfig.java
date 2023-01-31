@@ -11,8 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-  @Autowired
-  RedisProperties redisProperties;
+  @Autowired RedisProperties redisProperties;
 
   @Bean
   LettuceConnectionFactory lettuceConnectionFactory() {
@@ -25,6 +24,11 @@ public class RedisConfig {
     return new LettuceConnectionFactory(config);
   }
 
+  /**
+   * Redis template bean.
+   *
+   * @return RedisTemplate
+   */
   @Bean
   public RedisTemplate<String, Object> redisTemplate() {
     RedisTemplate<String, Object> template = new RedisTemplate<>();

@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(
     exclude = {
-        org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
-        DataSourceAutoConfiguration.class
+      org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
+      DataSourceAutoConfiguration.class
     })
 public class Application {
   public static void main(String[] args) {

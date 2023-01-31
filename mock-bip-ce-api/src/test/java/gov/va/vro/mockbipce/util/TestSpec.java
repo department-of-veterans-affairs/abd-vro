@@ -3,7 +3,6 @@ package gov.va.vro.mockbipce.util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -20,6 +19,11 @@ public class TestSpec {
     return "https://localhost:" + port + endPoint;
   }
 
+  /**
+   * Generates a basic test specification that can be used in multiple tests.
+   *
+   * @return TestSpec Test Specification
+   */
   public static TestSpec getBasicExample() {
     return TestSpec.builder()
         .veteranFileNumber("763789990")
