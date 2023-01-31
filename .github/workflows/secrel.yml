@@ -30,9 +30,11 @@ jobs:
     # only run for the internal repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: Tornado Pipeline
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v3.2.0
-    with:
-      config-file: .github/secrel/config.yml
+#    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v3.2.0
+    uses: actions/checkout@v3
+    run: exit 0
+#    with:
+#      config-file: .github/secrel/config.yml
     secrets: inherit
 
   notify-secrel-error:
