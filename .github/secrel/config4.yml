@@ -1,16 +1,12 @@
 ---
 
-snyk:
-  java-version: 17
-  additional-args:
-#  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
-
 languages:
   java:
     version: 17.0
     build-source: false
- #   build-args:
- #     - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+    build-args:
+      # Snyk does its own build to run SCA, so it needs the token to pull private artifacts
+      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
   python:
     version: 3.9
     requirements:

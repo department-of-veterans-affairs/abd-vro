@@ -1,4 +1,4 @@
-name: "SecRel check for PRs"
+name: "SecRel 4 pipeline"
 
 on:
   # Trigger on every code push to all branches
@@ -102,7 +102,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: SecRel Pipeline
     needs: [publish-images, images-for-secrel]
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0-rc2
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0
     with:
       config-file: .github/secrel/config4.yml
       images: ${{ needs.images-for-secrel.outputs.all-images }}
