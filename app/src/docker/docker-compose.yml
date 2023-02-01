@@ -330,3 +330,17 @@ services:
         condition: service_healthy
     networks:
       - internal
+
+  mock-bip-ce-api:
+    image: va/abd_vro-mock-bip-ce-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+    networks:
+      - internal

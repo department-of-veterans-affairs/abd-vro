@@ -28,6 +28,9 @@ logging:
 ## Health
 
 management:
+  server:
+    port: 8095
+    ssl.enabled: false
   endpoint:
     health:
       show-details: always
