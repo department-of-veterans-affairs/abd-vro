@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce;
+package gov.va.vro.mockbipce.config;
 
 import lombok.SneakyThrows;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -6,6 +6,7 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,6 +35,8 @@ public class TestConfig {
 
   @Value("${vro-mock-bip-ce-keystore}")
   private String keyStoreBase64;
+
+  @Autowired private JwtProps jwtProps;
 
   @SneakyThrows
   private KeyStore getKeyStore(String base64, String password) {
@@ -96,5 +99,10 @@ public class TestConfig {
     ClientHttpRequestFactory requestFactory =
         new HttpComponentsClientHttpRequestFactory(httpClient);
     return new RestTemplate(requestFactory);
+  }
+
+  @Bean
+  public JwtTestProps getJwtTestProps() {
+    return new JwtTestProps(jwtProps);
   }
 }
