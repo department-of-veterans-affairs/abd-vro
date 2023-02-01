@@ -16,7 +16,6 @@ class PDFGenerator:
 
     def __init__(self, options, message_data=None):
         self.options = options
-        logging.info(message_data)
         if message_data and "pdfLibrary" in message_data and message_data["pdfLibrary"].lower() in ["wkhtmltopdf", "weasyprint"]:
             self.library = message_data["pdfLibrary"]
         else:
