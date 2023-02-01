@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.api.FilesApi;
 import gov.va.vro.mockbipce.config.BasicStore;
 import gov.va.vro.mockbipce.model.EvidenceFile;
-import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
@@ -52,7 +51,7 @@ public class FilesApiController implements FilesApi {
     ObjectMapper mapper = new ObjectMapper();
     BipFileUploadPayload payloadObj = mapper.readValue(payload, BipFileUploadPayload.class);
     EvidenceFile evidenceFile = new EvidenceFile();
-    evidenceFile.setId(folderInfo[1]);
+    evidenceFile.setFileNumber(folderInfo[1]);
     evidenceFile.setUuid(UUID.randomUUID());
     evidenceFile.setPayload(payloadObj);
     evidenceFile.setContent(file.getBytes());

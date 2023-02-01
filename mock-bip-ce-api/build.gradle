@@ -16,11 +16,6 @@ configurations.all {
   }
 }
 
-ext {
-  // TODO: improve test code coverage so that the following can be removed
-  jacoco_minimum_coverage = 99
-}
-
 dependencies {
   implementation project(':shared:domain')
 
@@ -36,9 +31,6 @@ dependencies {
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
-  // Redis
-  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
   // https://mvnrepository.com/artifact/commons-io/commons-io
   implementation 'commons-io:commons-io:2.11.0'

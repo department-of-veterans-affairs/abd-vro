@@ -111,7 +111,6 @@ public class FilesTest {
     TestSpec spec = TestSpec.getBasicExample();
     spec.setPort(port);
     spec.setVeteranFileNumber("");
-    spec.setVeteranFileNumber("144523459");
 
     auxRunTest(spec);
   }

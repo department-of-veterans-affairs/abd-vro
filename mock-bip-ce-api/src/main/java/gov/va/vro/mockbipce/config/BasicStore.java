@@ -15,7 +15,7 @@ public class BasicStore {
   }
 
   public void put(EvidenceFile evidenceFile) {
-    String fileNumber = evidenceFile.getId();
+    String fileNumber = evidenceFile.getFileNumber();
     store.put(fileNumber, evidenceFile);
   }
 }

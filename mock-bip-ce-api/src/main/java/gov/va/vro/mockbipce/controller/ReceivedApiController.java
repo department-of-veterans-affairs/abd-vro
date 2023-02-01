@@ -3,7 +3,6 @@ package gov.va.vro.mockbipce.controller;
 import gov.va.vro.mockbipce.api.ReceivedApi;
 import gov.va.vro.mockbipce.config.BasicStore;
 import gov.va.vro.mockbipce.model.EvidenceFile;
-import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 @Controller
 @Slf4j
