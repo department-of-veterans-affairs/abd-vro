@@ -32,7 +32,7 @@ jobs:
     name: Tornado Pipeline
     runs-on: ubuntu-latest
     outputs:
-      job_status: ${{ env.JOB_STATUS }}
+      job_status: ${{ steps.job-status.outputs.job_status }}
 #    secrets: inherit
 
     steps:
@@ -43,8 +43,9 @@ jobs:
 #    with:
 #      config-file: .github/secrel/config.yml
       - name: set job status
+        id: job-status
 #        if: success()
-        run: echo "JOB_STATUS=success" >> $GITHUB_ENV
+        run: echo "job_status=success" >> $GITHUB_OUTPUT
 
 
   notify-secrel-error:
