@@ -58,9 +58,9 @@ jobs:
     steps:
       - name: debug
         uses: hmarr/debug-action@v2
-        run: |
-          echo "job_status=success" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
+#        run: |
+#          echo "job_status=success" >> $GITHUB_OUTPUT
+#          cat $GITHUB_OUTPUT
 
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
