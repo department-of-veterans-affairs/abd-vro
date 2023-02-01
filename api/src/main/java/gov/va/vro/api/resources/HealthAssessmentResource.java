@@ -27,13 +27,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v2", produces = "application/json")
-@SecurityRequirement(name = "Bearer Authentication")
-@SecurityScheme(
-    name = "Bearer Authentication",
-    type = SecuritySchemeType.HTTP,
-    bearerFormat = "JWT",
-    scheme = "bearer",
-    in = SecuritySchemeIn.HEADER)
+@SecurityRequirement(name = "X-API-Key")
+@SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface HealthAssessmentResource {
 

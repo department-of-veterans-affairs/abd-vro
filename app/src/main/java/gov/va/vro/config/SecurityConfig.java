@@ -54,6 +54,7 @@ public class SecurityConfig {
     // Secure end point
     httpSecurity
         .antMatcher(urlContextV1)
+        .antMatcher(urlContextV2)
         .csrf()
         .disable()
         .sessionManagement()
