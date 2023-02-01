@@ -48,8 +48,14 @@ jobs:
         run: |
           echo "JOB_STATUS=success" >> $GITHUB_ENV
           echo "GITHUB_ENV: $GITHUB_ENV"
-          cat "contents: $GITHUB_ENV"
+          cat $GITHUB_ENV
+          echo "success" > job-result.txt
 
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: result
+          path: job-result.txt
 
   notify-secrel-error:
     needs: build-and-scan
@@ -60,12 +66,18 @@ jobs:
       - name: debug
         uses: hmarr/debug-action@v2
 
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: result
+
       - name: otherdebug
         run: |
           echo "JOB_STATUS: $JOB_STATUS"
           echo "GITHUB_ENV: $GITHUB_ENV"
-          cat "contents: $GITHUB_ENV"
-          echo "needs.build-and-scan.outputs.job_status: ${{ needs.build-and-scan.outputs.job_status }}"
+          cat $GITHUB_ENV
+          value=`cat job-result.txt`
+          echo "value=$value"
 
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
