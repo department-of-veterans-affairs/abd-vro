@@ -2,6 +2,7 @@ package gov.va.vro.mockbipce.util;
 
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,17 +31,18 @@ public class TestHelper {
    * Posts the file specified by spec.
    *
    * @param spec Test Specification
-   * @param clazz Class for outpur
    * @return Response Entity
-   * @param <T> Type of response
    */
   @SneakyThrows
-  public <T> ResponseEntity<T> postFiles(TestSpec spec, Class<T> clazz) {
+  public ResponseEntity<UploadResponse> postFiles(TestSpec spec) {
     final String veteranFileNumber = spec.getVeteranFileNumber();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    headers.set("X-Folder-URI", "FILENUMBER:" + veteranFileNumber);
+    if (!spec.isIgnoreFolderUri()) {
+      String idType = spec.getIdType();
+      headers.set("X-Folder-URI", idType + ":" + veteranFileNumber);
+    }
     if (!spec.isIgnoreJwt()) {
       String jwt = jwtGenerator.generate();
       headers.set("Authorization", "Bearer " + jwt);
@@ -69,7 +71,6 @@ public class TestHelper {
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
     String url = spec.getUrl("/files");
-    ResponseEntity<T> response = restTemplate.postForEntity(url, request, clazz);
-    return response;
+    return restTemplate.postForEntity(url, request, UploadResponse.class);
   }
 }

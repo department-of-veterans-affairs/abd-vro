@@ -37,6 +37,9 @@ public class FilesApiController implements FilesApi {
     Files.write(testFile, file.getBytes());
     log.info("Temp file is written to {}.", testFile.toString());
 
+    if (folderUri == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No X-Folder-URI header");
+    }
     String[] folderInfo = folderUri.split(":");
     if (folderInfo.length < 2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid X-Folder-URI header");

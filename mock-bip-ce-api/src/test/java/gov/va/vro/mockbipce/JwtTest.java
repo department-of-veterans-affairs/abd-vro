@@ -19,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -40,7 +39,7 @@ public class JwtTest {
 
   private void auxRunTest(TestSpec spec) {
     try {
-      ResponseEntity<VefsErrorResponse> response = helper.postFiles(spec, VefsErrorResponse.class);
+      helper.postFiles(spec);
       fail("Expected 401 error");
     } catch (HttpStatusCodeException exception) {
       HttpStatus statusCode = exception.getStatusCode();

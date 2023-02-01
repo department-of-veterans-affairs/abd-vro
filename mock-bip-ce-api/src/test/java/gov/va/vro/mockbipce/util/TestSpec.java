@@ -1,20 +1,20 @@
 package gov.va.vro.mockbipce.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@NoArgsConstructor
 public class TestSpec {
   private String fileName;
   private String fileContent;
   private String veteranFileNumber;
   private int port;
   private boolean ignoreJwt = false;
+  private boolean ignoreFolderUri = false;
+  private String idType = "FILENUMBER";
 
   public String getUrl(String endPoint) {
     return "https://localhost:" + port + endPoint;
@@ -26,11 +26,11 @@ public class TestSpec {
    * @return TestSpec Test Specification
    */
   public static TestSpec getBasicExample() {
-    return TestSpec.builder()
-        .veteranFileNumber("763789990")
-        .fileContent("Hello World !!, This is a test file.")
-        .fileName("example.pdf")
-        .port(8094)
-        .build();
+    TestSpec spec = new TestSpec();
+    spec.setVeteranFileNumber("763789990");
+    spec.setFileContent("Hello World !!, This is a test file.");
+    spec.setFileName("example.pdf");
+    spec.setPort(8094);
+    return spec;
   }
 }

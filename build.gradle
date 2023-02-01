@@ -118,7 +118,8 @@ ext {
     ':service:provider',
     ':service:spi',
     ':svc-lighthouse-api',
-    ':console'
+    ':console',
+    ':mock-bip-ce-api'
   ]
   dockerModules = [
     ':app',

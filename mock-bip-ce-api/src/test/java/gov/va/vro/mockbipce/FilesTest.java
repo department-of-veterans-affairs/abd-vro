@@ -2,11 +2,14 @@ package gov.va.vro.mockbipce;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.config.TestConfig;
 import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
+import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,7 +58,7 @@ public class FilesTest {
     TestSpec spec = TestSpec.getBasicExample();
     spec.setPort(port);
 
-    ResponseEntity<UploadResponse> response = helper.postFiles(spec, UploadResponse.class);
+    ResponseEntity<UploadResponse> response = helper.postFiles(spec);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -61,5 +66,50 @@ public class FilesTest {
     log.info("UUID: " + ur.getUuid());
 
     verifyFile(spec);
+  }
+
+  private void auxRunTest(TestSpec spec) {
+    try {
+      helper.postFiles(spec);
+      fail("Expected 400 error");
+    } catch (HttpStatusCodeException exception) {
+      HttpStatus statusCode = exception.getStatusCode();
+      assertEquals(HttpStatus.BAD_REQUEST, statusCode);
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        mapper.readValue(exception.getResponseBodyAsString(), VefsErrorResponse.class);
+      } catch (Exception jsonException) {
+        fail("Expected a VefsErrorResponse object", jsonException);
+      }
+    } catch (RestClientException exception) {
+      fail("Unexpected runtime exception", exception);
+    }
+  }
+
+  @Test
+  void postFilesWrongIdTypeTest() {
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+    spec.setIdType("PARTICIPANT_ID");
+
+    auxRunTest(spec);
+  }
+
+  @Test
+  void postFilesNoFolderUrlTest() {
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+    spec.setIgnoreFolderUri(true);
+
+    auxRunTest(spec);
+  }
+
+  @Test
+  void postFilesInvalidFolderUrlTest() {
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+    spec.setVeteranFileNumber("");
+
+    auxRunTest(spec);
   }
 }

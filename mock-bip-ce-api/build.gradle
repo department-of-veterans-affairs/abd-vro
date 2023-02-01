@@ -18,7 +18,7 @@ configurations.all {
 
 ext {
   // TODO: improve test code coverage so that the following can be removed
-  jacoco_minimum_coverage = 0
+  jacoco_minimum_coverage = 99
 }
 
 dependencies {
