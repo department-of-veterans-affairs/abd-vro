@@ -19,9 +19,11 @@ public class SecurityConfig {
   private final AuthenticationEntryPoint authEntryPoint;
 
   /**
+   * Spring security to validate JWT.
+   *
    * @param http HttpSecurity
    * @return SecurityFilterChain
-   * @throws Exception
+   * @throws Exception Authentication failuure
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

@@ -28,7 +28,7 @@ public class FilesApiController implements FilesApi {
   @SneakyThrows
   @Override
   public ResponseEntity<UploadResponse> upload(
-      String xFolderUri, String payload, MultipartFile file) {
+      String folderUri, String payload, MultipartFile file) {
     String filename = file.getOriginalFilename();
     log.info("File {} being written to temp location.", filename);
     String targetName = FilenameUtils.getBaseName(filename);
@@ -37,7 +37,7 @@ public class FilesApiController implements FilesApi {
     Files.write(testFile, file.getBytes());
     log.info("Temp file is written to {}.", testFile.toString());
 
-    String[] folderInfo = xFolderUri.split(":");
+    String[] folderInfo = folderUri.split(":");
     if (folderInfo.length < 2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid X-Folder-URI header");
     }
@@ -55,7 +55,7 @@ public class FilesApiController implements FilesApi {
     repository.save(evidenceFile);
 
     log.info("========= Payload Start ======");
-    log.info(xFolderUri);
+    log.info(folderUri);
     log.info(payload);
     log.info("========== Payload End ========");
 

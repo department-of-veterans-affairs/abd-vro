@@ -34,10 +34,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     return token;
   }
 
-  private static boolean validateJwt(String jwt) {
-    return true;
-  }
-
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -66,17 +62,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
           @Override
           public String getUsername() {
-            return null;
+            return claims.getAudience();
           }
 
           @Override
           public boolean isAccountNonExpired() {
-            return false;
+            return true;
           }
 
           @Override
           public boolean isAccountNonLocked() {
-            return false;
+            return true;
           }
 
           @Override
@@ -86,7 +82,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
           @Override
           public boolean isEnabled() {
-            return false;
+            return true;
           }
         };
 

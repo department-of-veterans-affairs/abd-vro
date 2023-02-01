@@ -14,6 +14,7 @@ public class TestSpec {
   private String fileContent;
   private String veteranFileNumber;
   private int port;
+  private boolean ignoreJwt = false;
 
   public String getUrl(String endPoint) {
     return "https://localhost:" + port + endPoint;

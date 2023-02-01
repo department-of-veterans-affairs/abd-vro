@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<VefsErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<VefsErrorResponse> handleMethodArgumentTypeMismatchException(
       MethodArgumentTypeMismatchException exception) {
     log.error("Validation error", exception);
     MethodParameter parameter = exception.getParameter();
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
    * @return returns exception
    */
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<VefsErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<VefsErrorResponse> handleConstraintViolationException(
       ConstraintViolationException exception) {
     log.error("Validation error", exception);
     VefsErrorResponse cpe = VefsErrorResponse.builder().message("invalid parameters").build();

@@ -30,7 +30,7 @@ public interface FilesApi {
    * data provided. Information on how to properly creae a payload object for this endpoint is
    * available in the schema section.
    *
-   * @param xFolderUri The Folder Identifier that the file will be associated to. The example
+   * @param folderUri The Folder Identifier that the file will be associated to. The example
    *     provided is for identifying a veteran.&lt;br&gt;&lt;br&gt;**Header Format**:
    *     folder-type:identifier-type:ID&lt;br&gt;&lt;br&gt;**Valid Folder
    *     Types**:&lt;br&gt;&lt;br&gt;* VETERAN&lt;br&gt;&lt;br&gt;**Valid Identifier
@@ -171,7 +171,7 @@ public interface FilesApi {
                   <br><br>* FILENUMBER<br>* SSN<br>* PARTICIPANT_ID<br>* EDIPI
                   """)
           @RequestHeader(value = "X-Folder-URI", required = false)
-          String xFolderUri,
+          String folderUri,
       @Parameter(name = "payload", description = "")
           @Valid
           @RequestParam(value = "payload", required = false)

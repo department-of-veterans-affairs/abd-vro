@@ -4,17 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.mockbipce.config.JwtProps;
+import gov.va.vro.mockbipce.config.JwtTestProps;
 import gov.va.vro.mockbipce.config.TestConfig;
 import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -32,18 +33,15 @@ public class JwtTest {
 
   @Autowired private TestHelper helper;
 
-  @MockBean private JwtProps props;
+  @SpyBean private JwtTestProps props;
 
-  @Test
-  void invalidJwtSecretTest() {
-    Mockito.when(props.getSecret()).thenReturn("Not the secret");
+  @BeforeEach
+  void initJwtProps() {}
 
-    TestSpec spec = TestSpec.getBasicExample();
-    spec.setPort(port);
-
+  private void auxRunTest(TestSpec spec) {
     try {
       ResponseEntity<VefsErrorResponse> response = helper.postFiles(spec, VefsErrorResponse.class);
-      fail("Expected 4xx error");
+      fail("Expected 401 error");
     } catch (HttpStatusCodeException exception) {
       HttpStatus statusCode = exception.getStatusCode();
       assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
@@ -56,5 +54,24 @@ public class JwtTest {
     } catch (RestClientException exception) {
       fail("Unexpected runtime exception", exception);
     }
+  }
+
+  @Test
+  void invalidJwtSecretTest() {
+    Mockito.when(props.getSecret()).thenReturn("Not the secret");
+
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+
+    auxRunTest(spec);
+  }
+
+  @Test
+  void noJwtTest() {
+    TestSpec spec = TestSpec.getBasicExample();
+    spec.setPort(port);
+    spec.setIgnoreJwt(true);
+
+    auxRunTest(spec);
   }
 }

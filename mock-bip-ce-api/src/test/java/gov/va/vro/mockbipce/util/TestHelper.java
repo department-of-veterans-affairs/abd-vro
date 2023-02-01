@@ -41,8 +41,10 @@ public class TestHelper {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     headers.set("X-Folder-URI", "FILENUMBER:" + veteranFileNumber);
-    String jwt = jwtGenerator.generate();
-    headers.set("Authorization", "Bearer " + jwt);
+    if (!spec.isIgnoreJwt()) {
+      String jwt = jwtGenerator.generate();
+      headers.set("Authorization", "Bearer " + jwt);
+    }
 
     BipFileProviderData updr =
         BipFileProviderData.builder()

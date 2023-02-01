@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.util;
 
-import gov.va.vro.mockbipce.config.JwtProps;
+import gov.va.vro.mockbipce.config.JwtTestProps;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Service
 @RequiredArgsConstructor
 public class JwtGenerator {
-  private final JwtProps props;
+  private final JwtTestProps props;
 
   /**
    * Henerates the JWT.
