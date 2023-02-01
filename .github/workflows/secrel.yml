@@ -51,7 +51,7 @@ jobs:
     needs: build-and-scan
     runs-on: ubuntu-latest
     # only run for the internal repo
-    if: ${{ needs.build-and-scan.outputs.job_status == 'failed' }} && github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    if: always()
     steps:
       - name: debug
         uses: hmarr/debug-action@v2
@@ -59,6 +59,7 @@ jobs:
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
+        if: ${{ needs.build-and-scan.outputs.job_status == 'failed' }} && github.repository == 'department-of-veterans-affairs/abd-vro-internal'
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
