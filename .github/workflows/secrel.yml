@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       job_status: ${{ env.JOB_STATUS }}
+    secrets: inherit
 
     steps:
       - name: run secrel
@@ -44,7 +45,7 @@ jobs:
       - name: set job status
         if: success()
         run: echo "JOB_STATUS=success" >> $GITHUB_ENV
-    secrets: inherit
+
 
   notify-secrel-error:
     needs: build-and-scan
