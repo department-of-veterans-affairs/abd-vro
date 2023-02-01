@@ -6,12 +6,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.end2end.util.RestHelper;
+import gov.va.vro.end2end.util.TestSetup;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +37,8 @@ public class VroV2Tests {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   private final RestTemplate restTemplate = new RestTemplate();
+
+  private final RestHelper helper = new RestHelper();
 
   /*
    * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
@@ -114,6 +122,19 @@ public class VroV2Tests {
     assertEquals(
         "Claim with [collection id = 351] does not qualify for automated processing because it is missing anchors.",
         masResponse.getMessage());
+  }
+
+  @Test
+  void testPdfGenerationAndFetch() throws Exception {
+    TestSetup setup = TestSetup.getInstance("test-7101-01");
+    helper.setApiKey("test-key-01");
+    ResponseEntity<String> response = helper.generatePdf(setup);
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    String actual = response.getBody();
+    String expected = setup.getGeneratePdfResponse();
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    ResponseEntity<byte[]> fetchResponse = helper.getPdf(setup);
+    Assertions.assertEquals(HttpStatus.OK, fetchResponse.getStatusCode());
   }
 
   @SneakyThrows
