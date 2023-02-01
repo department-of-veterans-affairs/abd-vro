@@ -36,15 +36,16 @@ jobs:
     secrets: inherit
 
   report-job-status:
+    # only run for the internal repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    outputs:
+      job_status: ${{ env.JOB_STATUS }}
     needs: build-and-scan
     runs-on: ubuntu-latest
 
-    # only run for the internal repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
-    name: Set Job Status
-    run: echo "JOB_STATUS=success" >> $GITHUB_ENV
-    outputs:
-      job_status: ${{ env.JOB_STATUS }}
+    steps:
+      - name: Set Job Status
+        run: echo "JOB_STATUS=success" >> $GITHUB_ENV
 
   notify-secrel-error:
     needs: report-job-status
