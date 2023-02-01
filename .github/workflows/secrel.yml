@@ -43,7 +43,7 @@ jobs:
 #    with:
 #      config-file: .github/secrel/config.yml
       - name: set job status
-        if: success()
+#        if: success()
         run: echo "JOB_STATUS=success" >> $GITHUB_ENV
 
 
