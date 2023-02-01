@@ -12,7 +12,7 @@ def extract_date(date_string):
     try:
         date_entity = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%SZ").date()
     except ValueError:
-        date_entity = datetime.today()
+        date_entity = datetime.today().date()
 
     return date_entity
 
