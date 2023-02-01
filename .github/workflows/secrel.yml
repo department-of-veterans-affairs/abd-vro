@@ -39,53 +39,30 @@ jobs:
       - name: run secrel
 #    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v3.2.0
 #        uses: actions/checkout@v3
-        run: exit 0 #0 is success, 1+ is failed
+        run: exit 1 #0 is success, 1+ is failed
 #    with:
 #      config-file: .github/secrel/config.yml
       - name: set job status
         id: job-status
-#        if: success()
         run: |
           echo "JOB_STATUS=success" >> $GITHUB_ENV
-          echo "GITHUB_ENV: $GITHUB_ENV"
-          cat $GITHUB_ENV
-          echo "success" > job-result.txt
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: result
-          path: job-result.txt
 
   notify-secrel-error:
     needs: build-and-scan
     runs-on: ubuntu-latest
-    # only run for the internal repo
     if: always()
     steps:
       - name: debug
         uses: hmarr/debug-action@v2
 
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: result
-
-      - name: otherdebug
-        run: |
-          echo "JOB_STATUS: $JOB_STATUS"
-          echo "GITHUB_ENV: $GITHUB_ENV"
-          cat $GITHUB_ENV
-          value=`cat job-result.txt`
-          echo "value=$value"
-
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
         if: ${{ needs.build-and-scan.outputs.job_status == 'failed' && github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
-#        if: ${{ env.JOB_STATUS }} == 'failed'  && github.repository == 'department-of-veterans-affairs/abd-vro-internal'
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           # slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
-          slack-text: ${{ env.DEPLOY_STATE_TEXT }}
+          slack-text: "${{ env.DEPLOY_STATE_TEXT }} \n\
+              ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
+              caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
