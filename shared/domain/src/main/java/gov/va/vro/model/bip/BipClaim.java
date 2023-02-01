@@ -9,7 +9,6 @@ import lombok.Data;
  *
  * @author warren @Date 11/8/22
  */
-// @RequiredArgsConstructor
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
