@@ -39,7 +39,7 @@ jobs:
       - name: run secrel
 #    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v3.2.0
 #        uses: actions/checkout@v3
-        run: exit 1 #0 is success, 1+ is failed
+        run: exit 0 #0 is success, 1+ is failed
 #    with:
 #      config-file: .github/secrel/config.yml
       - name: set job status
@@ -82,7 +82,7 @@ jobs:
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
-        if: ${{ needs.build-and-scan.outputs.job_status == 'failed' }} && github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+        if: ${{ needs.build-and-scan.outputs.job_status == 'failed' && github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
 #        if: ${{ env.JOB_STATUS }} == 'failed'  && github.repository == 'department-of-veterans-affairs/abd-vro-internal'
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
