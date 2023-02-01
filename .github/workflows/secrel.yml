@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       job_status: ${{ env.JOB_STATUS }}
-    secrets: inherit
+#    secrets: inherit
 
     steps:
       - name: run secrel
