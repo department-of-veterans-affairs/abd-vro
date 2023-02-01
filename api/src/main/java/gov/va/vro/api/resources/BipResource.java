@@ -57,10 +57,6 @@ public interface BipResource {
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
             content = @Content(schema = @Schema(hidden = true)))
@@ -82,10 +78,6 @@ public interface BipResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
@@ -111,12 +103,8 @@ public interface BipResource {
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
             responseCode = "500",
-            description = "Data Access Server Error",
+            description = "Data Access Server Error.",
             content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "bip-claim-contention")
@@ -138,10 +126,6 @@ public interface BipResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
@@ -166,10 +150,6 @@ public interface BipResource {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
             description = "Data Access Server Error",
