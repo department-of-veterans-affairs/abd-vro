@@ -45,7 +45,9 @@ jobs:
       - name: set job status
         id: job-status
 #        if: success()
-        run: echo "job_status=success" >> $GITHUB_OUTPUT
+        run: |
+          echo "job_status=success" >> $GITHUB_OUTPUT
+          echo $GITHUB_OUTPUT
 
 
   notify-secrel-error:
