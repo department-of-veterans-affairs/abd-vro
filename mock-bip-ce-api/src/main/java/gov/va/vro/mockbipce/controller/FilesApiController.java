@@ -2,6 +2,7 @@ package gov.va.vro.mockbipce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.api.FilesApi;
+import gov.va.vro.mockbipce.config.BasicStore;
 import gov.va.vro.mockbipce.model.EvidenceFile;
 import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Controller
 @Slf4j
 public class FilesApiController implements FilesApi {
-  @Autowired private EvidenceFileRepository repository;
+  @Autowired private BasicStore store;
 
   @SneakyThrows
   @Override
@@ -55,7 +56,7 @@ public class FilesApiController implements FilesApi {
     evidenceFile.setUuid(UUID.randomUUID());
     evidenceFile.setPayload(payloadObj);
     evidenceFile.setContent(file.getBytes());
-    repository.save(evidenceFile);
+    store.put(evidenceFile);
 
     log.info("========= Payload Start ======");
     log.info(folderUri);

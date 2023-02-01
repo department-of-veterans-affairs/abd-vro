@@ -91,6 +91,7 @@ public class FilesTest {
     TestSpec spec = TestSpec.getBasicExample();
     spec.setPort(port);
     spec.setIdType("PARTICIPANT_ID");
+    spec.setVeteranFileNumber("123459");
 
     auxRunTest(spec);
   }
@@ -100,6 +101,7 @@ public class FilesTest {
     TestSpec spec = TestSpec.getBasicExample();
     spec.setPort(port);
     spec.setIgnoreFolderUri(true);
+    spec.setVeteranFileNumber("145459");
 
     auxRunTest(spec);
   }
@@ -109,6 +111,7 @@ public class FilesTest {
     TestSpec spec = TestSpec.getBasicExample();
     spec.setPort(port);
     spec.setVeteranFileNumber("");
+    spec.setVeteranFileNumber("144523459");
 
     auxRunTest(spec);
   }

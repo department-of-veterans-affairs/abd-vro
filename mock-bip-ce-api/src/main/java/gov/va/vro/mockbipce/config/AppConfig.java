@@ -9,4 +9,9 @@ public class AppConfig {
   public JwtProps jwtProps() {
     return new JwtProps();
   }
+
+  @Bean
+  public BasicStore basicStore() {
+    return new BasicStore();
+  }
 }

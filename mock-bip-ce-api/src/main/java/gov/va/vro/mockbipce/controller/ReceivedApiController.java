@@ -1,6 +1,7 @@
 package gov.va.vro.mockbipce.controller;
 
 import gov.va.vro.mockbipce.api.ReceivedApi;
+import gov.va.vro.mockbipce.config.BasicStore;
 import gov.va.vro.mockbipce.model.EvidenceFile;
 import gov.va.vro.mockbipce.repository.EvidenceFileRepository;
 import lombok.SneakyThrows;
@@ -19,18 +20,16 @@ import java.util.Optional;
 @Controller
 @Slf4j
 public class ReceivedApiController implements ReceivedApi {
-  @Autowired private EvidenceFileRepository repository;
+  @Autowired private BasicStore store;
 
   @SneakyThrows
   @Override
   public ResponseEntity<byte[]> download(String fileNumber) {
-    Optional<EvidenceFile> record = repository.findById(fileNumber);
-    if (record.isEmpty()) {
+    EvidenceFile evidenceFile = store.get(fileNumber);
+    if (evidenceFile == null) {
       HttpStatus status = HttpStatus.NOT_FOUND;
       throw new ResponseStatusException(status, status.getReasonPhrase());
     }
-
-    EvidenceFile evidenceFile = record.get();
     byte[] content = evidenceFile.getContent();
     String filename = evidenceFile.getPayload().getContentName();
 
