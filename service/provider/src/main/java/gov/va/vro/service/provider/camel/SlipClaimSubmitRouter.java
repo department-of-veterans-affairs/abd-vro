@@ -1,12 +1,12 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangeProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,17 +20,6 @@ public class SlipClaimSubmitRouter {
   private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
   public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
-  public static final Map<String, String> diagnoses;
-
-  static {
-    diagnoses = new HashMap<>();
-    diagnoses.put("7101", "hypertension");
-    diagnoses.put("7101v2", "hypertension");
-    diagnoses.put("6602v2", "asthma");
-    diagnoses.put("6602", "asthma");
-    diagnoses.put("1233", "1233");
-  }
-
   /**
    * Computes endpoint where claim should be routed next.
    *
@@ -38,8 +27,7 @@ public class SlipClaimSubmitRouter {
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
   public String routeClaimSubmit(Claim claim) {
-    String diagnosticCode = claim.getDiagnosticCode();
-    String diagnosis = getDiagnosis(diagnosticCode);
+    String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode()).toLowerCase();
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
@@ -59,7 +47,7 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
-    String diagnosis = getDiagnosis(diagnosticCode);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
@@ -78,7 +66,7 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
-    String diagnosis = getDiagnosis(diagnosticCode);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health"
@@ -95,9 +83,5 @@ public class SlipClaimSubmitRouter {
       throw new CamelProcessingException(NO_DIAGNOSTIC_CODE_ERROR);
     }
     return diagnosticCodeObj.toString();
-  }
-
-  private static String getDiagnosis(String diagnosticCode) {
-    return diagnoses.get(diagnosticCode);
   }
 }
