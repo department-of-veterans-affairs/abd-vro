@@ -1,4 +1,4 @@
-package org.openapitools;
+package gov.va.vro.mockbipce.config;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
