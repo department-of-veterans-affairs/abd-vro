@@ -47,7 +47,7 @@ jobs:
 #        if: success()
         run: |
           echo "job_status=success" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
 
 
   notify-secrel-error:
@@ -58,6 +58,9 @@ jobs:
     steps:
       - name: debug
         uses: hmarr/debug-action@v2
+        run: |
+          echo "job_status=success" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
 
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
