@@ -118,7 +118,7 @@ public class MasControllerTest extends BaseControllerTest {
           completeCalled.set(true);
         });
 
-    var request = MasTestData.getMasAutomatedClaimRequest();
+    var request = MasTestData.getMasAutomatedClaimRequest2();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertTrue(offrampCalled.get());

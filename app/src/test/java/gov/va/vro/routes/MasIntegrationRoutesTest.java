@@ -84,7 +84,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "claim-submit",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
-            + "requestTimeout=60000&routingKey=code.1233",
+            + "requestTimeout=60000&routingKey=code.hypertension",
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
@@ -97,7 +97,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "mas-processing",
-        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.1233&"
+        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.hypertension&"
             + "requestTimeout=60000",
         "mock:sufficiency-assess");
 
