@@ -149,14 +149,13 @@ public class BipController implements BipResource {
       req.setCreateContentions(contentions);
       BipUpdateClaimResp resp = service.addClaimContention(payload.getClaimId(), req);
       boolean isCreated = resp.getStatus() == HttpStatus.CREATED;
-      // TODO: If isCreated, return the contention content.
       BipContentionCreationResponse response =
           BipContentionCreationResponse.builder()
               .claimId(payload.getClaimId())
               .created(isCreated)
               .message(resp.getMessage())
               .build();
-      return ResponseEntity.ok(response);
+      return ResponseEntity.status(resp.getStatus()).body(response);
     } catch (BipException e) {
       log.error("failed to create contention for claim {}", payload.getClaimId(), e);
       BipContentionCreationResponse badResp =
