@@ -48,10 +48,12 @@ jobs:
         run: echo "JOB_STATUS=success" >> $GITHUB_ENV
 
   notify-secrel-error:
-    needs: report-job-status
+    needs:
+      - report-job-status
+      - build-and-scan
     runs-on: ubuntu-latest
 
-    if: always()
+    if: always() && failure()
     steps:
       - name: "Notify Slack on SecRel Failure"
         id: notify-slack
