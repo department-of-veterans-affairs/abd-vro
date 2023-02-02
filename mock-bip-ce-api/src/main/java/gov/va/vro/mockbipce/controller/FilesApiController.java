@@ -41,17 +41,18 @@ public class FilesApiController implements FilesApi {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No X-Folder-URI header");
     }
     String[] folderInfo = folderUri.split(":");
-    if (folderInfo.length < 2) {
+    if (folderInfo.length < 3) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid X-Folder-URI header");
     }
-    if (!"FILENUMBER".equals(folderInfo[0])) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only file numbers supported");
+    if (!("VETERAN".equals(folderInfo[0]) && "FILENUMBER".equals(folderInfo[1]))) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Only veteran file numbers supported");
     }
 
     ObjectMapper mapper = new ObjectMapper();
     BipFileUploadPayload payloadObj = mapper.readValue(payload, BipFileUploadPayload.class);
     EvidenceFile evidenceFile = new EvidenceFile();
-    evidenceFile.setFileNumber(folderInfo[1]);
+    evidenceFile.setFileNumber(folderInfo[2]);
     evidenceFile.setUuid(UUID.randomUUID());
     evidenceFile.setPayload(payloadObj);
     evidenceFile.setContent(file.getBytes());
