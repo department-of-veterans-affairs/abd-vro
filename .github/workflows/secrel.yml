@@ -20,8 +20,6 @@ env:
 
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
-  DEPLOY_STATE_EMOJI: 'x'
-  JOB_STATUS: 'failed'
 
 jobs:
   build-and-scan:
