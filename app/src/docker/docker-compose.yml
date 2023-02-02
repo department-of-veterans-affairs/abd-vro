@@ -335,6 +335,10 @@ services:
     image: va/abd_vro-mock-bip-ce-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
+    hostname: mock-bip-ce-api
+    ports:
+      - "8094:8094"
+      - "8095:8095"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
