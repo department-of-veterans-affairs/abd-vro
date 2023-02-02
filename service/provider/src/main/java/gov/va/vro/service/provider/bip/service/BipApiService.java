@@ -61,7 +61,6 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
-      log.info("jwt: {}", headers.get("Authorization")); // TODO: remove it after test.
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
@@ -178,7 +177,6 @@ public class BipApiService implements IBipApiService {
       HttpHeaders headers = getBipHeader();
       String createContention = mapper.writeValueAsString(contention);
       HttpEntity<String> request = new HttpEntity<>(createContention, headers);
-      log.info("createContesion: \n {}", createContention);
       ResponseEntity<String> bipResponse = restTemplate.postForEntity(url, request, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.CREATED) {
         return new BipUpdateClaimResp(HttpStatus.CREATED, bipResponse.getBody());
