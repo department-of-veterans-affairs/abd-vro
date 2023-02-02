@@ -51,11 +51,6 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   private List<String> documentsWithoutAnnotationsChecked;
 
-  /**
-   * Get diagnostic code.
-   *
-   * @return code.
-   */
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
