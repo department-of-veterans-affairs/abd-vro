@@ -133,7 +133,8 @@ from assessclaimdc7101.src.lib import main
                                               'relevant': False,
                                               'dateFormatted': '',
                                               'text': 'snomed diagnosis'}],
-                              'medications': []},
+                              'medications': [],
+                              'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'recentBpReadings': 3,
                                      'relevantConditionsCount': 1,
@@ -428,7 +429,8 @@ from assessclaimdc7101.src.lib import main
                                                                  "pressure",
                                                       "unit": "mm[Hg]",
                                                       "value": 200}}],
-                        "conditions": []
+                        "conditions": [],
+                        'documentsWithoutAnnotationsChecked': ["{guid}"]
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
@@ -467,7 +469,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
-                              'documentsWithoutAnnotationsChecked': []},
+                              'documentsWithoutAnnotationsChecked': ["{guid}"]},
                  'evidenceSummary': {
                      'recentBpReadings': 2,
                      'relevantConditionsCount': 0,
@@ -597,7 +599,8 @@ from assessclaimdc7101.src.lib import main
                                                                        'pressure',
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
-                              'conditions': []},
+                              'conditions': [],
+                              'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {
                      'recentBpReadings': 4,
                      'relevantConditionsCount': 0,
@@ -732,7 +735,8 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 180}}],
                               'conditions': [],
-                              'medications': []},
+                              'medications': [],
+                              'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'recentBpReadings': 4,
                                      'relevantConditionsCount': 0,
@@ -758,7 +762,7 @@ from assessclaimdc7101.src.lib import main
                 ,
                 {"claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                  "disabilityActionType": "INCREASE",
-                 "evidence": {"bp_readings": [], "conditions": [], "medications": []},
+                 "evidence": {"bp_readings": [], "conditions": [], "medications": [], 'documentsWithoutAnnotationsChecked': []},
                  "evidenceSummary": {
                      "medicationsCount": 0,
                      "relevantConditionsCount": 0,

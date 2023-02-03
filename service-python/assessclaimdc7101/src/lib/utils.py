@@ -11,9 +11,9 @@ def docs_without_annotations_ids(event):
     :return: list of strings
     """
     doc_ids = []
-    if "documentsWithoutAnnotationsChecked" in event.keys():
-        if event["documentsWithoutAnnotationsChecked"] is not None:
-            doc_ids = event["documentsWithoutAnnotationsChecked"]
+    if "documentsWithoutAnnotationsChecked" in list(event["evidence"].keys()):
+        if event["evidence"]["documentsWithoutAnnotationsChecked"] is not None:
+            doc_ids = event["evidence"]["documentsWithoutAnnotationsChecked"]
     return doc_ids
 
 
