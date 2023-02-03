@@ -95,7 +95,8 @@ public class MasIntegrationProcessors {
     veteranInfo.setLast(claimPayload.getLastName());
     veteranInfo.setMiddle("");
     veteranInfo.setBirthdate(claimPayload.getDateOfBirth());
-    generatePdfPayload.setVeteranFileId(claimPayload.getClaimId());
+    String claimId = String.valueOf(claimPayload.getClaimId());
+    generatePdfPayload.setVeteranFileId(claimId);
     generatePdfPayload.setVeteranInfo(veteranInfo);
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
