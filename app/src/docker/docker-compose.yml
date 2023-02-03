@@ -330,3 +330,21 @@ services:
         condition: service_healthy
     networks:
       - internal
+
+  mock-bip-ce-api:
+    image: va/abd_vro-mock-bip-ce-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-bip-ce-api
+    ports:
+      - "8094:8094"
+      - "8095:8095"
+      - "8096:8096"
+    environment:
+      <<: *common-vars
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+    networks:
+      - internal
