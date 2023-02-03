@@ -104,8 +104,8 @@ public class MockBipApiService implements IBipApiService {
     } else if (collectionId == 351) {
       // wrong station
       return buildClaim(999, "OTHER");
-    } else if (collectionId == CLAIM_ID_404) { // invalid claim ID, throw BipException
-      throw new BipException(HttpStatus.NOT_FOUND, ERR_MSG_404);
+    } else if (collectionId == CLAIM_ID_404) { // invalid claim ID, return null per BipClaimService.
+      return null;
     } else if (collectionId == CLAIM_ID_401) { // not authorized, throw BipException
       throw new BipException(HttpStatus.UNAUTHORIZED, ERR_MSG_401);
     } else if (collectionId == CLAIM_ID_500) { // internal error, throw BipException

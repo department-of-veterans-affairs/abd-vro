@@ -67,6 +67,8 @@ public class BipApiService implements IBipApiService {
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
         return result.getClaim();
+      } else if (bipResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+        return null;
       } else {
         log.error(
             "Failed to get claim details for {}. {} \n{}",
