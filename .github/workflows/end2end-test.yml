@@ -54,6 +54,8 @@ jobs:
 
       - name: "Run the end-to-end tests"
         run: ./gradlew :app:end2EndTest --info
+        env:
+          ENV: "end2end-test"
 
       - name: "Clean docker container and images"
         run: ./gradlew dockerclean

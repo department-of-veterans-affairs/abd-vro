@@ -2,7 +2,7 @@
 all-secrets.txt
 
 # Files possibly copied from repo abd-vro-dev-secrets
-./setenv.sh
+abd-vro-dev-secrets/setenv.sh
 
 #Ignoring cache folders
 .cache

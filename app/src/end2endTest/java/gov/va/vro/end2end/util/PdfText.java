@@ -3,10 +3,6 @@ package gov.va.vro.end2end.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.io.RandomAccessBuffer;
-import org.apache.pdfbox.pdfparser.PDFParser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 /**
  * This class represents the text of the evidence pdf as extracted by Apache PDFBox. It is used for
@@ -54,15 +50,7 @@ public class PdfText {
    * @throws Exception any error to fail the test
    */
   public static PdfText getInstance(byte[] pdfContent) throws Exception {
-    RandomAccessBuffer buffer = new RandomAccessBuffer(pdfContent);
-    PDFParser parser = new PDFParser(buffer);
-    parser.parse();
-
-    PDDocument document = parser.getPDDocument();
-
-    PDFTextStripper stripper = new PDFTextStripper();
-    stripper.setSortByPosition(true);
-    String text = stripper.getText(document);
+    String text = PdfUtil.getText(pdfContent);
     return new PdfText(text);
   }
 }

@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +27,12 @@ public class SlipClaimSubmitRouter {
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
   public String routeClaimSubmit(Claim claim) {
-    String diagnosticCode = claim.getDiagnosticCode();
+    String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode()).toLowerCase();
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
                 + "routingKey=code.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -46,10 +47,11 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -64,11 +66,12 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health"
                 + "-sufficiency-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }

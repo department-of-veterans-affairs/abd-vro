@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MasTestData {
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    return getMasAutomatedClaimPayload(123, "1233", "999");
+    return getMasAutomatedClaimPayload(123, "7101", "999");
   }
 
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
