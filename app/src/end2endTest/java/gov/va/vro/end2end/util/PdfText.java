@@ -54,15 +54,7 @@ public class PdfText {
    * @throws Exception any error to fail the test
    */
   public static PdfText getInstance(byte[] pdfContent) throws Exception {
-    RandomAccessBuffer buffer = new RandomAccessBuffer(pdfContent);
-    PDFParser parser = new PDFParser(buffer);
-    parser.parse();
-
-    PDDocument document = parser.getPDDocument();
-
-    PDFTextStripper stripper = new PDFTextStripper();
-    stripper.setSortByPosition(true);
-    String text = stripper.getText(document);
+    String text = PdfUtil.getText(pdfContent);
     return new PdfText(text);
   }
 }
