@@ -15,7 +15,6 @@ def pdf_evidence_request_callback(channel, method, properties, body):
 
     binding_key = method.routing_key
     message = json.loads(body.decode("utf-8"))
-    logging.info(message)
     logging.info(f"claimSubmissionId: {message['claimSubmissionId']}, health data received by {binding_key} processor")
 
     try:
