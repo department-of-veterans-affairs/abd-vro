@@ -24,9 +24,7 @@ public class MasAssessmentResultProcessor implements Processor {
       return;
     }
     saveToDbService.insertAssessmentResult(evidence, diagnosticCode);
-    String claimSubmissionId = evidence.getClaimSubmissionId();
-    Boolean sufficiencyFlag = evidence.isSufficientForFastTracking();
     saveToDbService.updateSufficientEvidenceFlag(
-        claimSubmissionId, sufficiencyFlag, diagnosticCode);
+        evidence.getClaimSubmissionId(), evidence.isSufficientForFastTracking(), diagnosticCode);
   }
 }
