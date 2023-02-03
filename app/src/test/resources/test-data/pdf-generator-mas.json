@@ -120,6 +120,9 @@
         "practitioner": "DR. JOHN248 SMITH811 MD",
         "organization": "LYONS VA MEDICAL CENTER"
       }
+    ],
+    "documentsWithoutAnnotationsChecked": [
+      "{guid1}"
     ]
   }
 }

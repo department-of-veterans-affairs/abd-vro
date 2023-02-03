@@ -38,9 +38,6 @@ public class GeneratePdfPayload {
 
   @NotNull private ClaimCondition conditions;
 
-  @Schema(description = "Documents unavailable for automated review")
-  private List<String> documentsWithoutAnnotationsChecked;
-
   @JsonProperty("evidence")
   private AbdEvidence evidence;
 

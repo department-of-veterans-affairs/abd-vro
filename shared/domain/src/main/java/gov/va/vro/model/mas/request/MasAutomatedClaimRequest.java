@@ -59,7 +59,4 @@ public class MasAutomatedClaimRequest {
 
   @Schema(description = "Veteran Flash Ids")
   private List<String> veteranFlashIds;
-
-  @Schema(description = "Documents unavailable for automated review")
-  private List<String> documentsWithoutAnnotationsChecked;
 }

@@ -49,8 +49,6 @@ public class MasAutomatedClaimPayload implements Auditable {
 
   private List<String> veteranFlashIds;
 
-  private List<String> documentsWithoutAnnotationsChecked;
-
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {

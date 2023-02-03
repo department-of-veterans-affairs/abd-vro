@@ -88,7 +88,8 @@ def assess_sufficiency(event: Dict):
             {
                 "evidence": {
                     "bp_readings": bp_display,
-                    "conditions": conditions_display
+                    "conditions": conditions_display,
+                    "documentsWithoutAnnotationsChecked": event["documentsWithoutAnnotationsChecked"]
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
