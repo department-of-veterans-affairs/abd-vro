@@ -1,9 +1,6 @@
 package gov.va.vro.end2end.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import gov.va.vro.model.VeteranInfo;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class represents the text of the evidence pdf as extracted by Apache PDFBox. It is used for

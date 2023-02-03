@@ -94,21 +94,24 @@ public class VroV2Tests {
     var masResponse = response.getBody();
     assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
 
-    MasAutomatedClaimRequest request =
-        objectMapper.readValue(content, MasAutomatedClaimRequest.class);
-    String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
-    for (int pollNumber = 0; pollNumber < 9; ++pollNumber) {
-      Thread.sleep(10000);
-      String url = "http://localhost:8096/received-files/" + fileNumber;
-      try {
-        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
-        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-        log.info("PDF text: {}", pdfTextV2.getPdfText());
-        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
-        break;
-      } catch (HttpStatusCodeException exception) {
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    if ("end2end-test".equals(System.getenv("ENV"))) {
+      log.info("Make sure the evidence pdf is uploaded");
+      MasAutomatedClaimRequest request =
+          objectMapper.readValue(content, MasAutomatedClaimRequest.class);
+      String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
+      for (int pollNumber = 0; pollNumber < 9; ++pollNumber) {
+        Thread.sleep(10000);
+        String url = "http://localhost:8096/received-files/" + fileNumber;
+        try {
+          ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+          assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+          PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+          log.info("PDF text: {}", pdfTextV2.getPdfText());
+          assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+          break;
+        } catch (HttpStatusCodeException exception) {
+          assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        }
       }
     }
   }

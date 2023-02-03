@@ -341,7 +341,6 @@ services:
       - "8095:8095"
       - "8096:8096"
     environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
       BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
