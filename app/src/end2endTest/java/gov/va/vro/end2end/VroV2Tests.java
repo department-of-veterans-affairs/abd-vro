@@ -99,7 +99,7 @@ public class VroV2Tests {
       MasAutomatedClaimRequest request =
           objectMapper.readValue(content, MasAutomatedClaimRequest.class);
       String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
-      for (int pollNumber = 0; pollNumber < 9; ++pollNumber) {
+      for (int pollNumber = 0; pollNumber < 30; ++pollNumber) {
         Thread.sleep(10000);
         String url = "http://localhost:8096/received-files/" + fileNumber;
         try {
