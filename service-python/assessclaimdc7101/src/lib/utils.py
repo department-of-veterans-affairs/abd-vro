@@ -5,18 +5,15 @@ from cerberus import Validator
 
 def docs_without_annotations_ids(event):
     """
-    Robustly handle MAS documents API scenarios. In case the field is missing or None.
+    Robustly handle scenarios when documents without annotations is not set. In case the field is missing or None.
 
     :param event: MAS json body
     :return: list of strings
     """
     doc_ids = []
     if "documentsWithoutAnnotationsChecked" in event.keys():
-        doc_ids = event["documentsWithoutAnnotationsChecked"]
-
-    if event["documentsWithoutAnnotationsChecked"] is None:
-        doc_ids = []
-
+        if event["documentsWithoutAnnotationsChecked"] is not None:
+            doc_ids = event["documentsWithoutAnnotationsChecked"]
     return doc_ids
 
 
