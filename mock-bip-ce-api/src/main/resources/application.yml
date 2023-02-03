@@ -19,6 +19,8 @@ server:
     trust-store: classpath:client_truststore.p12
     trust-store-password: client_truststore_pw
     trust-store-type: PKCS12
+  http.port: 8096
+
 
 ## Logging
 logging:
@@ -28,6 +30,9 @@ logging:
 ## Health
 
 management:
+  server:
+    port: 8095
+    ssl.enabled: false
   endpoint:
     health:
       show-details: always
