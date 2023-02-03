@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS claim_submission (
     throwable TEXT,
     -- details TEXT, -- no longer needed?
     event_time timestamp NOT NULL,
-    request_type VARCHAR,
-    status VARCHAR,
+    request_type ENUM ('CLAIM_SUBMISSION', 'AUTOMATED_CLAIM', 'OTHER') NOT NULL,
+    status ENUM ('PROCESSED', 'REJECTED', 'ERROR') NOT NULL,
     rfd_flag BOOLEAN,
     PRIMARY KEY(id)
 );
