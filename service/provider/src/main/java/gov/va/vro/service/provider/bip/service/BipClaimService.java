@@ -131,11 +131,11 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    int collectionId = payload.getCollectionId();
-    log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
+    long claimId = payload.getClaimIdAsLong();
+    log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
 
     try {
-      bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
+      bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
     } catch (Exception e) {
       throw new BipException("BIP update claim status resulted in an exception", e);
     }
@@ -145,8 +145,7 @@ public class BipClaimService {
   /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
-    String claimIdString = payload.getClaimPayload().getClaimDetail().getBenefitClaimId();
-    long claimId = Long.parseLong(claimIdString);
+    long claimId = payload.getClaimIdAsLong();
 
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(claimId);
