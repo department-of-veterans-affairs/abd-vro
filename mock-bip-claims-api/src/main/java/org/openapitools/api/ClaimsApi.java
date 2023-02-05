@@ -34,18 +34,12 @@ import java.util.Optional;
 import javax.annotation.Generated;
 import javax.validation.Valid;
 
-@Generated(
-    value = "org.openapitools.codegen.languages.SpringCodegen",
-    date = "2023-02-04T14:34:57.376566-05:00[America/New_York]")
 @Validated
 @Tag(
     name = "claims",
     description = "A tag that organizes resources for contentions within a given claim.")
+@RequestMapping("/")
 public interface ClaimsApi {
-
-  default Optional<NativeWebRequest> getRequest() {
-    return Optional.empty();
-  }
 
   /**
    * POST /claims/{claimId}/contentions : Creates one or more Contentions for a claim.
@@ -133,7 +127,7 @@ public interface ClaimsApi {
       value = "/claims/{claimId}/contentions",
       produces = {"application/json", "application/problem+json"},
       consumes = {"application/json"})
-  default ResponseEntity<CreateContentionsResponse> createContentions(
+  ResponseEntity<CreateContentionsResponse> createContentions(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -144,26 +138,8 @@ public interface ClaimsApi {
       @Parameter(name = "CreateContentionsRequest", description = "", required = true)
           @Valid
           @RequestBody
-          CreateContentionsRequest createContentionsRequest) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
+          CreateContentionsRequest createContentionsRequest);
+
 
   /**
    * GET /claims/{claimId} : Access claim summary information for a claim, using the claimId Get the
@@ -244,33 +220,14 @@ public interface ClaimsApi {
       method = RequestMethod.GET,
       value = "/claims/{claimId}",
       produces = {"application/json", "application/problem+json"})
-  default ResponseEntity<ClaimDetailResponse> getClaimById(
+  ResponseEntity<ClaimDetailResponse> getClaimById(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
               required = true,
               in = ParameterIn.PATH)
           @PathVariable("claimId")
-          Long claimId) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
+          Long claimId);
 
   /**
    * GET /claims/{claimId}/lifecycle_status : Get the lifecycle status(es) of an existing claim.
@@ -375,7 +332,7 @@ public interface ClaimsApi {
       method = RequestMethod.GET,
       value = "/claims/{claimId}/lifecycle_status",
       produces = {"application/json", "application/problem+json"})
-  default ResponseEntity<ClaimLifecycleStatusesResponse> getClaimLifecycleStatuses(
+  ResponseEntity<ClaimLifecycleStatusesResponse> getClaimLifecycleStatuses(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -393,26 +350,7 @@ public interface ClaimsApi {
               in = ParameterIn.QUERY)
           @Valid
           @RequestParam(value = "include_history", required = false, defaultValue = "false")
-          Boolean includeHistory) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
+          Boolean includeHistory);
 
   /**
    * GET /claims/{claimId}/contentions : List summaries for contentions associated with a given
@@ -488,34 +426,14 @@ public interface ClaimsApi {
       method = RequestMethod.GET,
       value = "/claims/{claimId}/contentions",
       produces = {"application/json", "application/problem+json"})
-  default ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(
+  ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
               required = true,
               in = ParameterIn.PATH)
           @PathVariable("claimId")
-          Long claimId) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
-
+          Long claimId);
   /**
    * PUT /claims/{claimId}/lifecycle_status : Update the lifecycle status of an existing claim
    * Update the lifecycle status of an existing claim.
@@ -630,7 +548,7 @@ public interface ClaimsApi {
       value = "/claims/{claimId}/lifecycle_status",
       produces = {"application/json", "application/problem+json"},
       consumes = {"application/json"})
-  default ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
+  ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -641,26 +559,7 @@ public interface ClaimsApi {
       @Parameter(name = "UpdateClaimLifecycleStatusRequest", description = "", required = true)
           @Valid
           @RequestBody
-          UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
+          UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest);
 
   /**
    * PUT /claims/{claimId}/contentions : Updates one or more contentions.
@@ -756,7 +655,7 @@ public interface ClaimsApi {
       value = "/claims/{claimId}/contentions",
       produces = {"application/json", "application/problem+json"},
       consumes = {"application/json"})
-  default ResponseEntity<UpdateContentionsResponse> updateContentions(
+  ResponseEntity<UpdateContentionsResponse> updateContentions(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -767,24 +666,5 @@ public interface ClaimsApi {
       @Parameter(name = "UpdateContentionsRequest", description = "", required = true)
           @Valid
           @RequestBody
-          UpdateContentionsRequest updateContentionsRequest) {
-    getRequest()
-        .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                  String exampleString = "null";
-                  ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                  break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/problem+json"))) {
-                  String exampleString =
-                      "Custom MIME type example not yet supported: application/problem+json";
-                  ApiUtil.setExampleResponse(request, "application/problem+json", exampleString);
-                  break;
-                }
-              }
-            });
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-  }
+          UpdateContentionsRequest updateContentionsRequest);
 }

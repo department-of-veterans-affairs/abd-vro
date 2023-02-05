@@ -9,10 +9,9 @@ import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGe
 @SpringBootApplication(
     nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
     exclude = {
-    org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
-    DataSourceAutoConfiguration.class
-})
-
+      org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
+      DataSourceAutoConfiguration.class
+    })
 @ComponentScan(
     basePackages = {"org.openapitools", "org.openapitools.api", "org.openapitools.configuration"},
     nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)

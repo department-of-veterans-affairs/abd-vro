@@ -1,0 +1,19 @@
+[
+  {
+    "description": "happy path",
+    "claimDetail": {
+      "claimId": 1010,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "specialIssueCodes": [
+          "AOOV",
+          "rrd"
+        ]
+      }
+    ]
+  }
+]
