@@ -1,0 +1,31 @@
+server:
+  port: 8097
+
+spring:
+  jackson:
+    date-format: org.openapitools.Rfc3339DateFormat
+    serialization.WRITE_DATES_AS_TIMESTAMPS: false
+
+
+# Management
+
+management:
+  server:
+    port: 8098
+    ssl.enabled: false
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState
+        liveness:
+          include: livenessState
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health

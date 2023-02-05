@@ -119,7 +119,8 @@ ext {
     ':service:spi',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api'
+    ':mock-bip-ce-api',
+    ':mock-bip-claims-api'
   ]
   dockerModules = [
     ':app',
@@ -130,7 +131,8 @@ ext {
     ':service-python:featuretoggle',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api'
+    ':mock-bip-ce-api',
+    ':mock-bip-claims-api'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
