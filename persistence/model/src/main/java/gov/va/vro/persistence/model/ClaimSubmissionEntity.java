@@ -3,10 +3,8 @@ package gov.va.vro.persistence.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +16,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
-@Table(name = "audit_event")
-public class AuditEventEntity {
+@Table(name = "claim_submission")
+public class ClaimSubmissionEntity {
 
   @Id
   @GeneratedValue(generator = "uuid")
@@ -27,15 +25,13 @@ public class AuditEventEntity {
   @Column(columnDefinition = "BINARY(16)")
   private UUID id;
 
+  private String referenceId;
+  private String idType;
   @NotNull private String eventId;
   private String routeId;
   @NotNull private String payloadType;
   private String throwable;
   private String message;
-  // private String details;
-  @Type(type = "json")
-  @Column(columnDefinition = "jsonb")
-  private Map<String, String> details;
-
+  private String details;
   @NotNull private ZonedDateTime eventTime = ZonedDateTime.now();
 }

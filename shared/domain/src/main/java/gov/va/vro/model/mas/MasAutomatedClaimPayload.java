@@ -1,14 +1,15 @@
 package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.event.Auditable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -22,8 +23,6 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
-
-  @JsonIgnore private final ObjectMapper objectMapper = new ObjectMapper();
 
   private String correlationId;
 
@@ -104,22 +103,23 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Override
   @SneakyThrows
   @JsonIgnore
-  public String getDetails() {
-    var details =
-        MasEventDetails.builder()
-            .claimId(Objects.toString(getClaimId()))
-            .collectionId(Objects.toString(getCollectionId()))
-            .diagnosticCode(getDiagnosticCode())
-            .veteranIcn(getVeteranIcn())
-            .disabilityActionType(getDisabilityActionType())
-            .flashIds(getVeteranFlashIds())
-            .inScope(isInScope())
-            .presumptive(isPresumptive())
-            .submissionSource(claimDetail == null ? null : claimDetail.getClaimSubmissionSource())
-            .submissionDate(claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime())
-            .offRampReason(getOffRampReason())
-            .build();
-    return objectMapper.writeValueAsString(details);
+  public Map<String, String> getDetails() {
+    Map<String, String> detailsMap = new HashMap<>();
+    detailsMap.put("claimId", Objects.toString(getClaimId()));
+    detailsMap.put("collectionId", Objects.toString(getCollectionId()));
+    detailsMap.put("diagnosticCode", getDiagnosticCode());
+    detailsMap.put("veteranIcn", getVeteranIcn());
+    detailsMap.put("disabilityActionType", getDisabilityActionType());
+    detailsMap.put(
+        "flashIds", getVeteranFlashIds() == null ? null : Objects.toString(getVeteranFlashIds()));
+    detailsMap.put("inScope", Objects.toString(isInScope()));
+    detailsMap.put("presumptive", Objects.toString(isPresumptive()));
+    detailsMap.put(
+        "submissionSource", claimDetail == null ? null : claimDetail.getClaimSubmissionSource());
+    detailsMap.put(
+        "submissionDate", claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime());
+    detailsMap.put("offRampReason", getOffRampReason());
+    return detailsMap;
   }
 
   @JsonIgnore

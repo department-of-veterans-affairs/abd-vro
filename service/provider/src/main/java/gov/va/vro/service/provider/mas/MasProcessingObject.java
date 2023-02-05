@@ -6,6 +6,8 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class MasProcessingObject implements Auditable {
 
@@ -36,7 +38,7 @@ public class MasProcessingObject implements Auditable {
   }
 
   @Override
-  public String getDetails() {
+  public Map<String, String> getDetails() {
     return claimPayload.getDetails();
   }
 
