@@ -32,8 +32,10 @@ public class AuditEventEntity {
   @NotNull private String payloadType;
   private String throwable;
   private String message;
+
   @Type(type = "json")
   @Column(columnDefinition = "jsonb")
   private Map<String, String> details;
+
   @NotNull private ZonedDateTime eventTime = ZonedDateTime.now();
 }
