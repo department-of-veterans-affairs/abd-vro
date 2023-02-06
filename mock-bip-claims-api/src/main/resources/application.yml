@@ -49,10 +49,10 @@ management:
         include: health
 
 ## mock specific
-mock-bip-cce-api:
+mock-bip-claims-api:
   jwt:
-    userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
-    secret: "${BIP_EVIDENCE_SECRET:theSecret}"
-    issuer: "${BIP_EVIDENCE_ISS:VRO}"
+    userId: "${BIP_CLAIM_USERID:VRO_USER}"
+    secret: "${BIP_CLAIM_SECRET:theSecret}"
+    issuer: "${BIP_CLAIM_ISS:VRO}"
     stationId: "${BIP_STATION_ID:281}"
     expirationSeconds: 900
