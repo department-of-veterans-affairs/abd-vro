@@ -18,7 +18,6 @@ import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -33,7 +32,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -146,8 +144,6 @@ public class MasControllerTest extends BaseControllerTest {
 
     var request = MasTestData.getMasAutomatedClaimRequest(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
-    log.error(">>>>> MasControllerTest > responseEntity: ", responseEntity.toString());
-    System.out.println(">>>>> MasControllerTest > audit: " + responseEntity.toString());
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     mockMasOfframpEndpoint.expectedMessageCount(1);
 
@@ -157,22 +153,13 @@ public class MasControllerTest extends BaseControllerTest {
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
     assertTrue(audits.size() > 0);
     var audit = audits.get(0);
-    log.error(">>>>> MasControllerTest > audit: ", audit);
     var details = objectMapper.convertValue(audit.getDetails(), MasEventDetails.class);
-    // Map<String, String> details = audit.getDetails();
-    // log.warn(">>>>> MasControllerTest > details: ", details);
     assertEquals("999", details.getClaimId());
     assertEquals("567", details.getCollectionId());
     assertEquals("7101", details.getDiagnosticCode());
     assertEquals("X", details.getVeteranIcn());
     assertEquals("VA.GOV", details.getSubmissionSource());
     assertTrue(details.isInScope());
-    // assertEquals("999", details.get("claimId"));
-    // assertEquals("567", details.get("collectionId"));
-    // assertEquals("7101", details.get("diagnosticCode"));
-    // assertEquals("X", details.get("veteranIcn"));
-    // assertEquals("VA.GOV", details.get("submissionSource"));
-    // assertEquals("true", details.get("inScope"));
   }
 
   @Test

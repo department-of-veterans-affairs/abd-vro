@@ -13,10 +13,11 @@ public class TestDataSupplier {
    *
    * @return return value
    */
-  public static VeteranEntity createVeteran(String icn, String participantId) {
+  public static VeteranEntity createVeteran(String icn, String participantId, String icnTimestamp) {
     VeteranEntity veteran = new VeteranEntity();
     veteran.setIcn(icn);
     veteran.setParticipantId(participantId);
+    veteran.setIcnTimestamp(icnTimestamp);
     return veteran;
   }
 

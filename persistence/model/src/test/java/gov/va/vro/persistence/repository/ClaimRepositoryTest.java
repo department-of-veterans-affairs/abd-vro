@@ -20,9 +20,10 @@ public class ClaimRepositoryTest {
 
   @Test
   void test() {
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    var veteran = TestDataSupplier.createVeteran("X", "Y", "Z");
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
+    assertNotNull(veteran.getIcnTimestamp());
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
     EvidenceSummaryDocumentEntity evidenceSummaryDocument1 = new EvidenceSummaryDocumentEntity();
