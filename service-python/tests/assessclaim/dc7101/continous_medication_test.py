@@ -240,6 +240,12 @@ def test_continuous_medication_required(
                                 "status": "active",
                                 "authoredOn": "2021-04-06T04:00:00Z",
                             },
+                            {
+                                "description": "some medication",
+                                "status": "active",
+                                "authoredOn": "",
+                                "partial_date": "**/**/1988"
+                            },
                         ],
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
@@ -258,6 +264,12 @@ def test_continuous_medication_required(
                             "status": "active",
                             "dateFormatted": "unparsed (1952-?-06T04:00:00Z)",
                             "authoredOn": "1952-?-06T04:00:00Z",  # malformed
+                        },
+                        {
+                            "description": "some medication",
+                            "status": "active",
+                            "authoredOn": "",
+                            "dateFormatted": "unparsed (**/**/1988)"
                         },
                     ],
                     "medicationsCount": 2,

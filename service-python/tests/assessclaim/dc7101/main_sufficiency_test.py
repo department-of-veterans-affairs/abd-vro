@@ -260,8 +260,14 @@ from assessclaimdc7101.src.lib import main
                         "medications": [{
                             "text": "some medication",
                             "relevant": True,
-                            "authoredOn": "1950-04-06T07:24:55Z"
-                        }]
+                            "authoredOn": "1950-04-06T07:24:55Z",
+                        },
+                            {
+                                "text": "some medication",
+                                "relevant": True,
+                                "authoredOn": "",
+                                "partial_date": "**/**/1988"
+                            }]
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",

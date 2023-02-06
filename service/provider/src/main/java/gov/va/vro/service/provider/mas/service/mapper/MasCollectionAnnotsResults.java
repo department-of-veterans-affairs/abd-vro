@@ -133,6 +133,9 @@ public class MasCollectionAnnotsResults {
     } else {
       abdMedication.setAuthoredOn("");
     }
+    if (masAnnotation.getPartialDate() != null) {
+      abdMedication.setPartialDate(masAnnotation.getPartialDate());
+    }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
     return abdMedication;
@@ -149,6 +152,9 @@ public class MasCollectionAnnotsResults {
       abdCondition.setOnsetDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
     } else {
       abdCondition.setOnsetDate("");
+    }
+    if (masAnnotation.getPartialDate() != null) {
+      abdCondition.setPartialDate(masAnnotation.getPartialDate());
     }
     return abdCondition;
   }
