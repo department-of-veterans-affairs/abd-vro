@@ -17,21 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
 public class ClaimsApiController implements ClaimsApi {
-  @Autowired
-  private ClaimStore claimStore;
-
+  @Autowired private ClaimStore claimStore;
 
   @Override
   public ResponseEntity<CreateContentionsResponse> createContentions(
-      Long claimId,
-      CreateContentionsRequest createContentionsRequest) {
-      return null;
+      Long claimId, CreateContentionsRequest createContentionsRequest) {
+    return null;
   }
 
   @Override
@@ -58,22 +54,19 @@ public class ClaimsApiController implements ClaimsApi {
 
   @Override
   public ResponseEntity<ClaimLifecycleStatusesResponse> getClaimLifecycleStatuses(
-      Long claimId,
-      Boolean includeHistory) {
-    return  null;
+      Long claimId, Boolean includeHistory) {
+    return null;
   }
 
   @Override
   public ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
-      Long claimId,
-      UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest) {
+      Long claimId, UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest) {
     return null;
   }
 
   @Override
   public ResponseEntity<UpdateContentionsResponse> updateContentions(
-      Long claimId,
-      UpdateContentionsRequest updateContentionsRequest) {
+      Long claimId, UpdateContentionsRequest updateContentionsRequest) {
     return null;
   }
 }

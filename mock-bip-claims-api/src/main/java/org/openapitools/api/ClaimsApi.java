@@ -19,8 +19,6 @@ import org.openapitools.model.UpdateClaimLifecycleStatusRequest;
 import org.openapitools.model.UpdateClaimLifecycleStatusResponse;
 import org.openapitools.model.UpdateContentionsRequest;
 import org.openapitools.model.UpdateContentionsResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,10 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Optional;
-import javax.annotation.Generated;
 import javax.validation.Valid;
 
 @Validated
@@ -139,7 +134,6 @@ public interface ClaimsApi {
           @Valid
           @RequestBody
           CreateContentionsRequest createContentionsRequest);
-
 
   /**
    * GET /claims/{claimId} : Access claim summary information for a claim, using the claimId Get the

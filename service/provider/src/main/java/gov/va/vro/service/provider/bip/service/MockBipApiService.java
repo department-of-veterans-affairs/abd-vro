@@ -101,6 +101,9 @@ public class MockBipApiService implements IBipApiService {
     if (collectionId == 350 || collectionId == 353) {
       // valid
       return buildClaim(1234, BipClaimService.TSOJ);
+    } else if (collectionId == 1001) {
+      // valid
+      return buildClaim(1001, BipClaimService.TSOJ);
     } else if (collectionId == 885491) {
       // wrong station
       return buildClaim(885491, "OTHER");
@@ -134,7 +137,7 @@ public class MockBipApiService implements IBipApiService {
 
   @Override
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
-    if (claimId == 1234) {
+    if (claimId == 1234 || claimId == 1001) {
       return List.of(
           buildContention(BipClaimService.SPECIAL_ISSUE_1, BipClaimService.SPECIAL_ISSUE_2));
     } else if (claimId == CLAIM_ID_204) { // No data. Returns an empty list.
