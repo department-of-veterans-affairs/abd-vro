@@ -3,6 +3,8 @@ package gov.va.vro.persistence.repository;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 
+import java.util.Date;
+
 public class TestDataSupplier {
   /***
    * <p>Create Veteran.</p>
@@ -13,7 +15,7 @@ public class TestDataSupplier {
    *
    * @return return value
    */
-  public static VeteranEntity createVeteran(String icn, String participantId, String icnTimestamp) {
+  public static VeteranEntity createVeteran(String icn, String participantId, Date icnTimestamp) {
     VeteranEntity veteran = new VeteranEntity();
     veteran.setIcn(icn);
     veteran.setParticipantId(participantId);
