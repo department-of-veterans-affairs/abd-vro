@@ -22,8 +22,8 @@ logging_setup.set_format()
 @pytest.mark.parametrize(
     "queue, service_queue_name", [
         (q6602v2, "6602v2"),
-        (q6602, "6602"),
-        (q7101, "7101"),
+        (q6602, "asthma"),
+        (q7101, "hypertension"),
         (q6522, "6522"),
         (qcancer, "cancer")
     ]
