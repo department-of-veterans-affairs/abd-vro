@@ -135,8 +135,7 @@ public class MasCollectionAnnotsResults {
     }
     if (masAnnotation.getPartialDate() != null) {
       abdMedication.setPartialDate(masAnnotation.getPartialDate());
-    }
-    else {
+    } else {
       abdMedication.setPartialDate("");
     }
     abdMedication.setRoute(null);
@@ -158,8 +157,7 @@ public class MasCollectionAnnotsResults {
     }
     if (masAnnotation.getPartialDate() != null) {
       abdCondition.setPartialDate(masAnnotation.getPartialDate());
-    }
-    else {
+    } else {
       abdCondition.setPartialDate("");
     }
     return abdCondition;
