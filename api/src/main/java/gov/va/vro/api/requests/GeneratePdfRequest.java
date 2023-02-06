@@ -33,6 +33,10 @@ public class GeneratePdfRequest {
   @Schema(description = "Veteran data for the pdf")
   private VeteranInfo veteranInfo;
 
+  @Nullable
+  @Schema(description = "Veteran file identifier", example = "12345")
+  private String veteranFileId;
+
   private ClaimCondition conditions;
 
   @NonNull
