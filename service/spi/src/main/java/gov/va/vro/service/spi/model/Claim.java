@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,20 @@ public class Claim {
   @NotNull private String diagnosticCode;
 
   private Set<String> contentions;
+
+  private String vbmsId;
+
+  private String offRampReason;
+
+  private boolean presumptiveFlag;
+
+  private String disabilityActionType;
+
+  private boolean inScope;
+
+  private String submissionSource;
+
+  private OffsetDateTime submissionDate;
 
   private String claimSubmissionDateTime;
 }

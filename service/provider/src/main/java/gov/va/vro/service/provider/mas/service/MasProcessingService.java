@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -114,6 +115,12 @@ public class MasProcessingService {
         .collectionId(Integer.toString(payload.getCollectionId()))
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
+        .inScope(payload.isInScope())
+        .disabilityActionType(payload.getDisabilityActionType())
+        .offRampReason(payload.getOffRampReason())
+        .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
+        .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
+        .vbmsId(Integer.toString(payload.getClaimId()))
         .build();
   }
 }

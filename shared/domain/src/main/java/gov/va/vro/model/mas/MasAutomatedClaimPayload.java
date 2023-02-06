@@ -117,7 +117,8 @@ public class MasAutomatedClaimPayload implements Auditable {
     detailsMap.put(
         "submissionSource", claimDetail == null ? null : claimDetail.getClaimSubmissionSource());
     detailsMap.put(
-        "submissionDate", claimDetail == null ? null : claimDetail.getClaimSubmissionDateTime());
+        "submissionDate",
+        claimDetail == null ? null : Objects.toString(claimDetail.getClaimSubmissionDateTime()));
     detailsMap.put("offRampReason", getOffRampReason());
     return detailsMap;
   }

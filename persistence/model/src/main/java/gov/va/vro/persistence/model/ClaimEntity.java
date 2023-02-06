@@ -3,6 +3,7 @@ package gov.va.vro.persistence.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -37,6 +38,20 @@ public class ClaimEntity extends BaseEntity {
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   private List<ContentionEntity> contentions = new ArrayList<>();
+
+  private String vbmsId;
+
+  private String offRampReason;
+
+  private boolean presumptiveFlag;
+
+  private String disabilityActionType;
+
+  private boolean inScope;
+
+  private String submissionSource;
+
+  private OffsetDateTime submissionDate;
 
   public void addContention(ContentionEntity contention) {
     contention.setClaim(this);
