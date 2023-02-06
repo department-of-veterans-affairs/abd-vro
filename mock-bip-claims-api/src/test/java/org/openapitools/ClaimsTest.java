@@ -5,12 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.openapitools.configuration.TestConfig;
 import org.openapitools.model.ClaimDetail;
 import org.openapitools.model.ClaimDetailResponse;
 import org.openapitools.model.ContentionSummariesResponse;
 import org.openapitools.model.ContentionSummary;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,14 +24,17 @@ import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
+@Import(TestConfig.class)
 @ActiveProfiles("test")
 public class ClaimsTest {
   @LocalServerPort int port;
 
-  private RestTemplate restTemplate = new RestTemplate();
+  @Autowired
+  @Qualifier("httpsRestTemplate")
+  private RestTemplate restTemplate;
 
   private String getUrl(String endPoint) {
-    String base = "http://localhost:" + port + "/";
+    String base = "https://localhost:" + port + "/";
     return base + endPoint;
   }
 

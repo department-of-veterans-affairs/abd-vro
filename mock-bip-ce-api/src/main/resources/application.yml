@@ -21,14 +21,12 @@ server:
     trust-store-type: PKCS12
   http.port: 8096
 
-
 ## Logging
 logging:
   level:
     root: INFO
 
 ## Health
-
 management:
   server:
     port: 8095
@@ -51,7 +49,6 @@ management:
         include: health
 
 ## mock specific
-
 mock-bip-cce-api:
   jwt:
     userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
