@@ -136,6 +136,9 @@ public class MasCollectionAnnotsResults {
     if (masAnnotation.getPartialDate() != null) {
       abdMedication.setPartialDate(masAnnotation.getPartialDate());
     }
+    else {
+      abdMedication.setPartialDate("");
+    }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
     return abdMedication;
@@ -155,6 +158,9 @@ public class MasCollectionAnnotsResults {
     }
     if (masAnnotation.getPartialDate() != null) {
       abdCondition.setPartialDate(masAnnotation.getPartialDate());
+    }
+    else {
+      abdCondition.setPartialDate("");
     }
     return abdCondition;
   }

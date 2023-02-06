@@ -37,10 +37,12 @@ def bp_reader(request_body):
     elevated_bp = []
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
     bp_readings = request_body["evidence"]["bp_readings"]
-    bp_readings = sort_bp(bp_readings)
 
     for reading in bp_readings:
-        bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
+        try:
+            bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
+        except ValueError:
+            continue  # If there is no date associated
         reading["dateFormatted"] = format_date(bp_reading_date)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
@@ -49,8 +51,8 @@ def bp_reader(request_body):
             if reading["systolic"]["value"] >= 160 and reading["diastolic"]["value"] >= 100:
                 elevated_bp.append(reading)
 
-    predominance_calculation = {"twoYearsBp": bp_readings_in_past_two_years,
-                                "oneYearBp": bp_reading_in_past_year,
+    predominance_calculation = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
+                                "oneYearBp": sort_bp(bp_reading_in_past_year),
                                 "twoYearsBpReadings": len(bp_readings_in_past_two_years),
                                 "oneYearBpReadings": len(bp_reading_in_past_year),
                                 "recentElevatedBpReadings": len(elevated_bp),

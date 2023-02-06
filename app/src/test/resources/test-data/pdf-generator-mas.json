@@ -24,13 +24,15 @@
       "recordedDate": "04-06-1950",
       "dateFormatted": "4/6/1950",
       "relevant": true,
-      "dataSource":  "LH"
+      "dataSource":  "LH",
+      "partialDate": ""
     },
       {"code": "38341003",
         "relevant": false,
         "text": "Hypertensive disorder",
         "dateFormatted": "4/6/1950",
-        "dataSource":  "MAS"}
+        "dataSource":  "MAS",
+        "partialDate": ""}
     ],
     "medications": [
       {
@@ -45,7 +47,7 @@
         ],
         "route": "ORAL",
         "dataSource": "MAS",
-        "relevant": true
+        "partialDate": ""
       },
       {
         "status": "Active",
@@ -54,15 +56,15 @@
         ],
         "description": "Hydrochlorothiazide 6.25 MG",
         "refills": 0,
-        "authoredOn": "1950-04-06T07:24:55Z",
-        "dateFormatted": "4/6/1950",
+        "authoredOn": "",
+        "dateFormatted": "",
         "dosageInstructions": [
           "Once per day.",
           "As directed by physician."
         ],
         "route": "As directed by physician.",
         "dataSource": "MAS",
-        "relevant": true
+        "partialDate": "*/6/1950"
       }
     ],
     "bp_readings": [

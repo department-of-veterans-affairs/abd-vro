@@ -25,16 +25,15 @@ def conditions_calculation(request_body):
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
+        if "partialDate" not in condition.keys():
+            condition["partialDate"] = ""  # PDF template logic assumes this field exists
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
             condition["dateFormatted"] = format_date(condition_date)
             condition_with_date.append(condition)
             if condition_date >= date_of_claim_date - relativedelta(years=2):
                 conditions_two_years.append(condition)
-        except ValueError:
-            condition["dateFormatted"] = f'unparsed ({condition["recordedDate"]})'
-            condition_without_date.append(condition)
-        except KeyError:
+        except (ValueError, KeyError):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
 
