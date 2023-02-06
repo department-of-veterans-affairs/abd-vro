@@ -45,6 +45,8 @@ public class GeneratePdfPayload {
 
   private String pdfTemplate;
 
+  private String veteranFileId;
+
   @JsonIgnore
   public static String createPdfFilename(String diagnosis) {
     String timestamp = String.format("%1$tY%1$tm%1$td", new Date());

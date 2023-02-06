@@ -5,9 +5,11 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +41,13 @@ public class MasController implements MasResource {
             .veteranFlashIds(request.getVeteranFlashIds())
             .build();
 
+    if (!hasValidClaimId(request)) {
+      throw new BipException(
+          HttpStatus.BAD_REQUEST, "The request does not have a valid BenefitClaimId.");
+    }
+    log.info(
+        "Related claim ID: {}",
+        payload.getClaimDetail().getBenefitClaimId()); // TODO: remove after test.
     String message = masProcessingService.processIncomingClaim(payload);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
@@ -55,5 +64,17 @@ public class MasController implements MasResource {
         String.format("Received Exam Order Status for collection Id %d.", collectionId);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
+  }
+
+  // TODO: Add this test method for now. It'd better add some logic in MasAutomatedClaimRequest.
+  private boolean hasValidClaimId(MasAutomatedClaimRequest request) {
+    try {
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      log.info("claim ID to check: {}", claimId); // TODO: remove after test.
+      long validId = Long.parseLong(claimId);
+      return validId > 0L;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
