@@ -27,7 +27,5 @@ public class VeteranFlashIdEntity {
 
   @ManyToOne private VeteranEntity veteran;
 
-  @NotNull private String veteranIcn;
-
   @NotNull private Integer flashId;
 }
