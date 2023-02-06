@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,9 @@ public class ClaimRepositoryTest {
 
   @Test
   void test() {
-    var veteran = TestDataSupplier.createVeteran("X", "Y", "Z");
+    Date icnTimestamp = new Date();
+
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
     assertNotNull(veteran.getIcnTimestamp());
