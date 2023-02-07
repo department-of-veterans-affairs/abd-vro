@@ -5,6 +5,7 @@ public enum ModifyingActionEnum {
   CONTENTION_PUT("contention_put");
 
   private String description;
+
   ModifyingActionEnum(String description) {
     this.description = description;
   }

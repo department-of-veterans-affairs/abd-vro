@@ -428,6 +428,7 @@ public interface ClaimsApi {
               in = ParameterIn.PATH)
           @PathVariable("claimId")
           Long claimId);
+
   /**
    * PUT /claims/{claimId}/lifecycle_status : Update the lifecycle status of an existing claim
    * Update the lifecycle status of an existing claim.

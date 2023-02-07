@@ -11,24 +11,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/")
 public interface ModifyingActionsApi {
 
-  /**
-   * GET /modifying-actions: Provides modifying REST actions.
-   */
+  /** GET /modifying-actions: Provides modifying REST actions. */
   @Operation(
       operationId = "getModifyingActions",
       summary = "Provides modifying REST actions",
       description = "Provides modifying REST actions.",
       responses = {
-          @ApiResponse(
-              responseCode = "200",
-              description = "Lst of actions.",
-              content = {
-                  @Content(
-                      mediaType = "application/json",
-                      schema = @Schema(implementation = String[].class))
-              })
-      }
-  )
+        @ApiResponse(
+            responseCode = "200",
+            description = "Lst of actions.",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = String[].class))
+            })
+      })
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/modifying-actions",

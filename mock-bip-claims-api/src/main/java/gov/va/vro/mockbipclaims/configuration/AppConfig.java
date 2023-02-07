@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 
 @Configuration
 public class AppConfig {
@@ -32,16 +31,15 @@ public class AppConfig {
    * Creates a basic HashMap based store.
    *
    * @return The Claimstore.
-   * @throws IOException
+   * @throws IOException If mock claims data cannot be read
    */
   @Bean
   public ClaimStore createClaimStore() throws IOException {
     ClaimStore claimStore = new ClaimStore();
 
-    File file = mockClaimsResource.getFile();
-    byte[] content = Files.readAllBytes(file.toPath());
+    InputStream stream = mockClaimsResource.getInputStream();
     ObjectMapper mapper = createObjectMapper();
-    ClaimStoreItem[] items = mapper.readValue(content, ClaimStoreItem[].class);
+    ClaimStoreItem[] items = mapper.readValue(stream, ClaimStoreItem[].class);
     for (int index = 0; index < items.length; ++index) {
       ClaimStoreItem item = items[index];
       claimStore.put(item);

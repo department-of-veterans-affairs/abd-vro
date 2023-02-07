@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 /** Mock some claim data returned by the BIP API. */
 @Service
 @Slf4j
-@Conditional(BipConditions.LocalEnvCeCondition.class)
+@Conditional(BipConditions.LocalEnvironmentCondition.class)
 public class MockBipCeApiService implements IBipCeApiService {
   @Override
   public BipFileUploadResp uploadEvidenceFile(

@@ -342,8 +342,26 @@ services:
       - "8096:8096"
     environment:
       <<: *common-vars
-      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
-      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_CLAIM_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_CLAIM_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+    networks:
+      - internal
+
+  mock-bip-claims-api:
+    image: va/abd_vro-mock-bip-claims-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-bip-claims-api
+    ports:
+      - "8097:8097"
+      - "8098:8098"
+      - "8099:8099"
+    environment:
+      <<: *common-vars
+      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:

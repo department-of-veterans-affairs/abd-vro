@@ -16,7 +16,7 @@ import java.util.List;
 
 /** Mock some claim data returned by the BIP API. */
 @Service
-@Conditional(BipConditions.LocalEnvCondition.class)
+@Conditional(BipConditions.LocalEnvironmentCondition.class)
 public class MockBipApiService implements IBipApiService {
   private static final long CLAIM_ID_201 = 201L;
   private static final long CLAIM_ID_204 = 204L;

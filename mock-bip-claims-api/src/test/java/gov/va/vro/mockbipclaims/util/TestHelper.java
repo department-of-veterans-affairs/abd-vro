@@ -34,7 +34,7 @@ public class TestHelper {
   @Autowired private JwtGenerator jwtGenerator;
 
   /**
-   * Posts the file specified by spec.
+   * Gets the response entity for the claim specified by the spec.
    *
    * @param spec Test Specification
    * @return Response Entity
@@ -56,6 +56,12 @@ public class TestHelper {
     return restTemplate.exchange(url, HttpMethod.GET, request, ClaimDetailResponse.class);
   }
 
+  /**
+   * Gets the claim specified by the spec.
+   *
+   * @param spec test specification
+   * @return ClaimDetail object
+   */
   @SneakyThrows
   public ClaimDetail getClaimDetail(TestSpec spec) {
     ResponseEntity<ClaimDetailResponse> response = getClaim(spec);
@@ -64,6 +70,12 @@ public class TestHelper {
     return body.getClaim();
   }
 
+  /**
+   * Gets the response entity for the contentions specified by the spec.
+   *
+   * @param spec test specification
+   * @return ResponseEntity
+   */
   @SneakyThrows
   public ResponseEntity<ContentionSummariesResponse> getContentions(TestSpec spec) {
     final long claimId = spec.getClaimId();
@@ -81,6 +93,13 @@ public class TestHelper {
     return restTemplate.exchange(url, HttpMethod.GET, request, ContentionSummariesResponse.class);
   }
 
+  /**
+   * Updates the claim contentions specified by the spec.
+   *
+   * @param spec test specification
+   * @param contention updated contention
+   * @return response entity after put
+   */
   @SneakyThrows
   public ResponseEntity<UpdateContentionsResponse> putContentions(
       TestSpec spec, ExistingContention contention) {
@@ -102,6 +121,12 @@ public class TestHelper {
     return restTemplate.exchange(url, HttpMethod.PUT, request, UpdateContentionsResponse.class);
   }
 
+  /**
+   * Gets the contentions specified by the spec.
+   *
+   * @param spec test specification
+   * @return List of contention summary objects
+   */
   public List<ContentionSummary> getContentionSummaries(TestSpec spec) {
     ResponseEntity<ContentionSummariesResponse> response = getContentions(spec);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -109,6 +134,13 @@ public class TestHelper {
     return csr.getContentions();
   }
 
+  /**
+   * Update the claim lifecycle specified by the spec.
+   *
+   * @param spec test specification
+   * @param value new lifecycle
+   * @return response entity after put
+   */
   @SneakyThrows
   public ResponseEntity<ClaimLifecycleStatusesResponse> putLifecycleStatus(
       TestSpec spec, String value) {
@@ -131,6 +163,12 @@ public class TestHelper {
         url, HttpMethod.PUT, request, ClaimLifecycleStatusesResponse.class);
   }
 
+  /**
+   * Gets all the modifying actions.
+   *
+   * @param spec test specification
+   * @return modifying actions
+   */
   public String[] getModifyingActions(TestSpec spec) {
     String url = spec.getUrl("/modifying-actions");
     return restTemplate.getForObject(url, String[].class);
