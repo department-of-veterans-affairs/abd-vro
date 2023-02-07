@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
-
+  
   private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
@@ -79,7 +80,10 @@ public class MasAutomatedClaimPayload implements Auditable {
   @JsonIgnore
   public Boolean isPresumptive() {
     if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
-      return (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
+      return (veteranFlashIds != null
+          && !Collections.disjoint(
+              veteranFlashIds,
+              Arrays.asList(MasVeteranFlashProps.getInstance().getAgentOrangeFlashIds())));
     }
     return null;
   }
