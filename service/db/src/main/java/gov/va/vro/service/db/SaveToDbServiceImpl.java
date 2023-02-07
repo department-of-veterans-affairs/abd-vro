@@ -7,6 +7,7 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
+import gov.va.vro.persistence.model.VeteranFlashIdEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
@@ -19,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -121,6 +124,35 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       examOrderEntity.setStatus(examOrder.getStatus());
       examOrderRepository.save(examOrderEntity);
     }
+  }
+
+  @Override
+  public void insertFlashIds(List<String> veteranFlashIds, String veteranIcn) {
+    var veteran = veteranRepository.findByIcn(veteranIcn);
+    if (veteran.isEmpty()) {
+      log.warn("Could not find a Veteran with this ICN. Could not attach flash IDs.");
+      return;
+    }
+    if (veteranFlashIds == null) {
+      log.warn("The Veteran Flash ID list was null, could not attach to Veteran.");
+      return;
+    }
+    VeteranEntity entity = veteran.get();
+    List<VeteranFlashIdEntity> flashIdList = createFlashIds(veteranFlashIds, entity);
+    entity.setFlashIds(flashIdList);
+    veteranRepository.save(entity);
+  }
+
+  private List<VeteranFlashIdEntity> createFlashIds(
+      List<String> veteranFlashIds, VeteranEntity entity) {
+    List<VeteranFlashIdEntity> flashIdList = new ArrayList<>();
+    for (String flashId : veteranFlashIds) {
+      VeteranFlashIdEntity id = new VeteranFlashIdEntity();
+      id.setFlashId(Integer.valueOf(flashId));
+      id.setVeteran(entity);
+      flashIdList.add(id);
+    }
+    return flashIdList;
   }
 
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {

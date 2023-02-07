@@ -9,6 +9,7 @@ import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
+import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
@@ -25,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -125,6 +128,25 @@ class SaveToDbServiceImplTest {
     assertNotNull(esd);
     assertEquals(esd.getDocumentName(), documentName);
     assertEquals(esd.getEvidenceCount().size(), 2);
+  }
+
+  @Test
+  void persistFlashIds() {
+    VeteranEntity veteran = new VeteranEntity();
+    veteran.setIcn("X");
+    veteran.setParticipantId("Y");
+    veteranRepository.save(veteran);
+    List<String> flashIds = new ArrayList<>();
+    flashIds.add("123");
+    flashIds.add("456");
+    saveToDbService.insertFlashIds(flashIds, veteran.getIcn());
+    VeteranEntity veteranWithFlashIds = veteranRepository.findByIcn(veteran.getIcn()).orElseThrow();
+    assertEquals(
+        veteranWithFlashIds.getFlashIds().get(0).getFlashId(), Integer.valueOf(flashIds.get(0)));
+    assertEquals(
+        veteranWithFlashIds.getFlashIds().get(1).getFlashId(), Integer.valueOf(flashIds.get(1)));
+    assertEquals(veteranWithFlashIds.getFlashIds().get(0).getVeteran().getIcn(), veteran.getIcn());
+    assertEquals(veteranWithFlashIds.getFlashIds().get(1).getVeteran().getIcn(), veteran.getIcn());
   }
 
   @Test
