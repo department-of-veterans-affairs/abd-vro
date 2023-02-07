@@ -27,52 +27,52 @@ class BipClaimServiceTest {
 
   @Test
   void hasAnchorsWrongJurisdiction() throws BipException {
-
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId))
         .thenReturn(createClaim("123", "King Cross"));
 
     BipClaimService claimService = new BipClaimService(bipApiService, null);
-    assertFalse(claimService.hasAnchors(collectionId));
+    assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
   @Test
   void hasAnchorsMissingSpecialIssue() throws BipException {
-
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
-        .thenReturn(createClaim(claimId, "398"));
-    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId)).thenReturn(createClaim(claimId, "398"));
+    Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(bipApiService, null);
-    assertFalse(claimService.hasAnchors(collectionId));
+    assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
   @Test
   void hasAnchors() throws BipException {
 
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
-        .thenReturn(createClaim(claimId, "398"));
-    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId)).thenReturn(createClaim(claimId, "398"));
+    Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(bipApiService, null);
-    assertTrue(claimService.hasAnchors(collectionId));
+    assertTrue(claimService.hasAnchors(bipClaimId));
   }
 
   @Test
   void removeSpecialIssueMissing() throws BipException {
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
 
-    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+    Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
@@ -87,9 +87,10 @@ class BipClaimServiceTest {
 
   @Test
   void removeSpecialIssue() throws BipException {
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
 
-    Mockito.when(bipApiService.getClaimContentions(Integer.parseInt(claimId)))
+    Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
@@ -107,8 +108,9 @@ class BipClaimServiceTest {
 
   @Test
   void completeProcessingNotRightStation() throws BipException {
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId))
         .thenReturn(createClaim(claimId, "Short Line"));
 
     BipClaimService claimService = new BipClaimService(bipApiService, null);
@@ -118,14 +120,14 @@ class BipClaimServiceTest {
 
   @Test
   void completeProcessing() throws BipException {
+    long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(collectionId))
-        .thenReturn(createClaim(claimId, "398"));
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId)).thenReturn(createClaim(claimId, "398"));
 
     BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertTrue(claimService.completeProcessing(getMpo(payload)).isTSOJ());
-    Mockito.verify(bipApiService).setClaimToRfdStatus(collectionId);
+    Mockito.verify(bipApiService).setClaimToRfdStatus(bipClaimId);
   }
 
   @Test
