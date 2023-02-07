@@ -49,6 +49,7 @@ public class JwtGenerator {
 
     String issuer = props.getIssuer();
     return Jwts.builder()
+        .setSubject("Claim")
         .setId(UUID.randomUUID().toString())
         .setHeaderParam("typ", "JWT")
         .setIssuedAt(now)

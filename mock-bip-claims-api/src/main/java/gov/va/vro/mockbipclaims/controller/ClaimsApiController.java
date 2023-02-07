@@ -59,6 +59,11 @@ public class ClaimsApiController implements ClaimsApi {
   @Override
   public ResponseEntity<ClaimDetailResponse> getClaimById(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
+    if (item == null) {
+      String reason = "No claim found for id: " + claimId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+    }
+
     ClaimDetail claimDetail = item.getClaimDetail();
 
     ClaimDetailResponse response = new ClaimDetailResponse();

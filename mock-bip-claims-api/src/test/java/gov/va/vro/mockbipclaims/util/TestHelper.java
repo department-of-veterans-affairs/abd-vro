@@ -12,6 +12,7 @@ import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -26,12 +27,25 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
+@Slf4j
 public class TestHelper {
   @Autowired
   @Qualifier("httpsRestTemplate")
   private RestTemplate restTemplate;
 
   @Autowired private JwtGenerator jwtGenerator;
+
+
+  private HttpHeaders getHeaders(TestSpec spec){
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    if (!spec.isIgnoreJwt()) {
+      String jwt = jwtGenerator.generate();
+      log.info("jwt generated: {}", jwt);
+      headers.set("Authorization", "Bearer " + jwt);
+    }
+    return headers;
+  }
 
   /**
    * Gets the response entity for the claim specified by the spec.
@@ -43,13 +57,7 @@ public class TestHelper {
   public ResponseEntity<ClaimDetailResponse> getClaim(TestSpec spec) {
     final long claimId = spec.getClaimId();
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (!spec.isIgnoreJwt()) {
-      String jwt = jwtGenerator.generate();
-      headers.set("Authorization", "Bearer " + jwt);
-    }
-
+    HttpHeaders headers = getHeaders(spec);
     HttpEntity<Object> request = new HttpEntity<Object>(headers);
 
     String url = spec.getUrl("/claims/" + claimId);
@@ -80,13 +88,7 @@ public class TestHelper {
   public ResponseEntity<ContentionSummariesResponse> getContentions(TestSpec spec) {
     final long claimId = spec.getClaimId();
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (!spec.isIgnoreJwt()) {
-      String jwt = jwtGenerator.generate();
-      headers.set("Authorization", "Bearer " + jwt);
-    }
-
+    HttpHeaders headers = getHeaders(spec);
     HttpEntity<Object> request = new HttpEntity<Object>(headers);
 
     String url = spec.getUrl("/claims/" + claimId + "/contentions");
@@ -105,13 +107,7 @@ public class TestHelper {
       TestSpec spec, ExistingContention contention) {
     final long claimId = spec.getClaimId();
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (!spec.isIgnoreJwt()) {
-      String jwt = jwtGenerator.generate();
-      headers.set("Authorization", "Bearer " + jwt);
-    }
-
+    HttpHeaders headers = getHeaders(spec);
     var body = new UpdateContentionsRequest();
     body.addUpdateContentionsItem(contention);
 
@@ -146,13 +142,7 @@ public class TestHelper {
       TestSpec spec, String value) {
     final long claimId = spec.getClaimId();
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (!spec.isIgnoreJwt()) {
-      String jwt = jwtGenerator.generate();
-      headers.set("Authorization", "Bearer " + jwt);
-    }
-
+    HttpHeaders headers = getHeaders(spec);
     var body = new UpdateClaimLifecycleStatusRequest();
     body.setClaimLifecycleStatus(value);
 
