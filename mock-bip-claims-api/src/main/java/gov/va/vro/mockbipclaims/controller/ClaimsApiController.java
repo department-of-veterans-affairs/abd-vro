@@ -17,6 +17,8 @@ import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.store.ModifyingActionEnum;
+import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,8 @@ import java.util.List;
 @Controller
 public class ClaimsApiController implements ClaimsApi {
   @Autowired private ClaimStore claimStore;
+
+  @Autowired private ModifyingActionStore actionStore;
 
   @Autowired private ContentionMapper mapper;
 
@@ -83,6 +87,8 @@ public class ClaimsApiController implements ClaimsApi {
     Message message = new Message();
     message.setText("Success");
     response.addMessagesItem(message);
+
+    actionStore.addAction(ModifyingActionEnum.LIFECYCLE_PUT);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -125,6 +131,7 @@ public class ClaimsApiController implements ClaimsApi {
     Message message = new Message();
     message.setText("Success");
     response.addMessagesItem(message);
+    actionStore.addAction(ModifyingActionEnum.CONTENTION_PUT);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

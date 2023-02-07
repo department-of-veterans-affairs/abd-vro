@@ -130,4 +130,9 @@ public class TestHelper {
     return restTemplate.exchange(
         url, HttpMethod.PUT, request, ClaimLifecycleStatusesResponse.class);
   }
+
+  public String[] getModifyingActions(TestSpec spec) {
+    String url = spec.getUrl("/modifying-actions");
+    return restTemplate.getForObject(url, String[].class);
+  }
 }

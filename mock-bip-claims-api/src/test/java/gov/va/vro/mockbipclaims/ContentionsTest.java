@@ -7,6 +7,7 @@ import gov.va.vro.mockbipclaims.configuration.TestConfig;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
 import gov.va.vro.mockbipclaims.model.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.ExistingContention;
+import gov.va.vro.mockbipclaims.model.store.ModifyingActionEnum;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,9 @@ public class ContentionsTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
+    String[] actionsBefore = helper.getModifyingActions(spec);
+    assertEquals(0, actionsBefore.length);
+
     List<ContentionSummary> contentions = helper.getContentionSummaries(spec);
     assertEquals(1, contentions.size());
     ContentionSummary summary = contentions.get(0);
@@ -51,6 +55,10 @@ public class ContentionsTest {
     ExistingContention existingContention = mapper.toExistingContention(summary);
     var responsePut = helper.putContentions(spec, existingContention);
     assertEquals(HttpStatus.OK, responsePut.getStatusCode());
+
+    String[] actionsAfter = helper.getModifyingActions(spec);
+    assertEquals(1, actionsAfter.length);
+    assertEquals(ModifyingActionEnum.CONTENTION_PUT.getDescription(), actionsAfter[0]);
 
     List<ContentionSummary> contentionsBack = helper.getContentionSummaries(spec);
     assertEquals(1, contentionsBack.size());
