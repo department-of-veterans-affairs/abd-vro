@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Properties used in BIP API services.
@@ -63,9 +60,6 @@ public class BipApiProps {
     Date now = cal.getTime();
     claims.put("iat", now.getTime());
     claims.put("expires", expired.getTime());
-    Map<String, Object> headerType = new HashMap<>();
-    headerType.put("typ", Header.JWT_TYPE);
-
     return claims;
   }
 }

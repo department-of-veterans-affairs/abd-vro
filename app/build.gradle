@@ -71,6 +71,7 @@ dependencies {
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 
   testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+  testImplementation "io.jsonwebtoken:jjwt:0.2"
 
   // end to end dependencies
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
