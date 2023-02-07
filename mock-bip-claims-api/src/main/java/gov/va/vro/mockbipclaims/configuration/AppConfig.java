@@ -27,6 +27,12 @@ public class AppConfig {
     return JsonMapper.builder().addModule(new JavaTimeModule()).build();
   }
 
+  /**
+   * Creates a basic HashMap based store.
+   *
+   * @return The Claimstore.
+   * @throws IOException
+   */
   @Bean
   public ClaimStore createClaimStore() throws IOException {
     ClaimStore claimStore = new ClaimStore();

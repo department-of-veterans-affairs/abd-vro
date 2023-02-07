@@ -1,12 +1,14 @@
 package gov.va.vro.mockbipclaims;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import gov.va.vro.mockbipclaims.configuration.TestConfig;
 import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
+import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
+import gov.va.vro.model.bip.ClaimStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +23,25 @@ import org.springframework.test.context.ActiveProfiles;
 @Slf4j
 @Import(TestConfig.class)
 @ActiveProfiles("test")
-public class ClaimsTest {
+public class LifecycleStatusTest {
   @LocalServerPort int port;
 
   @Autowired private TestHelper helper;
 
   @Test
-  void claim1010Test() {
+  void positiveUpdateTest() {
     TestSpec spec = new TestSpec();
     spec.setClaimId(1010);
     spec.setPort(port);
 
-    ResponseEntity<ClaimDetailResponse> response = helper.getClaim(spec);
+    ClaimDetail claimDetail = helper.getClaimDetail(spec);
+    String rfd = ClaimStatus.RFD.getDescription();
+    assertNotEquals(rfd, claimDetail.getClaimLifecycleStatus());
+
+    ResponseEntity<ClaimLifecycleStatusesResponse> response = helper.putLifecycleStatus(spec, rfd);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    ClaimDetailResponse body = response.getBody();
-    ClaimDetail claim = body.getClaim();
-    String tempStationOfJurisdiction = claim.getTempStationOfJurisdiction();
-    assertEquals("398", tempStationOfJurisdiction);
+
+    ClaimDetail claimDetailAfter = helper.getClaimDetail(spec);
+    assertEquals(rfd, claimDetailAfter.getClaimLifecycleStatus());
   }
 }
