@@ -157,7 +157,7 @@ lhAPIProvider:
   validateToken: "${VALIDATE_TOKEN:NO}"
 
 masVeteranFlashIds:
-  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:266,266}"
+  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
 
 springdoc:
   writer-with-default-pretty-printer: true
