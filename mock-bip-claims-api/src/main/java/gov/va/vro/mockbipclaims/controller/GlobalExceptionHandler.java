@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.model.Message;
 import gov.va.vro.mockbipclaims.model.ProviderResponse;
