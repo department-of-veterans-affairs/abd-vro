@@ -3,7 +3,7 @@
   "code": "7101",
   "document_type": "hypertension",
   "conditions": [],
-  "fileIdentifier": "12345",
+  "veteranFileId": "0000",
   "veteranInfo": {
     "first": "Test",
     "middle": "",

@@ -41,24 +41,24 @@ public class BipClaimService {
   /**
    * Check if all the anchors for fast-tracking are satisfied.
    *
-   * @param collectionId collection id identifying the claim
+   * @param claimId claim id identifying the claim
    * @return true if the anchors are satisfied, false otherwise
    */
-  public boolean hasAnchors(int collectionId) {
+  public boolean hasAnchors(long claimId) {
 
-    var claimDetails = bipApiService.getClaimDetails(collectionId);
+    var claimDetails = bipApiService.getClaimDetails(claimId);
     if (claimDetails == null) {
-      log.warn("Claim with collection Id {} not found in BIP", collectionId);
+      log.warn("Claim with claim Id {} not found in BIP", claimId);
       return false;
     }
     if (!TSOJ.equals(claimDetails.getTempStationOfJurisdiction())) {
-      log.info("Claim with collection Id {} does not have TSOJ = {}", collectionId, TSOJ);
+      log.info("Claim with claim Id {} does not have TSOJ = {}", claimId, TSOJ);
       return false;
     }
-    int claimId = Integer.parseInt(claimDetails.getClaimId());
+
     var contentions = bipApiService.getClaimContentions(claimId);
     if (contentions == null) {
-      log.info("Claim with collection Id {} does not have contentions.", collectionId);
+      log.info("Claim with claim Id {} does not have contentions.", claimId);
       return false;
     }
 
@@ -131,11 +131,11 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    int collectionId = payload.getCollectionId();
-    log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
+    long claimId = payload.getClaimIdAsLong();
+    log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
 
     try {
-      bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
+      bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
     } catch (Exception e) {
       throw new BipException("BIP update claim status resulted in an exception", e);
     }
@@ -145,20 +145,25 @@ public class BipClaimService {
   /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
+    long claimId = payload.getClaimIdAsLong();
 
     // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(collectionId);
+    var claim = bipApiService.getClaimDetails(claimId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
       log.info(
-          "Claim with collection Id = {} is in state {}. Not updating status",
+          "Claim {} with collection Id = {} is in state {}. Not updating status",
+          claimId,
           collectionId,
           claim.getTempStationOfJurisdiction());
       payload.setTSOJ(false);
       return payload;
     }
     // otherwise, update claim
-    log.info("Updating claim status for claim with collection id = {}", collectionId);
-    bipApiService.setClaimToRfdStatus(collectionId);
+    log.info(
+        "Updating claim status for claim with claim id = {} for MAS collection Id = {}",
+        claimId,
+        collectionId);
+    bipApiService.setClaimToRfdStatus(claimId);
     payload.setTSOJ(true);
     return payload;
   }
