@@ -47,7 +47,6 @@ public class JwtGenerator {
     expiration.setTime(now);
     expiration.add(Calendar.SECOND, props.getExpirationSeconds());
 
-    String issuer = props.getIssuer();
     return Jwts.builder()
         .setSubject("Claim")
         .setId(UUID.randomUUID().toString())
@@ -56,7 +55,7 @@ public class JwtGenerator {
         .setExpiration(expiration.getTime())
         .setIssuer(props.getIssuer())
         // applicationID MUST be the same as the issuer for tracking purposes
-        .claim("applicationID", issuer)
+        .claim("applicationID", props.getApplicationId())
         .claim("userID", props.getUserId())
         .claim("stationID", props.getStationId());
   }

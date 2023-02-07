@@ -12,5 +12,6 @@ public class JwtProps {
   private String secret;
   private String issuer;
   private String stationId;
+  private String applicationId;
   private int expirationSeconds;
 }

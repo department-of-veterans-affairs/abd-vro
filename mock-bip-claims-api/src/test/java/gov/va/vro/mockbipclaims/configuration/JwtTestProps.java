@@ -12,6 +12,7 @@ public class JwtTestProps {
   private String secret;
   private String issuer;
   private String stationId;
+  private String applicationId;
   private int expirationSeconds;
 
   /**
@@ -24,6 +25,7 @@ public class JwtTestProps {
     secret = props.getSecret();
     issuer = props.getIssuer();
     stationId = props.getStationId();
+    applicationId = props.getApplicationId();
     expirationSeconds = props.getExpirationSeconds();
   }
 }
