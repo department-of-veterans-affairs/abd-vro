@@ -11,8 +11,8 @@ spring.config.import: >
 
 mock-bip-cce-api:
   jwt-test:
-    userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
-    secret: "${BIP_EVIDENCE_SECRET:theSecret}"
-    issuer: "${BIP_EVIDENCE_ISS:VRO}"
-    stationId: "${BIP_STATION_ID:281}"
+    userId: VRO_USER
+    secret: theSecret
+    issuer: VRO
+    stationId: 281
     expirationSeconds: 900

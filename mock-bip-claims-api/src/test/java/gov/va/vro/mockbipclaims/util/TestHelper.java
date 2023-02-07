@@ -35,8 +35,7 @@ public class TestHelper {
 
   @Autowired private JwtGenerator jwtGenerator;
 
-
-  private HttpHeaders getHeaders(TestSpec spec){
+  private HttpHeaders getHeaders(TestSpec spec) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     if (!spec.isIgnoreJwt()) {
