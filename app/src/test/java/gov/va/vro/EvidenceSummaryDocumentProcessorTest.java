@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -36,11 +37,14 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
   @Autowired protected ClaimRepository claimRepository;
 
+  Date icnTimestamp = new Date();
+
   @Test
   @DirtiesContext
   void positiveEvidenceSummaryDocumentProcessor() throws Exception {
     // Create veteran, claim, and contention and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    Date icnTimestamp = new Date();
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
     var claim = TestDataSupplier.createClaim("1234", "type", veteran);
@@ -73,7 +77,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
   @DirtiesContext
   void negativeEvidenceSummaryDocumentProcessorWrongDiagnosticCode() throws Exception {
     // Create veteran and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
 
     // Create a contention and set an invalid diagnostic code, then create claim and add.

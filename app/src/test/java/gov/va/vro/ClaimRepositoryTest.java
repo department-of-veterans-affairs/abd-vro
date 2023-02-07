@@ -9,6 +9,7 @@ import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,12 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
 
   @Test
   void insertQuery() {
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    Date icnTimestamp = new Date();
+
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
+    assertNotNull(veteran.getIcnTimestamp());
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
 

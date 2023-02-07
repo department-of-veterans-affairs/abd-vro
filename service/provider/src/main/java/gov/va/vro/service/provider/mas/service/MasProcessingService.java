@@ -9,6 +9,7 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,7 @@ public class MasProcessingService {
   }
 
   public void examOrderingStatus(MasExamOrderStatusPayload payload) {
+    saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload));
     camelEntrance.examOrderingStatus(payload);
   }
 
@@ -121,6 +123,13 @@ public class MasProcessingService {
         .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
         .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
         .vbmsId(Integer.toString(payload.getClaimId()))
+        .build();
+  }
+
+  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload) {
+    return ExamOrder.builder()
+        .collectionId(Integer.toString(payload.getCollectionId()))
+        .status(payload.getCollectionStatus())
         .build();
   }
 }

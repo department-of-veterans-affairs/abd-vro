@@ -5,12 +5,15 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+  private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
 
   @Override
@@ -105,6 +109,20 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimRepository.save(claim);
   }
 
+  @Override
+  @Transactional
+  public void insertOrUpdateExamOrderingStatus(ExamOrder examOrder) {
+    ExamOrderEntity examOrderEntity =
+        examOrderRepository
+            .findByCollectionId(examOrder.getCollectionId())
+            .orElseGet(() -> createExamOrder(examOrder));
+    if (null != examOrderEntity) {
+      examOrderEntity.setCollectionId(examOrder.getCollectionId());
+      examOrderEntity.setStatus(examOrder.getStatus());
+      examOrderRepository.save(examOrderEntity);
+    }
+  }
+
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
     AbdEvidence evidence = request.getEvidence();
     Map<String, String> evidenceCount = new HashMap<>();
@@ -157,6 +175,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimEntity.setVeteran(veteranEntity);
     createContention(claimEntity, claim.getDiagnosticCode());
     return claimRepository.save(claimEntity);
+  }
+
+  private ExamOrderEntity createExamOrder(ExamOrder examOrder) {
+    ExamOrderEntity examOrderEntity = new ExamOrderEntity();
+    examOrderEntity.setCollectionId(examOrder.getCollectionId());
+    examOrderEntity.setStatus(examOrder.getStatus());
+    return examOrderRepository.save(examOrderEntity);
   }
 
   private ContentionEntity createContention(ClaimEntity claim, String diagnosticCode) {
