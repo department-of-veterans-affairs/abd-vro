@@ -135,8 +135,7 @@ public class MockBipApiService implements IBipApiService {
   @Override
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     if (claimId == 1234) {
-      return List.of(
-          buildContention(BipClaimService.SPECIAL_ISSUE_1, BipClaimService.SPECIAL_ISSUE_2));
+      return List.of(buildContention("RDR1", "RRD"));
     } else if (claimId == CLAIM_ID_204) { // No data. Returns an empty list.
       return new ArrayList<>();
     } else if (claimId == CLAIM_ID_404) { // invalid claim ID, throw BipException

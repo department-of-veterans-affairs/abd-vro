@@ -1,6 +1,7 @@
 package gov.va.vro.config;
 
 import gov.va.vro.service.provider.BipApiProps;
+import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,11 @@ public class BipApiConfig {
   @Bean
   public BipApiProps getBipApiProps() {
     return new BipApiProps();
+  }
+
+  @Bean
+  public ClaimProps getClaimProps() {
+    return new ClaimProps();
   }
 
   private KeyStore getKeyStore(String base64, String password)
