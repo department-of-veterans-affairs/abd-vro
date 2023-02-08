@@ -4,17 +4,13 @@ import gov.va.vro.api.resources.BipResource;
 import gov.va.vro.api.responses.BipClaimContentionsResponse;
 import gov.va.vro.api.responses.BipClaimResponse;
 import gov.va.vro.api.responses.BipClaimStatusResponse;
-import gov.va.vro.api.responses.BipContentionCreationResponse;
 import gov.va.vro.api.responses.BipContentionUpdateResponse;
 import gov.va.vro.api.responses.BipFileUploadResponse;
 import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.CreateContention;
-import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
@@ -134,36 +130,6 @@ public class BipController implements BipResource {
     } catch (BipException e) {
       BipContentionUpdateResponse badResp =
           BipContentionUpdateResponse.builder().updated(false).message(e.getMessage()).build();
-      return ResponseEntity.internalServerError().body(badResp);
-    }
-  }
-
-  @Override
-  public ResponseEntity<BipContentionCreationResponse> createContentions(
-      @Valid BipCreateClaimContentionPayload payload) {
-    log.info("Create a contention for claim ID {}", payload.getClaimId());
-
-    try {
-      List<CreateContention> contentions = Collections.singletonList(payload.getContention());
-      CreateContentionReq req = new CreateContentionReq();
-      req.setCreateContentions(contentions);
-      BipUpdateClaimResp resp = service.addClaimContention(payload.getClaimId(), req);
-      boolean isCreated = resp.getStatus() == HttpStatus.CREATED;
-      BipContentionCreationResponse response =
-          BipContentionCreationResponse.builder()
-              .claimId(payload.getClaimId())
-              .created(isCreated)
-              .message(resp.getMessage())
-              .build();
-      return ResponseEntity.status(resp.getStatus()).body(response);
-    } catch (BipException e) {
-      log.error("failed to create contention for claim {}", payload.getClaimId(), e);
-      BipContentionCreationResponse badResp =
-          BipContentionCreationResponse.builder()
-              .contentionId(payload.getClaimId())
-              .created(false)
-              .message(e.getMessage())
-              .build();
       return ResponseEntity.internalServerError().body(badResp);
     }
   }

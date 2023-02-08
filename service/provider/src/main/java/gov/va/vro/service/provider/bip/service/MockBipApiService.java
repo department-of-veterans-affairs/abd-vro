@@ -4,7 +4,6 @@ import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import org.springframework.context.annotation.Conditional;
@@ -18,7 +17,6 @@ import java.util.List;
 @Service
 @Conditional(BipConditions.LocalEnvCondition.class)
 public class MockBipApiService implements IBipApiService {
-  private static final long CLAIM_ID_201 = 201L;
   private static final long CLAIM_ID_204 = 204L;
   private static final long CLAIM_ID_400 = 400L;
   private static final long CLAIM_ID_401 = 401L;
@@ -27,74 +25,79 @@ public class MockBipApiService implements IBipApiService {
   private static final long CLAIM_ID_501 = 501L;
 
   private static final String ERR_MSG_400 =
-      "{\n"
-          + "  \"messages\": [\n"
-          + "    {\n"
-          + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
-          + "      \"key\": \"Bad reqeust\",\n"
-          + "      \"severity\": \"ERROR\",\n"
-          + "      \"status\": \"400\",\n"
-          + "      \"text\": \"Invalid parameters.\",\n"
-          + "      \"httpStatus\": \"BAD_REQUEST\"\n"
-          + "    }\n"
-          + "  ]\n"
-          + "}";
+      """
+                  {
+                    "messages": [
+                      {
+                        "timestamp": "2023-01-24T16:36:59.578",
+                        "key": "Bad reqeust",
+                        "severity": "ERROR",
+                        "status": "400",
+                        "text": "Invalid parameters.",
+                        "httpStatus": "BAD_REQUEST"
+                      }
+                    ]
+                  }""";
 
   private static final String ERR_MSG_404 =
-      "{\n"
-          + "  \"messages\": [\n"
-          + "    {\n"
-          + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
-          + "      \"key\": \"bip.vetservices.claims.request.claimId.NotValid\",\n"
-          + "      \"severity\": \"ERROR\",\n"
-          + "      \"status\": \"404\",\n"
-          + "      \"text\": \"Claim not found.\",\n"
-          + "      \"httpStatus\": \"NOT_FOUND\"\n"
-          + "    }\n"
-          + "  ]\n"
-          + "}";
+      """
+                  {
+                    "messages": [
+                      {
+                        "timestamp": "2023-01-24T16:36:59.578",
+                        "key": "bip.vetservices.claims.request.claimId.NotValid",
+                        "severity": "ERROR",
+                        "status": "404",
+                        "text": "Claim not found.",
+                        "httpStatus": "NOT_FOUND"
+                      }
+                    ]
+                  }""";
 
   private static final String ERR_MSG_401 =
-      "{\n"
-          + "  \"messages\": [\n"
-          + "    {\n"
-          + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
-          + "      \"key\": \"UNAUTHORIZED\",\n"
-          + "      \"severity\": \"ERROR\",\n"
-          + "      \"status\": \"401\",\n"
-          + "      \"text\": \"No JWT Token in Header.\",\n"
-          + "      \"httpStatus\": \"UNAUTHORIZED\"\n"
-          + "    }\n"
-          + "  ]\n"
-          + "}";
+      """
+                  {
+                    "messages": [
+                      {
+                        "timestamp": "2023-01-24T16:36:59.578",
+                        "key": "UNAUTHORIZED",
+                        "severity": "ERROR",
+                        "status": "401",
+                        "text": "No JWT Token in Header.",
+                        "httpStatus": "UNAUTHORIZED"
+                      }
+                    ]
+                  }""";
 
   private static final String ERR_MSG_500 =
-      "{\n"
-          + "  \"messages\": [\n"
-          + "    {\n"
-          + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
-          + "      \"key\": \"bip.framework.global.general.exception\",\n"
-          + "      \"severity\": \"ERROR\",\n"
-          + "      \"status\": \"500\",\n"
-          + "      \"text\": \"Unexpected exception.\",\n"
-          + "      \"httpStatus\": \"INTERNAL_SERVER_ERROR\"\n"
-          + "    }\n"
-          + "  ]\n"
-          + "}";
+      """
+                  {
+                    "messages": [
+                      {
+                        "timestamp": "2023-01-24T16:36:59.578",
+                        "key": "bip.framework.global.general.exception",
+                        "severity": "ERROR",
+                        "status": "500",
+                        "text": "Unexpected exception.",
+                        "httpStatus": "INTERNAL_SERVER_ERROR"
+                      }
+                    ]
+                  }""";
 
   private static final String ERR_MSG_501 =
-      "{\n"
-          + "  \"messages\": [\n"
-          + "    {\n"
-          + "      \"timestamp\": \"2023-01-24T16:36:59.578\",\n"
-          + "      \"key\": \"system error\",\n"
-          + "      \"severity\": \"ERROR\",\n"
-          + "      \"status\": \"501\",\n"
-          + "      \"text\": \"Not implemented.\",\n"
-          + "      \"httpStatus\": \"INTERNAL_SERVER_ERROR\"\n"
-          + "    }\n"
-          + "  ]\n"
-          + "}";
+      """
+                  {
+                    "messages": [
+                      {
+                        "timestamp": "2023-01-24T16:36:59.578",
+                        "key": "system error",
+                        "severity": "ERROR",
+                        "status": "501",
+                        "text": "Not implemented.",
+                        "httpStatus": "INTERNAL_SERVER_ERROR"
+                      }
+                    ]
+                  }""";
 
   @Override
   public BipClaim getClaimDetails(long collectionId) {
@@ -182,24 +185,6 @@ public class MockBipApiService implements IBipApiService {
       throw new BipException(HttpStatus.UNAUTHORIZED, ERR_MSG_501);
     } else {
       return new BipUpdateClaimResp(HttpStatus.CREATED, "OK from mock service.");
-    }
-  }
-
-  @Override
-  public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
-      throws BipException {
-    if (claimId == CLAIM_ID_404) { // invalid claim ID, throw BipException
-      throw new BipException(HttpStatus.NOT_FOUND, ERR_MSG_404);
-    } else if (claimId == CLAIM_ID_400) { // bad call, throw BipException
-      throw new BipException(HttpStatus.BAD_REQUEST, ERR_MSG_400);
-    } else if (claimId == CLAIM_ID_401) { // not authorized, throw BipException
-      throw new BipException(HttpStatus.UNAUTHORIZED, ERR_MSG_401);
-    } else if (claimId == CLAIM_ID_500) { // internal error, throw BipException
-      throw new BipException(HttpStatus.UNAUTHORIZED, ERR_MSG_500);
-    } else {
-      String message =
-          String.format("This is a mock response to create a contetion for claim %d.", claimId);
-      return new BipUpdateClaimResp(HttpStatus.CREATED, message);
     }
   }
 

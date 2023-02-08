@@ -3,10 +3,8 @@ package gov.va.vro.api.resources;
 import gov.va.vro.api.responses.BipClaimContentionsResponse;
 import gov.va.vro.api.responses.BipClaimResponse;
 import gov.va.vro.api.responses.BipClaimStatusResponse;
-import gov.va.vro.api.responses.BipContentionCreationResponse;
 import gov.va.vro.api.responses.BipContentionUpdateResponse;
 import gov.va.vro.api.responses.BipFileUploadResponse;
-import gov.va.vro.model.bip.BipCreateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimContentionPayload;
 import gov.va.vro.model.bip.BipUpdateClaimPayload;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
@@ -141,30 +139,6 @@ public interface BipResource {
           @Valid
           @RequestBody
           BipUpdateClaimContentionPayload payload);
-
-  @Operation(
-      summary = "Create a claim contention",
-      description = "Request to create a claim contention.")
-  @PostMapping("/claim/contention")
-  @ResponseStatus(HttpStatus.OK)
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Successful Request"),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Data Access Server Error",
-            content = @Content(schema = @Schema(hidden = true)))
-      })
-  @Timed(value = "bip-claim-contention-create")
-  @Tag(name = "BIP Integration")
-  ResponseEntity<BipContentionCreationResponse> createContentions(
-      @Parameter(
-              description = "Request to create a contention for a claim.",
-              required = true,
-              schema = @Schema(implementation = BipCreateClaimContentionPayload.class))
-          @Valid
-          @RequestBody
-          BipCreateClaimContentionPayload payload);
 
   @Operation(summary = "Upload evidence file", description = "Upload evidence PDF file.")
   @PostMapping(
