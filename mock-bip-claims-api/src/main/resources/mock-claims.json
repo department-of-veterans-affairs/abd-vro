@@ -12,7 +12,7 @@
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "specialIssueCodes": [
-          "rating decision review - level 1",
+          "RDR1",
           "RRD"
         ]
       }
@@ -31,7 +31,7 @@
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "specialIssueCodes": [
-          "rating decision review - level 1",
+          "RDR1",
           "RRD"
         ]
       }
@@ -50,7 +50,7 @@
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "specialIssueCodes": [
-          "rating decision review - level 1",
+          "RDR1",
           "RRD"
         ]
       }
