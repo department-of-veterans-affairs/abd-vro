@@ -32,7 +32,7 @@ plugins {
 
   // Apply these
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '17.8.0'
+  id('nebula.lint') version '18.0.1'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
   // VA's starter plugins
   // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
