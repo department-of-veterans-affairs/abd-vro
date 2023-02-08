@@ -7,7 +7,11 @@ if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] &&
 then
   echo "Please enter valid environment (dev, sandbox, qa, prod, prod-test)" && exit 1
 fi
-
+KUBECLUSTER=nonprod
+if [ "${ENV}" == "prod" ] || [ "${ENV}" == "prod-test" ]
+then
+  KUBECLUSTER=prod
+fi
 #get the current sha from github repository
 GIT_SHA=$(git rev-parse HEAD)
 if [ -n "$2" ]
@@ -53,6 +57,7 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
+--set-string images.services.environment=${KUBECLUSTER} \
 \
 --set-string images.redis.imageName=redis \
 --set-string images.redis.tag=latest \
