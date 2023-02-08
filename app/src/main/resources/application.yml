@@ -156,6 +156,9 @@ lhAPIProvider:
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "${VALIDATE_TOKEN:NO}"
 
+masVeteranFlashIds:
+  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
+
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: false
@@ -221,7 +224,10 @@ truststore_password: "${BIP_PASSWORD}"
 keystore: "${BIP_KEYSTORE}"
 bipalias: "${BIP_ALIAS}"
 
+claim:
+  special_issue_1: "RDR1"
+  special_issue_2: "RRD"
+
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
-
