@@ -112,7 +112,7 @@ public class MasCollectionAnnotsResults {
     abdBloodPressure.setDataSource(DATA_SOURCE);
     if (masAnnotation.getObservationDate() != null) {
       abdBloodPressure.setDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
-    }  else {
+    } else {
       abdBloodPressure.setDate("");
     }
     abdBloodPressure.setSystolic(systolicReading);
