@@ -47,7 +47,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Profile("!qa & !sandbox & !prod")
+@Profile("dev")
 public class BipController implements BipResource {
   private final IBipApiService service;
 
