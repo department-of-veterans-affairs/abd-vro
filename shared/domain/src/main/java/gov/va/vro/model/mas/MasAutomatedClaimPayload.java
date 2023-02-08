@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
-  
+
   private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
