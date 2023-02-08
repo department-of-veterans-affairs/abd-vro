@@ -20,23 +20,15 @@ import javax.validation.constraints.NotNull;
 @Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
-  // claim identifier used by client
-  @NotNull private String claimSubmissionId;
-
-  // domain of the id, e.g. "va.gov-Form526Submission"
-  @NotNull private String idType;
-
   private String collectionId;
-
-  private String incomingStatus = "submission";
 
   @ManyToOne private VeteranEntity veteran;
 
   @OneToMany(
-      mappedBy = "claim",
-      fetch = FetchType.EAGER,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+          mappedBy = "claim",
+          fetch = FetchType.EAGER,
+          cascade = CascadeType.ALL,
+          orphanRemoval = true)
   private List<ContentionEntity> contentions = new ArrayList<>();
 
   private String vbmsId;
@@ -48,10 +40,6 @@ public class ClaimEntity extends BaseEntity {
   private String disabilityActionType;
 
   private boolean inScope;
-
-  private String submissionSource;
-
-  private OffsetDateTime submissionDate;
 
   public void addContention(ContentionEntity contention) {
     contention.setClaim(this);

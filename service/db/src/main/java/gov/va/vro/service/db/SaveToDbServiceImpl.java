@@ -4,11 +4,13 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.model.VeteranFlashIdEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
@@ -34,6 +36,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
 
@@ -41,18 +45,31 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Transactional
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
+    ClaimSubmissionEntity claimSubmission = createClaimSubmission(claim);
     ClaimEntity claimEntity =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
-            .orElseGet(() -> createClaim(claim, veteranEntity));
-    ensureContentionExists(claimEntity, claim.getDiagnosticCode());
+            claimRepository
+                    .findByVbmsId(claim.getClaimSubmissionId())
+                    .orElseGet(() -> createClaim(claim, claimSubmission, veteranEntity));
+    ensureContentionExists(claimEntity, claimSubmission, claim.getDiagnosticCode());
+    claimSubmissionRepository.save(claimSubmission);
     claim.setRecordId(claimEntity.getId());
     return claim;
   }
 
+  private ClaimSubmissionEntity createClaimSubmission(Claim claim) {
+    ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
+    claimSubmission.setReferenceId(claim.getClaimSubmissionId());
+    claimSubmission.setIdType(claim.getIdType());
+    claimSubmission.setIncomingStatus(claim.getIncomingStatus());
+    claimSubmission.setSubmissionSource(claim.getSubmissionSource());
+    claimSubmission.setSubmissionDate(claim.getSubmissionDate());
+    claimSubmissionRepository.save(claimSubmission);
+    return claimSubmission;
+  }
+
   @Override
   public void insertAssessmentResult(
-      UUID claimId, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
+          UUID claimId, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
     ClaimEntity claimEntity = claimRepository.findById(claimId).orElse(null);
     if (claimEntity == null) {
       log.warn("Could not match Claim ID in insertAssessmentResult, exiting.");
@@ -64,20 +81,19 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
     var claimEntity =
-        claimRepository.findByClaimSubmissionIdAndIdType(
-            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+            claimRepository.findByVbmsId(evidence.getClaimSubmissionId());
     if (claimEntity.isEmpty()) {
       log.warn(
-          "Claim not found for claimEntity submission id = {} and id type = {}",
-          evidence.getClaimSubmissionId(),
-          Claim.DEFAULT_ID_TYPE);
+              "Claim not found for claimEntity submission id = {} and id type = {}",
+              evidence.getClaimSubmissionId(),
+              Claim.DEFAULT_ID_TYPE);
       return;
     }
     insertAssessmentResult(claimEntity.get(), evidence, diagnosticCode);
   }
 
   private void insertAssessmentResult(
-      ClaimEntity claimEntity, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
+          ClaimEntity claimEntity, AbdEvidenceWithSummary evidenceResponse, String diagnosticCode) {
     Map<String, String> summary = convertMap(evidenceResponse.getEvidenceSummary());
     if (summary == null || summary.isEmpty()) {
       log.warn("Evidence Summary is empty, exiting.");
@@ -97,7 +113,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
     ClaimEntity claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
+            claimRepository.findByVbmsId(request.getClaimSubmissionId()).orElse(null);
     if (claim == null) {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
@@ -116,9 +132,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Transactional
   public void insertOrUpdateExamOrderingStatus(ExamOrder examOrder) {
     ExamOrderEntity examOrderEntity =
-        examOrderRepository
-            .findByCollectionId(examOrder.getCollectionId())
-            .orElseGet(() -> createExamOrder(examOrder));
+            examOrderRepository
+                    .findByCollectionId(examOrder.getCollectionId())
+                    .orElseGet(() -> createExamOrder(examOrder));
     if (null != examOrderEntity) {
       examOrderEntity.setCollectionId(examOrder.getCollectionId());
       examOrderEntity.setStatus(examOrder.getStatus());
@@ -144,7 +160,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   private List<VeteranFlashIdEntity> createFlashIds(
-      List<String> veteranFlashIds, VeteranEntity entity) {
+          List<String> veteranFlashIds, VeteranEntity entity) {
     List<VeteranFlashIdEntity> flashIdList = new ArrayList<>();
     for (String flashId : veteranFlashIds) {
       VeteranFlashIdEntity id = new VeteranFlashIdEntity();
@@ -184,10 +200,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return result;
   }
 
-  private ContentionEntity ensureContentionExists(ClaimEntity claim, String diagnosticCode) {
+  private ContentionEntity ensureContentionExists(ClaimEntity claim, ClaimSubmissionEntity claimSubmission, String diagnosticCode) {
     var contention = findContention(claim, diagnosticCode);
     if (contention == null) {
-      contention = createContention(claim, diagnosticCode);
+      contention = createContention(claim, claimSubmission, diagnosticCode);
       claimRepository.save(claim);
     }
     return contention;
@@ -202,10 +218,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return null;
   }
 
-  private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
+  private ClaimEntity createClaim(Claim claim, ClaimSubmissionEntity claimSubmission, VeteranEntity veteranEntity) {
     ClaimEntity claimEntity = mapper.toClaimEntity(claim);
     claimEntity.setVeteran(veteranEntity);
-    createContention(claimEntity, claim.getDiagnosticCode());
+    createContention(claimEntity, claimSubmission, claim.getDiagnosticCode());
     return claimRepository.save(claimEntity);
   }
 
@@ -216,10 +232,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return examOrderRepository.save(examOrderEntity);
   }
 
-  private ContentionEntity createContention(ClaimEntity claim, String diagnosticCode) {
+  private ContentionEntity createContention(ClaimEntity claim, ClaimSubmissionEntity claimSubmission, String diagnosticCode) {
     ContentionEntity contentionEntity = new ContentionEntity();
     contentionEntity.setDiagnosticCode(diagnosticCode);
     claim.addContention(contentionEntity);
+    claimSubmission.addContention(contentionEntity);
     return contentionEntity;
   }
 

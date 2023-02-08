@@ -3,6 +3,7 @@ package gov.va.vro.persistence.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,13 +29,13 @@ public class ClaimSubmissionEntity extends BaseEntity {
 
   private String submissionSource;
 
-  private Date submissionDate;
+  private OffsetDateTime submissionDate;
 
   @OneToMany(
-      mappedBy = "claim",
-      fetch = FetchType.EAGER,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+          mappedBy = "claimSubmission",
+          fetch = FetchType.EAGER,
+          cascade = CascadeType.ALL,
+          orphanRemoval = true)
   private List<ContentionEntity> contentions = new ArrayList<>();
 
   public void addContention(ContentionEntity contention) {
