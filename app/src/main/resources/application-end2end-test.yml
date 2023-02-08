@@ -10,22 +10,16 @@ spring.config.import: >
 
 # Settings for Mutual TLS and Jwt authentication with the Mock BIP Evidence Server
 bip:
-  # bip claims evidence api
-  evidenceClientId: VRO
+  evidenceClientId: VRO_USER
   evidenceSecret: theSecret
   evidenceBaseURL: "mock-bip-ce-api:8094"
+  applicationId: VRO
   evidenceIssuer: VRO
-  # bip claims api
   claimClientId: VRO
   claimSecret: theSecret
   claimBaseURL: "mock-bip-claims-api:8097"
   claimIssuer: VRO
-  # common
   applicationName: VRO
   stationId: 281
-
-
-
-
 
 truststore_password: keystore_pw

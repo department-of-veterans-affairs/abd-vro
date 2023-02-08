@@ -44,8 +44,8 @@ public class ContentionsTest {
     ContentionSummary summary = contentions.get(0);
     assertEquals(1011, summary.getContentionId());
     var codes = summary.getSpecialIssueCodes();
-    assertTrue(codes.indexOf("rrd") >= 0);
-    assertTrue(codes.indexOf("AOOV") >= 0);
+    assertTrue(codes.indexOf("RRD") >= 0);
+    assertTrue(codes.indexOf("rating decision review - level 1") >= 0);
 
     summary.getSpecialIssueCodes().remove(0);
     summary.getSpecialIssueCodes().remove(0);

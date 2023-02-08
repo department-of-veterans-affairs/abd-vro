@@ -8,11 +8,3 @@ http:
 spring.config.import: >
   server-truststore.yml,
   client-keystore.yml
-
-mock-bip-cce-api:
-  jwt-test:
-    userId: VRO_USER
-    secret: theSecret
-    issuer: VRO
-    stationId: 281
-    expirationSeconds: 900

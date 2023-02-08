@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "mock-bip-cce-api.jwt")
+@ConfigurationProperties(prefix = "mock-bip-ce-api.jwt")
 public class JwtProps {
   private String userId;
   private String secret;

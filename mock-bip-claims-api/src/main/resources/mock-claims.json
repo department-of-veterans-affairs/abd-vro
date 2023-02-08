@@ -12,8 +12,8 @@
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "specialIssueCodes": [
-          "AOOV",
-          "rrd"
+          "rating decision review - level 1",
+          "RRD"
         ]
       }
     ]

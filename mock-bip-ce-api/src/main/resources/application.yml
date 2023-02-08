@@ -49,7 +49,7 @@ management:
         include: health
 
 ## mock specific
-mock-bip-cce-api:
+mock-bip-ce-api:
   jwt:
     userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
     secret: "${BIP_EVIDENCE_SECRET:theSecret}"
