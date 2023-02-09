@@ -33,11 +33,6 @@ public class BipClaimService {
 
   public static final String TSOJ = "398";
 
-  //  @Value("${bip.special_issue_1}")
-  //  public static final String SPECIAL_ISSUE_1;
-  //
-  //  @Value("${bip.special_issue_1}")
-  //  public static final String SPECIAL_ISSUE_2;
   private final ClaimProps claimPorps;
 
   private final IBipApiService bipApiService;
