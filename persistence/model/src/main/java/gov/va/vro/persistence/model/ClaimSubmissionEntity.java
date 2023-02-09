@@ -23,6 +23,8 @@ public class ClaimSubmissionEntity extends BaseEntity {
 
   private String incomingStatus;
 
+  private String offRampReason;
+
   private String submissionSource;
 
   private OffsetDateTime submissionDate;

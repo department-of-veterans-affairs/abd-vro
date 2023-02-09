@@ -52,6 +52,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
             .orElseGet(() -> createClaim(claim, veteranEntity));
     ensureContentionExists(claimEntity, claim.getDiagnosticCode());
     claimEntity.addClaimSubmission(claimSubmissionEntity);
+    claimSubmissionRepository.save(claimSubmissionEntity);
+    claimRepository.save(claimEntity);
     claim.setRecordId(claimEntity.getId());
     return claim;
   }
@@ -63,7 +65,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimSubmission.setIncomingStatus(claim.getIncomingStatus());
     claimSubmission.setSubmissionSource(claim.getSubmissionSource());
     claimSubmission.setSubmissionDate(claim.getSubmissionDate());
-    claimSubmissionRepository.save(claimSubmission);
+    claimSubmission.setOffRampReason(claim.getOffRampReason());
     return claimSubmission;
   }
 

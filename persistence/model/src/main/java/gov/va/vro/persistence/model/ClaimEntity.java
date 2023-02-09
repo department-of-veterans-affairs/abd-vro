@@ -25,8 +25,6 @@ public class ClaimEntity extends BaseEntity {
 
   @NotNull private String vbmsId;
 
-  private String offRampReason;
-
   private boolean presumptiveFlag;
 
   private String disabilityActionType;
