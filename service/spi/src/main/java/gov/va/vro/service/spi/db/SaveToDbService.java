@@ -20,4 +20,6 @@ public interface SaveToDbService {
   void insertOrUpdateExamOrderingStatus(ExamOrder examOrder);
 
   void insertFlashIds(List<String> veteranFlashIds, String veteranIcn);
+
+  void updateRfdFlag(String claimId, boolean rfdFlag);
 }

@@ -21,11 +21,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
-  private String collectionId;
-
   @NotNull private String vbmsId;
 
   private boolean presumptiveFlag;
+
+  private boolean rfdFlag;
 
   private String disabilityActionType;
 

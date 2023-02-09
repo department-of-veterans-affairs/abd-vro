@@ -60,7 +60,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private ClaimSubmissionEntity createClaimSubmission(Claim claim) {
     ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
-    claimSubmission.setReferenceId(claim.getClaimSubmissionId());
+    claimSubmission.setReferenceId(claim.getCollectionId());
     claimSubmission.setIdType(claim.getIdType());
     claimSubmission.setIncomingStatus(claim.getIncomingStatus());
     claimSubmission.setSubmissionSource(claim.getSubmissionSource());
@@ -157,6 +157,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     List<VeteranFlashIdEntity> flashIdList = createFlashIds(veteranFlashIds, entity);
     entity.setFlashIds(flashIdList);
     veteranRepository.save(entity);
+  }
+
+  @Override
+  public void updateRfdFlag(String claimId, boolean rfdFlag) {
+    var claim = claimRepository.findByVbmsId(claimId);
+    if (claim.isEmpty()) {
+      log.warn("Could not find claim with id and idType, could not update RFD flag.");
+      return;
+    }
+    ClaimEntity claimEntity = claim.get();
+    claimEntity.setRfdFlag(rfdFlag);
+    claimRepository.save(claimEntity);
   }
 
   private List<VeteranFlashIdEntity> createFlashIds(

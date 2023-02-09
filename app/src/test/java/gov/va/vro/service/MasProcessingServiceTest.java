@@ -6,6 +6,8 @@ import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,11 @@ import java.util.List;
 public class MasProcessingServiceTest extends BaseIntegrationTest {
 
   @Autowired MasProcessingService masProcessingService;
+
+  @Autowired
+  ClaimSubmissionRepository claimSubmissionRepository;
+
+  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
 
   @Test
   void testClaimPersistence() {
@@ -37,6 +44,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     masProcessingService.processIncomingClaim(request2);
     var claimEntity2 = verifyClaimPersisted(request2);
     contentions = claimEntity2.getContentions();
+    ClaimEntity claim = claimRepository.findByVbmsId(claimId1).orElseThrow();
     assertEquals(2, contentions.size());
 
     // new claim
@@ -98,12 +106,13 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
   }
 
   private ClaimEntity verifyClaimPersisted(MasAutomatedClaimPayload request) {
-    var claim =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType(
-                request.getClaimId().toString(), "va.gov-Form526Submission")
-            .orElseThrow();
-    assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
+    var claim = claimRepository.findByVbmsId(request.getClaimId().toString()).orElseThrow();
+    var claimSubmissionList = claimSubmissionRepository.findByReferenceIdAndIdType(
+            String.valueOf(request.getCollectionId()), DEFAULT_ID_TYPE);
+    for(ClaimSubmissionEntity submission: claimSubmissionList){
+      assertEquals(request.getCollectionId().toString(), submission.getReferenceId());
+    }
+
     assertEquals(request.getVeteranIcn(), claim.getVeteran().getIcn());
     return claim;
   }

@@ -35,6 +35,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     claim.setIdType(Claim.DEFAULT_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode(diagnosticCode);
+    claim.setCollectionId("456");
     saveToDbService.insertClaim(claim);
 
     var evidence = new AbdEvidenceWithSummary();
@@ -49,9 +50,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     Mockito.when(message.getBody(AbdEvidenceWithSummary.class)).thenReturn(evidence);
     processor.process(exchange);
 
-    claimRepository
-        .findByClaimSubmissionIdAndIdType(claimSubmissionId, Claim.DEFAULT_ID_TYPE)
-        .orElseThrow();
+    claimRepository.findByVbmsId(claimSubmissionId).orElseThrow();
     var results =
         assessmentResultRepository.findAll().stream()
             .filter(result -> diagnosticCode.equals(result.getContention().getDiagnosticCode()))
