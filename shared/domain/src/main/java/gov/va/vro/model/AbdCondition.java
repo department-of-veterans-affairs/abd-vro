@@ -29,6 +29,9 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";
 
+  @Schema(description = "Partial date from OCR", example = "**/**/1988")
+  private String partialDate;
+
   @Override
   public int compareTo(AbdCondition otherCondition) {
     return StringUtils.compare(onsetDate, otherCondition.onsetDate);

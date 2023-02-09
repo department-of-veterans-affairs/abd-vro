@@ -9,6 +9,7 @@ import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
 public class BipClaimService {
 
   public static final String TSOJ = "398";
-  public static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
-  public static final String SPECIAL_ISSUE_2 = "rrd";
+
+  private final ClaimProps claimPorps;
 
   private final IBipApiService bipApiService;
 
@@ -61,7 +62,10 @@ public class BipClaimService {
       log.info("Claim with claim Id {} does not have contentions.", claimId);
       return false;
     }
-
+    log.info(
+        "SPECIAL_ISSUE_1: {}, SPECIAL_ISSUE_2: {}",
+        claimPorps.getSpecialIssue1(),
+        claimPorps.getSpecialIssue2());
     // collect all special issues
     var specialIssues =
         contentions.stream()
@@ -70,7 +74,11 @@ public class BipClaimService {
             .flatMap(Collection::stream)
             .map(String::toLowerCase) // Ignore case
             .collect(Collectors.toSet());
-    return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
+    boolean hasSpecialIssues =
+        specialIssues.contains(claimPorps.getSpecialIssue1().toLowerCase())
+            && specialIssues.contains(claimPorps.getSpecialIssue2().toLowerCase());
+    log.info("Has special issues: {}", hasSpecialIssues);
+    return hasSpecialIssues;
   }
 
   /**
@@ -81,7 +89,8 @@ public class BipClaimService {
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
     var claimId = Long.parseLong(payload.getClaimId());
-    log.info("Attempting to remove special issue for claim id = {}", claimId);
+    String specialIssue1 = claimPorps.getSpecialIssue1();
+    log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
@@ -91,18 +100,19 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
-      if (!hasSpecialIssues(contention)) {
+      List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+      if (specialIssueCodes == null) {
+        log.info("Contention {} has no special issues.", contention.getContentionId());
         continue;
       }
-      var codes =
-          contention.getSpecialIssueCodes().stream()
-              .map(String::toLowerCase)
-              .collect(Collectors.toSet());
-      if (codes.contains(SPECIAL_ISSUE_1)) {
+      log.info("Special issue codes: {}", String.join(",", specialIssueCodes));
+      var codes = specialIssueCodes.stream().map(String::toLowerCase).collect(Collectors.toSet());
+      if (codes.contains(specialIssue1.toLowerCase())) {
+        log.info("Found {} in contention {}", specialIssue1, contention.getContentionId());
         // remove string from contention
         List<String> updatedCodes =
             contention.getSpecialIssueCodes().stream()
-                .filter(code -> !SPECIAL_ISSUE_1.equalsIgnoreCase(code))
+                .filter(code -> !claimPorps.getSpecialIssue1().equalsIgnoreCase(code))
                 .collect(Collectors.toList());
         var update = contention.toBuilder().specialIssueCodes(updatedCodes).build();
         updatedContentions.add(update);

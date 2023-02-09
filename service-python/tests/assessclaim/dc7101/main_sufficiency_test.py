@@ -127,11 +127,13 @@ from assessclaimdc7101.src.lib import main
                                               'recordedDate': '1950-04-06',
                                               'relevant': True,
                                               'text': 'Essential (primary) hypertension',
-                                              "category": "Encounter Diagnosis"},
+                                              "category": "Encounter Diagnosis",
+                                              "partialDate": ""},
                                              {'code': '1234',
                                               'relevant': False,
                                               'dateFormatted': '',
-                                              'text': 'snomed diagnosis'}],
+                                              'text': 'snomed diagnosis',
+                                              "partialDate": ""}],
                               'medications': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'recentBpReadings': 3,
@@ -260,8 +262,14 @@ from assessclaimdc7101.src.lib import main
                         "medications": [{
                             "text": "some medication",
                             "relevant": True,
-                            "authoredOn": "1950-04-06T07:24:55Z"
-                        }]
+                            "authoredOn": "1950-04-06T07:24:55Z",
+                        },
+                            {
+                                "text": "some medication",
+                                "relevant": True,
+                                "authoredOn": "",
+                                "partialDate": "**/**/1988"
+                            }]
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
@@ -291,18 +299,28 @@ from assessclaimdc7101.src.lib import main
                                    'recordedDate': '1950-04-06',
                                    'relevant': True,
                                    'text': 'Essential (primary) hypertension',
-                                   "category": "Encounter Diagnosis"},
+                                   "category": "Encounter Diagnosis",
+                                   "partialDate": ""},
                                   {'code': '1234',
-                                   'dateFormatted': "unparsed ()",
+                                   'dateFormatted': "",
                                    'relevant': False,
                                    'text': 'snomed diagnosis',
-                                   "recordedDate": ""
+                                   "recordedDate": "",
+                                   "partialDate": ""
                                    }],
                               'medications': [{'authoredOn': '1950-04-06T07:24:55Z',
                                                'dateFormatted': '4/6/1950',
                                                'relevant': True,
-                                               'text': 'some medication'}]},
-                 'evidenceSummary': {'medicationsCount': 1,
+                                               'text': 'some medication',
+                                               "partialDate": ""},
+                                              {
+                                                  "text": "some medication",
+                                                  "relevant": True,
+                                                  "authoredOn": "",
+                                                  "partialDate": "**/**/1988",
+                                                  "dateFormatted": ""
+                                              }]},
+                 'evidenceSummary': {'medicationsCount': 2,
                                      'recentBpReadings': 1,
                                      'relevantConditionsCount': 1,
                                      'totalBpReadings': 1,
@@ -384,7 +402,8 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 200}}],
                               'conditions': [],
                               'medications': [{'relevant': True, 'text': 'some medication',
-                                               'dateFormatted': ''}]},
+                                               'dateFormatted': '',
+                                               "partialDate": ""}]},
                  'evidenceSummary': {'medicationsCount': 1,
                                      'recentBpReadings': 2,
                                      'relevantConditionsCount': 0,
@@ -397,7 +416,7 @@ from assessclaimdc7101.src.lib import main
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "2020-11-01",
+                        "bp_readings": [{"date": "****-11-01",  # Date is not formatted correctly
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -433,20 +452,7 @@ from assessclaimdc7101.src.lib import main
                 ,
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
-                 'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/1/2020',
-                                               'diastolic': {'code': '8462-4',
-                                                             'display': 'Diastolic blood '
-                                                                        'pressure',
-                                                             'unit': 'mm[Hg]',
-                                                             'value': 115},
-                                               'organization': 'LYONS VA MEDICAL CENTER',
-                                               'practitioner': 'DR. JANE460 DOE922 MD',
-                                               'systolic': {'code': '8480-6',
-                                                            'display': 'Systolic blood '
-                                                                       'pressure',
-                                                            'unit': 'mm[Hg]',
-                                                            'value': 180}},
+                 'evidence': {'bp_readings': [
                                               {'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -463,7 +469,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 200}}],
                               'conditions': []},
                  'evidenceSummary': {
-                     'recentBpReadings': 2,
+                     'recentBpReadings': 1,
                      'relevantConditionsCount': 0,
                      'totalBpReadings': 2,
                      'totalConditionsCount': 0},
