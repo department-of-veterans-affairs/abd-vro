@@ -23,6 +23,8 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
+  services:
+    environment: nonprod
 # BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
   app:

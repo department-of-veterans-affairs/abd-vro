@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;
@@ -22,7 +24,6 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
-
   @JsonIgnore private final ObjectMapper objectMapper = new ObjectMapper();
 
   private String correlationId;
@@ -80,7 +81,10 @@ public class MasAutomatedClaimPayload implements Auditable {
   @JsonIgnore
   public Boolean isPresumptive() {
     if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
-      return (veteranFlashIds != null && veteranFlashIds.contains(AGENT_ORANGE_FLASH_ID));
+      return (veteranFlashIds != null
+          && !Collections.disjoint(
+              veteranFlashIds,
+              Arrays.asList(MasVeteranFlashProps.getInstance().getAgentOrangeFlashIds())));
     }
     return null;
   }
