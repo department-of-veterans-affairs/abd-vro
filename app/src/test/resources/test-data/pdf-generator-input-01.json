@@ -21,7 +21,8 @@
         "dosageInstructions": [
           "QD"
         ],
-        "route": "ORAL"
+        "route": "ORAL",
+        "partialDate":""
       },
       {
         "status": "Active",
@@ -35,7 +36,8 @@
           "Once per day.",
           "As directed by physician."
         ],
-        "route": "As directed by physician."
+        "route": "As directed by physician.",
+        "partialDate":""
       }
     ],
     "bp_readings": [
