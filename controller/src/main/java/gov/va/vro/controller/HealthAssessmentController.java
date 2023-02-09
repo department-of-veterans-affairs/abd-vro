@@ -36,9 +36,10 @@ public class HealthAssessmentController implements HealthAssessmentResource {
       String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode());
       if (diagnosis == null) {
         throw new ClaimProcessingException(
-                claim.getClaimSubmissionId(),
-                HttpStatus.BAD_REQUEST,
-                String.format("Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
+            claim.getClaimSubmissionId(),
+            HttpStatus.BAD_REQUEST,
+            String.format(
+                "Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
       }
       Claim model = postClaimRequestMapper.toModel(claim);
       String responseAsString = camelEntrance.submitClaimFull(model);
