@@ -181,8 +181,7 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   private void verifyClaimPersisted(MasAutomatedClaimRequest request) {
-    var claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimDetail().getBenefitClaimId()).get();
+    var claim = claimRepository.findByVbmsId(request.getClaimDetail().getBenefitClaimId()).get();
     assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
     assertEquals(request.getVeteranIdentifiers().getIcn(), claim.getVeteran().getIcn());
     var contentions = claim.getContentions();

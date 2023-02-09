@@ -27,14 +27,12 @@ public class TestDataSupplier {
    * <p>Summary.</p>
    *
    * @param id ID
-   * @param idType ID type
    * @param veteran veteran
    * @return return
    */
-  public static ClaimEntity createClaim(String id, String idType, VeteranEntity veteran) {
+  public static ClaimEntity createClaim(String id, VeteranEntity veteran) {
     ClaimEntity claim = new ClaimEntity();
-    claim.setClaimSubmissionId(id);
-    claim.setIdType(idType);
+    claim.setVbmsId(id);
     claim.setVeteran(veteran);
     return claim;
   }

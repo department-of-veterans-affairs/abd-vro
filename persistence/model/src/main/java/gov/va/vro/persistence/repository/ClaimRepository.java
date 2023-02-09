@@ -13,5 +13,6 @@ import java.util.UUID;
 public interface ClaimRepository extends JpaRepository<ClaimEntity, UUID> {
 
   Optional<ClaimEntity> findByVbmsId(String vbmsId);
+
   Page<ClaimEntity> findAllByVeteranIcn(String veteranIcn, PageRequest pageRequest);
 }

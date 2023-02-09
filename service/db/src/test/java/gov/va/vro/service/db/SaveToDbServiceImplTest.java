@@ -65,12 +65,8 @@ class SaveToDbServiceImplTest {
     assertEquals(1, veteranRepository.findAll().size());
     assertEquals(1, claimRepository.findAll().size());
     ClaimEntity claimEntity =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
-            .orElseThrow();
-    assertEquals(claim.getClaimSubmissionId(), claimEntity.getClaimSubmissionId());
-    assertEquals("va.gov-Form526Submission", claimEntity.getIdType());
-    assertEquals("submission", claimEntity.getIncomingStatus());
+        claimRepository.findByVbmsId(claim.getClaimSubmissionId()).orElseThrow();
+    assertEquals(claim.getClaimSubmissionId(), claimEntity.getVbmsId());
     assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
@@ -85,14 +81,13 @@ class SaveToDbServiceImplTest {
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
-    ClaimEntity claimBeforeAssessment =
-        claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ClaimEntity claimBeforeAssessment = claimRepository.findByVbmsId("1234").orElseThrow();
     Map<String, Object> evidenceMap = new HashMap<>();
     evidenceMap.put("medicationsCount", "10");
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
     evidence.setEvidenceSummary(evidenceMap);
     saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
-    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
     AssessmentResultEntity assessmentResult =
@@ -120,7 +115,7 @@ class SaveToDbServiceImplTest {
     String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     // Save evidence summary document.
     saveToDbService.insertEvidenceSummaryDocument(input, documentName);
-    ClaimEntity result = claimRepository.findByClaimSubmissionId("1234").orElseThrow();
+    ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
     // Verify evidence is correct
     assertNotNull(result);
     EvidenceSummaryDocumentEntity esd =
@@ -159,10 +154,7 @@ class SaveToDbServiceImplTest {
             .diagnosticCode("7101")
             .build();
     saveToDbService.insertClaim(claim1);
-    ClaimEntity claimEntity1 =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
-            .orElseThrow();
+    ClaimEntity claimEntity1 = claimRepository.findByVbmsId("1234").orElseThrow();
     assertEquals(1, claimEntity1.getContentions().size());
     ContentionEntity contentionEntity = claimEntity1.getContentions().get(0);
     assertEquals(claim1.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
@@ -175,10 +167,7 @@ class SaveToDbServiceImplTest {
             .diagnosticCode("8181")
             .build();
     saveToDbService.insertClaim(claim2);
-    ClaimEntity claimEntity2 =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission")
-            .orElseThrow();
+    ClaimEntity claimEntity2 = claimRepository.findByVbmsId("1234").orElseThrow();
     assertEquals(2, claimEntity2.getContentions().size());
   }
 }

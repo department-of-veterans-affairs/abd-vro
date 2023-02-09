@@ -31,10 +31,10 @@ public class ContentionEntity extends BaseEntity {
   @NotNull private String diagnosticCode;
 
   @OneToMany(
-          mappedBy = "contention",
-          fetch = FetchType.EAGER,
-          cascade = CascadeType.ALL,
-          orphanRemoval = true)
+      mappedBy = "contention",
+      fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
 
   @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -73,7 +73,7 @@ public class ContentionEntity extends BaseEntity {
    * @return returns the evidence summary document.
    */
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
-          EvidenceSummaryDocumentEntity request) {
+      EvidenceSummaryDocumentEntity request) {
     EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
     document.setDocumentName(request.getDocumentName());
     document.setEvidenceCount(request.getEvidenceCount());

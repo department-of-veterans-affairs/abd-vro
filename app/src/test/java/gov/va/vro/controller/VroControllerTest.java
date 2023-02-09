@@ -18,7 +18,6 @@ import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.CamelContext;
@@ -42,7 +41,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -122,9 +120,8 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
-    Optional<ClaimEntity> claimEntityOptional =
-        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
-    assertTrue(claimEntityOptional.isPresent());
+    var claim = claimRepository.findByVbmsId(request.getClaimSubmissionId());
+    assertTrue(claim.isPresent());
   }
 
   @Test
