@@ -113,6 +113,9 @@ public class FieldExtractor {
         }
       }
     }
+    else {
+      result.setCategory("");
+    }
 
     return result;
   }
