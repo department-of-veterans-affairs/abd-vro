@@ -89,7 +89,8 @@ public class BipClaimService {
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
     var claimId = Long.parseLong(payload.getClaimId());
-    log.info("Attempting to remove special issue for claim id = {}", claimId);
+    String specialIssue1 = claimPorps.getSpecialIssue1();
+    log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
@@ -99,14 +100,15 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
-      if (!hasSpecialIssues(contention)) {
+      List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+      if (specialIssueCodes == null) {
+        log.info("Contention {} has no special issues.", contention.getContentionId());
         continue;
       }
-      var codes =
-          contention.getSpecialIssueCodes().stream()
-              .map(String::toLowerCase)
-              .collect(Collectors.toSet());
-      if (codes.contains(claimPorps.getSpecialIssue1())) {
+      log.info("Special issue codes: {}", String.join(",", specialIssueCodes));
+      var codes = specialIssueCodes.stream().map(String::toLowerCase).collect(Collectors.toSet());
+      if (codes.contains(specialIssue1.toLowerCase())) {
+        log.info("Found {} in contention {}", specialIssue1, contention.getContentionId());
         // remove string from contention
         List<String> updatedCodes =
             contention.getSpecialIssueCodes().stream()

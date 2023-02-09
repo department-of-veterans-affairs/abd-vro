@@ -67,7 +67,7 @@ public class MasCollectionAnnotsResults {
               AbdCondition abdCondition = createCondition(masAnnotation);
               conditions.add(abdCondition);
             }
-            case LABRESULT -> {
+            case LABRESULT, BLOOD_PRESSURE -> {
               if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
                 AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
                 bpReadings.add(abdBloodPressure);
