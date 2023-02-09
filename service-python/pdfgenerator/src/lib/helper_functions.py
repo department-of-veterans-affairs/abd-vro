@@ -7,10 +7,6 @@ from dateutil.relativedelta import relativedelta
 
 def pdf_helper_asthma(data):
 
-    if "evidence" in data:
-        for medication_info in data["evidence"]["medications"]:
-            medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
-
     return data
 
 
@@ -21,6 +17,10 @@ def pdf_helper_all(data):
     data["evidence"] = data["evidence"]
     if data["veteranInfo"]["birthdate"] != "":
         data["veteranInfo"]["birthdate"] = parser.parse(data["veteranInfo"]["birthdate"])
+
+    if "evidence" in data:
+        for medication_info in data["evidence"]["medications"]:
+            medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
 
     return data
 
