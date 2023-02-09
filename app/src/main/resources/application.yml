@@ -209,12 +209,12 @@ spring.redis:
 
 bip:
   claimClientId: "${BIP_CLAIM_USERID}"
-  claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}"
+  claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
+  claimBaseURL: "${BIP_CLAIM_URL}"
   claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
   evidenceClientId: "${BIP_EVIDENCE_USERID}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL:vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
   evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
   applicationName: "${BIP_APPLICATION_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"

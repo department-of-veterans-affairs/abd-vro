@@ -20,6 +20,7 @@ import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionEnum;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class ClaimsApiController implements ClaimsApi {
   @Autowired private ClaimStore claimStore;
 
@@ -47,6 +49,7 @@ public class ClaimsApiController implements ClaimsApi {
 
   @Override
   public ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(Long claimId) {
+    log.info("Getting contentions for claim (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
@@ -62,6 +65,7 @@ public class ClaimsApiController implements ClaimsApi {
 
   @Override
   public ResponseEntity<ClaimDetailResponse> getClaimById(Long claimId) {
+    log.info("Getting claim (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
@@ -85,6 +89,7 @@ public class ClaimsApiController implements ClaimsApi {
   @Override
   public ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
       Long claimId, UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest) {
+    log.info("Updating claim lifecycle status (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
@@ -114,6 +119,7 @@ public class ClaimsApiController implements ClaimsApi {
   @Override
   public ResponseEntity<UpdateContentionsResponse> updateContentions(
       Long claimId, UpdateContentionsRequest updateContentionsRequest) {
+    log.info("Updating contentions claim (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
