@@ -123,7 +123,7 @@ public class BipClaimService {
       return payload; // nothing to update
     }
     log.info("Removing special issue for claim id = {}", claimId);
-    String action = "Remove special issue";
+    String action = "UPDATED_CONTENTION";
     List<UpdateContention> updateContentions =
         updatedContentions.stream()
             .map(c -> c.toUpdateContention(action))
