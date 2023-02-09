@@ -138,7 +138,7 @@ public class MasCollectionAnnotsResults {
       abdMedication.setAuthoredOn("");
     }
     if (masAnnotation.getPartialDate() != null) {
-      abdMedication.setPartialDate(masAnnotation.getPartialDate());
+      abdMedication.setPartialDate(masAnnotation.getPartialDate().replaceAll("Z", ""));
     } else {
       abdMedication.setPartialDate("");
     }
@@ -160,7 +160,7 @@ public class MasCollectionAnnotsResults {
       abdCondition.setOnsetDate("");
     }
     if (masAnnotation.getPartialDate() != null) {
-      abdCondition.setPartialDate(masAnnotation.getPartialDate());
+      abdCondition.setPartialDate(masAnnotation.getPartialDate().replaceAll("Z", ""));
     } else {
       abdCondition.setPartialDate("");
     }
