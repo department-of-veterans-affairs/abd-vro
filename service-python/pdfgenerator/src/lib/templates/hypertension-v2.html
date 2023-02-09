@@ -226,7 +226,7 @@
           {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list %}
             <tr>
               <th>{{ condition.text}}</th>
-              <td>{{ condition.dateFormatted }}</td>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list |length == 0 %}
@@ -267,7 +267,7 @@
           {% for bp_reading in evidence.bp_readings %}
           <tr>
             <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
-            <td {% if bp_reading.dateFormatted == "" or "unparsed" in bp_reading.dateFormatted %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == "" %}No associated date{% elif "unparsed" in bp_reading.dateFormatted == "" %}No confident date {{bp_reading.dateFormatted.replace("unparsed ")}}{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
+            <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
             <td>VAMC record - {{ bp_reading.organization }}</td>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
@@ -302,7 +302,7 @@
           {% for medication in evidence.medications %}
           <tr>
             <th>{{ medication.description }}</th>
-            <td {% if medication.dateFormatted == "" or "unparsed" in medication.dateFormatted %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" %}No associated date{% elif "unparsed" in medication.dateFormatted == "" %}No confident date {{medication.dateFormatted.replace("unparsed ", )}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
+            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}No confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
             <td>Source Sample</td>
             <td>1/3/2023</td>
             <td>20, 21</td>
@@ -342,7 +342,7 @@
           {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list %}
             <tr>
               <th>{{ condition.text }}</th>
-              <td>{{ condition.dateFormatted }}</td>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
               <td>Source Sample</td>
               <td>1/3/2023</td>
               <td>20, 21</td>
