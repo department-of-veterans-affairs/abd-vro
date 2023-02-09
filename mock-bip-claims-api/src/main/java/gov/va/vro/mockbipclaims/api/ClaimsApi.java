@@ -3,8 +3,6 @@ package gov.va.vro.mockbipclaims.api;
 import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
-import gov.va.vro.mockbipclaims.model.CreateContentionsRequest;
-import gov.va.vro.mockbipclaims.model.CreateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.ProviderResponse;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
@@ -35,106 +33,6 @@ import javax.validation.Valid;
     description = "A tag that organizes resources for contentions within a given claim.")
 @RequestMapping("/")
 public interface ClaimsApi {
-
-  /**
-   * POST /claims/{claimId}/contentions : Creates one or more Contentions for a claim.
-   *
-   * @param claimId The CorpDB BNFT_CLAIM_ID (required)
-   * @param createContentionsRequest (required)
-   * @return A list of contention ids of the created contentions, in the same order as the creation
-   *     request. (status code 201) or There was an error encountered processing the Request.
-   *     Response will contain a \&quot;messages\&quot; element that will provide further
-   *     information on the error. This request shouldn&#39;t be retried until corrected. (status
-   *     code 400) or The authentication mechanism failed and hence access is forbidden. (status
-   *     code 401) or There was an error encountered processing the Request. Response will contain a
-   *     \&quot;messages\&quot; element that will provide further information on the error. Please
-   *     retry. If problem persists, please contact support with a copy of the Response. (status
-   *     code 500)
-   */
-  @Operation(
-      operationId = "createContentions",
-      summary = "Creates one or more Contentions for a claim",
-      tags = {"contentions"},
-      responses = {
-        @ApiResponse(
-            responseCode = "201",
-            description =
-                """
-                A list of contention ids of the created contentions, in the same order as the
-                creation request.
-                """,
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = CreateContentionsResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = CreateContentionsResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "400",
-            description =
-                """
-                There was an error encountered processing the Request.  Response will contain
-                a \"messages\" element that will provide further information on the error.
-                This request shouldn't be retried until corrected.
-                """,
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "401",
-            description = "The authentication mechanism failed and hence access is forbidden.",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "500",
-            description =
-                """
-                There was an error encountered processing the Request.  Response will contain
-                a  \"messages\" element that will provide further information on the error.
-                 Please retry.  If problem persists, please contact support with a copy of
-                 the Response.
-                 """,
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            })
-      },
-      security = {@SecurityRequirement(name = "bearerAuth")})
-  @RequestMapping(
-      method = RequestMethod.POST,
-      value = "/claims/{claimId}/contentions",
-      produces = {"application/json", "application/problem+json"},
-      consumes = {"application/json"})
-  ResponseEntity<CreateContentionsResponse> createContentions(
-      @Parameter(
-              name = "claimId",
-              description = "The CorpDB BNFT_CLAIM_ID",
-              required = true,
-              in = ParameterIn.PATH)
-          @PathVariable("claimId")
-          Long claimId,
-      @Parameter(name = "CreateContentionsRequest", description = "", required = true)
-          @Valid
-          @RequestBody
-          CreateContentionsRequest createContentionsRequest);
-
   /**
    * GET /claims/{claimId} : Access claim summary information for a claim, using the claimId Get the
    * claim summary for a claim ID. This is the use case for getting claim information regardless of

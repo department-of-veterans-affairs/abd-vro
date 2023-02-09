@@ -9,8 +9,6 @@ import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummary;
-import gov.va.vro.mockbipclaims.model.CreateContentionsRequest;
-import gov.va.vro.mockbipclaims.model.CreateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.Message;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
@@ -19,9 +17,9 @@ import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionEnum;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,18 +32,13 @@ import java.util.List;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class ClaimsApiController implements ClaimsApi {
-  @Autowired private ClaimStore claimStore;
+  private final ClaimStore claimStore;
 
-  @Autowired private ModifyingActionStore actionStore;
+  private final ModifyingActionStore actionStore;
 
-  @Autowired private ContentionMapper mapper;
-
-  @Override
-  public ResponseEntity<CreateContentionsResponse> createContentions(
-      Long claimId, CreateContentionsRequest createContentionsRequest) {
-    return null;
-  }
+  private final ContentionMapper mapper;
 
   @Override
   public ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(Long claimId) {
