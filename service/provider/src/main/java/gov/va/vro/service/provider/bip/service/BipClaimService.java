@@ -111,9 +111,7 @@ public class BipClaimService {
         continue;
       }
       log.info("Special issue codes: {}", String.join(",", specialIssueCodes));
-      var codes = specialIssueCodes.stream()
-              .map(String::toLowerCase)
-              .collect(Collectors.toSet());
+      var codes = specialIssueCodes.stream().map(String::toLowerCase).collect(Collectors.toSet());
       if (codes.contains(specialIssue1.toLowerCase())) {
         log.info("Found {} in contention {}", specialIssue1, contention.getContentionId());
         // remove string from contention
