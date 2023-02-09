@@ -112,8 +112,7 @@ public class FieldExtractor {
           result.setCategory(text);
         }
       }
-    }
-    else {
+    } else {
       result.setCategory("");
     }
 
