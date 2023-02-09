@@ -7,6 +7,9 @@ package gov.va.vro.model.mas;
 public enum MasAnnotType {
   MEDICATION("medication"),
   LABRESULT("lab_result"),
+
+  BLOOD_PRESSURE("blood_pressure"),
+
   PROCEDURE("procedure"),
   SERVICE("service"),
   CONDITION("medical_condition"),

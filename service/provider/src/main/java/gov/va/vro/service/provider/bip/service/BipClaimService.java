@@ -9,6 +9,7 @@ import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
 public class BipClaimService {
 
   public static final String TSOJ = "398";
-  public static final String SPECIAL_ISSUE_1 = "rating decision review - level 1";
-  public static final String SPECIAL_ISSUE_2 = "rrd";
+
+  private final ClaimProps claimPorps;
 
   private final IBipApiService bipApiService;
 
@@ -41,27 +42,30 @@ public class BipClaimService {
   /**
    * Check if all the anchors for fast-tracking are satisfied.
    *
-   * @param collectionId collection id identifying the claim
+   * @param claimId claim id identifying the claim
    * @return true if the anchors are satisfied, false otherwise
    */
-  public boolean hasAnchors(int collectionId) {
+  public boolean hasAnchors(long claimId) {
 
-    var claimDetails = bipApiService.getClaimDetails(collectionId);
+    var claimDetails = bipApiService.getClaimDetails(claimId);
     if (claimDetails == null) {
-      log.warn("Claim with collection Id {} not found in BIP", collectionId);
+      log.warn("Claim with claim Id {} not found in BIP", claimId);
       return false;
     }
     if (!TSOJ.equals(claimDetails.getTempStationOfJurisdiction())) {
-      log.info("Claim with collection Id {} does not have TSOJ = {}", collectionId, TSOJ);
-      return false;
-    }
-    int claimId = Integer.parseInt(claimDetails.getClaimId());
-    var contentions = bipApiService.getClaimContentions(claimId);
-    if (contentions == null) {
-      log.info("Claim with collection Id {} does not have contentions.", collectionId);
+      log.info("Claim with claim Id {} does not have TSOJ = {}", claimId, TSOJ);
       return false;
     }
 
+    var contentions = bipApiService.getClaimContentions(claimId);
+    if (contentions == null) {
+      log.info("Claim with claim Id {} does not have contentions.", claimId);
+      return false;
+    }
+    log.info(
+        "SPECIAL_ISSUE_1: {}, SPECIAL_ISSUE_2: {}",
+        claimPorps.getSpecialIssue1(),
+        claimPorps.getSpecialIssue2());
     // collect all special issues
     var specialIssues =
         contentions.stream()
@@ -70,7 +74,11 @@ public class BipClaimService {
             .flatMap(Collection::stream)
             .map(String::toLowerCase) // Ignore case
             .collect(Collectors.toSet());
-    return specialIssues.contains(SPECIAL_ISSUE_1) && specialIssues.contains(SPECIAL_ISSUE_2);
+    boolean hasSpecialIssues =
+        specialIssues.contains(claimPorps.getSpecialIssue1().toLowerCase())
+            && specialIssues.contains(claimPorps.getSpecialIssue2().toLowerCase());
+    log.info("Has special issues: {}", hasSpecialIssues);
+    return hasSpecialIssues;
   }
 
   /**
@@ -81,7 +89,8 @@ public class BipClaimService {
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
     var claimId = Long.parseLong(payload.getClaimId());
-    log.info("Attempting to remove special issue for claim id = {}", claimId);
+    String specialIssue1 = claimPorps.getSpecialIssue1();
+    log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
@@ -91,18 +100,19 @@ public class BipClaimService {
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
-      if (!hasSpecialIssues(contention)) {
+      List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+      if (specialIssueCodes == null) {
+        log.info("Contention {} has no special issues.", contention.getContentionId());
         continue;
       }
-      var codes =
-          contention.getSpecialIssueCodes().stream()
-              .map(String::toLowerCase)
-              .collect(Collectors.toSet());
-      if (codes.contains(SPECIAL_ISSUE_1)) {
+      log.info("Special issue codes: {}", String.join(",", specialIssueCodes));
+      var codes = specialIssueCodes.stream().map(String::toLowerCase).collect(Collectors.toSet());
+      if (codes.contains(specialIssue1.toLowerCase())) {
+        log.info("Found {} in contention {}", specialIssue1, contention.getContentionId());
         // remove string from contention
         List<String> updatedCodes =
             contention.getSpecialIssueCodes().stream()
-                .filter(code -> !SPECIAL_ISSUE_1.equalsIgnoreCase(code))
+                .filter(code -> !claimPorps.getSpecialIssue1().equalsIgnoreCase(code))
                 .collect(Collectors.toList());
         var update = contention.toBuilder().specialIssueCodes(updatedCodes).build();
         updatedContentions.add(update);
@@ -131,11 +141,11 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    int collectionId = payload.getCollectionId();
-    log.info("Marking claim with collectionId = {} as Ready For Decision", collectionId);
+    long claimId = payload.getClaimIdAsLong();
+    log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
 
     try {
-      bipApiService.updateClaimStatus(collectionId, ClaimStatus.RFD);
+      bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
     } catch (Exception e) {
       throw new BipException("BIP update claim status resulted in an exception", e);
     }
@@ -145,20 +155,25 @@ public class BipClaimService {
   /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
+    long claimId = payload.getClaimIdAsLong();
 
     // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(collectionId);
+    var claim = bipApiService.getClaimDetails(claimId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
       log.info(
-          "Claim with collection Id = {} is in state {}. Not updating status",
+          "Claim {} with collection Id = {} is in state {}. Not updating status",
+          claimId,
           collectionId,
           claim.getTempStationOfJurisdiction());
       payload.setTSOJ(false);
       return payload;
     }
     // otherwise, update claim
-    log.info("Updating claim status for claim with collection id = {}", collectionId);
-    bipApiService.setClaimToRfdStatus(collectionId);
+    log.info(
+        "Updating claim status for claim with claim id = {} for MAS collection Id = {}",
+        claimId,
+        collectionId);
+    bipApiService.setClaimToRfdStatus(claimId);
     payload.setTSOJ(true);
     return payload;
   }

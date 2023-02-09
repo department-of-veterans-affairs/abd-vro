@@ -22,8 +22,10 @@ public class ReceivedApiController implements ReceivedApi {
   @SneakyThrows
   @Override
   public ResponseEntity<byte[]> download(String fileNumber) {
+    log.info("Entered download for fileNumber: {}", fileNumber);
     EvidenceFile evidenceFile = store.get(fileNumber);
     if (evidenceFile == null) {
+      log.info("No file found for fileNumber: {}", fileNumber);
       HttpStatus status = HttpStatus.NOT_FOUND;
       throw new ResponseStatusException(status, status.getReasonPhrase());
     }

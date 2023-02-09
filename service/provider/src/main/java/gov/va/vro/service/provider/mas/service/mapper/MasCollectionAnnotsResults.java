@@ -67,7 +67,7 @@ public class MasCollectionAnnotsResults {
               AbdCondition abdCondition = createCondition(masAnnotation);
               conditions.add(abdCondition);
             }
-            case LABRESULT -> {
+            case LABRESULT, BLOOD_PRESSURE -> {
               if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
                 AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
                 bpReadings.add(abdBloodPressure);
@@ -110,7 +110,11 @@ public class MasCollectionAnnotsResults {
 
     AbdBloodPressure abdBloodPressure = new AbdBloodPressure();
     abdBloodPressure.setDataSource(DATA_SOURCE);
-    abdBloodPressure.setDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
+    if (masAnnotation.getObservationDate() != null) {
+      abdBloodPressure.setDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
+    } else {
+      abdBloodPressure.setDate("");
+    }
     abdBloodPressure.setSystolic(systolicReading);
     abdBloodPressure.setDiastolic(diastolicReading);
     abdBloodPressure.setOrganization(null);

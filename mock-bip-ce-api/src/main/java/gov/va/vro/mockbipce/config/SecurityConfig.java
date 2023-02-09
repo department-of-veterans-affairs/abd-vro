@@ -30,6 +30,7 @@ public class SecurityConfig {
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.authorizeRequests().antMatchers("/received-files/*").permitAll();
+    http.authorizeRequests().antMatchers("/actuator/health").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     http.exceptionHandling().authenticationEntryPoint(authEntryPoint);

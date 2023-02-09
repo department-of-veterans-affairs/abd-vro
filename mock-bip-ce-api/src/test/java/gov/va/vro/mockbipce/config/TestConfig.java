@@ -30,10 +30,10 @@ public class TestConfig {
   @Value("${http.client.ssl.key-store-password}")
   private String keyStorePassword;
 
-  @Value("${vro-mock-bip-ce-truststore}")
+  @Value("${truststore}")
   private String trustStoreBase64;
 
-  @Value("${vro-mock-bip-ce-keystore}")
+  @Value("${keystore}")
   private String keyStoreBase64;
 
   @Autowired private JwtProps jwtProps;

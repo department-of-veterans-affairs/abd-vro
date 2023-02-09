@@ -15,9 +15,27 @@ then
   echo "This script must be run in mock-bip-ce-api directory." && exit 1
 fi
 
-targetPath="certificates"
 srcMainPath="src/main/resources"
-srcTestPath="src/test/resources"
+
+if [ "$1" == "compose" ]
+then
+  serverCn=mock-bip-ce-api
+  clientCn=app
+
+  targetPath="compose-certificates"
+  srcTestPath="../app/src/main/resources"
+  serverKeystoreP12="${targetPath}/e2e_server_keystore.p12"
+  clientTruststoreP12="${targetPath}/e2e_client_truststore.p12"
+else
+  serverCn=localhost
+  clientCn=localhost
+  serverKeystoreFilename=
+  targetPath="localhost-certificates"
+  srcTestPath="src/test/resources"
+
+  serverKeystoreP12="${targetPath}/server_keystore.p12"
+  clientTruststoreP12="${targetPath}/client_truststore.p12"
+fi
 
 mkdir -p "$targetPath"
 rm -f "${targetPath}"/*
@@ -37,22 +55,22 @@ openssl genrsa -out "${targetPath}/client.key" 2048
 # Next lines create the self-signed public keys for Server Root CA and Client Root CA.
 openssl req -x509 -new -nodes -key "${targetPath}/server_root_ca.key" -sha256 -days 365 \
   -out "${targetPath}/server_root_ca.pem" \
-  -subj "/C=US/ST=MD/L=Olney/O=./OU=./CN=localhost"
+  -subj "/C=US/ST=MD/L=Olney/O=./OU=./CN=${serverCn}"
 openssl req -x509 -new -nodes -key "${targetPath}/client_root_ca.key" -sha256 -days 365 \
   -out "${targetPath}/client_root_ca.pem" \
-  -subj "/C=US/ST=MD/L=Rockville/O=./OU=./CN=localhost"
+  -subj "/C=US/ST=MD/L=Rockville/O=./OU=./CN=${clientCn}"
 
 # Next lines create the Certificate Signing Request (CSR) files for Server Intermediate CA,
 # Server, and Client.
 openssl req -new -sha256 -key "${targetPath}/server_intermediate_ca.key" \
   -out "${targetPath}/server_intermediate_ca.csr" \
-  -subj "/C=US/ST=MD/L=Kensington/O=./OU=./CN=localhost"
+  -subj "/C=US/ST=MD/L=Kensington/O=./OU=./CN=${serverCn}"
 openssl req -new -sha256 -key "${targetPath}/server.key" \
   -out "${targetPath}/server.csr" \
-  -subj "/C=US/ST=MD/L=Bethesda/O=./OU=./CN=localhost"
+  -subj "/C=US/ST=MD/L=Bethesda/O=./OU=./CN=${serverCn}"
 openssl req -new -sha256 -key "${targetPath}/client.key" \
   -out "${targetPath}/client.csr" \
-  -subj "/C=US/ST=MD/L=Baltimore/O=./OU=./CN=localhost"
+  -subj "/C=US/ST=MD/L=Baltimore/O=./OU=./CN=${clientCn}"
 
 # Next lines create the public key for Server Intermediate CA, Server, and Client which are
 # respectively signed by Server CA, Server Intermediate CA, and Client CA.
@@ -77,7 +95,7 @@ openssl x509 -req -in "${targetPath}/client.csr"  -days 365 -sha256 \
 # for TLS.
 openssl pkcs12 -export -password pass:server_keystore_pw -name server -nodes \
   -in "${targetPath}/server.pem" \
-  -out "${targetPath}/server_keystore.p12" \
+  -out ${serverKeystoreP12} \
   -inkey "${targetPath}/server.key"
 openssl pkcs12 -export -password pass:keystore_pw -name client -nodes \
   -in "${targetPath}/client.pem" \
@@ -99,7 +117,7 @@ keytool -alias server_all_cas -noprompt -storepass keystore_pw \
   -keystore "${targetPath}/server_truststore.p12"
 keytool -alias client_root_ca -noprompt -storepass client_truststore_pw \
   -import -file "${targetPath}/client_root_ca.pem" \
-  -keystore "${targetPath}/client_truststore.p12"
+  -keystore "${clientTruststoreP12}"
 
 # When deployed VRO reads sensitive settings from Kubernetes secrets as environment variables.
 # To be able to specify PKCS#12 file contents as environment variables contents are converted
@@ -109,13 +127,13 @@ openssl base64 -in "${targetPath}/client_keystore.p12" -out "${targetPath}/clien
 
 # Next line copies PKCS#12 files for Server keystore and Client truststore to resource directory.
 # Spring Boot directly uses these files in the mock server as specified in application.yml.
-cp "${targetPath}/server_keystore.p12" ${srcMainPath}
-cp "${targetPath}/client_truststore.p12" ${srcMainPath}
+cp "${serverKeystoreP12}" ${srcMainPath}
+cp "${clientTruststoreP12}" ${srcMainPath}
 
 # Next line copies PKCS#12 file base 64 content to yml files as Client keystore and Server
 # truststore. These contents are used by RestTemplate in unit tests to complete Mutual TLS.
 # The same contents need to be used from VRO application when this mock server is used.
-echo "vro-mock-bip-ce-keystore: >" > "${srcTestPath}/client-keystore.yml"
+echo "keystore: >" > "${srcTestPath}/client-keystore.yml"
 sed 's_^_  _' "${targetPath}/client_keystore.b64" >> "${srcTestPath}/client-keystore.yml"
-echo "vro-mock-bip-ce-truststore: >" > "${srcTestPath}/server-truststore.yml"
+echo "truststore: >" > "${srcTestPath}/server-truststore.yml"
 sed 's_^_  _' "${targetPath}/server_truststore.b64" >> "${srcTestPath}/server-truststore.yml"

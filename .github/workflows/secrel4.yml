@@ -16,6 +16,9 @@ env:
   TARGET_ENV: 'dev'
   RUN_TESTS: 'true'
 
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
+
 jobs:
   publish-images:
     # only run for the internal repo
@@ -107,3 +110,20 @@ jobs:
       config-file: .github/secrel/config4.yml
       images: ${{ needs.images-for-secrel.outputs.all-images }}
     secrets: inherit
+
+  notify-secrel-error:
+    if: failure()
+    needs: secrel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Notify Slack on SecRel Failure"
+        uses: archive/github-actions-slack@v2.6.0
+        # only run for the internal repo
+        if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":redlight: SecRel scan <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|failed>! \n\
+              ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
+              caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."

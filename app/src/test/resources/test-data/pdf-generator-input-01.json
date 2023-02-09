@@ -8,6 +8,7 @@
     "suffix": "Jr",
     "birthdate": "01/04/1971"
   },
+  "veteranFileId": "12345",
   "pdfTemplate": "v1",
   "pdfLibrary": "wkhtmltopdf",
   "evidence": {

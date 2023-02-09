@@ -41,7 +41,7 @@ public class TestHelper {
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     if (!spec.isIgnoreFolderUri()) {
       String idType = spec.getIdType();
-      headers.set("X-Folder-URI", idType + ":" + veteranFileNumber);
+      headers.set("X-Folder-URI", "VETERAN:" + idType + ":" + veteranFileNumber);
     }
     if (!spec.isIgnoreJwt()) {
       String jwt = jwtGenerator.generate();

@@ -58,3 +58,7 @@ build/
 
 ### Mac artifacts ###
 .DS_Store
+
+# certificates
+localhost-certificates
+compose-certificates

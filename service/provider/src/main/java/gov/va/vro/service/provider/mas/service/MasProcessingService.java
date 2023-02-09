@@ -72,7 +72,9 @@ public class MasProcessingService {
       return Optional.of(message);
     }
 
-    if (!bipClaimService.hasAnchors(payload.getCollectionId())) {
+    long claimId = Long.parseLong(payload.getClaimDetail().getBenefitClaimId());
+    log.info("Check hasAnchors for claim ID, {}", claimId); // TODO: remove it after test.
+    if (!bipClaimService.hasAnchors(claimId)) {
       var message =
           String.format(
               "Claim with [collection id = %s] does not qualify for"

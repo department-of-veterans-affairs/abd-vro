@@ -6,19 +6,25 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.end2end.util.PdfTextV2;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
+@Slf4j
 public class VroV2Tests {
 
   private static final String BASE_URL = "http://localhost:8080/v2";
@@ -76,6 +82,7 @@ public class VroV2Tests {
     assertEquals("Received Exam Order Status for collection Id 123.", masResponse.getMessage());
   }
 
+  @SneakyThrows
   @Test
   void testAutomatedClaim() {
     var path = "test-mas/claim-350-7101.json";
@@ -86,6 +93,27 @@ public class VroV2Tests {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
+
+    if ("end2end-test".equals(System.getenv("ENV"))) {
+      log.info("Make sure the evidence pdf is uploaded");
+      MasAutomatedClaimRequest request =
+          objectMapper.readValue(content, MasAutomatedClaimRequest.class);
+      String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
+      for (int pollNumber = 0; pollNumber < 30; ++pollNumber) {
+        Thread.sleep(10000);
+        String url = "http://localhost:8096/received-files/" + fileNumber;
+        try {
+          ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+          assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+          PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+          log.info("PDF text: {}", pdfTextV2.getPdfText());
+          assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+          break;
+        } catch (HttpStatusCodeException exception) {
+          assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        }
+      }
+    }
   }
 
   @Test

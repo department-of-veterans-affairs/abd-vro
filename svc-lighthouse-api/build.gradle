@@ -35,7 +35,7 @@ dependencies {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
-  implementation 'org.projectlombok:lombok:1.18.24'
+  implementation 'org.projectlombok:lombok:1.18.26'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
   // Needed?

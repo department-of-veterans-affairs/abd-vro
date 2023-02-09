@@ -39,7 +39,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.HigherEnvCondition.class)
+@Conditional(BipConditions.NonLocalEnvCeCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipCeApiService implements IBipCeApiService {
@@ -65,7 +65,9 @@ public class BipCeApiService implements IBipCeApiService {
       log.info("Call {} to uploadEvidenceFile for {} : {}", url, idtype.name(), fileId);
 
       HttpHeaders headers = getBipHeader();
-      headers.set("X-Folder-URI", String.format(X_FOLDER_URI, idtype.name(), fileId));
+      String headerFolderUri = String.format(X_FOLDER_URI, idtype.name(), fileId);
+      headers.set("X-Folder-URI", headerFolderUri);
+      log.info("X-Folder-URI header is set: {}", headerFolderUri);
 
       String filename = payload.getContentName();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
