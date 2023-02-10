@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface BipConditions {
 
-  Set<String> TEST_ENVS = Set.of("local", "test", "end2end-test");
+  Set<String> TEST_ENVS = Set.of("local", "end2end-test");
 
   // End to end test call the mock claims evidence api
   Set<String> TEST_ENVS_CE = Set.of("default", "local", "test");
