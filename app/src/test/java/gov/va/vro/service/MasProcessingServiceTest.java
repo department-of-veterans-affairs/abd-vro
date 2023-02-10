@@ -18,8 +18,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
 
   @Autowired MasProcessingService masProcessingService;
 
-  @Autowired
-  ClaimSubmissionRepository claimSubmissionRepository;
+  @Autowired ClaimSubmissionRepository claimSubmissionRepository;
 
   public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
 
@@ -107,9 +106,10 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
 
   private ClaimEntity verifyClaimPersisted(MasAutomatedClaimPayload request) {
     var claim = claimRepository.findByVbmsId(request.getClaimId().toString()).orElseThrow();
-    var claimSubmissionList = claimSubmissionRepository.findByReferenceIdAndIdType(
+    var claimSubmissionList =
+        claimSubmissionRepository.findByReferenceIdAndIdType(
             String.valueOf(request.getCollectionId()), DEFAULT_ID_TYPE);
-    for(ClaimSubmissionEntity submission: claimSubmissionList){
+    for (ClaimSubmissionEntity submission : claimSubmissionList) {
       assertEquals(request.getCollectionId().toString(), submission.getReferenceId());
     }
 

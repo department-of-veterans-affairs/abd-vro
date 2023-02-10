@@ -47,7 +47,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    var claim = TestDataSupplier.createClaim("1234", veteran);
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 
@@ -82,7 +82,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
     // Create a contention and set an invalid diagnostic code, then create claim and add.
     ContentionEntity contention = new ContentionEntity("1111");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    var claim = TestDataSupplier.createClaim("1234", veteran);
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

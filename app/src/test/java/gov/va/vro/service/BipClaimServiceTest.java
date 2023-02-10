@@ -32,7 +32,7 @@ class BipClaimServiceTest {
     Mockito.when(bipApiService.getClaimDetails(bipClaimId))
         .thenReturn(createClaim("123", "King Cross"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
@@ -47,7 +47,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
@@ -63,7 +63,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     assertTrue(claimService.hasAnchors(bipClaimId));
   }
 
@@ -78,7 +78,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
@@ -96,7 +96,7 @@ class BipClaimServiceTest {
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("Rating Decision Review - Level 1", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     var mpo = new MasProcessingObject();
     mpo.setClaimPayload(payload);
@@ -113,7 +113,7 @@ class BipClaimServiceTest {
     Mockito.when(bipApiService.getClaimDetails(bipClaimId))
         .thenReturn(createClaim(claimId, "Short Line"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertFalse(claimService.completeProcessing(getMpo(payload)).isTSOJ());
   }
@@ -124,7 +124,7 @@ class BipClaimServiceTest {
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
     Mockito.when(bipApiService.getClaimDetails(bipClaimId)).thenReturn(createClaim(claimId, "398"));
 
-    BipClaimService claimService = new BipClaimService(bipApiService, null, null);
+    BipClaimService claimService = new BipClaimService(bipApiService, null);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
     assertTrue(claimService.completeProcessing(getMpo(payload)).isTSOJ());
     Mockito.verify(bipApiService).setClaimToRfdStatus(bipClaimId);
@@ -133,7 +133,7 @@ class BipClaimServiceTest {
   @Test
   void uploadPdf_missingData() {
     IBipCeApiService bipCeApiService = Mockito.mock(IBipCeApiService.class);
-    BipClaimService claimService = new BipClaimService(null, bipCeApiService, null);
+    BipClaimService claimService = new BipClaimService(null, bipCeApiService);
     var payload = MasTestData.getMasAutomatedClaimPayload();
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     try {
@@ -147,7 +147,7 @@ class BipClaimServiceTest {
   @Test
   void uploadPdf() {
     IBipCeApiService bipCeApiService = Mockito.mock(IBipCeApiService.class);
-    BipClaimService claimService = new BipClaimService(null, bipCeApiService, null);
+    BipClaimService claimService = new BipClaimService(null, bipCeApiService);
     FetchPdfResponse fetchPdfResponse = new FetchPdfResponse();
     var data = Base64.getEncoder().encode("Hello!".getBytes(StandardCharsets.UTF_8));
     fetchPdfResponse.setPdfData(new String(data));
