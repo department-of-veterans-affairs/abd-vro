@@ -35,15 +35,20 @@ def bp_reader(request_body):
     bp_reading_in_past_year = []
     bp_readings_in_past_two_years = []
     elevated_bp = []
+    sortable_bp = []
+    not_sortable_bp = []
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
     bp_readings = request_body["evidence"]["bp_readings"]
 
     for reading in bp_readings:
         try:
             bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
+            reading["dateFormatted"] = format_date(bp_reading_date)
+            sortable_bp.append(reading)
         except ValueError:
+            not_sortable_bp.append(reading)
+            reading["dateFormatted"] = ''
             continue  # If there is no date associated
-        reading["dateFormatted"] = format_date(bp_reading_date)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):
@@ -53,6 +58,7 @@ def bp_reader(request_body):
 
     predominance_calculation = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
                                 "oneYearBp": sort_bp(bp_reading_in_past_year),
+                                "allBp": sort_bp(sortable_bp) + not_sortable_bp,
                                 "twoYearsBpReadings": len(bp_readings_in_past_two_years),
                                 "oneYearBpReadings": len(bp_reading_in_past_year),
                                 "recentElevatedBpReadings": len(elevated_bp),

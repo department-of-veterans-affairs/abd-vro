@@ -1,5 +1,6 @@
 package gov.va.vro.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -36,4 +37,6 @@ public class HealthDataAssessment {
 
   @Schema(description = "date of the Claim")
   private String claimSubmissionDateTime;
+
+  @JsonIgnore private HealthAssessmentSource source = HealthAssessmentSource.LIGHTHOUSE;
 }
