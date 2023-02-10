@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.bip.service;
+package gov.va.vro.service;
 
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
@@ -6,6 +6,8 @@ import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.bip.service.IBipApiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
