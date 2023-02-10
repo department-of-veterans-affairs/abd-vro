@@ -11,6 +11,7 @@ import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.store.ModifyingActionsResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,13 +154,26 @@ public class TestHelper {
   }
 
   /**
-   * Gets all the modifying actions.
+   * Retrieves if lifecycle status of a claim is updated.
    *
    * @param spec test specification
-   * @return modifying actions
+   * @return is updated?
    */
-  public String[] getModifyingActions(TestSpec spec) {
-    String url = spec.getUrl("/modifying-actions");
-    return restTemplate.getForObject(url, String[].class);
+  public boolean isLifecycleStatusUpdated(TestSpec spec) {
+    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/lifecycle_status");
+    ModifyingActionsResponse response = restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    return response.isFound();
+  }
+
+  /**
+   * Retrieves if the contentions of a claim is updated.
+   *
+   * @param spec test specification
+   * @return is updated?
+   */
+  public boolean isContentionsUpdated(TestSpec spec) {
+    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/contentions");
+    ModifyingActionsResponse response = restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    return response.isFound();
   }
 }

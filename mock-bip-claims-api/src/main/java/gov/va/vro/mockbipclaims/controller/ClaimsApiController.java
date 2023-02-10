@@ -15,7 +15,6 @@ import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionEnum;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -95,7 +94,7 @@ public class ClaimsApiController implements ClaimsApi {
     message.setText("Success");
     response.addMessagesItem(message);
 
-    actionStore.addAction(ModifyingActionEnum.LIFECYCLE_PUT);
+    actionStore.addLifecycleStatusUpdate(claimId);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -139,7 +138,7 @@ public class ClaimsApiController implements ClaimsApi {
     Message message = new Message();
     message.setText("Success");
     response.addMessagesItem(message);
-    actionStore.addAction(ModifyingActionEnum.CONTENTION_PUT);
+    actionStore.addContentionsUpdate(claimId);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

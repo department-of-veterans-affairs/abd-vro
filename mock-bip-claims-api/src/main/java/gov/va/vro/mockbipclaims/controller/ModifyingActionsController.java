@@ -2,22 +2,28 @@ package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.ModifyingActionsApi;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
-import org.springframework.beans.factory.annotation.Autowired;
+import gov.va.vro.mockbipclaims.model.store.ModifyingActionsResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
 @Controller
+@RequiredArgsConstructor
 public class ModifyingActionsController implements ModifyingActionsApi {
-  @Autowired private ModifyingActionStore store;
+  private final ModifyingActionStore store;
 
   @Override
-  public ResponseEntity<String[]> getModifyingActions() {
-    List<String> actions = store.getModifyingActions();
-    String[] body = actions.toArray(new String[0]);
-    ResponseEntity<String[]> response = new ResponseEntity<>(body, HttpStatus.OK);
-    return response;
+  public ResponseEntity<ModifyingActionsResponse> getLifecycleStatusUpdated(Long claimId) {
+    boolean found = store.isLifecycleStatusUpdated(claimId);
+    ModifyingActionsResponse body = new ModifyingActionsResponse(found);
+    return new ResponseEntity<>(body, HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<ModifyingActionsResponse> getContentionsUpdated(Long claimId) {
+    boolean found = store.isContentionsUpdated(claimId);
+    ModifyingActionsResponse body = new ModifyingActionsResponse(found);
+    return new ResponseEntity<>(body, HttpStatus.OK);
   }
 }

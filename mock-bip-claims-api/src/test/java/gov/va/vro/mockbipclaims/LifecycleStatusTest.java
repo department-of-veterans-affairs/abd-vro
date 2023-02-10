@@ -35,7 +35,8 @@ public class LifecycleStatusTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
-    final String[] actionsBefore = helper.getModifyingActions(spec);
+    boolean updatedBefore = helper.isLifecycleStatusUpdated(spec);
+    assertEquals(false, updatedBefore);
 
     ClaimDetail claimDetail = helper.getClaimDetail(spec);
     String rfd = ClaimStatus.RFD.getDescription();
@@ -47,8 +48,7 @@ public class LifecycleStatusTest {
     ClaimDetail claimDetailAfter = helper.getClaimDetail(spec);
     assertEquals(rfd, claimDetailAfter.getClaimLifecycleStatus());
 
-    String[] actionsAfter = helper.getModifyingActions(spec);
-    int actionsBeforeLength = actionsBefore.length;
-    assertTrue(actionsAfter.length > actionsBeforeLength);
+    boolean updated = helper.isLifecycleStatusUpdated(spec);
+    assertEquals(true, updated);
   }
 }

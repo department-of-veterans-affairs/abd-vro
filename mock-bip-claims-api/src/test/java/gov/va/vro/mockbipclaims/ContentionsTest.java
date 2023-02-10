@@ -37,7 +37,8 @@ public class ContentionsTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
-    final String[] actionsBefore = helper.getModifyingActions(spec);
+    boolean updatedBefore = helper.isContentionsUpdated(spec);
+    assertEquals(false, updatedBefore);
 
     List<ContentionSummary> contentions = helper.getContentionSummaries(spec);
     assertEquals(1, contentions.size());
@@ -54,9 +55,8 @@ public class ContentionsTest {
     var responsePut = helper.putContentions(spec, existingContention);
     assertEquals(HttpStatus.OK, responsePut.getStatusCode());
 
-    String[] actionsAfter = helper.getModifyingActions(spec);
-    int actionsBeforeLength = actionsBefore.length;
-    assertTrue(actionsAfter.length > actionsBeforeLength);
+    boolean updated = helper.isContentionsUpdated(spec);
+    assertEquals(true, updated);
 
     List<ContentionSummary> contentionsBack = helper.getContentionSummaries(spec);
     assertEquals(1, contentionsBack.size());

@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Validated
-@Tag(
-    name = "claims",
-    description = "A tag that organizes resources for contentions within a given claim.")
 @RequestMapping("/")
 public interface ClaimsApi {
   /**
@@ -54,7 +50,6 @@ public interface ClaimsApi {
           Get the claim summary for a claim ID. This is the use case for getting claim information
           regardless of veteran.
           """,
-      tags = {"claims"},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -140,7 +135,6 @@ public interface ClaimsApi {
   @Operation(
       operationId = "getClaimLifecycleStatuses",
       summary = "Get the lifecycle status(es) of an existing claim",
-      tags = {"claims"},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -260,7 +254,6 @@ public interface ClaimsApi {
   @Operation(
       operationId = "getContentionsForClaim",
       summary = "List summaries for contentions associated with a given claim.",
-      tags = {"contentions"},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -350,7 +343,6 @@ public interface ClaimsApi {
       operationId = "updateClaimLifecycleStatus",
       summary = "Update the lifecycle status of an existing claim",
       description = "Update the lifecycle status of an existing claim",
-      tags = {"claims"},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -472,7 +464,6 @@ public interface ClaimsApi {
   @Operation(
       operationId = "updateContentions",
       summary = "Updates one or more contentions",
-      tags = {"contentions"},
       responses = {
         @ApiResponse(
             responseCode = "200",

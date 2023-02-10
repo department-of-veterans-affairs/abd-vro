@@ -3,16 +3,48 @@ package gov.va.vro.mockbipclaims.model.store;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
 public class ModifyingActionStore {
-  private List<String> modifyingActions = new ArrayList<>();
+  private Set<Long> lifecycleStatusUpdates = new HashSet<>();
+  private Set<Long> contentionsUpdates = new HashSet<>();
 
-  public void addAction(ModifyingActionEnum action) {
-    String description = action.getDescription();
-    modifyingActions.add(description);
+  /**
+   * Add the claim to lifecycle status updated list.
+   *
+   * @param claimId Claim id
+   */
+  public void addLifecycleStatusUpdate(Long claimId) {
+    lifecycleStatusUpdates.add(claimId);
+  }
+
+  /**
+   * Add the claim to contentions updated list.
+   *
+   * @param claimId Claim id
+   */
+  public void addContentionsUpdate(Long claimId) {
+    contentionsUpdates.add(claimId);
+  }
+
+  /**
+   * Retrieve if the claim is in lifecycle status updated list.
+   *
+   * @param claimId Claim id
+   */
+  public boolean isLifecycleStatusUpdated(Long claimId) {
+    return lifecycleStatusUpdates.contains(claimId);
+  }
+
+  /**
+   * Retrieve if the claim is in contentions updated list.
+   *
+   * @param claimId Claim id
+   */
+  public boolean isContentionsUpdated(Long claimId) {
+    return contentionsUpdates.contains(claimId);
   }
 }
