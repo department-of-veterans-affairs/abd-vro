@@ -2,6 +2,7 @@ package gov.va.vro.service.db;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
@@ -22,10 +23,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
@@ -40,6 +45,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
+
+  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
 
   @Override
   @Transactional
@@ -109,6 +116,17 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
     contention.addAssessmentResult(assessmentResultEntity);
     claimRepository.save(claimEntity);
+  }
+ @Override
+  public void setOffRampReason(MasAutomatedClaimPayload payload){
+    List<ClaimSubmissionEntity> claimSubmissionList =
+            claimSubmissionRepository.findByReferenceIdAndIdType(String.valueOf(payload.getCollectionId()),
+                    DEFAULT_ID_TYPE);
+   Collections.reverse(claimSubmissionList);
+   ClaimSubmissionEntity claimSubmissionEntity = claimSubmissionList.get(0);
+   claimSubmissionEntity.setOffRampReason(payload.getOffRampReason());
+   claimSubmissionRepository.save(claimSubmissionEntity);
+
   }
 
   @Override

@@ -7,7 +7,6 @@ import java.time.OffsetDateTime;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -16,10 +15,10 @@ import javax.validation.constraints.NotNull;
 public class ClaimSubmissionEntity extends BaseEntity {
   @ManyToOne private ClaimEntity claim;
 
-  @NotNull String referenceId;
+  private String referenceId;
 
   // domain of the id, e.g. "va.gov-Form526Submission"
-  @NotNull private String idType;
+  private String idType;
 
   private String incomingStatus;
 

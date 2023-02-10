@@ -104,20 +104,20 @@ class VroControllerTest extends BaseControllerTest {
 
     var responseEntity1 =
         post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
-    //    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
+    assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertNotNull(response1);
-    //    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
-    //    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
+    assertEquals(request.getDiagnosticCode(), response1.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response1.getVeteranIcn());
 
     // Now submit an existing claim:
     var responseEntity2 =
         post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
-    //    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
+    assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
-    //    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
-    //    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
+    assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
+    assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
     var claim = claimRepository.findByVbmsId(request.getClaimSubmissionId());
     //    assertTrue(claim.isPresent());
@@ -162,9 +162,8 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     var claimProcessingError = responseEntity.getBody();
     assertNotNull(claimProcessingError);
-    //    assertEquals("Internal error while processing claim data.",
-    // claimProcessingError.getMessage());
-    //    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+    assertEquals("Internal error while processing claim data.", claimProcessingError.getMessage());
+    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
   }
 
   @Test
