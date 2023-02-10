@@ -35,7 +35,7 @@ public class LifecycleStatusTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
-    String[] actionsBefore = helper.getModifyingActions(spec);
+    final String[] actionsBefore = helper.getModifyingActions(spec);
 
     ClaimDetail claimDetail = helper.getClaimDetail(spec);
     String rfd = ClaimStatus.RFD.getDescription();

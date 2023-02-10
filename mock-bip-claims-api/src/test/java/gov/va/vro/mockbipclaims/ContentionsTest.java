@@ -37,7 +37,7 @@ public class ContentionsTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
-    String[] actionsBefore = helper.getModifyingActions(spec);
+    final String[] actionsBefore = helper.getModifyingActions(spec);
 
     List<ContentionSummary> contentions = helper.getContentionSummaries(spec);
     assertEquals(1, contentions.size());
