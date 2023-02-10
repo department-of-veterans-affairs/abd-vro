@@ -43,11 +43,12 @@ def bp_reader(request_body):
     for reading in bp_readings:
         try:
             bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
+            reading["dateFormatted"] = format_date(bp_reading_date)
             sortable_bp.append(reading)
         except ValueError:
             not_sortable_bp.append(reading)
+            reading["dateFormatted"] = ''
             continue  # If there is no date associated
-        reading["dateFormatted"] = format_date(bp_reading_date)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):

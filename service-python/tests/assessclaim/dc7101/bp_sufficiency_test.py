@@ -315,7 +315,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "systolic": {
                                     "value": 131
                                 },
-                                "date": "2021-05-13"
+                                "date": ""  # no date
                             },
                             {
                                 "diastolic": {
@@ -378,8 +378,8 @@ from assessclaimdc7101.src.lib import bp_calculator
                             'dateFormatted': '9/13/2021',
                             'diastolic': {'value': 104},
                             'systolic': {'value': 120}},
-                           {'date': '2021-05-13',
-                            'dateFormatted': '5/13/2021',
+                           {'date': '',
+                            'dateFormatted': '',
                             'diastolic': {'value': 113},
                             'systolic': {'value': 131}}],
                  'oneYearBp': [{'date': '2021-10-14',
@@ -402,11 +402,8 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'dateFormatted': '9/13/2021',
                                 'diastolic': {'value': 104},
                                 'systolic': {'value': 120}},
-                               {'date': '2021-05-13',
-                                'dateFormatted': '5/13/2021',
-                                'diastolic': {'value': 113},
-                                'systolic': {'value': 131}}],
-                 'oneYearBpReadings': 6,
+                               ],
+                 'oneYearBpReadings': 5,
                  'recentElevatedBpReadings': 3,
                  'totalBpReadings': 6,
                  'twoYearsBp': [{'date': '2021-10-14',
@@ -429,11 +426,8 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'dateFormatted': '9/13/2021',
                                  'diastolic': {'value': 104},
                                  'systolic': {'value': 120}},
-                                {'date': '2021-05-13',
-                                 'dateFormatted': '5/13/2021',
-                                 'diastolic': {'value': 113},
-                                 'systolic': {'value': 131}}],
-                 'twoYearsBpReadings': 6}
+                                ],
+                 'twoYearsBpReadings': 5}
         ),
         (
                 {

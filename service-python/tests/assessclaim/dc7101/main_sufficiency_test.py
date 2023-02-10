@@ -427,6 +427,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {"date": "",
+                                               "dateFormatted": "",
                                                "diastolic": {"code": "8462-4",
                                                              "display": "Diastolic blood "
                                                                         "pressure",
