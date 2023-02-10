@@ -1,19 +1,13 @@
 package gov.va.vro.service.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.persistence.model.AssessmentResultEntity;
-import gov.va.vro.persistence.model.ClaimEntity;
-import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
-import gov.va.vro.persistence.model.VeteranEntity;
-import gov.va.vro.persistence.repository.AssessmentResultRepository;
-import gov.va.vro.persistence.repository.ClaimRepository;
-import gov.va.vro.persistence.repository.VeteranRepository;
+import gov.va.vro.persistence.model.*;
+import gov.va.vro.persistence.repository.*;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -43,7 +34,11 @@ class SaveToDbServiceImplTest {
 
   @Autowired private ClaimRepository claimRepository;
 
+  @Autowired private ClaimSubmissionRepository claimSubmissionRepository;
+
   @Autowired private AssessmentResultRepository assessmentResultRepository;
+
+  @Autowired private ExamOrderRepository examOrderRepository;
 
   @Value("classpath:test-data/evidence-summary-document-data.json")
   private Resource esdData;
@@ -51,7 +46,8 @@ class SaveToDbServiceImplTest {
   @Test
   void persistClaim() {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("claim1");
+    claim.setClaimSubmissionId("claim1"); // Not the same as our claim submission id.
+    claim.setCollectionId("collection1");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
     var result = saveToDbService.insertClaim(claim);
@@ -71,6 +67,12 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+    assertEquals(1, claimEntity.getClaimSubmissions().size());
+    ClaimSubmissionEntity claimSubmissionEntity =
+        claimEntity.getClaimSubmissions().iterator().next();
+    assertNotNull(claimSubmissionEntity);
+    assertEquals(claim.getCollectionId(), claimSubmissionEntity.getReferenceId());
+    assertEquals(claim.getIdType(), claimSubmissionEntity.getIdType());
   }
 
   @Test
@@ -99,6 +101,30 @@ class SaveToDbServiceImplTest {
   }
 
   @Test
+  void persistOffRampReason() {
+    Claim claim = new Claim();
+    claim.setClaimSubmissionId("1234");
+    claim.setCollectionId("collection1");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("7101");
+    saveToDbService.insertClaim(claim);
+    ClaimEntity result1 = claimRepository.findByVbmsId("1234").orElseThrow();
+    assertNotNull(result1);
+    Set<ClaimSubmissionEntity> csEntities = result1.getClaimSubmissions();
+    assertEquals(1, csEntities.size());
+    ClaimSubmissionEntity claimSubmission1 = csEntities.iterator().next();
+    assertNull(claimSubmission1.getOffRampReason());
+    claim.setOffRampReason("OffRampReason1");
+    saveToDbService.setOffRampReason(claim);
+    ClaimEntity result2 = claimRepository.findByVbmsId("1234").orElseThrow();
+    assertNotNull(result2);
+    Set<ClaimSubmissionEntity> csEntities2 = result2.getClaimSubmissions();
+    assertEquals(1, csEntities2.size());
+    ClaimSubmissionEntity claimSubmission2 = csEntities.iterator().next();
+    assertEquals(claim.getOffRampReason(), claimSubmission2.getOffRampReason());
+  }
+
+  @Test
   void persistEvidenceSummaryDocument() throws Exception {
     // Save claim
     Claim claim = new Claim();
@@ -123,6 +149,26 @@ class SaveToDbServiceImplTest {
     assertNotNull(esd);
     assertEquals(esd.getDocumentName(), documentName);
     assertEquals(esd.getEvidenceCount().size(), 2);
+  }
+
+  @Test
+  void persistExamOrder() {
+    ExamOrder examOrder1 = new ExamOrder();
+    examOrder1.setCollectionId("collection1");
+    examOrder1.setStatus("status1");
+    saveToDbService.insertOrUpdateExamOrderingStatus(examOrder1);
+    Optional<ExamOrderEntity> orderEntity =
+        examOrderRepository.findByCollectionId(examOrder1.getCollectionId());
+    assert (orderEntity.isPresent());
+    assertEquals(examOrder1.getStatus(), orderEntity.get().getStatus());
+    ExamOrder examOrder2 = new ExamOrder();
+    examOrder2.setCollectionId(examOrder1.getCollectionId());
+    examOrder2.setStatus("status2");
+    saveToDbService.insertOrUpdateExamOrderingStatus(examOrder2);
+    Optional<ExamOrderEntity> updatedOrder =
+        examOrderRepository.findByCollectionId(examOrder1.getCollectionId());
+    assert (updatedOrder.isPresent());
+    assertEquals(examOrder2.getStatus(), updatedOrder.get().getStatus());
   }
 
   @Test
@@ -158,7 +204,8 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimEntity1.getContentions().size());
     ContentionEntity contentionEntity = claimEntity1.getContentions().get(0);
     assertEquals(claim1.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
-
+    Set<ClaimSubmissionEntity> claimSubmissionEntities = claimEntity1.getClaimSubmissions();
+    assertEquals(1, claimSubmissionEntities.size());
     Claim claim2 =
         Claim.builder()
             .claimSubmissionId("1234")
@@ -169,5 +216,7 @@ class SaveToDbServiceImplTest {
     saveToDbService.insertClaim(claim2);
     ClaimEntity claimEntity2 = claimRepository.findByVbmsId("1234").orElseThrow();
     assertEquals(2, claimEntity2.getContentions().size());
+    Set<ClaimSubmissionEntity> claimSubmissionEntities2 = claimEntity2.getClaimSubmissions();
+    assertEquals(2, claimSubmissionEntities2.size());
   }
 }

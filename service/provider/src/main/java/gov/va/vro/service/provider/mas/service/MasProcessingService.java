@@ -40,13 +40,15 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-    saveToDbService.insertClaim(toClaim(payload));
+    Claim claim = toClaim(payload);
+    saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
     var offRampReasonOptional = getOffRampReason(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
       payload.setOffRampReason(offRampReason);
-      saveToDbService.setOffRampReason(payload);
+      claim.setOffRampReason(offRampReason);
+      saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }

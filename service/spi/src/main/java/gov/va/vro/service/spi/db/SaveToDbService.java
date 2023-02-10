@@ -1,7 +1,6 @@
 package gov.va.vro.service.spi.db;
 
 import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -24,5 +23,5 @@ public interface SaveToDbService {
 
   void updateRfdFlag(String claimId, boolean rfdFlag);
 
-    void setOffRampReason(MasAutomatedClaimPayload payload);
+  void setOffRampReason(Claim payload);
 }
