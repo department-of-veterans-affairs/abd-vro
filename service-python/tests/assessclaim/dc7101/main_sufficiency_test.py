@@ -420,7 +420,7 @@ from assessclaimdc7101.src.lib import main
                               'conditions': [],
                               'medications': [{'relevant': True, 'text': 'some medication',
                                                'dateFormatted': '',
-                                               "partialDate": ""}}],
+                                               "partialDate": ""}],
                               'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 1,
                                      'recentBpReadings': 2,
