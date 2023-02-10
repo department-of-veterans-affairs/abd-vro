@@ -2,7 +2,6 @@ package gov.va.vro.mockbipclaims;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.mockbipclaims.configuration.TestConfig;
 import gov.va.vro.mockbipclaims.model.ClaimDetail;

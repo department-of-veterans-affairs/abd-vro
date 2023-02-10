@@ -161,7 +161,8 @@ public class TestHelper {
    */
   public boolean isLifecycleStatusUpdated(TestSpec spec) {
     String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/lifecycle_status");
-    ModifyingActionsResponse response = restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    ModifyingActionsResponse response =
+        restTemplate.getForObject(url, ModifyingActionsResponse.class);
     return response.isFound();
   }
 
@@ -173,7 +174,8 @@ public class TestHelper {
    */
   public boolean isContentionsUpdated(TestSpec spec) {
     String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/contentions");
-    ModifyingActionsResponse response = restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    ModifyingActionsResponse response =
+        restTemplate.getForObject(url, ModifyingActionsResponse.class);
     return response.isFound();
   }
 }

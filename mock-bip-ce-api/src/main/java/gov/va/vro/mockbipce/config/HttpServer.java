@@ -12,6 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 public class HttpServer {
+
+  /**
+   * Opens an additional Http port to provide access without TLS.
+   *
+   * @param httpPort Port number
+   * @return Servlet Web Server Factory
+   */
   @Bean
   public ServletWebServerFactory servletContainer(@Value("${server.http.port}") int httpPort) {
     Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
