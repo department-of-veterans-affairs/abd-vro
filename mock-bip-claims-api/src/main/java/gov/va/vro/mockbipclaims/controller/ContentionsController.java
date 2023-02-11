@@ -1,15 +1,15 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.ContentionsApi;
-import gov.va.vro.mockbipclaims.config.ClaimStore;
-import gov.va.vro.mockbipclaims.config.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
-import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
-import gov.va.vro.mockbipclaims.model.ContentionSummary;
-import gov.va.vro.mockbipclaims.model.ExistingContention;
-import gov.va.vro.mockbipclaims.model.Message;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
+import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
+import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
+import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.store.ClaimStore;
+import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

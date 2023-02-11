@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.LifecycleStatusesApi;
-import gov.va.vro.mockbipclaims.config.ClaimStore;
-import gov.va.vro.mockbipclaims.config.ClaimStoreItem;
-import gov.va.vro.mockbipclaims.model.Message;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
+import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateClaimLifecycleStatusRequest;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
+import gov.va.vro.mockbipclaims.model.store.ClaimStore;
+import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

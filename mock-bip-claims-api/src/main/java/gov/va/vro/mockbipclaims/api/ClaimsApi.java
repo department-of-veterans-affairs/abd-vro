@@ -1,7 +1,7 @@
 package gov.va.vro.mockbipclaims.api;
 
-import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
-import gov.va.vro.mockbipclaims.model.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

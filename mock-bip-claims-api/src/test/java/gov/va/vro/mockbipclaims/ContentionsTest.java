@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
-import gov.va.vro.mockbipclaims.model.ContentionSummary;
-import gov.va.vro.mockbipclaims.model.ExistingContention;
+import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
+import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import lombok.extern.slf4j.Slf4j;

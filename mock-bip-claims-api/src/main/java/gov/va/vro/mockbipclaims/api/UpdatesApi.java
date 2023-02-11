@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipclaims.api;
 
-import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

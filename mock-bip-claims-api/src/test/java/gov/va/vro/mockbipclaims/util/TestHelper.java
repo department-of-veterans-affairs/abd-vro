@@ -2,16 +2,16 @@ package gov.va.vro.mockbipclaims.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
-import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
-import gov.va.vro.mockbipclaims.model.ContentionSummary;
-import gov.va.vro.mockbipclaims.model.ExistingContention;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
-import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
+import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
+import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateClaimLifecycleStatusRequest;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
+import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

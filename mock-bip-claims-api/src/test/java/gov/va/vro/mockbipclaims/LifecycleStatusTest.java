@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import gov.va.vro.mockbipclaims.config.TestConfig;
-import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
+import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import gov.va.vro.model.bip.ClaimStatus;

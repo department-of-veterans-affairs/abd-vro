@@ -1,9 +1,9 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
-import gov.va.vro.mockbipclaims.config.ClaimStore;
-import gov.va.vro.mockbipclaims.config.ClaimStoreItem;
-import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.store.ClaimStore;
+import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

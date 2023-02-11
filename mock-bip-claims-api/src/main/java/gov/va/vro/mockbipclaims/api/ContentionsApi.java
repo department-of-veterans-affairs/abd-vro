@@ -1,9 +1,9 @@
 package gov.va.vro.mockbipclaims.api;
 
-import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
-import gov.va.vro.mockbipclaims.model.ProviderResponse;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
-import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
+import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

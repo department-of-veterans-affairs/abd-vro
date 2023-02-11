@@ -3,9 +3,9 @@ package gov.va.vro.mockbipclaims;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.Message;
-import gov.va.vro.mockbipclaims.model.PhaseType;
+import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
+import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.PhaseType;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

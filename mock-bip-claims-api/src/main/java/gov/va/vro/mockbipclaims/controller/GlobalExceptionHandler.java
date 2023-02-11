@@ -1,7 +1,7 @@
 package gov.va.vro.mockbipclaims.controller;
 
-import gov.va.vro.mockbipclaims.model.Message;
-import gov.va.vro.mockbipclaims.model.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

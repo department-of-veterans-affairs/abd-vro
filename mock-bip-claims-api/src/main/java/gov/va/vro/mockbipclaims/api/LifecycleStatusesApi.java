@@ -1,8 +1,8 @@
 package gov.va.vro.mockbipclaims.api;
 
-import gov.va.vro.mockbipclaims.model.ProviderResponse;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
+import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.request.UpdateClaimLifecycleStatusRequest;
+import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
