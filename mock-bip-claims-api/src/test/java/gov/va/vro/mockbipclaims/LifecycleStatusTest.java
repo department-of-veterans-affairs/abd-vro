@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
+import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import gov.va.vro.model.bip.ClaimStatus;
@@ -42,7 +42,8 @@ public class LifecycleStatusTest {
     String rfd = ClaimStatus.RFD.getDescription();
     assertNotEquals(rfd, claimDetail.getClaimLifecycleStatus());
 
-    ResponseEntity<ClaimLifecycleStatusesResponse> response = helper.putLifecycleStatus(spec, rfd);
+    ResponseEntity<UpdateClaimLifecycleStatusResponse> response =
+        helper.putLifecycleStatus(spec, rfd);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     ClaimDetail claimDetailAfter = helper.getClaimDetail(spec);

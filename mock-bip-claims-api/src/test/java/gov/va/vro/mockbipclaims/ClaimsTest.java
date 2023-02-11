@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
+import gov.va.vro.mockbipclaims.model.PhaseType;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,6 @@ public class ClaimsTest {
     ClaimDetail claim = body.getClaim();
     String tempStationOfJurisdiction = claim.getTempStationOfJurisdiction();
     assertEquals("398", tempStationOfJurisdiction);
+    assertEquals(PhaseType.GATHERING_OF_EVIDENCE, claim.getPhase());
   }
 }

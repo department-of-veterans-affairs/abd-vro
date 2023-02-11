@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.mockbipclaims.model.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
-import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
+import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
@@ -138,7 +138,7 @@ public class TestHelper {
    * @return response entity after put
    */
   @SneakyThrows
-  public ResponseEntity<ClaimLifecycleStatusesResponse> putLifecycleStatus(
+  public ResponseEntity<UpdateClaimLifecycleStatusResponse> putLifecycleStatus(
       TestSpec spec, String value) {
     final long claimId = spec.getClaimId();
 
@@ -150,7 +150,7 @@ public class TestHelper {
 
     String url = spec.getUrl("/claims/" + claimId + "/lifecycle-status");
     return restTemplate.exchange(
-        url, HttpMethod.PUT, request, ClaimLifecycleStatusesResponse.class);
+        url, HttpMethod.PUT, request, UpdateClaimLifecycleStatusResponse.class);
   }
 
   /**

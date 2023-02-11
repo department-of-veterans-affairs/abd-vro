@@ -3,7 +3,8 @@
     "description": "for happy path",
     "claimDetail": {
       "claimId": 1010,
-      "tempStationOfJurisdiction": "398"
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
     },
     "contentions": [
       {
