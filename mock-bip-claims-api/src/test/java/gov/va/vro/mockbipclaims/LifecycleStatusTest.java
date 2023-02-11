@@ -3,7 +3,7 @@ package gov.va.vro.mockbipclaims;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import gov.va.vro.mockbipclaims.configuration.TestConfig;
+import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;

@@ -1,8 +1,8 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.ContentionsApi;
-import gov.va.vro.mockbipclaims.configuration.ClaimStore;
-import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
+import gov.va.vro.mockbipclaims.config.ClaimStore;
+import gov.va.vro.mockbipclaims.config.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
 import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummary;

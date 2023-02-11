@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * can use these end points to detect if updates happened and reset the updates. For now this API
  * assumes same claim cannot be updated at the same time from different tests.
  */
+@Tag(name = "Updates")
 @RequestMapping("/")
 public interface UpdatesApi {
 

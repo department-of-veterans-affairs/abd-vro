@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

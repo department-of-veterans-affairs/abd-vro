@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import lombok.SneakyThrows;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;

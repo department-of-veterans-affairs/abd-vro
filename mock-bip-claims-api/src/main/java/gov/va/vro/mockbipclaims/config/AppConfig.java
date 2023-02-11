@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;

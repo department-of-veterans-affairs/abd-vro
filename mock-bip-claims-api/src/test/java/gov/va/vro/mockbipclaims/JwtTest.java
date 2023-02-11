@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.mockbipclaims.configuration.JwtTestProps;
-import gov.va.vro.mockbipclaims.configuration.TestConfig;
+import gov.va.vro.mockbipclaims.config.JwtTestProps;
+import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.ProviderResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;

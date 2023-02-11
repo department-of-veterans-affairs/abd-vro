@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipclaims.util;
 
-import gov.va.vro.mockbipclaims.configuration.JwtTestProps;
+import gov.va.vro.mockbipclaims.config.JwtTestProps;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,6 +31,10 @@ public class SecurityConfig {
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.authorizeRequests().antMatchers("/updates/**").permitAll();
     http.authorizeRequests().antMatchers("/actuator/health").permitAll();
+    http.authorizeRequests().antMatchers("/").permitAll();
+    http.authorizeRequests().antMatchers("/swagger-ui.html").permitAll();
+    http.authorizeRequests().antMatchers("/swagger-ui/**").permitAll();
+    http.authorizeRequests().antMatchers("/v3/api-docs/**").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     http.exceptionHandling().authenticationEntryPoint(authEntryPoint);

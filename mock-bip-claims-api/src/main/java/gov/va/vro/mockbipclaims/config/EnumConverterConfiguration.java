@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.configuration;
+package gov.va.vro.mockbipclaims.config;
 
 import gov.va.vro.mockbipclaims.model.PhaseType;
 import org.springframework.context.annotation.Bean;
