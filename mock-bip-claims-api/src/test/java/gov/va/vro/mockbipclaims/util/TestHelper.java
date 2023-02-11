@@ -160,7 +160,7 @@ public class TestHelper {
    * @return is updated?
    */
   public boolean isLifecycleStatusUpdated(TestSpec spec) {
-    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/lifecycle_status");
+    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle_status");
     ModifyingActionsResponse response =
         restTemplate.getForObject(url, ModifyingActionsResponse.class);
     return response.isFound();
@@ -173,7 +173,7 @@ public class TestHelper {
    * @return is updated?
    */
   public boolean isContentionsUpdated(TestSpec spec) {
-    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId() + "/contentions");
+    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/contentions");
     ModifyingActionsResponse response =
         restTemplate.getForObject(url, ModifyingActionsResponse.class);
     return response.isFound();
@@ -183,10 +183,9 @@ public class TestHelper {
    * Retrieves if the contentions of a claim is updated.
    *
    * @param spec test specification
-   * @return is updated?
    */
   public void resetUpdated(TestSpec spec) {
-    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId());
+    String url = spec.getUrl("/updates/" + spec.getClaimId());
     restTemplate.delete(url);
   }
 }

@@ -21,6 +21,7 @@ public class ClaimStoreItem {
 
   List<ContentionSummary> originalContentions;
 
+  /** Saves the content that can change for later recovery. */
   public void backupAllCanChange() {
     originalLifecycleStatus = claimDetail.getClaimLifecycleStatus();
     originalContentions = new ArrayList<>();
@@ -29,6 +30,7 @@ public class ClaimStoreItem {
     }
   }
 
+  /** Restores original content of the data from back-ups. */
   public void reset() {
     claimDetail.setClaimLifecycleStatus(originalLifecycleStatus);
     contentions = new ArrayList<>();

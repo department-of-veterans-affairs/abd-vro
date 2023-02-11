@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipclaims.controller;
 
-import gov.va.vro.mockbipclaims.api.ModifyingActionsApi;
+import gov.va.vro.mockbipclaims.api.UpdatesApi;
 import gov.va.vro.mockbipclaims.configuration.ClaimStore;
 import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequiredArgsConstructor
-public class ModifyingActionsController implements ModifyingActionsApi {
+public class UpdatesController implements UpdatesApi {
   private final ClaimStore claimStore;
 
   private final ModifyingActionStore store;

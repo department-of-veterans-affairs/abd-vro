@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @RequestMapping("/")
-public interface ModifyingActionsApi {
+public interface UpdatesApi {
 
-  /** DELETE /modifying-actions/{claimId}: Deletes all actions info for the claim. */
+  /** DELETE /updates/{claimId}: Deletes all actions info for the claim. */
   @Operation(
       operationId = "deleteUpdated",
       summary = "Resets all updated flags.",
       description = "Resets all updated flags.",
       responses = {@ApiResponse(responseCode = "204", description = "If update happened.")})
-  @RequestMapping(method = RequestMethod.DELETE, value = "/modifying-actions/{claimId}")
+  @RequestMapping(method = RequestMethod.DELETE, value = "/updates/{claimId}")
   ResponseEntity<Void> deletedUpdated(
       @Parameter(
               name = "claimId",
@@ -32,8 +32,7 @@ public interface ModifyingActionsApi {
           Long claimId);
 
   /**
-   * GET /modifying-actions/{claimId}/lifecycle-status: Retrieves if lifecycle status of the claim
-   * is updated.
+   * GET /updates/{claimId}/lifecycle-status: Retrieves if lifecycle status of the claim is updated.
    */
   @Operation(
       operationId = "getLifecycleStatusUpdated",
@@ -51,7 +50,7 @@ public interface ModifyingActionsApi {
       })
   @RequestMapping(
       method = RequestMethod.GET,
-      value = "/modifying-actions/{claimId}/lifecycle_status",
+      value = "/updates/{claimId}/lifecycle_status",
       produces = {"application/json"})
   ResponseEntity<ModifyingActionsResponse> getLifecycleStatusUpdated(
       @Parameter(
@@ -63,8 +62,8 @@ public interface ModifyingActionsApi {
           Long claimId);
 
   /**
-   * GET /modifying-actions/{claimId}/contentions: Retrieves if any of the contentions of the claim
-   * is updated.
+   * GET /updates/{claimId}/contentions: Retrieves if any of the contentions of the claim is
+   * updated.
    */
   @Operation(
       operationId = "getContentionsUpdated",
@@ -82,7 +81,7 @@ public interface ModifyingActionsApi {
       })
   @RequestMapping(
       method = RequestMethod.GET,
-      value = "/modifying-actions/{claimId}/contentions",
+      value = "/updates/{claimId}/contentions",
       produces = {"application/json"})
   ResponseEntity<ModifyingActionsResponse> getContentionsUpdated(
       @Parameter(

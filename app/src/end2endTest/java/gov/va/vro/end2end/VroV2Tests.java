@@ -87,7 +87,7 @@ public class VroV2Tests {
   private boolean getFoundStatus(String claimId, String type) {
     for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
       Thread.sleep(10);
-      String url = "http://localhost:8099/modifying-actions/" + claimId + "/" + type;
+      String url = "http://localhost:8099/updates/" + claimId + "/" + type;
       var testResponse = restTemplate.getForEntity(url, ModifyingActionsResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
       ModifyingActionsResponse body = testResponse.getBody();
@@ -114,7 +114,7 @@ public class VroV2Tests {
 
     if ("end2end-test".equals(System.getenv("ENV"))) {
       log.info("Reset data in the mock servers.");
-      restTemplate.delete("http://localhost:8099/modifying-actions/" + claimId);
+      restTemplate.delete("http://localhost:8099/updates/" + claimId);
       restTemplate.delete("http://localhost:8096/received-files/" + fileNumber);
     }
 
