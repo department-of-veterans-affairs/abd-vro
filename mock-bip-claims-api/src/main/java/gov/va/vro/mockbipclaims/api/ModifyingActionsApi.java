@@ -15,6 +15,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/")
 public interface ModifyingActionsApi {
 
+  /** DELETE /modifying-actions/{claimId}: Deletes all actions info for the claim. */
+  @Operation(
+      operationId = "deleteUpdated",
+      summary = "Resets all updated flags.",
+      description = "Resets all updated flags.",
+      responses = {@ApiResponse(responseCode = "204", description = "If update happened.")})
+  @RequestMapping(method = RequestMethod.DELETE, value = "/modifying-actions/{claimId}")
+  ResponseEntity<Void> deletedUpdated(
+      @Parameter(
+              name = "claimId",
+              description = "The CorpDB BNFT_CLAIM_ID",
+              required = true,
+              in = ParameterIn.PATH)
+          @PathVariable("claimId")
+          Long claimId);
+
   /**
    * GET /modifying-actions/{claimId}/lifecycle-status: Retrieves if lifecycle status of the claim
    * is updated.

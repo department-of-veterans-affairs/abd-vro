@@ -13,6 +13,16 @@ public class ModifyingActionStore {
   private Set<Long> contentionsUpdates = new HashSet<>();
 
   /**
+   * Delete all updates for the claim.
+   *
+   * @param claimId Claim id
+   */
+  public void reset(Long claimId) {
+    lifecycleStatusUpdates.remove(claimId);
+    contentionsUpdates.remove(claimId);
+  }
+
+  /**
    * Add the claim to lifecycle status updated list.
    *
    * @param claimId Claim id

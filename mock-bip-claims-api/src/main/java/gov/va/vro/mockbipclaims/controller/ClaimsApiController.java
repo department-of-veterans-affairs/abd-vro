@@ -25,8 +25,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -119,20 +117,19 @@ public class ClaimsApiController implements ClaimsApi {
     }
 
     List<ExistingContention> contentions = updateContentionsRequest.getUpdateContentions();
-    List<ContentionSummary> currentContensions = item.getContentions();
+    List<ContentionSummary> currentContentions = item.getContentions();
     for (ExistingContention contention : contentions) {
       Long id = contention.getContentionId();
-      int existingIndex = findContention(currentContensions, id);
+      int existingIndex = findContention(currentContentions, id);
       if (existingIndex < 0) {
         String reason = "Contention does not exist in claim for id: " + claimId;
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
       }
 
       ContentionSummary summary = mapper.toContentionSummary(contention);
-      String now = ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT);
       summary.setLastModified(OffsetDateTime.now());
 
-      currentContensions.set(existingIndex, summary);
+      currentContentions.set(existingIndex, summary);
     }
     UpdateContentionsResponse response = new UpdateContentionsResponse();
     Message message = new Message();

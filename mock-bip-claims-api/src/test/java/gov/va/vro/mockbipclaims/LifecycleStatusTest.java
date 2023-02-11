@@ -34,6 +34,7 @@ public class LifecycleStatusTest {
     spec.setClaimId(1010);
     spec.setPort(port);
 
+    helper.resetUpdated(spec);
     boolean updatedBefore = helper.isLifecycleStatusUpdated(spec);
     assertEquals(false, updatedBefore);
 
@@ -49,5 +50,9 @@ public class LifecycleStatusTest {
 
     boolean updated = helper.isLifecycleStatusUpdated(spec);
     assertEquals(true, updated);
+
+    helper.resetUpdated(spec);
+    boolean updatedAfter = helper.isLifecycleStatusUpdated(spec);
+    assertEquals(false, updatedAfter);
   }
 }

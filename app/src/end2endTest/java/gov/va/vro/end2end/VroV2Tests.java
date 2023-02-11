@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.end2end.util.ModifyingActionsResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
@@ -83,10 +84,40 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
+  private boolean getFoundStatus(String claimId, String type) {
+    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
+      Thread.sleep(10);
+      String url = "http://localhost:8099/modifying-actions/" + claimId + "/" + type;
+      var testResponse = restTemplate.getForEntity(url, ModifyingActionsResponse.class);
+      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+      ModifyingActionsResponse body = testResponse.getBody();
+      if (body.isFound()) {
+        log.info("{} is updated.", type);
+        return true;
+      } else {
+        log.info("{} is not updated. Retrying...", type);
+      }
+    }
+    return false;
+  }
+
+  @SneakyThrows
   @Test
   void testAutomatedClaim() {
+
     var path = "test-mas/claim-350-7101.json";
     var content = resourceToString(path);
+    final MasAutomatedClaimRequest request =
+        objectMapper.readValue(content, MasAutomatedClaimRequest.class);
+    final String claimId = request.getClaimDetail().getBenefitClaimId();
+    final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
+
+    if ("end2end-test".equals(System.getenv("ENV"))) {
+      log.info("Reset data in the mock servers.");
+      restTemplate.delete("http://localhost:8099/modifying-actions/" + claimId);
+      restTemplate.delete("http://localhost:8096/received-files/" + fileNumber);
+    }
+
     var requestEntity = getEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
@@ -94,26 +125,34 @@ public class VroV2Tests {
     var masResponse = response.getBody();
     assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
 
-    if ("end2end-test".equals(System.getenv("ENV"))) {
-      log.info("Make sure the evidence pdf is uploaded");
-      MasAutomatedClaimRequest request =
-          objectMapper.readValue(content, MasAutomatedClaimRequest.class);
-      String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
-      for (int pollNumber = 0; pollNumber < 30; ++pollNumber) {
-        Thread.sleep(10000);
-        String url = "http://localhost:8096/received-files/" + fileNumber;
-        try {
-          ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
-          assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-          PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-          log.info("PDF text: {}", pdfTextV2.getPdfText());
-          assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
-          break;
-        } catch (HttpStatusCodeException exception) {
-          assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        }
+    if (!"end2end-test".equals(System.getenv("ENV"))) {
+      return;
+    }
+
+    log.info("Make sure the evidence pdf is uploaded");
+    boolean successUploading = false;
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      String url = "http://localhost:8096/received-files/" + fileNumber;
+      try {
+        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+        successUploading = true;
+        break;
+      } catch (HttpStatusCodeException exception) {
+        log.info("Did not find pdf for veteran {}. Retrying...", fileNumber);
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
       }
     }
+    assertTrue(successUploading);
+
+    boolean contentionsFound = getFoundStatus(claimId, "contentions");
+    assertTrue(contentionsFound);
+    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
+    assertTrue(lifecycleStatusFound);
   }
 
   @Test

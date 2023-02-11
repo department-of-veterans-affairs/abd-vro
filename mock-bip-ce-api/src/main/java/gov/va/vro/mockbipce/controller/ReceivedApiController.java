@@ -39,4 +39,10 @@ public class ReceivedApiController implements ReceivedApi {
 
     return new ResponseEntity<>(content, headers, HttpStatus.OK);
   }
+
+  @Override
+  public ResponseEntity<Void> remove(String fileNumber) {
+    store.remove(fileNumber);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }

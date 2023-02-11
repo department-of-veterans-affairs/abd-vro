@@ -42,6 +42,7 @@ public class AppConfig {
     ClaimStoreItem[] items = mapper.readValue(stream, ClaimStoreItem[].class);
     for (int index = 0; index < items.length; ++index) {
       ClaimStoreItem item = items[index];
+      item.backupAllCanChange();
       claimStore.put(item);
     }
     return claimStore;

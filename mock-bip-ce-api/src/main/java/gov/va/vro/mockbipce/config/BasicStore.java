@@ -14,6 +14,10 @@ public class BasicStore {
     return store.get(fileNumber);
   }
 
+  public void remove(String fileNumber) {
+    store.remove(fileNumber);
+  }
+
   public void put(EvidenceFile evidenceFile) {
     String fileNumber = evidenceFile.getFileNumber();
     store.put(fileNumber, evidenceFile);

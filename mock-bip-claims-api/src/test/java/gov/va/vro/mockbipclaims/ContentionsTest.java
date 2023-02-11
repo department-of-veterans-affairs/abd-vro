@@ -64,6 +64,19 @@ public class ContentionsTest {
     assertEquals(1011, summaryBack.getContentionId());
     var codesBack = summaryBack.getSpecialIssueCodes();
     assertEquals(1, codesBack.size());
-    assertEquals("other", codes.get(0));
+    assertEquals("other", codesBack.get(0));
+
+    helper.resetUpdated(spec);
+    boolean updatedAfter = helper.isContentionsUpdated(spec);
+    assertEquals(false, updatedAfter);
+
+    List<ContentionSummary> contentionsBack2 = helper.getContentionSummaries(spec);
+    assertEquals(1, contentionsBack2.size());
+    ContentionSummary summaryBack2 = contentionsBack2.get(0);
+    assertEquals(1011, summaryBack2.getContentionId());
+    var codesBack2 = summaryBack2.getSpecialIssueCodes();
+    assertEquals(2, codesBack2.size());
+    assertTrue(codesBack2.indexOf("RRD") >= 0);
+    assertTrue(codesBack2.indexOf("RDR1") >= 0);
   }
 }

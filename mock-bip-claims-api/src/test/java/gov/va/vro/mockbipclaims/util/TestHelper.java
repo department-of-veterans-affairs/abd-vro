@@ -178,4 +178,15 @@ public class TestHelper {
         restTemplate.getForObject(url, ModifyingActionsResponse.class);
     return response.isFound();
   }
+
+  /**
+   * Retrieves if the contentions of a claim is updated.
+   *
+   * @param spec test specification
+   * @return is updated?
+   */
+  public void resetUpdated(TestSpec spec) {
+    String url = spec.getUrl("/modifying-actions/" + spec.getClaimId());
+    restTemplate.delete(url);
+  }
 }
