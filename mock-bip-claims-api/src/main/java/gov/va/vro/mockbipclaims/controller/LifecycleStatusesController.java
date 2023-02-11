@@ -3,7 +3,6 @@ package gov.va.vro.mockbipclaims.controller;
 import gov.va.vro.mockbipclaims.api.LifecycleStatusesApi;
 import gov.va.vro.mockbipclaims.configuration.ClaimStore;
 import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
-import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.model.Message;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
@@ -22,12 +21,6 @@ public class LifecycleStatusesController implements LifecycleStatusesApi {
   private final ClaimStore claimStore;
 
   private final ModifyingActionStore actionStore;
-
-  @Override
-  public ResponseEntity<ClaimLifecycleStatusesResponse> getClaimLifecycleStatuses(
-      Long claimId, Boolean includeHistory) {
-    return null;
-  }
 
   @Override
   public ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
