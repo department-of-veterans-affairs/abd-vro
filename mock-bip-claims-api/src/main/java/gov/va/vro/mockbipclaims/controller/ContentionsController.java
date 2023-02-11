@@ -1,18 +1,13 @@
 package gov.va.vro.mockbipclaims.controller;
 
-import gov.va.vro.mockbipclaims.api.ClaimsApi;
+import gov.va.vro.mockbipclaims.api.ContentionsApi;
 import gov.va.vro.mockbipclaims.configuration.ClaimStore;
 import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
-import gov.va.vro.mockbipclaims.model.ClaimDetail;
-import gov.va.vro.mockbipclaims.model.ClaimDetailResponse;
-import gov.va.vro.mockbipclaims.model.ClaimLifecycleStatusesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.Message;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
-import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
@@ -30,7 +25,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class ClaimsApiController implements ClaimsApi {
+public class ContentionsController implements ContentionsApi {
   private final ClaimStore claimStore;
 
   private final ModifyingActionStore actionStore;
@@ -50,49 +45,6 @@ public class ClaimsApiController implements ClaimsApi {
     ContentionSummariesResponse response = new ContentionSummariesResponse();
     response.setContentions(contentions);
 
-    return new ResponseEntity<>(response, HttpStatus.OK);
-  }
-
-  @Override
-  public ResponseEntity<ClaimDetailResponse> getClaimById(Long claimId) {
-    log.info("Getting claim (id: {})", claimId);
-    ClaimStoreItem item = claimStore.get(claimId);
-    if (item == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
-    }
-
-    ClaimDetail claimDetail = item.getClaimDetail();
-
-    ClaimDetailResponse response = new ClaimDetailResponse();
-    response.setClaim(claimDetail);
-
-    return new ResponseEntity<>(response, HttpStatus.OK);
-  }
-
-  @Override
-  public ResponseEntity<ClaimLifecycleStatusesResponse> getClaimLifecycleStatuses(
-      Long claimId, Boolean includeHistory) {
-    return null;
-  }
-
-  @Override
-  public ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
-      Long claimId, UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest) {
-    log.info("Updating claim lifecycle status (id: {})", claimId);
-    ClaimStoreItem item = claimStore.get(claimId);
-    if (item == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
-    }
-    String status = updateClaimLifecycleStatusRequest.getClaimLifecycleStatus();
-    item.getClaimDetail().setClaimLifecycleStatus(status);
-    var response = new UpdateClaimLifecycleStatusResponse();
-    Message message = new Message();
-    message.setText("Success");
-    response.addMessagesItem(message);
-
-    actionStore.addLifecycleStatusUpdate(claimId);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
