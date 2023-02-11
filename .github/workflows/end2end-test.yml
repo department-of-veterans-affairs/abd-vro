@@ -17,6 +17,9 @@ env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
+  BIP_TRUSTSTORE: ${{ secrets.BIP_TRUSTSTORE }}
+  BIP_KEYSTORE: ${{ secrets.BIP_KEYSTORE }}
+  BIP_PASSWORD: ${{ secrets.BIP_PASSWORD }}
 
 jobs:
   end2end-test:
