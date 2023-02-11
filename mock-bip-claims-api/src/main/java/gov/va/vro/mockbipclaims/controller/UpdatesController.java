@@ -3,8 +3,8 @@ package gov.va.vro.mockbipclaims.controller;
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
 import gov.va.vro.mockbipclaims.configuration.ClaimStore;
 import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionsResponse;
+import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +16,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class UpdatesController implements UpdatesApi {
   private final ClaimStore claimStore;
 
-  private final ModifyingActionStore store;
+  private final UpdatesStore store;
 
   @Override
-  public ResponseEntity<Void> deletedUpdated(Long claimId) {
+  public ResponseEntity<Void> deletedUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
@@ -31,16 +31,16 @@ public class UpdatesController implements UpdatesApi {
   }
 
   @Override
-  public ResponseEntity<ModifyingActionsResponse> getLifecycleStatusUpdated(Long claimId) {
+  public ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
     boolean found = store.isLifecycleStatusUpdated(claimId);
-    ModifyingActionsResponse body = new ModifyingActionsResponse(found);
+    UpdatesResponse body = new UpdatesResponse(found);
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 
   @Override
-  public ResponseEntity<ModifyingActionsResponse> getContentionsUpdated(Long claimId) {
+  public ResponseEntity<UpdatesResponse> getContentionsUpdates(Long claimId) {
     boolean found = store.isContentionsUpdated(claimId);
-    ModifyingActionsResponse body = new ModifyingActionsResponse(found);
+    UpdatesResponse body = new UpdatesResponse(found);
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 }

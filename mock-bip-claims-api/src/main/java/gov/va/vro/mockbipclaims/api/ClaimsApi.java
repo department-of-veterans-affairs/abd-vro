@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/*
+/**
  * Generated using Open API Specification of BIP Claims API (bipclaim_3.1.1.json) amd
- * openapitools/openapi-generator-cli. All the operations not being used by VRO removed.
- * All the tags are also removed.
+ * openapitools/openapi-generator-cli. All the operations not being used by VRO removed. All the
+ * tags are also removed.
  */
 @Validated
 @RequestMapping("/")
@@ -32,9 +32,9 @@ public interface ClaimsApi {
    * @return Details for the given claim id. (status code 200) or The authentication mechanism
    *     failed and hence access is forbidden. (status code 401) or Could not derive claim from
    *     request path (status code 404) or There was an error encountered processing the Request.
-   *     Response will contain a \&quot;messages\&quot; element that will provide further
-   *     information on the error. Please retry. If problem persists, please contact support with a
-   *     copy of the Response. (status code 500)
+   *     Response will contain a "messages" element that will provide further information on the
+   *     error. Please retry. If problem persists, please contact support with a copy of the
+   *     Response. (status code 500)
    */
   @Operation(
       operationId = "getClaimById",
@@ -83,7 +83,7 @@ public interface ClaimsApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a  \"messages\" element that will provide further information on the error.
+                a  "messages" element that will provide further information on the error.
                 Please retry.  If problem persists, please contact support with a copy of the
                 Response.
                 """,

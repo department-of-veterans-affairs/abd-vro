@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 
-/*
+/**
  * Generated using Open API Specification of BIP Claims API (bipclaim_3.1.1.json) amd
- * openapitools/openapi-generator-cli. All the operations not being used by VRO removed.
- * All the tags are also removed.
+ * openapitools/openapi-generator-cli. All the operations not being used by VRO removed. All the
+ * tags are also removed.
  */
 @Validated
 @RequestMapping("/")
@@ -84,7 +84,7 @@ public interface ContentionsApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a \"messages\" element that will provide further information on the error.  Please
+                a "messages" element that will provide further information on the error.  Please
                 retry.  If problem persists, please contact support with a copy of the Response.
                 """,
             content = {
@@ -117,13 +117,13 @@ public interface ContentionsApi {
    * @param updateContentionsRequest (required)
    * @return Response indicates successful updates. May have messages with any warnings. (status
    *     code 200) or There was an error encountered processing the Request. Response will contain a
-   *     \&quot;messages\&quot; element that will provide further information on the error. This
-   *     request shouldn&#39;t be retried until corrected. (status code 400) or The authentication
-   *     mechanism failed and hence access is forbidden. (status code 401) or There was an error
-   *     encountered processing the Request. Response will contain a \&quot;messages\&quot; element
-   *     that will provide further information on the error. Please retry. If problem persists,
-   *     please contact support with a copy of the Response. (status code 500) or Resource not
-   *     implemented (status code 501)
+   *     "messages" element that will provide further information on the error. This request
+   *     shouldn't be retried until corrected. (status code 400) or The authentication mechanism
+   *     failed and hence access is forbidden. (status code 401) or There was an error encountered
+   *     processing the Request. Response will contain a "messages"; element that will provide
+   *     further information on the error. Please retry. If problem persists, please contact support
+   *     with a copy of the Response. (status code 500) or Resource not implemented (status code
+   *     501)
    */
   @Operation(
       operationId = "updateContentions",
@@ -146,7 +146,7 @@ public interface ContentionsApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a \"messages\" element that will provide further information on the error.  This
+                a "messages" element that will provide further information on the error.  This
                 request shouldn't be retried until corrected.
                 """,
             content = {
@@ -173,7 +173,7 @@ public interface ContentionsApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a  \"messages\" element that will provide further information on the error.
+                a  "messages" element that will provide further information on the error.
                 Please retry.  If problem persists, please contact support with a copy of the
                 Response.
                 """,
@@ -211,8 +211,6 @@ public interface ContentionsApi {
               in = ParameterIn.PATH)
           @PathVariable("claimId")
           Long claimId,
-      @Parameter(name = "UpdateContentionsRequest", description = "", required = true)
-          @Valid
-          @RequestBody
+      @Parameter(name = "UpdateContentionsRequest", required = true) @Valid @RequestBody
           UpdateContentionsRequest updateContentionsRequest);
 }

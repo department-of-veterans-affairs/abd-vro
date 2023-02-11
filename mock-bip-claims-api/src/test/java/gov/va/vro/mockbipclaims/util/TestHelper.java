@@ -11,7 +11,7 @@ import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionsResponse;
+import gov.va.vro.mockbipclaims.model.store.UpdatesResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +148,7 @@ public class TestHelper {
 
     HttpEntity<UpdateClaimLifecycleStatusRequest> request = new HttpEntity<>(body, headers);
 
-    String url = spec.getUrl("/claims/" + claimId + "/lifecycle_status");
+    String url = spec.getUrl("/claims/" + claimId + "/lifecycle-status");
     return restTemplate.exchange(
         url, HttpMethod.PUT, request, ClaimLifecycleStatusesResponse.class);
   }
@@ -160,9 +160,8 @@ public class TestHelper {
    * @return is updated?
    */
   public boolean isLifecycleStatusUpdated(TestSpec spec) {
-    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle_status");
-    ModifyingActionsResponse response =
-        restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle-status");
+    UpdatesResponse response = restTemplate.getForObject(url, UpdatesResponse.class);
     return response.isFound();
   }
 
@@ -174,8 +173,7 @@ public class TestHelper {
    */
   public boolean isContentionsUpdated(TestSpec spec) {
     String url = spec.getUrl("/updates/" + spec.getClaimId() + "/contentions");
-    ModifyingActionsResponse response =
-        restTemplate.getForObject(url, ModifyingActionsResponse.class);
+    UpdatesResponse response = restTemplate.getForObject(url, UpdatesResponse.class);
     return response.isFound();
   }
 

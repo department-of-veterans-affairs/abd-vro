@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-public class ModifyingActionStore {
+public class UpdatesStore {
   private Set<Long> lifecycleStatusUpdates = new HashSet<>();
   private Set<Long> contentionsUpdates = new HashSet<>();
 

@@ -20,17 +20,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 
-/*
+/**
  * Generated using Open API Specification of BIP Claims API (bipclaim_3.1.1.json) amd
- * openapitools/openapi-generator-cli. All the operations not being used by VRO removed
- * (except GET /claims/{claimId}/lifecycle_status whic is being used in tests).
- * All the tags are also removed.
+ * openapitools/openapi-generator-cli. All the operations not being used by VRO removed All the tags
+ * are also removed.
  */
 @Validated
 @RequestMapping("/")
 public interface LifecycleStatusesApi {
   /**
-   * PUT /claims/{claimId}/lifecycle_status : Update the lifecycle status of an existing claim
+   * PUT /claims/{claimId}/lifecycle-status : Update the lifecycle status of an existing claim
    * Update the lifecycle status of an existing claim.
    *
    * @param claimId The CorpDB BNFT_CLAIM_ID (required)
@@ -69,7 +68,7 @@ public interface LifecycleStatusesApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a \"messages\" element that will provide further information on the error.
+                a "messages" element that will provide further information on the error.
                 This request shouldn't be retried until corrected.
                 """,
             content = {
@@ -107,7 +106,7 @@ public interface LifecycleStatusesApi {
             description =
                 """
                 There was an error encountered processing the Request.  Response will contain
-                a  \"messages\" element that will provide further information on the error.
+                a  "messages" element that will provide further information on the error.
                 Please retry.  If problem persists, please contact support with a copy of the
                 Response.
                 """,
@@ -139,7 +138,7 @@ public interface LifecycleStatusesApi {
                   "https://github.ec.va.gov/EPMO/bip-vetservices-claims/blob/development/bip-vetservices-claims-docs/claim-updates.md"))
   @RequestMapping(
       method = RequestMethod.PUT,
-      value = "/claims/{claimId}/lifecycle_status",
+      value = "/claims/{claimId}/lifecycle-status",
       produces = {"application/json", "application/problem+json"},
       consumes = {"application/json"})
   ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
@@ -150,8 +149,6 @@ public interface LifecycleStatusesApi {
               in = ParameterIn.PATH)
           @PathVariable("claimId")
           Long claimId,
-      @Parameter(name = "UpdateClaimLifecycleStatusRequest", description = "", required = true)
-          @Valid
-          @RequestBody
+      @Parameter(name = "UpdateClaimLifecycleStatusRequest", required = true) @Valid @RequestBody
           UpdateClaimLifecycleStatusRequest updateClaimLifecycleStatusRequest);
 }

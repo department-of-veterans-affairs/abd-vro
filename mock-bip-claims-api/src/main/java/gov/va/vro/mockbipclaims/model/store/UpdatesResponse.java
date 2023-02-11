@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyingActionsResponse {
+public class UpdatesResponse {
   private boolean found;
 }

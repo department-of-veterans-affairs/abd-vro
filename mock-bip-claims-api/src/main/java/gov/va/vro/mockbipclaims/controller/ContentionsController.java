@@ -10,7 +10,7 @@ import gov.va.vro.mockbipclaims.model.ExistingContention;
 import gov.va.vro.mockbipclaims.model.Message;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.UpdateContentionsResponse;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
+import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.util.List;
 public class ContentionsController implements ContentionsApi {
   private final ClaimStore claimStore;
 
-  private final ModifyingActionStore actionStore;
+  private final UpdatesStore actionStore;
 
   private final ContentionMapper mapper;
 

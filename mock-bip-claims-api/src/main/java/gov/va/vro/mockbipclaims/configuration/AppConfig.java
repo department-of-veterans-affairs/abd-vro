@@ -3,7 +3,7 @@ package gov.va.vro.mockbipclaims.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
+import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +54,7 @@ public class AppConfig {
    * @return the modifying action store
    */
   @Bean
-  public ModifyingActionStore createModifyingActionStore() {
-    return new ModifyingActionStore();
+  public UpdatesStore createModifyingActionStore() {
+    return new UpdatesStore();
   }
 }

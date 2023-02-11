@@ -6,7 +6,7 @@ import gov.va.vro.mockbipclaims.configuration.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.Message;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.UpdateClaimLifecycleStatusResponse;
-import gov.va.vro.mockbipclaims.model.store.ModifyingActionStore;
+import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class LifecycleStatusesController implements LifecycleStatusesApi {
   private final ClaimStore claimStore;
 
-  private final ModifyingActionStore actionStore;
+  private final UpdatesStore actionStore;
 
   @Override
   public ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
