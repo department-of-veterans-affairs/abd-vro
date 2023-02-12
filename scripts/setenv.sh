@@ -135,15 +135,15 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 ### Integration with BIP ###
 
 # Credentials for BIP Claim API
-exportSecretIfUnset BIP_CLAIM_USERID
-exportSecretIfUnset BIP_CLAIM_SECRET
+#exportSecretIfUnset BIP_CLAIM_USERID
+#exportSecretIfUnset BIP_CLAIM_SECRET
 # Credentials for BIP Claim Evidence API
-exportSecretIfUnset BIP_EVIDENCE_USERID
-exportSecretIfUnset BIP_EVIDENCE_SECRET
+#exportSecretIfUnset BIP_EVIDENCE_USERID
+#exportSecretIfUnset BIP_EVIDENCE_SECRET
 exportSecretIfUnset BIP_KEYSTORE
 exportSecretIfUnset BIP_TRUSTSTORE
 exportSecretIfUnset BIP_PASSWORD
-exportSecretIfUnset BIP_ALIAS
+#exportSecretIfUnset BIP_ALIAS
 
 # TODO: Move all? of these to application*.yml
 #export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
