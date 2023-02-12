@@ -133,23 +133,20 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 
 ###
 ### Integration with BIP ###
-
+## Shared by app and mock-bip containers.
+## Keep here until another way found to share application.yml file content.
 # Credentials for BIP Claim API
-#exportSecretIfUnset BIP_CLAIM_USERID
-#exportSecretIfUnset BIP_CLAIM_SECRET
-# Credentials for BIP Claim Evidence API
-#exportSecretIfUnset BIP_EVIDENCE_USERID
-#exportSecretIfUnset BIP_EVIDENCE_SECRET
+export BIP_CLAIM_USERID=VRO_USER
+export BIP_CLAIM_SECRET=theSecret
+export BIP_CLAIM_ISS=VRO
+# Credential for BIP Claim Evidence API
+export BIP_EVIDENCE_USERID=VRO_USER
+export BIP_EVIDENCE_SECRET=daSecret
+export BIP_EVIDENCE_ISS=VRO
+# BIP Common
+export BIP_APPLICATION_ID=VRO
+export BIP_STATION_ID=456
 exportSecretIfUnset BIP_KEYSTORE
 exportSecretIfUnset BIP_TRUSTSTORE
 exportSecretIfUnset BIP_PASSWORD
-#exportSecretIfUnset BIP_ALIAS
-
-# TODO: Move all? of these to application*.yml
-#export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
-#export BIP_CLAIM_ISS=virtual_regional_office
-#export BIP_EVIDENCE_URL=vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
-#export BIP_EVIDENCE_ISS=VRO
-#export BIP_APPLICATION_ID=VRO
-#export BIP_STATION_ID=281
 
