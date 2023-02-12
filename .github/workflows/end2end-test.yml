@@ -20,6 +20,7 @@ env:
   BIP_TRUSTSTORE: ${{ secrets.BIP_TRUSTSTORE }}
   BIP_KEYSTORE: ${{ secrets.BIP_KEYSTORE }}
   BIP_PASSWORD: ${{ secrets.BIP_PASSWORD }}
+  MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
 
 jobs:
   end2end-test:
