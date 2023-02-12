@@ -65,6 +65,11 @@ exportSecretIfUnset(){
   fi
 }
 
+exportFile(){
+  local FILE_VALUE=$(eval cat "$2")
+  eval "export $1=${FILE_VALUE}"
+}
+
 ###
 ### Settings for local development ###
 
@@ -139,14 +144,14 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 export BIP_CLAIM_USERID=VRO_USER
 export BIP_CLAIM_SECRET=theSecret
 export BIP_CLAIM_ISS=VRO
-# Credential for BIP Claim Evidence API
+# Credentials for BIP Claim Evidence API
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret
 export BIP_EVIDENCE_ISS=VRO
-# BIP Common
+# BIP Common. "build-certificates.sh" generates keystore and truststore files.
 export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456
-exportSecretIfUnset BIP_KEYSTORE
-exportSecretIfUnset BIP_TRUSTSTORE
-exportSecretIfUnset BIP_PASSWORD
+export BIP_KEYSTORE=$(eval cat scripts/keystore/client-keystore.b64)
+export BIP_TRUSTSTORE=$(eval cat scripts/keystore/server-truststore.b64)
+export BIP_PASSWORD=keystore_pw
 

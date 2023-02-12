@@ -1,19 +1,9 @@
 # ssl client settings
-
 http:
   client:
     ssl:
-      trust-store-password: keystore_pw
-      key-store-password: keystore_pw
+      trust-store-password: ${BIP_PASSWORD}
+      key-store-password: ${BIP_PASSWORD}
 
-spring.config.import: >
-  server-truststore.yml,
-  client-keystore.yml
-
-mock-bip-cce-api:
-  jwt-test:
-    userId: VRO_USER
-    secret: theSecret
-    issuer: VRO
-    stationId: 281
-    expirationSeconds: 900
+keystore: ${BIP_KEYSTORE}
+truststore: ${BIP_TRUSTSTORE}
