@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce.config;
+package gov.va.vro.mockshared;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
-  private JwtProps props;
+  private JwtAppConfig props;
 
   private static String getToken(HttpServletRequest request) {
     String header = request.getHeader("Authorization");

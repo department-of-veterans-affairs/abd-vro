@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.config;
+package gov.va.vro.mockshared;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -2,25 +2,15 @@ package gov.va.vro.mockbipclaims.config;
 
 import gov.va.vro.mockshared.JwtGenerator;
 import gov.va.vro.mockshared.JwtSpecification;
+import gov.va.vro.mockshared.KeystoreSpec;
+import gov.va.vro.mockshared.RestUtil;
 import lombok.SneakyThrows;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.util.Base64;
-import javax.net.ssl.SSLContext;
 
 @TestConfiguration
 public class TestConfig {
@@ -38,16 +28,6 @@ public class TestConfig {
 
   @Autowired private JwtProps jwtProps;
 
-  @SneakyThrows
-  private KeyStore getKeyStore(String base64, String password) {
-    KeyStore keyStore = KeyStore.getInstance("PKCS12");
-    String noSpaceBase64 = base64.replaceAll("\\s+", "");
-    byte[] decodedBytes = Base64.getDecoder().decode(noSpaceBase64);
-    InputStream stream = new ByteArrayInputStream(decodedBytes);
-    keyStore.load(stream, password.toCharArray());
-    return keyStore;
-  }
-
   /**
    * Gets the https rest template.
    *
@@ -57,22 +37,9 @@ public class TestConfig {
   @SneakyThrows
   @Bean(name = "httpsRestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) {
-    KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
-    KeyStore trustStore = getKeyStore(trustStoreBase64, trustStorePassword);
-
-    SSLContext sslContext =
-        new SSLContextBuilder()
-            .loadTrustMaterial(trustStore, null)
-            .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
-            .build();
-
-    SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-
-    CloseableHttpClient httpClient =
-        HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-    ClientHttpRequestFactory requestFactory =
-        new HttpComponentsClientHttpRequestFactory(httpClient);
-    return new RestTemplate(requestFactory);
+    KeystoreSpec spec =
+        new KeystoreSpec(keyStoreBase64, keyStorePassword, trustStoreBase64, trustStorePassword);
+    return RestUtil.getHttpsRestTemplate(builder, spec);
   }
 
   @Bean
