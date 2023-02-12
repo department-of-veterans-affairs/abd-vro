@@ -12,6 +12,7 @@ import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockshared.JwtGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

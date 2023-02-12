@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims.config;
+package gov.va.vro.mockshared;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Getter
 @Setter
-public class JwtTestProps extends DefaultClaims {
+public class JwtSpecification extends DefaultClaims {
   private String secret;
 
   /**
@@ -22,9 +22,9 @@ public class JwtTestProps extends DefaultClaims {
    *
    * @param props Test properties
    */
-  public JwtTestProps(JwtProps props) {
+  public JwtSpecification(JwtAppConfig props) {
     secret = props.getSecret();
-    setSubject("Claim");
+    setSubject(props.getSubject());
     setIssuer(props.getIssuer());
     put("applicationID", props.getApplicationId());
     put("userID", props.getUserId());

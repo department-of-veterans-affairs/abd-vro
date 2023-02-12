@@ -1,8 +1,9 @@
 package gov.va.vro.mockbipclaims.config;
 
+import gov.va.vro.mockshared.JwtGenerator;
+import gov.va.vro.mockshared.JwtSpecification;
 import lombok.SneakyThrows;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -18,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.cert.X509Certificate;
 import java.util.Base64;
 import javax.net.ssl.SSLContext;
 
@@ -75,34 +75,14 @@ public class TestConfig {
     return new RestTemplate(requestFactory);
   }
 
-  /**
-   * Gets the https rest template without validation of the certificate.
-   *
-   * @param builder Rest template builder
-   * @return RestTemplate
-   */
-  @SneakyThrows
-  @Bean(name = "httpsNoCertificationRestTemplate")
-  public RestTemplate getHttpsNoCertificationRestTemplate(RestTemplateBuilder builder) {
-    TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-    KeyStore keyStore = getKeyStore(keyStoreBase64, keyStorePassword);
-    SSLContext sslContext =
-        new SSLContextBuilder()
-            .loadTrustMaterial(null, acceptingTrustStrategy)
-            .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
-            .build();
-
-    SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-
-    CloseableHttpClient httpClient =
-        HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-    ClientHttpRequestFactory requestFactory =
-        new HttpComponentsClientHttpRequestFactory(httpClient);
-    return new RestTemplate(requestFactory);
+  @Bean
+  public JwtSpecification getJwtSpecification() {
+    return new JwtSpecification(jwtProps);
   }
 
   @Bean
-  public JwtTestProps getJwtTestProps() {
-    return new JwtTestProps(jwtProps);
+  public JwtGenerator getJwtGenerator() {
+    JwtSpecification spec = getJwtSpecification();
+    return new JwtGenerator(spec);
   }
 }

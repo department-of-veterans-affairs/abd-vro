@@ -1,14 +1,11 @@
-package gov.va.vro.mockbipclaims.util;
+package gov.va.vro.mockshared;
 
-import gov.va.vro.mockbipclaims.config.JwtTestProps;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JwtGenerator {
-  private final JwtTestProps props;
+  private final JwtSpecification props;
 
   /**
    * Henerates the JWT.

@@ -1,0 +1,7 @@
+plugins {
+  id 'starter.std.java.library-conventions'
+}
+
+dependencies {
+  implementation 'io.jsonwebtoken:jjwt:0.9.1'
+}

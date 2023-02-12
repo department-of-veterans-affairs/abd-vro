@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.mockbipclaims.config.JwtTestProps;
 import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
+import gov.va.vro.mockshared.JwtSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class JwtTest {
 
   @Autowired private TestHelper helper;
 
-  @SpyBean private JwtTestProps props;
+  @SpyBean private JwtSpecification props;
 
   @BeforeEach
   void initJwtProps() {}
