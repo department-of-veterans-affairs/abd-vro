@@ -1,4 +1,4 @@
-FROM postgres:14.7-alpine
+FROM postgres:15.2-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 USER root
