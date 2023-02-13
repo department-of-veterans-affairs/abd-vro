@@ -3,10 +3,7 @@ package gov.va.vro.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.model.*;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +15,15 @@ public class MasCollectionServiceTest {
 
   @Test
   void combineEvidence() {
-    var lighthouseAssessment = createAssessment(null);
-    lighthouseAssessment.setDisabilityActionType("INCREASE");
+    var lighthouseAssessment = createAssessment("123");
+    lighthouseAssessment.setSource(HealthAssessmentSource.LIGHTHOUSE);
     lighthouseAssessment.setEvidence(
         createEvidence(
             Arrays.asList(createMedication("med1"), createMedication("med2")),
             Collections.singletonList(createCondition("cond2"))));
-    var masAssessment = createAssessment("123");
+    var masAssessment = createAssessment(null);
+    masAssessment.setSource(HealthAssessmentSource.MAS);
+    masAssessment.setDisabilityActionType("INCREASE");
     masAssessment.setEvidence(
         createEvidence(
             Collections.singletonList(createMedication("med1")),
