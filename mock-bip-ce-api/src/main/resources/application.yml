@@ -24,7 +24,7 @@ server:
 ## Logging
 logging:
   level:
-    root: INFO
+    root: DEBUG
 
 ## Health
 management:

@@ -7,3 +7,8 @@ http:
 
 keystore: ${BIP_KEYSTORE}
 truststore: ${BIP_TRUSTSTORE}
+
+## Logging
+logging:
+  level:
+    root: DEBUG
