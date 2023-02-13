@@ -47,7 +47,7 @@ public class BipApiServiceTest {
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
   private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
   private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle-status";
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String HTTPS = "https://";
   private static final String CLAIM_URL = "claims.bip.va.gov";

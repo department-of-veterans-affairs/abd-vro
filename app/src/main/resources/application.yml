@@ -208,13 +208,13 @@ spring.redis:
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
 bip:
-  claimClientId: "${BIP_CLAIM_USERID}"
-  claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}"
-  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
-  evidenceClientId: "${BIP_EVIDENCE_USERID}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL:vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest}"
+  claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
+  claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
+  claimBaseURL: "${BIP_CLAIM_URL}"
+  claimIssuer: "${BIP_CLAIM_ISS:VRO}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET:theSecret}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
   evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
   applicationName: "${BIP_APPLICATION_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"

@@ -40,8 +40,7 @@ public class FilesTest {
   @Autowired private TestHelper helper;
 
   private void verifyFile(TestSpec spec) {
-    String baseUrl = spec.getUrl("/received-files/");
-    String url = baseUrl + spec.getVeteranFileNumber();
+    String url = spec.getReceivedFilesUrl();
     ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
 
     byte[] content = spec.getFileContent().getBytes();
@@ -66,6 +65,17 @@ public class FilesTest {
     log.info("UUID: " + ur.getUuid());
 
     verifyFile(spec);
+
+    String url = spec.getReceivedFilesUrl();
+    restTemplate.delete(url);
+
+    try {
+      restTemplate.getForEntity(url, byte[].class);
+      fail("Expected 404 error.");
+    } catch (HttpStatusCodeException exception) {
+      HttpStatus statusCode = exception.getStatusCode();
+      assertEquals(HttpStatus.NOT_FOUND, statusCode);
+    }
   }
 
   private void auxRunTest(TestSpec spec) {
