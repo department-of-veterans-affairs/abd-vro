@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ModifyingActionsResponse {
+public class UpdatesResponse {
   private boolean found;
 }
