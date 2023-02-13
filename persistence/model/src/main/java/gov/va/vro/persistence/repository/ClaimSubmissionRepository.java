@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface ClaimSubmissionRepository extends JpaRepository<ClaimSubmissionEntity, UUID> {
 
   List<ClaimSubmissionEntity> findByReferenceIdAndIdType(String referenceId, String idType);
+
+  List<ClaimSubmissionEntity> findByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+      String referenceId, String idType);
 }

@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,9 +119,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void setOffRampReason(Claim claimWithOffRamp) {
     List<ClaimSubmissionEntity> claimSubmissionList =
-        claimSubmissionRepository.findByReferenceIdAndIdType(
-            String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
-    Collections.reverse(claimSubmissionList);
+        claimSubmissionRepository.findByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmissionList.get(0);
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
