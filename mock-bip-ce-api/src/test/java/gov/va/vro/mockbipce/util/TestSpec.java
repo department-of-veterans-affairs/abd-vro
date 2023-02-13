@@ -20,6 +20,11 @@ public class TestSpec {
     return "https://localhost:" + port + endPoint;
   }
 
+  public String getReceivedFilesUrl() {
+    String baseUrl = getUrl("/received-files/");
+    return baseUrl + veteranFileNumber;
+  }
+
   /**
    * Generates a basic test specification that can be used in multiple tests.
    *

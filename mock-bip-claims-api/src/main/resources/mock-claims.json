@@ -1,0 +1,60 @@
+[
+  {
+    "description": "for happy path",
+    "claimDetail": {
+      "claimId": 1010,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "identical to happy path, used for out of scope",
+    "claimDetail": {
+      "claimId": 3010,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "3011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "wrong temp station of jurisdiction",
+    "claimDetail": {
+      "claimId": 2010,
+      "tempStationOfJurisdiction": "391"
+    },
+    "contentions": [
+      {
+        "contentionId": "2011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  }
+]
