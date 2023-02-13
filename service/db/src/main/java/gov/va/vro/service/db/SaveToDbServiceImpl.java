@@ -9,6 +9,7 @@ import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.model.VeteranFlashIdEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
@@ -37,6 +38,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
 
   private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
@@ -183,6 +186,28 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimEntity claimEntity = claim.get();
     claimEntity.setRfdFlag(rfdFlag);
     claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void updateSufficientEvidenceFlag(
+      String claimSubmissionId, Boolean flag, String diagnosticCode) {
+    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim with given claimSubmissionId.");
+      return;
+    }
+    ContentionEntity contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      log.warn("Could not find contention with given diagnostic code.");
+      return;
+    }
+    AssessmentResultEntity assessmentResult =
+        assessmentResultRepository.findByContentionId(contention.getId());
+    if (flag == null) {
+      log.warn("No evidence.");
+    }
+    assessmentResult.setSufficientEvidenceFlag(flag);
+    assessmentResultRepository.save(assessmentResult);
   }
 
   private List<VeteranFlashIdEntity> createFlashIds(
