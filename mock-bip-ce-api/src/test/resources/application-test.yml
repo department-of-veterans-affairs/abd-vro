@@ -2,13 +2,10 @@
 http:
   client:
     ssl:
-      trust-store-password: ${BIP_PASSWORD}
-      key-store-password: ${BIP_PASSWORD}
+      trust-store-password: keystore_pw
+      key-store-password: keystore_pw
 
-keystore: ${BIP_KEYSTORE}
-truststore: ${BIP_TRUSTSTORE}
+spring.config.import: >
+  client-keystore.yml,
+  server-truststore.yml
 
-## Logging
-logging:
-  level:
-    root: DEBUG
