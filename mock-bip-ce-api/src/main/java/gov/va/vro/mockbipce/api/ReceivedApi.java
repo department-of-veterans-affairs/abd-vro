@@ -4,6 +4,7 @@ import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -133,5 +134,21 @@ public interface ReceivedApi {
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
   ResponseEntity<byte[]> download(
       @Parameter(name = "fileNumber", description = "The file number of the Veteran") @PathVariable
+          String fileNumber);
+
+  /** DELETE /received-files/{fileNumber}: Removes the document for the folder. */
+  @Operation(
+      operationId = "remove",
+      summary = "Removes the document for the .",
+      description = "Removes the document for the document.",
+      responses = {@ApiResponse(responseCode = "204", description = "Document removed.")})
+  @RequestMapping(method = RequestMethod.DELETE, value = "/received-files/{fileNumber}")
+  ResponseEntity<Void> remove(
+      @Parameter(
+              name = "fileNumber",
+              description = "The file number of the Veteran",
+              required = true,
+              in = ParameterIn.PATH)
+          @PathVariable("fileNumber")
           String fileNumber);
 }
