@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface BipConditions {
   // End-to-end tests call the mock claims evidence api
-  final Set<String> LOCAL_ENVIRONMENTS = Set.of("default", "local", "test");
+  final Set<String> LOCAL_ENVIRONMENTS = Set.of("default", "local");
 
   class LocalEnvironmentCondition implements Condition {
     @Override
