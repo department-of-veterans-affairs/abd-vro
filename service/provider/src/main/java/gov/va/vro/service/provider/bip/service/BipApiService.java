@@ -45,12 +45,12 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.HigherEnvCondition.class)
+@Conditional(BipConditions.NonLocalEnvironmentCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
   private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle-status";
   private static final String CONTENTION = "/claims/%s/contentions";
 
   private static final String HTTPS = "https://";

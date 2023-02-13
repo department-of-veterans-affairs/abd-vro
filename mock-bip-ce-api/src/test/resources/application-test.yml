@@ -1,5 +1,4 @@
 # ssl client settings
-
 http:
   client:
     ssl:
@@ -7,13 +6,6 @@ http:
       key-store-password: keystore_pw
 
 spring.config.import: >
-  server-truststore.yml,
-  client-keystore.yml
+  client-keystore.yml,
+  server-truststore.yml
 
-mock-bip-cce-api:
-  jwt-test:
-    userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
-    secret: "${BIP_EVIDENCE_SECRET:theSecret}"
-    issuer: "${BIP_EVIDENCE_ISS:VRO}"
-    stationId: "${BIP_STATION_ID:281}"
-    expirationSeconds: 900
