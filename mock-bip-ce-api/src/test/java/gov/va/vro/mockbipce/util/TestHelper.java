@@ -1,5 +1,6 @@
 package gov.va.vro.mockbipce.util;
 
+import gov.va.vro.mockshared.jwt.JwtGenerator;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;

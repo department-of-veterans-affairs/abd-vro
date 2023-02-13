@@ -39,7 +39,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.NonLocalEnvCeCondition.class)
+@Conditional(BipConditions.NonLocalEnvironmentCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipCeApiService implements IBipCeApiService {

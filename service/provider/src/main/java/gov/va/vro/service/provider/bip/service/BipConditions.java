@@ -8,41 +8,22 @@ import java.util.Arrays;
 import java.util.Set;
 
 public interface BipConditions {
+  // End-to-end tests call the mock claims evidence api
+  final Set<String> LOCAL_ENVIRONMENTS = Set.of("default", "local");
 
-  Set<String> TEST_ENVS = Set.of("default", "local", "end2end-test");
-
-  // End to end test call the mock claims evidence api
-  Set<String> TEST_ENVS_CE = Set.of("default", "local", "test");
-
-  class LocalEnvCondition implements Condition {
+  class LocalEnvironmentCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
       var profiles = context.getEnvironment().getActiveProfiles();
-      return Arrays.stream(profiles).anyMatch(TEST_ENVS::contains);
+      return Arrays.stream(profiles).anyMatch(LOCAL_ENVIRONMENTS::contains);
     }
   }
 
-  class HigherEnvCondition implements Condition {
+  class NonLocalEnvironmentCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
       var profiles = context.getEnvironment().getActiveProfiles();
-      return Arrays.stream(profiles).noneMatch(TEST_ENVS::contains);
-    }
-  }
-
-  class LocalEnvCeCondition implements Condition {
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-      var profiles = context.getEnvironment().getActiveProfiles();
-      return Arrays.stream(profiles).anyMatch(TEST_ENVS_CE::contains);
-    }
-  }
-
-  class NonLocalEnvCeCondition implements Condition {
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-      var profiles = context.getEnvironment().getActiveProfiles();
-      return Arrays.stream(profiles).noneMatch(TEST_ENVS_CE::contains);
+      return Arrays.stream(profiles).noneMatch(LOCAL_ENVIRONMENTS::contains);
     }
   }
 }

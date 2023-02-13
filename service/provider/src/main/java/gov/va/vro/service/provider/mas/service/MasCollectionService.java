@@ -78,10 +78,10 @@ public class MasCollectionService {
           "No annotations found for collection id " + claimPayload.getCollectionId());
     }
     MasCollectionAnnotation masCollectionAnnotation = response.get(0);
+    // Veteran File ID is PII -- do not log it.
     log.info(
-        "Collection Annotation Response : Collection ID  {} and Veteran File ID {}",
-        masCollectionAnnotation.getCollectionsId(),
-        masCollectionAnnotation.getVeteranFileId());
+        "Collection Annotation Response : Collection ID  {}",
+        masCollectionAnnotation.getCollectionsId());
 
     MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
     AbdEvidence abdEvidence =

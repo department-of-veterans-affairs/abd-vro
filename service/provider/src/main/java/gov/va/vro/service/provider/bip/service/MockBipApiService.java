@@ -15,7 +15,7 @@ import java.util.List;
 
 /** Mock some claim data returned by the BIP API. */
 @Service
-@Conditional(BipConditions.LocalEnvCondition.class)
+@Conditional(BipConditions.LocalEnvironmentCondition.class)
 public class MockBipApiService implements IBipApiService {
   private static final long CLAIM_ID_204 = 204L;
   private static final long CLAIM_ID_400 = 400L;
@@ -104,9 +104,15 @@ public class MockBipApiService implements IBipApiService {
     if (collectionId == 350 || collectionId == 353) {
       // valid
       return buildClaim(1234, BipClaimService.TSOJ);
+    } else if (collectionId == 1001) {
+      // valid
+      return buildClaim(1001, BipClaimService.TSOJ);
+    } else if (collectionId == 1010) {
+      // valid
+      return buildClaim(1010, BipClaimService.TSOJ);
     } else if (collectionId == 885491) {
       // wrong station
-      return buildClaim(885491, "OTHER");
+      return buildClaim(2010, "OTHER");
     } else if (collectionId == CLAIM_ID_404) { // invalid claim ID, throw BipException.
       throw new BipException(HttpStatus.NOT_FOUND, ERR_MSG_404);
     } else if (collectionId == CLAIM_ID_401) { // not authorized, throw BipException
@@ -138,6 +144,8 @@ public class MockBipApiService implements IBipApiService {
   @Override
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     if (claimId == 1234) {
+      return List.of(buildContention("RDR1", "RRD"));
+    } else if (claimId == 1010) {
       return List.of(buildContention("RDR1", "RRD"));
     } else if (claimId == CLAIM_ID_204) { // No data. Returns an empty list.
       return new ArrayList<>();
