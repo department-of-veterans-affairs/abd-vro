@@ -113,12 +113,11 @@ jobs:
 
   notify-secrel-error:
     if: failure()
-    needs: [publish-images, images-for-secrel, secrel]
+    needs: secrel
     runs-on: ubuntu-latest
 
     steps:
       - name: "Notify Slack on SecRel Failure"
-        id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
         # only run for the internal repo
         if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
