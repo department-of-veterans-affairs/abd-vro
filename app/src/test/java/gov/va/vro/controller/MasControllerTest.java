@@ -93,7 +93,7 @@ public class MasControllerTest extends BaseControllerTest {
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-offramp"))
+                    .to(mockMasOfframpEndpoint))
         .end();
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(
@@ -112,7 +112,7 @@ public class MasControllerTest extends BaseControllerTest {
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-complete"))
+                    .to(mockMasCompleteEndpoint))
         .end();
     mockMasCompleteEndpoint.whenAnyExchangeReceived(
         exchange -> {
