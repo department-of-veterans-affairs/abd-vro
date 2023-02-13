@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.config;
 
-import gov.va.vro.mockshared.JwtAppConfig;
+import gov.va.vro.mockshared.jwt.JwtAppConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.rest;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

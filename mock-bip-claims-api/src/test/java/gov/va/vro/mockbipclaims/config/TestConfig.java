@@ -1,9 +1,9 @@
 package gov.va.vro.mockbipclaims.config;
 
-import gov.va.vro.mockshared.JwtGenerator;
-import gov.va.vro.mockshared.JwtSpecification;
-import gov.va.vro.mockshared.KeystoreSpec;
-import gov.va.vro.mockshared.RestUtil;
+import gov.va.vro.mockshared.jwt.JwtGenerator;
+import gov.va.vro.mockshared.jwt.JwtSpecification;
+import gov.va.vro.mockshared.rest.KeystoreSpec;
+import gov.va.vro.mockshared.rest.RestUtil;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

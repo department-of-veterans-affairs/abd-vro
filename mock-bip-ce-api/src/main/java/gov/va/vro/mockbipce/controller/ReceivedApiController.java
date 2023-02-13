@@ -1,8 +1,8 @@
 package gov.va.vro.mockbipce.controller;
 
 import gov.va.vro.mockbipce.api.ReceivedApi;
-import gov.va.vro.mockbipce.config.BasicStore;
-import gov.va.vro.mockbipce.model.EvidenceFile;
+import gov.va.vro.mockbipce.model.store.BasicStore;
+import gov.va.vro.mockbipce.model.store.EvidenceFile;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

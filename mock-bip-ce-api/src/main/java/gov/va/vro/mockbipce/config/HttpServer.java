@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.config;
 
-import gov.va.vro.mockshared.RestUtil;
+import gov.va.vro.mockshared.rest.RestUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;

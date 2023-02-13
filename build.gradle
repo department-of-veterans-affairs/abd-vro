@@ -120,7 +120,8 @@ ext {
     ':svc-lighthouse-api',
     ':console',
     ':mock-bip-ce-api',
-    ':mock-bip-claims-api'
+    ':mock-bip-claims-api',
+    ':mock-shared'
   ]
   dockerModules = [
     ':app',

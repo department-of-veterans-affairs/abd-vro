@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipce.model;
+package gov.va.vro.mockbipce.model.store;
 
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import lombok.Getter;

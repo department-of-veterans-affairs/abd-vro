@@ -1,4 +1,4 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.jwt;
 
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;

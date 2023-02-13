@@ -1,4 +1,4 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.jwt;
 
 public interface JwtAppConfig {
   String getSubject();

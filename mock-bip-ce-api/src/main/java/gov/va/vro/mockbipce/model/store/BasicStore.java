@@ -1,6 +1,5 @@
-package gov.va.vro.mockbipce.config;
+package gov.va.vro.mockbipce.model.store;
 
-import gov.va.vro.mockbipce.model.EvidenceFile;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;

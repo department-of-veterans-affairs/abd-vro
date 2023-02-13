@@ -8,7 +8,7 @@ import gov.va.vro.mockbipclaims.config.TestConfig;
 import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
-import gov.va.vro.mockshared.JwtSpecification;
+import gov.va.vro.mockshared.jwt.JwtSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

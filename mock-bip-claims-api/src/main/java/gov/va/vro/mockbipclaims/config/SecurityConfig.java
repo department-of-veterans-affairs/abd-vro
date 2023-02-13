@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipclaims.config;
 
-import gov.va.vro.mockshared.JwtRequestFilter;
+import gov.va.vro.mockshared.rest.JwtRequestFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

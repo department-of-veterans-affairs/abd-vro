@@ -1,5 +1,6 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.rest;
 
+import gov.va.vro.mockshared.jwt.JwtAppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;

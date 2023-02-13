@@ -1,4 +1,4 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.rest;
 
 import lombok.SneakyThrows;
 import org.apache.catalina.connector.Connector;

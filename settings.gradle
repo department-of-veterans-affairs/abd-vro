@@ -93,11 +93,10 @@ include ':service-python:featuretoggle'
 include ':svc-lighthouse-api'
 include ':mock-bip-ce-api'
 include ':mock-bip-claims-api'
+include ':mock-shared'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
   include ':service-python:assessclaimdc6522'
   include ':service-python:assessclaimcancer'
 }
-include 'mock-shared'
-

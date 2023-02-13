@@ -1,4 +1,4 @@
-package gov.va.vro.mockshared;
+package gov.va.vro.mockshared.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,4 +1,4 @@
-package gov.va.vro.mockbipclaims;
+package gov.va.vro.mockshared.mapper;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
