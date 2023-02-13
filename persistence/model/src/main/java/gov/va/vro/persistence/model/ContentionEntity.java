@@ -26,8 +26,6 @@ public class ContentionEntity extends BaseEntity {
 
   @ManyToOne private ClaimEntity claim;
 
-  @ManyToOne private ClaimSubmissionEntity claimSubmission;
-
   @NotNull private String diagnosticCode;
 
   @OneToMany(
