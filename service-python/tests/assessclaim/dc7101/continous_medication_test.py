@@ -171,6 +171,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
+                            "partialDate": ""
                         }
                     ],
                     "medicationsCount": 1,
@@ -199,6 +200,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
+                            "partialDate": ""
                         }
                     ],
                     "medicationsCount": 1,
@@ -233,12 +235,18 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "1952-?-06T04:00:00Z",  # malformed
+                                "authoredOn": "",
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "2021-04-06T04:00:00Z",
+                            },
+                            {
+                                "description": "some medication",
+                                "status": "active",
+                                "authoredOn": "",
+                                "partialDate": "**/**/1988"
                             },
                         ],
                     },
@@ -252,15 +260,24 @@ def test_continuous_medication_required(
                             "status": "active",
                             "dateFormatted": "4/6/2021",
                             "authoredOn": "2021-04-06T04:00:00Z",
+                            "partialDate": ""
                         },
                         {
                             "description": "Benazepril",
                             "status": "active",
-                            "dateFormatted": "unparsed (1952-?-06T04:00:00Z)",
-                            "authoredOn": "1952-?-06T04:00:00Z",  # malformed
+                            "dateFormatted": "",
+                            "authoredOn": "",
+                            "partialDate": ""
+                        },
+                        {
+                            "description": "some medication",
+                            "status": "active",
+                            "authoredOn": "",
+                            "dateFormatted": "",
+                            "partialDate": "**/**/1988"
                         },
                     ],
-                    "medicationsCount": 2,
+                    "medicationsCount": 3,
                 },
         ),
         (

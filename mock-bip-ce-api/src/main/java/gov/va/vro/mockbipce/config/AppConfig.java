@@ -1,5 +1,6 @@
 package gov.va.vro.mockbipce.config;
 
+import gov.va.vro.mockbipce.model.store.BasicStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
