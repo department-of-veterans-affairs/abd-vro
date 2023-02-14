@@ -200,11 +200,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not find contention with given diagnostic code.");
       return;
     }
-    AssessmentResultEntity assessmentResult =
-        assessmentResultRepository.findByContentionId(contention.getId());
+    Optional<AssessmentResultEntity> result =
+        assessmentResultRepository.findFirstByContentionIdOrderByCreatedAtDesc(contention.getId());
+    if (result.isEmpty()) {
+      log.warn("Could not match assessment result to this contention id.");
+      return;
+    }
     if (flag == null) {
       log.warn("No evidence.");
     }
+    AssessmentResultEntity assessmentResult = result.get();
     assessmentResult.setSufficientEvidenceFlag(flag);
     assessmentResultRepository.save(assessmentResult);
   }
