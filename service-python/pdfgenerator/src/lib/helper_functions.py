@@ -18,7 +18,7 @@ def pdf_helper_all(data):
     if data["veteranInfo"]["birthdate"] != "":
         data["veteranInfo"]["birthdate"] = parser.parse(data["veteranInfo"]["birthdate"])
 
-    if "evidence" in data:
+    if data["version"] == "v1":
         for medication_info in data["evidence"]["medications"]:
             medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
 
