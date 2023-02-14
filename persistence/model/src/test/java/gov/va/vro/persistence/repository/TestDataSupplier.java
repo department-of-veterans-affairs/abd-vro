@@ -41,6 +41,14 @@ public class TestDataSupplier {
     return claim;
   }
 
+  /**
+   * Create a Claim Submission
+   *
+   * @param claim
+   * @param reference_id
+   * @param id_type
+   * @return
+   */
   public static ClaimSubmissionEntity createClaimSubmission(
       ClaimEntity claim, String reference_id, String id_type) {
     ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();

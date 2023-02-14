@@ -156,6 +156,19 @@ class SaveToDbServiceImplTest {
 
   @Test
   void persistExamOrder() {
+    Claim claim = new Claim();
+    claim.setClaimSubmissionId("1234");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("7101");
+    claim.setVbmsId("vbms1");
+    claim.setCollectionId("collection1");
+    claim.setIdType(Claim.DEFAULT_ID_TYPE);
+    saveToDbService.insertClaim(claim);
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            claim.getCollectionId(), claim.getIdType());
+    assert (claimSubmission.isPresent());
+    ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     ExamOrder examOrder1 = new ExamOrder();
     examOrder1.setCollectionId("collection1");
     examOrder1.setStatus("status1");
@@ -163,7 +176,9 @@ class SaveToDbServiceImplTest {
     Optional<ExamOrderEntity> orderEntity =
         examOrderRepository.findByCollectionId(examOrder1.getCollectionId());
     assert (orderEntity.isPresent());
-    assertEquals(examOrder1.getStatus(), orderEntity.get().getStatus());
+    ExamOrderEntity examOrderEntity = orderEntity.get();
+    assertEquals(examOrder1.getStatus(), examOrderEntity.getStatus());
+    assertEquals(examOrderEntity.getClaimSubmission().getId(), claimSubmissionEntity.getId());
     ExamOrder examOrder2 = new ExamOrder();
     examOrder2.setCollectionId(examOrder1.getCollectionId());
     examOrder2.setStatus("status2");
@@ -171,7 +186,9 @@ class SaveToDbServiceImplTest {
     Optional<ExamOrderEntity> updatedOrder =
         examOrderRepository.findByCollectionId(examOrder1.getCollectionId());
     assert (updatedOrder.isPresent());
-    assertEquals(examOrder2.getStatus(), updatedOrder.get().getStatus());
+    ExamOrderEntity updatedOrderEntity = updatedOrder.get();
+    assertEquals(examOrder2.getStatus(), updatedOrderEntity.getStatus());
+    assertEquals(updatedOrderEntity.getClaimSubmission().getId(), claimSubmissionEntity.getId());
   }
 
   @Test
