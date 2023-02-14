@@ -23,7 +23,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import javax.transaction.Transactional;
 
 @Service
@@ -114,11 +119,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void setOffRampReason(Claim claimWithOffRamp) {
-    List<ClaimSubmissionEntity> claimSubmissionList =
-        claimSubmissionRepository.findByReferenceIdAndIdType(
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
-    Collections.reverse(claimSubmissionList);
-    ClaimSubmissionEntity claimSubmissionEntity = claimSubmissionList.get(0);
+    ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
   }
