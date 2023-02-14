@@ -4,6 +4,7 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.requests.GeneratePdfRequest;
@@ -120,7 +121,7 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
     var claim = claimRepository.findByVbmsId(request.getClaimSubmissionId());
-    //    assertTrue(claim.isPresent());
+    assertTrue(claim.isPresent());
   }
 
   @Test
