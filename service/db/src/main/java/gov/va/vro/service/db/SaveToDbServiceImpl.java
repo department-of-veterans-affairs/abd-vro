@@ -9,6 +9,7 @@ import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.model.VeteranFlashIdEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
@@ -23,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
 
   private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
@@ -117,9 +119,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void setOffRampReason(Claim claimWithOffRamp) {
     List<ClaimSubmissionEntity> claimSubmissionList =
-        claimSubmissionRepository.findByReferenceIdAndIdType(
-            String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
-    Collections.reverse(claimSubmissionList);
+        claimSubmissionRepository.findByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmissionList.get(0);
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -183,6 +184,28 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimEntity claimEntity = claim.get();
     claimEntity.setRfdFlag(rfdFlag);
     claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void updateSufficientEvidenceFlag(
+      String claimSubmissionId, Boolean flag, String diagnosticCode) {
+    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim with given claimSubmissionId.");
+      return;
+    }
+    ContentionEntity contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      log.warn("Could not find contention with given diagnostic code.");
+      return;
+    }
+    AssessmentResultEntity assessmentResult =
+        assessmentResultRepository.findByContentionId(contention.getId());
+    if (flag == null) {
+      log.warn("No evidence.");
+    }
+    assessmentResult.setSufficientEvidenceFlag(flag);
+    assessmentResultRepository.save(assessmentResult);
   }
 
   private List<VeteranFlashIdEntity> createFlashIds(

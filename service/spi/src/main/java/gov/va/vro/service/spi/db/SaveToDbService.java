@@ -24,4 +24,6 @@ public interface SaveToDbService {
   void updateRfdFlag(String claimId, boolean rfdFlag);
 
   void setOffRampReason(Claim payload);
+
+  void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag, String diagnosticCode);
 }

@@ -13,6 +13,7 @@ import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,8 @@ public class BipClaimService {
   private final IBipApiService bipApiService;
 
   private final IBipCeApiService bipCeApiService;
+
+  private final SaveToDbService saveToDbService;
 
   /**
    * Check if all the anchors for fast-tracking are satisfied.
@@ -146,6 +149,7 @@ public class BipClaimService {
 
     try {
       bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
+      saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
     } catch (Exception e) {
       throw new BipException("BIP update claim status resulted in an exception", e);
     }
