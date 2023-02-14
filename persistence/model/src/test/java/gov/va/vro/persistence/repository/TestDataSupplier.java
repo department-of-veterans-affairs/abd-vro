@@ -1,6 +1,7 @@
 package gov.va.vro.persistence.repository;
 
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 
 import java.util.Date;
@@ -28,17 +29,32 @@ public class TestDataSupplier {
    *
    * @param id
    *
-   * @param idType
    *
    * @param veteran
    *
    * @return
    */
-  public static ClaimEntity createClaim(String id, String idType, VeteranEntity veteran) {
+  public static ClaimEntity createClaim(String id, VeteranEntity veteran) {
     ClaimEntity claim = new ClaimEntity();
-    claim.setClaimSubmissionId(id);
-    claim.setIdType(idType);
+    claim.setVbmsId(id);
     claim.setVeteran(veteran);
     return claim;
+  }
+
+  /**
+   * Create a Claim Submission
+   *
+   * @param claim
+   * @param reference_id
+   * @param id_type
+   * @return
+   */
+  public static ClaimSubmissionEntity createClaimSubmission(
+      ClaimEntity claim, String reference_id, String id_type) {
+    ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
+    claimSubmission.setClaim(claim);
+    claimSubmission.setReferenceId(reference_id);
+    claimSubmission.setIdType(id_type);
+    return claimSubmission;
   }
 }

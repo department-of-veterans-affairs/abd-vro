@@ -4,10 +4,14 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
+import gov.va.vro.persistence.model.VeteranFlashIdEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
@@ -19,8 +23,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
@@ -31,20 +38,41 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
+
+  private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
+
+  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
 
   @Override
   @Transactional
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
+    ClaimSubmissionEntity claimSubmissionEntity = createClaimSubmission(claim);
     ClaimEntity claimEntity =
         claimRepository
-            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
+            .findByVbmsId(claim.getClaimSubmissionId())
             .orElseGet(() -> createClaim(claim, veteranEntity));
     ensureContentionExists(claimEntity, claim.getDiagnosticCode());
+    claimEntity.addClaimSubmission(claimSubmissionEntity);
+    claimSubmissionRepository.save(claimSubmissionEntity);
+    claimRepository.save(claimEntity);
     claim.setRecordId(claimEntity.getId());
     return claim;
+  }
+
+  private ClaimSubmissionEntity createClaimSubmission(Claim claim) {
+    ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
+    claimSubmission.setReferenceId(claim.getCollectionId());
+    claimSubmission.setIdType(claim.getIdType());
+    claimSubmission.setIncomingStatus(claim.getIncomingStatus());
+    claimSubmission.setSubmissionSource(claim.getSubmissionSource());
+    claimSubmission.setSubmissionDate(claim.getSubmissionDate());
+    claimSubmission.setOffRampReason(claim.getOffRampReason());
+    return claimSubmission;
   }
 
   @Override
@@ -60,9 +88,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
-    var claimEntity =
-        claimRepository.findByClaimSubmissionIdAndIdType(
-            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+    var claimEntity = claimRepository.findByVbmsId(evidence.getClaimSubmissionId());
     if (claimEntity.isEmpty()) {
       log.warn(
           "Claim not found for claimEntity submission id = {} and id type = {}",
@@ -92,9 +118,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
+  public void setOffRampReason(Claim claimWithOffRamp) {
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
+    ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
+    claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
+    claimSubmissionRepository.save(claimSubmissionEntity);
+  }
+
+  @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
-    ClaimEntity claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
+    ClaimEntity claim = claimRepository.findByVbmsId(request.getClaimSubmissionId()).orElse(null);
     if (claim == null) {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
@@ -121,6 +156,69 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       examOrderEntity.setStatus(examOrder.getStatus());
       examOrderRepository.save(examOrderEntity);
     }
+  }
+
+  @Override
+  public void insertFlashIds(List<String> veteranFlashIds, String veteranIcn) {
+    var veteran = veteranRepository.findByIcn(veteranIcn);
+    if (veteran.isEmpty()) {
+      log.warn("Could not find a Veteran with this ICN. Could not attach flash IDs.");
+      return;
+    }
+    if (veteranFlashIds == null) {
+      log.warn("The Veteran Flash ID list was null, could not attach to Veteran.");
+      return;
+    }
+    VeteranEntity entity = veteran.get();
+    List<VeteranFlashIdEntity> flashIdList = createFlashIds(veteranFlashIds, entity);
+    entity.setFlashIds(flashIdList);
+    veteranRepository.save(entity);
+  }
+
+  @Override
+  public void updateRfdFlag(String claimId, boolean rfdFlag) {
+    var claim = claimRepository.findByVbmsId(claimId);
+    if (claim.isEmpty()) {
+      log.warn("Could not find claim with id and idType, could not update RFD flag.");
+      return;
+    }
+    ClaimEntity claimEntity = claim.get();
+    claimEntity.setRfdFlag(rfdFlag);
+    claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void updateSufficientEvidenceFlag(
+      String claimSubmissionId, Boolean flag, String diagnosticCode) {
+    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+    if (claim == null) {
+      log.warn("Could not find claim with given claimSubmissionId.");
+      return;
+    }
+    ContentionEntity contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      log.warn("Could not find contention with given diagnostic code.");
+      return;
+    }
+    AssessmentResultEntity assessmentResult =
+        assessmentResultRepository.findByContentionId(contention.getId());
+    if (flag == null) {
+      log.warn("No evidence.");
+    }
+    assessmentResult.setSufficientEvidenceFlag(flag);
+    assessmentResultRepository.save(assessmentResult);
+  }
+
+  private List<VeteranFlashIdEntity> createFlashIds(
+      List<String> veteranFlashIds, VeteranEntity entity) {
+    List<VeteranFlashIdEntity> flashIdList = new ArrayList<>();
+    for (String flashId : veteranFlashIds) {
+      VeteranFlashIdEntity id = new VeteranFlashIdEntity();
+      id.setFlashId(Integer.valueOf(flashId));
+      id.setVeteran(entity);
+      flashIdList.add(id);
+    }
+    return flashIdList;
   }
 
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
@@ -178,9 +276,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   private ExamOrderEntity createExamOrder(ExamOrder examOrder) {
+    // Currently ExamOrders only come from MAS
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            examOrder.getCollectionId(), DEFAULT_ID_TYPE);
     ExamOrderEntity examOrderEntity = new ExamOrderEntity();
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());
+    if (claimSubmission.isEmpty()) {
+      log.warn("Could not find claim submission, will not save connection to exam order.");
+    } else {
+      examOrderEntity.setClaimSubmission(claimSubmission.get());
+    }
     return examOrderRepository.save(examOrderEntity);
   }
 

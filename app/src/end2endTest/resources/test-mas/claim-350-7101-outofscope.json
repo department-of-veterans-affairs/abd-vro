@@ -13,7 +13,7 @@
   },
   "claimDetail": {
     "benefitClaimId": "3010",
-    "claimSubmissionDateTime": "2018-11-04T17:45:61Z",
+    "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
       "name": "string",
@@ -24,6 +24,6 @@
     }
   },
   "veteranFlashIds": [
-    "string"
+    "999"
   ]
 }

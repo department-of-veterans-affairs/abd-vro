@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 public interface ClaimMapper {
 
   @Mapping(target = "contentions", ignore = true)
+  @Mapping(target = "vbmsId", source = "claimSubmissionId")
   ClaimEntity toClaimEntity(Claim claim);
 
   @Mapping(target = "recordId", source = "id")
   @Mapping(target = "veteranIcn", source = "veteran.icn")
+  @Mapping(target = "claimSubmissionId", source = "vbmsId")
   Claim toClaim(ClaimEntity claimEntity);
 
   /***

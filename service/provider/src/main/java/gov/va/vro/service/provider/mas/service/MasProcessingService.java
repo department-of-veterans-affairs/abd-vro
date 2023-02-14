@@ -3,6 +3,7 @@ package gov.va.vro.service.provider.mas.service;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
@@ -28,6 +29,8 @@ public class MasProcessingService {
 
   private final BipClaimService bipClaimService;
 
+  private final ClaimRepository claimRepository;
+
   private final SaveToDbService saveToDbService;
 
   /**
@@ -37,11 +40,15 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-    saveToDbService.insertClaim(toClaim(payload));
+    Claim claim = toClaim(payload);
+    saveToDbService.insertClaim(claim);
+    saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
     var offRampReasonOptional = getOffRampReason(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
       payload.setOffRampReason(offRampReason);
+      claim.setOffRampReason(offRampReason);
+      saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }

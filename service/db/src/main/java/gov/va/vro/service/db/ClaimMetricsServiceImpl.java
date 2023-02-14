@@ -45,7 +45,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   @Override
   public ClaimInfoResponse findClaimInfo(String claimSubmissionId) {
-    ClaimEntity claim = claimRepository.findByClaimSubmissionId(claimSubmissionId).orElse(null);
+    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
     if (claim == null) {
       log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
       return null;

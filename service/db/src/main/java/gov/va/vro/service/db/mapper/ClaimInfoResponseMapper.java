@@ -16,6 +16,7 @@ import java.util.List;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ClaimInfoResponseMapper {
   @Mapping(target = "veteranIcn", source = "veteran.icn")
+  @Mapping(target = "claimSubmissionId", source = "vbmsId")
   ClaimInfoResponse toClaimInfoResponse(ClaimEntity claimEntity);
 
   List<ClaimInfoResponse> toClaimInfoResponses(Iterable<ClaimEntity> claimEntities);
