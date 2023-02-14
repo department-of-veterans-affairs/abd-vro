@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -304,7 +305,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   private VeteranEntity findOrCreateVeteran(String veteranIcn) {
-    return veteranRepository.findByIcn(veteranIcn).orElseGet(() -> createVeteran(veteranIcn));
+    VeteranEntity veteranEntity =
+        veteranRepository.findByIcn(veteranIcn).orElseGet(() -> createVeteran(veteranIcn));
+    Date date = new Date();
+    veteranEntity.setIcnTimestamp(date);
+    return veteranRepository.save(veteranEntity);
   }
 
   private VeteranEntity createVeteran(String veteranIcn) {
