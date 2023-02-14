@@ -211,7 +211,7 @@ bip:
   claimClientId: "${BIP_CLAIM_USERID}"
   claimSecret: "${BIP_CLAIM_SECRET}"
   claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "${BIP_CLAIM_ISS::virtual_regional_office}"
+  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
   evidenceClientId: "${BIP_EVIDENCE_USERID}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
   evidenceBaseURL: "${BIP_EVIDENCE_URL}"
