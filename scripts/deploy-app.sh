@@ -52,10 +52,17 @@ generateImageArgs(){
 }
 VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
 
+ENDPOINT=${ENV}
+if [ "${ENV}" == "prod" ]
+then
+  ENDPOINT=api
+fi
+
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.version=${IMAGE_TAG} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
+--set-string endpoint=${ENDPOINT} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
 --set-string images.services.environment=${KUBECLUSTER} \
 \

@@ -149,7 +149,7 @@ public class TestHelper {
 
     HttpEntity<UpdateClaimLifecycleStatusRequest> request = new HttpEntity<>(body, headers);
 
-    String url = spec.getUrl("/claims/" + claimId + "/lifecycle-status");
+    String url = spec.getUrl("/claims/" + claimId + "/lifecycle_status");
     return restTemplate.exchange(
         url, HttpMethod.PUT, request, UpdateClaimLifecycleStatusResponse.class);
   }
@@ -161,7 +161,7 @@ public class TestHelper {
    * @return is updated?
    */
   public boolean isLifecycleStatusUpdated(TestSpec spec) {
-    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle-status");
+    String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle_status");
     UpdatesResponse response = restTemplate.getForObject(url, UpdatesResponse.class);
     return response.isFound();
   }

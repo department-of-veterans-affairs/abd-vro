@@ -154,7 +154,7 @@ public class VroV2Tests {
 
     boolean contentionsFound = getFoundStatus(claimId, "contentions");
     assertTrue(contentionsFound);
-    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle-status");
+    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
     assertTrue(lifecycleStatusFound);
   }
 
