@@ -97,7 +97,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(checkClaimRouteId)
         .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
+        // Msg body is still a MasAutomatedClaimPayload
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
@@ -105,9 +107,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var processClaimRouteId = "mas-claim-processing";
     from(ENDPOINT_MAS)
         .routeId(processClaimRouteId)
+        // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
-        .setExchangePattern(ExchangePattern.InOnly);
+        .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
 
   private void configureMasProcessing() {
@@ -124,6 +127,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
+        // TODO remove unmarshal calls if possible: unmarshalling should be automatic
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject

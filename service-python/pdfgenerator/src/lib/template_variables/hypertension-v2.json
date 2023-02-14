@@ -1,5 +1,6 @@
 {
   "claimSubmissionId": "1234",
+  "version": "v2",
   "code": "7101",
   "document_type": "hypertension",
   "conditions": [],
