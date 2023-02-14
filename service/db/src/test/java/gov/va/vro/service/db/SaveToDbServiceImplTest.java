@@ -156,6 +156,14 @@ class SaveToDbServiceImplTest {
 
   @Test
   void persistExamOrder() {
+    Claim claim = new Claim();
+    claim.setClaimSubmissionId("1234");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("7101");
+    claim.setVbmsId("vbms1");
+    claim.setCollectionId("collection1");
+    claim.setIdType(Claim.DEFAULT_ID_TYPE);
+    saveToDbService.insertClaim(claim);
     ExamOrder examOrder1 = new ExamOrder();
     examOrder1.setCollectionId("collection1");
     examOrder1.setStatus("status1");

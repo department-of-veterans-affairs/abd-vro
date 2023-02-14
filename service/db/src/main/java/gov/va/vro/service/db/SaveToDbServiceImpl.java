@@ -23,11 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import javax.transaction.Transactional;
 
 @Service
@@ -119,8 +115,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void setOffRampReason(Claim claimWithOffRamp) {
     List<ClaimSubmissionEntity> claimSubmissionList =
-        claimSubmissionRepository.findByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
+        claimSubmissionRepository.findByReferenceIdAndIdType(
+            String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
+    Collections.reverse(claimSubmissionList);
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmissionList.get(0);
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -275,9 +272,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   private ExamOrderEntity createExamOrder(ExamOrder examOrder) {
+    // Currently ExamOrders only come from MAS
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            examOrder.getCollectionId(), DEFAULT_ID_TYPE);
     ExamOrderEntity examOrderEntity = new ExamOrderEntity();
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());
+    if (claimSubmission.isEmpty()) {
+      log.warn("Could not find claim submission, will not save connection to exam order.");
+    } else {
+      examOrderEntity.setClaimSubmission(claimSubmission.get());
+    }
     return examOrderRepository.save(examOrderEntity);
   }
 
