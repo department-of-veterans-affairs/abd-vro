@@ -31,7 +31,7 @@ public class MasExamOrderStatusPayload implements Auditable {
   @Schema(description = "Collection Status", example = "DRAFT")
   private String collectionStatus;
 
-  @Schema(description = "Exam order timestamp", example = "2018-11-04T17:45:61Z")
+  @Schema(description = "Exam order timestamp", example = "2018-11-04T17:45:59Z")
   private String examOrderDateTime;
 
   @JsonIgnore
