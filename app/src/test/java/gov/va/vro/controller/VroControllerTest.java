@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.MasTestData;
 import gov.va.vro.api.requests.GeneratePdfRequest;
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.config.AppTestConfig;
 import gov.va.vro.config.AppTestUtil;
@@ -98,6 +100,16 @@ class VroControllerTest extends BaseControllerTest {
         FunctionProcessor.<Claim, String>fromFunction(
             claim -> util.claimToResponse(claim, true, null)));
 
+    // Health data assessments shouldn't create claims themselves despite going through the insert
+    // claim it is an update
+    // For testing, we need something already in the claim database table.
+    var setupRequest = MasTestData.getMasAutomatedClaimRequest(1234, "7101", "999");
+    var responseEntity = post("/v2/automatedClaim", setupRequest, MasResponse.class);
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    var claim = claimRepository.findByVbmsId("999");
+    assertTrue(claim.isPresent());
+    assertEquals(1, claim.get().getClaimSubmissions().size());
+
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");
@@ -120,8 +132,9 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
-    var claim = claimRepository.findByVbmsId(request.getClaimSubmissionId());
-    assertTrue(claim.isPresent());
+    var updatedClaim = claimRepository.findByVbmsId("999");
+    assertTrue(updatedClaim.isPresent());
+    assertEquals(3, updatedClaim.get().getClaimSubmissions().size());
   }
 
   @Test
@@ -154,6 +167,16 @@ class VroControllerTest extends BaseControllerTest {
         FunctionProcessor.<Claim, String>fromFunction(
             claim ->
                 util.claimToResponse(claim, false, "Internal error while processing claim data.")));
+    // Health data assessments shouldn't create claims themselves despite going through the insert
+    // claim it is an update
+    // For testing, we need something already in the claim database table.
+    var setupRequest = MasTestData.getMasAutomatedClaimRequest(1234, "7101", "999");
+    var setupResponse = post("/v2/automatedClaim", setupRequest, MasResponse.class);
+    assertEquals(HttpStatus.OK, setupResponse.getStatusCode());
+    var claim = claimRepository.findByVbmsId("999");
+    assertTrue(claim.isPresent());
+    assertEquals(1, claim.get().getClaimSubmissions().size());
+
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
     request.setVeteranIcn("icn");

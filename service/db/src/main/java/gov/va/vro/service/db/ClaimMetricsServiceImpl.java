@@ -49,11 +49,15 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   @Override
   public ClaimInfoResponse findClaimInfo(String claimSubmissionId) {
-    // V1 calls hand us a claimSubmissionId which is equivalent to the reference_id on the claim_submission table.
-    ClaimSubmissionEntity claimSubmission = claimSubmissionRepository.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElse(null);
+    // V1 calls hand us a claimSubmissionId which is equivalent to the reference_id on the
+    // claim_submission table.
+    ClaimSubmissionEntity claimSubmission =
+        claimSubmissionRepository
+            .findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId)
+            .orElse(null);
     ClaimEntity claim = null;
 
-    if(claimSubmission != null){
+    if (claimSubmission != null) {
       claim = claimSubmission.getClaim();
     }
 

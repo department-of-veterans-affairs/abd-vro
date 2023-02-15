@@ -13,7 +13,8 @@ public interface ClaimSubmissionRepository extends JpaRepository<ClaimSubmission
 
   List<ClaimSubmissionEntity> findByReferenceIdAndIdType(String referenceId, String idType);
 
-  // For the few cases where we really don't know an idType, this is equivalent to the prior Claim find byReferenceId not specifying a type.
+  // For the few cases where we really don't know an idType, this is equivalent to the prior Claim
+  // find byReferenceId not specifying a type.
   Optional<ClaimSubmissionEntity> findFirstByReferenceIdOrderByCreatedAtDesc(String referenceId);
 
   Optional<ClaimSubmissionEntity> findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(

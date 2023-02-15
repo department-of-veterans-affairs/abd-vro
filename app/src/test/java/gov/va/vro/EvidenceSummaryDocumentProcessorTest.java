@@ -47,7 +47,8 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
-    // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that reference Id must match
+    // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
+    // reference Id must match
     // What later PDF requests send us.
     var claim = TestDataSupplier.createClaim("1234", veteran, "1234");
     claim.addContention(contention);

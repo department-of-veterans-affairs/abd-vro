@@ -46,17 +46,28 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
 
-  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
-
   @Override
   @Transactional
   public Claim insertClaim(Claim claim) {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
+    ClaimEntity claimEntity = null;
+
+    // This is for compatibility with postHealthAssessment routes that only send the
+    // claimsubmissionId which is equal to collection id which is equal to the reference_id in the
+    // claim submission.
+    if (claim.getBenefitClaimId() == null) {
+      Optional<ClaimSubmissionEntity> claimSubmissionEntityOptional =
+          claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+              claim.getCollectionId(), claim.getIdType());
+      claimEntity = claimSubmissionEntityOptional.get().getClaim();
+    } else {
+      claimEntity =
+          claimRepository
+              .findByVbmsId(claim.getBenefitClaimId())
+              .orElseGet(() -> createClaim(claim, veteranEntity));
+    }
+
     ClaimSubmissionEntity claimSubmissionEntity = createClaimSubmission(claim);
-    ClaimEntity claimEntity =
-        claimRepository
-            .findByVbmsId(claim.getBenefitClaimId())
-            .orElseGet(() -> createClaim(claim, veteranEntity));
     ensureContentionExists(claimEntity, claim.getDiagnosticCode());
     claimEntity.addClaimSubmission(claimSubmissionEntity);
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -127,7 +138,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public void setOffRampReason(Claim claimWithOffRamp) {
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            String.valueOf(claimWithOffRamp.getCollectionId()), DEFAULT_ID_TYPE);
+            String.valueOf(claimWithOffRamp.getCollectionId()), Claim.DEFAULT_ID_TYPE);
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -202,13 +213,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       String claimSubmissionId, Boolean flag, String diagnosticCode) {
     // ClaimSubmissionId in v1 = ReferenceId on ClaimSubmission in VRO
     Optional<ClaimSubmissionEntity> claimSubmission =
-            claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-                    claimSubmissionId, Claim.DEFAULT_ID_TYPE);
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            claimSubmissionId, Claim.DEFAULT_ID_TYPE);
     if (claimSubmission.isEmpty()) {
       log.warn(
-              "Claim Submission not found for claim submission id = {} and id type = {}",
-              claimSubmissionId,
-              Claim.DEFAULT_ID_TYPE);
+          "Claim Submission not found for claim submission id = {} and id type = {}",
+          claimSubmissionId,
+          Claim.DEFAULT_ID_TYPE);
       return;
     }
     ClaimEntity claim = claimSubmission.get().getClaim();
@@ -301,7 +312,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     // Currently ExamOrders only come from MAS
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            examOrder.getCollectionId(), DEFAULT_ID_TYPE);
+            examOrder.getCollectionId(), Claim.DEFAULT_ID_TYPE);
     ExamOrderEntity examOrderEntity = new ExamOrderEntity();
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());

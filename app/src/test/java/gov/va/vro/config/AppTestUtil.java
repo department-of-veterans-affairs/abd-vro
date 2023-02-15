@@ -33,7 +33,8 @@ public class AppTestUtil {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
-    // Collection id is equivalent to the reference_id on the claim_submission table, which is what other entities
+    // Collection id is equivalent to the reference_id on the claim_submission table, which is what
+    // other entities
     // Expect to see as the claim submission id.
     response.setClaimSubmissionId(claim.getCollectionId());
     response.setErrorMessage(errorMessage);

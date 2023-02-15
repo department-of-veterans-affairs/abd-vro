@@ -27,7 +27,9 @@ public class Claim {
 
   private UUID recordId;
 
-  @NotNull private String benefitClaimId;
+  // Either benefitClaimId or CollectionId must be filled out, but either could be null.
+  // CollectionId is equivalent to reference_id on the claim submission table
+  private String benefitClaimId;
 
   private String collectionId;
 
