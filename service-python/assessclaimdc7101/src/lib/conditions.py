@@ -37,9 +37,14 @@ def conditions_calculation(request_body):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
 
-        if condition_code in hypertension_conditions.conditions and condition["category"] == "Encounter Diagnosis":
-            condition["relevant"] = True
-            count += 1
+        if condition_code in hypertension_conditions.conditions:
+            if condition["dataSource"] == "LH":
+                if condition["category"] == "Encounter Diagnosis":
+                    condition["relevant"] = True
+                    count += 1
+            else:
+                condition["relevant"] = True
+                count += 1
         else:
             condition["relevant"] = False
 
