@@ -186,8 +186,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void updateRfdFlag(String claimId, boolean rfdFlag) {
-    var claim = claimRepository.findByVbmsId(claimId);
+  public void updateRfdFlag(String benefitClaimId, boolean rfdFlag) {
+    var claim = claimRepository.findByVbmsId(benefitClaimId);
     if (claim.isEmpty()) {
       log.warn("Could not find claim with id and idType, could not update RFD flag.");
       return;
@@ -200,11 +200,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void updateSufficientEvidenceFlag(
       String claimSubmissionId, Boolean flag, String diagnosticCode) {
-    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
-    if (claim == null) {
-      log.warn("Could not find claim with given claimSubmissionId.");
+    // ClaimSubmissionId in v1 = ReferenceId on ClaimSubmission in VRO
+    Optional<ClaimSubmissionEntity> claimSubmission =
+            claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+                    claimSubmissionId, Claim.DEFAULT_ID_TYPE);
+    if (claimSubmission.isEmpty()) {
+      log.warn(
+              "Claim Submission not found for claim submission id = {} and id type = {}",
+              claimSubmissionId,
+              Claim.DEFAULT_ID_TYPE);
       return;
     }
+    ClaimEntity claim = claimSubmission.get().getClaim();
     ContentionEntity contention = findContention(claim, diagnosticCode);
     if (contention == null) {
       log.warn("Could not find contention with given diagnostic code.");
