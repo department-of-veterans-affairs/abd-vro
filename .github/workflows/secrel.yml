@@ -1,4 +1,4 @@
-name: "SecRel 4"
+name: "SecRel workflow"
 
 on:
   # Trigger on every code push to main and develop branches
@@ -37,7 +37,7 @@ jobs:
             # main and sandbox are untested
             # main)    IMAGE_PREFIX="";;
             # sandbox) IMAGE_PREFIX=sandbox;;
-            qa)      IMAGE_PREFIX=qa;;
+            # qa)      IMAGE_PREFIX=qa;;
             develop) IMAGE_PREFIX=dev;;
             *)       IMAGE_PREFIX=dev
                      GRADLE_TESTS=false
@@ -107,7 +107,7 @@ jobs:
     needs: [publish-images, images-for-secrel]
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.0
     with:
-      config-file: .github/secrel/config4.yml
+      config-file: .github/secrel/config.yml
       images: ${{ needs.images-for-secrel.outputs.all-images }}
     secrets: inherit
 
