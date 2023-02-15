@@ -33,6 +33,7 @@ on:
 env:
   COMMIT_SHA: ${{ inputs.target_release }}
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
+  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
   TARGET_ENV: ${{ inputs.target_env }}
 
 jobs:
