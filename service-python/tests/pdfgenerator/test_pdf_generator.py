@@ -106,7 +106,7 @@ def test_pdf_generation(pdfkit_mock, template):
     """Test if the generate PDF function gets called."""
     pdf_generator = PDFGenerator({})
 
-    rabbitmq_data = {"veteranInfo": {"birthdate": "1935-06-15T00:00:00+00:00"}}
+    rabbitmq_data = {"veteranInfo": {"birthdate": "1935-06-15T00:00:00+00:00Z"}}
     generated_variables = pdf_generator.generate_template_variables(
         template, rabbitmq_data
     )
