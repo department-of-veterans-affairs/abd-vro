@@ -42,6 +42,7 @@ tasks.register("test", PythonTask) {
 }
 
 check {
+  dependsOn cleanPython
   dependsOn checkPython
   dependsOn test
 }
