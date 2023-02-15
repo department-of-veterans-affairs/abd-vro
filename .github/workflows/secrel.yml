@@ -9,7 +9,7 @@ on:
   release:
     types: [ "created" ]
 
-  # Allow manual runs
+  # Trigger manually
   workflow_dispatch:
 
 env:
