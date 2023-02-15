@@ -1,21 +1,20 @@
 package gov.va.vro.model.bip;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-/**
- * A veteran component in a BIP claim object.
- *
- * @author warren @Date 11/9/22
- */
-@RequiredArgsConstructor
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+
+/** The minimal information to reference a Veteran in CorpDB. */
+@Schema(name = "Veteran", description = "The minimal info to reference a Veteran in CorpDB.")
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Veteran {
-  private long participantId;
-  private String firstName;
-  private String lastName;
+  @NotNull
+  @Max(999999999999999L)
+  private Long participantId;
+
+  @NotNull private String firstName;
+
+  @NotNull private String lastName;
 }
