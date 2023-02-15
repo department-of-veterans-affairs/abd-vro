@@ -89,7 +89,7 @@ class SaveToDbServiceImplTest {
     evidence.setEvidenceSummary(evidenceMap);
     saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
     Boolean flag = false;
-    saveToDbService.updateSufficientEvidenceFlag(claimBeforeAssessment.getVbmsId(), flag, "7101");
+    saveToDbService.updateSufficientEvidenceFlag(evidence.getClaimSubmissionId(), flag, "7101");
     ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
@@ -130,7 +130,9 @@ class SaveToDbServiceImplTest {
   void persistEvidenceSummaryDocument() throws Exception {
     // Save claim
     Claim claim = new Claim();
-    claim.setBenefitClaimId("1234");
+    claim.setBenefitClaimId("787878");
+    // Collection is the same as reference_id on the claim_submission table. which is also the same as later claimSubmissionId fields given by other entities.
+    claim.setCollectionId("1234"); // Match claimSubmissionId in esdData.getInputStream
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
@@ -139,11 +141,12 @@ class SaveToDbServiceImplTest {
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     ObjectMapper mapper = new ObjectMapper();
     GeneratePdfPayload input = mapper.readValue(inputAsString, GeneratePdfPayload.class);
+    // Payload gives us claimsubmissionId which is the same as the reference_id on the claim submission table.
     String diagnosis = "Hypertension";
     String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     // Save evidence summary document.
     saveToDbService.insertEvidenceSummaryDocument(input, documentName);
-    ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
+    ClaimEntity result = claimRepository.findByVbmsId("787878").orElseThrow();
     // Verify evidence is correct
     assertNotNull(result);
     EvidenceSummaryDocumentEntity esd =
