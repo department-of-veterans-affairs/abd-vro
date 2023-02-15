@@ -46,8 +46,10 @@ public class MasCollectionService {
         log.info(
             "Collection Status Response : Collection Status {} ",
             masCollectionStatus.getCollectionStatus());
-        if ((MasStatus.PROCESSED)
-            .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
+        if ((MasStatus.VRONOTIFIED)
+                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))
+            || (MasStatus.PROCESSED)
+                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
           return true;
         }
       }
