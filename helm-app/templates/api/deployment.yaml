@@ -533,12 +533,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.name }}
-                  key: {{ .Values.dataservice.SLACK_EXCEPTION_CHANNEL }}
+                  key: {{ .Values.dataservice.slackExceptionChannel }}
             - name: SLACK_EXCEPTION_WEBHOOK
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.name }}
-                  key: {{ .Values.dataservice.SLACK_EXCEPTION_WEBHOOK }}
+                  key: {{ .Values.dataservice.slackExceptionWebhook }}
             - name: LH_TOKEN_URL
               valueFrom:
                 secretKeyRef:
