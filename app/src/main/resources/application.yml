@@ -208,12 +208,12 @@ spring.redis:
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
 bip:
-  claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
-  claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
+  claimClientId: "${BIP_CLAIM_USERID}"
+  claimSecret: "${BIP_CLAIM_SECRET}"
   claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "${BIP_CLAIM_ISS:VRO}"
-  evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET:theSecret}"
+  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
   evidenceBaseURL: "${BIP_EVIDENCE_URL}"
   evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
   applicationName: "${BIP_APPLICATION_ISS:VRO}"

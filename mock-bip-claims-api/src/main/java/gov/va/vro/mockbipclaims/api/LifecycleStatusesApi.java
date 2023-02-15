@@ -31,7 +31,7 @@ import javax.validation.Valid;
 @RequestMapping("/")
 public interface LifecycleStatusesApi {
   /**
-   * PUT /claims/{claimId}/lifecycle-status : Update the lifecycle status of an existing claim
+   * PUT /claims/{claimId}/lifecycle_status : Update the lifecycle status of an existing claim
    * Update the lifecycle status of an existing claim.
    *
    * @param claimId The CorpDB BNFT_CLAIM_ID (required)
@@ -140,7 +140,7 @@ public interface LifecycleStatusesApi {
                   "https://github.ec.va.gov/EPMO/bip-vetservices-claims/blob/development/bip-vetservices-claims-docs/claim-updates.md"))
   @RequestMapping(
       method = RequestMethod.PUT,
-      value = "/claims/{claimId}/lifecycle-status",
+      value = "/claims/{claimId}/lifecycle_status",
       produces = {"application/json", "application/problem+json"},
       consumes = {"application/json"})
   ResponseEntity<UpdateClaimLifecycleStatusResponse> updateClaimLifecycleStatus(
