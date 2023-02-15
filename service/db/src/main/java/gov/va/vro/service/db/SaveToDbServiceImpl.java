@@ -73,6 +73,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     claimSubmission.setSubmissionSource(claim.getSubmissionSource());
     claimSubmission.setSubmissionDate(claim.getSubmissionDate());
     claimSubmission.setOffRampReason(claim.getOffRampReason());
+    claimSubmission.setInScope(claim.isInScope());
     return claimSubmission;
   }
 

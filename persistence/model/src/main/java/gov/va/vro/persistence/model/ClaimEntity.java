@@ -29,8 +29,6 @@ public class ClaimEntity extends BaseEntity {
 
   private String disabilityActionType;
 
-  private boolean inScope;
-
   @ManyToOne private VeteranEntity veteran;
 
   @OneToMany(
