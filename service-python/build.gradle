@@ -7,7 +7,7 @@ plugins {
 python {
   installVirtualenv = false
   docker.use = true
-  docker.image = 'python:latest'
+  docker.image = 'python:3.10-bullseye'
 }
 
 pipInstall {
