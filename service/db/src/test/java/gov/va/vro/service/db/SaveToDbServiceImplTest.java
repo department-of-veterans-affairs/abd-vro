@@ -46,13 +46,13 @@ class SaveToDbServiceImplTest {
   @Test
   void persistClaim() {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("claim1"); // Not the same as our claim submission id.
+    claim.setBenefitClaimId("claim1"); // Not the same as our claim submission id.
     claim.setCollectionId("collection1");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
     var result = saveToDbService.insertClaim(claim);
     assertNotNull(result.getRecordId());
-    assertEquals(claim.getClaimSubmissionId(), result.getClaimSubmissionId());
+    assertEquals(claim.getBenefitClaimId(), result.getBenefitClaimId());
     assertEquals(claim.getIdType(), result.getIdType());
     assertEquals(claim.getDiagnosticCode(), result.getDiagnosticCode());
     assertEquals(claim.getVeteranIcn(), result.getVeteranIcn());
@@ -60,9 +60,8 @@ class SaveToDbServiceImplTest {
 
     assertEquals(1, veteranRepository.findAll().size());
     assertEquals(1, claimRepository.findAll().size());
-    ClaimEntity claimEntity =
-        claimRepository.findByVbmsId(claim.getClaimSubmissionId()).orElseThrow();
-    assertEquals(claim.getClaimSubmissionId(), claimEntity.getVbmsId());
+    ClaimEntity claimEntity = claimRepository.findByVbmsId(claim.getBenefitClaimId()).orElseThrow();
+    assertEquals(claim.getBenefitClaimId(), claimEntity.getVbmsId());
     assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
@@ -79,7 +78,7 @@ class SaveToDbServiceImplTest {
   void persistAssessmentResult() throws Exception {
     // Save claim
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("1234");
+    claim.setBenefitClaimId("1234");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
@@ -106,7 +105,7 @@ class SaveToDbServiceImplTest {
   @Test
   void persistOffRampReason() {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("1234");
+    claim.setBenefitClaimId("1234");
     claim.setCollectionId("collection1");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
@@ -131,7 +130,7 @@ class SaveToDbServiceImplTest {
   void persistEvidenceSummaryDocument() throws Exception {
     // Save claim
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("1234");
+    claim.setBenefitClaimId("1234");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
@@ -157,10 +156,9 @@ class SaveToDbServiceImplTest {
   @Test
   void persistExamOrder() {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId("1234");
+    claim.setBenefitClaimId("1234");
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
-    claim.setVbmsId("vbms1");
     claim.setCollectionId("collection1");
     claim.setIdType(Claim.DEFAULT_ID_TYPE);
     saveToDbService.insertClaim(claim);
@@ -214,7 +212,7 @@ class SaveToDbServiceImplTest {
   void multipleRequests() {
     Claim claim1 =
         Claim.builder()
-            .claimSubmissionId("1234")
+            .benefitClaimId("1234")
             .collectionId("111")
             .veteranIcn("v1")
             .diagnosticCode("7101")
@@ -228,7 +226,7 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimSubmissionEntities.size());
     Claim claim2 =
         Claim.builder()
-            .claimSubmissionId("1234")
+            .benefitClaimId("1234")
             .collectionId("111")
             .veteranIcn("v1")
             .diagnosticCode("8181")

@@ -20,12 +20,12 @@ public class MasProcessingObject implements Auditable {
     return claimPayload.getCollectionId();
   }
 
-  public String getClaimId() {
+  public String getBenefitClaimId() {
     return claimPayload.getClaimDetail().getBenefitClaimId();
   }
 
-  public long getClaimIdAsLong() {
-    String claimIdString = getClaimId();
+  public long getBenefitClaimIdAsLong() {
+    String claimIdString = getBenefitClaimId();
     long claimId = Long.parseLong(claimIdString);
     return claimId;
   }

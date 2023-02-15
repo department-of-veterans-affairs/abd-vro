@@ -5,8 +5,10 @@ import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -25,6 +27,8 @@ import java.util.List;
 public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   private final ClaimRepository claimRepository;
+
+  private final ClaimSubmissionRepository claimSubmissionRepository;
 
   private final AssessmentResultRepository assessmentResultRepository;
 
@@ -45,7 +49,14 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   @Override
   public ClaimInfoResponse findClaimInfo(String claimSubmissionId) {
-    ClaimEntity claim = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+    // V1 calls hand us a claimSubmissionId which is equivalent to the reference_id on the claim_submission table.
+    ClaimSubmissionEntity claimSubmission = claimSubmissionRepository.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElse(null);
+    ClaimEntity claim = null;
+
+    if(claimSubmission != null){
+      claim = claimSubmission.getClaim();
+    }
+
     if (claim == null) {
       log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
       return null;

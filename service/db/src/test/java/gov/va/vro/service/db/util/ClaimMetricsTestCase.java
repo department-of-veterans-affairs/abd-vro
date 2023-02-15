@@ -11,6 +11,7 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -19,6 +20,7 @@ import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,6 +36,8 @@ public class ClaimMetricsTestCase {
   // private ServiceBundle serviceBundle;
 
   private String claimSubmissionId;
+
+  private String benefitClaimId;
 
   private String icn;
 
@@ -60,12 +64,17 @@ public class ClaimMetricsTestCase {
    */
   public void populate(SaveToDbService service, ClaimRepository repo) {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId(claimSubmissionId);
+    claim.setBenefitClaimId(benefitClaimId);
+    claim.setCollectionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
     service.insertClaim(claim);
 
-    ClaimEntity claimEntity = repo.findByVbmsId(claimSubmissionId).orElseThrow();
+    ClaimEntity claimEntity = repo.findByVbmsId(benefitClaimId).orElseThrow();
+    Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();
+    assertEquals(1, submissions.size());
+    ClaimSubmissionEntity submissionEntity = submissions.iterator().next();
+    assertEquals(claimSubmissionId, submissionEntity.getReferenceId());
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());
 
@@ -152,6 +161,7 @@ public class ClaimMetricsTestCase {
     int counterValue = counter.getAndIncrement();
 
     result.claimSubmissionId = "claim_id_" + counterValue;
+    result.benefitClaimId = "vbms_id_" + counterValue;
     result.icn = "icn_" + counterValue;
     result.evidenceCase = AbdEvidenceCase.getInstance();
     result.documentName = "document_" + counterValue;

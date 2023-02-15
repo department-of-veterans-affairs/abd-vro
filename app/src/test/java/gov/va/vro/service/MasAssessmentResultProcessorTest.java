@@ -26,20 +26,21 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
 
   @Test
   void testPersist() throws Exception {
-    String claimSubmissionId = "666";
+    String benefitClaimId = "111";
+    String collectionId = "666";
     String diagnosticCode = "999";
 
     Claim claim = new Claim();
 
-    claim.setClaimSubmissionId(claimSubmissionId);
+    claim.setBenefitClaimId(benefitClaimId);
     claim.setIdType(Claim.DEFAULT_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode(diagnosticCode);
-    claim.setCollectionId("456");
+    claim.setCollectionId(collectionId);
     saveToDbService.insertClaim(claim);
 
     var evidence = new AbdEvidenceWithSummary();
-    evidence.setClaimSubmissionId(claimSubmissionId);
+    evidence.setClaimSubmissionId(collectionId);
     evidence.setEvidenceSummary(Map.of("Hello", 10));
 
     var message = Mockito.mock(Message.class);
@@ -50,7 +51,9 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     Mockito.when(message.getBody(AbdEvidenceWithSummary.class)).thenReturn(evidence);
     processor.process(exchange);
 
-    claimRepository.findByVbmsId(claimSubmissionId).orElseThrow();
+    claimSubmissionRepository
+        .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(collectionId, Claim.DEFAULT_ID_TYPE)
+        .orElseThrow();
     var results =
         assessmentResultRepository.findAll().stream()
             .filter(result -> diagnosticCode.equals(result.getContention().getDiagnosticCode()))

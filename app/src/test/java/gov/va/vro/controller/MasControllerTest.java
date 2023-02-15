@@ -163,7 +163,7 @@ public class MasControllerTest extends BaseControllerTest {
     assertTrue(audits.size() > 0);
     var audit = audits.get(0);
     var details = objectMapper.convertValue(audit.getDetails(), MasEventDetails.class);
-    assertEquals("999", details.getClaimId());
+    assertEquals("999", details.getBenefitClaimId());
     assertEquals("567", details.getCollectionId());
     assertEquals("7101", details.getDiagnosticCode());
     assertEquals("X", details.getVeteranIcn());

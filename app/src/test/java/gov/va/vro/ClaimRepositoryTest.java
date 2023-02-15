@@ -53,7 +53,7 @@ class ClaimRepositoryTest extends BaseIntegrationTest {
     ar2.setEvidenceCountSummary(evidence2);
     contention2.addAssessmentResult(ar2);
 
-    var claim = TestDataSupplier.createClaim("123", veteran);
+    var claim = TestDataSupplier.createClaim("123", veteran, "refId");
     claim.addContention(contention1);
     claim.addContention(contention2);
 

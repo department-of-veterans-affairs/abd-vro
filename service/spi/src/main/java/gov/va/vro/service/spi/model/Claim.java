@@ -27,7 +27,7 @@ public class Claim {
 
   private UUID recordId;
 
-  @NotNull private String claimSubmissionId;
+  @NotNull private String benefitClaimId;
 
   private String collectionId;
 
@@ -41,8 +41,6 @@ public class Claim {
   @NotNull private String diagnosticCode;
 
   private Set<String> contentions;
-
-  private String vbmsId;
 
   private String offRampReason;
 

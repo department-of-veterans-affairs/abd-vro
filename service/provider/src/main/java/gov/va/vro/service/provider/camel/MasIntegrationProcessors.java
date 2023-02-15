@@ -64,7 +64,7 @@ public class MasIntegrationProcessors {
         (Function<MasProcessingObject, Claim>)
             payload ->
                 Claim.builder()
-                    .claimSubmissionId(payload.getClaimId())
+                    .benefitClaimId(payload.getBenefitClaimId())
                     .diagnosticCode(payload.getDiagnosticCode())
                     .veteranIcn(payload.getVeteranIcn())
                     .build());

@@ -3,7 +3,6 @@ package gov.va.vro.service.provider.mas.service;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
@@ -28,8 +27,6 @@ public class MasProcessingService {
   private final MasConfig masConfig;
 
   private final BipClaimService bipClaimService;
-
-  private final ClaimRepository claimRepository;
 
   private final SaveToDbService saveToDbService;
 
@@ -120,7 +117,7 @@ public class MasProcessingService {
 
   private Claim toClaim(MasAutomatedClaimPayload payload) {
     return Claim.builder()
-        .claimSubmissionId(Integer.toString(payload.getClaimId()))
+        .benefitClaimId(Integer.toString(payload.getBenefitClaimId()))
         .collectionId(Integer.toString(payload.getCollectionId()))
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
@@ -129,7 +126,6 @@ public class MasProcessingService {
         .offRampReason(payload.getOffRampReason())
         .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
         .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
-        .vbmsId(Integer.toString(payload.getClaimId()))
         .build();
   }
 

@@ -105,7 +105,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
   }
 
   private ClaimEntity verifyClaimPersisted(MasAutomatedClaimPayload request) {
-    var claim = claimRepository.findByVbmsId(request.getClaimId().toString()).orElseThrow();
+    var claim = claimRepository.findByVbmsId(request.getBenefitClaimId().toString()).orElseThrow();
     var claimSubmissionList =
         claimSubmissionRepository.findByReferenceIdAndIdType(
             String.valueOf(request.getCollectionId()), DEFAULT_ID_TYPE);

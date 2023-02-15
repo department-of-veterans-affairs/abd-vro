@@ -55,7 +55,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimSubmissionEntity claimSubmissionEntity = createClaimSubmission(claim);
     ClaimEntity claimEntity =
         claimRepository
-            .findByVbmsId(claim.getClaimSubmissionId())
+            .findByVbmsId(claim.getBenefitClaimId())
             .orElseGet(() -> createClaim(claim, veteranEntity));
     ensureContentionExists(claimEntity, claim.getDiagnosticCode());
     claimEntity.addClaimSubmission(claimSubmissionEntity);
@@ -90,15 +90,19 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
-    var claimEntity = claimRepository.findByVbmsId(evidence.getClaimSubmissionId());
-    if (claimEntity.isEmpty()) {
+    // ClaimSubmissionId in v1 = ReferenceId on ClaimSubmission in VRO
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+    if (claimSubmission.isEmpty()) {
       log.warn(
-          "Claim not found for claimEntity submission id = {} and id type = {}",
+          "Claim Submission not found for claim submission id = {} and id type = {}",
           evidence.getClaimSubmissionId(),
           Claim.DEFAULT_ID_TYPE);
       return;
     }
-    insertAssessmentResult(claimEntity.get(), evidence, diagnosticCode);
+    ClaimEntity claimEntity = claimSubmission.get().getClaim();
+    insertAssessmentResult(claimEntity, evidence, diagnosticCode);
   }
 
   private void insertAssessmentResult(
@@ -131,11 +135,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
-    ClaimEntity claim = claimRepository.findByVbmsId(request.getClaimSubmissionId()).orElse(null);
-    if (claim == null) {
+    // ClaimSubmissionId in v1 calls is equal to ReferenceId on ClaimSubmission in VRO
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            request.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+    if (claimSubmission.isEmpty()) {
       log.warn("Could not find claim by claimSubmissionId, exiting.");
       return;
     }
+    ClaimEntity claim = claimSubmission.get().getClaim();
     ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
     if (contention == null) {
       log.warn("Could not match the contention with the claim and diagnostic code, exiting.");

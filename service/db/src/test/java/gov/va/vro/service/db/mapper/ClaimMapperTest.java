@@ -28,7 +28,7 @@ class ClaimMapperTest {
 
     ClaimMapper claimMapper = Mappers.getMapper(ClaimMapper.class);
     Claim claim = claimMapper.toClaim(claimEntity);
-    assertEquals(claimEntity.getVbmsId(), claim.getClaimSubmissionId());
+    assertEquals(claimEntity.getVbmsId(), claim.getBenefitClaimId());
     assertEquals(claimEntity.getVeteran().getIcn(), claim.getVeteranIcn());
     assertEquals(2, claim.getContentions().size());
     assertTrue(claim.getContentions().contains("7101"));
