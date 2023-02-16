@@ -50,7 +50,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
     // reference Id must match
     // What later PDF requests send us.
-    var claim = TestDataSupplier.createClaim("1234", veteran, "1234");
+    var claim = TestDataSupplier.createClaim(null, veteran, "1234");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 
@@ -85,7 +85,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
     // Create a contention and set an invalid diagnostic code, then create claim and add.
     ContentionEntity contention = new ContentionEntity("1111");
-    var claim = TestDataSupplier.createClaim("1234", veteran, "refId");
+    var claim = TestDataSupplier.createClaim(null, veteran, "refId");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

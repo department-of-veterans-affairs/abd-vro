@@ -52,14 +52,18 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
     ClaimEntity claimEntity = null;
 
-    // This is for compatibility with postHealthAssessment routes that only send the
-    // claimsubmissionId which is equal to collection id which is equal to the reference_id in the
-    // claim submission.
+    // V1 endpoints do not give us a benefit claim id. They give us a claimSubmissionId (which is
+    // stored as collectionId on Claim and as reference_id in claim_submission)
     if (claim.getBenefitClaimId() == null) {
-      Optional<ClaimSubmissionEntity> claimSubmissionEntityOptional =
+      Optional<ClaimSubmissionEntity> v1ClaimSubmission =
           claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
               claim.getCollectionId(), claim.getIdType());
-      claimEntity = claimSubmissionEntityOptional.get().getClaim();
+      if (v1ClaimSubmission.isPresent()) {
+        claimEntity = v1ClaimSubmission.get().getClaim();
+      } else {
+        claimEntity = createClaim(claim, veteranEntity);
+      }
+      // V2 endpoints go through here with a benefit claim id
     } else {
       claimEntity =
           claimRepository

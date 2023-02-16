@@ -13,7 +13,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -21,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
-  @NotNull private String vbmsId;
+  private String vbmsId;
 
   private boolean presumptiveFlag;
 

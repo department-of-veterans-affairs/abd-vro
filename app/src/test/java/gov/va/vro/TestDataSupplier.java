@@ -28,14 +28,15 @@ public class TestDataSupplier {
   /***
    * <p>Summary.</p>
    *
-   * @param id ID
+   * @param benefitClaimId ID , this may be null in v1 calls
    * @param veteran veteran
    * @param referenceId also known as claimSubmissionId
    * @return return
    */
-  public static ClaimEntity createClaim(String id, VeteranEntity veteran, String referenceId) {
+  public static ClaimEntity createClaim(
+      String benefitClaimId, VeteranEntity veteran, String referenceId) {
     ClaimEntity claim = new ClaimEntity();
-    claim.setVbmsId(id);
+    claim.setVbmsId(benefitClaimId);
     claim.setVeteran(veteran);
     ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
     claimSubmission.setReferenceId(referenceId);

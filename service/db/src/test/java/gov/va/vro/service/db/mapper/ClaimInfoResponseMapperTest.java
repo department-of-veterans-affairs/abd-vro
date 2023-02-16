@@ -55,14 +55,12 @@ public class ClaimInfoResponseMapperTest {
     esdEntity.setEvidenceCount(esdEvidenceInfo);
     contentionEntity.addEvidenceSummaryDocument(esdEntity);
 
-    final String benefitClaimId = "vbms_id_test";
     final String claimSubmissionId = "cs_id_test";
     ClaimSubmissionEntity claimSubmissionEntity = new ClaimSubmissionEntity();
     claimSubmissionEntity.setReferenceId(claimSubmissionId);
     claimSubmissionEntity.setIdType(Claim.DEFAULT_ID_TYPE);
 
     ClaimEntity claimEntity = new ClaimEntity();
-    claimEntity.setVbmsId(benefitClaimId);
     claimEntity.setVeteran(veteranEntity);
     claimEntity.addContention(contentionEntity);
     claimEntity.addClaimSubmission(claimSubmissionEntity);

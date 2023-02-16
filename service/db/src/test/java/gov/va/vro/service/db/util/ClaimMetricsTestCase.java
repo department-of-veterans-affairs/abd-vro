@@ -38,8 +38,6 @@ public class ClaimMetricsTestCase {
 
   private String claimSubmissionId;
 
-  private String benefitClaimId;
-
   private String icn;
 
   private AbdEvidenceCase evidenceCase;
@@ -66,7 +64,6 @@ public class ClaimMetricsTestCase {
   public void populate(
       SaveToDbService service, ClaimRepository repo, ClaimSubmissionRepository csRepo) {
     Claim claim = new Claim();
-    claim.setBenefitClaimId(benefitClaimId);
     claim.setCollectionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
@@ -74,15 +71,12 @@ public class ClaimMetricsTestCase {
 
     ClaimEntity claimEntity;
 
-    if (benefitClaimId != null) {
-      claimEntity = repo.findByVbmsId(benefitClaimId).orElseThrow();
-    } else {
-      // Some calls send us claimSubmissionId which is the same as reference_id on the
-      // claim_submission table (which is collectionId as well)
-      ClaimSubmissionEntity csEntity =
-          csRepo.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElseThrow();
-      claimEntity = csEntity.getClaim();
-    }
+    // v1 Some calls send us claimSubmissionId which is the same as reference_id on the
+    // claim_submission table (which is collectionId as well)
+    ClaimSubmissionEntity csEntity =
+        csRepo.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElseThrow();
+    claimEntity = csEntity.getClaim();
+
     Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();
     assertEquals(1, submissions.size());
     ClaimSubmissionEntity submissionEntity = submissions.iterator().next();
@@ -122,7 +116,6 @@ public class ClaimMetricsTestCase {
 
     int counterValue = counter.getAndIncrement();
 
-    result.benefitClaimId = "vbms_id_" + counterValue;
     result.claimSubmissionId = "claim_id_" + counterValue;
     result.evidenceCase = AbdEvidenceCase.getInstance();
     result.documentName = "document_" + counterValue;
@@ -174,7 +167,6 @@ public class ClaimMetricsTestCase {
     int counterValue = counter.getAndIncrement();
 
     result.claimSubmissionId = "claim_id_" + counterValue;
-    result.benefitClaimId = "vbms_id_" + counterValue;
     result.icn = "icn_" + counterValue;
     result.evidenceCase = AbdEvidenceCase.getInstance();
     result.documentName = "document_" + counterValue;
