@@ -14,6 +14,7 @@ on:
 
 env:
   TARGET_ENV: 'dev'
+  IMAGE_PREFIX: 'dev_'
   RUN_TESTS: 'true'
 
   # Id for the #benefits-vro-devops Slack channel
@@ -25,44 +26,36 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
-      target-env: ${{ env.TARGET_ENV }}
-      run-tests: ${{ env.RUN_TESTS }}
     runs-on: ubuntu-latest
     steps:
       - name: "Determine target environment"
         run: |
           echo "ref_name: ${{ github.ref_name }}"
+          IMAGE_PREFIX=dev
           GRADLE_TESTS=true
           case "${{ github.ref_name }}" in
-            # main and sandbox are untested
-            # main)    IMAGE_PREFIX="";;
-            # sandbox) IMAGE_PREFIX=sandbox;;
-            qa)      IMAGE_PREFIX=qa;;
-            develop) IMAGE_PREFIX=dev;;
-            *)       IMAGE_PREFIX=dev
-                     GRADLE_TESTS=false
-              ;;
+            main)      IMAGE_PREFIX="";;
+            release-*) IMAGE_PREFIX="";;
+            develop)   GRADLE_TESTS=false;;
           esac
-          echo "TARGET_ENV=${IMAGE_PREFIX}" >> $GITHUB_ENV
+          echo "IMAGE_PREFIX=${IMAGE_PREFIX}" >> $GITHUB_ENV
           echo "RUN_TESTS=${GRADLE_TESTS}" >> $GITHUB_ENV
 
       - name: "DEBUG step"
         run: |
           echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
+          echo "IMAGE_PREFIX: ${{ env.IMAGE_PREFIX }}"
           echo "RUN_TESTS: ${{ env.RUN_TESTS }}"
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      # we are using the GitHub actor and token below instead of the PAT
-      # due to a signing issue in SecRel 4. for more details see
-      # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
-
-      - name: "Publish ${{ env.TARGET_ENV }} images to GHCR"
+      - name: "Publish ${{ env.IMAGE_PREFIX }} images to GHCR"
         id: publish-images
         uses: ./.github/actions/publish-images
         with:
           target_env: ${{ env.TARGET_ENV }}
+          image_prefix: ${{ env.IMAGE_PREFIX }}
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
@@ -94,8 +87,6 @@ jobs:
     steps:
       - name: show vars
         run: |
-          echo "TARGET_ENV: ${{ needs.publish-images.outputs.target-env }}"
-          echo "RUN_TESTS: ${{ needs.publish-images.outputs.run-tests }}"
           echo "ref_name: ${{github.ref_name}}"
           echo "publish-images: ${{ needs.publish-images.outputs.vro-images }}"
           echo "all-images: ${{ needs.images-for-secrel.outputs.all-images }}"

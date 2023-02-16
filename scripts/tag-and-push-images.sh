@@ -12,15 +12,23 @@ REPO="$1"
 # Images will also be tagged as 'latest', overriding any previous images
 IMG_TAG="$2"
 # Target environment, e.g., 'dev' or 'qa'
-# Used to determine the prefix for the image name
 TARGET_ENV="$3"
 
-# sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
-case "$TARGET_ENV" in
-  dev|qa) IMG_NAME_PREFIX="dev_";;
-  sandbox|prod|prod-test) IMG_NAME_PREFIX="";;
-  *) { echo "Unknown environment: $TARGET_ENV"; exit 20; }
-esac
+# Is a 4th argument provided? If the 4th argument is an empty string, it is considered provided.
+# Note that when this argument is provided, the $TARGET_ENV is not used.
+# This argument enables publishing any commit to an image with any prefix.
+if [ $# -ge 4 ]; then
+  # The prefix for the image name, e.g., 'dev_' or '' (no prefix)
+  IMG_NAME_PREFIX="$4"
+else
+  # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
+  case "$TARGET_ENV" in
+    dev|qa) IMG_NAME_PREFIX="dev_";;
+    sandbox|prod|prod-test) IMG_NAME_PREFIX="";;
+    *) { echo "Unknown environment: $TARGET_ENV"; exit 20; }
+  esac
+  echo "Inferred IMG_NAME_PREFIX=$IMG_NAME_PREFIX based on TARGET_ENV=$TARGET_ENV"
+fi
 
 # Tag and push images using commit hash and `latest`
 source scripts/image_vars.src

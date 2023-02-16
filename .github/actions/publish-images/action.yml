@@ -8,6 +8,9 @@ inputs:
   target_env:
     description: 'TARGET_ENV like dev or qa'
     required: true
+  image_prefix:
+    description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
+    default: 'dev_'
   ghcr_username:
     description: 'GHCR username'
     required: true
@@ -48,7 +51,7 @@ runs:
       shell: bash
       env:
         COMMIT_SHA: ${{ github.sha }}
-      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}"
+      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}" "${{ inputs.image_prefix }}"
 
     - name: "Published images list"
       id: published-images
@@ -60,8 +63,8 @@ runs:
         IMG_TAG=${COMMIT_SHA:0:7}
         source scripts/image_vars.src
         echo "images<<EOF" >> $GITHUB_OUTPUT
-        for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-          IMG_NAME=${{ inputs.target_env }}_$(getVarValue "${PREFIX}" _IMG)
+        for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+          IMG_NAME=${{ inputs.image_prefix }}$(getVarValue "${VAR_PREFIX}" _IMG)
           echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" >> $GITHUB_OUTPUT
         done
         echo "EOF" >> $GITHUB_OUTPUT
