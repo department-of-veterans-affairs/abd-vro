@@ -44,7 +44,42 @@ class SaveToDbServiceImplTest {
   private Resource esdData;
 
   @Test
-  void persistClaim() {
+  void persistClaimWithV1Data() {
+    Claim claim = new Claim();
+    claim.setCollectionId("collection1");
+    claim.setVeteranIcn("v1");
+    claim.setDiagnosticCode("1234");
+    var result = saveToDbService.insertClaim(claim);
+    assertNotNull(result.getRecordId());
+    assertEquals(claim.getBenefitClaimId(), result.getBenefitClaimId());
+    assertEquals(claim.getIdType(), result.getIdType());
+    assertEquals(claim.getDiagnosticCode(), result.getDiagnosticCode());
+    assertEquals(claim.getVeteranIcn(), result.getVeteranIcn());
+    assertEquals(claim.getIncomingStatus(), result.getIncomingStatus());
+
+    assertEquals(1, veteranRepository.findAll().size());
+    assertEquals(1, claimRepository.findAll().size());
+
+    ClaimSubmissionEntity claimSubmissionEntity =
+        claimSubmissionRepository
+            .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+                claim.getCollectionId(), Claim.DEFAULT_ID_TYPE)
+            .orElseThrow();
+    ClaimEntity claimEntity = claimSubmissionEntity.getClaim();
+
+    assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
+    assertEquals(1, claimEntity.getContentions().size());
+    ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
+    assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+    assertEquals(1, claimEntity.getClaimSubmissions().size());
+    ClaimSubmissionEntity submissionsOnClaim = claimEntity.getClaimSubmissions().iterator().next();
+    assertNotNull(submissionsOnClaim);
+    assertEquals(claim.getCollectionId(), submissionsOnClaim.getReferenceId());
+    assertEquals(claim.getIdType(), submissionsOnClaim.getIdType());
+  }
+
+  @Test
+  void persistClaimWithV2Data() {
     Claim claim = new Claim();
     claim.setBenefitClaimId("claim1"); // Not the same as our claim submission id.
     claim.setCollectionId("collection1");

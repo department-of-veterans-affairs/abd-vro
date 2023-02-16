@@ -53,7 +53,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimEntity claimEntity = null;
 
     // V1 endpoints do not give us a benefit claim id. They give us a claimSubmissionId (which is
-    // stored as collectionId on Claim and as reference_id in claim_submission)
+    // stored as reference_id in claim_submission)
     if (claim.getBenefitClaimId() == null) {
       Optional<ClaimSubmissionEntity> v1ClaimSubmission =
           claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
@@ -63,7 +63,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       } else {
         claimEntity = createClaim(claim, veteranEntity);
       }
-      // V2 endpoints go through here with a benefit claim id
+      // V2 endpoints go through here with a benefit claim id, and collectionId is the reference_id
+      // on claimSubmission
     } else {
       claimEntity =
           claimRepository
