@@ -112,7 +112,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
             evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
     if (claimSubmission.isEmpty()) {
       log.warn(
-          "Claim Submission not found for claim submission id = {} and id type = {}",
+          "Claim Submission not found for claim submission id = {} and id type = {} to insert assessment result",
           evidence.getClaimSubmissionId(),
           Claim.DEFAULT_ID_TYPE);
       return;
@@ -156,7 +156,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             request.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
     if (claimSubmission.isEmpty()) {
-      log.warn("Could not find claim by claimSubmissionId, exiting.");
+      log.warn(
+          "Could not find claim by claimSubmissionId {} from insert evidence summary document, exiting.",
+          request.getClaimSubmissionId());
       return;
     }
     ClaimEntity claim = claimSubmission.get().getClaim();
@@ -222,7 +224,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
             claimSubmissionId, Claim.DEFAULT_ID_TYPE);
     if (claimSubmission.isEmpty()) {
       log.warn(
-          "Claim Submission not found for claim submission id = {} and id type = {}",
+          "Claim Submission not found for claim submission id = {} and id type = {} in update sufficient evidence flag",
           claimSubmissionId,
           Claim.DEFAULT_ID_TYPE);
       return;
@@ -322,7 +324,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());
     if (claimSubmission.isEmpty()) {
-      log.warn("Could not find claim submission, will not save connection to exam order.");
+      log.warn(
+          "Could not find claim submission for collection id {}, will not save connection to exam order.",
+          examOrder.getCollectionId());
     } else {
       examOrderEntity.setClaimSubmission(claimSubmission.get());
     }
