@@ -42,7 +42,7 @@ public class TestHelper {
     headers.setContentType(MediaType.APPLICATION_JSON);
     if (!spec.isIgnoreJwt()) {
       String jwt = jwtGenerator.generate();
-      log.info("jwt generated: {}", jwt);
+      log.info("jwt: {}", jwt);
       headers.set("Authorization", "Bearer " + jwt);
     }
     return headers;
