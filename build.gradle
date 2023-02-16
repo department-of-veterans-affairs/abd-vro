@@ -32,7 +32,7 @@ plugins {
 
   // Apply these
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '17.8.0'
+  id('nebula.lint') version '18.0.3'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
   // VA's starter plugins
   // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
@@ -119,7 +119,9 @@ ext {
     ':service:spi',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api'
+    ':mock-bip-ce-api',
+    ':mock-bip-claims-api',
+    ':mock-shared'
   ]
   dockerModules = [
     ':app',
@@ -130,7 +132,8 @@ ext {
     ':service-python:featuretoggle',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api'
+    ':mock-bip-ce-api',
+    ':mock-bip-claims-api'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')

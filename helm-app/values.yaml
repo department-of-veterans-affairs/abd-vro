@@ -3,6 +3,7 @@ name: abd-vro
 owner: VA-OCTO
 environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
 cluster: nonprod
+endpoint: dev
 # TODO: How is version used? What should this be set to?
 version: 0.1
 replicaCount: 1
@@ -23,6 +24,8 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
+  services:
+    environment: nonprod
 # BEGIN image-names.sh replacement block (do not modify this block)
 # The following image list is updated by image-names.sh
   app:
@@ -192,6 +195,8 @@ dataservice:
   vroAudUrl: vroAudUrl
   lhVroApiKey: lhVroApiKey
   validateToken: validateToken
+  slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
+  slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
 dbinit:
   secretName: dbinit

@@ -38,4 +38,5 @@ dependencies {
   implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
   implementation 'io.jsonwebtoken:jjwt:0.2'
+  testImplementation 'io.jsonwebtoken:jjwt:0.2'
 }

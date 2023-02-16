@@ -105,7 +105,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: SecRel Pipeline
     needs: [publish-images, images-for-secrel]
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.0.0
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.0
     with:
       config-file: .github/secrel/config4.yml
       images: ${{ needs.images-for-secrel.outputs.all-images }}
@@ -113,12 +113,11 @@ jobs:
 
   notify-secrel-error:
     if: failure()
-    needs: [publish-images, images-for-secrel, secrel]
+    needs: secrel
     runs-on: ubuntu-latest
 
     steps:
       - name: "Notify Slack on SecRel Failure"
-        id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
         # only run for the internal repo
         if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}

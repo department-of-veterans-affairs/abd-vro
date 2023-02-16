@@ -156,6 +156,9 @@ lhAPIProvider:
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "${VALIDATE_TOKEN:NO}"
 
+masVeteranFlashIds:
+  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
+
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: false
@@ -207,11 +210,11 @@ spring.redis:
 bip:
   claimClientId: "${BIP_CLAIM_USERID}"
   claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL:claims-uat.stage8.bip.va.gov/api/v1}"
+  claimBaseURL: "${BIP_CLAIM_URL}"
   claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
   evidenceClientId: "${BIP_EVIDENCE_USERID}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL:vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
   evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
   applicationName: "${BIP_APPLICATION_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
@@ -221,7 +224,10 @@ truststore_password: "${BIP_PASSWORD}"
 keystore: "${BIP_KEYSTORE}"
 bipalias: "${BIP_ALIAS}"
 
+claim:
+  special_issue_1: "RDR1"
+  special_issue_2: "RRD"
+
 spring.config.import: >
   conf-camel.yml,
   conf-camel-rabbitmq.yml
-

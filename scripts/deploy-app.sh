@@ -7,7 +7,11 @@ if [ "${ENV}" != "sandbox" ] && [ "${ENV}" != "dev" ] && [ "${ENV}" != "qa" ] &&
 then
   echo "Please enter valid environment (dev, sandbox, qa, prod, prod-test)" && exit 1
 fi
-
+KUBECLUSTER=nonprod
+if [ "${ENV}" == "prod" ] || [ "${ENV}" == "prod-test" ]
+then
+  KUBECLUSTER=prod
+fi
 #get the current sha from github repository
 GIT_SHA=$(git rev-parse HEAD)
 if [ -n "$2" ]
@@ -28,7 +32,7 @@ generateImageArgs(){
 
   # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
-    dev|qa) IMG_NAME_PREFIX="${1}_";;
+    dev|qa) IMG_NAME_PREFIX="dev_";;
     sandbox|prod|prod-test) USE_SECREL_IMAGES="true";;
     *) { echo "Unknown environment: $1"; exit 20; }
   esac
@@ -48,11 +52,19 @@ generateImageArgs(){
 }
 VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
 
+ENDPOINT=${ENV}
+if [ "${ENV}" == "prod" ]
+then
+  ENDPOINT=api
+fi
+
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.version=${IMAGE_TAG} \
 --set-string info.git_hash=${GIT_SHA} \
 --set-string info.deploy_env=${ENV} \
+--set-string endpoint=${ENDPOINT} \
 --set-string info.github_token=${GITHUB_ACCESS_TOKEN} \
+--set-string images.services.environment=${KUBECLUSTER} \
 \
 --set-string images.redis.imageName=redis \
 --set-string images.redis.tag=latest \

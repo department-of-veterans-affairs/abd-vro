@@ -8,7 +8,6 @@ import gov.va.vro.model.bip.BipContentionResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
@@ -20,15 +19,23 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -37,7 +44,6 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.HigherEnvCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
@@ -164,27 +170,6 @@ public class BipApiService implements IBipApiService {
       }
     } catch (RestClientException | JsonProcessingException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
-      throws BipException {
-    try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
-      log.info("Call {} to add claim contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader();
-      String createContention = mapper.writeValueAsString(contention);
-      HttpEntity<String> request = new HttpEntity<>(createContention, headers);
-      ResponseEntity<String> bipResponse = restTemplate.postForEntity(url, request, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.CREATED) {
-        return new BipUpdateClaimResp(HttpStatus.CREATED, bipResponse.getBody());
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to addClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }
