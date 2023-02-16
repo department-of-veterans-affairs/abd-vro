@@ -27,6 +27,9 @@ on:
       target_env:
         required: true
         type: string
+      image_prefix:
+        required: false
+        type: string
 
 # Ensures that only one deploy per env will run at a time.
 concurrency:
@@ -34,7 +37,6 @@ concurrency:
 
 env:
   COMMIT_SHA: ${{ github.sha }}
-  TARGET_ENV: ${{ inputs.target_env }}
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages

@@ -5,9 +5,6 @@ inputs:
   access_token:
     description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
     required: true
-  target_env:
-    description: 'TARGET_ENV like dev or qa'
-    required: true
   image_prefix:
     description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
     default: 'dev_'
@@ -51,7 +48,7 @@ runs:
       shell: bash
       env:
         COMMIT_SHA: ${{ github.sha }}
-      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}" "${{ inputs.image_prefix }}"
+      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.image_prefix }}"
 
     - name: "Published images list"
       id: published-images

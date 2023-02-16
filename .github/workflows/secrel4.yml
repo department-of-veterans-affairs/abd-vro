@@ -13,7 +13,6 @@ on:
   workflow_dispatch:
 
 env:
-  TARGET_ENV: 'dev'
   IMAGE_PREFIX: 'dev_'
   RUN_TESTS: 'true'
 
@@ -28,7 +27,7 @@ jobs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Determine target environment"
+      - name: "Determine image prefix"
         run: |
           echo "ref_name: ${{ github.ref_name }}"
           IMAGE_PREFIX=dev
@@ -43,7 +42,6 @@ jobs:
 
       - name: "DEBUG step"
         run: |
-          echo "TARGET_ENV: ${{ env.TARGET_ENV }}"
           echo "IMAGE_PREFIX: ${{ env.IMAGE_PREFIX }}"
           echo "RUN_TESTS: ${{ env.RUN_TESTS }}"
 
@@ -54,7 +52,6 @@ jobs:
         id: publish-images
         uses: ./.github/actions/publish-images
         with:
-          target_env: ${{ env.TARGET_ENV }}
           image_prefix: ${{ env.IMAGE_PREFIX }}
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
