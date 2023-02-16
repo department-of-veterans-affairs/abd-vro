@@ -30,7 +30,7 @@ jobs:
       - name: "Determine image prefix"
         run: |
           echo "ref_name: ${{ github.ref_name }}"
-          IMAGE_PREFIX=dev
+          IMAGE_PREFIX=dev_
           GRADLE_TESTS=true
           case "${{ github.ref_name }}" in
             main)      IMAGE_PREFIX="";;
