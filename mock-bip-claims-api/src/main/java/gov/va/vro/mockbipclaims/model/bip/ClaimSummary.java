@@ -1,8 +1,5 @@
 package gov.va.vro.mockbipclaims.model.bip;
 
-import gov.va.vro.model.bip.BenefitClaimType;
-import gov.va.vro.model.bip.Claimant;
-import gov.va.vro.model.bip.Veteran;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,40 +1,26 @@
 package gov.va.vro.model.bip;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.OffsetDateTime;
+import lombok.RequiredArgsConstructor;
 
 /**
- * The object used to specify a claim type. This object gives a higher level of granularity to claim
- * types, especially when there are only 9 modifiers. Using this object will remove the need to
- * specify EP code or label in separate fields. The values reflected in this object reflect the
- * values that go into the m21-4 manuals, the authoritative specifications for claims.
+ * A component in a BIP claim object.
+ *
+ * @author warren @Date 11/9/22
  */
-@Schema(
-    name = "benefit_claim_type",
-    description =
-        """
-        The object used to specify a claim type. This object gives a higher level of granularity
-        to claim types, especially when there are only 9 modifiers. Using this object will
-        remove the need to specify EP code or label in separate fields. The values reflected
-        in this object reflect the values that go into the m21-4 manuals, the authoritative
-        specifications for claims.
-        """)
-@JsonTypeName("benefit_claim_type")
+@RequiredArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BenefitClaimType {
   private String name;
-
   private String code;
 
+  @JsonProperty("description")
   private String description;
-
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private OffsetDateTime deactiveDate;
 
   @JsonProperty("attribute_one")
   private String attributeOne;
