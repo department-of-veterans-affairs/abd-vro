@@ -33,6 +33,13 @@ public class Claim {
 
   private String collectionId;
 
+  // Backwards compatibility with v1 routes. On the way in mappers put claimsubmission id into
+  // collection id
+  // Both ways tie to the reference_id on claim submission table.
+  public String getClaimSubmissionId() {
+    return collectionId;
+  }
+
   // At the moment, this is the only id type
   @Builder.Default @NotNull private String idType = DEFAULT_ID_TYPE;
 
