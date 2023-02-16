@@ -11,16 +11,8 @@ REPO="$1"
 # A tag label for all the images, e.g., ${COMMIT_SHA:0:7}
 # Images will also be tagged as 'latest', overriding any previous images
 IMG_TAG="$2"
-# Target environment, e.g., 'dev' or 'qa'
-# Used to determine the prefix for the image name
-TARGET_ENV="$3"
-
-# sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
-case "$TARGET_ENV" in
-  dev|qa) IMG_NAME_PREFIX="dev_";;
-  sandbox|prod|prod-test) IMG_NAME_PREFIX="";;
-  *) { echo "Unknown environment: $TARGET_ENV"; exit 20; }
-esac
+# The prefix for the image name, e.g., 'dev_' or '' (no prefix)
+IMG_NAME_PREFIX="$3"
 
 # Tag and push images using commit hash and `latest`
 source scripts/image_vars.src
