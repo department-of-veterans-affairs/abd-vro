@@ -83,6 +83,8 @@ def assess_sufficiency(event: Dict):
                     sufficient = True
             if bp_calculation["recentElevatedBpReadings"] >= 1 and bp_calculation["twoYearsBpReadings"] >= 3:
                 sufficient = True
+        if sufficient is None:
+            response_body["errorMessage"] = "insufficientHealthDataToOrderExam"
 
         response_body.update(
             {
