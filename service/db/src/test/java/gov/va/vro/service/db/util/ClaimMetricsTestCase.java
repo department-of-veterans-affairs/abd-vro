@@ -14,6 +14,7 @@ import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -62,7 +63,8 @@ public class ClaimMetricsTestCase {
    * This populates the database based on the simulation of generating medical assessment and
    * evidence summary pdf.
    */
-  public void populate(SaveToDbService service, ClaimRepository repo) {
+  public void populate(
+      SaveToDbService service, ClaimRepository repo, ClaimSubmissionRepository csRepo) {
     Claim claim = new Claim();
     claim.setBenefitClaimId(benefitClaimId);
     claim.setCollectionId(claimSubmissionId);
@@ -70,7 +72,17 @@ public class ClaimMetricsTestCase {
     claim.setDiagnosticCode("7101");
     service.insertClaim(claim);
 
-    ClaimEntity claimEntity = repo.findByVbmsId(benefitClaimId).orElseThrow();
+    ClaimEntity claimEntity;
+
+    if (benefitClaimId != null) {
+      claimEntity = repo.findByVbmsId(benefitClaimId).orElseThrow();
+    } else {
+      // Some calls send us claimSubmissionId which is the same as reference_id on the
+      // claim_submission table (which is collectionId as well)
+      ClaimSubmissionEntity csEntity =
+          csRepo.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElseThrow();
+      claimEntity = csEntity.getClaim();
+    }
     Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();
     assertEquals(1, submissions.size());
     ClaimSubmissionEntity submissionEntity = submissions.iterator().next();
@@ -110,6 +122,7 @@ public class ClaimMetricsTestCase {
 
     int counterValue = counter.getAndIncrement();
 
+    result.benefitClaimId = "vbms_id_" + counterValue;
     result.claimSubmissionId = "claim_id_" + counterValue;
     result.evidenceCase = AbdEvidenceCase.getInstance();
     result.documentName = "document_" + counterValue;

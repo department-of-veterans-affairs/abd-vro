@@ -131,7 +131,8 @@ class SaveToDbServiceImplTest {
     // Save claim
     Claim claim = new Claim();
     claim.setBenefitClaimId("787878");
-    // Collection is the same as reference_id on the claim_submission table. which is also the same as later claimSubmissionId fields given by other entities.
+    // Collection is the same as reference_id on the claim_submission table. which is also the same
+    // as later claimSubmissionId fields given by other entities.
     claim.setCollectionId("1234"); // Match claimSubmissionId in esdData.getInputStream
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
@@ -141,7 +142,8 @@ class SaveToDbServiceImplTest {
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     ObjectMapper mapper = new ObjectMapper();
     GeneratePdfPayload input = mapper.readValue(inputAsString, GeneratePdfPayload.class);
-    // Payload gives us claimsubmissionId which is the same as the reference_id on the claim submission table.
+    // Payload gives us claimsubmissionId which is the same as the reference_id on the claim
+    // submission table.
     String diagnosis = "Hypertension";
     String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     // Save evidence summary document.

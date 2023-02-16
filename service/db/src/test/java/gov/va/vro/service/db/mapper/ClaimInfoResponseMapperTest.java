@@ -10,10 +10,12 @@ import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.service.db.TestConfig;
+import gov.va.vro.service.spi.model.Claim;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,11 +55,17 @@ public class ClaimInfoResponseMapperTest {
     esdEntity.setEvidenceCount(esdEvidenceInfo);
     contentionEntity.addEvidenceSummaryDocument(esdEntity);
 
+    final String benefitClaimId = "vbms_id_test";
     final String claimSubmissionId = "cs_id_test";
+    ClaimSubmissionEntity claimSubmissionEntity = new ClaimSubmissionEntity();
+    claimSubmissionEntity.setReferenceId(claimSubmissionId);
+    claimSubmissionEntity.setIdType(Claim.DEFAULT_ID_TYPE);
+
     ClaimEntity claimEntity = new ClaimEntity();
-    claimEntity.setVbmsId(claimSubmissionId);
+    claimEntity.setVbmsId(benefitClaimId);
     claimEntity.setVeteran(veteranEntity);
     claimEntity.addContention(contentionEntity);
+    claimEntity.addClaimSubmission(claimSubmissionEntity);
 
     ClaimInfoResponse response = mapper.toClaimInfoResponse(claimEntity);
 

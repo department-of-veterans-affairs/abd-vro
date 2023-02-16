@@ -9,6 +9,7 @@ import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ClaimMetricsServiceImplTest {
   @Autowired private SaveToDbServiceImpl saveToDbService;
 
   @Autowired private ClaimRepository claimRepository;
+
+  @Autowired private ClaimSubmissionRepository claimSubmissionRepository;
 
   private void verifyFindAllClaimInfo(
       ClaimInfoQueryParams params, List<ClaimMetricsTestCase> cases) {
@@ -76,7 +79,7 @@ public class ClaimMetricsServiceImplTest {
     allCases.addAll(thirdClaimCases);
 
     verifyHappyPathClaimMetrics(0);
-    allCases.forEach(c -> c.populate(saveToDbService, claimRepository));
+    allCases.forEach(c -> c.populate(saveToDbService, claimRepository, claimSubmissionRepository));
     verifyHappyPathClaimMetrics(22);
 
     allCases.forEach(
@@ -112,7 +115,7 @@ public class ClaimMetricsServiceImplTest {
   void testFindClaimInfoInvalidId() {
     // Put something in the database so that it is not empty
     ClaimMetricsTestCase testCase = ClaimMetricsTestCase.getInstance();
-    testCase.populate(saveToDbService, claimRepository);
+    testCase.populate(saveToDbService, claimRepository, claimSubmissionRepository);
 
     ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id");
     assertNull(cir);
