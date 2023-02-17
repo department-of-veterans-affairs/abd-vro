@@ -55,7 +55,8 @@ public interface ClaimMetricsResource {
 
   @Operation(
       summary = "Retrieves claim specific information.",
-      description = "This endpoint retrieves metrics a specific claim. Defaults to v2 claims. Claim version parameeter may be specified as v1 or v2")
+      description =
+          "This endpoint retrieves metrics a specific claim. Defaults to v2 claims. Claim version parameeter may be specified as v1 or v2")
   @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {
@@ -78,7 +79,8 @@ public interface ClaimMetricsResource {
   @Tag(name = "Claim Metrics")
   @ResponseBody
   ResponseEntity<gov.va.vro.model.claimmetrics.response.ClaimInfoResponse> claimInfoForClaimId(
-      @PathVariable String claimSubmissionId, @RequestParam(required = false) String claimVersion) throws ClaimProcessingException;
+      @PathVariable String claimSubmissionId, @RequestParam(required = false) String claimVersion)
+      throws ClaimProcessingException;
 
   @Operation(
       summary = "Retrieves claim specific metrics for all claims.",
