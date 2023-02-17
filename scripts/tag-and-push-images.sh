@@ -20,7 +20,7 @@ for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
   IMG_NAME=${IMG_NAME_PREFIX}$(getVarValue "${PREFIX}" _IMG)
 
-  echo "Tagging image '$GRADLE_IMG_NAME' as '$IMG_NAME:${IMG_TAG}' and 'latest'"
+  echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:${IMG_TAG}' and '$IMG_NAME:latest'"
   docker tag "$GRADLE_IMG_NAME" "ghcr.io/${REPO}/${IMG_NAME}:${IMG_TAG}"
   docker tag "$GRADLE_IMG_NAME" "ghcr.io/${REPO}/${IMG_NAME}:latest"
 

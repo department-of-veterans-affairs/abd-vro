@@ -115,7 +115,7 @@ jobs:
           for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=${{ inputs.image_prefix }}$(getVarValue ${VAR_PREFIX} _IMG)
             IMG_TAG=${{ needs.set-image-props.outputs.image-tag }}
-            echo "Clean up image with tags '$IMG_NAME:$IMG_TAG' and '${IMG_NAME}:latest'"
+            echo "Clean up image '$IMG_NAME' with tags '$IMG_TAG' and 'latest'"
             docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" \
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
