@@ -1,5 +1,5 @@
 ALTER TABLE claim_submission
-    ADD COLUMN IF NOT EXISTS claim_id UUID DEFAULT uuid_generate_v4 () NOT NULL;
+    ADD COLUMN IF NOT EXISTS claim_id UUID NOT NULL;
 
 ALTER TABLE claim_submission
     ADD COLUMN IF NOT EXISTS off_ramp_reason VARCHAR;

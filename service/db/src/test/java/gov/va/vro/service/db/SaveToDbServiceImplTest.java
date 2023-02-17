@@ -240,10 +240,8 @@ class SaveToDbServiceImplTest {
     flashIds.add("456");
     saveToDbService.insertFlashIds(flashIds, veteran.getIcn());
     VeteranEntity veteranWithFlashIds = veteranRepository.findByIcn(veteran.getIcn()).orElseThrow();
-    assertEquals(
-        veteranWithFlashIds.getFlashIds().get(0).getFlashId(), Integer.valueOf(flashIds.get(0)));
-    assertEquals(
-        veteranWithFlashIds.getFlashIds().get(1).getFlashId(), Integer.valueOf(flashIds.get(1)));
+    assertEquals(veteranWithFlashIds.getFlashIds().get(0).getFlashId(), flashIds.get(0));
+    assertEquals(veteranWithFlashIds.getFlashIds().get(1).getFlashId(), flashIds.get(1));
     assertEquals(veteranWithFlashIds.getFlashIds().get(0).getVeteran().getIcn(), veteran.getIcn());
     assertEquals(veteranWithFlashIds.getFlashIds().get(1).getVeteran().getIcn(), veteran.getIcn());
   }

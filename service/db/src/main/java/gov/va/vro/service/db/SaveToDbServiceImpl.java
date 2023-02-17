@@ -254,7 +254,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     List<VeteranFlashIdEntity> flashIdList = new ArrayList<>();
     for (String flashId : veteranFlashIds) {
       VeteranFlashIdEntity id = new VeteranFlashIdEntity();
-      id.setFlashId(Integer.valueOf(flashId));
+      id.setFlashId(flashId);
       id.setVeteran(entity);
       flashIdList.add(id);
     }
