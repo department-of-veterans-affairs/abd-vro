@@ -245,7 +245,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("No evidence.");
     }
     AssessmentResultEntity assessmentResult = result.get();
-    assessmentResult.setSufficientEvidenceFlag(evidence.getSufficientForFastTracking());
+    assessmentResult.setSufficientEvidenceFlag(evidence.isSufficientForFastTracking());
     assessmentResultRepository.save(assessmentResult);
   }
 
