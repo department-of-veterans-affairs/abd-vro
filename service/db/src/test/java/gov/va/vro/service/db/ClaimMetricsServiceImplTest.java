@@ -87,7 +87,8 @@ public class ClaimMetricsServiceImplTest {
     allCases.forEach(
         c -> {
           String claimSubmissionId = c.getClaimSubmissionId();
-          ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId, Claim.V1_ID_TYPE);
+          ClaimInfoResponse cir =
+              claimMetricsService.findClaimInfo(claimSubmissionId, Claim.V1_ID_TYPE);
           c.verifyClaimInfoResponse(cir);
         });
     // Reverse the icnCases to get the last updated claims for that ICN.

@@ -13,7 +13,6 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
-import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -210,15 +209,15 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimInfoResponse claimInfo = generateClaimInfoResponse();
 
     String claimSubmissionId = claimInfo.getClaimSubmissionId();
-    String claimVersion = "v2";
 
     // Return an expected exception if argument does not match.
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.eq(claimVersion)))
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.isNull()))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.eq(claimVersion)))
+    Mockito.when(
+            service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
         .thenReturn(claimInfo);
 
-    String path = "/v1/claim-info/" + claimSubmissionId + "/" + claimVersion;
+    String path = "/v1/claim-info/" + claimSubmissionId + "?claimVersion=v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -231,7 +230,8 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Test
   void testClaimInfoNotValidId() {
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.eq("v1"))).thenReturn(null);
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+        .thenReturn(null);
 
     String path = "/v1/claim-info/not_an_id/v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);

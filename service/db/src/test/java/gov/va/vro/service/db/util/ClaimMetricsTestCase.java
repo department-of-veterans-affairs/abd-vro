@@ -13,7 +13,6 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -61,8 +60,7 @@ public class ClaimMetricsTestCase {
    * This populates the database based on the simulation of generating medical assessment and
    * evidence summary pdf.
    */
-  public void populate(
-      SaveToDbService service, ClaimSubmissionRepository csRepo) {
+  public void populate(SaveToDbService service, ClaimSubmissionRepository csRepo) {
     Claim claim = new Claim();
     claim.setCollectionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
@@ -74,7 +72,10 @@ public class ClaimMetricsTestCase {
     // v1 Some calls send us claimSubmissionId which is the same as reference_id on the
     // claim_submission table (which is collectionId as well)
     ClaimSubmissionEntity csEntity =
-        csRepo.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(claimSubmissionId, claim.getIdType()).orElseThrow();
+        csRepo
+            .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+                claimSubmissionId, claim.getIdType())
+            .orElseThrow();
     claimEntity = csEntity.getClaim();
 
     Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();

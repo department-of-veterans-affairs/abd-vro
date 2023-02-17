@@ -32,16 +32,19 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId, String claimVersion)
-      throws ClaimProcessingException {
-    String idType;
-    switch (claimVersion) {
-      case "v1" -> idType = Claim.V1_ID_TYPE;
-      case "v2" -> idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
-      default -> {
-        log.warn("Invalid version given to claim info. Must be 1 or 2");
-        String msg = HttpStatus.BAD_REQUEST.getReasonPhrase();
-        throw new ClaimProcessingException(claimSubmissionId, HttpStatus.BAD_GATEWAY, msg);
+  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(
+      String claimSubmissionId, String claimVersion) throws ClaimProcessingException {
+    String idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
+    ;
+    if (claimVersion != null) {
+      switch (claimVersion) {
+        case "v1" -> idType = Claim.V1_ID_TYPE;
+        case "v2" -> idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
+        default -> {
+          log.warn("Invalid version given to claim info. Must be v1 or v2 if given");
+          String msg = HttpStatus.BAD_REQUEST.getReasonPhrase();
+          throw new ClaimProcessingException(claimSubmissionId, HttpStatus.BAD_GATEWAY, msg);
+        }
       }
     }
     ClaimInfoResponse response = claimMetricsService.findClaimInfo(claimSubmissionId, idType);
