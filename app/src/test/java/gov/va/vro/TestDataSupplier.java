@@ -1,5 +1,6 @@
 package gov.va.vro;
 
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
@@ -40,7 +41,11 @@ public class TestDataSupplier {
     claim.setVeteran(veteran);
     ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
     claimSubmission.setReferenceId(referenceId);
-    claimSubmission.setIdType(Claim.DEFAULT_ID_TYPE);
+    if (benefitClaimId == null) {
+      claimSubmission.setIdType(Claim.V1_ID_TYPE);
+    } else {
+      claimSubmission.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+    }
     claim.addClaimSubmission(claimSubmission);
     return claim;
   }

@@ -66,6 +66,7 @@ public class MasIntegrationProcessors {
                 Claim.builder()
                     .benefitClaimId(payload.getBenefitClaimId())
                     .collectionId(String.valueOf(payload.getCollectionId()))
+                    .idType(payload.getIdType())
                     .diagnosticCode(payload.getDiagnosticCode())
                     .veteranIcn(payload.getVeteranIcn())
                     .build());
@@ -88,6 +89,7 @@ public class MasIntegrationProcessors {
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(transferObject.getEvidence());
     generatePdfPayload.setClaimSubmissionId(String.valueOf(claimPayload.getCollectionId()));
+    generatePdfPayload.setIdType(transferObject.getIdType());
     generatePdfPayload.setPdfTemplate("v2");
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());

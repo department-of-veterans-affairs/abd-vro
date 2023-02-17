@@ -25,6 +25,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
+  public static final String CLAIM_V2_ID_TYPE = "mas-Form526Submission";
 
   private String correlationId;
 
@@ -45,6 +46,8 @@ public class MasAutomatedClaimPayload implements Auditable {
   @NotNull @Valid private VeteranIdentifiers veteranIdentifiers;
 
   @NotNull @Valid private ClaimDetail claimDetail;
+
+  @Builder.Default @NotNull private String idType = CLAIM_V2_ID_TYPE;
 
   @Setter private String offRampReason;
 

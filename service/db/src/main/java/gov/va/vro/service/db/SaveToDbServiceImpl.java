@@ -110,12 +110,12 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to collectionId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+            evidence.getClaimSubmissionId(), evidence.getIdType());
     if (claimSubmission.isEmpty()) {
       log.warn(
           "Claim Submission not found for claim submission id = {} and id type = {} to insert assessment result",
           evidence.getClaimSubmissionId(),
-          Claim.DEFAULT_ID_TYPE);
+          evidence.getIdType());
       return;
     }
     ClaimEntity claimEntity = claimSubmission.get().getClaim();
@@ -144,7 +144,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public void setOffRampReason(Claim claimWithOffRamp) {
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            String.valueOf(claimWithOffRamp.getCollectionId()), Claim.DEFAULT_ID_TYPE);
+            String.valueOf(claimWithOffRamp.getCollectionId()), claimWithOffRamp.getIdType());
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -155,7 +155,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            request.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
+            request.getClaimSubmissionId(), request.getIdType());
     if (claimSubmission.isEmpty()) {
       log.warn(
           "Could not find claim by claimSubmissionId {} from insert evidence summary document, exiting.",
@@ -217,17 +217,16 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void updateSufficientEvidenceFlag(
-      String claimSubmissionId, Boolean flag, String diagnosticCode) {
+  public void updateSufficientEvidenceFlag(AbdEvidenceWithSummary evidence, String diagnosticCode) {
     // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            claimSubmissionId, Claim.DEFAULT_ID_TYPE);
+            evidence.getClaimSubmissionId(), evidence.getIdType());
     if (claimSubmission.isEmpty()) {
       log.warn(
           "Claim Submission not found for claim submission id = {} and id type = {} in update sufficient evidence flag",
-          claimSubmissionId,
-          Claim.DEFAULT_ID_TYPE);
+          evidence.getClaimSubmissionId(),
+          evidence.getIdType());
       return;
     }
     ClaimEntity claim = claimSubmission.get().getClaim();
@@ -242,11 +241,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("Could not match assessment result to this contention id.");
       return;
     }
-    if (flag == null) {
+    if (evidence.getEvidence() == null) {
       log.warn("No evidence.");
     }
     AssessmentResultEntity assessmentResult = result.get();
-    assessmentResult.setSufficientEvidenceFlag(flag);
+    assessmentResult.setSufficientEvidenceFlag(evidence.getSufficientForFastTracking());
     assessmentResultRepository.save(assessmentResult);
   }
 
@@ -320,7 +319,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     // Currently ExamOrders only come from MAS
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            examOrder.getCollectionId(), Claim.DEFAULT_ID_TYPE);
+            examOrder.getCollectionId(), examOrder.getIdType());
     ExamOrderEntity examOrderEntity = new ExamOrderEntity();
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());

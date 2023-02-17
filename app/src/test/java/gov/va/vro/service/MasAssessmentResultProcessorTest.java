@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -33,7 +34,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     Claim claim = new Claim();
 
     claim.setBenefitClaimId(benefitClaimId);
-    claim.setIdType(Claim.DEFAULT_ID_TYPE);
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode(diagnosticCode);
     claim.setCollectionId(collectionId);
@@ -41,6 +42,7 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
 
     var evidence = new AbdEvidenceWithSummary();
     evidence.setClaimSubmissionId(collectionId);
+    evidence.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     evidence.setEvidenceSummary(Map.of("Hello", 10));
 
     var message = Mockito.mock(Message.class);
@@ -52,7 +54,8 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     processor.process(exchange);
 
     claimSubmissionRepository
-        .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(collectionId, Claim.DEFAULT_ID_TYPE)
+        .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            collectionId, MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
         .orElseThrow();
     var results =
         assessmentResultRepository.findAll().stream()

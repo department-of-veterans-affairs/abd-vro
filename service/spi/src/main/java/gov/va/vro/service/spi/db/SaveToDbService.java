@@ -25,5 +25,5 @@ public interface SaveToDbService {
 
   void setOffRampReason(Claim payload);
 
-  void updateSufficientEvidenceFlag(String claimSubmissionId, Boolean flag, String diagnosticCode);
+  void updateSufficientEvidenceFlag(AbdEvidenceWithSummary evidence, String diagnosticCode);
 }

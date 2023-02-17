@@ -58,7 +58,7 @@ public class ClaimInfoResponseMapperTest {
     final String claimSubmissionId = "cs_id_test";
     ClaimSubmissionEntity claimSubmissionEntity = new ClaimSubmissionEntity();
     claimSubmissionEntity.setReferenceId(claimSubmissionId);
-    claimSubmissionEntity.setIdType(Claim.DEFAULT_ID_TYPE);
+    claimSubmissionEntity.setIdType(Claim.V1_ID_TYPE);
 
     ClaimEntity claimEntity = new ClaimEntity();
     claimEntity.setVeteran(veteranEntity);

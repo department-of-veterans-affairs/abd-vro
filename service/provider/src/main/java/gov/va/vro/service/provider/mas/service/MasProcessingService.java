@@ -93,8 +93,8 @@ public class MasProcessingService {
     return Optional.empty();
   }
 
-  public void examOrderingStatus(MasExamOrderStatusPayload payload) {
-    saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload));
+  public void examOrderingStatus(MasExamOrderStatusPayload payload, String claimIdType) {
+    saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload, claimIdType));
     camelEntrance.examOrderingStatus(payload);
   }
 
@@ -119,6 +119,7 @@ public class MasProcessingService {
     return Claim.builder()
         .benefitClaimId(payload.getBenefitClaimId())
         .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(payload.getIdType())
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
         .inScope(payload.isInScope())
@@ -129,9 +130,10 @@ public class MasProcessingService {
         .build();
   }
 
-  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload) {
+  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
     return ExamOrder.builder()
         .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(claimIdType)
         .status(payload.getCollectionStatus())
         .build();
   }

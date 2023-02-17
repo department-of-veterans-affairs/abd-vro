@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class Claim {
 
-  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
+  public static final String V1_ID_TYPE = "va.gov-Form526Submission";
 
   private UUID recordId;
 
@@ -41,7 +41,7 @@ public class Claim {
   }
 
   // At the moment, this is the only id type
-  @Builder.Default @NotNull private String idType = DEFAULT_ID_TYPE;
+  @Builder.Default @NotNull private String idType = V1_ID_TYPE;
 
   @Builder.Default @NotNull private String incomingStatus = "submission";
 

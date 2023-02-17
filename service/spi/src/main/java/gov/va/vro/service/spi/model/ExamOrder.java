@@ -20,5 +20,7 @@ public class ExamOrder {
 
   private String collectionId;
 
+  private String idType;
+
   private String status;
 }

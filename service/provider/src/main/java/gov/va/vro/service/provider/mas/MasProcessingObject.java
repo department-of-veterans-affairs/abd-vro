@@ -30,6 +30,10 @@ public class MasProcessingObject implements Auditable {
     return claimId;
   }
 
+  public String getIdType() {
+    return claimPayload.getIdType();
+  }
+
   public String getVeteranIcn() {
     return claimPayload.getVeteranIcn();
   }

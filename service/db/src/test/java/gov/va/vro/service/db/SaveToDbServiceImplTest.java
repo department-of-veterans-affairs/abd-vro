@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.*;
 import gov.va.vro.persistence.repository.*;
 import gov.va.vro.service.spi.model.Claim;
@@ -47,6 +48,7 @@ class SaveToDbServiceImplTest {
   void persistClaimWithV1Data() {
     Claim claim = new Claim();
     claim.setCollectionId("collection1");
+    claim.setIdType(Claim.V1_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
     var result = saveToDbService.insertClaim(claim);
@@ -63,7 +65,7 @@ class SaveToDbServiceImplTest {
     ClaimSubmissionEntity claimSubmissionEntity =
         claimSubmissionRepository
             .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-                claim.getCollectionId(), Claim.DEFAULT_ID_TYPE)
+                claim.getCollectionId(), Claim.V1_ID_TYPE)
             .orElseThrow();
     ClaimEntity claimEntity = claimSubmissionEntity.getClaim();
 
@@ -83,6 +85,7 @@ class SaveToDbServiceImplTest {
     Claim claim = new Claim();
     claim.setBenefitClaimId("claim1"); // Not the same as our claim submission id.
     claim.setCollectionId("collection1");
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
     var result = saveToDbService.insertClaim(claim);
@@ -114,6 +117,7 @@ class SaveToDbServiceImplTest {
     // Save claim
     Claim claim = new Claim();
     claim.setBenefitClaimId("1234");
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
@@ -124,7 +128,7 @@ class SaveToDbServiceImplTest {
     evidence.setEvidenceSummary(evidenceMap);
     saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
     Boolean flag = false;
-    saveToDbService.updateSufficientEvidenceFlag(evidence.getClaimSubmissionId(), flag, "7101");
+    saveToDbService.updateSufficientEvidenceFlag(evidence, "7101");
     ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
@@ -142,6 +146,7 @@ class SaveToDbServiceImplTest {
     Claim claim = new Claim();
     claim.setBenefitClaimId("1234");
     claim.setCollectionId("collection1");
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
@@ -166,6 +171,7 @@ class SaveToDbServiceImplTest {
     // Save claim
     Claim claim = new Claim();
     claim.setBenefitClaimId("787878");
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     // Collection is the same as reference_id on the claim_submission table. which is also the same
     // as later claimSubmissionId fields given by other entities.
     claim.setCollectionId("1234"); // Match claimSubmissionId in esdData.getInputStream
@@ -200,7 +206,7 @@ class SaveToDbServiceImplTest {
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     claim.setCollectionId("collection1");
-    claim.setIdType(Claim.DEFAULT_ID_TYPE);
+    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     saveToDbService.insertClaim(claim);
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
@@ -209,6 +215,7 @@ class SaveToDbServiceImplTest {
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     ExamOrder examOrder1 = new ExamOrder();
     examOrder1.setCollectionId("collection1");
+    examOrder1.setIdType(claim.getIdType());
     examOrder1.setStatus("status1");
     saveToDbService.insertOrUpdateExamOrderingStatus(examOrder1);
     Optional<ExamOrderEntity> orderEntity =
@@ -219,6 +226,7 @@ class SaveToDbServiceImplTest {
     assertEquals(examOrderEntity.getClaimSubmission().getId(), claimSubmissionEntity.getId());
     ExamOrder examOrder2 = new ExamOrder();
     examOrder2.setCollectionId(examOrder1.getCollectionId());
+    examOrder2.setIdType(examOrder1.getIdType());
     examOrder2.setStatus("status2");
     saveToDbService.insertOrUpdateExamOrderingStatus(examOrder2);
     Optional<ExamOrderEntity> updatedOrder =
@@ -252,6 +260,7 @@ class SaveToDbServiceImplTest {
         Claim.builder()
             .benefitClaimId("1234")
             .collectionId("111")
+            .idType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
             .veteranIcn("v1")
             .diagnosticCode("7101")
             .build();
@@ -266,6 +275,7 @@ class SaveToDbServiceImplTest {
         Claim.builder()
             .benefitClaimId("1234")
             .collectionId("111")
+            .idType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
             .veteranIcn("v1")
             .diagnosticCode("8181")
             .build();
