@@ -13,6 +13,7 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,6 +54,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimInfoResponse result = new ClaimInfoResponse();
 
     result.setClaimSubmissionId("claimSubmissionId_" + index);
+    result.setIdType(Claim.V1_ID_TYPE);
     result.setVeteranIcn("icn_" + index);
 
     ContentionInfo contentionInfo = new ContentionInfo();

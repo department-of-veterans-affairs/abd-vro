@@ -1,7 +1,6 @@
 package gov.va.vro.controller.mapper;
 
 import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.spi.model.Claim;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,6 +12,5 @@ public interface PostClaimRequestMapper {
   // Requests from health-data-assessment while they are a v2 claim, use claimSubmissionId
   // which needs to map to collectionId (the reference_id) field in claim Submission
   @Mapping(target = "collectionId", source = "claimSubmissionId")
-  @Mapping(target = "idType", constant = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
   Claim toModel(HealthDataAssessmentRequest request);
 }

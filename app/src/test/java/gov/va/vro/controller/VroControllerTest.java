@@ -18,7 +18,6 @@ import gov.va.vro.config.AppTestUtil;
 import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
@@ -106,7 +105,7 @@ class VroControllerTest extends BaseControllerTest {
     request.setDiagnosticCode("7101");
 
     var responseEntity1 =
-        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertNotNull(response1);
@@ -115,7 +114,7 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
@@ -124,7 +123,7 @@ class VroControllerTest extends BaseControllerTest {
 
     var claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            request.getClaimSubmissionId(), MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+            request.getClaimSubmissionId(), Claim.V1_ID_TYPE);
     assertTrue(claimSubmission.isPresent());
     var claim = claimSubmission.get().getClaim();
     assertNull(claim.getVbmsId());

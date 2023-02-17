@@ -21,6 +21,9 @@ public interface ClaimInfoResponseMapper {
       target = "claimSubmissionId",
       expression =
           "java(claimSubmissionsEntitySetToClaimSubmissionId(claimEntity.getClaimSubmissions()))")
+  @Mapping(
+      target = "idType",
+      expression = "java(claimSubmissionsEntitySetToIdType(claimEntity.getClaimSubmissions()))")
   ClaimInfoResponse toClaimInfoResponse(ClaimEntity claimEntity);
 
   List<ClaimInfoResponse> toClaimInfoResponses(Iterable<ClaimEntity> claimEntities);
@@ -30,5 +33,10 @@ public interface ClaimInfoResponseMapper {
   default String claimSubmissionsEntitySetToClaimSubmissionId(
       Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
     return claimSubmissionEntities.iterator().next().getReferenceId();
+  }
+
+  default String claimSubmissionsEntitySetToIdType(
+      Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
+    return claimSubmissionEntities.iterator().next().getIdType();
   }
 }
