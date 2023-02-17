@@ -6,6 +6,8 @@ import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +32,19 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId)
+  public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(String claimSubmissionId, String claimVersion)
       throws ClaimProcessingException {
-    ClaimInfoResponse response = claimMetricsService.findClaimInfo(claimSubmissionId);
+    String idType;
+    switch (claimVersion) {
+      case "v1" -> idType = Claim.V1_ID_TYPE;
+      case "v2" -> idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
+      default -> {
+        log.warn("Invalid version given to claim info. Must be 1 or 2");
+        String msg = HttpStatus.BAD_REQUEST.getReasonPhrase();
+        throw new ClaimProcessingException(claimSubmissionId, HttpStatus.BAD_GATEWAY, msg);
+      }
+    }
+    ClaimInfoResponse response = claimMetricsService.findClaimInfo(claimSubmissionId, idType);
     if (response == null) {
       log.warn("Claim {} not found", claimSubmissionId);
       String msg = HttpStatus.NOT_FOUND.getReasonPhrase();

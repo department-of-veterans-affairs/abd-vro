@@ -62,7 +62,7 @@ public class ClaimMetricsTestCase {
    * evidence summary pdf.
    */
   public void populate(
-      SaveToDbService service, ClaimRepository repo, ClaimSubmissionRepository csRepo) {
+      SaveToDbService service, ClaimSubmissionRepository csRepo) {
     Claim claim = new Claim();
     claim.setCollectionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
@@ -74,7 +74,7 @@ public class ClaimMetricsTestCase {
     // v1 Some calls send us claimSubmissionId which is the same as reference_id on the
     // claim_submission table (which is collectionId as well)
     ClaimSubmissionEntity csEntity =
-        csRepo.findFirstByReferenceIdOrderByCreatedAtDesc(claimSubmissionId).orElseThrow();
+        csRepo.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(claimSubmissionId, claim.getIdType()).orElseThrow();
     claimEntity = csEntity.getClaim();
 
     Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();

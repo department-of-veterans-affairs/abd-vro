@@ -11,6 +11,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
+import gov.va.vro.service.spi.model.Claim;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,13 +80,14 @@ public class ClaimMetricsServiceImplTest {
     allCases.addAll(thirdClaimCases);
 
     verifyHappyPathClaimMetrics(0);
-    allCases.forEach(c -> c.populate(saveToDbService, claimRepository, claimSubmissionRepository));
+    allCases.forEach(c -> c.populate(saveToDbService, claimSubmissionRepository));
     verifyHappyPathClaimMetrics(22);
 
+    // The test populate method uses v1 for the claim id Type
     allCases.forEach(
         c -> {
           String claimSubmissionId = c.getClaimSubmissionId();
-          ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId);
+          ClaimInfoResponse cir = claimMetricsService.findClaimInfo(claimSubmissionId, Claim.V1_ID_TYPE);
           c.verifyClaimInfoResponse(cir);
         });
     // Reverse the icnCases to get the last updated claims for that ICN.
@@ -115,9 +117,9 @@ public class ClaimMetricsServiceImplTest {
   void testFindClaimInfoInvalidId() {
     // Put something in the database so that it is not empty
     ClaimMetricsTestCase testCase = ClaimMetricsTestCase.getInstance();
-    testCase.populate(saveToDbService, claimRepository, claimSubmissionRepository);
+    testCase.populate(saveToDbService, claimSubmissionRepository);
 
-    ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id");
+    ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id", Claim.V1_ID_TYPE);
     assertNull(cir);
   }
 }
