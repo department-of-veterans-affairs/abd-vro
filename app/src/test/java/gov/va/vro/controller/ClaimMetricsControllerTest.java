@@ -214,7 +214,8 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.isNull()))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
     Mockito.when(
-            service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
+            service.findClaimInfo(
+                ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
         .thenReturn(claimInfo);
 
     String path = "/v1/claim-info/" + claimSubmissionId + "?claimVersion=v1";
