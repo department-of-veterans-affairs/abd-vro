@@ -87,7 +87,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            to *${{inputs.target_env}}* env using images with prefix '${{ inputs.image_prefix }}' \n\
+            to *${{inputs.target_env}}* env using images with prefix `${{ inputs.image_prefix }}` \n\
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
