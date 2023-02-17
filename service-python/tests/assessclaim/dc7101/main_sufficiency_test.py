@@ -349,7 +349,7 @@ from assessclaimdc7101.src.lib import main
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "2020-11-01",
+                        "bp_readings": [{"date": "", # missing date
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -362,6 +362,20 @@ from assessclaimdc7101.src.lib import main
                                                                  "pressure",
                                                       "unit": "mm[Hg]",
                                                       "value": 100}},
+                                        {'date': '2020-11-01',
+                                         'dateFormatted': '9/1/2020',
+                                         'diastolic': {'code': '8462-4',
+                                                       'display': 'Diastolic blood '
+                                                                  'pressure',
+                                                       'unit': 'mm[Hg]',
+                                                       'value': 90},
+                                         'organization': 'LYONS VA MEDICAL CENTER',
+                                         'practitioner': 'DR. JANE460 DOE922 MD',
+                                         'systolic': {'code': '8480-6',
+                                                      'display': 'Systolic blood '
+                                                                 'pressure',
+                                                      'unit': 'mm[Hg]',
+                                                      'value': 200}},
                                         {"date": "2020-09-01",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
@@ -395,14 +409,14 @@ from assessclaimdc7101.src.lib import main
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
                                                              'unit': 'mm[Hg]',
-                                                             'value': 115},
+                                                             'value': 90},
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'systolic': {'code': '8480-6',
                                                             'display': 'Systolic blood '
                                                                        'pressure',
                                                             'unit': 'mm[Hg]',
-                                                            'value': 100}},
+                                                            'value': 200}},
                                               {'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -416,7 +430,21 @@ from assessclaimdc7101.src.lib import main
                                                             'display': 'Systolic blood '
                                                                        'pressure',
                                                             'unit': 'mm[Hg]',
-                                                            'value': 200}}],
+                                                            'value': 200}},
+                                              {"date": "",
+                                               "dateFormatted": "",
+                                               "diastolic": {"code": "8462-4",
+                                                             "display": "Diastolic blood "
+                                                                        "pressure",
+                                                             "unit": "mm[Hg]",
+                                                             "value": 115},
+                                               "organization": "LYONS VA MEDICAL CENTER",
+                                               "practitioner": "DR. JANE460 DOE922 MD",
+                                               "systolic": {"code": "8480-6",
+                                                            "display": "Systolic blood "
+                                                                       "pressure",
+                                                            "unit": "mm[Hg]",
+                                                            "value": 100}}],
                               'conditions': [],
                               'medications': [{'relevant': True, 'text': 'some medication',
                                                'dateFormatted': '',
@@ -425,7 +453,7 @@ from assessclaimdc7101.src.lib import main
                  'evidenceSummary': {'medicationsCount': 1,
                                      'recentBpReadings': 2,
                                      'relevantConditionsCount': 0,
-                                     'totalBpReadings': 2,
+                                     'totalBpReadings': 3,
                                      'totalConditionsCount': 0},
                  'sufficientForFastTracking': None,
                  "claimSubmissionId": "1234"}

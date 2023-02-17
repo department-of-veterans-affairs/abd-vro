@@ -5,7 +5,7 @@ spring:
   profiles:
     active: ${ENV:default}
   jackson:
-    date-format: gov.va.vro.mockbipce.config.Rfc3339DateFormat
+    date-format: gov.va.vro.mockshared.mapper.Rfc3339DateFormat
     serialization.WRITE_DATES_AS_TIMESTAMPS: false
 
 server:
@@ -21,14 +21,12 @@ server:
     trust-store-type: PKCS12
   http.port: 8096
 
-
 ## Logging
 logging:
   level:
     root: INFO
 
 ## Health
-
 management:
   server:
     port: 8095
@@ -51,8 +49,7 @@ management:
         include: health
 
 ## mock specific
-
-mock-bip-cce-api:
+mock-bip-ce-api:
   jwt:
     userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
     secret: "${BIP_EVIDENCE_SECRET:theSecret}"

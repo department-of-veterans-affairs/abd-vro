@@ -42,7 +42,8 @@ def assess_hypertension(event: Dict):
         )
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
-        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
+        logging.info(
+            f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
@@ -75,7 +76,7 @@ def assess_sufficiency(event: Dict):
             if bp_calculation["oneYearBpReadings"] >= 3:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
-            bp_display = bp_calculator.sort_bp(event["evidence"]["bp_readings"])  # Include all bp readings to display
+            bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
             if relevant_conditions["relevantConditionsCount"] >= 1:
                 sufficient = False
@@ -117,7 +118,8 @@ def assess_sufficiency(event: Dict):
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, sufficientForFastTracking: {sufficient}, "
                      f"evidenceSummary: {response_body['evidenceSummary']}")
     else:
-        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
+        logging.info(
+            f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 

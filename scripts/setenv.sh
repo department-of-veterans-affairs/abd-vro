@@ -65,6 +65,11 @@ exportSecretIfUnset(){
   fi
 }
 
+exportFile(){
+  local FILE_VALUE=$(eval cat "$2")
+  eval "export $1=${FILE_VALUE}"
+}
+
 ###
 ### Settings for local development ###
 
@@ -133,23 +138,20 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 
 ###
 ### Integration with BIP ###
-
-# Credentials for BIP Claim API
-exportSecretIfUnset BIP_CLAIM_USERID
-exportSecretIfUnset BIP_CLAIM_SECRET
+##
+## Shared by app and mock-bip containers.
+## I tried to move these to app/application-local (still there) but
+## Gradle appears to have problems with it since these are used as a Spring
+## artifact (@Value) in a different module service/provider.
+## There is some discussion in stackoverflow 63846115 for solutions.
+##
+export BIP_CLAIM_USERID=VRO_USER
+export BIP_CLAIM_SECRET=theSecret
+export BIP_CLAIM_ISS=VRO
 # Credentials for BIP Claim Evidence API
-exportSecretIfUnset BIP_EVIDENCE_USERID
-exportSecretIfUnset BIP_EVIDENCE_SECRET
-exportSecretIfUnset BIP_KEYSTORE
-exportSecretIfUnset BIP_TRUSTSTORE
-exportSecretIfUnset BIP_PASSWORD
-exportSecretIfUnset BIP_ALIAS
-
-# TODO: Move all? of these to application*.yml
-#export BIP_CLAIM_URL=claims-uat.stage8.bip.va.gov/api/v1
-#export BIP_CLAIM_ISS=virtual_regional_office
-#export BIP_EVIDENCE_URL=vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
-#export BIP_EVIDENCE_ISS=VRO
-#export BIP_APPLICATION_ID=VRO
-#export BIP_STATION_ID=281
-
+export BIP_EVIDENCE_USERID=VRO_USER
+export BIP_EVIDENCE_SECRET=daSecret
+export BIP_EVIDENCE_ISS=VRO
+# BIP Common.
+export BIP_APPLICATION_ID=VRO
+export BIP_STATION_ID=456

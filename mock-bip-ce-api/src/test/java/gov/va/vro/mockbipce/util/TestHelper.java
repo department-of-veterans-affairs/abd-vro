@@ -1,9 +1,11 @@
 package gov.va.vro.mockbipce.util;
 
+import gov.va.vro.mockshared.jwt.JwtGenerator;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
@@ -20,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Service
+@Slf4j
 public class TestHelper {
   @Autowired
   @Qualifier("httpsRestTemplate")
@@ -45,6 +48,7 @@ public class TestHelper {
     }
     if (!spec.isIgnoreJwt()) {
       String jwt = jwtGenerator.generate();
+      log.info("jwt generated: {}", jwt);
       headers.set("Authorization", "Bearer " + jwt);
     }
 

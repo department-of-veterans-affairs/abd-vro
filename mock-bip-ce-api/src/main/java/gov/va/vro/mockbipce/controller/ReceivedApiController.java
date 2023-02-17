@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipce.controller;
 
 import gov.va.vro.mockbipce.api.ReceivedApi;
-import gov.va.vro.mockbipce.config.BasicStore;
-import gov.va.vro.mockbipce.model.EvidenceFile;
+import gov.va.vro.mockbipce.model.store.BasicStore;
+import gov.va.vro.mockbipce.model.store.EvidenceFile;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class ReceivedApiController implements ReceivedApi {
-  @Autowired private BasicStore store;
+  private final BasicStore store;
 
   @SneakyThrows
   @Override
@@ -38,5 +39,11 @@ public class ReceivedApiController implements ReceivedApi {
     headers.setContentDisposition(disposition);
 
     return new ResponseEntity<>(content, headers, HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<Void> remove(String fileNumber) {
+    store.remove(fileNumber);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

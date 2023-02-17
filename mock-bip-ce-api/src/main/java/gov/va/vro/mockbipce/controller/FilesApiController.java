@@ -2,14 +2,14 @@ package gov.va.vro.mockbipce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.api.FilesApi;
-import gov.va.vro.mockbipce.config.BasicStore;
-import gov.va.vro.mockbipce.model.EvidenceFile;
+import gov.va.vro.mockbipce.model.store.BasicStore;
+import gov.va.vro.mockbipce.model.store.EvidenceFile;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.response.UploadResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,8 +22,9 @@ import java.util.UUID;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class FilesApiController implements FilesApi {
-  @Autowired private BasicStore store;
+  private final BasicStore store;
 
   @SneakyThrows
   @Override

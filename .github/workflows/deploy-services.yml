@@ -50,6 +50,7 @@ env:
   SERVICE: ${{ inputs.target_service }}
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: ${{ inputs.target_env }}
+  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
 
 jobs:
   deploy-service:

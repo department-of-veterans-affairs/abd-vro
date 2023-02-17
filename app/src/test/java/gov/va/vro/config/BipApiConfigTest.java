@@ -1,6 +1,8 @@
 package gov.va.vro.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.service.provider.bip.BipException;
 import org.junit.jupiter.api.Test;
@@ -22,15 +24,10 @@ class BipApiConfigTest {
   @Qualifier("bipCERestTemplate")
   private RestTemplate template;
 
-  @Autowired
-  @Qualifier("bipRestTemplate")
-  private RestTemplate httpsTemplate;
-
   @Test
   public void testRestTemplate() throws Exception {
 
     assertNotNull(template);
-    assertNotNull(httpsTemplate);
 
     BipApiConfig config = new BipApiConfig();
     try {
