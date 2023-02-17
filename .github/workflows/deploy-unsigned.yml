@@ -107,8 +107,6 @@ jobs:
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
-          # Temp
-          run_tests: 'false'
 
       # TODO: Is this really needed?
       - name: "Remove images locally"
