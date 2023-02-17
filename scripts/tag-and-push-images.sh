@@ -8,7 +8,7 @@ set -e
 
 # ${{ github.repository }}
 REPO="$1"
-# A tag label for all the images, e.g., ${COMMIT_SHA:0:7}
+# A tag label for all the images, e.g., ${GITHUB_SHA:0:7}
 # Images will also be tagged as 'latest', overriding any previous images
 IMG_TAG="$2"
 # The prefix for the image name, e.g., 'dev_' or '' (no prefix)

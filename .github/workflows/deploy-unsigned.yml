@@ -20,6 +20,10 @@ on:
         options:
           - 'dev_'
           - ''
+      image_tag:
+        description: 'The tag/version for the image; default is the first 7 of the commit hash'
+        required: false
+        default: ${GITHUB_SHA}
 
   # Allow other workflows to call this one
   workflow_call:
@@ -30,13 +34,15 @@ on:
       image_prefix:
         required: true
         type: string
+      image_tag:
+        required: false
+        type: string
 
 # Ensures that only one deploy per env will run at a time.
 concurrency:
   group: deploy-unsigned-${{ inputs.target_env }}
 
 env:
-  COMMIT_SHA: ${{ github.sha }}
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages
@@ -45,9 +51,23 @@ env:
   JOB_STATUS: 'failed'
 
 jobs:
+  set-image-props:
+    outputs:
+      image-tag: ${{ steps.image-props.outputs.image_tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Determine image properties"
+        id: image-props
+        run: |
+          IMAGE_TAG=${{ inputs.image_tag }}
+          # if $IMAGE_TAG is empty, then set to first characters of GITHUB_SHA
+          [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
   publish-images:
     # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    needs: set-image-props
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
       job_status: ${{ env.JOB_STATUS }}
@@ -80,7 +100,8 @@ jobs:
       - name: "Test and publish images with prefix '${{ inputs.image_prefix }}' to GHCR"
         uses: ./.github/actions/publish-images
         with:
-          image_prefix: ${{ inputs.image_prefix }}
+          image_prefix: "${{ inputs.image_prefix }}"
+          image_tag: "${{ needs.set-image-props.outputs.image-tag }}"
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
@@ -91,8 +112,9 @@ jobs:
           source scripts/image_vars.src
           for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
             IMG_NAME=${{ inputs.image_prefix }}$(getVarValue ${VAR_PREFIX} _IMG)
-            echo "Clean up image with tags '$IMG_NAME:${COMMIT_SHA:0:7}' and '${IMG_NAME}:latest'"
-            docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}" \
+            IMG_TAG=${{ needs.set-image-props.outputs.image-tag }}
+            echo "Clean up image with tags '$IMG_NAME:$IMG_TAG' and '${IMG_NAME}:latest'"
+            docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" \
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
           done
 
@@ -101,7 +123,7 @@ jobs:
         run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
-    needs: publish-images
+    needs: [set-image-props, publish-images]
     runs-on: ubuntu-latest
     outputs:
       job_status: ${{ env.JOB_STATUS }}
@@ -128,7 +150,7 @@ jobs:
         env:
           SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
           SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
-        run: ./scripts/deploy-app.sh ${{ inputs.target_env }} ${COMMIT_SHA:0:7}
+        run: ./scripts/deploy-app.sh "${{ inputs.target_env }}" "${{ needs.set-image-props.outputs.image-tag }}"
 
       - name: "Wait for LHDI deployment"
         run: |
