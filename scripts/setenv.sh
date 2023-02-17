@@ -135,3 +135,23 @@ export MAS_API_BAS_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca/
 export MAS_COLLECTION_ANNOTS_PATH=/pcQueryCollectionAnnots
 export MAS_COLLECTION_STATUS_PATH=/pcCheckCollectionStatus
 export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
+
+###
+### Integration with BIP ###
+##
+## Shared by app and mock-bip containers.
+## I tried to move these to app/application-local (still there) but
+## Gradle appears to have problems with it since these are used as a Spring
+## artifact (@Value) in a different module service/provider.
+## There is some discussion in stackoverflow 63846115 for solutions.
+##
+export BIP_CLAIM_USERID=VRO_USER
+export BIP_CLAIM_SECRET=theSecret
+export BIP_CLAIM_ISS=VRO
+# Credentials for BIP Claim Evidence API
+export BIP_EVIDENCE_USERID=VRO_USER
+export BIP_EVIDENCE_SECRET=daSecret
+export BIP_EVIDENCE_ISS=VRO
+# BIP Common.
+export BIP_APPLICATION_ID=VRO
+export BIP_STATION_ID=456
