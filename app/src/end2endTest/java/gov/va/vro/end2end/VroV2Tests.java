@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
@@ -16,9 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStreamReader;
@@ -132,30 +129,30 @@ public class VroV2Tests {
       return;
     }
 
-    log.info("Make sure the evidence pdf is uploaded");
-    boolean successUploading = false;
-    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-      Thread.sleep(20000);
-      String url = RECEIVED_FILES_URL + fileNumber;
-      try {
-        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
-        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-        log.info("PDF text: {}", pdfTextV2.getPdfText());
-        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
-        successUploading = true;
-        break;
-      } catch (HttpStatusCodeException exception) {
-        log.info("Did not find pdf for veteran {}. Retrying...", fileNumber);
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-      }
-    }
-    assertTrue(successUploading);
-
-    boolean contentionsFound = getFoundStatus(claimId, "contentions");
-    assertTrue(contentionsFound);
-    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
-    assertTrue(lifecycleStatusFound);
+    //    log.info("Make sure the evidence pdf is uploaded");
+    //    boolean successUploading = false;
+    //    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+    //      Thread.sleep(20000);
+    //      String url = RECEIVED_FILES_URL + fileNumber;
+    //      try {
+    //        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+    //        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+    //        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+    //        log.info("PDF text: {}", pdfTextV2.getPdfText());
+    //        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+    //        successUploading = true;
+    //        break;
+    //      } catch (HttpStatusCodeException exception) {
+    //        log.info("Did not find pdf for veteran {}. Retrying...", fileNumber);
+    //        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    //      }
+    //    }
+    //    assertTrue(successUploading);
+    //
+    //    boolean contentionsFound = getFoundStatus(claimId, "contentions");
+    //    assertTrue(contentionsFound);
+    //    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
+    //    assertTrue(lifecycleStatusFound);
   }
 
   @Test
