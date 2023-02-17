@@ -27,14 +27,14 @@ public class Claim {
 
   private UUID recordId;
 
-  // Either benefitClaimId or CollectionId must be filled out
-  // CollectionId is equivalent to reference_id on the claim submission table
+  // We should either get a benefitClaimId from MAS for v2 endpoints, or v1 endpoints provide a
+  // claimSubmissionId that we use to set the collectionId
   private String benefitClaimId;
 
   private String collectionId;
 
-  // Backwards compatibility with v1 routes. On the way in mappers put claimsubmission id into
-  // collection id
+  // For backwards compatibility with v1 routes. On the way in, mappers set collectionId to the
+  // payload's claimSubmissionId.
   // Both ways tie to the reference_id on claim submission table.
   public String getClaimSubmissionId() {
     return collectionId;

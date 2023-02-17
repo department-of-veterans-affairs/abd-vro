@@ -8,8 +8,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -18,15 +16,15 @@ public class EvidenceSummaryDocumentProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    String body = exchange.getIn().getBody(String.class);
-    log.info(">>>>> exchange > body: " + body);
+    // String body = exchange.getIn().getBody(String.class);
+    // log.info(">>>>> exchange > body: " + body);
     GeneratePdfPayload payload = exchange.getIn().getBody(GeneratePdfPayload.class);
-    log.info(">>>>> exchange > payload~1: " + payload);
+    // log.info(">>>>> exchange > payload~1: " + payload);
     if (payload == null) {
       log.warn("Payload is empty, returning...");
       return;
     }
-    log.info(">>>>> exchange > payload~2: " + Objects.toString(payload));
+    // log.info(">>>>> exchange > payload~2: " + Objects.toString(payload));
     String diagnosis = matchDiagnosticCode(payload.getDiagnosticCode());
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");

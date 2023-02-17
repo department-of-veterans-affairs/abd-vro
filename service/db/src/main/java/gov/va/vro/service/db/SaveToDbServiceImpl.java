@@ -52,9 +52,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
     ClaimEntity claimEntity = null;
 
-    // V1 endpoints do not give us a benefit claim id. They give us a claimSubmissionId (which is
-    // stored as reference_id in claim_submission)
     if (claim.getBenefitClaimId() == null) {
+      // V1 endpoints do not give us a benefit claim id. They give us a claimSubmissionId (which is
+      // stored as reference_id in claim_submission)
       Optional<ClaimSubmissionEntity> v1ClaimSubmission =
           claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
               claim.getCollectionId(), claim.getIdType());
@@ -63,9 +63,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       } else {
         claimEntity = createClaim(claim, veteranEntity);
       }
+    } else {
       // V2 endpoints go through here with a benefit claim id, and collectionId is the reference_id
       // on claimSubmission
-    } else {
       claimEntity =
           claimRepository
               .findByVbmsId(claim.getBenefitClaimId())
@@ -83,6 +83,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private ClaimSubmissionEntity createClaimSubmission(Claim claim) {
     ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
+    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to collectionId
     claimSubmission.setReferenceId(claim.getCollectionId());
     claimSubmission.setIdType(claim.getIdType());
     claimSubmission.setIncomingStatus(claim.getIncomingStatus());
@@ -106,7 +107,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
-    // ClaimSubmissionId in v1 = ReferenceId on ClaimSubmission in VRO
+    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to collectionId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
@@ -151,7 +152,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
-    // ClaimSubmissionId in v1 calls is equal to ReferenceId on ClaimSubmission in VRO
+    // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             request.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
@@ -218,7 +219,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   public void updateSufficientEvidenceFlag(
       String claimSubmissionId, Boolean flag, String diagnosticCode) {
-    // ClaimSubmissionId in v1 = ReferenceId on ClaimSubmission in VRO
+    // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             claimSubmissionId, Claim.DEFAULT_ID_TYPE);
