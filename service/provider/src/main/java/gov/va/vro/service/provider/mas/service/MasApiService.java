@@ -126,7 +126,7 @@ public class MasApiService implements IMasApiService {
       log.error("Failed to order exam", e);
       // TODO: REPLACE WHEN FIXED
       //  Currently this MAS endpoint does not work, so mocking response in order to continue.
-      //return "OK";
+      // return "OK";
       throw new MasException(e.getMessage(), e);
     }
   }
