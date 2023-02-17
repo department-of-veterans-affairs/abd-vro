@@ -17,3 +17,20 @@ logging:
     org.hibernate.SQL: INFO
     org.type.descriptor.sql.BasicBinder: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
+bip:
+  claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
+  claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
+  claimIssuer: "${BIP_CLAIM_ISS:VRO}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
+  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
+  applicationName: "${BIP_APPLICATION_ISS:VRO}"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:456}"
+
+# Self-signed certificates. Created by scripts/build-certificates.sh.
+spring.config.import: >
+  client-keystore.yml,
+  server-truststore.yml
+truststore_password: keystore_pw
+bipalias: theAlias
