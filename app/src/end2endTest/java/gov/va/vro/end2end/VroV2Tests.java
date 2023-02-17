@@ -115,11 +115,9 @@ public class VroV2Tests {
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
 
-    if ("end2end-test".equals(System.getenv("ENV"))) {
-      log.info("Reset data in the mock servers.");
-      restTemplate.delete(UPDATES_URL + claimId);
-      restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
-    }
+    log.info("Reset data in the mock servers.");
+    restTemplate.delete(UPDATES_URL + claimId);
+    restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
 
     var requestEntity = getEntity(content);
     var response =
@@ -127,10 +125,6 @@ public class VroV2Tests {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
-
-    if (!"end2end-test".equals(System.getenv("ENV"))) {
-      return;
-    }
 
     log.info("Make sure the evidence pdf is uploaded");
     boolean successUploading = false;
@@ -156,6 +150,28 @@ public class VroV2Tests {
     assertTrue(contentionsFound);
     boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
     assertTrue(lifecycleStatusFound);
+  }
+
+  /** Test if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
+  @Test
+  @SneakyThrows
+  void testBipGetClaim404() {
+    var path = "test-mas/claim-350-7101.json"; // use otherwise good test case
+    var contentOriginal = resourceToString(path);
+    final MasAutomatedClaimRequest request =
+        objectMapper.readValue(contentOriginal, MasAutomatedClaimRequest.class);
+    String claimId = "999990"; // something for 404
+    request.getClaimDetail().setBenefitClaimId(claimId);
+    String content = objectMapper.writeValueAsString(request);
+
+    var requestEntity = getEntity(content);
+    try {
+      var response =
+          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      fail("We should have received 400");
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
   }
 
   @Test
