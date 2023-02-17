@@ -90,8 +90,8 @@ public class MasAutomatedClaimPayload implements Auditable {
   }
 
   @JsonIgnore
-  public Integer getBenefitClaimId() {
-    return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
+  public String getBenefitClaimId() {
+    return claimDetail == null ? null : claimDetail.getBenefitClaimId();
   }
 
   @JsonIgnore
@@ -110,7 +110,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   @JsonIgnore
   public Map<String, String> getDetails() {
     Map<String, String> detailsMap = new HashMap<>();
-    detailsMap.put("benefitClaimId", Objects.toString(getBenefitClaimId()));
+    detailsMap.put("benefitClaimId", getBenefitClaimId());
     detailsMap.put("collectionId", Objects.toString(getCollectionId()));
     detailsMap.put("diagnosticCode", getDiagnosticCode());
     detailsMap.put("veteranIcn", getVeteranIcn());

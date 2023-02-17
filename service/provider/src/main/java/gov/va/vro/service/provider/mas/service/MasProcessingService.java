@@ -117,7 +117,7 @@ public class MasProcessingService {
 
   private Claim toClaim(MasAutomatedClaimPayload payload) {
     return Claim.builder()
-        .benefitClaimId(Integer.toString(payload.getBenefitClaimId()))
+        .benefitClaimId(payload.getBenefitClaimId())
         .collectionId(Integer.toString(payload.getCollectionId()))
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
