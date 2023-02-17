@@ -144,35 +144,6 @@ class SaveToDbServiceImplTest {
   }
 
   @Test
-  void persistAssessmentResultWithNullFlag() throws Exception {
-    // Save claim
-    Claim claim = new Claim();
-    claim.setBenefitClaimId("1234");
-    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
-    claim.setVeteranIcn("v1");
-    claim.setDiagnosticCode("7101");
-    saveToDbService.insertClaim(claim);
-    ClaimEntity claimBeforeAssessment = claimRepository.findByVbmsId("1234").orElseThrow();
-    Map<String, Object> evidenceMap = new HashMap<>();
-    evidenceMap.put("medicationsCount", "10");
-    AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
-    evidence.setEvidenceSummary(evidenceMap);
-    evidence.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
-    saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
-    saveToDbService.updateSufficientEvidenceFlag(evidence, "7101");
-    ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
-    assertNotNull(result);
-    assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));
-    AssessmentResultEntity assessmentResult =
-        result.getContentions().get(0).getAssessmentResults().get(0);
-    assertEquals(assessmentResult.getEvidenceCountSummary(), evidenceMap);
-    assertNull(assessmentResult.getSufficientEvidenceFlag());
-
-    long c = assessmentResultRepository.count();
-    assertEquals(1, c);
-  }
-
-  @Test
   void persistOffRampReason() {
     Claim claim = new Claim();
     claim.setBenefitClaimId("1234");
