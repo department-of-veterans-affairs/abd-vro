@@ -1,4 +1,5 @@
-name: Deploy unsigned images
+name: Publish and deploy images
+# TODO: This filename needs updating for SecRel 4 since it signs all images.
 
 on:
   # Allow manual triggering
@@ -12,11 +13,21 @@ on:
         options:
           - dev
           - qa
+      image_prefix:
+        description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
+        default: 'dev_'
+        type: choice
+        options:
+          - 'dev_'
+          - ''
 
   # Allow other workflows to call this one
   workflow_call:
     inputs:
       target_env:
+        required: true
+        type: string
+      image_prefix:
         required: true
         type: string
 
@@ -26,7 +37,6 @@ concurrency:
 
 env:
   COMMIT_SHA: ${{ github.sha }}
-  TARGET_ENV: ${{ inputs.target_env }}
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages
@@ -55,7 +65,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            to *${{env.TARGET_ENV}}* env \n\
+            to *${{inputs.target_env}}* env using images with prefix '${{ inputs.image_prefix }}' \n\
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
@@ -67,10 +77,10 @@ jobs:
       # due to a signing issue in SecRel 4. for more details see
       # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
 
-      - name: "Test and publish ${{ env.TARGET_ENV }} images to GHCR"
+      - name: "Test and publish images with prefix '${{ inputs.image_prefix }}' to GHCR"
         uses: ./.github/actions/publish-images
         with:
-          target_env: ${{ env.TARGET_ENV }}
+          image_prefix: ${{ inputs.image_prefix }}
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
@@ -79,8 +89,8 @@ jobs:
       - name: "Remove images locally"
         run: |
           source scripts/image_vars.src
-          for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            IMG_NAME=${{ env.TARGET_ENV }}_$(getVarValue ${PREFIX} _IMG)
+          for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+            IMG_NAME=${{ inputs.image_prefix }}$(getVarValue ${VAR_PREFIX} _IMG)
             echo "Clean up image with tags '$IMG_NAME:${COMMIT_SHA:0:7}' and '${IMG_NAME}:latest'"
             docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${COMMIT_SHA:0:7}" \
                        "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
@@ -105,7 +115,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
-          slack-text: ":panda_coffee: Deploying to ${{ env.TARGET_ENV }}..."
+          slack-text: ":panda_coffee: Deploying to ${{ inputs.target_env }}..."
 
       - name: "Set up kube config"
         run: |
@@ -114,15 +124,15 @@ jobs:
           # Adjust file permission to address Kubernetes warning
           chmod go-rw ~/.kube/config
 
-      - name: "Deploy to ${{ env.TARGET_ENV }} env"
+      - name: "Deploy to ${{ inputs.target_env }} env"
         env:
           SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
           SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
-        run: ./scripts/deploy-app.sh ${{ env.TARGET_ENV }} ${COMMIT_SHA:0:7}
+        run: ./scripts/deploy-app.sh ${{ inputs.target_env }} ${COMMIT_SHA:0:7}
 
       - name: "Wait for LHDI deployment"
         run: |
-          if kubectl -n va-abd-rrd-${{ env.TARGET_ENV }} rollout status deployment/vro-api; then
+          if kubectl -n va-abd-rrd-${{ inputs.target_env }} rollout status deployment/vro-api; then
             echo "JOB_STATUS=success" >> $GITHUB_ENV
           else
             # Return nonzero error code so that workflow fails

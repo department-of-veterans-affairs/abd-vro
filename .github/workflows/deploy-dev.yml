@@ -12,4 +12,5 @@ jobs:
     uses: ./.github/workflows/deploy-unsigned.yml
     with:
       target_env: dev
+      image_prefix: dev_
     secrets: inherit

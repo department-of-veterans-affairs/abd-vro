@@ -6,7 +6,6 @@ import gov.va.vro.service.provider.bip.BipException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -26,7 +25,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 
 /**
@@ -104,31 +102,6 @@ public class BipApiConfig {
     } catch (Exception e) {
       log.error("Unexpected error.", e);
       throw new BipException(e.getMessage(), e);
-    }
-  }
-
-  @Bean(name = "bipRestTemplate")
-  public RestTemplate restTemplate() throws BipException {
-    try {
-      TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-      SSLContext sslContext =
-          org.apache.http.ssl.SSLContexts.custom()
-              .loadTrustMaterial(null, acceptingTrustStrategy)
-              .build();
-
-      SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
-      CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-
-      HttpComponentsClientHttpRequestFactory requestFactory =
-          new HttpComponentsClientHttpRequestFactory();
-
-      requestFactory.setHttpClient(httpClient);
-      return new RestTemplate(requestFactory);
-    } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
-      log.error("failed to configure bipRestTemplate. {}", e.getMessage());
-      throw new BipException("Configuration failed for restTemplate.", e);
     }
   }
 }
