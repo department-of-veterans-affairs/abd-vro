@@ -62,6 +62,8 @@ jobs:
           IMAGE_TAG=${{ inputs.image_tag }}
           # if $IMAGE_TAG is empty, then set to first characters of GITHUB_SHA
           [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
+          echo "GITHUB_SHA $GITHUB_SHA"
+          echo "IMAGE_TAG  $IMAGE_TAG"
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
   publish-images:
@@ -105,6 +107,8 @@ jobs:
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
+          # Temp
+          run_tests: 'false'
 
       # TODO: Is this really needed?
       - name: "Remove images locally"

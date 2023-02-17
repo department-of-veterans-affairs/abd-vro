@@ -67,12 +67,12 @@ jobs:
     needs:
       - publish-to-ghcr
     outputs:
-      all-images: ${{ steps.append-images.outputs.all-images }}
+      all-images: ${{ steps.append-images.outputs.all_images }}
     steps:
       - name: "Append 3rd-party images"
         id: append-images
         run: |
-          echo "all-images<<EOF" >> $GITHUB_OUTPUT
+          echo "all_images<<EOF" >> $GITHUB_OUTPUT
           echo "${{ needs.publish-to-ghcr.outputs.vro-images }}" >> $GITHUB_OUTPUT
           MANUAL_IMGS_ARRAY=( vro-rabbitmq:latest vro-redis:latest )
           for MANUAL_IMAGE in ${MANUAL_IMGS_ARRAY[@]}; do
