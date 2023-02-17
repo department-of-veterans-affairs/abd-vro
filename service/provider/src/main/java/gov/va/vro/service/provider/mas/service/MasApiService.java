@@ -123,11 +123,11 @@ public class MasApiService implements IMasApiService {
       return mapper.readValue(masResponse.getBody(), new TypeReference<>() {});
 
     } catch (RestClientException | IOException e) {
-      // log.error("Failed to order exam", e);
+      log.error("Failed to order exam", e);
       // TODO: REPLACE WHEN FIXED
       //  Currently this MAS endpoint does not work, so mocking response in order to continue.
-      return "OK";
-      // throw new MasException(e.getMessage(), e);
+      //return "OK";
+      throw new MasException(e.getMessage(), e);
     }
   }
 
