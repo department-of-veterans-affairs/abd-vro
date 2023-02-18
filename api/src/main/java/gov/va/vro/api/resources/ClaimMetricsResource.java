@@ -56,7 +56,7 @@ public interface ClaimMetricsResource {
   @Operation(
       summary = "Retrieves claim specific information.",
       description =
-          "This endpoint retrieves metrics a specific claim. Defaults to v2 claims. Claim version parameeter may be specified as v1 or v2")
+          "Retrieves metrics for the specified claim. Defaults to claims from MAS ('v2'). Specify the claim's endpoint version ('v1' or 'v2') for claims submitted to that endpoint version.")
   @GetMapping(value = "/claim-info/{claimSubmissionId}")
   @ApiResponses(
       value = {

@@ -69,8 +69,8 @@ public class ClaimMetricsTestCase {
 
     ClaimEntity claimEntity;
 
-    // v1 Some calls send us claimSubmissionId which is the same as reference_id on the
-    // claim_submission table (which is collectionId as well)
+    // v1 endpoints provide claimSubmissionId, which maps to reference_id on the
+    // claim_submission table (which is used as collectionId)
     ClaimSubmissionEntity csEntity =
         csRepo
             .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(

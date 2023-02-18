@@ -48,8 +48,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
     // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
-    // reference Id must match
-    // What later PDF requests send us.
+    // referenceId must match in the PDF requests sent later.
     var claim = TestDataSupplier.createClaim(null, veteran, "1234");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
