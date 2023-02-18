@@ -53,8 +53,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimEntity claimEntity = null;
 
     if (claim.getBenefitClaimId() == null) {
-      // V1 endpoints do not give us a benefit claim id. They give us a claimSubmissionId (which is
-      // stored as reference_id in claim_submission)
+      // v1 endpoints provide a claimSubmissionId (which is stored as reference_id in
+      // claim_submission)
+      // instead of a benefitClaimId (vbmsId)
       Optional<ClaimSubmissionEntity> v1ClaimSubmission =
           claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
               claim.getCollectionId(), claim.getIdType());
@@ -64,8 +65,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         claimEntity = createClaim(claim, veteranEntity);
       }
     } else {
-      // V2 endpoints go through here with a benefit claim id, and collectionId is the reference_id
-      // on claimSubmission
+      // v2 endpoints provide a benefitClaimId, and collectionId is the reference_id on
+      // claimSubmission
       claimEntity =
           claimRepository
               .findByVbmsId(claim.getBenefitClaimId())
@@ -107,7 +108,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
-    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to collectionId
+    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to referenceId
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             evidence.getClaimSubmissionId(), evidence.getIdType());
@@ -144,7 +145,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public void setOffRampReason(Claim claimWithOffRamp) {
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            String.valueOf(claimWithOffRamp.getCollectionId()), claimWithOffRamp.getIdType());
+            claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -191,7 +192,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public void insertFlashIds(List<String> veteranFlashIds, String veteranIcn) {
     var veteran = veteranRepository.findByIcn(veteranIcn);
     if (veteran.isEmpty()) {
-      log.warn("Could not find a Veteran with this ICN. Could not attach flash IDs.");
+      log.error("Could not find a Veteran with this ICN. Could not attach flash IDs.");
       return;
     }
     if (veteranFlashIds == null) {
@@ -208,7 +209,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   public void updateRfdFlag(String benefitClaimId, boolean rfdFlag) {
     var claim = claimRepository.findByVbmsId(benefitClaimId);
     if (claim.isEmpty()) {
-      log.warn("Could not find claim with id and idType, could not update RFD flag.");
+      log.error("Could not find claim with id and idType, could not update RFD flag.");
       return;
     }
     ClaimEntity claimEntity = claim.get();
@@ -223,7 +224,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             evidence.getClaimSubmissionId(), evidence.getIdType());
     if (claimSubmission.isEmpty()) {
-      log.warn(
+      log.error(
           "Claim Submission not found for claim submission id = {} and id type = {} in update sufficient evidence flag",
           evidence.getClaimSubmissionId(),
           evidence.getIdType());
@@ -232,17 +233,17 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ClaimEntity claim = claimSubmission.get().getClaim();
     ContentionEntity contention = findContention(claim, diagnosticCode);
     if (contention == null) {
-      log.warn("Could not find contention with given diagnostic code.");
+      log.error("Could not find contention with given diagnostic code.");
       return;
     }
     Optional<AssessmentResultEntity> result =
         assessmentResultRepository.findFirstByContentionIdOrderByCreatedAtDesc(contention.getId());
     if (result.isEmpty()) {
-      log.warn("Could not match assessment result to this contention id.");
+      log.error("Could not match assessment result to this contention id.");
       return;
     }
     if (evidence.getEvidence() == null) {
-      log.warn("No evidence.");
+      log.error("No evidence.");
     }
     AssessmentResultEntity assessmentResult = result.get();
     assessmentResult.setSufficientEvidenceFlag(evidence.isSufficientForFastTracking());
@@ -324,7 +325,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());
     if (claimSubmission.isEmpty()) {
-      log.warn(
+      log.error(
           "Could not find claim submission for collection id {}, will not save connection to exam order.",
           examOrder.getCollectionId());
     } else {

@@ -35,7 +35,6 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   public ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(
       String claimSubmissionId, String claimVersion) throws ClaimProcessingException {
     String idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
-    ;
     if (claimVersion != null) {
       switch (claimVersion) {
         case "v1" -> idType = Claim.V1_ID_TYPE;

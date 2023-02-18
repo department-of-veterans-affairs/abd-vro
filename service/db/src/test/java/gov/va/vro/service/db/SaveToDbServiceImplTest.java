@@ -145,14 +145,15 @@ class SaveToDbServiceImplTest {
 
   @Test
   void persistOffRampReason() {
+    String vbmsId = "1234";
     Claim claim = new Claim();
-    claim.setBenefitClaimId("1234");
+    claim.setBenefitClaimId(vbmsId);
     claim.setCollectionId("collection1");
     claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("7101");
     saveToDbService.insertClaim(claim);
-    ClaimEntity result1 = claimRepository.findByVbmsId("1234").orElseThrow();
+    ClaimEntity result1 = claimRepository.findByVbmsId(vbmsId).orElseThrow();
     assertNotNull(result1);
     Set<ClaimSubmissionEntity> csEntities = result1.getClaimSubmissions();
     assertEquals(1, csEntities.size());
@@ -160,7 +161,7 @@ class SaveToDbServiceImplTest {
     assertNull(claimSubmission1.getOffRampReason());
     claim.setOffRampReason("OffRampReason1");
     saveToDbService.setOffRampReason(claim);
-    ClaimEntity result2 = claimRepository.findByVbmsId("1234").orElseThrow();
+    ClaimEntity result2 = claimRepository.findByVbmsId(vbmsId).orElseThrow();
     assertNotNull(result2);
     Set<ClaimSubmissionEntity> csEntities2 = result2.getClaimSubmissions();
     assertEquals(1, csEntities2.size());
@@ -171,8 +172,9 @@ class SaveToDbServiceImplTest {
   @Test
   void persistEvidenceSummaryDocument() throws Exception {
     // Save claim
+    String vbmsId = "787878";
     Claim claim = new Claim();
-    claim.setBenefitClaimId("787878");
+    claim.setBenefitClaimId(vbmsId);
     claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setCollectionId("1234"); // Match claimSubmissionId in esdData.getInputStream
     claim.setVeteranIcn("v1");
@@ -191,7 +193,7 @@ class SaveToDbServiceImplTest {
     String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     // Save evidence summary document.
     saveToDbService.insertEvidenceSummaryDocument(input, documentName);
-    ClaimEntity result = claimRepository.findByVbmsId("787878").orElseThrow();
+    ClaimEntity result = claimRepository.findByVbmsId(vbmsId).orElseThrow();
     // Verify evidence is correct
     assertNotNull(result);
     EvidenceSummaryDocumentEntity esd =

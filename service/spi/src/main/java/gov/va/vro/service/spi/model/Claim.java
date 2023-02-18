@@ -27,8 +27,8 @@ public class Claim {
 
   private UUID recordId;
 
-  // We should either get a benefitClaimId from MAS for v2 endpoints, or v1 endpoints provide a
-  // claimSubmissionId that we use to set the collectionId
+  // v1 endpoints provide a claimSubmissionId that is mapped to collectionId.
+  // collectionId maps to claim_submission.reference_id
   private String benefitClaimId;
 
   private String collectionId;
@@ -40,7 +40,6 @@ public class Claim {
     return collectionId;
   }
 
-  // At the moment, this is the only id type
   @Builder.Default @NotNull private String idType = V1_ID_TYPE;
 
   @Builder.Default @NotNull private String incomingStatus = "submission";

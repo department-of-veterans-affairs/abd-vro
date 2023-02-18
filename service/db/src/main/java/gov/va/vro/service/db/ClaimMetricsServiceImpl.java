@@ -49,8 +49,8 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   @Override
   public ClaimInfoResponse findClaimInfo(String claimSubmissionId, String idType) {
-    // V1 calls hand us a claimSubmissionId which is equivalent to the reference_id on the
-    // claim_submission table.
+    // v1 endpoints provide a claimSubmissionId, which maps to the reference_id on claim_submission
+    // table.
     ClaimSubmissionEntity claimSubmission =
         claimSubmissionRepository
             .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(claimSubmissionId, idType)

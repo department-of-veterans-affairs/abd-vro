@@ -9,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostClaimRequestMapper {
 
-  // Requests from health-data-assessment while they are a v2 claim, use claimSubmissionId
-  // which needs to map to collectionId (the reference_id) field in claim Submission
+  // Requests from v2/health-data-assessment use claimSubmissionId,
+  // which needs to map to collectionId (to be used as the reference_id field in ClaimSubmission)
   @Mapping(target = "collectionId", source = "claimSubmissionId")
   Claim toModel(HealthDataAssessmentRequest request);
 }
