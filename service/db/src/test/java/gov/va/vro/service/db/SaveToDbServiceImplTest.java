@@ -53,6 +53,7 @@ class SaveToDbServiceImplTest {
     claim.setDiagnosticCode("1234");
     var result = saveToDbService.insertClaim(claim);
     assertNotNull(result.getRecordId());
+    // Both of these values should be null, and it should be equal in a v1 path.
     assertEquals(claim.getBenefitClaimId(), result.getBenefitClaimId());
     assertEquals(claim.getIdType(), result.getIdType());
     assertEquals(claim.getDiagnosticCode(), result.getDiagnosticCode());
