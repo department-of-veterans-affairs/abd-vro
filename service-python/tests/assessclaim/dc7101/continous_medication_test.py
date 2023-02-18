@@ -171,7 +171,6 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
                         }
                     ],
                     "medicationsCount": 1,
@@ -200,7 +199,6 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
                         }
                     ],
                     "medicationsCount": 1,
@@ -260,14 +258,12 @@ def test_continuous_medication_required(
                             "status": "active",
                             "dateFormatted": "4/6/2021",
                             "authoredOn": "2021-04-06T04:00:00Z",
-                            "partialDate": ""
                         },
                         {
                             "description": "Benazepril",
                             "status": "active",
                             "dateFormatted": "",
                             "authoredOn": "",
-                            "partialDate": ""
                         },
                         {
                             "description": "some medication",

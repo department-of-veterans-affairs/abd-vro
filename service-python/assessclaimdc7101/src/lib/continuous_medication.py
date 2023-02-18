@@ -40,8 +40,6 @@ def filter_mas_medication(request_body):
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for medication in request_body["evidence"]["medications"]:
-        if "partialDate" not in medication.keys():
-            medication["partialDate"] = ""  # PDF template logic assumes this field exists
         try:
             date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
             medication["dateFormatted"] = format_date(date)

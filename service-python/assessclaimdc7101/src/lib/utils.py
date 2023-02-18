@@ -68,6 +68,22 @@ def validate_request_body(request_body):
                                 "nullable": True,
                                 "schema": {"type": "string"},
                             },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
                         },
                     },
                 },
@@ -100,29 +116,18 @@ def validate_request_body(request_body):
                             "date": {"type": "string"},
                             "practitioner": {"type": "string", "nullable": True},
                             "organization": {"type": "string", "nullable": True},
-                        },
-                    },
-                },
-                "procedures": {
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {
+                            "document": {
                                 "type": "string",
+                                "default": "",
                             },
-                            "codeSystem": {
-                                "type": "string"
-                            },
-                            "text": {
-                                "type": "string"
-                            },
-                            "performedDate": {
-                                "type": "string"
-                            },
-                            "status": {
+                            "page": {
                                 "type": "string",
+                                "default": "",
                             },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            }
                         },
                     },
                 },
@@ -147,6 +152,22 @@ def validate_request_body(request_body):
                             "abatementDate": {
                                 "type": "string",
                                 "nullable": True
+                            },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
                             }
                         }
                     }
@@ -157,4 +178,4 @@ def validate_request_body(request_body):
     v = Validator(schema)
     v.allow_unknown = True
 
-    return {"is_valid": v.validate(request_body), "errors": v.errors}
+    return {"is_valid": v.validate(request_body), "errors": v.errors, "request_body": v.normalized(request_body)}
