@@ -1,6 +1,7 @@
 package gov.va.vro.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
@@ -19,8 +20,6 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
   @Autowired MasProcessingService masProcessingService;
 
   @Autowired ClaimSubmissionRepository claimSubmissionRepository;
-
-  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
 
   @Test
   void testClaimPersistence() {
@@ -108,7 +107,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var claim = claimRepository.findByVbmsId(request.getBenefitClaimId()).orElseThrow();
     var claimSubmissionList =
         claimSubmissionRepository.findByReferenceIdAndIdType(
-            String.valueOf(request.getCollectionId()), DEFAULT_ID_TYPE);
+            String.valueOf(request.getCollectionId()), MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+    assertTrue(claimSubmissionList.size() > 0);
     for (ClaimSubmissionEntity submission : claimSubmissionList) {
       assertEquals(request.getCollectionId().toString(), submission.getReferenceId());
     }

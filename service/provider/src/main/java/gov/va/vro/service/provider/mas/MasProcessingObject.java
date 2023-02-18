@@ -20,10 +20,12 @@ public class MasProcessingObject implements Auditable {
     return claimPayload.getCollectionId();
   }
 
+  // benefitClaimId (aka vbmsId)
   public String getBenefitClaimId() {
     return claimPayload.getClaimDetail().getBenefitClaimId();
   }
 
+  // TODO: verify that vbmsId is always a long or check the API spec where this long is submitted
   public long getBenefitClaimIdAsLong() {
     String claimIdString = getBenefitClaimId();
     long claimId = Long.parseLong(claimIdString);
