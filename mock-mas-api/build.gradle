@@ -1,0 +1,17 @@
+plugins {
+    id 'local.java.container-spring-conventions'
+    id 'starter.std.java.library-spring-conventions'
+    id 'io.spring.dependency-management'
+    id "io.freefair.lombok" version "6.6.1"
+    id 'starter.java.build-utils-conventions'
+    id 'jacoco'
+}
+
+dependencies {
+    implementation project(':shared:domain')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+}

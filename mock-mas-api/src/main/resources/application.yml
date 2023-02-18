@@ -1,0 +1,8 @@
+# spring settings
+spring:
+  profiles:
+    active: ${ENV:default}
+
+# server settings
+server:
+  port: 9001

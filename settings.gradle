@@ -100,3 +100,5 @@ if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6522'
   include ':service-python:assessclaimcancer'
 }
+include 'mock-mas-api'
+
