@@ -36,7 +36,7 @@ public class MasController implements MasResource {
             .firstName(request.getFirstName())
             .gender(request.getGender())
             .lastName(request.getLastName())
-            .dateOfBirth(request.getDateOfBirth())
+            .dateOfBirth(request.getDateOfBirth().replaceAll("Z", ""))
             .veteranIdentifiers(request.getVeteranIdentifiers())
             .veteranFlashIds(request.getVeteranFlashIds())
             .build();

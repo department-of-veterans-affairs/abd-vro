@@ -229,6 +229,16 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.name }}
                   key: {{ .Values.dataservice.lhApiAuthUrl }}
+            - name: SLACK_EXCEPTION_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.slackExceptionChannel }}
+            - name: SLACK_EXCEPTION_WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.slackExceptionWebhook }}
             - name: VRO_AUD_URL
               valueFrom:
                 secretKeyRef:
