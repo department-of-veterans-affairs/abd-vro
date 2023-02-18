@@ -16,7 +16,8 @@ def pdf_helper_all(data):
     data["timestamp"] = pytz.utc.localize(datetime.now())
     data["evidence"] = data["evidence"]
     if data["veteranInfo"]["birthdate"] != "":
-        data["veteranInfo"]["birthdate"] = parser.parse(data["veteranInfo"]["birthdate"])
+        birth_date = data["veteranInfo"]["birthdate"].replace("Z", "")
+        data["veteranInfo"]["birthdate"] = parser.parse(birth_date)
 
     if data["version"] == "v1":
         for medication_info in data["evidence"]["medications"]:
