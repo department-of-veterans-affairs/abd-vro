@@ -84,6 +84,10 @@ def validate_request_body(request_body):
                                 "type": "string",
                                 "default": "",
                             },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            },
                         },
                     },
                 },
@@ -127,6 +131,10 @@ def validate_request_body(request_body):
                             "receiptDate": {
                                 "type": "string",
                                 "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
                             }
                         },
                     },
@@ -166,6 +174,10 @@ def validate_request_body(request_body):
                                 "default": "",
                             },
                             "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
                                 "type": "string",
                                 "default": "",
                             }
