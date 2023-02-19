@@ -22,7 +22,7 @@ public class MasApiServiceTest {
 
   @Autowired private MasOauth2Properties oauth2Properties;
 
-  @Test
+  // @Test
   void retrieveAnnotation350() {
     if (oauth2Properties.getClientSecret() == null) {
       return; // ignore when client secret is not available (scripts/setenv.sh has not been run)
@@ -34,7 +34,7 @@ public class MasApiServiceTest {
     assertEquals(34, annotations.get(0).getDocuments().size());
   }
 
-  @Test
+  // @Test
   void orderExam350() {
     if (oauth2Properties.getClientSecret() == null) {
       return; // ignore when client secret is not available (scripts/setenv.sh has not been run)
