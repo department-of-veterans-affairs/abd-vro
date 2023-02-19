@@ -1,8 +1,12 @@
 package gov.va.vro.mockmas.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockmas.model.MasTokenResponse;
+import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,10 +16,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MasApiService {
   private final RestTemplate template;
+  private final ObjectMapper mapper;
   private final MasApiProperties apiProperties;
   private final MasOauth2Properties oauth2Properties;
   MasTokenResponse getToken() {
@@ -36,7 +43,8 @@ public class MasApiService {
     return response.getBody();
   }
 
-  public String getAnnotation(int collectionId) {
+  @SneakyThrows
+  public List<MasCollectionAnnotation> getAnnotation(int collectionId) {
     MasTokenResponse tokenResponse = getToken();
     String token = tokenResponse.getAccessToken();
 
@@ -53,6 +61,7 @@ public class MasApiService {
     HttpEntity<MasCollectionAnnotationRequest> request = new HttpEntity<>(body, headers);
 
     var response= template.postForEntity(url, request, String.class);
-    return response.getBody();
+    String responseBody = response.getBody();
+    return mapper.readValue(responseBody, new TypeReference<>() {});
   }
 }

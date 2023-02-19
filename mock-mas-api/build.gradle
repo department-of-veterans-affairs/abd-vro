@@ -10,6 +10,9 @@ plugins {
 dependencies {
     implementation project(':shared:domain')
 
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
