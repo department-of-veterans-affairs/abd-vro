@@ -1,8 +1,11 @@
 package gov.va.vro.service.provider.mas.service;
 
+import static java.util.Objects.isNull;
+
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
@@ -120,8 +123,14 @@ public class MasApiService implements IMasApiService {
 
       ResponseEntity<String> masResponse =
           restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-      return mapper.readValue(masResponse.getBody(), new TypeReference<>() {});
 
+      JsonNode masResponseJson = new ObjectMapper().readTree(String.valueOf(masResponse.getBody()));
+
+      String examOrderRespStatus = "success";
+      if ((isNull(masResponseJson.get("success")))) {
+        examOrderRespStatus = "failed";
+      }
+      return examOrderRespStatus;
     } catch (RestClientException | IOException e) {
       log.error("Failed to order exam", e);
       // TODO: REPLACE WHEN FIXED
