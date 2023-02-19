@@ -20,16 +20,16 @@ public class MockMasConfig {
   @Value("classpath:annotations/collection-375.json")
   private Resource collection375Resource;
 
-  /**
-   * Creates and provides the common instance of RestTemplate as a bean for the application.
-   */
+  /** Creates and provides the common instance of RestTemplate as a bean for the application. */
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
 
   @Bean
-  public ObjectMapper objectMapper() { return new ObjectMapper(); }
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 
   @SneakyThrows
   private List<MasCollectionAnnotation> readFromResource(Resource resource) {

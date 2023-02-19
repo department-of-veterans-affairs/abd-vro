@@ -16,13 +16,11 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
-@EnableConfigurationProperties({ MasApiProperties.class, MasOauth2Properties.class })
+@EnableConfigurationProperties({MasApiProperties.class, MasOauth2Properties.class})
 public class MasApiServiceTest {
-  @Autowired
-  private MasApiService apiService;
+  @Autowired private MasApiService apiService;
 
-  @Autowired
-  private MasOauth2Properties oauth2Properties;
+  @Autowired private MasOauth2Properties oauth2Properties;
 
   @Test
   void retrieveRecord350() {

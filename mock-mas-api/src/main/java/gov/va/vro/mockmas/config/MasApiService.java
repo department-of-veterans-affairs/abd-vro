@@ -10,7 +10,6 @@ import lombok.SneakyThrows;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,13 +24,14 @@ public class MasApiService {
   private final ObjectMapper mapper;
   private final MasApiProperties apiProperties;
   private final MasOauth2Properties oauth2Properties;
-  MasTokenResponse getToken() {
+
+  public MasTokenResponse getToken() {
     final HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
     final String url = oauth2Properties.getTokenUri();
 
-    MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.add("scope", oauth2Properties.getScope());
     map.add("grant_type", oauth2Properties.getGrantType());
     map.add("client_id", oauth2Properties.getClientId());
@@ -39,7 +39,7 @@ public class MasApiService {
 
     HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-    var response= template.postForEntity(url, request, MasTokenResponse.class);
+    var response = template.postForEntity(url, request, MasTokenResponse.class);
     return response.getBody();
   }
 
@@ -60,7 +60,7 @@ public class MasApiService {
 
     HttpEntity<MasCollectionAnnotationRequest> request = new HttpEntity<>(body, headers);
 
-    var response= template.postForEntity(url, request, String.class);
+    var response = template.postForEntity(url, request, String.class);
     String responseBody = response.getBody();
     return mapper.readValue(responseBody, new TypeReference<>() {});
   }

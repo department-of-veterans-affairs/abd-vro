@@ -2,6 +2,7 @@ package gov.va.vro.mockmas.controller;
 
 import gov.va.vro.mockmas.config.MasApiService;
 import gov.va.vro.mockmas.model.CollectionStore;
+import gov.va.vro.mockmas.model.MasTokenResponse;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;
@@ -71,14 +72,24 @@ public class MockMasController {
   @RequestMapping(
       method = RequestMethod.POST,
       value = "/pcOrderExam",
-      produces = { MediaType.TEXT_PLAIN_VALUE } )
+      produces = {MediaType.TEXT_PLAIN_VALUE})
   ResponseEntity<String> postExam(
       @Parameter(
-          name = "claimId",
-          description = "The CorpDB BNFT_CLAIM_ID",
-          required = true,
-          in = ParameterIn.PATH)
-      @RequestBody MasOrderExamRequest request) {
+              name = "claimId",
+              description = "The CorpDB BNFT_CLAIM_ID",
+              required = true,
+              in = ParameterIn.PATH)
+          @RequestBody
+          MasOrderExamRequest request) {
     return new ResponseEntity<>("OK", HttpStatus.OK);
+  }
+
+  @RequestMapping(
+      method = RequestMethod.POST,
+      value = "/token",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  ResponseEntity<MasTokenResponse> postForToken() {
+    MasTokenResponse response = apiService.getToken();
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

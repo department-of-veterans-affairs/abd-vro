@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
@@ -20,23 +19,21 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
-@EnableConfigurationProperties({ MasApiProperties.class, MasOauth2Properties.class })
+@EnableConfigurationProperties({MasApiProperties.class, MasOauth2Properties.class})
 public class CollectionsAnnotsTest {
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
-  @Autowired
-  private RestTemplate template;
+  @Autowired private RestTemplate template;
 
-  @Autowired
-  private MasApiProperties apiProperties;
+  @Autowired private MasApiProperties apiProperties;
 
   private void sanityCheck(int collectionId, int collectionLength, int documentSize) {
     String url = "http://localhost:" + port + apiProperties.getCollectionAnnotsPath();
     MasCollectionAnnotationRequest request = new MasCollectionAnnotationRequest();
     request.setCollectionsId(collectionId);
 
-    ResponseEntity<MasCollectionAnnotation[]> response = template.postForEntity(url, request, MasCollectionAnnotation[].class);
+    ResponseEntity<MasCollectionAnnotation[]> response =
+        template.postForEntity(url, request, MasCollectionAnnotation[].class);
     MasCollectionAnnotation[] body = response.getBody();
 
     assertEquals(collectionLength, body.length);
