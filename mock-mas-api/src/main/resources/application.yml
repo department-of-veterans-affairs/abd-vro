@@ -19,4 +19,4 @@ mock-mas:
     base-url: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
     collection-annots-path: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
     collection-status-path: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
-    create-exam-order-path: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+    create-exam-order-path: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"

@@ -2,7 +2,10 @@ package gov.va.vro.mockmas.controller;
 
 import gov.va.vro.mockmas.config.MasApiService;
 import gov.va.vro.mockmas.model.CollectionStore;
+import gov.va.vro.mockmas.model.ConditionInfo;
 import gov.va.vro.mockmas.model.MasTokenResponse;
+import gov.va.vro.mockmas.model.OrderExamResponse;
+import gov.va.vro.mockmas.model.OrderExamSuccess;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
 import gov.va.vro.model.mas.MasStatus;
@@ -17,9 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
@@ -72,8 +77,8 @@ public class MockMasController {
   @RequestMapping(
       method = RequestMethod.POST,
       value = "/pcOrderExam",
-      produces = {MediaType.TEXT_PLAIN_VALUE})
-  ResponseEntity<String> postExam(
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  ResponseEntity<OrderExamResponse> postExam(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -81,14 +86,24 @@ public class MockMasController {
               in = ParameterIn.PATH)
           @RequestBody
           MasOrderExamRequest request) {
-    return new ResponseEntity<>("OK", HttpStatus.OK);
+    log.info("Ordering exam for {}.", request.getCollectionsId());
+    ConditionInfo conditionInfo = new ConditionInfo("HYPERTENSION", "HYPERTENSION");
+
+    OrderExamSuccess success = new OrderExamSuccess();
+    success.setCollectionsId(request.getCollectionsId());
+    success.setConditions(Collections.singletonList(conditionInfo));
+
+    OrderExamResponse response = new OrderExamResponse(success);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @RequestMapping(
       method = RequestMethod.POST,
       value = "/token",
+      consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
-  ResponseEntity<MasTokenResponse> postForToken() {
+  ResponseEntity<MasTokenResponse> postForToken(@RequestParam MultiValueMap<String,String> paramMap) {
+    log.info("Getting the token from MAS server.");
     MasTokenResponse response = apiService.getToken();
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

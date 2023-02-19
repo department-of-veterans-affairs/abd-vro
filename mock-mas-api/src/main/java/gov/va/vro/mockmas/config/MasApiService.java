@@ -3,10 +3,13 @@ package gov.va.vro.mockmas.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockmas.model.MasTokenResponse;
+import gov.va.vro.mockmas.model.OrderExamRequest;
+import gov.va.vro.mockmas.model.OrderExamResponse;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MasApiService {
   private final RestTemplate template;
   private final ObjectMapper mapper;
@@ -62,6 +66,28 @@ public class MasApiService {
 
     var response = template.postForEntity(url, request, String.class);
     String responseBody = response.getBody();
+    return mapper.readValue(responseBody, new TypeReference<>() {});
+  }
+
+  @SneakyThrows
+  public OrderExamResponse orderExam(int collectionId) {
+    MasTokenResponse tokenResponse = getToken();
+    String token = tokenResponse.getAccessToken();
+
+    final HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setBearerAuth(token);
+
+    String baseUrl = apiProperties.getBaseUrl();
+    final String url = baseUrl + apiProperties.getCreateExamOrderPath();
+
+    OrderExamRequest body = new OrderExamRequest(collectionId);
+
+    HttpEntity<OrderExamRequest> request = new HttpEntity<>(body, headers);
+
+    var response = template.postForEntity(url, request, String.class);
+    String responseBody = response.getBody();
+    log.info("order exam response: {}", responseBody);
     return mapper.readValue(responseBody, new TypeReference<>() {});
   }
 }

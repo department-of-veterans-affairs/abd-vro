@@ -3,6 +3,7 @@ package gov.va.vro.mockmas.config;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import gov.va.vro.mockmas.model.OrderExamResponse;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class MasApiServiceTest {
   @Autowired private MasOauth2Properties oauth2Properties;
 
   @Test
-  void retrieveRecord350() {
+  void retrieveAnnotation350() {
     if (oauth2Properties.getClientSecret() == null) {
       return; // ignore when client secret is not available (scripts/setenv.sh has not been run)
     }
@@ -32,5 +33,12 @@ public class MasApiServiceTest {
     assertNotNull(annotations);
     assertEquals(2, annotations.size());
     assertEquals(34, annotations.get(0).getDocuments().size());
+  }
+
+  @Test void orderExam350() {
+    if (oauth2Properties.getClientSecret() == null) {
+      return; // ignore when client secret is not available (scripts/setenv.sh has not been run)
+    }
+    // OrderExamResponse response = apiService.orderExam(350);
   }
 }
