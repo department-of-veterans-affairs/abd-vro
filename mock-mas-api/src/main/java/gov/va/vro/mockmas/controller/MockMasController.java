@@ -102,7 +102,8 @@ public class MockMasController {
       value = "/token",
       consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
-  ResponseEntity<MasTokenResponse> postForToken(@RequestParam MultiValueMap<String,String> paramMap) {
+  ResponseEntity<MasTokenResponse> postForToken(
+      @RequestParam MultiValueMap<String, String> paramMap) {
     log.info("Getting the token from MAS server.");
     MasTokenResponse response = apiService.getToken();
     return new ResponseEntity<>(response, HttpStatus.OK);

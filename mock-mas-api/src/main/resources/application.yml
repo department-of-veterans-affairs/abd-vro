@@ -7,6 +7,28 @@ spring:
 server:
   port: 9001
 
+# Health
+management:
+  server:
+    port: 9002
+    ssl.enabled: false
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState
+        liveness:
+          include: livenessState
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health
+
 # mock mas application specific
 mock-mas:
   mas-oauth2:

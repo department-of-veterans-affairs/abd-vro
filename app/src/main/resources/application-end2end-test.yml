@@ -4,8 +4,8 @@
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 spring.config.import: application-local.yml
 
-spring.security.oauth2.client.provider.mas.uri: "http://localhost:9001/token"
+spring.security.oauth2.client.provider.mas.uri: "http://mock-mas-api:9001/token"
 
-masAPIProvider.baseURL: "http://localhost:9001"
+masAPIProvider.baseURL: "http://mock-mas-api:9001"
 masAPIProvider.createExamOrderPath: "/pcOrderExam"
 

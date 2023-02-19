@@ -1,12 +1,12 @@
 package gov.va.vro.mockmas;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import gov.va.vro.mockmas.config.MasApiProperties;
 import gov.va.vro.mockmas.config.MasOauth2Properties;
 import gov.va.vro.mockmas.model.OrderExamRequest;
 import gov.va.vro.mockmas.model.OrderExamResponse;
 import gov.va.vro.mockmas.model.OrderExamSuccess;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
@@ -30,8 +28,7 @@ public class OrderExamTest {
 
   @Autowired private MasApiProperties apiProperties;
 
-  private void sanityCheck(int collectionId, int collectionLength, int documentSize) {
- }
+  private void sanityCheck(int collectionId, int collectionLength, int documentSize) {}
 
   @Test
   void orderExam375Test() {
