@@ -245,11 +245,10 @@ public class VroV2Tests {
     return headers;
   }
 
-
   /**
-   * This is a positive end to end set. Two set of blood pressures and medications come
-   * from Health API and MAS collections. They are not really related. You can
-   * check this to see how the pdfs look like with data from both sources.
+   * This is a positive end to end set. Two set of blood pressures and medications come from Health
+   * API and MAS collections. They are not really related. You can check this to see how the pdfs
+   * look like with data from both sources.
    */
   @SneakyThrows
   @Test
