@@ -268,10 +268,10 @@
           <tr>
             <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
             <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
-            <td>{% if bp_reading.organization == "" %}class="empty" {% endif %}>{% if bp_reading.organization == ""%}n.a.{% else %} VAMC record - {{ bp_reading.organization }}{% endif %}</td>
-            <td>{% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %} VAMC record - {{ bp_reading.receiptDate }}{% endif %}</td>
-            <td>{% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %} VAMC record - {{ bp_reading.page }}{% endif %}</td>
-            <td>{% if bp_reading.documentId == "" %}class="empty" {% endif %}>{% if bp_reading.documentId == ""%}n.a.  - see VistA/Capri to verify{% else %} VAMC record - {{ bp_reading.documentId }}{% endif %}</td>
+            <td {% if bp_reading.organization == "" %}class="empty" {% endif %}>{% if bp_reading.organization == ""%}n.a.{% else %} VAMC record - {{ bp_reading.organization }}{% endif %}</td>
+            <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
+            <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
+            <td {% if bp_reading.documentId == "" %}class="empty" {% endif %}>{% if bp_reading.documentId == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.documentId }}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -303,10 +303,10 @@
           <tr>
             <th>{{ medication.description }}</th>
             <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}No confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
-            <td>{% if medication.organization == "" %}class="empty" {% endif %}>{% if medication.organization == ""%}n.a.{% else %} VAMC record - {{ medication.organization }}{% endif %}</td>
-            <td>{% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %} VAMC record - {{ medication.receiptDate }}{% endif %}</td>
-            <td>{% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %} VAMC record - {{ medication.page }}{% endif %}</td>
-            <td>{% if medication.documentId == "" %}class="empty" {% endif %}>{% if medication.documentId == ""%}n.a.{% else %} VAMC record - {{ medication.documentId }}{% endif %}</td>
+            <td {% if medication.organization == "" %}class="empty" {% endif %}>{% if medication.organization == ""%}n.a.{% else %} VAMC record - {{ medication.organization }}{% endif %}</td>
+            <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
+            <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
+            <td {% if medication.documentId == "" %}class="empty" {% endif %}>{% if medication.documentId == ""%}n.a.{% else %}{{ medication.documentId }}{% endif %}</td>
           </tr>
           {% endfor %}
           {% if evidence.medications |length == 0 %}
@@ -343,10 +343,10 @@
             <tr>
               <th>{{ condition.text }}</th>
               <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
-              <td>{% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %} VAMC record - {{ condition.organization }}{% endif %}</td>
-              <td>{% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %} VAMC record - {{ condition.receiptDate }}{% endif %}</td>
-              <td>{% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %} VAMC record - {{ condition.page }}{% endif %}</td>
-              <td>{% if condition.documentId == "" %}class="empty" {% endif %}>{% if condition.documentId == ""%}n.a.{% else %} VAMC record - {{ condition.documentId }}{% endif %}</td>
+              <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %} VAMC record - {{ condition.organization }}{% endif %}</td>
+              <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
+              <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
+              <td {% if condition.documentId == "" %}class="empty" {% endif %}>{% if condition.documentId == ""%}n.a.{% else %}{{ condition.documentId }}{% endif %}</td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list |length == 0 %}

@@ -317,12 +317,14 @@ from assessclaimdc7101.src.lib import main
                             "text": "some medication",
                             "relevant": True,
                             "authoredOn": "1950-04-06T07:24:55Z",
+                            "dataSource": "MAS"
                         },
                             {
                                 "text": "some medication",
                                 "relevant": True,
                                 "authoredOn": "",
-                                "partialDate": "**/**/1988"
+                                "partialDate": "**/**/1988",
+                                "dataSource": "MAS"
                             }]
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
@@ -384,7 +386,8 @@ from assessclaimdc7101.src.lib import main
                                                'partialDate': '',
                                                'receiptDate': '',
                                                'relevant': True,
-                                               'text': 'some medication'},
+                                               'text': 'some medication',
+                                               "dataSource": "MAS"},
                                               {'authoredOn': '',
                                                'dateFormatted': '',
                                                'document': '',
@@ -393,7 +396,8 @@ from assessclaimdc7101.src.lib import main
                                                'partialDate': '**/**/1988',
                                                'receiptDate': '',
                                                'relevant': True,
-                                               'text': 'some medication'}]},
+                                               'text': 'some medication',
+                                               "dataSource": "MAS"}]},
                  'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
                                      'medicationsCount': 2,
                                      'recentBpReadings': 1,
@@ -450,7 +454,8 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                         "medications": [{
                             "text": "some medication",
-                            "relevant": True
+                            "relevant": True,
+                            "dataSource": "MAS"
                         }]
                     },
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
@@ -524,7 +529,8 @@ from assessclaimdc7101.src.lib import main
                                                'partialDate': '',
                                                'receiptDate': '',
                                                'relevant': True,
-                                               'text': 'some medication'}]},
+                                               'text': 'some medication',
+                                               "dataSource": "MAS"}]},
                  'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
                                      'medicationsCount': 1,
                                      'recentBpReadings': 2,
