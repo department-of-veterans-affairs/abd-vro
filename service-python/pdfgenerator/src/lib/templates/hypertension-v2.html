@@ -271,7 +271,7 @@
             <td {% if bp_reading.organization == "" %}class="empty" {% endif %}>{% if bp_reading.organization == ""%}n.a.{% else %} VAMC record - {{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
-            <td {% if bp_reading.documentId == "" %}class="empty" {% endif %}>{% if bp_reading.documentId == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.documentId }}{% endif %}</td>
+            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.document }}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -306,7 +306,7 @@
             <td {% if medication.organization == "" %}class="empty" {% endif %}>{% if medication.organization == ""%}n.a.{% else %} VAMC record - {{ medication.organization }}{% endif %}</td>
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
-            <td {% if medication.documentId == "" %}class="empty" {% endif %}>{% if medication.documentId == ""%}n.a.{% else %}{{ medication.documentId }}{% endif %}</td>
+            <td {% if medication.document == "" %}class="empty" {% endif %}>{% if medication.document == ""%}n.a.{% else %}{{ medication.document }}{% endif %}</td>
           </tr>
           {% endfor %}
           {% if evidence.medications |length == 0 %}
@@ -346,7 +346,7 @@
               <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %} VAMC record - {{ condition.organization }}{% endif %}</td>
               <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
               <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
-              <td {% if condition.documentId == "" %}class="empty" {% endif %}>{% if condition.documentId == ""%}n.a.{% else %}{{ condition.documentId }}{% endif %}</td>
+              <td {% if condition.document == "" %}class="empty" {% endif %}>{% if condition.document == ""%}n.a.{% else %}{{ condition.document }}{% endif %}</td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list |length == 0 %}
@@ -385,7 +385,7 @@
           <tr>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
-            <td>{{ review.document_id }}</td>
+            <td>{{ review.document }}</td>
           </tr>
           {% endfor %}
           {% if evidence.unavailable_reviews |length == 0 %}
