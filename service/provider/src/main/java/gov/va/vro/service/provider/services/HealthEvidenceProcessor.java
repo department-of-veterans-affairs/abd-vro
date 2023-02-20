@@ -23,6 +23,9 @@ public class HealthEvidenceProcessor implements Processor {
 
     if (evidence.getErrorMessage() != null) {
       log.error("Health Assessment Failed");
+      if ("insufficientHealthDataToOrderExam".equalsIgnoreCase(evidence.getErrorMessage())) {
+        exchange.setProperty("sufficientForFastTracking", null);
+      }
       throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
     } else {
       exchange.setProperty("sufficientForFastTracking", evidence.isSufficientForFastTracking());
