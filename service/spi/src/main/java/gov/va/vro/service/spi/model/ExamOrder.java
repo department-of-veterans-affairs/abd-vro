@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.OffsetDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +25,6 @@ public class ExamOrder {
   private String idType;
 
   private String status;
+
+  private OffsetDateTime examOrderDateTime;
 }
