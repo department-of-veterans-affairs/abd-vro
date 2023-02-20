@@ -1,5 +1,4 @@
 name: Publish and deploy images
-# TODO: This filename needs updating for SecRel 4 since it signs all images.
 
 on:
   # Allow manual triggering
