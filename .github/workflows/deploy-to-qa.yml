@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-qa-images:
-    uses: ./.github/workflows/deploy-unsigned.yml
+    uses: ./.github/workflows/deploy-to-env.yml
     with:
       target_env: qa
       # QA uses typically dev_* images
