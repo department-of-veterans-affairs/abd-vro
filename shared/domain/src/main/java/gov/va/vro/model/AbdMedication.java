@@ -21,8 +21,8 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private String status;
 
   @Schema(
-          description = "Location where the measurement taken",
-          example = "WASHINGTON VA MEDICAL CENTER")
+      description = "Location where the measurement taken",
+      example = "WASHINGTON VA MEDICAL CENTER")
   private String organization;
 
   @Schema(description = "Notes of the medication order")
@@ -74,7 +74,6 @@ public class AbdMedication implements Comparable<AbdMedication> {
 
   @Schema(description = "Document Page Number", example = "55")
   private String page;
-
 
   @Schema(description = "Partial date from OCR", example = "**/**/1988")
   private String partialDate;
