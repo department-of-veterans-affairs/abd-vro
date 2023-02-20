@@ -13,6 +13,7 @@ import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,8 @@ public class BipClaimService {
   private final IBipApiService bipApiService;
 
   private final IBipCeApiService bipCeApiService;
+
+  private final SaveToDbService saveToDbService;
 
   /**
    * Check if all the anchors for fast-tracking are satisfied.
@@ -88,7 +91,7 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
-    var claimId = Long.parseLong(payload.getClaimId());
+    var claimId = Long.parseLong(payload.getBenefitClaimId());
     String specialIssue1 = claimPorps.getSpecialIssue1();
     log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
@@ -141,11 +144,12 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    long claimId = payload.getClaimIdAsLong();
+    long claimId = payload.getBenefitClaimIdAsLong();
     log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
 
     try {
       bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
+      saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
     } catch (Exception e) {
       throw new BipException("BIP update claim status resulted in an exception", e);
     }
@@ -155,7 +159,7 @@ public class BipClaimService {
   /** Check if claim is still eligible for fast tracking, and if so, update status. */
   public MasProcessingObject completeProcessing(MasProcessingObject payload) {
     int collectionId = payload.getCollectionId();
-    long claimId = payload.getClaimIdAsLong();
+    long claimId = payload.getBenefitClaimIdAsLong();
 
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(claimId);

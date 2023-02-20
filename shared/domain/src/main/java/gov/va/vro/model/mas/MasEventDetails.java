@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 public class MasEventDetails {
 
-  private String claimId;
+  private String benefitClaimId;
   private String collectionId;
   private String veteranIcn;
   private String diagnosticCode;

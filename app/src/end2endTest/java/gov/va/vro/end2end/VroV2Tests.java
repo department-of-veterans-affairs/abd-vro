@@ -115,11 +115,9 @@ public class VroV2Tests {
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
 
-    if ("end2end-test".equals(System.getenv("ENV"))) {
-      log.info("Reset data in the mock servers.");
-      restTemplate.delete(UPDATES_URL + claimId);
-      restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
-    }
+    log.info("Reset data in the mock servers.");
+    restTemplate.delete(UPDATES_URL + claimId);
+    restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
 
     var requestEntity = getEntity(content);
     var response =
@@ -127,10 +125,6 @@ public class VroV2Tests {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
-
-    if (!"end2end-test".equals(System.getenv("ENV"))) {
-      return;
-    }
 
     log.info("Make sure the evidence pdf is uploaded");
     boolean successUploading = false;
@@ -156,6 +150,22 @@ public class VroV2Tests {
     assertTrue(contentionsFound);
     boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
     assertTrue(lifecycleStatusFound);
+  }
+
+  /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
+  @Test
+  @SneakyThrows
+  void testAutomatedClaimNonExistentClaimId() {
+    var path = "test-mas/claim-801-7101-nonexistent-claimid.json";
+    var content = resourceToString(path);
+    var requestEntity = getEntity(content);
+    try {
+      var response =
+          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      fail("Collection 801 should have received 400.");
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
   }
 
   @Test
@@ -233,5 +243,58 @@ public class VroV2Tests {
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(JWT_TOKEN);
     return headers;
+  }
+
+  /**
+   * This is a positive end to end set. Two set of blood pressures and medications come from Health
+   * API and MAS collections. They are not really related. You can check this to see how the pdfs
+   * look like with data from both sources.
+   */
+  @SneakyThrows
+  @Test
+  void testAutomatedClaimSufficientSeparate() {
+
+    var path = "test-mas/claim-375-7101.json";
+    var content = resourceToString(path);
+    final MasAutomatedClaimRequest request =
+        objectMapper.readValue(content, MasAutomatedClaimRequest.class);
+    final String claimId = request.getClaimDetail().getBenefitClaimId();
+    final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
+
+    log.info("Reset data in the mock servers.");
+    restTemplate.delete(UPDATES_URL + claimId);
+    restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
+
+    var requestEntity = getEntity(content);
+    var response =
+        restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    var masResponse = response.getBody();
+    assertEquals("Received Claim for collection Id 375.", masResponse.getMessage());
+
+    log.info("Make sure the evidence pdf is uploaded");
+    boolean successUploading = false;
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      String url = RECEIVED_FILES_URL + fileNumber;
+      try {
+        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+        successUploading = true;
+        break;
+      } catch (HttpStatusCodeException exception) {
+        log.info("Did not find pdf for veteran {}. Retrying...", fileNumber);
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+      }
+    }
+    assertTrue(successUploading);
+
+    boolean contentionsFound = getFoundStatus(claimId, "contentions");
+    assertTrue(contentionsFound);
+    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
+    assertTrue(lifecycleStatusFound);
   }
 }
