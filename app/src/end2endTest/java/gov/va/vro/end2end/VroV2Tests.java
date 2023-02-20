@@ -228,7 +228,7 @@ public class VroV2Tests {
             "collectionStatus",
             "DRAFT",
             "examOrderDateTime",
-            "2022-12-08T17:45:61Z",
+            "2022-12-08T17:45:59Z",
             "eventId",
             "None");
     return objectMapper.writeValueAsString(payload);

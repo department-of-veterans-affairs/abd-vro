@@ -89,6 +89,8 @@ class SaveToDbServiceImplTest {
     claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode("1234");
+    claim.setConditionName("Condition1");
+    claim.setDisabilityClassificationCode("DCC1");
     var result = saveToDbService.insertClaim(claim);
     assertNotNull(result.getRecordId());
     assertEquals(claim.getBenefitClaimId(), result.getBenefitClaimId());
@@ -105,6 +107,8 @@ class SaveToDbServiceImplTest {
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
+    assertEquals(claim.getConditionName(), contentionEntity.getConditionName());
+    assertEquals(claim.getDisabilityClassificationCode(), contentionEntity.getClassificationCode());
     assertEquals(1, claimEntity.getClaimSubmissions().size());
     ClaimSubmissionEntity claimSubmissionEntity =
         claimEntity.getClaimSubmissions().iterator().next();

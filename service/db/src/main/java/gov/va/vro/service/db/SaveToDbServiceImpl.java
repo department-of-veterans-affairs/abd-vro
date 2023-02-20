@@ -74,7 +74,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
 
     ClaimSubmissionEntity claimSubmissionEntity = createClaimSubmission(claim);
-    ensureContentionExists(claimEntity, claim.getDiagnosticCode());
+    ensureContentionExists(
+        claimEntity,
+        claim.getDiagnosticCode(),
+        claim.getConditionName(),
+        claim.getDisabilityClassificationCode());
     claimEntity.addClaimSubmission(claimSubmissionEntity);
     claimSubmissionRepository.save(claimSubmissionEntity);
     claimRepository.save(claimEntity);
@@ -182,8 +186,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
             .findByCollectionId(examOrder.getCollectionId())
             .orElseGet(() -> createExamOrder(examOrder));
     if (null != examOrderEntity) {
-      examOrderEntity.setCollectionId(examOrder.getCollectionId());
       examOrderEntity.setStatus(examOrder.getStatus());
+      examOrderEntity.setOrderedAt(examOrder.getExamOrderDateTime());
       examOrderRepository.save(examOrderEntity);
     }
   }
@@ -291,10 +295,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return result;
   }
 
-  private ContentionEntity ensureContentionExists(ClaimEntity claim, String diagnosticCode) {
+  private ContentionEntity ensureContentionExists(
+      ClaimEntity claim,
+      String diagnosticCode,
+      String conditionName,
+      String disabilityClassificationCode) {
     var contention = findContention(claim, diagnosticCode);
     if (contention == null) {
-      contention = createContention(claim, diagnosticCode);
+      contention =
+          createContention(claim, diagnosticCode, conditionName, disabilityClassificationCode);
       claimRepository.save(claim);
     }
     return contention;
@@ -312,7 +321,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
     ClaimEntity claimEntity = mapper.toClaimEntity(claim);
     claimEntity.setVeteran(veteranEntity);
-    createContention(claimEntity, claim.getDiagnosticCode());
+    createContention(
+        claimEntity,
+        claim.getDiagnosticCode(),
+        claim.getConditionName(),
+        claim.getDisabilityClassificationCode());
     return claimRepository.save(claimEntity);
   }
 
@@ -324,6 +337,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     ExamOrderEntity examOrderEntity = new ExamOrderEntity();
     examOrderEntity.setCollectionId(examOrder.getCollectionId());
     examOrderEntity.setStatus(examOrder.getStatus());
+    examOrderEntity.setOrderedAt(examOrder.getExamOrderDateTime());
     if (claimSubmission.isEmpty()) {
       log.error(
           "Could not find claim submission for collection id {}, will not save connection to exam order.",
@@ -334,9 +348,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return examOrderRepository.save(examOrderEntity);
   }
 
-  private ContentionEntity createContention(ClaimEntity claim, String diagnosticCode) {
+  private ContentionEntity createContention(
+      ClaimEntity claim,
+      String diagnosticCode,
+      String conditionName,
+      String disabilityClassificationCode) {
     ContentionEntity contentionEntity = new ContentionEntity();
     contentionEntity.setDiagnosticCode(diagnosticCode);
+    contentionEntity.setConditionName(conditionName);
+    contentionEntity.setClassificationCode(disabilityClassificationCode);
     claim.addContention(contentionEntity);
     return contentionEntity;
   }
