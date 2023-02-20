@@ -33,7 +33,9 @@ public class AppTestUtil {
     var response = new HealthDataAssessment();
     response.setDiagnosticCode(claim.getDiagnosticCode());
     response.setVeteranIcn(claim.getVeteranIcn());
-    response.setClaimSubmissionId(claim.getClaimSubmissionId());
+    // CollectionId is equivalent to the reference_id on the claim_submission table, which is what
+    // other entities expect to see as the claimSubmissionId.
+    response.setClaimSubmissionId(claim.getCollectionId());
     response.setErrorMessage(errorMessage);
     if (evidence) {
       response.setEvidence(new AbdEvidence());

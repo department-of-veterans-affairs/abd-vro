@@ -57,6 +57,6 @@ public class MasAutomatedClaimRequest {
   @Schema(description = "Details of the Claim")
   private ClaimDetail claimDetail;
 
-  @Schema(description = "Veteran Flash Ids")
+  @Schema(description = "Veteran Flash Ids", example = "[\"999\"]")
   private List<String> veteranFlashIds;
 }
