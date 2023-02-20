@@ -46,12 +46,15 @@ public class OpenApiConfiguration {
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
             .collect(Collectors.toList());
 
+    // Adding to this list will have it appear under `tags` at http://localhost:8080/v3/api-docs
+    // Not sure why this list isn't automatically populated when @Tag is used.
     final List<Tag> tags =
         Arrays.asList(
             new Tag().name("Pdf Generation"),
             new Tag().name("Claim Metrics"),
             new Tag().name("Health Assessment"),
-            new Tag().name("MAS Integration"));
+            new Tag().name("MAS Integration"),
+            new Tag().name("Xample Domain"));
 
     OpenAPI config =
         new OpenAPI()

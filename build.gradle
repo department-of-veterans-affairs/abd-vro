@@ -109,6 +109,7 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
+  // Modules that use Java code
   codeModules = [
     ':app',
     ':api',
@@ -122,8 +123,12 @@ ext {
     ':mock-bip-ce-api',
     ':mock-bip-claims-api',
     ':mock-shared',
-    ':mock-mas-api'
+    ':mock-mas-api',
+    ':domain-xample:api-controller',
+    ':domain-xample:shared',
+    ':domain-xample:workflows-xample'
   ]
+  // Modules that create Docker images
   dockerModules = [
     ':app',
     ':db-init',
