@@ -13,6 +13,7 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,6 +54,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimInfoResponse result = new ClaimInfoResponse();
 
     result.setClaimSubmissionId("claimSubmissionId_" + index);
+    result.setIdType(Claim.V1_ID_TYPE);
     result.setVeteranIcn("icn_" + index);
 
     ContentionInfo contentionInfo = new ContentionInfo();
@@ -211,12 +213,14 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     String claimSubmissionId = claimInfo.getClaimSubmissionId();
 
     // Return an expected exception if argument does not match.
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString()))
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.isNull()))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId)))
+    Mockito.when(
+            service.findClaimInfo(
+                ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
         .thenReturn(claimInfo);
 
-    String path = "/v1/claim-info/" + claimSubmissionId;
+    String path = "/v1/claim-info/" + claimSubmissionId + "?claimVersion=v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -229,9 +233,10 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Test
   void testClaimInfoNotValidId() {
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString())).thenReturn(null);
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+        .thenReturn(null);
 
-    String path = "/v1/claim-info/not_an_id";
+    String path = "/v1/claim-info/not_an_id/v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());

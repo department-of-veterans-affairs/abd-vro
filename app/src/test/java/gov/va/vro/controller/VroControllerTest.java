@@ -4,6 +4,7 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,6 @@ import gov.va.vro.controller.exception.ClaimProcessingError;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.CamelContext;
@@ -42,7 +42,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -106,7 +105,7 @@ class VroControllerTest extends BaseControllerTest {
     request.setDiagnosticCode("7101");
 
     var responseEntity1 =
-        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity1.getStatusCode());
     FullHealthDataAssessmentResponse response1 = responseEntity1.getBody();
     assertNotNull(response1);
@@ -115,16 +114,20 @@ class VroControllerTest extends BaseControllerTest {
 
     // Now submit an existing claim:
     var responseEntity2 =
-        post("/v2/health-data-assessment", request, FullHealthDataAssessmentResponse.class);
+        post("/v1/full-health-data-assessment", request, FullHealthDataAssessmentResponse.class);
     assertEquals(HttpStatus.CREATED, responseEntity2.getStatusCode());
     FullHealthDataAssessmentResponse response2 = responseEntity2.getBody();
     assertNotNull(response2);
     assertEquals(request.getDiagnosticCode(), response2.getDiagnosticCode());
     assertEquals(request.getVeteranIcn(), response2.getVeteranIcn());
 
-    Optional<ClaimEntity> claimEntityOptional =
-        claimRepository.findByClaimSubmissionIdAndIdType("1234", "va.gov-Form526Submission");
-    assertTrue(claimEntityOptional.isPresent());
+    var claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            request.getClaimSubmissionId(), Claim.V1_ID_TYPE);
+    assertTrue(claimSubmission.isPresent());
+    var claim = claimSubmission.get().getClaim();
+    assertNull(claim.getVbmsId());
+    assertEquals(2, claim.getClaimSubmissions().size());
   }
 
   @Test

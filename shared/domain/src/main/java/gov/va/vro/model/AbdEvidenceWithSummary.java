@@ -25,6 +25,9 @@ public class AbdEvidenceWithSummary {
   @Schema(description = "Claim submission id", example = "1234")
   private String claimSubmissionId;
 
+  @Schema(description = "Namespace for the claimSubmissionId", example = "mas-Form526Submission")
+  private String idType;
+
   @Schema(description = "Sufficient for Fast Tracking flag")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private boolean sufficientForFastTracking;
