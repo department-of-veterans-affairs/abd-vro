@@ -38,7 +38,8 @@ public class MasOrderExamProcessor implements Processor {
       MasOrderExamConditions masOrderExamConditions = new MasOrderExamConditions();
       masOrderExamConditions.setConditionCode(
           MAS_CONDITION_CODES.getOrDefault(claimPayload.getDiagnosticCode(), "NA"));
-      masOrderExamConditions.setContentionText("HYPERTENSION");
+      masOrderExamConditions.setContentionText(
+          MAS_CONDITION_CODES.getOrDefault(claimPayload.getDiagnosticCode(), "NA"));
       masOrderExamRequest.setConditions(List.of(masOrderExamConditions));
       var response = masApiService.orderExam(masOrderExamRequest);
       log.info("Order Exam Response :  " + response);
