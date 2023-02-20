@@ -152,23 +152,17 @@ public class VroV2Tests {
     assertTrue(lifecycleStatusFound);
   }
 
-  /** Test if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
+  /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
   @Test
   @SneakyThrows
-  void testBipGetClaim404() {
-    var path = "test-mas/claim-350-7101.json"; // use otherwise good test case
-    var contentOriginal = resourceToString(path);
-    final MasAutomatedClaimRequest request =
-        objectMapper.readValue(contentOriginal, MasAutomatedClaimRequest.class);
-    String claimId = "999990"; // something for 404
-    request.getClaimDetail().setBenefitClaimId(claimId);
-    String content = objectMapper.writeValueAsString(request);
-
+  void testAutomatedClaimNonExistentClaimId() {
+    var path = "test-mas/claim-801-7101-nonexistent-claimid.json";
+    var content = resourceToString(path);
     var requestEntity = getEntity(content);
     try {
       var response =
           restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-      fail("We should have received 400");
+      fail("Collection 801 should have received 400.");
     } catch (HttpStatusCodeException exception) {
       assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
