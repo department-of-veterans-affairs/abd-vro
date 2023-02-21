@@ -46,6 +46,7 @@ public class MasExamOrderStatusPayload implements Auditable {
     Map<String, String> detailsMap = new HashMap<>();
     detailsMap.put("collectionId", Integer.toString(collectionId));
     detailsMap.put("collectionStatus", collectionStatus);
+    detailsMap.put("examOrderDateTime", examOrderDateTime);
     return detailsMap;
   }
 

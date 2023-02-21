@@ -16,7 +16,7 @@
     "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
-      "name": "string",
+      "name": "blood pressure",
       "diagnosticCode": "7101",
       "disabilityActionType": "DECREASE",
       "disabilityClassificationCode": "3460",

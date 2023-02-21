@@ -54,11 +54,27 @@ public class MasAutomatedClaimPayload implements Auditable {
   private List<String> veteranFlashIds;
 
   @JsonIgnore
+  public String getConditionName() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getName();
+  }
+
+  @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
       return null;
     }
     return claimDetail.getConditions().getDiagnosticCode();
+  }
+
+  @JsonIgnore
+  public String getDisabilityClassificationCode() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getDisabilityClassificationCode();
   }
 
   @JsonIgnore
@@ -115,9 +131,11 @@ public class MasAutomatedClaimPayload implements Auditable {
     Map<String, String> detailsMap = new HashMap<>();
     detailsMap.put("benefitClaimId", getBenefitClaimId());
     detailsMap.put("collectionId", Objects.toString(getCollectionId()));
+    detailsMap.put("conditionName", getConditionName());
     detailsMap.put("diagnosticCode", getDiagnosticCode());
     detailsMap.put("veteranIcn", getVeteranIcn());
     detailsMap.put("disabilityActionType", getDisabilityActionType());
+    detailsMap.put("disabilityClassificationCode", getDisabilityClassificationCode());
     detailsMap.put(
         "flashIds", getVeteranFlashIds() == null ? null : Objects.toString(getVeteranFlashIds()));
     detailsMap.put("inScope", Objects.toString(isInScope()));

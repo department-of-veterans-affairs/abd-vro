@@ -48,11 +48,15 @@ public class Claim {
 
   @NotNull private String diagnosticCode;
 
+  private String conditionName;
+
   private Set<String> contentions;
 
   private String offRampReason;
 
   private boolean presumptiveFlag;
+
+  private String disabilityClassificationCode;
 
   private String disabilityActionType;
 

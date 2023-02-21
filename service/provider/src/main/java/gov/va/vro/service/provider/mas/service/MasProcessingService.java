@@ -120,10 +120,12 @@ public class MasProcessingService {
         .benefitClaimId(payload.getBenefitClaimId())
         .collectionId(Integer.toString(payload.getCollectionId()))
         .idType(payload.getIdType())
+        .conditionName(payload.getConditionName())
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
         .inScope(payload.isInScope())
         .disabilityActionType(payload.getDisabilityActionType())
+        .disabilityClassificationCode(payload.getDisabilityClassificationCode())
         .offRampReason(payload.getOffRampReason())
         .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
         .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
@@ -131,10 +133,16 @@ public class MasProcessingService {
   }
 
   private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
+    String examOrderDateTime = payload.getExamOrderDateTime();
+    OffsetDateTime examDateTime = null;
+    if (examOrderDateTime != null && !examOrderDateTime.isBlank()) {
+      examDateTime = OffsetDateTime.parse(examOrderDateTime);
+    }
     return ExamOrder.builder()
         .collectionId(Integer.toString(payload.getCollectionId()))
         .idType(claimIdType)
         .status(payload.getCollectionStatus())
+        .examOrderDateTime(examDateTime)
         .build();
   }
 }
