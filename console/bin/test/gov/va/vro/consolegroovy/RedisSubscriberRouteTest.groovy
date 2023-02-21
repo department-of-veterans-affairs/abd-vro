@@ -14,7 +14,7 @@ class RedisSubscriberRouteTest {
     camelContext.start()
 
     // Publish a message to the Redis channel
-    redisTemplate.convertAndSend("channel1", "test message")
+    redisTemplate.convertAndSend("feature-flag-toggle", "test message")
 
     // Wait for the message to be processed
     Thread.sleep(1000)
