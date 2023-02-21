@@ -268,7 +268,7 @@
           <tr>
             <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
             <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
-            <td {% if bp_reading.organization == "" %}class="empty" {% endif %}>{% if bp_reading.organization == ""%}n.a.{% elif bp_reading.dataSource =="LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
+            <td {% if bp_reading.organization == "" %}class="empty" {% endif %}>{% if bp_reading.organization == ""%}n.a.{% elif bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
             <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.document }}{% endif %}</td>
