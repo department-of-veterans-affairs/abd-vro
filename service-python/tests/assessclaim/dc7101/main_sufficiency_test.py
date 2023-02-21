@@ -610,7 +610,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
-                              'documentsWithoutAnnotationsChecked': []},
+                              'documentsWithoutAnnotationsChecked': ['{guid}']},
                  'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
                                      'recentBpReadings': 1,
                                      'relevantConditionsCountLighthouse': 0,
