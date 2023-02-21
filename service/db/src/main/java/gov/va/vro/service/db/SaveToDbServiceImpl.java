@@ -49,7 +49,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   @Override
   @Transactional
   public Claim insertClaim(Claim claim) {
-    VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
+    VeteranEntity veteranEntity =
+        findOrCreateVeteran(claim.getVeteranIcn(), claim.getVeteranParticipantId());
     ClaimEntity claimEntity = null;
 
     if (claim.getBenefitClaimId() == null) {
@@ -361,17 +362,20 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return contentionEntity;
   }
 
-  private VeteranEntity findOrCreateVeteran(String veteranIcn) {
+  private VeteranEntity findOrCreateVeteran(String veteranIcn, String veteranParticipantId) {
     VeteranEntity veteranEntity =
-        veteranRepository.findByIcn(veteranIcn).orElseGet(() -> createVeteran(veteranIcn));
+        veteranRepository
+            .findByIcn(veteranIcn)
+            .orElseGet(() -> createVeteran(veteranIcn, veteranParticipantId));
     Date date = new Date();
     veteranEntity.setIcnTimestamp(date);
     return veteranRepository.save(veteranEntity);
   }
 
-  private VeteranEntity createVeteran(String veteranIcn) {
+  private VeteranEntity createVeteran(String veteranIcn, String veteranParticipantId) {
     VeteranEntity veteranEntity = new VeteranEntity();
     veteranEntity.setIcn(veteranIcn);
+    veteranEntity.setParticipantId(veteranParticipantId);
     return veteranRepository.save(veteranEntity);
   }
 }
