@@ -220,8 +220,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
                 ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
         .thenReturn(claimInfo);
 
-
-    String path = "/v1/claim-info/" + claimSubmissionId + "?claimVersion=v1";
+    String path = "/v2/claim-info/" + claimSubmissionId + "?claimVersion=v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -237,8 +236,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
         .thenReturn(null);
 
-
-    String path = "/v1/claim-info/not_an_id/v1";
+    String path = "/v2/claim-info/not_an_id/v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());

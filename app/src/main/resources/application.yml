@@ -9,9 +9,15 @@ info:
 # API Auth
 apiauth:
   hdr-key-name-v1: X-API-Key
-  url-context-v1: /v1/**
+  claim-metrics: /v2/claim-metrics
+  claim-info: /v2/claim-info/**
+  full-health-assessment: /v1/full-health-data-assessment
+  health-assessment: /v2/health-data-assessment
   hdr-key-name-v2: Authorization
-  url-context-v2: /v2/**
+  automated-claim: /v2/automatedClaim
+  exam-order: /v2/examOrderingStatus
+  evidence-pdf: /v1/evidence-pdf/**
+  immediate-pdf: /v1/immediate-pdf
 
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
