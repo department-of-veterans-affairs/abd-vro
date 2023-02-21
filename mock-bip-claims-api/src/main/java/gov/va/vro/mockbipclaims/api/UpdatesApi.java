@@ -39,7 +39,7 @@ public interface UpdatesApi {
           Long claimId);
 
   /**
-   * GET /updates/{claimId}/lifecycle-status: Retrieves if the claim lifecycle status has updates.
+   * GET /updates/{claimId}/lifecycle_status: Retrieves if the claim lifecycle status has updates.
    */
   @Operation(
       operationId = "getLifecycleStatusUpdates",
@@ -57,7 +57,7 @@ public interface UpdatesApi {
       })
   @RequestMapping(
       method = RequestMethod.GET,
-      value = "/updates/{claimId}/lifecycle-status",
+      value = "/updates/{claimId}/lifecycle_status",
       produces = {"application/json"})
   ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(
       @Parameter(

@@ -19,7 +19,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,12 +45,11 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.NonLocalEnvironmentCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
   private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle-status";
+  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CONTENTION = "/claims/%s/contentions";
 
   private static final String HTTPS = "https://";
@@ -83,9 +82,20 @@ public class BipApiService implements IBipApiService {
             bipResponse.getBody());
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
+    } catch (JsonProcessingException e) {
+      log.error("json processing error", e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (HttpStatusCodeException e) {
+      String message = "Failed to get claim info for claim ID " + claimId;
+      log.error(message, e);
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        throw new BipException(HttpStatus.BAD_REQUEST, message);
+      } else {
+        throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      }
+    } catch (RestClientException e) {
+      log.error("failed to update status to {} for claim {}.", claimId, e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 

@@ -57,13 +57,11 @@ class VroConsoleShellPrintJsonTests {
     shell.execute("import gov.va.vro.persistence.model.*")
     def createClaim="""
       claim = new ClaimEntity()
-      claim.setClaimSubmissionId('id-123456')
-      claim.setIdType('va.gov-Form526Submission')
+      claim.setVbmsId('id-123456')
       """.stripMargin()
     shell.execute(createClaim)
     String claimJsonString = shell.execute('printJson claim')
-    assertTrue claimJsonString.contains('"claimSubmissionId" : "id-123456"')
-    assertTrue claimJsonString.contains('"idType" : "va.gov-Form526Submission"')
+    assertTrue claimJsonString.contains('"vbmsId" : "id-123456"')
     assertTrue claimJsonString.contains('"veteran" : null')
     assertTrue claimJsonString.contains('"contentions" : [ ]')
 
@@ -92,6 +90,6 @@ class VroConsoleShellPrintJsonTests {
     String contentionJsonString = shell.execute('printJson claim.contentions[0]')
     assertTrue contentionJsonString.contains('"diagnosticCode" : "7101"')
     assertTrue contentionJsonString.contains('"claim" : {')
-    assertTrue contentionJsonString.contains('"claimSubmissionId" : "id-123456"')
+    assertTrue contentionJsonString.contains('"vbmsId" : "id-123456"')
   }
 }

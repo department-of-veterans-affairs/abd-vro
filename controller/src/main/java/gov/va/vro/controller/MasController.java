@@ -36,7 +36,7 @@ public class MasController implements MasResource {
             .firstName(request.getFirstName())
             .gender(request.getGender())
             .lastName(request.getLastName())
-            .dateOfBirth(request.getDateOfBirth())
+            .dateOfBirth(request.getDateOfBirth().replaceAll("Z", ""))
             .veteranIdentifiers(request.getVeteranIdentifiers())
             .veteranFlashIds(request.getVeteranFlashIds())
             .build();
@@ -59,7 +59,7 @@ public class MasController implements MasResource {
     log.info("Received MAS order status request with collection ID {}", collectionId);
     String correlationId = UUID.randomUUID().toString();
     payload.setCorrelationId(correlationId);
-    masProcessingService.examOrderingStatus(payload);
+    masProcessingService.examOrderingStatus(payload, MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     String message =
         String.format("Received Exam Order Status for collection Id %d.", collectionId);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
