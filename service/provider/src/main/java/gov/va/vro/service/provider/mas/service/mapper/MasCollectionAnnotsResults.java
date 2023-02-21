@@ -195,9 +195,9 @@ public class MasCollectionAnnotsResults {
     abdCondition.setStatus(null);
     abdCondition.setAbatementDate(null);
     if (masAnnotation.getObservationDate() != null) {
-      abdCondition.setOnsetDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
+      abdCondition.setRecordedDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
     } else {
-      abdCondition.setOnsetDate("");
+      abdCondition.setRecordedDate("");
     }
     if (masAnnotation.getPartialDate() != null) {
       abdCondition.setPartialDate(masAnnotation.getPartialDate().replaceAll("Z", ""));
