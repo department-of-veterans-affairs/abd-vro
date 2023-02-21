@@ -86,6 +86,10 @@ def assess_sufficiency(event: Dict):
             if bp_calculation["recentElevatedBpReadings"] >= 1 and bp_calculation["twoYearsBpReadings"] >= 3:
                 sufficient = True
 
+        # TODO: remove the following conditional. This should be handled in the camel routes. (HealthEvidenceProcessor)
+        if sufficient is None:
+            response_body["errorMessage"] = "insufficientHealthDataToOrderExam"
+
         response_body.update(
             {
                 "evidence": {
