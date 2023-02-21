@@ -5,6 +5,7 @@ http:
       trust-store-password: keystore_pw
       key-store-password: keystore_pw
 
+# Self-signed certificates. Created by scripts/build-certificates.sh.
 spring.config.import: >
   client-keystore.yml,
   server-truststore.yml

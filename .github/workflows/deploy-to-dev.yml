@@ -9,7 +9,8 @@ on:
 
 jobs:
   deploy-dev-images:
-    uses: ./.github/workflows/deploy-unsigned.yml
+    uses: ./.github/workflows/deploy-to-env.yml
     with:
       target_env: dev
+      image_prefix: dev_
     secrets: inherit

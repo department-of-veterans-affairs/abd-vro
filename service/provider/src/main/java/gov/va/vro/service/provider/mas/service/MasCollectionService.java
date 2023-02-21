@@ -114,8 +114,10 @@ public class MasCollectionService {
         HealthAssessmentSource.MAS == assessment1.getSource() ? assessment1 : assessment2;
     var lighthouseAssessment =
         HealthAssessmentSource.LIGHTHOUSE == assessment1.getSource() ? assessment1 : assessment2;
-    AbdEvidence lighthouseEvidence = masAssessment.getEvidence();
-    AbdEvidence masApiEvidence = lighthouseAssessment.getEvidence();
+
+    AbdEvidence masApiEvidence = masAssessment.getEvidence();
+    AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
+
     // for now, we just add up the lists
     log.info("combineEvidence >> LH  : " + ((lighthouseEvidence != null) ? "not null" : "null"));
     log.info("combineEvidence >> MAS : " + ((masApiEvidence != null) ? "not null" : "null"));

@@ -24,15 +24,10 @@ class BipApiConfigTest {
   @Qualifier("bipCERestTemplate")
   private RestTemplate template;
 
-  @Autowired
-  @Qualifier("bipRestTemplate")
-  private RestTemplate httpsTemplate;
-
   @Test
   public void testRestTemplate() throws Exception {
 
     assertNotNull(template);
-    assertNotNull(httpsTemplate);
 
     BipApiConfig config = new BipApiConfig();
     try {

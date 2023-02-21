@@ -39,6 +39,10 @@ public class ContentionEntity extends BaseEntity {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
+  private String conditionName;
+
+  private String classificationCode;
+
   /***
    * <p>Summary.</p>
    *
