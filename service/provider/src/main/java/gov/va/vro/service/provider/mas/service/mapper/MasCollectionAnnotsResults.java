@@ -52,6 +52,15 @@ public class MasCollectionAnnotsResults {
       isConditionBp = masDocument.getCondition().equalsIgnoreCase(BP_CONDITION);
       isConditionAsthma = masDocument.getCondition().equalsIgnoreCase(ASTHMA_CONDITION);
       if (masDocument.getAnnotations() != null) {
+        String documentId = masDocument.getEfolderversionrefid();
+        String receiptDate = masDocument.getRecDate();
+        if (documentId == null) {
+          documentId = "";
+        }
+        if (receiptDate == null) {
+          receiptDate = "";
+        }
+
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
               ">>>> Annotation Type <<<<<< : {} ",
@@ -61,20 +70,28 @@ public class MasCollectionAnnotsResults {
           switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
+              abdMedication.setDocument(documentId);
+              abdMedication.setReceiptDate(receiptDate);
               medications.add(abdMedication);
             }
             case CONDITION -> {
               AbdCondition abdCondition = createCondition(masAnnotation);
+              abdCondition.setDocument(documentId);
+              abdCondition.setReceiptDate(receiptDate);
               conditions.add(abdCondition);
             }
             case LABRESULT, BLOOD_PRESSURE -> {
               if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
                 AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
+                abdBloodPressure.setDocument(documentId);
+                abdBloodPressure.setReceiptDate(receiptDate);
                 bpReadings.add(abdBloodPressure);
               }
             }
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masDocument, masAnnotation);
+              veteranService.setDocument(documentId);
+              veteranService.setReceiptDate(receiptDate);
               serviceLocations.add(veteranService);
             }
             default -> { // NOP
