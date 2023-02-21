@@ -69,15 +69,15 @@ public class SecurityConfig {
     httpSecurity
         .exceptionHandling()
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-    // Secure end point
+    // Secure end point./gradlew :controller:spotlessApply && ./gradlew :app:spotlessApply &&
+    // ./gradlew :shared:domain:spotlessApply && ./gradlew :service:db:spotlessApply && ./gradlew
+    // :service:provider:spotlessApply && ./gradlew :service:spi:spotlessApply && ./gradlew
+    // :persistence:spotlessApply && ./gradlew :persistence:model:spotlessApply
     httpSecurity
-        .antMatcher(claimInfo)
-        // .antMatcher(evidencePdf)
-        .antMatcher(claimMetrics)
-        // .antMatcher(fullHealth)
-        // .antMatcher(healthAssessment)
-        // .antMatcher(immediatePdf)
-
+        .requestMatchers()
+        .antMatchers(
+            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
+        .and()
         .csrf()
         .disable()
         .sessionManagement()
@@ -108,8 +108,9 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .antMatcher(automatedClaim)
-        .antMatcher(examOrder)
+        .requestMatchers()
+        .antMatchers(automatedClaim, examOrder)
+        .and()
         .csrf()
         .disable()
         .sessionManagement()
