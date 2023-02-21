@@ -10,7 +10,6 @@ import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
 import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,6 @@ public class JwtTest {
   @Autowired private TestHelper helper;
 
   @SpyBean private JwtSpecification props;
-
-  @BeforeEach
-  void initJwtProps() {}
 
   private void auxRunTest(TestSpec spec) {
     try {

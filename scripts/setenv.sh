@@ -138,9 +138,13 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 
 ###
 ### Integration with BIP ###
+##
 ## Shared by app and mock-bip containers.
-## Keep here until another way found to share application.yml file content.
-# Credentials for BIP Claim API
+## I tried to move these to app/application-local (still there) but
+## Gradle appears to have problems with it since these are used as a Spring
+## artifact (@Value) in a different module service/provider.
+## There is some discussion in stackoverflow 63846115 for solutions.
+##
 export BIP_CLAIM_USERID=VRO_USER
 export BIP_CLAIM_SECRET=theSecret
 export BIP_CLAIM_ISS=VRO
@@ -148,10 +152,6 @@ export BIP_CLAIM_ISS=VRO
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret
 export BIP_EVIDENCE_ISS=VRO
-# BIP Common. "build-certificates.sh" generates keystore and truststore files.
+# BIP Common.
 export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456
-export BIP_KEYSTORE=$(eval cat scripts/keystore/client-keystore.b64)
-export BIP_TRUSTSTORE=$(eval cat scripts/keystore/server-truststore.b64)
-export BIP_PASSWORD=keystore_pw
-

@@ -3,8 +3,10 @@ package gov.va.vro.persistence.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +32,10 @@ public class AuditEventEntity {
   @NotNull private String payloadType;
   private String throwable;
   private String message;
-  private String details;
+
+  @Type(type = "json")
+  @Column(columnDefinition = "jsonb")
+  private Map<String, String> details;
+
   @NotNull private ZonedDateTime eventTime = ZonedDateTime.now();
 }

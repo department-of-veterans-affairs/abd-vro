@@ -46,9 +46,9 @@ public class MasTestData {
   }
 
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest(
-      int collectionId, String diagnosticCode, String claimId) {
+      int collectionId, String diagnosticCode, String benefitClaimId) {
     VeteranIdentifiers veteranIdentifiers = getVeteranIdentifiers();
-    ClaimDetail claimDetail = getClaimDetail(diagnosticCode, claimId);
+    ClaimDetail claimDetail = getClaimDetail(diagnosticCode, benefitClaimId);
 
     return MasAutomatedClaimRequest.builder()
         .dateOfBirth("2002-12-12")

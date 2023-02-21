@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 @Getter
 @Builder(toBuilder = true)
@@ -18,7 +19,7 @@ public class AuditEvent {
   private String message;
 
   // WARNING: DO NOT STORE PII/PHI
-  private String details;
+  private Map<String, String> details;
 
   @Builder.Default private ZonedDateTime eventTime = ZonedDateTime.now();
 

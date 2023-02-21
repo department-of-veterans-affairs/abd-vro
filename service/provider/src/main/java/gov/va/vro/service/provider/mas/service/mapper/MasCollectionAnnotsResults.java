@@ -52,6 +52,15 @@ public class MasCollectionAnnotsResults {
       isConditionBp = masDocument.getCondition().equalsIgnoreCase(BP_CONDITION);
       isConditionAsthma = masDocument.getCondition().equalsIgnoreCase(ASTHMA_CONDITION);
       if (masDocument.getAnnotations() != null) {
+        String documentId = masDocument.getEfolderversionrefid();
+        String receiptDate = masDocument.getRecDate();
+        if (documentId == null) {
+          documentId = "";
+        }
+        if (receiptDate == null) {
+          receiptDate = "";
+        }
+
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
               ">>>> Annotation Type <<<<<< : {} ",
@@ -61,20 +70,28 @@ public class MasCollectionAnnotsResults {
           switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
+              abdMedication.setDocument(documentId);
+              abdMedication.setReceiptDate(receiptDate);
               medications.add(abdMedication);
             }
             case CONDITION -> {
               AbdCondition abdCondition = createCondition(masAnnotation);
+              abdCondition.setDocument(documentId);
+              abdCondition.setReceiptDate(receiptDate);
               conditions.add(abdCondition);
             }
             case LABRESULT, BLOOD_PRESSURE -> {
               if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
                 AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
+                abdBloodPressure.setDocument(documentId);
+                abdBloodPressure.setReceiptDate(receiptDate);
                 bpReadings.add(abdBloodPressure);
               }
             }
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masDocument, masAnnotation);
+              veteranService.setDocument(documentId);
+              veteranService.setReceiptDate(receiptDate);
               serviceLocations.add(veteranService);
             }
             default -> { // NOP
@@ -115,6 +132,26 @@ public class MasCollectionAnnotsResults {
     } else {
       abdBloodPressure.setDate("");
     }
+    if (masAnnotation.getPageNum() != null) {
+      abdBloodPressure.setPage(masAnnotation.getPageNum());
+    } else {
+      abdBloodPressure.setPage("");
+    }
+    if (masAnnotation.getRecDate() != null) {
+      abdBloodPressure.setReceiptDate(masAnnotation.getRecDate());
+    } else {
+      abdBloodPressure.setReceiptDate("");
+    }
+    if (masAnnotation.getEFolderVersionRefId() != null) {
+      abdBloodPressure.setDocument(masAnnotation.getEFolderVersionRefId());
+    } else {
+      abdBloodPressure.setDocument("");
+    }
+    if (masAnnotation.getDocTypedescription() != null) {
+      abdBloodPressure.setOrganization(masAnnotation.getDocTypedescription());
+    } else {
+      abdBloodPressure.setOrganization("");
+    }
     abdBloodPressure.setSystolic(systolicReading);
     abdBloodPressure.setDiastolic(diastolicReading);
     abdBloodPressure.setOrganization(null);
@@ -142,6 +179,26 @@ public class MasCollectionAnnotsResults {
     } else {
       abdMedication.setPartialDate("");
     }
+    if (masAnnotation.getPageNum() != null) {
+      abdMedication.setPage(masAnnotation.getPageNum());
+    } else {
+      abdMedication.setPage("");
+    }
+    if (masAnnotation.getRecDate() != null) {
+      abdMedication.setReceiptDate(masAnnotation.getRecDate());
+    } else {
+      abdMedication.setReceiptDate("");
+    }
+    if (masAnnotation.getEFolderVersionRefId() != null) {
+      abdMedication.setDocument(masAnnotation.getEFolderVersionRefId());
+    } else {
+      abdMedication.setDocument("");
+    }
+    if (masAnnotation.getDocTypedescription() != null) {
+      abdMedication.setOrganization(masAnnotation.getDocTypedescription());
+    } else {
+      abdMedication.setOrganization("");
+    }
     abdMedication.setRoute(null);
     abdMedication.setAsthmaRelevant(isConditionAsthma);
     return abdMedication;
@@ -155,14 +212,34 @@ public class MasCollectionAnnotsResults {
     abdCondition.setStatus(null);
     abdCondition.setAbatementDate(null);
     if (masAnnotation.getObservationDate() != null) {
-      abdCondition.setOnsetDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
+      abdCondition.setRecordedDate(masAnnotation.getObservationDate().replaceAll("Z", ""));
     } else {
-      abdCondition.setOnsetDate("");
+      abdCondition.setRecordedDate("");
     }
     if (masAnnotation.getPartialDate() != null) {
       abdCondition.setPartialDate(masAnnotation.getPartialDate().replaceAll("Z", ""));
     } else {
       abdCondition.setPartialDate("");
+    }
+    if (masAnnotation.getPageNum() != null) {
+      abdCondition.setPage(masAnnotation.getPageNum());
+    } else {
+      abdCondition.setPage("");
+    }
+    if (masAnnotation.getRecDate() != null) {
+      abdCondition.setReceiptDate(masAnnotation.getRecDate());
+    } else {
+      abdCondition.setReceiptDate("");
+    }
+    if (masAnnotation.getEFolderVersionRefId() != null) {
+      abdCondition.setDocument(masAnnotation.getEFolderVersionRefId());
+    } else {
+      abdCondition.setDocument("");
+    }
+    if (masAnnotation.getDocTypedescription() != null) {
+      abdCondition.setOrganization(masAnnotation.getDocTypedescription());
+    } else {
+      abdCondition.setOrganization("");
     }
     return abdCondition;
   }

@@ -158,6 +158,7 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS"
                             }
                         ]
                     },
@@ -171,7 +172,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
+                            "dataSource": "MAS"
                         }
                     ],
                     "medicationsCount": 1,
@@ -187,6 +188,7 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS"
                             }
                         ]
                     },
@@ -200,7 +202,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
+                            "dataSource": "MAS"
                         }
                     ],
                     "medicationsCount": 1,
@@ -216,6 +218,7 @@ def test_continuous_medication_required(
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
+                                "dataSource": "MAS"
                             }
                         ]
                     },
@@ -236,17 +239,20 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "",
+                                "dataSource": "MAS"
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "2021-04-06T04:00:00Z",
+                                "dataSource": "LH"
                             },
                             {
                                 "description": "some medication",
                                 "status": "active",
                                 "authoredOn": "",
-                                "partialDate": "**/**/1988"
+                                "partialDate": "**/**/1988",
+                                "dataSource": "MAS"
                             },
                         ],
                     },
@@ -256,28 +262,22 @@ def test_continuous_medication_required(
                 {
                     "medications": [
                         {
-                            "description": "Advil",
-                            "status": "active",
-                            "dateFormatted": "4/6/2021",
-                            "authoredOn": "2021-04-06T04:00:00Z",
-                            "partialDate": ""
-                        },
-                        {
                             "description": "Benazepril",
                             "status": "active",
                             "dateFormatted": "",
                             "authoredOn": "",
-                            "partialDate": ""
+                            "dataSource": "MAS"
                         },
                         {
                             "description": "some medication",
                             "status": "active",
                             "authoredOn": "",
                             "dateFormatted": "",
-                            "partialDate": "**/**/1988"
+                            "partialDate": "**/**/1988",
+                            "dataSource": "MAS"
                         },
                     ],
-                    "medicationsCount": 3,
+                    "medicationsCount": 2,
                 },
         ),
         (
