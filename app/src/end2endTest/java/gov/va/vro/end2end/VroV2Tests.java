@@ -101,58 +101,86 @@ public class VroV2Tests {
     return false;
   }
 
+  /**
+   * Runs a full end-to-end test for the collection id using mock services. Collection id used here
+   * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
+   * ones in mock-bip-claims-api.
+   */
   @SneakyThrows
-  @Test
-  void testAutomatedClaim() {
+  private void testAutomatedClaimFullPositive(String collectionId) {
 
-    var path = "test-mas/claim-350-7101.json";
+    // Load the test case
+    var path = String.format("test-mas/claim-%s-7101.json", collectionId);
     var content = resourceToString(path);
+
+    // Extract claim id and file number and reset previous actions for those in mocks
     final MasAutomatedClaimRequest request =
         objectMapper.readValue(content, MasAutomatedClaimRequest.class);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
+    log.info("Reset data in the mock servers.");
+    restTemplate.delete(UPDATES_URL + claimId);
+    restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
 
-    if ("end2end-test".equals(System.getenv("ENV"))) {
-      log.info("Reset data in the mock servers.");
-      restTemplate.delete(UPDATES_URL + claimId);
-      restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
-    }
-
+    // Start automated claim
     var requestEntity = getEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received Claim for collection Id 350.", masResponse.getMessage());
+    String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
+    assertEquals(expectedMessage, masResponse.getMessage());
 
-    if (!"end2end-test".equals(System.getenv("ENV"))) {
-      return;
+    // Wait until the evidence pdf is uploaded
+    log.info("Wait until the evidence pdf is uploaded");
+    boolean successUploading = false;
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      String url = RECEIVED_FILES_URL + fileNumber;
+      try {
+        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
+        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
+        successUploading = true;
+        break;
+      } catch (HttpStatusCodeException exception) {
+        log.info("Did not find veteran {}. Retrying...", fileNumber);
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+      }
     }
 
-    //    log.info("Make sure the evidence pdf is uploaded");
-    //    boolean successUploading = false;
-    //    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-    //      Thread.sleep(20000);
-    //      String url = RECEIVED_FILES_URL + fileNumber;
-    //      try {
-    //        ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
-    //        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-    //        PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-    //        log.info("PDF text: {}", pdfTextV2.getPdfText());
-    //        assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
-    //        successUploading = true;
-    //        break;
-    //      } catch (HttpStatusCodeException exception) {
-    //        log.info("Did not find pdf for veteran {}. Retrying...", fileNumber);
-    //        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-    //      }
-    //    }
-    //    assertTrue(successUploading);
-    //
-    //    boolean contentionsFound = getFoundStatus(claimId, "contentions");
-    //    assertTrue(contentionsFound);
-    //    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
-    //    assertTrue(lifecycleStatusFound);
+    // Verify evidence pdf is uploaded
+    assertTrue(successUploading);
+    // Verify contentions are updated (TODO: verify the actual update here)
+    boolean contentionsFound = getFoundStatus(claimId, "contentions");
+    assertTrue(contentionsFound);
+    // Verify lifecycle status is updated (TODO: verify the actual update here)
+    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
+    assertTrue(lifecycleStatusFound);
+  }
+
+  @SneakyThrows
+  @Test
+  void testAutomatedClaim() {
+    testAutomatedClaimFullPositive("350");
+  }
+
+  /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
+  @Test
+  @SneakyThrows
+  void testAutomatedClaimNonExistentClaimId() {
+    var path = "test-mas/claim-801-7101-nonexistent-claimid.json";
+    var content = resourceToString(path);
+    var requestEntity = getEntity(content);
+    try {
+      var response =
+          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      fail("Collection 801 should have received 400.");
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
   }
 
   @Test
@@ -215,7 +243,7 @@ public class VroV2Tests {
             "collectionStatus",
             "DRAFT",
             "examOrderDateTime",
-            "2022-12-08T17:45:61Z",
+            "2022-12-08T17:45:59Z",
             "eventId",
             "None");
     return objectMapper.writeValueAsString(payload);
@@ -230,5 +258,30 @@ public class VroV2Tests {
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(JWT_TOKEN);
     return headers;
+  }
+
+  /**
+   * This is a positive end to end set. Two set of blood pressures and medications come from Health
+   * API and MAS collections. They are not really related. You can check this to see how the pdfs
+   * look like with data from both sources.
+   *
+   * <p>After the run get the pdf from http://localhost:8094/9999375
+   */
+  @SneakyThrows
+  @Test
+  void testAutomatedClaimSufficientSeparate() {
+    testAutomatedClaimFullPositive("375");
+  }
+
+  /**
+   * This is an identical to testAutomatedClaimSufficientSeparate except it is a presumptive case.
+   * The file number, collection id and claim numbers also differ.
+   *
+   * <p>After the run get the pdf from http://localhost:8094/9999376
+   */
+  @SneakyThrows
+  @Test
+  void testAutomatedClaimPresumptive() {
+    testAutomatedClaimFullPositive("376");
   }
 }
