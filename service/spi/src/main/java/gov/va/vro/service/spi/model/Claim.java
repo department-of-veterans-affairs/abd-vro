@@ -46,6 +46,8 @@ public class Claim {
 
   @NotNull private String veteranIcn;
 
+  private String veteranParticipantId;
+
   @NotNull private String diagnosticCode;
 
   private String conditionName;
