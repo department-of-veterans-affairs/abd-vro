@@ -94,6 +94,7 @@ include ':svc-lighthouse-api'
 include ':mock-shared'
 include ':mock-bip-ce-api'
 include ':mock-bip-claims-api'
+include ':mock-mas-api'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'

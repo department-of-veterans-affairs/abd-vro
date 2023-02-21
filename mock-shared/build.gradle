@@ -1,6 +1,6 @@
 plugins {
   id 'starter.std.java.library-conventions'
-  id "io.freefair.lombok" version "6.6.1"
+  id "io.freefair.lombok" version "6.6.2"
 }
 
 dependencies {

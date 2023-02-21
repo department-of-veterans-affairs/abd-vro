@@ -20,6 +20,46 @@
     ]
   },
   {
+    "description": "for happy path, used with collection id 375",
+    "claimDetail": {
+      "claimId": 1015,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "for happy path, used with collection id 376, presumptive",
+    "claimDetail": {
+      "claimId": 1020,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
     "description": "identical to happy path, used for out of scope",
     "claimDetail": {
       "claimId": 3010,

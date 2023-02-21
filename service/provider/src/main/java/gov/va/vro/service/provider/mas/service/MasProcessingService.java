@@ -9,10 +9,12 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -35,11 +37,15 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-    saveToDbService.insertClaim(toClaim(payload));
+    Claim claim = toClaim(payload);
+    saveToDbService.insertClaim(claim);
+    saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
     var offRampReasonOptional = getOffRampReason(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
       payload.setOffRampReason(offRampReason);
+      claim.setOffRampReason(offRampReason);
+      saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
@@ -87,7 +93,8 @@ public class MasProcessingService {
     return Optional.empty();
   }
 
-  public void examOrderingStatus(MasExamOrderStatusPayload payload) {
+  public void examOrderingStatus(MasExamOrderStatusPayload payload, String claimIdType) {
+    saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload, claimIdType));
     camelEntrance.examOrderingStatus(payload);
   }
 
@@ -110,10 +117,33 @@ public class MasProcessingService {
 
   private Claim toClaim(MasAutomatedClaimPayload payload) {
     return Claim.builder()
-        .claimSubmissionId(Integer.toString(payload.getClaimId()))
+        .benefitClaimId(payload.getBenefitClaimId())
         .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(payload.getIdType())
+        .conditionName(payload.getConditionName())
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
+        .veteranParticipantId(payload.getVeteranParticipantId())
+        .inScope(payload.isInScope())
+        .disabilityActionType(payload.getDisabilityActionType())
+        .disabilityClassificationCode(payload.getDisabilityClassificationCode())
+        .offRampReason(payload.getOffRampReason())
+        .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
+        .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
+        .build();
+  }
+
+  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
+    String examOrderDateTime = payload.getExamOrderDateTime();
+    OffsetDateTime examDateTime = null;
+    if (examOrderDateTime != null && !examOrderDateTime.isBlank()) {
+      examDateTime = OffsetDateTime.parse(examOrderDateTime);
+    }
+    return ExamOrder.builder()
+        .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(claimIdType)
+        .status(payload.getCollectionStatus())
+        .examOrderDateTime(examDateTime)
         .build();
   }
 }
