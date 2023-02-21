@@ -78,7 +78,19 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             .isPresent());
   }
 
-  private MasProcessingObject processClaim(boolean sufficientEvidence) throws Exception {
+  @Test
+  void processClaimInsufficientEvidenceAccessError() throws Exception {
+    var mpo = processClaim(null);
+    Thread.sleep(200);
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
+    assertTrue(
+        audits.stream()
+            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .findFirst()
+            .isPresent());
+  }
+
+  private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
 
     // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
@@ -138,9 +150,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     var response = camelEntrance.processClaim(payload);
 
     // verify if order exam was called based on the sufficient evidence flag
-    if (sufficientEvidence) {
+    if (sufficientEvidence == null) {
       Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
-    } else {
+    } else if (sufficientEvidence != null && sufficientEvidence == true) {
+      Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
+    } else if (sufficientEvidence != null && sufficientEvidence == false) {
       var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamRequest.class);
       Mockito.verify(masApiService, Mockito.times(1)).orderExam(argumentCaptor.capture());
       MasOrderExamRequest orderExamRequest = argumentCaptor.getValue();

@@ -78,7 +78,7 @@ COMMON_HELM_ARGS="--set-string environment=${ENV} \
 # K8s namespace
 NAMESPACE="${TEAMNAME}-${ENV}"
 
-source scripts/notify-slack.src "$GITHUB_ACTION $GITHUB_RUN_NUMBER \`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\` by \`${GITHUB_ACTOR:-$USER}\`"
+source scripts/notify-slack.src "\`${GITHUB_WORKFLOW:-$HOST}\`, \`$0\`: Uninstalling \`${HELM_APP_NAME}\` from \`${NAMESPACE}\` by \`${GITHUB_ACTOR:-$USER}\`"
 helm del "$HELM_APP_NAME" -n "${NAMESPACE}"
 
 source scripts/notify-slack.src "\`$0\`: Deploying new \`${HELM_APP_NAME}\` to \`${NAMESPACE}\` IMAGE_TAG=\`${IMAGE_TAG}\`"

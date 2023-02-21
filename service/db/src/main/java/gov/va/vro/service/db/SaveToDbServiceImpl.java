@@ -4,20 +4,31 @@ import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
+import gov.va.vro.persistence.model.VeteranFlashIdEntity;
+import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
+import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
@@ -28,19 +39,65 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   private final VeteranRepository veteranRepository;
   private final ClaimRepository claimRepository;
+
+  private final AssessmentResultRepository assessmentResultRepository;
+
+  private final ClaimSubmissionRepository claimSubmissionRepository;
+  private final ExamOrderRepository examOrderRepository;
   private final ClaimMapper mapper;
 
   @Override
   @Transactional
   public Claim insertClaim(Claim claim) {
-    VeteranEntity veteranEntity = findOrCreateVeteran(claim.getVeteranIcn());
-    ClaimEntity claimEntity =
-        claimRepository
-            .findByClaimSubmissionIdAndIdType(claim.getClaimSubmissionId(), claim.getIdType())
-            .orElseGet(() -> createClaim(claim, veteranEntity));
-    ensureContentionExists(claimEntity, claim.getDiagnosticCode());
+    VeteranEntity veteranEntity =
+        findOrCreateVeteran(claim.getVeteranIcn(), claim.getVeteranParticipantId());
+    ClaimEntity claimEntity = null;
+
+    if (claim.getBenefitClaimId() == null) {
+      // v1 endpoints provide a claimSubmissionId (which is stored as reference_id in
+      // claim_submission)
+      // instead of a benefitClaimId (vbmsId)
+      Optional<ClaimSubmissionEntity> v1ClaimSubmission =
+          claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+              claim.getCollectionId(), claim.getIdType());
+      if (v1ClaimSubmission.isPresent()) {
+        claimEntity = v1ClaimSubmission.get().getClaim();
+      } else {
+        claimEntity = createClaim(claim, veteranEntity);
+      }
+    } else {
+      // v2 endpoints provide a benefitClaimId, and collectionId is the reference_id on
+      // claimSubmission
+      claimEntity =
+          claimRepository
+              .findByVbmsId(claim.getBenefitClaimId())
+              .orElseGet(() -> createClaim(claim, veteranEntity));
+    }
+
+    ClaimSubmissionEntity claimSubmissionEntity = createClaimSubmission(claim);
+    ensureContentionExists(
+        claimEntity,
+        claim.getDiagnosticCode(),
+        claim.getConditionName(),
+        claim.getDisabilityClassificationCode());
+    claimEntity.addClaimSubmission(claimSubmissionEntity);
+    claimSubmissionRepository.save(claimSubmissionEntity);
+    claimRepository.save(claimEntity);
     claim.setRecordId(claimEntity.getId());
     return claim;
+  }
+
+  private ClaimSubmissionEntity createClaimSubmission(Claim claim) {
+    ClaimSubmissionEntity claimSubmission = new ClaimSubmissionEntity();
+    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to collectionId
+    claimSubmission.setReferenceId(claim.getCollectionId());
+    claimSubmission.setIdType(claim.getIdType());
+    claimSubmission.setIncomingStatus(claim.getIncomingStatus());
+    claimSubmission.setSubmissionSource(claim.getSubmissionSource());
+    claimSubmission.setSubmissionDate(claim.getSubmissionDate());
+    claimSubmission.setOffRampReason(claim.getOffRampReason());
+    claimSubmission.setInScope(claim.isInScope());
+    return claimSubmission;
   }
 
   @Override
@@ -56,17 +113,19 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode) {
-    var claimEntity =
-        claimRepository.findByClaimSubmissionIdAndIdType(
-            evidence.getClaimSubmissionId(), Claim.DEFAULT_ID_TYPE);
-    if (claimEntity.isEmpty()) {
+    // For v1 endpoints, PostClaimRequestMapper maps claimSubmissionId to referenceId
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            evidence.getClaimSubmissionId(), evidence.getIdType());
+    if (claimSubmission.isEmpty()) {
       log.warn(
-          "Claim not found for claimEntity submission id = {} and id type = {}",
+          "Claim Submission not found for claim submission id = {} and id type = {} to insert assessment result",
           evidence.getClaimSubmissionId(),
-          Claim.DEFAULT_ID_TYPE);
+          evidence.getIdType());
       return;
     }
-    insertAssessmentResult(claimEntity.get(), evidence, diagnosticCode);
+    ClaimEntity claimEntity = claimSubmission.get().getClaim();
+    insertAssessmentResult(claimEntity, evidence, diagnosticCode);
   }
 
   private void insertAssessmentResult(
@@ -88,13 +147,28 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
+  public void setOffRampReason(Claim claimWithOffRamp) {
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
+    ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
+    claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
+    claimSubmissionRepository.save(claimSubmissionEntity);
+  }
+
+  @Override
   public void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName) {
-    ClaimEntity claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimSubmissionId()).orElse(null);
-    if (claim == null) {
-      log.warn("Could not find claim by claimSubmissionId, exiting.");
+    // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            request.getClaimSubmissionId(), request.getIdType());
+    if (claimSubmission.isEmpty()) {
+      log.warn(
+          "Could not find claim by claimSubmissionId {} from insert evidence summary document, exiting.",
+          request.getClaimSubmissionId());
       return;
     }
+    ClaimEntity claim = claimSubmission.get().getClaim();
     ContentionEntity contention = findContention(claim, request.getDiagnosticCode());
     if (contention == null) {
       log.warn("Could not match the contention with the claim and diagnostic code, exiting.");
@@ -103,6 +177,94 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     Map<String, String> evidenceCount = fillEvidenceCounts(request);
     contention.addEvidenceSummaryDocument(evidenceCount, documentName);
     claimRepository.save(claim);
+  }
+
+  @Override
+  @Transactional
+  public void insertOrUpdateExamOrderingStatus(ExamOrder examOrder) {
+    ExamOrderEntity examOrderEntity =
+        examOrderRepository
+            .findByCollectionId(examOrder.getCollectionId())
+            .orElseGet(() -> createExamOrder(examOrder));
+    if (null != examOrderEntity) {
+      examOrderEntity.setStatus(examOrder.getStatus());
+      examOrderEntity.setOrderedAt(examOrder.getExamOrderDateTime());
+      examOrderRepository.save(examOrderEntity);
+    }
+  }
+
+  @Override
+  public void insertFlashIds(List<String> veteranFlashIds, String veteranIcn) {
+    var veteran = veteranRepository.findByIcn(veteranIcn);
+    if (veteran.isEmpty()) {
+      log.error("Could not find a Veteran with this ICN. Could not attach flash IDs.");
+      return;
+    }
+    if (veteranFlashIds == null) {
+      log.warn("The Veteran Flash ID list was null, could not attach to Veteran.");
+      return;
+    }
+    VeteranEntity entity = veteran.get();
+    List<VeteranFlashIdEntity> flashIdList = createFlashIds(veteranFlashIds, entity);
+    entity.setFlashIds(flashIdList);
+    veteranRepository.save(entity);
+  }
+
+  @Override
+  public void updateRfdFlag(String benefitClaimId, boolean rfdFlag) {
+    var claim = claimRepository.findByVbmsId(benefitClaimId);
+    if (claim.isEmpty()) {
+      log.error("Could not find claim with id and idType, could not update RFD flag.");
+      return;
+    }
+    ClaimEntity claimEntity = claim.get();
+    claimEntity.setRfdFlag(rfdFlag);
+    claimRepository.save(claimEntity);
+  }
+
+  @Override
+  public void updateSufficientEvidenceFlag(AbdEvidenceWithSummary evidence, String diagnosticCode) {
+    // For v1 endpoints, ClaimSubmissionId = ClaimSubmission.referenceId
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            evidence.getClaimSubmissionId(), evidence.getIdType());
+    if (claimSubmission.isEmpty()) {
+      log.error(
+          "Claim Submission not found for claim submission id = {} and id type = {} in update sufficient evidence flag",
+          evidence.getClaimSubmissionId(),
+          evidence.getIdType());
+      return;
+    }
+    ClaimEntity claim = claimSubmission.get().getClaim();
+    ContentionEntity contention = findContention(claim, diagnosticCode);
+    if (contention == null) {
+      log.error("Could not find contention with given diagnostic code.");
+      return;
+    }
+    Optional<AssessmentResultEntity> result =
+        assessmentResultRepository.findFirstByContentionIdOrderByCreatedAtDesc(contention.getId());
+    if (result.isEmpty()) {
+      log.error("Could not match assessment result to this contention id.");
+      return;
+    }
+    if (evidence.getEvidence() == null) {
+      log.error("No evidence.");
+    }
+    AssessmentResultEntity assessmentResult = result.get();
+    assessmentResult.setSufficientEvidenceFlag(evidence.getSufficientForFastTracking());
+    assessmentResultRepository.save(assessmentResult);
+  }
+
+  private List<VeteranFlashIdEntity> createFlashIds(
+      List<String> veteranFlashIds, VeteranEntity entity) {
+    List<VeteranFlashIdEntity> flashIdList = new ArrayList<>();
+    for (String flashId : veteranFlashIds) {
+      VeteranFlashIdEntity id = new VeteranFlashIdEntity();
+      id.setFlashId(flashId);
+      id.setVeteran(entity);
+      flashIdList.add(id);
+    }
+    return flashIdList;
   }
 
   private Map<String, String> fillEvidenceCounts(GeneratePdfPayload request) {
@@ -134,10 +296,15 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     return result;
   }
 
-  private ContentionEntity ensureContentionExists(ClaimEntity claim, String diagnosticCode) {
+  private ContentionEntity ensureContentionExists(
+      ClaimEntity claim,
+      String diagnosticCode,
+      String conditionName,
+      String disabilityClassificationCode) {
     var contention = findContention(claim, diagnosticCode);
     if (contention == null) {
-      contention = createContention(claim, diagnosticCode);
+      contention =
+          createContention(claim, diagnosticCode, conditionName, disabilityClassificationCode);
       claimRepository.save(claim);
     }
     return contention;
@@ -155,24 +322,60 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private ClaimEntity createClaim(Claim claim, VeteranEntity veteranEntity) {
     ClaimEntity claimEntity = mapper.toClaimEntity(claim);
     claimEntity.setVeteran(veteranEntity);
-    createContention(claimEntity, claim.getDiagnosticCode());
+    createContention(
+        claimEntity,
+        claim.getDiagnosticCode(),
+        claim.getConditionName(),
+        claim.getDisabilityClassificationCode());
     return claimRepository.save(claimEntity);
   }
 
-  private ContentionEntity createContention(ClaimEntity claim, String diagnosticCode) {
+  private ExamOrderEntity createExamOrder(ExamOrder examOrder) {
+    // Currently ExamOrders only come from MAS
+    Optional<ClaimSubmissionEntity> claimSubmission =
+        claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+            examOrder.getCollectionId(), examOrder.getIdType());
+    ExamOrderEntity examOrderEntity = new ExamOrderEntity();
+    examOrderEntity.setCollectionId(examOrder.getCollectionId());
+    examOrderEntity.setStatus(examOrder.getStatus());
+    examOrderEntity.setOrderedAt(examOrder.getExamOrderDateTime());
+    if (claimSubmission.isEmpty()) {
+      log.error(
+          "Could not find claim submission for collection id {}, will not save connection to exam order.",
+          examOrder.getCollectionId());
+    } else {
+      examOrderEntity.setClaimSubmission(claimSubmission.get());
+    }
+    return examOrderRepository.save(examOrderEntity);
+  }
+
+  private ContentionEntity createContention(
+      ClaimEntity claim,
+      String diagnosticCode,
+      String conditionName,
+      String disabilityClassificationCode) {
     ContentionEntity contentionEntity = new ContentionEntity();
     contentionEntity.setDiagnosticCode(diagnosticCode);
+    contentionEntity.setConditionName(conditionName);
+    contentionEntity.setClassificationCode(disabilityClassificationCode);
     claim.addContention(contentionEntity);
     return contentionEntity;
   }
 
-  private VeteranEntity findOrCreateVeteran(String veteranIcn) {
-    return veteranRepository.findByIcn(veteranIcn).orElseGet(() -> createVeteran(veteranIcn));
+  private VeteranEntity findOrCreateVeteran(String veteranIcn, String veteranParticipantId) {
+    VeteranEntity veteranEntity =
+        veteranRepository
+            .findByIcn(veteranIcn)
+            .orElseGet(() -> createVeteran(veteranIcn, veteranParticipantId));
+    Date date = new Date();
+    veteranEntity.setIcnTimestamp(date);
+    return veteranRepository.save(veteranEntity);
   }
 
-  private VeteranEntity createVeteran(String veteranIcn) {
+  private VeteranEntity createVeteran(String veteranIcn, String veteranParticipantId) {
     VeteranEntity veteranEntity = new VeteranEntity();
     veteranEntity.setIcn(veteranIcn);
+    veteranEntity.setParticipantId(veteranParticipantId);
     return veteranRepository.save(veteranEntity);
   }
 }

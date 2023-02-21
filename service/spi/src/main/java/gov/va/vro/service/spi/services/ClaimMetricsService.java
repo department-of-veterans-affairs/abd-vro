@@ -8,7 +8,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 public interface ClaimMetricsService {
   ClaimMetricsResponse getClaimMetrics();
 
-  ClaimInfoResponse findClaimInfo(String claimSubmissionId);
+  ClaimInfoResponse findClaimInfo(String claimSubmissionId, String idType);
 
   ClaimsInfo findAllClaimInfo(ClaimInfoQueryParams params);
 }

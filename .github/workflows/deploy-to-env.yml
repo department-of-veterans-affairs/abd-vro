@@ -86,7 +86,8 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            to *${{inputs.target_env}}* env using images with prefix `${{ inputs.image_prefix }}` \n\
+            to *${{inputs.target_env}}* using images with prefix `${{ inputs.image_prefix }}` \
+            and tag `${{ needs.set-image-props.outputs.image-tag }}` \n\
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
@@ -169,7 +170,8 @@ jobs:
   notify-slack:
     needs: [ publish-images, deploy-images ]
     runs-on: ubuntu-latest
-    if: always()
+    # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
+    if: always() && github.repository == 'department-of-veterans-affairs/abd-vro'
     steps:
       - name: "Set cancelled deployment message"
         if: ${{ needs.publish-images.outputs.job_status == 'cancelled' || needs.deploy-images.outputs.job_status == 'cancelled' }}
