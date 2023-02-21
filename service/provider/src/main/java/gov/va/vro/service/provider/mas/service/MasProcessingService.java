@@ -123,6 +123,7 @@ public class MasProcessingService {
         .conditionName(payload.getConditionName())
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
+        .veteranParticipantId(payload.getVeteranParticipantId())
         .inScope(payload.isInScope())
         .disabilityActionType(payload.getDisabilityActionType())
         .disabilityClassificationCode(payload.getDisabilityClassificationCode())

@@ -9,7 +9,7 @@
     "ssn": "111-11-1111",
     "veteranFileId": "string",
     "edipn": "string",
-    "participantId": "string"
+    "participantId": "participant1"
   },
   "claimDetail": {
     "benefitClaimId": "2010",
