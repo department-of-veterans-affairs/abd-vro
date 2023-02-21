@@ -58,6 +58,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_OFFRAMP = "seda:offramp";
 
+  public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
+
+  public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
+
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
@@ -116,8 +120,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureMasProcessing() {
     String routeId = "mas-processing";
 
-    String orderExamEndpoint = "direct:order-exam";
-
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
@@ -131,16 +133,27 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
-        // Conditionally order exam
-        .to(orderExamEndpoint)
-        // Upload PDF
+        .choice()
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
+        // Order Exam only if the Sufficient For Fast Tracking is "false"
+        .to(ENDPOINT_ORDER_EXAM)
+        // Upload PDF only if SufficientForFastTracking is either true or false
         .to(ENDPOINT_UPLOAD_PDF)
         // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE);
+        .to(ENDPOINT_MAS_COMPLETE)
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
+        // Upload PDF only if SufficientForFastTracking is either true or false
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
+        .to(ENDPOINT_MAS_COMPLETE)
+        .otherwise()
+        // Off ramp if the Sufficient For Fast Tracking is null
+        .to(ENDPOINT_ACCESS_ERR)
+        .end();
 
-    // Call "Order Exam" in the absence of evidence
+    // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    from(orderExamEndpoint)
+    from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
         .routeId(orderExamRouteId)
         .choice()
@@ -151,6 +164,15 @@ public class MasIntegrationRoutes extends RouteBuilder {
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .log("MAS Order Exam response: ${body}")
         .end();
+
+    // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
+    var assessorErrorRouteId = "assessorError";
+    from(ENDPOINT_ACCESS_ERR)
+        .routeId(assessorErrorRouteId)
+        .log("Assessor Error. Off-ramping claim")
+        .wireTap(ENDPOINT_OFFRAMP)
+        .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
+        .to(ENDPOINT_MAS_COMPLETE);
   }
 
   private void configureCollectEvidence() {
@@ -215,7 +237,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Removing Special Issue"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking}"))
+        // Mark the claim as "RFD" only if the Sufficient For Fast Tracking is "true"
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))

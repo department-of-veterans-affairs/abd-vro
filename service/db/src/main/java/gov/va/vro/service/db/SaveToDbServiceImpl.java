@@ -250,7 +250,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.error("No evidence.");
     }
     AssessmentResultEntity assessmentResult = result.get();
-    assessmentResult.setSufficientEvidenceFlag(evidence.isSufficientForFastTracking());
+    assessmentResult.setSufficientEvidenceFlag(evidence.getSufficientForFastTracking());
     assessmentResultRepository.save(assessmentResult);
   }
 
