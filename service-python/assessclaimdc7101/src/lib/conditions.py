@@ -18,15 +18,29 @@ def conditions_calculation(request_body):
     condition_with_date = []
     condition_without_date = []
     conditions_two_years = []
-    count = 0
+    lh_count = 0
+    mas_count = 0
+    mas_not_relevant = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
-        if "partialDate" not in condition.keys():
-            condition["partialDate"] = ""  # PDF template logic assumes this field exists
+
+        if condition_code in hypertension_conditions.conditions:
+            if condition["dataSource"] == "LH":
+                if condition["category"] == "Encounter Diagnosis":
+                    condition["relevant"] = True
+                    lh_count += 1
+            else:
+                condition["relevant"] = True
+                mas_count += 1
+        else:
+            condition["relevant"] = False
+            if condition["dataSource"] == "MAS":
+                mas_not_relevant += 1
+
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
             condition["dateFormatted"] = format_date(condition_date)
@@ -36,17 +50,6 @@ def conditions_calculation(request_body):
         except (ValueError, KeyError):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
-
-        if condition_code in hypertension_conditions.conditions:
-            if condition["dataSource"] == "LH":
-                if condition["category"] == "Encounter Diagnosis":
-                    condition["relevant"] = True
-                    count += 1
-            else:
-                condition["relevant"] = True
-                count += 1
-        else:
-            condition["relevant"] = False
 
     condition_with_date = sorted(
         condition_with_date,
@@ -66,7 +69,9 @@ def conditions_calculation(request_body):
         "conditions": condition_with_date,
         "conditionsTwoYears": conditions_two_years,
         "totalConditionsCount": len(veterans_conditions),
-        "relevantConditionsCount": count
+        "relevantConditionsCountLighthouse": lh_count,
+        "relevantConditionsCountMAS": mas_count,
+        "irrelevantConditionsCountMAS": mas_not_relevant
         }
     )
     return response
