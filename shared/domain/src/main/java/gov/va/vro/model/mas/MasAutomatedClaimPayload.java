@@ -119,6 +119,11 @@ public class MasAutomatedClaimPayload implements Auditable {
   }
 
   @JsonIgnore
+  public String getVeteranParticipantId() {
+    return veteranIdentifiers == null ? null : veteranIdentifiers.getParticipantId();
+  }
+
+  @JsonIgnore
   @Override
   public String getEventId() {
     return correlationId;
