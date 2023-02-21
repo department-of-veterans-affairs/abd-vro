@@ -126,6 +126,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("idType", simple("${body.idType}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
