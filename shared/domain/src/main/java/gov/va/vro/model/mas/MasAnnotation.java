@@ -22,8 +22,17 @@ public class MasAnnotation {
   @JsonProperty("page_num")
   private String pageNum;
 
+  @JsonProperty("eFolderVersionRefId")
+  private String eFolderVersionRefId;
+
   @JsonProperty("dates")
   private String dates;
+
+  @JsonProperty("recDate")
+  private String recDate;
+
+  @JsonProperty("docTypedescription")
+  private String docTypedescription;
 
   @JsonProperty("annot_name")
   private String annotName;
