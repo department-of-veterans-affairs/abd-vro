@@ -69,10 +69,7 @@ public class SecurityConfig {
     httpSecurity
         .exceptionHandling()
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-    // Secure end point./gradlew :controller:spotlessApply && ./gradlew :app:spotlessApply &&
-    // ./gradlew :shared:domain:spotlessApply && ./gradlew :service:db:spotlessApply && ./gradlew
-    // :service:provider:spotlessApply && ./gradlew :service:spi:spotlessApply && ./gradlew
-    // :persistence:spotlessApply && ./gradlew :persistence:model:spotlessApply
+    // Secure end point.
     httpSecurity
         .requestMatchers()
         .antMatchers(
