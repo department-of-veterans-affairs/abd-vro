@@ -1,0 +1,29 @@
+{
+  "dob": "1968-02-19",
+  "firstName": "David",
+  "lastName": "Skyscraper",
+  "gender": "male",
+  "collectionId": 376,
+  "veteranIdentifiers": {
+    "icn": "1012666073V986297",
+    "ssn": "111-11-1376",
+    "veteranFileId": "9999376",
+    "edipn": "1010234-376",
+    "participantId": "88888376"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1020",
+    "claimSubmissionDateTime": "2023-02-08T18:45:59Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "NEW",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "Agent Orange Exposure Verified"
+  ]
+}
