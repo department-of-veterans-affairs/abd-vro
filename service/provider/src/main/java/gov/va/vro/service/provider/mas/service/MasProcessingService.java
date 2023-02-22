@@ -14,14 +14,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MasProcessingService {
 
+  private static final String customDateFormatRegex =
+      "^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])(Z)?$";
+  private static final Pattern customDatePattern = Pattern.compile(customDateFormatRegex);
   private final CamelEntrance camelEntrance;
 
   private final MasConfig masConfig;
@@ -136,8 +144,24 @@ public class MasProcessingService {
   private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
     String examOrderDateTime = payload.getExamOrderDateTime();
     OffsetDateTime examDateTime = null;
-    if (examOrderDateTime != null && !examOrderDateTime.isBlank()) {
-      examDateTime = OffsetDateTime.parse(examOrderDateTime);
+    try {
+      if (examOrderDateTime != null && !examOrderDateTime.isBlank()) {
+        // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
+        Matcher customDateMatcher = customDatePattern.matcher(examOrderDateTime);
+        if (customDateMatcher.matches()) {
+          Integer year = Integer.parseInt(customDateMatcher.group(0));
+          Integer month = Integer.parseInt(customDateMatcher.group(1));
+          Integer day = Integer.parseInt(customDateMatcher.group(2));
+          LocalDate customDate = LocalDate.of(year, month, day);
+          examDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
+        } else {
+          // Fall back to ISO 8601 Date Time
+          examDateTime = OffsetDateTime.parse(examOrderDateTime);
+        }
+      }
+    } catch (Exception e) {
+      log.error(
+          "Unable to parse exam order date time. Unexpected date format {}", examOrderDateTime);
     }
     return ExamOrder.builder()
         .collectionId(Integer.toString(payload.getCollectionId()))
