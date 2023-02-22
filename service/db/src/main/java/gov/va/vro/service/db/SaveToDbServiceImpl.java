@@ -175,7 +175,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       return;
     }
     Map<String, String> evidenceCount = fillEvidenceCounts(request);
-    contention.addEvidenceSummaryDocument(evidenceCount, documentName);
+    contention.addEvidenceSummaryDocument(evidenceCount, documentName, request.getVeteranFileId());
     claimRepository.save(claim);
   }
 

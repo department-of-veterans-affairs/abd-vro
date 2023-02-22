@@ -27,4 +27,6 @@ public class EvidenceSummaryDocumentEntity extends BaseEntity {
   private Map<String, String> evidenceCount;
 
   private String documentName;
+
+  private String veteranFileId;
 }

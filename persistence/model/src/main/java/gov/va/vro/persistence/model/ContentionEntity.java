@@ -90,10 +90,12 @@ public class ContentionEntity extends BaseEntity {
    * @param evidenceCount evidence counts
    * @param documentName document name
    */
-  public void addEvidenceSummaryDocument(Map<String, String> evidenceCount, String documentName) {
+  public void addEvidenceSummaryDocument(
+      Map<String, String> evidenceCount, String documentName, String veteranFileId) {
     EvidenceSummaryDocumentEntity esd = new EvidenceSummaryDocumentEntity();
     esd.setEvidenceCount(evidenceCount);
     esd.setDocumentName(documentName);
+    esd.setVeteranFileId(veteranFileId);
     esd.setContention(this);
     evidenceSummaryDocuments.add(esd);
   }
