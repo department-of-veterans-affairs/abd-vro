@@ -107,6 +107,7 @@ public class MasIntegrationProcessors {
     if (disabilityActionType != null) {
       ClaimCondition condition = new ClaimCondition();
       condition.setDisabilityActionType(transferObject.getDisabilityActionType());
+      condition.setName(transferObject.getDisplayName());
       generatePdfPayload.setConditions(condition);
     }
 

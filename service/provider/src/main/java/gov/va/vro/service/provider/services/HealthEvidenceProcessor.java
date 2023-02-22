@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.services;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class HealthEvidenceProcessor implements Processor {
   @Override
   public void process(Exchange exchange) {
     MasProcessingObject masTransferObject = (MasProcessingObject) exchange.getProperty("payload");
+    List<ServiceLocation> serviceLocations = (List<ServiceLocation>) exchange.getProperty("serviceLocations");
 
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
 
@@ -32,7 +34,12 @@ public class HealthEvidenceProcessor implements Processor {
       exchange.setProperty("sufficientForFastTracking", evidence.getSufficientForFastTracking());
       log.info(
           " MAS Processing >> Sufficient Evidence >>> " + evidence.getSufficientForFastTracking());
-      masTransferObject.setEvidence(getValidEvidence(evidence.getEvidence()));
+
+      // Transfer service locations. Assessment does not populate that one.
+      AbdEvidence currentEvidenceData = evidence.getEvidence();
+      currentEvidenceData.setServiceLocations(serviceLocations);
+
+      masTransferObject.setEvidence(getValidEvidence(currentEvidenceData));
       exchange.getMessage().setBody(masTransferObject);
     }
   }
@@ -47,6 +54,8 @@ public class HealthEvidenceProcessor implements Processor {
     validEvidence.setMedications(emptyIfNull(evidence.getMedications()));
     validEvidence.setBloodPressures(emptyIfNull(evidence.getBloodPressures()));
     validEvidence.setProcedures(emptyIfNull(evidence.getProcedures()));
+    validEvidence.setServiceLocations(emptyIfNull(evidence.getServiceLocations()));
+
     return validEvidence;
   }
 
