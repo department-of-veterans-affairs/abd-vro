@@ -205,8 +205,25 @@
             "dbq_type": ""
           }
         ]
+      },
+      {
+        "docTypeDescription": "C and P Exam",
+        "eFolderVersionRefId": "{U76A1A2A-FFFF-EEEE-DDDD-000000000001}",
+        "recDate": "2023-08-26Z",
+        "condition": "Hypertension",
+        "annotations": []
+      },
+      {
+        "docTypeDescription": "C and P Exam",
+        "eFolderVersionRefId": "{U76A1A2A-FFFF-EEEE-DDDD-000000000002}",
+        "recDate": "2023-09-01Z",
+        "condition": "Hypertension",
+        "annotations": []
       }
     ],
-    "documentsWithoutAnnotationsChecked": []
+    "documentsWithoutAnnotationsChecked": [
+      "{U76A1A2A-FFFF-EEEE-DDDD-000000000001}",
+      "{U76A1A2A-FFFF-EEEE-DDDD-000000000002}"
+    ]
   }
 ]
