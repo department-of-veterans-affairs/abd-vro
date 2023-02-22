@@ -17,6 +17,7 @@
     "conditions": [],
     "medications": [],
     "procedures": [],
-    "serviceLocations": []
+    "serviceLocations": [],
+    "documentsWithoutAnnotationsChecked": []
   }
 }

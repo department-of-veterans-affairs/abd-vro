@@ -3,6 +3,20 @@ from datetime import datetime
 from cerberus import Validator
 
 
+def docs_without_annotations_ids(event):
+    """
+    Robustly handle scenarios when documents without annotations is not set. In case the field is missing or None.
+
+    :param event: MAS json body
+    :return: list of strings
+    """
+    doc_ids = []
+    if "documentsWithoutAnnotationsChecked" in list(event["evidence"].keys()):
+        if event["evidence"]["documentsWithoutAnnotationsChecked"] is not None:
+            doc_ids = event["evidence"]["documentsWithoutAnnotationsChecked"]
+    return doc_ids
+
+
 def extract_date(date_string):
     """
     Safely reading in a date by handling exceptions

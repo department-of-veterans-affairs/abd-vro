@@ -381,14 +381,14 @@
           </tr>
         </thead>
         <tbody>
-          {% for review in evidence.unavailable_reviews %}
+          {% for review in evidence.documentsWithoutAnnotationsChecked %}
           <tr>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
-            <td>{{ review.document }}</td>
+            <td>{{ review }}</td>
           </tr>
           {% endfor %}
-          {% if evidence.unavailable_reviews |length == 0 %}
+          {% if evidence.documentsWithoutAnnotationsChecked |length == 0 %}
           <tr>
             <td colspan="3" class="empty">The automated review scanned all relevant documents.</td>
           </tr>
