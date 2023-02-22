@@ -190,7 +190,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
-        .process(combineExchangesProcessor()); // returns HealthDataAssessment
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
