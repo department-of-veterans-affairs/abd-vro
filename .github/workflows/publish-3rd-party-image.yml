@@ -8,19 +8,23 @@ on:
   workflow_dispatch:
     inputs:
       image_name:
-        description: 'Name of the image to publish, e.g., rabbitmq'
+        description: 'Name of the image to pull, e.g., bitnami/rabbitmq'
         required: true
         type: string
       image_tag:
-        description: 'Tag/Version of the image to publish, e.g., 3'
+        description: 'Tag/Version of the image to pull, e.g., 3'
+        required: true
+        type: string
+      target_image_name:
+        description: 'Desired image name to publish, replacing "/", e.g., bitnami-rabbitmq; ("vro-" will be added as a prefix)'
         required: true
         type: string
 
 env:
   # Add prefix to avoid uncertainty of which image is being used
-  TARGET_IMAGE: "vro-${{ inputs.image_name }}"
+  TARGET_IMAGE: "vro-${{ inputs.target_image_name }}"
   # Target path where the image will be pushed, i.e., to GHCR for the current repo
-  GHCR_PATH: "ghcr.io/${{ github.repository }}/vro-${{ inputs.image_name }}"
+  GHCR_PATH: "ghcr.io/${{ github.repository }}/vro-${{ inputs.target_image_name }}"
 
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
@@ -54,8 +58,7 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: "`${{ github.workflow }}` by `${{ github.triggering_actor }}` \n\
-            Published 3rd-party image to `${{ env.GHCR_PATH }}`\n\
+          slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
             Check for the package in <https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=${{ github.event.repository.name }}|GHCR>\n\
             See thread :thread: to complete any remaining steps..."
 
@@ -70,8 +73,8 @@ jobs:
             1. Verify that \
                <https://github.com/${{ github.repository }}/pkgs/container/${{ github.event.repository.name }}%2F${{ env.TARGET_IMAGE }}|the package> \
                is associated with repo `${{ github.repository }}` and is set to `Inherit access from source repository` as instructed by \
-               <https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility|LHDI doc>. \
-               Also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>\n\
+               <https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility|LHDI doc>; \
+               also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>.\n\
             2. Add image to the `MANUAL_IMGS_ARRAY` in `.github/workflows/secrel4.yml`\n\
             3. Create a Helm configuration for the service; mimic files in `helm-service-* folders`\n\
-            4. Create and test `scripts/deploy-${{ inputs.image_name }}.sh`\n"
+            4. Create and test `scripts/deploy-${{ inputs.target_image_name }}.sh`\n"
