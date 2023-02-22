@@ -148,9 +148,9 @@ public class MasProcessingService {
         // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
         Matcher customDateMatcher = customDatePattern.matcher(input);
         if (customDateMatcher.matches()) {
-          Integer year = Integer.parseInt(customDateMatcher.group(0));
-          Integer month = Integer.parseInt(customDateMatcher.group(1));
-          Integer day = Integer.parseInt(customDateMatcher.group(2));
+          Integer year = Integer.parseInt(customDateMatcher.group(1));
+          Integer month = Integer.parseInt(customDateMatcher.group(2));
+          Integer day = Integer.parseInt(customDateMatcher.group(3));
           LocalDate customDate = LocalDate.of(year, month, day);
           customDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
         } else {
