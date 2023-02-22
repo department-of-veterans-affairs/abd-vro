@@ -6,6 +6,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
@@ -101,6 +102,14 @@ public class MasIntegrationProcessors {
     String fileId = claimPayload.getVeteranIdentifiers().getVeteranFileId();
     generatePdfPayload.setVeteranFileId(fileId);
     generatePdfPayload.setVeteranInfo(veteranInfo);
+
+    String disabilityActionType = transferObject.getDisabilityActionType();
+    if (disabilityActionType != null) {
+      ClaimCondition condition = new ClaimCondition();
+      condition.setDisabilityActionType(transferObject.getDisabilityActionType());
+      generatePdfPayload.setConditions(condition);
+    }
+
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
         generatePdfPayload.getClaimSubmissionId(),
