@@ -21,6 +21,8 @@ public class HealthEvidenceProcessor implements Processor {
     MasProcessingObject masTransferObject = (MasProcessingObject) exchange.getProperty("payload");
     List<ServiceLocation> serviceLocations =
         (List<ServiceLocation>) exchange.getProperty("serviceLocations");
+    List<String> docsWoutAnnotsChecked =
+        (List<String>) exchange.getProperty("docsWoutAnnotsChecked");
 
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
 
@@ -39,6 +41,7 @@ public class HealthEvidenceProcessor implements Processor {
       // Transfer service locations. Assessment does not populate that one.
       AbdEvidence currentEvidenceData = evidence.getEvidence();
       currentEvidenceData.setServiceLocations(serviceLocations);
+      currentEvidenceData.setDocumentsWithoutAnnotationsChecked(docsWoutAnnotsChecked);
 
       masTransferObject.setEvidence(getValidEvidence(currentEvidenceData));
       exchange.getMessage().setBody(masTransferObject);
@@ -56,6 +59,8 @@ public class HealthEvidenceProcessor implements Processor {
     validEvidence.setBloodPressures(emptyIfNull(evidence.getBloodPressures()));
     validEvidence.setProcedures(emptyIfNull(evidence.getProcedures()));
     validEvidence.setServiceLocations(emptyIfNull(evidence.getServiceLocations()));
+    List<String> docsWoutAnnotsChecked = evidence.getDocumentsWithoutAnnotationsChecked();
+    validEvidence.setDocumentsWithoutAnnotationsChecked(emptyIfNull(docsWoutAnnotsChecked));
 
     return validEvidence;
   }

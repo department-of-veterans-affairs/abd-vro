@@ -140,6 +140,8 @@ public class MasCollectionService {
             masApiEvidence != null ? masApiEvidence.getProcedures() : null));
     if (masApiEvidence != null) {
       compositeEvidence.setServiceLocations(masApiEvidence.getServiceLocations());
+      List<String> docsWout = masApiEvidence.getDocumentsWithoutAnnotationsChecked();
+      compositeEvidence.setDocumentsWithoutAnnotationsChecked(docsWout);
     }
     HealthDataAssessment combinedAssessment = new HealthDataAssessment();
     combinedAssessment.setClaimSubmissionId(lighthouseAssessment.getClaimSubmissionId());
