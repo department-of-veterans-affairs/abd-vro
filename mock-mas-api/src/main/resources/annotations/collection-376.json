@@ -169,6 +169,42 @@
             "dbq_type": ""
           }
         ]
+      },
+      {
+        "docTypeDescription": "Certificate of Release",
+        "eFolderVersionRefId": "{9YDD999-99456-989898-B5345-HSYEJ887HSYY}",
+        "recDate": "1970-08-21Z",
+        "condition": "Hypertension",
+        "annotations": [
+          {
+            "annot_type": "service",
+            "annot_name": "",
+            "annot_val": "Republic Of Vietnam",
+            "page_num": "7",
+            "dates": "",
+            "end": 888,
+            "acd_pref_name": "",
+            "spellcheck_val": "",
+            "relevant": false,
+            "partial_date": "",
+            "sorted_date": "0999-12-27Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "service",
+            "annot_name": "",
+            "annot_val": "Vietnam",
+            "page_num": "9",
+            "dates": "",
+            "end": 999,
+            "acd_pref_name": "",
+            "spellcheck_val": "",
+            "relevant": false,
+            "partial_date": "",
+            "sorted_date": "0999-12-27Z",
+            "dbq_type": ""
+          }
+        ]
       }
     ],
     "documentsWithoutAnnotationsChecked": []
