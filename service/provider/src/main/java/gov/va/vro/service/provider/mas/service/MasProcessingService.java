@@ -137,32 +137,35 @@ public class MasProcessingService {
         .disabilityClassificationCode(payload.getDisabilityClassificationCode())
         .offRampReason(payload.getOffRampReason())
         .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
-        .submissionDate(OffsetDateTime.parse(payload.getClaimDetail().getClaimSubmissionDateTime()))
+        .submissionDate(parseCustomDate(payload.getClaimDetail().getClaimSubmissionDateTime()))
         .build();
   }
 
-  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
-    String examOrderDateTime = payload.getExamOrderDateTime();
-    OffsetDateTime examDateTime = null;
+  private OffsetDateTime parseCustomDate(String input) {
+    OffsetDateTime customDateTime = null;
     try {
-      if (examOrderDateTime != null && !examOrderDateTime.isBlank()) {
+      if (input != null && !input.isBlank()) {
         // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
-        Matcher customDateMatcher = customDatePattern.matcher(examOrderDateTime);
+        Matcher customDateMatcher = customDatePattern.matcher(input);
         if (customDateMatcher.matches()) {
           Integer year = Integer.parseInt(customDateMatcher.group(0));
           Integer month = Integer.parseInt(customDateMatcher.group(1));
           Integer day = Integer.parseInt(customDateMatcher.group(2));
           LocalDate customDate = LocalDate.of(year, month, day);
-          examDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
+          customDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
         } else {
           // Fall back to ISO 8601 Date Time
-          examDateTime = OffsetDateTime.parse(examOrderDateTime);
+          customDateTime = OffsetDateTime.parse(input);
         }
       }
     } catch (Exception e) {
-      log.error(
-          "Unable to parse exam order date time. Unexpected date format {}", examOrderDateTime);
+      log.error("Unable to parse date time. Unexpected date format {}", input);
     }
+    return customDateTime;
+  }
+
+  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
+    OffsetDateTime examDateTime = parseCustomDate(payload.getExamOrderDateTime());
     return ExamOrder.builder()
         .collectionId(Integer.toString(payload.getCollectionId()))
         .idType(claimIdType)
