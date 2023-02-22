@@ -60,6 +60,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
             Check for the package in <https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=${{ github.event.repository.name }}|GHCR>\n\
+            Remember to run this workflow in both public repo (for `dev` and `qa` envs) and internal repo (for remaining envs that require signed images).\n\
             See thread :thread: to complete any remaining steps..."
 
       - name: "Post follow-on actions in Slack thread"
