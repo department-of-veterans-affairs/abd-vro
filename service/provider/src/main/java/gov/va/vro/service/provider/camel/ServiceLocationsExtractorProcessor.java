@@ -15,8 +15,13 @@ public class ServiceLocationsExtractorProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    HealthDataAssessment assessment = exchange.getMessage().getBody(HealthDataAssessment.class);
-    List<ServiceLocation> serviceLocations = assessment.getEvidence().getServiceLocations();
-    exchange.setProperty("serviceLocations", serviceLocations);
+    try { // Late change, be defensive
+      HealthDataAssessment assessment = exchange.getMessage().getBody(HealthDataAssessment.class);
+      List<ServiceLocation> serviceLocations = assessment.getEvidence().getServiceLocations();
+      exchange.setProperty("serviceLocations", serviceLocations);
+    } catch (Exception e) {
+      // If this happens service locations in the pdf will be empty
+      log.info("unable to set the service location", e);
+    }
   }
 }

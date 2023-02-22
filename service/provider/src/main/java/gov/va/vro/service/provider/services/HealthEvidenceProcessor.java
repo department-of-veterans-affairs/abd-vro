@@ -19,7 +19,8 @@ public class HealthEvidenceProcessor implements Processor {
   @Override
   public void process(Exchange exchange) {
     MasProcessingObject masTransferObject = (MasProcessingObject) exchange.getProperty("payload");
-    List<ServiceLocation> serviceLocations = (List<ServiceLocation>) exchange.getProperty("serviceLocations");
+    List<ServiceLocation> serviceLocations =
+        (List<ServiceLocation>) exchange.getProperty("serviceLocations");
 
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
 

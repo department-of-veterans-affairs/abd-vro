@@ -106,8 +106,12 @@ public class MasIntegrationProcessors {
     String disabilityActionType = transferObject.getDisabilityActionType();
     if (disabilityActionType != null) {
       ClaimCondition condition = new ClaimCondition();
-      condition.setDisabilityActionType(transferObject.getDisabilityActionType());
-      condition.setName(transferObject.getDisplayName());
+      condition.setDisabilityActionType(disabilityActionType);
+      String conditionName = transferObject.getConditionName();
+      if (conditionName == null) {
+        conditionName = "Not Available";
+      }
+      condition.setName(conditionName);
       generatePdfPayload.setConditions(condition);
     }
 
