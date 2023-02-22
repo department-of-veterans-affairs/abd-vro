@@ -29,4 +29,7 @@ public class MasCollectionAnnotation {
 
   @JsonProperty("documents")
   private List<MasDocument> documents;
+
+  @JsonProperty("documentsWithoutAnnotationsChecked")
+  private List<String> documentsWithoutAnnotationsChecked;
 }

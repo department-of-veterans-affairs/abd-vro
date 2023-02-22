@@ -20,7 +20,7 @@ def on_generate_callback(channel, method, properties, body):
         pdf_generator = PDFGenerator(pdf_options)
 
         message = json.loads(body)
-        # logging.info(f" [x] {binding_key}: Received message: {message}")
+        # logging.info(f" Received message: {message}")
         claim_id = message["claimSubmissionId"]
         diagnosis_code = message["diagnosticCode"]
         message["veteran_info"] = message["veteranInfo"]

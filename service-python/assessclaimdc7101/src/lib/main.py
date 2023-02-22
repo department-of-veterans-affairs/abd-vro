@@ -62,6 +62,7 @@ def assess_sufficiency(event: Dict):
     validation_results = utils.validate_request_body(event)
     event = validation_results["request_body"]
     response_body = {}
+
     if "claimSubmissionDateTime" not in event:
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
@@ -94,7 +95,8 @@ def assess_sufficiency(event: Dict):
             {
                 "evidence": {
                     "bp_readings": bp_display,
-                    "conditions": conditions_display
+                    "conditions": conditions_display,
+                    "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
