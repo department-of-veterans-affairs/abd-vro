@@ -17,8 +17,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                             "systolic": {
                                 "value": 180
                             },
-                            "receiptDate": "",
-                            "date": "2021-11-01"
+                            "receiptDate": "2022-11-01",
+                            "date": "2021-11-01",
+                            "dataSource": "MAS"
                         },
                         {
                             "diastolic": {
@@ -27,46 +28,53 @@ from assessclaimdc7101.src.lib import bp_calculator
                             "systolic": {
                                 "value": 200
                             },
-                            "receiptDate": "",
-                            "date": "2021-09-01"
+                            "receiptDate": "2022-11-01",
+                            "date": "2021-09-01",
+                            "dataSource": "LH"
                         }
                     ]
                 }
                     ,
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
-                {'allBp': [{'date': '2021-11-01',
-                            "receiptDate": "",
+                {'allBp': [{'dataSource': 'MAS',
+                            'date': '2021-11-01',
                             'dateFormatted': '11/1/2021',
                             'diastolic': {'value': 115},
+                            'receiptDate': '11/1/2022',
                             'systolic': {'value': 180}},
-                           {'date': '2021-09-01',
-                            "receiptDate": "",
+                           {'dataSource': 'LH',
+                            'date': '2021-09-01',
                             'dateFormatted': '9/1/2021',
                             'diastolic': {'value': 110},
+                            'receiptDate': '11/1/2022',
                             'systolic': {'value': 200}}],
-                 'oneYearBp': [{'date': '2021-11-01',
-                                "receiptDate": "",
+                 'oneYearBp': [{'dataSource': 'MAS',
+                                'date': '2021-11-01',
                                 'dateFormatted': '11/1/2021',
                                 'diastolic': {'value': 115},
+                                'receiptDate': '11/1/2022',
                                 'systolic': {'value': 180}},
-                               {'date': '2021-09-01',
-                                "receiptDate": "",
+                               {'dataSource': 'LH',
+                                'date': '2021-09-01',
                                 'dateFormatted': '9/1/2021',
                                 'diastolic': {'value': 110},
+                                'receiptDate': '11/1/2022',
                                 'systolic': {'value': 200}}],
                  'oneYearBpReadings': 2,
                  'recentElevatedBpReadings': 2,
                  'totalBpReadings': 2,
-                 'twoYearsBp': [{'date': '2021-11-01',
-                                 "receiptDate": "",
+                 'twoYearsBp': [{'dataSource': 'MAS',
+                                 'date': '2021-11-01',
                                  'dateFormatted': '11/1/2021',
                                  'diastolic': {'value': 115},
+                                 'receiptDate': '11/1/2022',
                                  'systolic': {'value': 180}},
-                                {'date': '2021-09-01',
-                                 "receiptDate": "",
+                                {'dataSource': 'LH',
+                                 'date': '2021-09-01',
                                  'dateFormatted': '9/1/2021',
                                  'diastolic': {'value': 110},
+                                 'receiptDate': '11/1/2022',
                                  'systolic': {'value': 200}}],
                  'twoYearsBpReadings': 2}
         ),
@@ -362,7 +370,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "systolic": {
                                     "value": 131
                                 },
-                                "receiptDate": "",
+                                "receiptDate": "2021-09-13",
                                 "date": ""  # no date
                             },
                             {
@@ -436,7 +444,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                             'diastolic': {'value': 104},
                             'systolic': {'value': 120}},
                            {'date': '',
-                            "receiptDate": "",
+                            "receiptDate": "9/13/2021",
                             'dateFormatted': '',
                             'diastolic': {'value': 113},
                             'systolic': {'value': 131}}],
@@ -1037,7 +1045,7 @@ def test_bp_reader(request_body, bp_calculator_result):
 
     :param request_body: request body with blood pressure readings and other data
     :type request_body: dict
-    :param predominance_calculation: correct return value from algorithm
-    :type predominance_calculation: dict
+    :param bp_calculator_result: correct return value from algorithm
+    :type bp_calculator_result: dict
     """
     assert bp_calculator.bp_reader(request_body) == bp_calculator_result
