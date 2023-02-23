@@ -71,6 +71,7 @@ class SaveToDbServiceImplTest {
     ClaimEntity claimEntity = claimSubmissionEntity.getClaim();
 
     assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
+    assertNull(claimEntity.getVeteran().getParticipantId());
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());
@@ -88,6 +89,7 @@ class SaveToDbServiceImplTest {
     claim.setCollectionId("collection1");
     claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     claim.setVeteranIcn("v1");
+    claim.setVeteranParticipantId("vPID1");
     claim.setDiagnosticCode("1234");
     claim.setConditionName("Condition1");
     claim.setDisabilityClassificationCode("DCC1");
@@ -104,6 +106,7 @@ class SaveToDbServiceImplTest {
     ClaimEntity claimEntity = claimRepository.findByVbmsId(claim.getBenefitClaimId()).orElseThrow();
     assertEquals(claim.getBenefitClaimId(), claimEntity.getVbmsId());
     assertEquals(claim.getVeteranIcn(), claimEntity.getVeteran().getIcn());
+    assertEquals(claim.getVeteranParticipantId(), claimEntity.getVeteran().getParticipantId());
     assertEquals(1, claimEntity.getContentions().size());
     ContentionEntity contentionEntity = claimEntity.getContentions().get(0);
     assertEquals(claim.getDiagnosticCode(), contentionEntity.getDiagnosticCode());

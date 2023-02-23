@@ -37,6 +37,20 @@ public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
       example = "WASHINGTON VA MEDICAL CENTER")
   private String organization;
 
+  @Schema(
+      description = "Document Type Description",
+      example = "Medical Treatment Record - Government Facility")
+  private String document;
+
+  @Schema(description = "VBMS Receipt Date", example = "04/05/2021")
+  private String receiptDate;
+
+  @Schema(description = "Document Page Number", example = "55")
+  private String page;
+
+  @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
+  private String documentId;
+
   @Schema(description = "Formatted date", example = "01/01/2023")
   private String dateFormatted;
 

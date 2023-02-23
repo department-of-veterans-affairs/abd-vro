@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 import javax.validation.constraints.Min;
 
-@RequestMapping(value = "/v1", produces = "application/json")
+@RequestMapping(value = "/v2", produces = "application/json")
 @SecurityRequirement(name = "X-API-Key")
 @SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed

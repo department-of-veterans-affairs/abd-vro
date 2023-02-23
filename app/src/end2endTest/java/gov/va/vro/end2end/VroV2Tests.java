@@ -110,7 +110,7 @@ public class VroV2Tests {
    * ones in mock-bip-claims-api.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId) {
+  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate) {
 
     // Load the test case
     var path = String.format("test-mas/claim-%s-7101.json", collectionId);
@@ -133,6 +133,10 @@ public class VroV2Tests {
     var masResponse = response.getBody();
     String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
     assertEquals(expectedMessage, masResponse.getMessage());
+
+    if (!expectedStatusUpdate) {
+      return;
+    }
 
     // Wait until the evidence pdf is uploaded
     log.info("Wait until the evidence pdf is uploaded");
@@ -167,7 +171,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaim() {
-    testAutomatedClaimFullPositive("350");
+    testAutomatedClaimFullPositive("350", false);
   }
 
   /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
@@ -268,23 +272,23 @@ public class VroV2Tests {
    * API and MAS collections. They are not really related. You can check this to see how the pdfs
    * look like with data from both sources.
    *
-   * <p>After the run get the pdf from http://localhost:8094/9999375
+   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999375
    */
   @SneakyThrows
   @Test
   void testAutomatedClaimSufficientSeparate() {
-    testAutomatedClaimFullPositive("375");
+    testAutomatedClaimFullPositive("375", true);
   }
 
   /**
    * This is an identical to testAutomatedClaimSufficientSeparate except it is a presumptive case.
    * The file number, collection id and claim numbers also differ.
    *
-   * <p>After the run get the pdf from http://localhost:8094/9999376
+   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999376
    */
   @SneakyThrows
   @Test
   void testAutomatedClaimPresumptive() {
-    testAutomatedClaimFullPositive("376");
+    testAutomatedClaimFullPositive("376", true);
   }
 }

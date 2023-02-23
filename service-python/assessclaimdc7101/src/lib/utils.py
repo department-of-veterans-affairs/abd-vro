@@ -3,6 +3,20 @@ from datetime import datetime
 from cerberus import Validator
 
 
+def docs_without_annotations_ids(event):
+    """
+    Robustly handle scenarios when documents without annotations is not set. In case the field is missing or None.
+
+    :param event: MAS json body
+    :return: list of strings
+    """
+    doc_ids = []
+    if "documentsWithoutAnnotationsChecked" in list(event["evidence"].keys()):
+        if event["evidence"]["documentsWithoutAnnotationsChecked"] is not None:
+            doc_ids = event["evidence"]["documentsWithoutAnnotationsChecked"]
+    return doc_ids
+
+
 def extract_date(date_string):
     """
     Safely reading in a date by handling exceptions
@@ -68,6 +82,26 @@ def validate_request_body(request_body):
                                 "nullable": True,
                                 "schema": {"type": "string"},
                             },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            },
                         },
                     },
                 },
@@ -100,29 +134,22 @@ def validate_request_body(request_body):
                             "date": {"type": "string"},
                             "practitioner": {"type": "string", "nullable": True},
                             "organization": {"type": "string", "nullable": True},
-                        },
-                    },
-                },
-                "procedures": {
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {
+                            "document": {
                                 "type": "string",
+                                "default": "",
                             },
-                            "codeSystem": {
-                                "type": "string"
-                            },
-                            "text": {
-                                "type": "string"
-                            },
-                            "performedDate": {
-                                "type": "string"
-                            },
-                            "status": {
+                            "page": {
                                 "type": "string",
+                                "default": "",
                             },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            }
                         },
                     },
                 },
@@ -147,6 +174,26 @@ def validate_request_body(request_body):
                             "abatementDate": {
                                 "type": "string",
                                 "nullable": True
+                            },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
                             }
                         }
                     }
@@ -157,4 +204,4 @@ def validate_request_body(request_body):
     v = Validator(schema)
     v.allow_unknown = True
 
-    return {"is_valid": v.validate(request_body), "errors": v.errors}
+    return {"is_valid": v.validate(request_body), "errors": v.errors, "request_body": v.normalized(request_body)}

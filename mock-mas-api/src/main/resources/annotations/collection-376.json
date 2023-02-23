@@ -36,6 +36,20 @@
           {
             "annot_type": "medical_condition",
             "annot_name": "",
+            "annot_val": "Hypertension With partial",
+            "page_num": "44",
+            "dates": "",
+            "end": 14788,
+            "acd_pref_name": "hyper-tension",
+            "spellcheck_val": "Hypertension",
+            "relevant": false,
+            "partial_date": "04/14/****",
+            "sorted_date": "1999-11-22Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "medical_condition",
+            "annot_name": "",
             "annot_val": "Essential Hypertension",
             "page_num": "52",
             "dates": "",
@@ -156,6 +170,21 @@
           {
             "annot_type": "blood_pressure",
             "annot_name": "BP",
+            "annot_val": "140/95",
+            "page_num": "42",
+            "dates": "",
+            "observation_date": "",
+            "end": 591,
+            "acd_pref_name": "BPReading",
+            "spellcheck_val": "",
+            "relevant": true,
+            "partial_date": "",
+            "sorted_date": "2022-09-25Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "blood_pressure",
+            "annot_name": "BP",
             "annot_val": "143/88",
             "page_num": "823",
             "dates": "",
@@ -169,8 +198,75 @@
             "dbq_type": ""
           }
         ]
+      },
+      {
+        "docTypeDescription": "Certificate of Release",
+        "eFolderVersionRefId": "{9YDD999-99456-989898-B5345-HSYEJ887HSYY}",
+        "recDate": "1970-08-21Z",
+        "condition": "Hypertension",
+        "annotations": [
+          {
+            "annot_type": "medication",
+            "annot_name": "",
+            "annot_val": "Vassotea",
+            "page_num": "81",
+            "dates": "",
+            "end": 277,
+            "acd_pref_name": "enalapril",
+            "spellcheck_val": "Vasotec",
+            "relevant": true,
+            "partial_date": "12/09/****",
+            "sorted_date": "1999-10-27Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "service",
+            "annot_name": "",
+            "annot_val": "Republic Of Vietnam",
+            "page_num": "7",
+            "dates": "",
+            "end": 888,
+            "acd_pref_name": "",
+            "spellcheck_val": "",
+            "relevant": false,
+            "partial_date": "",
+            "sorted_date": "1999-10-27Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "service",
+            "annot_name": "",
+            "annot_val": "Vietnam",
+            "page_num": "9",
+            "dates": "",
+            "end": 999,
+            "acd_pref_name": "",
+            "spellcheck_val": "",
+            "relevant": false,
+            "partial_date": "",
+            "sorted_date": "1999-10-27Z",
+            "dbq_type": ""
+          }
+        ]
+      },
+      {
+        "docTypeDescription": "C and P Exam",
+        "eFolderVersionRefId": "{U76A1A2A-FFFF-EEEE-DDDD-000000000001}",
+        "recDate": "2023-08-26Z",
+        "condition": "Hypertension",
+        "annotations": []
+      },
+      {
+        "docTypeDescription": "C and P Exam",
+        "eFolderVersionRefId": "{U76A1A2A-FFFF-EEEE-DDDD-000000000002}",
+        "recDate": "2023-09-01Z",
+        "condition": "Hypertension",
+        "annotations": []
       }
     ],
-    "documentsWithoutAnnotationsChecked": []
+    "documentsWithoutAnnotationsChecked": [
+      "{U76A1A2A-FFFF-EEEE-DDDD-000000000001}",
+      "{U76A1A2A-FFFF-EEEE-DDDD-000000000002}"
+    ]
   }
 ]

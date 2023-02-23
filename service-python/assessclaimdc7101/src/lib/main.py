@@ -60,7 +60,9 @@ def assess_sufficiency(event: Dict):
     :rtype: dict
     """
     validation_results = utils.validate_request_body(event)
+    event = validation_results["request_body"]
     response_body = {}
+
     if "claimSubmissionDateTime" not in event:
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
@@ -69,6 +71,7 @@ def assess_sufficiency(event: Dict):
         relevant_conditions = conditions.conditions_calculation(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["conditionsTwoYears"]
+        total_relevant_conditions = relevant_conditions["relevantConditionsCountMAS"] + relevant_conditions["relevantConditionsCountLighthouse"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -77,23 +80,30 @@ def assess_sufficiency(event: Dict):
         if event["disabilityActionType"] == "NEW":
             bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
-            if relevant_conditions["relevantConditionsCount"] >= 1:
+            if total_relevant_conditions >= 1:
                 sufficient = False
                 if bp_calculation["twoYearsBpReadings"] >= 3:
                     sufficient = True
             if bp_calculation["recentElevatedBpReadings"] >= 1 and bp_calculation["twoYearsBpReadings"] >= 3:
                 sufficient = True
 
+        # TODO: remove the following conditional. This should be handled in the camel routes. (HealthEvidenceProcessor)
+        if sufficient is None:
+            response_body["errorMessage"] = "insufficientHealthDataToOrderExam"
+
         response_body.update(
             {
                 "evidence": {
                     "bp_readings": bp_display,
-                    "conditions": conditions_display
+                    "conditions": conditions_display,
+                    "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
                     "recentBpReadings": bp_calculation["twoYearsBpReadings"],
-                    "relevantConditionsCount": relevant_conditions["relevantConditionsCount"],
+                    "relevantConditionsCountLighthouse": relevant_conditions["relevantConditionsCountLighthouse"],
+                    "relevantConditionsCountMAS": relevant_conditions["relevantConditionsCountMAS"],
+                    "irrelevantConditionsCountMAS": relevant_conditions["irrelevantConditionsCountMAS"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
                 "sufficientForFastTracking": sufficient,

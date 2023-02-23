@@ -58,6 +58,10 @@ public class MasProcessingObject implements Auditable {
     return claimPayload.getDisabilityActionType();
   }
 
+  public String getConditionName() {
+    return claimPayload.getConditionName();
+  }
+
   @Override
   public String getDisplayName() {
     return claimPayload.getDisplayName();

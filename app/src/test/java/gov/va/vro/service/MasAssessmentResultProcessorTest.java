@@ -30,32 +30,34 @@ public class MasAssessmentResultProcessorTest extends BaseIntegrationTest {
     String benefitClaimId = "111";
     String collectionId = "666";
     String diagnosticCode = "999";
+    String idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
 
     Claim claim = new Claim();
 
     claim.setBenefitClaimId(benefitClaimId);
-    claim.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+    claim.setIdType(idType);
     claim.setVeteranIcn("v1");
     claim.setDiagnosticCode(diagnosticCode);
     claim.setCollectionId(collectionId);
     saveToDbService.insertClaim(claim);
 
+    // IdType on evidence is set by the processor since it doesn't come in otherwise.
+    // This is why the below line of exchange getProperty is important to mock.
     var evidence = new AbdEvidenceWithSummary();
     evidence.setClaimSubmissionId(collectionId);
-    evidence.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     evidence.setEvidenceSummary(Map.of("Hello", 10));
 
     var message = Mockito.mock(Message.class);
     var exchange = Mockito.mock(Exchange.class);
     Mockito.when(exchange.getMessage()).thenReturn(message);
     Mockito.when(exchange.getProperty("diagnosticCode", String.class)).thenReturn(diagnosticCode);
+    Mockito.when(exchange.getProperty("idType", String.class)).thenReturn(idType);
 
     Mockito.when(message.getBody(AbdEvidenceWithSummary.class)).thenReturn(evidence);
     processor.process(exchange);
 
     claimSubmissionRepository
-        .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
-            collectionId, MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
+        .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(collectionId, idType)
         .orElseThrow();
     var results =
         assessmentResultRepository.findAll().stream()
