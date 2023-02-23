@@ -16,15 +16,15 @@ on:
         required: true
         type: string
       target_image_name:
-        description: 'Desired image name to publish, replacing "/", e.g., bitnami-rabbitmq; ("vro-" will be added as a prefix)'
+        description: 'Desired image name to publish, replacing "/", e.g., bitnami-rabbitmq; ("mirror-" will be added as a prefix)'
         required: true
         type: string
 
 env:
-  # Add prefix to avoid uncertainty of which image is being used
-  TARGET_IMAGE: "vro-${{ inputs.target_image_name }}"
+  # Add prefix to be clear that we're not using the original image
+  TARGET_IMAGE: "mirror-${{ inputs.target_image_name }}"
   # Target path where the image will be pushed, i.e., to GHCR for the current repo
-  GHCR_PATH: "ghcr.io/${{ github.repository }}/vro-${{ inputs.target_image_name }}"
+  GHCR_PATH: "ghcr.io/${{ github.repository }}/mirror-${{ inputs.target_image_name }}"
 
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
@@ -60,7 +60,8 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
             Check for the package in <https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=${{ github.event.repository.name }}|GHCR>\n\
-            Remember to run this workflow in both public repo (for `dev` and `qa` envs) and internal repo (for remaining envs that require signed images).\n\
+            Remember to run this workflow in both the public repo (for `dev` and `qa` envs) and internal repo \
+            (for <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO#ghcr-images|remaining envs> that require signed images).\n\
             See thread :thread: to complete any remaining steps..."
 
       - name: "Post follow-on actions in Slack thread"
