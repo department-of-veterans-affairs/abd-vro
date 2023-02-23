@@ -271,7 +271,7 @@
             <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
-            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.document }}{% endif %}</td>
+            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == "" and bp_reading.dataSource == "LH"%}n.a.  - see VistA/Capri to verify{% elif bp_reading.document == "" and bp_reading.dataSource == "MAS"%}n.a.{% else %}{{ bp_reading.document }}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
