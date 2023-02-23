@@ -40,14 +40,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: "Tag and push images using commit hash and `latest`"
+    - name: "Publish images using tags '${{ inputs.image_tag }}' and 'latest'"
       shell: bash
       run: |
         docker pull "${{ inputs.image_name }}:${{ inputs.image_tag }}"
         echo "# Publishing image ${{ inputs.image_name }}:${{ inputs.image_tag }} to ${{ env.GHCR_PATH }} and also tagged as 'latest'"
+
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
+        docker push "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
+
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:latest"
-        docker push --all-tags "${{ env.GHCR_PATH }}"
+        docker push "${{ env.GHCR_PATH }}:latest"
 
   notify_push:
     runs-on: ubuntu-latest
@@ -60,8 +63,6 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
             Check for the package in <https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=${{ github.event.repository.name }}|GHCR>\n\
-            Remember to run this workflow in both the public repo (for `dev` and `qa` envs) and internal repo \
-            (for <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO#ghcr-images|remaining envs> that require signed images).\n\
             See thread :thread: to complete any remaining steps..."
 
       - name: "Post follow-on actions in Slack thread"
@@ -79,4 +80,7 @@ jobs:
                also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>.\n\
             2. Add image to the `MANUAL_IMGS_ARRAY` in `.github/workflows/secrel4.yml`\n\
             3. Create a Helm configuration for the service; mimic files in `helm-service-* folders`\n\
-            4. Create and test `scripts/deploy-${{ inputs.target_image_name }}.sh`\n"
+            4. Create and test `scripts/deploy-${{ inputs.target_image_name }}.sh`\n\
+            \n\
+            Remember to run this workflow in both the public repo (for `dev` and `qa` envs) and internal repo \
+            (for <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO#ghcr-images|remaining envs> that require signed images)."
