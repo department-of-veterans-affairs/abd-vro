@@ -42,6 +42,10 @@ def bp_reader(request_body):
 
     for reading in bp_readings:
         try:
+            reading["receiptDate"] = format_date(datetime.strptime(reading["receiptDate"], "%Y-%m-%d").date())
+        except (ValueError, KeyError):
+            reading["receiptDate"] = ""
+        try:
             bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
             reading["dateFormatted"] = format_date(bp_reading_date)
             sortable_bp.append(reading)

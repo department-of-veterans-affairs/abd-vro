@@ -291,4 +291,10 @@ public class VroV2Tests {
   void testAutomatedClaimPresumptive() {
     testAutomatedClaimFullPositive("376", true);
   }
+
+  @SneakyThrows
+  @Test
+  void testAutomatedFaa() {
+    testAutomatedClaimFullPositive("500", true);
+  }
 }
