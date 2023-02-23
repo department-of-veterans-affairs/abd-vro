@@ -175,7 +175,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(assessorErrorRouteId)
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_OFFRAMP)
         .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
         .to(ENDPOINT_MAS_COMPLETE);
