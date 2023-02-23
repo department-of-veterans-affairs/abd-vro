@@ -11,9 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FeatureFlag {
-    
     private String name;
     private String description;
     private boolean value;
-
 }
