@@ -50,7 +50,10 @@ def filter_mas_medication(request_body):
             except (ValueError, KeyError):
                 medication["dateFormatted"] = ''
                 medication_without_date.append(medication)
-
+            try:
+                medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
+            except (ValueError, KeyError):
+                medication["receiptDate"] = ""
     medication_with_date = sorted(
         medication_with_date,
         key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),

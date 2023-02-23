@@ -9,6 +9,7 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -75,6 +76,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasPollingProcessor masPollingProcessor;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
+
+  private final MasAccessErrProcessor masAccessErrProcessor;
 
   private final MasCollectionService masCollectionService;
   private final MasAssessmentResultProcessor masAssessmentResultProcessor;
@@ -171,6 +174,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_ACCESS_ERR)
         .routeId(assessorErrorRouteId)
         .log("Assessor Error. Off-ramping claim")
+        .process(masAccessErrProcessor)
         .wireTap(ENDPOINT_OFFRAMP)
         .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
         .to(ENDPOINT_MAS_COMPLETE);
@@ -190,7 +194,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
-        .process(combineExchangesProcessor()); // returns HealthDataAssessment
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")

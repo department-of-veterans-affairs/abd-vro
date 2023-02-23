@@ -117,6 +117,8 @@ public class MasCollectionAnnotsResults {
     abdEvidence.setProcedures(procedures);
     abdEvidence.setBloodPressures(bpReadings);
     abdEvidence.setServiceLocations(serviceLocations);
+    abdEvidence.setDocumentsWithoutAnnotationsChecked(
+        masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
     return abdEvidence;
   }
 

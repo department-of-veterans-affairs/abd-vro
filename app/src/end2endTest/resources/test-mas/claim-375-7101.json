@@ -13,7 +13,7 @@
   },
   "claimDetail": {
     "benefitClaimId": "1015",
-    "claimSubmissionDateTime": "2023-01-05T18:45:59Z",
+    "claimSubmissionDateTime": "2023-01-05Z",
     "claimSubmissionSource": "MAS",
     "conditions": {
       "name": "Hyperotension",
