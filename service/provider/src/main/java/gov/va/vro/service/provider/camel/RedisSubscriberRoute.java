@@ -21,17 +21,6 @@ public class RedisSubscriberRoute extends RouteBuilder {
     @Autowired
     private RedisFeatureFlagService featureFlagService;
 
-    @PostConstruct
-    public void init() {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisTemplate.getConnectionFactory());
-        container.addMessageListener(new MessageListenerAdapter(handleMessage), new ChannelTopic("feature-flag-toggle"));
-    }
-
-    private void handleMessage(String message) {
-        create
-    }
-
     @Override
     public void configure() throws Exception {
         from("redis:subscribe?template=redisTemplate&Channel=feature-flag-toggle")
