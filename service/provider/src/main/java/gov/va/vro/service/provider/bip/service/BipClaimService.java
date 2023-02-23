@@ -177,7 +177,7 @@ public class BipClaimService {
         "Updating claim status for claim with claim id = {} for MAS collection Id = {}",
         claimId,
         collectionId);
-    bipApiService.setClaimToRfdStatus(claimId);
+    //bipApiService.setClaimToRfdStatus(claimId); //Should be set only for SufficientEvidence is true
     payload.setTSOJ(true);
     return payload;
   }
