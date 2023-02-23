@@ -302,7 +302,7 @@
           {% for medication in evidence.medications %}
           <tr>
             <th>{{ medication.description }}</th>
-            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}No confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
+            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}Non-confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
             <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
@@ -342,7 +342,7 @@
           {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list %}
             <tr>
               <th>{{ condition.text }}</th>
-              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}Non-confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
               <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
               <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
               <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
@@ -364,10 +364,10 @@
       <a class="mb-30" href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
     </div>
   </div>
-  <!-- Relevant documents with no keywords found -->
+  <!-- Relevant documents unavailable for automated review -->
   <div class="row mt-3">
     <div class="col">
-      <h1 class="m-0 mb-13"><b>Relevant documents with no keywords found</b></h1>
+      <h1 class="m-0 mb-13"><b>Relevant documents unavailable for automated review</b></h1>
     </div>
   </div>
   <div class="row">
@@ -401,7 +401,7 @@
   <!-- About this document -->
   <div class="row">
     <div class="col">
-      <h1 class="m-0 mb-13"><b>About this document</b></h1>
+      <h1 id="about" class="m-0 mb-13"><b>About this document</b></h1>
       <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
       <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
       <ul>
