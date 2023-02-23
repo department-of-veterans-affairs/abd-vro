@@ -58,6 +58,7 @@ from assessclaimdc7101.src.lib import main
                 "claimSubmissionId": "1234"
             },
             {'evidence': {'bp_readings': [{'date': '2021-11-01',
+                                           'receiptDate': '',
                                            'dateFormatted': '11/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
@@ -72,6 +73,7 @@ from assessclaimdc7101.src.lib import main
                                                         'unit': 'mm[Hg]',
                                                         'value': 180}},
                                           {'date': '2021-09-01',
+                                           'receiptDate': '',
                                            'dateFormatted': '9/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
@@ -215,6 +217,7 @@ from assessclaimdc7101.src.lib import main
                                 "value": 180,
                             },
                             "date": "2021-11-01",
+                            'receiptDate': '',
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER",
                         },
@@ -232,6 +235,7 @@ from assessclaimdc7101.src.lib import main
                                 "value": 200,
                             },
                             "date": "2021-09-01",
+                            'receiptDate': '',
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER",
                         },
