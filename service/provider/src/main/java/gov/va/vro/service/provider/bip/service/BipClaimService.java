@@ -151,10 +151,10 @@ public class BipClaimService {
     var claim = bipApiService.getClaimDetails(claimId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
       log.info(
-      "Claim {} with collection Id = {} is in state {}. Not updating status",
-              claimId,
-              collectionId,
-              claim.getTempStationOfJurisdiction());
+          "Claim {} with collection Id = {} is in state {}. Not updating status",
+          claimId,
+          collectionId,
+          claim.getTempStationOfJurisdiction());
     } else {
       log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
       try {
