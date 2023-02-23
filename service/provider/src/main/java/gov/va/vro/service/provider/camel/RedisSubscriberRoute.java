@@ -37,7 +37,7 @@ public class RedisSubscriberRoute extends RouteBuilder {
         from("redis:subscribe?template=redisTemplate&Channel=feature-flag-toggle")
             .process(exchange -> {
                 String message = exchange.getIn().getBody(String.class);
-                System.out.println("Received message: " + message);write 
+                System.out.println("Received message: " + message);
             });
     }
     
