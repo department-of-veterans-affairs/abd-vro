@@ -26,26 +26,28 @@ public class HealthEvidenceProcessor implements Processor {
 
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
 
-    if (evidence.getErrorMessage() != null) {
-      if ("insufficientHealthDataToOrderExam".equalsIgnoreCase(evidence.getErrorMessage())) {
-        exchange.setProperty("sufficientForFastTracking", null);
-      } else {
-        log.error("Health Assessment Failed");
-        throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
-      }
-    } else {
-      exchange.setProperty("sufficientForFastTracking", evidence.getSufficientForFastTracking());
-      log.info(
-          " MAS Processing >> Sufficient Evidence >>> " + evidence.getSufficientForFastTracking());
-
-      // Transfer service locations. Assessment does not populate that one.
-      AbdEvidence currentEvidenceData = evidence.getEvidence();
-      currentEvidenceData.setServiceLocations(serviceLocations);
-      currentEvidenceData.setDocumentsWithoutAnnotationsChecked(docsWoutAnnotsChecked);
-
-      masTransferObject.setEvidence(getValidEvidence(currentEvidenceData));
-      exchange.getMessage().setBody(masTransferObject);
+    String evidenceError = evidence.getErrorMessage();
+    if (evidenceError != null
+        && !"insufficientHealthDataToOrderExam".equalsIgnoreCase(evidenceError)) {
+      log.error("Health Assessment Failed");
+      throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
     }
+
+    if ("insufficientHealthDataToOrderExam".equalsIgnoreCase(evidenceError)) {
+      exchange.setProperty("sufficientForFastTracking", null);
+    }
+
+    exchange.setProperty("sufficientForFastTracking", evidence.getSufficientForFastTracking());
+    log.info(
+        " MAS Processing >> Sufficient Evidence >>> " + evidence.getSufficientForFastTracking());
+
+    // Transfer service locations. Assessment does not populate that one.
+    AbdEvidence currentEvidenceData = evidence.getEvidence();
+    currentEvidenceData.setServiceLocations(serviceLocations);
+    currentEvidenceData.setDocumentsWithoutAnnotationsChecked(docsWoutAnnotsChecked);
+
+    masTransferObject.setEvidence(getValidEvidence(currentEvidenceData));
+    exchange.getMessage().setBody(masTransferObject);
   }
 
   /**

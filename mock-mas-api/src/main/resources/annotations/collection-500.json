@@ -1,0 +1,18 @@
+[
+  {
+    "collectionsId": 500,
+    "vtrnFileId": "099999500",
+    "creationDate": "2023-02-22T16:11:53.888Z",
+    "icn": "9000682",
+    "documents": [
+      {
+        "docTypeDescription": "STR - Dental",
+        "eFolderVersionRefId": "{XXXXXX643-YTE8-763G-ABT5-DGDGDTYEGDD76}",
+        "recDate": "2022-04-23Z",
+        "condition": "Hypertension",
+        "annotations": []
+      }
+    ],
+    "documentsWithoutAnnotationsChecked": []
+  }
+]
