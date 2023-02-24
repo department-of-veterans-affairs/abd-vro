@@ -71,7 +71,7 @@ def assess_sufficiency(event: Dict):
         relevant_conditions = conditions.conditions_calculation(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["conditionsTwoYears"]
-        total_relevant_conditions = relevant_conditions["relevantConditionsCountMAS"] + relevant_conditions["relevantConditionsCountLighthouse"]
+        total_relevant_conditions = relevant_conditions["relevantConditionsLighthouseCount"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -101,9 +101,7 @@ def assess_sufficiency(event: Dict):
                 "evidenceSummary": {
                     "totalBpReadings": bp_calculation["totalBpReadings"],
                     "recentBpReadings": bp_calculation["twoYearsBpReadings"],
-                    "relevantConditionsCountLighthouse": relevant_conditions["relevantConditionsCountLighthouse"],
-                    "relevantConditionsCountMAS": relevant_conditions["relevantConditionsCountMAS"],
-                    "irrelevantConditionsCountMAS": relevant_conditions["irrelevantConditionsCountMAS"],
+                    "relevantConditionsLighthouseCount": relevant_conditions["relevantConditionsLighthouseCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
                 "sufficientForFastTracking": sufficient,
