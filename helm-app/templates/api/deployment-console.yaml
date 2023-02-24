@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-console
+  labels: {{- toYaml .Values.labels.api | nindent 4 }}
+#  annotations:
+#    app.kubernetes.io/name: {{ .Values.name }}
+#    app.kubernetes.io/version: {{ .Values.version | quote }}
+#    app.kubernetes.io/owner: {{ .Values.owner }}
+#    app.kubernetes.io/env: {{ .Values.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels.api | nindent 8 }}
+#      annotations:
+#        app.kubernetes.io/podname: {{ .Values.name }}
+#        app.kubernetes.io/podversion: {{ .Values.version | quote }}
+#        app.kubernetes.io/podowner: {{ .Values.owner }}
+#        app.kubernetes.io/podenv: {{ .Values.environment }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.name }}-ghcr
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}
+      containers:
+        - name: {{ .Values.name }}-console
+          image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag }}
+          imagePullPolicy: {{ .Values.images.console.imagePullPolicy }}
+          stdin: true
+          tty: true
+          env:
+            - name: ENV
+              value: {{ .Values.environment }}
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.urlKey }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.usernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.passwordKey }}
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.dbnameKey }}
+            - name: POSTGRES_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: {{ .Values.postgres.schemaKey }}
+            - name: RABBITMQ_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-rabbit-mq-service
+            - name: RABBITMQ_PLACEHOLDERS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.usernameKey }}
+            - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secretName }}
+                  key: {{ .Values.rabbitmq.passwordKey }}
+            - name: REDIS_PLACEHOLDERS_HOST
+              value: {{ .Chart.Name }}-redis-service
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
+            - name: MAS_API_AUTH_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientId }}
+            - name: MAS_API_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientSecret }}
+            - name: MAS_API_AUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthScope }}
+            - name: MAS_API_AUTH_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BAS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiBaseUrl }}
+            - name: MAS_COLLECTION_ANNOTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
+            - name: MAS_COLLECTION_STATUS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionStatusPath }}
+            - name: MAS_CREATE_EXAM_ORDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
