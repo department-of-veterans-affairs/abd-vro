@@ -15,6 +15,7 @@ spec:
   template:
     metadata:
       labels: {{- toYaml .Values.labels.api | nindent 8 }}
+        sidecar.istio.io/inject: "false"
 #      annotations:
 #        app.kubernetes.io/podname: {{ .Values.name }}
 #        app.kubernetes.io/podversion: {{ .Values.version | quote }}
