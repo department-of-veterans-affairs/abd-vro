@@ -45,7 +45,7 @@ env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages
-  DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
+  DEPLOY_STATE_TEXT: ':panda_shocked: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Deployment> failed!'
   DEPLOY_STATE_EMOJI: 'x'
   JOB_STATUS: 'failed'
 
