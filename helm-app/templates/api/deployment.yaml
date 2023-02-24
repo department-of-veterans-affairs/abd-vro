@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}-app
   labels: {{- toYaml .Values.labels.api | nindent 4 }}
   annotations:
     app.kubernetes.io/name: {{ .Values.name }}
