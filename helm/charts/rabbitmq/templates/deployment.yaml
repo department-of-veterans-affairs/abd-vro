@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vro-rabbitmq
+  labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- toYaml .Values.labels.mq.global | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.name }}-ghcr
+      containers:
+        - name: rabbit-mq
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.images.rabbitmq.tag }}
+          env:
+            {{- toYaml .Values.rabbitmqServiceEnvVars | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.service.mq.sourcePort }}
+              protocol: TCP
+          volumeMounts:
+            - name: {{ .Values.volumes.tracking.name }}
+              # This folder is available for RabbitMQ messages to be persisted
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
+          resources: {{- toYaml .Values.resources.mq | nindent 12 }}
+      volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}

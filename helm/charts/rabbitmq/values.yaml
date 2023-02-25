@@ -1,0 +1,40 @@
+# NOTE: the name cannot have underscore
+name: abd-vro
+owner: VA-OCTO
+environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
+cluster: nonprod
+# TODO: How is version used? What should this be set to?
+version: 0.1
+
+labels:
+  mq:
+    global: &labels-mq-global
+      app: rabbit-mq
+    pod:
+      <<: *labels-mq-global
+      sidecar.istio.io/inject: "false"
+
+images:
+  rabbitmq:
+    tag: "latest"
+
+resources:
+  mq:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+service:
+  mq:
+    type: ClusterIP
+    sourcePort: 5672
+    targetPort: 5672
+
+volumes:
+  tracking:
+    name: tracking-persistent-storage
+    claimName: tracking-efs-claim
+    mountPath: /persist/tracking

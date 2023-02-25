@@ -1,0 +1,19 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+labels:
+  console:
+    global: &labels-console-global
+      app: vro-console
+    pod:
+      <<: *labels-console-global
+      sidecar.istio.io/inject: "false"
+
+images:
+  console:
+    imageName: dev_vro-console
+
+volumes:
+  tracking:
+    name: tracking-persistent-storage
+    claimName: tracking-efs-claim
+    mountPath: /persist/tracking
