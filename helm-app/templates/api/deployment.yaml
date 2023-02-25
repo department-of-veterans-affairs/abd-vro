@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/owner: {{ .Values.owner }}
     app.kubernetes.io/env: {{ .Values.environment }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
   template:

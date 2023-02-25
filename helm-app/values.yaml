@@ -6,7 +6,6 @@ cluster: nonprod
 endpoint: dev
 # TODO: How is version used? What should this be set to?
 version: 0.1
-replicaCount: 1
 
 labels:
   api:
