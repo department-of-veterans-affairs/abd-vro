@@ -19,15 +19,9 @@ images:
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
-# BEGIN image-names-db.sh replacement block (do not modify this block)
-# The following image list is updated by image-names-db.sh
   db:
     imageName: dev_vro-postgres
     tag: tagPlaceholder
-  dbInit:
-    imageName: dev_vro-db-init
-    tag: tagPlaceholder
-# END image-names-db.sh replacement block (do not modify this block)
 
 resources:
   db:
