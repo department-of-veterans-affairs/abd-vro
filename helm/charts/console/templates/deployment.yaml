@@ -14,10 +14,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
-      volumes:
-        - name: {{ .Values.volumes.tracking.name }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.volumes.tracking.claimName }}
       containers:
         - name: console
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag | default .Values.images.tag }}
@@ -109,6 +105,5 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
-          volumeMounts:
-            - name: {{ .Values.volumes.tracking.name }}
-              mountPath: {{ .Values.volumes.tracking.mountPath }}
+          volumeMounts: {{- toYaml .Values.volumeMounts | nindent 12 }}
+      volumes: {{- toYaml .Values.volumes | nindent 8 }}

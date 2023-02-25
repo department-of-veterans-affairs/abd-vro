@@ -1,10 +1,4 @@
-# NOTE: the name cannot have underscore
-name: abd-vro
-owner: VA-OCTO
-environment: dev # The .Values.environment is computed by the deploy plugin - it returns//uses values like dev, qa, pre, prod etc
-cluster: nonprod
-# TODO: How is version used? What should this be set to?
-version: 0.1
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 labels:
   mq:

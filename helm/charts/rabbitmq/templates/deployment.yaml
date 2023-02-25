@@ -14,19 +14,14 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
       containers:
-        - name: rabbit-mq
+        - name: rabbitmq
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.images.rabbitmq.tag }}
           env:
             {{- toYaml .Values.rabbitmqServiceEnvVars | nindent 12 }}
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
-          volumeMounts:
-            - name: {{ .Values.volumes.tracking.name }}
-              # This folder is available for RabbitMQ messages to be persisted
-              mountPath: {{ .Values.volumes.tracking.mountPath }}
+          # This volume is available for RabbitMQ messages to be persisted
+          volumeMounts: {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources: {{- toYaml .Values.resources.mq | nindent 12 }}
-      volumes:
-        - name: {{ .Values.volumes.tracking.name }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.volumes.tracking.claimName }}
+      volumes: {{- toYaml .Values.volumes | nindent 8 }}

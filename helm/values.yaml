@@ -35,6 +35,15 @@ rabbitmqClientEnvVarsAnchor: &anchor-rabbitmq-client-env-vars
   - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
     <<: *valueFromSecret-rabbitmq-pwd
 
+trackingPvcName: &tracking-pvc-name tracking-persistent-storage
+trackingPvc: &anchor-tracking-pvc
+  - name: *tracking-pvc-name
+    persistentVolumeClaim:
+      claimName: tracking-efs-claim
+trackingPvcMount: &anchor-tracking-pvc-mount
+  - name: *tracking-pvc-name
+    mountPath: /persist/tracking
+
 # global (reserved keyword) allows all subcharts to access values using .Values.global.someKey
 # However, this makes the subchart less independent: https://itnext.io/helm-3-umbrella-charts-global-values-in-sub-charts-666437d4ed28
 # so don't use .Values.global.someKey. Instead, use '<<: *anchor-global'
@@ -61,7 +70,7 @@ global: &anchor-global
   version: 0.1
 
   # TODO: replace hostnamePrefix with 'vro' when service.yml's hostnames are updated
-  hostnamePrefix: vro-api
+  hostnamePrefix: vro
 
   # Not used: cluster: nonprod
 
@@ -194,6 +203,8 @@ console-chart:
   # Advantage: don't have to add 'global' to subcharts, making them portable.
   <<: *anchor-global
   rabbitmqEnvVars: *anchor-rabbitmq-client-env-vars
+  volumes: *anchor-tracking-pvc
+  volumeMounts: *anchor-tracking-pvc-mount
 
 # To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set rabbitmq.enabled=true --debug
 rabbitmq-chart:
@@ -203,3 +214,5 @@ rabbitmq-chart:
       <<: *valueFromSecret-rabbitmq-user
     - name: RABBITMQ_DEFAULT_PASS
       <<: *valueFromSecret-rabbitmq-pwd
+  volumes: *anchor-tracking-pvc
+  volumeMounts: *anchor-tracking-pvc-mount
