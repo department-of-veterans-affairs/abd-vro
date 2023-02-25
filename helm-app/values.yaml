@@ -30,36 +30,28 @@ images:
   app:
     imageName: dev_vro-app
     tag: tagPlaceholder
-    imagePullPolicy: Always
   db:
     # Being used as the `pg-isready` container
     imageName: dev_vro-postgres
     tag: tagPlaceholder
-    imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
-    imagePullPolicy: Always
   console:
     imageName: dev_vro-console
     tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
     tag: tagPlaceholder
-    imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
     tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
     tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
     tag: tagPlaceholder
-    imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this block)
 
 resources:

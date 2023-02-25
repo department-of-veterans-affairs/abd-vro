@@ -111,8 +111,7 @@ images_for_helmchart_values_yaml(){
 for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
   echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
     imageName: ${_ENV}_$(getVarValue "${PREFIX}" _IMG)
-    tag: tagPlaceholder
-    imagePullPolicy: Always"
+    tag: tagPlaceholder"
 done
 echo '# END image-names-db.sh replacement block (do not modify this block)'
 }

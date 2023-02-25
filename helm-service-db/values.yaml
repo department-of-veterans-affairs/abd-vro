@@ -24,11 +24,9 @@ images:
   db:
     imageName: dev_vro-postgres
     tag: tagPlaceholder
-    imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
-    imagePullPolicy: Always
 # END image-names-db.sh replacement block (do not modify this block)
 
 resources:
