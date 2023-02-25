@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-rrd
-  labels: {{- toYaml .Values.labels.api | nindent 4 }}
+  labels: {{- toYaml .Values.labels.rrd.global | nindent 4 }}
 #  annotations:
 #    app.kubernetes.io/name: {{ .Values.name }}
 #    app.kubernetes.io/version: {{ .Values.version | quote }}
@@ -11,10 +11,10 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels.rrd.global | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.api | nindent 8 }}
+      labels: {{- toYaml .Values.labels.rrd.pod | nindent 8 }}
         sidecar.istio.io/inject: "false"
 #      annotations:
 #        app.kubernetes.io/podname: {{ .Values.name }}
