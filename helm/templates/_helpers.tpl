@@ -16,8 +16,11 @@ imagePullSecrets:
 {{- print "ghcr.io/department-of-veterans-affairs/" .Values.global.images.repo }}
 {{- end }}
 
-{{- define "vro.defaultImageTag" -}}
-{{ .Values.global.images.tag }}
+{{- define "vro.postgresUrl" -}}
+{{- printf "jdbc:postgresql://%s-postgres:%s/%s"
+  .Values.global.hostnamePrefix
+  (toString .Values.global.service.db.targetPort)
+  .Values.global.service.db.databaseName }}
 {{- end }}
 
 {{/***************************************************************
@@ -64,10 +67,11 @@ valueFrom:
 */}}
 {{- define "vro.dbClient.envVars" -}}
 - name: POSTGRES_URL
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.urlKey }}
+  value: {{ include "vro.postgresUrl" . }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.urlKey }}
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
@@ -79,15 +83,17 @@ valueFrom:
       name: {{ .Values.global.postgres.secretKeyRef.name }}
       key: {{ .Values.global.postgres.secretKeyRef.passwordKey }}
 - name: POSTGRES_DB
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+  value: {{ .Values.global.service.db.databaseName }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: POSTGRES_SCHEMA
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+  value: claims
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
 {{- end }}
 
 {{/*
@@ -132,5 +138,5 @@ valueFrom:
 
 {{- define "vro.volumeMounts.tracking" -}}
 - name: {{ .Values.global.tracking.pvcName }}
-  mountPath: /persist/tracking
+  mountPath: {{ .Values.global.tracking.mountPath }}
 {{- end }}

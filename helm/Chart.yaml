@@ -34,3 +34,5 @@ dependencies:
     condition: postgres.enabled
   - name: redis-chart
     condition: redis.enabled
+  - name: vro-app-chart
+    condition: vro-app.enabled

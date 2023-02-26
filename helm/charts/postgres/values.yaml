@@ -1,5 +1,5 @@
 labels:
-  app: postgres-db
+  app: vro-postgres
 
 image:
   name: dev_vro-postgres

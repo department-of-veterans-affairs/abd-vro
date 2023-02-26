@@ -33,6 +33,7 @@ spec:
         - name: postgres--{{ .Release.Name }}
           image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
           env:
+            # TODO: Don't think this is needed by init-db.sh
             - name: ENV
               value: {{ required "expecting dev, prod, etc" .Values.global.environment }}
             # Following is for the DB superuser

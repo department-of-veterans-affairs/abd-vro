@@ -1,7 +1,7 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 labels:
-  app: rabbit-mq
+  app: rabbitmq
 
 image:
   tag: "latest"

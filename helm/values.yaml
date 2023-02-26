@@ -7,7 +7,7 @@ postgres:
   enabled: true
 redis:
   enabled: true
-vro:
+vro-app:
   enabled: true
 # Enable as needed:
 console:
@@ -26,9 +26,7 @@ global:
   # name cannot have underscore
   # Used as imagePullSecrets, secretKeyRef.name, container name prefixes,
   # virtual-service's uri.prefix and for env vars: SERVER_SERVLET_CONTEXTPATH, STARTER_OPENAPI_SERVERURL
-  name: abd-vro
-  # owner is used in annotations
-  owner: VA-OCTO
+  #name: abd-vro
   hostnamePrefix: vro
 
   # Persistent Volumes
@@ -40,6 +38,7 @@ global:
   tracking:
     pvcName: tracking-persistent-storage
     claimName: vro-tracking-efs-claim
+    mountPath: /persist/tracking
     storageSize: 1Gi
 
   # Not used: cluster: nonprod
@@ -50,6 +49,7 @@ global:
   # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
   environment: dev
 
+  # TODO: replace with images.tag or subchart's image.tag?
   # version is used in annotations for APP
   version: 0.1
 
@@ -59,6 +59,7 @@ global:
     # tag is used to set the default image tag for all VRO images
     tag: "someGlobalTag"
     services:
+      uriPrefix: vro
       environment: nonprod # for APP
 
   # endpoint is api if ENV==prod; otherwise dev
@@ -68,58 +69,25 @@ global:
 
 
   service:
-#    api:
-#      type: ClusterIP
-#      sourcePort: 8080
-#      targetPort: 8080
+    app:
+      sourcePort: 8080
+      targetPort: 8080
     db:
       sourcePort: 5432
       targetPort: 5432
+      databaseName: vro
     mq:
       sourcePort: 5672
       targetPort: 5672
     redis:
       sourcePort: 6379
       targetPort: 6379
-  ports:
-    - name: http
-      containerPort: 8080
-      protocol: TCP
-    - name: liveness
-      containerPort: 8081
-      protocol: TCP
-    - name: debug
-      containerPort: 5005
-      protocol: TCP
 
-  livenessProbe:
-    httpGet:
-      path: /liveness
-      port: 8081
-    initialDelaySeconds: 120
-    periodSeconds: 10
-    timeoutSeconds: 10
-    failureThreshold: 3
-
-  readinessProbe:
-    httpGet:
-      path: /readiness
-      port: 8081
-    initialDelaySeconds: 120
-    periodSeconds: 10
-    timeoutSeconds: 10
-    failureThreshold: 3
-
-  # autoscaling:
-  #   enabled: false
-  #   minReplicas: 1
-  #   maxReplicas: 100
-  #   targetCPUUtilizationPercentage: 80
-  api:
-    apiKeySecret: api
-    apiKey01: apiKey01
-    apiKey02: apiKey02
-    vroNonProdKey: vroNonProd
+#  api:
+#    apiKeySecret: api
+#    apiKey01: apiKey01
+#    apiKey02: apiKey02
+#    vroNonProdKey: vroNonProd
 
   rabbitmq:
     secretKeyRef:
@@ -148,52 +116,14 @@ global:
   dbinit:
     secretKeyRef:
       name: dbinit
+      # DB super user; TODO: why isn't this in the postgres.secretKeyRef?
       superUsernameKey: superUsername
       superPasswordKey: superPassword
+      # TODO: Do the values for the following always match postgres.secretKeyRef.usernameKey and passwordKey?
       usernameKey: username
       passwordKey: password
+      urlKey: url
     # superDbnameKey: superDbname
-    # urlKey: url
-
-  mas:
-    keyName: mas
-    masApiAuthClientId: masApiAuthClientId
-    masApiAuthClientSecret: masApiAuthClientSecret
-    masApiAuthScope: masApiAuthScope
-    masApiAuthTokenUri: masApiAuthTokenUri
-    masApiBaseUrl: masApiBaseUrl
-    masCollectionAnnotsPath: masCollectionAnnotsPath
-    masCollectionStatusPath: masCollectionStatusPath
-    masCreateExamOrderPath: masCreateExampOrderPath
-
-  bip:
-    keyName: bip
-    bipApplicationId: bipApplicationId
-    bipApplicationIss: bipApplicationIss
-    bipClaimSecret: bipClaimSecret
-    bipClaimUrl: bipClaimUrl
-    bipClaimUserId: bipClaimUserId
-    bipEvidenceSecret: bipEvidenceSecret
-    bipEvidenceUrl: bipEvidenceUrl
-    bipEvidenceUserId: bipEvidenceUserId
-    bipStationId: bipStationId
-    bipKeyStore: bipKeystore
-    bipTrustStore: bipTruststore
-    bipPassword: bipPassword
-    bipAlias: bipAlias
-
-  dataservice:
-    lhTokenUrl: lhTokenUrl
-    lhFhirUrl: lhFhirUrl
-    lhPrivateKey: lhPrivateKey
-    lhAssertionUrl: lhAssertionUrl
-    lhAccessClientId: lhAccessClientId
-    lhApiAuthUrl: lhApiAuthUrl
-    vroAudUrl: vroAudUrl
-    lhVroApiKey: lhVroApiKey
-    validateToken: validateToken
-    slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
-    slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
 # To test:
 #   helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string global.images.tag=latest --set console.enabled=true --debug

@@ -1,7 +1,7 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 labels:
-  app: redis-cache
+  app: redis
 
 image:
   tag: "latest"
