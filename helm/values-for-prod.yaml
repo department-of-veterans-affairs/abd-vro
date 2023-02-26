@@ -6,3 +6,11 @@ global:
 
   images:
     repo: abd-vro-internal
+
+rabbitmq-chart:
+  image:
+    tag: "3"
+
+redis-chart:
+  image:
+    tag: "7"

@@ -3,19 +3,20 @@ kind: Deployment
 metadata:
   # Also used as the pod's prefix
   name: vro-console
-  labels: {{- toYaml .Values.labels.console.global | nindent 4 }}
+  labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.console.global | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.console.pod | nindent 8 }}
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: console--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
           stdin: true
           tty: true
           env:

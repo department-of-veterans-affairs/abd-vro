@@ -2,19 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vro-redis
-  labels: {{- toYaml .Values.labels.redis.global | nindent 4 }}
+  labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.redis.global | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.redis.pod | nindent 8 }}
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: redis--{{ .Release.Name }}
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:{{ .Values.images.redis.tag }}
+        - name: redis--{{ .Values.image.tag }}
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:{{ .Values.image.tag }}
           env:
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
           ports:

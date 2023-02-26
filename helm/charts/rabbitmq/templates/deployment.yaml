@@ -2,19 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vro-rabbitmq
-  labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+  labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.mq.global | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: rabbitmq--{{ .Release.Name }}
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.images.rabbitmq.tag }}
+        - name: rabbitmq--{{ .Values.image.tag }}
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.image.tag }}
           env:
             - name: RABBITMQ_DEFAULT_USER
               {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 14 }}

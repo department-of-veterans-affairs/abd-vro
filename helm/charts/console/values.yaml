@@ -2,13 +2,8 @@
 # Tip: https://stackoverflow.com/questions/63157235/how-to-render-only-selected-template-in-helm
 
 labels:
-  console:
-    global: &labels-console-global
-      app: vro-console
-    pod:
-      <<: *labels-console-global
-      sidecar.istio.io/inject: "false"
+  app: vro-console
 
-images:
-  console:
-    imageName: dev_vro-console
+image:
+  name: dev_vro-console
+  tag: "latest"

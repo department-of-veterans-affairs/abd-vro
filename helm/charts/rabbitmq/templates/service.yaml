@@ -3,7 +3,7 @@ kind: Service
 metadata:
   # name is used as the hostname of the service
   name: {{ .Values.global.hostnamePrefix }}-rabbitmq
-  labels: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+  labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
@@ -11,4 +11,4 @@ spec:
       targetPort: {{ .Values.global.service.mq.targetPort }}
       protocol: TCP
       name: http
-  selector: {{- toYaml .Values.labels.mq.global | nindent 4 }}
+  selector: {{- toYaml .Values.labels | nindent 4 }}

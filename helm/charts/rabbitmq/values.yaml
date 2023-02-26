@@ -1,13 +1,7 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 labels:
-  mq:
-    global: &labels-mq-global
-      app: rabbit-mq
-    pod:
-      <<: *labels-mq-global
-      sidecar.istio.io/inject: "false"
+  app: rabbit-mq
 
-images:
-  rabbitmq:
-    tag: "latest"
+image:
+  tag: "latest"
