@@ -1,0 +1,5 @@
+labels:
+  app: postgres-db
+
+image:
+  name: dev_vro-postgres

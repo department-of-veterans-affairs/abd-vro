@@ -17,7 +17,11 @@ spec:
         - name: redis--{{ .Values.image.tag }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:{{ .Values.image.tag }}
           env:
-            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.redis.secretKeyRef.name }}
+                  key: {{ .Values.global.redis.secretKeyRef.passwordKey }}
           ports:
             - containerPort: {{ .Values.global.service.redis.sourcePort }}
               protocol: TCP

@@ -49,6 +49,7 @@ global:
   images:
     pullSecretsName: abd-vro-ghcr
     repo: abd-vro
+    # tag is used to set the default image tag for all VRO images
     tag: "someGlobalTag"
     services:
       environment: nonprod # for APP
@@ -64,10 +65,9 @@ global:
 #      type: ClusterIP
 #      sourcePort: 8080
 #      targetPort: 8080
-#    db:
-#      type: ClusterIP
-#      sourcePort: 5432
-#      targetPort: 5432
+    db:
+      sourcePort: 5432
+      targetPort: 5432
     mq:
       sourcePort: 5672
       targetPort: 5672
@@ -138,6 +138,16 @@ global:
     initUsernameKey: initUsername
     initPasswordKey: initPassword
 
+  dbinit:
+    secretKeyRef:
+      name: dbinit
+      superUsernameKey: superUsername
+      superPasswordKey: superPassword
+      usernameKey: username
+      passwordKey: password
+    # superDbnameKey: superDbname
+    # urlKey: url
+
   mas:
     keyName: mas
     masApiAuthClientId: masApiAuthClientId
@@ -177,15 +187,6 @@ global:
     validateToken: validateToken
     slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
     slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
-
-  dbinit:
-    secretName: dbinit
-    superUsernameKey: superUsername
-    superPasswordKey: superPassword
-    superDbnameKey: superDbname
-    urlKey: url
-    usernameKey: username
-    passwordKey: password
 
 # To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set-string console-chart.images.console.tag=latest --set console.enabled=true --debug
 #console-chart:

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Also used as the pod's prefix
+  name: vro-postgres
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: postgres--{{ .Release.Name }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
+          env:
+            - name: ENV
+              value: {{ required "expecting dev, prod, etc" .Values.global.environment }}
+            # Following is for the DB superuser
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.superUsernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.superPasswordKey }}
+            # Following is used to set up a user and DB schema for Flyway migrations
+            - name: FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
+            - name: FLYWAY_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgres.secretKeyRef.name }}
+                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+          ports:
+            - containerPort: {{ .Values.global.service.db.sourcePort }}
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+      #    volumeMounts:
+      #      - name: persistent-storage
+      #        mountPath: /var/lib/postgresql/data/pgdata
+      #volumes:
+      #  - name: persistent-storage
+      #    persistentVolumeClaim:
+      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
