@@ -32,11 +32,13 @@ global:
   hostnamePrefix: vro
 
   pgdata:
-    pvcName: database-persistent-storage
-    claimName: efs-claim
+    pvcName: pgdata-persistent-storage
+    claimName: vro-pgdata-efs-claim
+    storageSize: 2Gi
   tracking:
     pvcName: tracking-persistent-storage
-    claimName: tracking-efs-claim
+    claimName: vro-tracking-efs-claim
+    storageSize: 1Gi
 
   # Not used: cluster: nonprod
 

@@ -7,6 +7,11 @@ global:
   images:
     repo: abd-vro-internal
 
+  pgdata:
+    storageSize: 5Gi
+  tracking:
+    storageSize: 2Gi
+
 rabbitmq-chart:
   image:
     tag: "3"
