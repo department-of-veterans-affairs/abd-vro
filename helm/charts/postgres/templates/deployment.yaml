@@ -57,10 +57,8 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
-      #    volumeMounts:
-      #      - name: persistent-storage
-      #        mountPath: /var/lib/postgresql/data/pgdata
-      #volumes:
-      #  - name: persistent-storage
-      #    persistentVolumeClaim:
-      #      claimName: efs-claim #This name should match that of the persistent volume claim created above
+          # This volume is for DB data to be persisted
+          volumeMounts:
+            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
+      volumes:
+        {{- include "vro.volumes.pgdata" . | nindent 8 }}

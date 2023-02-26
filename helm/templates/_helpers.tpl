@@ -107,15 +107,29 @@ valueFrom:
     Persistent Volumes
 */}}
 
-{{- define "vro.volumes.tracking" -}}
-- name: {{ .Values.global.tracking.pvcName }}
+{{/*
+  Volume for Postgres DB
+*/}}
+{{- define "vro.volumes.pgdata" -}}
+- name: {{ .Values.global.pgdata.pvcName }}
   persistentVolumeClaim:
-    claimName: tracking-efs-claim
+    claimName: {{ .Values.global.pgdata.claimName }}
+{{- end }}
+
+{{- define "vro.volumeMounts.pgdata" -}}
+- name: {{ .Values.global.pgdata.pvcName }}
+  mountPath: /var/lib/postgresql/data/pgdata
 {{- end }}
 
 {{/*
-Volume mount for tracking volume
+  Volume mount for tracking API requests
 */}}
+{{- define "vro.volumes.tracking" -}}
+- name: {{ .Values.global.tracking.pvcName }}
+  persistentVolumeClaim:
+    claimName: {{ .Values.global.tracking.claimName }}
+{{- end }}
+
 {{- define "vro.volumeMounts.tracking" -}}
 - name: {{ .Values.global.tracking.pvcName }}
   mountPath: /persist/tracking

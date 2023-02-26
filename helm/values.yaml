@@ -31,9 +31,12 @@ global:
   owner: VA-OCTO
   hostnamePrefix: vro
 
+  pgdata:
+    pvcName: database-persistent-storage
+    claimName: efs-claim
   tracking:
     pvcName: tracking-persistent-storage
-
+    claimName: tracking-efs-claim
 
   # Not used: cluster: nonprod
 
