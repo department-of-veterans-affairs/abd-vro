@@ -1,0 +1,13 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+labels:
+  redis:
+    global: &labels-redis-global
+      app: redis-cache
+    pod:
+      <<: *labels-redis-global
+      sidecar.istio.io/inject: "false"
+
+images:
+  redis:
+    tag: "latest"

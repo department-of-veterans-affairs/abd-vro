@@ -19,7 +19,7 @@ console:
 # However, this makes the subchart less independent: https://itnext.io/helm-3-umbrella-charts-global-values-in-sub-charts-666437d4ed28
 # so don't use .Values.global.someKey. Instead, use '<<: *anchor-global'
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
-global: &anchor-global
+global:
   # ================= Constants =================
   # Should be referenced as .Values.global.someParam
 
@@ -71,7 +71,9 @@ global: &anchor-global
     mq:
       sourcePort: 5672
       targetPort: 5672
-
+    redis:
+      sourcePort: 6379
+      targetPort: 6379
   ports:
     - name: http
       containerPort: 8080

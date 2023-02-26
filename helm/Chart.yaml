@@ -30,3 +30,5 @@ dependencies:
     condition: console.enabled
   - name: rabbitmq-chart
     condition: rabbitmq.enabled
+  - name: redis-chart
+    condition: redis.enabled
