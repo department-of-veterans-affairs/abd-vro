@@ -34,5 +34,7 @@ spec:
               memory: 1024Mi
           volumeMounts:
             {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
+            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
+        {{- include "vro.volumes.pgdata" . | nindent 8 }}

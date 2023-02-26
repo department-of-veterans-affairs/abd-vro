@@ -118,7 +118,7 @@ valueFrom:
 
 {{- define "vro.volumeMounts.pgdata" -}}
 - name: {{ .Values.global.pgdata.pvcName }}
-  mountPath: /var/lib/postgresql/data/pgdata
+  mountPath: {{ .Values.global.pgdata.mountPath }}
 {{- end }}
 
 {{/*

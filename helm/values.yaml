@@ -31,9 +31,11 @@ global:
   owner: VA-OCTO
   hostnamePrefix: vro
 
+  # Persistent Volumes
   pgdata:
     pvcName: pgdata-persistent-storage
     claimName: vro-pgdata-efs-claim
+    mountPath: /persist/postgres
     storageSize: 2Gi
   tracking:
     pvcName: tracking-persistent-storage
@@ -193,10 +195,6 @@ global:
     slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
     slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
-# To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set-string console-chart.images.console.tag=latest --set console.enabled=true --debug
-#console-chart:
-#  <<: *anchor-global
-
-# To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set rabbitmq.enabled=true --debug
-#rabbitmq-chart:
-#  <<: *anchor-global
+# To test:
+#   helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string global.images.tag=latest --set console.enabled=true --debug
+#   helm upgrade --install vro-test helm -n va-abd-rrd-dev --set rabbitmq.enabled=true --debug

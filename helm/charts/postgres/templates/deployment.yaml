@@ -14,6 +14,21 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        # To address postgres container error "The server must be started by the user that owns the data directory."
+        # Container runs as user uid=70(postgres) gid=70(postgres) groups=70(postgres),70(postgres)
+        # The pgdata volume is owned by 50016, but this is variable -- TODO: ask LHDI.
+        # https://stackoverflow.com/a/51195446 uses initContainer to chown but "Operation not permitted"!
+        # Using solution at https://stackoverflow.com/q/57196736 results in
+        # `id` returning `uid=50016 gid=70(postgres) groups=70(postgres)`
+        #
+        # Note: "postgres doesn't care what UID it runs as (as long as the owner of /var/lib/postgresql/data matches),
+        #   but initdb does care (and needs the user to exist in /etc/passwd)" -- https://hub.docker.com/_/postgres
+        # Running `initdb /persist/postgres/pgdataTest` manually results in the error but the container seems to work :shrug:
+        runAsUser: 50016
+        runAsGroup: 70
+        # Any files created in the volume will have this group ID:
+        # fsGroup: 70
       containers:
         - name: postgres--{{ .Release.Name }}
           image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
@@ -31,6 +46,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.dbinit.secretKeyRef.name }}
                   key: {{ .Values.global.dbinit.secretKeyRef.superPasswordKey }}
+            - name: PGDATA
+              # https://hub.docker.com/_/postgres recommends using a subdirectory under the mounted directory
+              value: {{ .Values.global.pgdata.mountPath }}/pgdata
             # Following is used to set up a user and DB schema for Flyway migrations
             - name: FLYWAY_USER
               valueFrom:
