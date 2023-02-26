@@ -11,17 +11,27 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels.mq.pod | nindent 8 }}
     spec:
-      imagePullSecrets:
-        - name: {{ .Values.name }}-ghcr
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: rabbitmq
+        - name: rabbitmq--{{ .Release.Name }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.images.rabbitmq.tag }}
           env:
-            {{- toYaml .Values.rabbitmqServiceEnvVars | nindent 12 }}
+            - name: RABBITMQ_DEFAULT_USER
+              {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 14 }}
+            - name: RABBITMQ_DEFAULT_PASS
+              {{- include "vro.valueFromSecret.rabbitmqPwd" . | nindent 14 }}
           ports:
-            - containerPort: {{ .Values.service.mq.sourcePort }}
+            - containerPort: {{ .Values.global.service.mq.sourcePort }}
               protocol: TCP
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
           # This volume is available for RabbitMQ messages to be persisted
-          volumeMounts: {{- toYaml .Values.volumeMounts | nindent 12 }}
-          resources: {{- toYaml .Values.resources.mq | nindent 12 }}
-      volumes: {{- toYaml .Values.volumes | nindent 8 }}
+          volumeMounts:
+            {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
+      volumes:
+        {{- include "vro.volumes.tracking" . | nindent 8 }}

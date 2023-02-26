@@ -1,0 +1,8 @@
+
+global:
+  # endpoint is api if ENV==prod; otherwise dev
+  # Used by virtual-service's hosts
+  endpoint: api
+
+  images:
+    repo: abd-vro-internal

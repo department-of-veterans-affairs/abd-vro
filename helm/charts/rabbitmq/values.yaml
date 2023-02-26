@@ -11,24 +11,3 @@ labels:
 images:
   rabbitmq:
     tag: "latest"
-
-resources:
-  mq:
-    requests:
-      cpu: 150m
-      memory: 512Mi
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
-
-service:
-  mq:
-    type: ClusterIP
-    sourcePort: 5672
-    targetPort: 5672
-
-volumes:
-  tracking:
-    name: tracking-persistent-storage
-    claimName: tracking-efs-claim
-    mountPath: /persist/tracking

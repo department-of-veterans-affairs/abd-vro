@@ -15,79 +15,62 @@ console:
 
 # This file makes extensive use of YAML Anchors to reduce repetition.
 
-# valueFromSecretSection defines reusable anchors for K8s secrets
-valueFromSecretSection:
-  rabbitmqUserAnchor: &valueFromSecret-rabbitmq-user
-    valueFrom:
-      secretKeyRef:
-        name: rabbitmq
-        key: User
-  rabbitmqPwdAnchor: &valueFromSecret-rabbitmq-pwd
-    valueFrom:
-      secretKeyRef:
-        name: rabbitmq
-        key: Pass
-
-# For clients to connect to MQ
-rabbitmqClientEnvVarsAnchor: &anchor-rabbitmq-client-env-vars
-  - name: RABBITMQ_PLACEHOLDERS_USERNAME
-    <<: *valueFromSecret-rabbitmq-user
-  - name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
-    <<: *valueFromSecret-rabbitmq-pwd
-
-trackingPvcName: &tracking-pvc-name tracking-persistent-storage
-trackingPvc: &anchor-tracking-pvc
-  - name: *tracking-pvc-name
-    persistentVolumeClaim:
-      claimName: tracking-efs-claim
-trackingPvcMount: &anchor-tracking-pvc-mount
-  - name: *tracking-pvc-name
-    mountPath: /persist/tracking
-
 # global (reserved keyword) allows all subcharts to access values using .Values.global.someKey
 # However, this makes the subchart less independent: https://itnext.io/helm-3-umbrella-charts-global-values-in-sub-charts-666437d4ed28
 # so don't use .Values.global.someKey. Instead, use '<<: *anchor-global'
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global: &anchor-global
+  # ================= Constants =================
+  # Should be referenced as .Values.global.someParam
+
   # name cannot have underscore
   # Used as imagePullSecrets, secretKeyRef.name, container name prefixes,
   # virtual-service's uri.prefix and for env vars: SERVER_SERVLET_CONTEXTPATH, STARTER_OPENAPI_SERVERURL
   name: abd-vro
-  # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
-  environment: dev
   # owner is used in annotations
   owner: VA-OCTO
+  hostnamePrefix: vro
+
+  tracking:
+    pvcName: tracking-persistent-storage
+
+
+  # Not used: cluster: nonprod
+
+  # ================= Parameters =================
+  # Should be referenced as .Values.global.someParam
+
+  # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
+  environment: dev
+
+  # version is used in annotations for APP
+  version: 0.1
+
   images:
-    registry: ghcr.io
-    org: department-of-veterans-affairs
-    # Note the repo name uses a hypen, not underscore
+    pullSecretsName: abd-vro-ghcr
     repo: abd-vro
     tag: "someGlobalTag"
     services:
-      environment: nonprod
-
-  # version is used in annotations
-  version: 0.1
-
-  # TODO: replace hostnamePrefix with 'vro' when service.yml's hostnames are updated
-  hostnamePrefix: vro
-
-  # Not used: cluster: nonprod
+      environment: nonprod # for APP
 
   # endpoint is api if ENV==prod; otherwise dev
   # Used by virtual-service's hosts
   endpoint: dev
+  # ================= Parameters =================
+
 
   service:
-    api:
-      type: ClusterIP
-      sourcePort: 8080
-      targetPort: 8080
-    db:
-      # Being used as the `pg-isready` container
-      type: ClusterIP
-      sourcePort: 5432
-      targetPort: 5432
+#    api:
+#      type: ClusterIP
+#      sourcePort: 8080
+#      targetPort: 8080
+#    db:
+#      type: ClusterIP
+#      sourcePort: 5432
+#      targetPort: 5432
+    mq:
+      sourcePort: 5672
+      targetPort: 5672
 
   ports:
     - name: http
@@ -129,18 +112,29 @@ global: &anchor-global
     apiKey02: apiKey02
     vroNonProdKey: vroNonProd
 
-  # Needed to connect to DB and for the `db-init` container
+  rabbitmq:
+    secretKeyRef:
+      name: rabbitmq
+      usernameKey: User
+      passwordKey: Pass
+
+  redis:
+    secretKeyRef:
+      name: redis
+      passwordKey: redisPassword
+
   postgres:
+    secretKeyRef:
+      name: postgres
+      urlKey: url
+      usernameKey: username
+      passwordKey: password
+      dbnameKey: dbName
+      schemaKey: schema
     dbName: vro
-    secretName: postgres
-    usernameKey: username
-    passwordKey: password
-    dbnameKey: dbName
     initDbName: vro
     initUsernameKey: initUsername
     initPasswordKey: initPassword
-    urlKey: url
-    schemaKey: schema
 
   mas:
     keyName: mas
@@ -169,11 +163,6 @@ global: &anchor-global
     bipPassword: bipPassword
     bipAlias: bipAlias
 
-  # Needed to connect to Redis
-  redis:
-    secretName: redis
-    passwordKey: redisPassword
-
   dataservice:
     lhTokenUrl: lhTokenUrl
     lhFhirUrl: lhFhirUrl
@@ -197,22 +186,9 @@ global: &anchor-global
     passwordKey: password
 
 # To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set-string console-chart.images.console.tag=latest --set console.enabled=true --debug
-console-chart:
-  # Dereference anchor-global so that values are accessible without 'global':
-  # .Values.someKey is equal to .Values.global.someKey
-  # Advantage: don't have to add 'global' to subcharts, making them portable.
-  <<: *anchor-global
-  rabbitmqEnvVars: *anchor-rabbitmq-client-env-vars
-  volumes: *anchor-tracking-pvc
-  volumeMounts: *anchor-tracking-pvc-mount
+#console-chart:
+#  <<: *anchor-global
 
 # To test: helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string info.github_token=${GITHUB_ACCESS_TOKEN} --set rabbitmq.enabled=true --debug
-rabbitmq-chart:
-  <<: *anchor-global
-  rabbitmqServiceEnvVars:
-    - name: RABBITMQ_DEFAULT_USER
-      <<: *valueFromSecret-rabbitmq-user
-    - name: RABBITMQ_DEFAULT_PASS
-      <<: *valueFromSecret-rabbitmq-pwd
-  volumes: *anchor-tracking-pvc
-  volumeMounts: *anchor-tracking-pvc-mount
+#rabbitmq-chart:
+#  <<: *anchor-global
