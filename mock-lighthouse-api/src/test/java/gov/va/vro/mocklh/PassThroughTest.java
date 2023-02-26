@@ -1,8 +1,13 @@
 package gov.va.vro.mocklh;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mocklh.config.LhApiProperties;
+import gov.va.vro.mocklh.model.LhToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
@@ -10,12 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,6 +38,7 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,6 +54,8 @@ public class PassThroughTest {
   @Autowired private LhApiProperties props;
 
   @Autowired private RestTemplate template;
+
+  @Autowired private ObjectMapper mapper;
 
   @LocalServerPort private int port;
 
@@ -85,6 +95,7 @@ public class PassThroughTest {
         .compact();
   }
 
+  @SneakyThrows
   @Test
   void icn1012666073V986297Test() {
     final String icn = "1012666073V986297";
@@ -102,8 +113,35 @@ public class PassThroughTest {
     requestBody.add("scope", "launch patient/Observation.read");
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
 
-    String tokenUrl = "http://localhost:" + port + "/token";
-    ResponseEntity<String> tokenResp = template.postForEntity(tokenUrl, entity, String.class);
-    assertNotNull(tokenResp.getBody());
+    String baseUrl = "http://localhost:" + port;
+
+    String tokenUrl =  baseUrl + "/token";
+    ResponseEntity<LhToken> tokenResponse = template.postForEntity(tokenUrl, entity, LhToken.class);
+    LhToken token = tokenResponse.getBody();
+    assertNotNull(token.getAccessToken());
+
+    String observationUrl = baseUrl + "/Observation?_count=100&";
+    observationUrl += "patient=" + icn;
+    observationUrl += "&code=85354-9";
+
+    HttpHeaders headers2 = new HttpHeaders();
+    headers2.setBearerAuth(token.getAccessToken());
+    headers2.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+    HttpEntity<String> entity2 = new HttpEntity<>(headers2);
+
+    ResponseEntity<String> bundleResponse = template.exchange(observationUrl, HttpMethod.GET, entity2, String.class);
+
+    JsonNode bundle = mapper.readTree(bundleResponse.getBody());
+    assertNotNull(bundle);
+
+    JsonNode total = bundle.get("total");
+    assertTrue(total.isInt());
+    assertEquals(8, total.asInt());
+
+    JsonNode entry = bundle.get("entry");
+    assertNotNull(entry);
+    assertTrue(entry.isArray());
+    assertEquals(8, entry.size());
   }
 }

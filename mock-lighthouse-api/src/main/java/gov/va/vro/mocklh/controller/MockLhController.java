@@ -6,11 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -33,6 +39,30 @@ public class MockLhController implements MockLhApi {
     ResponseEntity<String> response = template.postForEntity(url, newRequest, String.class);
 
     log.info("token response: {}", response.getBody());
+
+    return response;
+  }
+
+  @Override
+  public ResponseEntity<String> getObservation(String bearerToken, MultiValueMap<String, String> queryParams) {
+    log.info("Retrieving Observation...");
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.set(HttpHeaders.AUTHORIZATION, bearerToken);
+
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+
+    String url = properties.getFhirUrl() + "/Observation";
+    String fullUrl = UriComponentsBuilder.fromHttpUrl(url)
+        .queryParams(queryParams)
+        .build()
+        .toUriString();
+
+    log.info("Calling {}", url);
+    ResponseEntity<String> response = template.exchange(fullUrl, HttpMethod.GET, entity, String.class);
+
+    log.info("Observation response: {}", response.getBody());
 
     return response;
   }
