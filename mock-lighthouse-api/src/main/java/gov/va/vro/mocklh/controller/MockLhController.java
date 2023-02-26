@@ -43,9 +43,8 @@ public class MockLhController implements MockLhApi {
     return response;
   }
 
-  @Override
-  public ResponseEntity<String> getObservation(String bearerToken, MultiValueMap<String, String> queryParams) {
-    log.info("Retrieving Observation...");
+  private ResponseEntity<String> getResource(String bearerToken, MultiValueMap<String, String> queryParams, String resourceType) {
+    log.info("Retrieving {}...", resourceType);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -65,5 +64,10 @@ public class MockLhController implements MockLhApi {
     log.info("Observation response: {}", response.getBody());
 
     return response;
+  }
+
+  @Override
+  public ResponseEntity<String> getObservation(String bearerToken, MultiValueMap<String, String> queryParams) {
+    return getResource(bearerToken, queryParams, "Observation");
   }
 }

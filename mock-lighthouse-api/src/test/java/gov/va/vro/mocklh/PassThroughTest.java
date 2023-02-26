@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mocklh.config.LhApiProperties;
 import gov.va.vro.mocklh.model.LhToken;
+import gov.va.vro.mocklh.util.TestSpec;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
@@ -95,53 +96,87 @@ public class PassThroughTest {
         .compact();
   }
 
-  @SneakyThrows
-  @Test
-  void icn1012666073V986297Test() {
-    final String icn = "1012666073V986297";
-    final String assertion = getCcgAssertion();
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+  private MultiValueMap<String, String> newRequestBodyStaticPiece() {
     MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-    String launchCode = getPatientCoding(icn);
+
     requestBody.add("grant_type", "client_credentials");
     requestBody.add(
         "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
+
+    String assertion = getCcgAssertion();
     requestBody.add("client_assertion", assertion);
+
+    return requestBody;
+  }
+
+  private MultiValueMap<String, String> newRequestBody(TestSpec spec) {
+    MultiValueMap<String, String> requestBody = newRequestBodyStaticPiece();
+
+    String launchCode = getPatientCoding(spec.getIcn());
     requestBody.add("launch", launchCode);
-    requestBody.add("scope", "launch patient/Observation.read");
-    HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
 
-    String baseUrl = "http://localhost:" + port;
+    requestBody.add("scope", spec.getScope());
 
-    String tokenUrl =  baseUrl + "/token";
+    return requestBody;
+  }
+
+  private HttpEntity<MultiValueMap<String, String>> getTokenEntity(TestSpec spec) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, String> requestBody = newRequestBody(spec);
+
+    return new HttpEntity<>(requestBody, headers);
+  }
+
+  private LhToken getToken(TestSpec spec) {
+    HttpEntity<MultiValueMap<String, String>> entity = getTokenEntity(spec);
+
+    String tokenUrl = props.getTokenUrl();
     ResponseEntity<LhToken> tokenResponse = template.postForEntity(tokenUrl, entity, LhToken.class);
     LhToken token = tokenResponse.getBody();
+    return token;
+  }
+
+  @SneakyThrows
+  private JsonNode getBundle(TestSpec spec) {
+    LhToken token = getToken(spec);
     assertNotNull(token.getAccessToken());
 
-    String observationUrl = baseUrl + "/Observation?_count=100&";
-    observationUrl += "patient=" + icn;
-    observationUrl += "&code=85354-9";
+    String url = spec.getUrl(port);
 
-    HttpHeaders headers2 = new HttpHeaders();
-    headers2.setBearerAuth(token.getAccessToken());
-    headers2.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(token.getAccessToken());
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-    HttpEntity<String> entity2 = new HttpEntity<>(headers2);
+    HttpEntity<String> entity = new HttpEntity<>(headers);
 
-    ResponseEntity<String> bundleResponse = template.exchange(observationUrl, HttpMethod.GET, entity2, String.class);
+    ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, entity, String.class);
+    return mapper.readTree(response.getBody());
+  }
 
-    JsonNode bundle = mapper.readTree(bundleResponse.getBody());
+  private void verifyBundle(JsonNode bundle, int count) {
     assertNotNull(bundle);
 
     JsonNode total = bundle.get("total");
     assertTrue(total.isInt());
-    assertEquals(8, total.asInt());
+    assertEquals(count, total.asInt());
 
     JsonNode entry = bundle.get("entry");
     assertNotNull(entry);
     assertTrue(entry.isArray());
-    assertEquals(8, entry.size());
+    assertEquals(count, entry.size());
+  }
+
+  @SneakyThrows
+  @Test
+  void icn1012666073V986297Test() {
+    TestSpec spec = TestSpec.builder()
+        .icn("1012666073V986297")
+        .resourceType("Observation")
+        .code("85354-9")
+        .build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 8);
   }
 }
