@@ -173,6 +173,10 @@ public class PassThroughTest {
   @SneakyThrows
   @Test
   void icn1012666073V986297BloodPressureTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
     TestSpec spec =
         TestSpec.builder()
             .icn("1012666073V986297")
@@ -187,6 +191,10 @@ public class PassThroughTest {
   @SneakyThrows
   @Test
   void icn9000682ConditionTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
     TestSpec spec = TestSpec.builder().icn("9000682").resourceType("Condition").build();
 
     JsonNode bundle = getBundle(spec);
@@ -196,6 +204,10 @@ public class PassThroughTest {
   @SneakyThrows
   @Test
   void icn9000682MedicationRequestTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
     TestSpec spec = TestSpec.builder().icn("9000682").resourceType("MedicationRequest").build();
 
     JsonNode bundle = getBundle(spec);
