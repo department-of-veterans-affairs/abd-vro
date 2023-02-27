@@ -6,6 +6,7 @@ cluster: nonprod
 endpoint: dev
 # TODO: How is version used? What should this be set to?
 version: 0.1
+replicaCount: 1
 
 labels:
   api:
@@ -34,6 +35,9 @@ images:
     tag: tagPlaceholder
   dbInit:
     imageName: dev_vro-db-init
+    tag: tagPlaceholder
+  console:
+    imageName: dev_vro-console
     tag: tagPlaceholder
   serviceDataAccess:
     imageName: dev_vro-service-data-access
