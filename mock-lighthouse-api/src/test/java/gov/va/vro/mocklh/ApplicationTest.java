@@ -45,6 +45,8 @@ import java.util.Date;
 @Slf4j
 @ActiveProfiles("test")
 public class ApplicationTest {
+  private static final String PLACE_HOLDER = "place-holder";
+
   static {
     if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
       Security.addProvider(new BouncyCastleProvider());
@@ -170,10 +172,20 @@ public class ApplicationTest {
     verifyBundle(bundle, count, count);
   }
 
+  private boolean checkRunnable() {
+    if (PLACE_HOLDER.equals(props.getClientId())) {
+      return false;
+    }
+    if (PLACE_HOLDER.equals(props.getPemKey())) {
+      return false;
+    }
+    return true;
+  }
+
   @SneakyThrows
   @Test
   void icn1012666073V986297BloodPressureTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 
@@ -191,7 +203,7 @@ public class ApplicationTest {
   @SneakyThrows
   @Test
   void icn9000682ConditionTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 
@@ -204,7 +216,7 @@ public class ApplicationTest {
   @SneakyThrows
   @Test
   void icn9000682MedicationRequestTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 
@@ -217,7 +229,7 @@ public class ApplicationTest {
   @SneakyThrows
   @Test
   void icnMock1012666073V986297BloodPressureTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 
@@ -235,7 +247,7 @@ public class ApplicationTest {
   @SneakyThrows
   @Test
   void icnMock1012666073V986297MedicationRequestTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 
@@ -249,7 +261,7 @@ public class ApplicationTest {
   @SneakyThrows
   @Test
   void icnMock1012666073V986297ConditionTest() {
-    if (props.getClientId() == null || props.getPemKey() == null) {
+    if (!checkRunnable()) {
       return; // No LH environment variable. Bail out.
     }
 

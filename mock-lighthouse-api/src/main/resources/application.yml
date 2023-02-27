@@ -35,5 +35,5 @@ mock-lh:
     token-url: "https://sandbox-api.va.gov/oauth2/health/system/v1/token"
     fhir-url: "https://sandbox-api.va.gov/services/fhir/v0/r4"
     assertion-url: "https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token"
-    client-id: "${LH_ACCESS_CLIENT_ID}"
-    pem-key: "${LH_PRIVATE_KEY}"
+    client-id: "${LH_ACCESS_CLIENT_ID:place-holder}"
+    pem-key: "${LH_PRIVATE_KEY:place-holder}"
