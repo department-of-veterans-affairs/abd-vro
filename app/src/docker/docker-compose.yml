@@ -131,7 +131,7 @@ services:
     networks:
       - internal
     environment:
-      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_FLYWAY_USER}&password=${POSTGRES_FLYWAY_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
