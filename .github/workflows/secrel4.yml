@@ -74,7 +74,7 @@ jobs:
         run: |
           echo "all_images<<EOF" >> $GITHUB_OUTPUT
           echo "${{ needs.publish-to-ghcr.outputs.vro-images }}" >> $GITHUB_OUTPUT
-          MANUAL_IMGS_ARRAY=( vro-rabbitmq:latest vro-redis:latest )
+          MANUAL_IMGS_ARRAY=( mirror-rabbitmq:latest mirror-redis:latest )
           for MANUAL_IMAGE in ${MANUAL_IMGS_ARRAY[@]}; do
             # SecRel will not sign images outside the scope of the repository that's calling SecRel,
             # so the image must exist in abd-vro-internal

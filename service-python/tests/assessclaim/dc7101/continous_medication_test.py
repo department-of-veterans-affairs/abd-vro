@@ -158,7 +158,8 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
-                                "dataSource": "MAS"
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
@@ -172,6 +173,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
+                            "receiptDate": "",
                             "dataSource": "MAS"
                         }
                     ],
@@ -188,7 +190,8 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
-                                "dataSource": "MAS"
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
@@ -202,6 +205,7 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
+                            "receiptDate": "",
                             "dataSource": "MAS"
                         }
                     ],
@@ -218,7 +222,9 @@ def test_continuous_medication_required(
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
-                                "dataSource": "MAS"
+                                "dataSource": "MAS",
+                                "receiptDate": "",
+
                             }
                         ]
                     },
@@ -239,11 +245,13 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "",
+                                "receiptDate": "",
                                 "dataSource": "MAS"
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
+                                "receiptDate": "",
                                 "authoredOn": "2021-04-06T04:00:00Z",
                                 "dataSource": "LH"
                             },
@@ -251,6 +259,7 @@ def test_continuous_medication_required(
                                 "description": "some medication",
                                 "status": "active",
                                 "authoredOn": "",
+                                "receiptDate": "",
                                 "partialDate": "**/**/1988",
                                 "dataSource": "MAS"
                             },
@@ -265,6 +274,7 @@ def test_continuous_medication_required(
                             "description": "Benazepril",
                             "status": "active",
                             "dateFormatted": "",
+                            "receiptDate": "",
                             "authoredOn": "",
                             "dataSource": "MAS"
                         },
@@ -272,6 +282,7 @@ def test_continuous_medication_required(
                             "description": "some medication",
                             "status": "active",
                             "authoredOn": "",
+                            "receiptDate": "",
                             "dateFormatted": "",
                             "partialDate": "**/**/1988",
                             "dataSource": "MAS"

@@ -22,7 +22,7 @@ spec:
       #      mountPath: /var/lib/rabbitmq
       containers:
         - name: rabbit-mq
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-rabbitmq:latest
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:latest
           #command:
           #  - chown
           #  - -R
