@@ -3,11 +3,6 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-rrd
   labels: {{- toYaml .Values.labels.rrd.global | nindent 4 }}
-#  annotations:
-#    app.kubernetes.io/name: {{ .Values.name }}
-#    app.kubernetes.io/version: {{ .Values.version | quote }}
-#    app.kubernetes.io/owner: {{ .Values.owner }}
-#    app.kubernetes.io/env: {{ .Values.environment }}
 spec:
   replicas: 1
   selector:
@@ -15,12 +10,6 @@ spec:
   template:
     metadata:
       labels: {{- toYaml .Values.labels.rrd.pod | nindent 8 }}
-        sidecar.istio.io/inject: "false"
-#      annotations:
-#        app.kubernetes.io/podname: {{ .Values.name }}
-#        app.kubernetes.io/podversion: {{ .Values.version | quote }}
-#        app.kubernetes.io/podowner: {{ .Values.owner }}
-#        app.kubernetes.io/podenv: {{ .Values.environment }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
