@@ -262,6 +262,44 @@
         "recDate": "2023-09-01Z",
         "condition": "Hypertension",
         "annotations": []
+      },
+      {
+        "docTypeDescription": "VAMC Other Output Reports",
+        "eFolderVersionRefId": "",
+        "recDate": "2022-12-23Z",
+        "condition": "Hypertension",
+        "annotations": [
+          {
+            "annot_type": "blood_pressure",
+            "annot_name": "BP",
+            "annot_val": "128/55",
+            "page_num": "0000009",
+            "dates": "",
+            "observation_date": "2022-10-16Z",
+            "end": 292,
+            "acd_pref_name": "BPReading",
+            "spellcheck_val": "",
+            "relevant": true,
+            "partial_date": "",
+            "sorted_date": "2022-12-23Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "blood_pressure",
+            "annot_name": "BP",
+            "annot_val": "129/65",
+            "page_num": "0000021",
+            "dates": "",
+            "observation_date": "2022-09-15Z",
+            "end": 19658,
+            "acd_pref_name": "BPReading",
+            "spellcheck_val": "",
+            "relevant": true,
+            "partial_date": "",
+            "sorted_date": "2022-12-23Z",
+            "dbq_type": ""
+          }
+        ]
       }
     ],
     "documentsWithoutAnnotationsChecked": [
