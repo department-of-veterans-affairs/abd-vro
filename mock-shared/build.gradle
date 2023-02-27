@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
   implementation "io.jsonwebtoken:jjwt:${io_jsonwebtoken_version}"
-  implementation 'org.apache.httpcomponents:httpclient:4.5'
+  implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-security'
