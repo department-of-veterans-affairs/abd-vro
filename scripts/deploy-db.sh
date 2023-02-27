@@ -23,6 +23,7 @@ else
   VERSION=${GIT_SHA:0:7}
 fi
 
+source scripts/image_vars.src
 generateDbImageArgs(){
   local _IMAGE_TAG=$2
 
@@ -39,8 +40,9 @@ generateDbImageArgs(){
     echo "--set-string images.repo=abd-vro-internal "
   fi
 
-  local HELM_KEY="db"
-  local IMAGE_NAME="${IMG_NAME_PREFIX}vro-postgres"
+  local PREFIX="db"
+  local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
+  local IMAGE_NAME=${IMG_NAME_PREFIX}$(getVarValue "${PREFIX}" _IMG)
   echo "--set-string images.$HELM_KEY.tag=${_IMAGE_TAG} "
   echo "--set-string images.$HELM_KEY.imageName=${IMAGE_NAME} "
 }
