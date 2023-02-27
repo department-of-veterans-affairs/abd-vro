@@ -44,7 +44,7 @@ import java.util.Date;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
-public class PassThroughTest {
+public class ApplicationTest {
   static {
     if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
       Security.addProvider(new BouncyCastleProvider());
@@ -212,5 +212,57 @@ public class PassThroughTest {
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 14, 7);
+  }
+
+  @SneakyThrows
+  @Test
+  void icnMock1012666073V986297BloodPressureTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
+    TestSpec spec =
+        TestSpec.builder()
+            .icn("mock1012666073V986297")
+            .resourceType("Observation")
+            .code("85354-9")
+            .build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 8);
+  }
+
+  @SneakyThrows
+  @Test
+  void icnMock1012666073V986297MedicationRequestTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
+    TestSpec spec =
+        TestSpec.builder()
+            .icn("mock1012666073V986297")
+            .resourceType("MedicationRequest")
+            .build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 10);
+  }
+
+  @SneakyThrows
+  @Test
+  void icnMock1012666073V986297ConditionTest() {
+    if (props.getClientId() == null || props.getPemKey() == null) {
+      return; // No LH environment variable. Bail out.
+    }
+
+    TestSpec spec =
+        TestSpec.builder()
+            .icn("mock1012666073V986297")
+            .resourceType("Condition")
+            .build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 0);
   }
 }

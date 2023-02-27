@@ -2,11 +2,13 @@ package gov.va.vro.mocklh.controller;
 
 import gov.va.vro.mocklh.api.MockLhApi;
 import gov.va.vro.mocklh.config.LhApiProperties;
+import gov.va.vro.mocklh.model.MockBundleStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ public class MockLhController implements MockLhApi {
   private final RestTemplate template;
 
   private final LhApiProperties properties;
+
+  private final MockBundleStore store;
 
   @Override
   public ResponseEntity<String> getToken(MultiValueMap<String, String> requestBody) {
@@ -67,18 +71,36 @@ public class MockLhController implements MockLhApi {
   @Override
   public ResponseEntity<String> getObservation(
       String bearerToken, MultiValueMap<String, String> queryParams) {
+    String icn = queryParams.getFirst("patient");
+    String bundle = store.getMockObservationBundle(icn);
+    if (bundle != null) {
+      log.info("Sending back the mock Observation: {}", icn);
+      return new ResponseEntity<>(bundle, HttpStatus.OK);
+    }
     return getResource(bearerToken, queryParams, "Observation");
   }
 
   @Override
   public ResponseEntity<String> getCondition(
       String bearerToken, MultiValueMap<String, String> queryParams) {
+    String icn = queryParams.getFirst("patient");
+    String bundle = store.getMockConditionBundle(icn);
+    if (bundle != null) {
+      log.info("Sending back the mock Condition: {}", icn);
+      return new ResponseEntity<>(bundle, HttpStatus.OK);
+    }
     return getResource(bearerToken, queryParams, "Condition");
   }
 
   @Override
   public ResponseEntity<String> getMedicationRequest(
       String bearerToken, MultiValueMap<String, String> queryParams) {
+    String icn = queryParams.getFirst("patient");
+    String bundle = store.getMockMedicationRequestBundle(icn);
+    if (bundle != null) {
+      log.info("Sending back the mock MedicationRequest: {}", icn);
+      return new ResponseEntity<>(bundle, HttpStatus.OK);
+    }
     return getResource(bearerToken, queryParams, "MedicationRequest");
   }
 }
