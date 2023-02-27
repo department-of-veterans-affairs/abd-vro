@@ -182,7 +182,7 @@
             <th style="width: 118px !important;">Key terms</th>
             <th>Document</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page(s)</th>
+            <th style="width: 70px !important;">Page number(s) / Event ID(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
@@ -259,7 +259,7 @@
             <th style="width: 90px !important;">Observation date</th>
             <th>Source</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page(s)</th>
+            <th style="width: 70px !important;">Page number(s) / Event ID(s)</th>
             <th style="width: 240px !important;">Document ID</th>
           </tr>
         </thead>
@@ -271,7 +271,7 @@
             <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == ""%}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
-            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == ""%}n.a.  - see VistA/Capri to verify{% else %}{{ bp_reading.document }}{% endif %}</td>
+            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>{% if bp_reading.document == ""%}Pulled directly from EHR{% else %}{{ bp_reading.document }}{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -306,7 +306,23 @@
             <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
-            <td {% if medication.document == "" %}class="empty" {% endif %}>{% if medication.document == ""%}n.a.{% else %}{{ medication.document }}{% endif %}</td>
+            <td {% if medication.document == "" %}class="empty" {% endif %}>
+              {% if medication.dataSource == "LH" %}
+                {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif medication.document == "" %}
+                  n.a.
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% else %}
+                {% if medication.document == ""%}
+                  n.a.
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
           {% if evidence.medications |length == 0 %}
