@@ -33,6 +33,9 @@ import java.util.Date;
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
   @Value("classpath:test-data/pdf-generator-mas.json")
+  private Resource pdfGeneratorMas;
+
+  @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
   @Autowired protected ClaimRepository claimRepository;
@@ -41,7 +44,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
   @Test
   @DirtiesContext
-  void positiveEvidenceSummaryDocumentProcessor() throws Exception {
+  void positiveEvidenceSummaryDocumentProcessorV1() throws Exception {
     // Create veteran, claim, and contention and save.
     Date icnTimestamp = new Date();
     var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
@@ -50,6 +53,42 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
     // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
     // referenceId must match in the PDF requests sent later.
     var claim = TestDataSupplier.createClaim(null, veteran, "1234");
+    claim.addContention(contention);
+    claim = claimRepository.save(claim);
+
+    // Call generate-pdf endpoint to activate the Evidence Summary Document processor.
+    var mapper = new ObjectMapper();
+    InputStream stream = pdfGeneratorMas.getInputStream();
+    String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    GeneratePdfRequest input = mapper.readValue(inputAsString, GeneratePdfRequest.class);
+    post("/v1/evidence-pdf", input, GeneratePdfResponse.class);
+
+    // Verify that the evidence summary document is created and saved correctly.
+    assertNotNull(claim.getId());
+    var claim2 = claimRepository.findById(claim.getId()).orElse(null);
+    assertNotNull(claim2);
+    assertEquals(claim2.getContentions().get(0).getEvidenceSummaryDocuments().size(), 1);
+    EvidenceSummaryDocumentEntity evidenceSummaryDocument =
+        claim2.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
+    assertEquals(evidenceSummaryDocument.getEvidenceCount().get("medicationsCount"), "2");
+    assertEquals(evidenceSummaryDocument.getEvidenceCount().get("totalBpReadings"), "3");
+    String diagnosis = "Hypertension";
+    String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
+    assertEquals(evidenceSummaryDocument.getDocumentName(), documentName);
+    assertEquals(evidenceSummaryDocument.getContention().getId(), contention.getId());
+  }
+
+  @Test
+  @DirtiesContext
+  void positiveEvidenceSummaryDocumentProcessorV2() throws Exception {
+    // Create veteran, claim, and contention and save.
+    Date icnTimestamp = new Date();
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
+    veteranRepository.save(veteran);
+    ContentionEntity contention = new ContentionEntity("7101");
+    // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
+    // referenceId must match in the PDF requests sent later.
+    var claim = TestDataSupplier.createClaim("12345", veteran, "1234");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

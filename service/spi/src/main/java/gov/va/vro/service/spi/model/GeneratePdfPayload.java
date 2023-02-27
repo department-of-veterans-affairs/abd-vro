@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 public class GeneratePdfPayload {
   @NonNull private String claimSubmissionId;
 
-  @Builder.Default @NotNull private String idType = Claim.V1_ID_TYPE;
+  @NotNull private String idType;
 
   @NonNull private String diagnosticCode;
 
