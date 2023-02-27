@@ -56,50 +56,7 @@ spec:
         - name: dbinit--{{ .Release.Name }}
           image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag  | default .Values.global.images.tag }}
           env:
-            # TODO: Is ENV needed?
-            - name: ENV
-              value: {{ .Values.global.environment }}
-            - name: FLYWAY_URL
-              value: {{ include "vro.postgresUrl" . }}
-#              valueFrom:
-#                secretKeyRef:
-#                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-#                  key: {{ .Values.global.dbinit.secretKeyRef.urlKey }}
-            - name: FLYWAY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
-            - name: FLYWAY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
-            - name: FLYWAY_SCHEMA
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
-            - name: FLYWAY_PLACEHOLDERS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.usernameKey }}
-            - name: FLYWAY_PLACEHOLDERS_DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
-            - name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
-            - name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.passwordKey }}
+            {{- include "vro.flyway.envVars" . | nindent 12 }}
           resources:
             requests:
               cpu: 150m

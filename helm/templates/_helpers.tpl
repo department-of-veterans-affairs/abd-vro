@@ -63,6 +63,19 @@ valueFrom:
 {{- end }}
 
 {{/*
+  For clients to connect to Redis
+*/}}
+{{- define "vro.redisClient.envVars" -}}
+- name: REDIS_PLACEHOLDERS_HOST
+  value: {{ .Values.global.hostnamePrefix }}-redis
+- name: REDIS_PLACEHOLDERS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.global.redis.secretKeyRef.name }}
+      key: {{ .Values.global.redis.secretKeyRef.passwordKey }}
+{{- end }}
+
+{{/*
   For clients to connect to DB
 */}}
 {{- define "vro.dbClient.envVars" -}}
@@ -89,7 +102,7 @@ valueFrom:
 #      name: {{ .Values.global.postgres.secretKeyRef.name }}
 #      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: POSTGRES_SCHEMA
-  value: claims
+  value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
 #      name: {{ .Values.global.postgres.secretKeyRef.name }}
@@ -97,16 +110,53 @@ valueFrom:
 {{- end }}
 
 {{/*
-  For clients to connect to Redis
+  For Flyway to connect to set up Postgres DB schema
 */}}
-{{- define "vro.redisClient.envVars" -}}
-- name: REDIS_PLACEHOLDERS_HOST
-  value: {{ .Values.global.hostnamePrefix }}-redis
-- name: REDIS_PLACEHOLDERS_PASSWORD
+{{- define "vro.flyway.envVars" -}}
+- name: FLYWAY_URL
+  value: {{ include "vro.postgresUrl" . }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.dbinit.secretKeyRef.name }}
+#      key: {{ .Values.global.dbinit.secretKeyRef.urlKey }}
+- name: FLYWAY_USER
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.redis.secretKeyRef.name }}
-      key: {{ .Values.global.redis.secretKeyRef.passwordKey }}
+      name: {{ .Values.global.dbinit.secretKeyRef.name }}
+      key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+- name: FLYWAY_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.global.dbinit.secretKeyRef.name }}
+      key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
+- name: FLYWAY_SCHEMA
+  value: {{ .Values.global.service.db.schemaName }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+- name: FLYWAY_PLACEHOLDERS_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.global.postgres.secretKeyRef.name }}
+      key: {{ .Values.global.postgres.secretKeyRef.usernameKey }}
+- name: FLYWAY_PLACEHOLDERS_DB_NAME
+  value: {{ .Values.global.service.db.databaseName }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+- name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
+  value: {{ .Values.global.service.db.schemaName }}
+#  valueFrom:
+#    secretKeyRef:
+#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+- name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.global.postgres.secretKeyRef.name }}
+      key: {{ .Values.global.postgres.secretKeyRef.passwordKey }}
 {{- end }}
 
 {{/***************************************************************

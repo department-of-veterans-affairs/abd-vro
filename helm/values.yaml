@@ -76,6 +76,7 @@ global:
       sourcePort: 5432
       targetPort: 5432
       databaseName: vro
+      schemaName: claims
     mq:
       sourcePort: 5672
       targetPort: 5672
@@ -108,10 +109,10 @@ global:
       passwordKey: password
       dbnameKey: dbName
       schemaKey: schema
-    dbName: vro
-    initDbName: vro
-    initUsernameKey: initUsername
-    initPasswordKey: initPassword
+#    dbName: vro
+#    initDbName: vro
+#    initUsernameKey: initUsername
+#    initPasswordKey: initPassword
 
   dbinit:
     secretKeyRef:
