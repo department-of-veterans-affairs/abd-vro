@@ -28,6 +28,10 @@ images:
   app:
     imageName: dev_vro-app
     tag: tagPlaceholder
+  db:
+    # Being used as the `pg-isready` container
+    imageName: dev_vro-postgres
+    tag: tagPlaceholder
   dbInit:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
