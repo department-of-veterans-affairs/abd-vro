@@ -156,7 +156,7 @@ jobs:
 
       - name: "Wait for LHDI deployment"
         run: |
-          if kubectl -n va-abd-rrd-${{ inputs.target_env }} rollout status deployment/vro-api; then
+          if kubectl -n va-abd-rrd-${{ inputs.target_env }} rollout status deployment/vro-api-app; then
             echo "JOB_STATUS=success" >> $GITHUB_ENV
           else
             # Return nonzero error code so that workflow fails
