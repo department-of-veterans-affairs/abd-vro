@@ -1,12 +1,212 @@
 {
   "resourceType": "Bundle",
   "type": "searchset",
-  "total": 0,
+  "total": 3,
   "link": [
     {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986297&_count=100&page=1"
+    },
+    {
       "relation": "self",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=1012666073V986297&_count=100&page=1"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986297&_count=100&page=1"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986297&_count=100&page=1"
     }
   ],
-  "entry": []
+  "entry": [
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition/condition1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition1",
+        "meta": {
+          "lastUpdated": "2022-05-30T00:00:00Z"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ],
+          "text": "Active"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ],
+          "text": "Confirmed"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ],
+            "text": "Problem List Item"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13645005",
+              "display": "Chronic obstructive lung disease"
+            }
+          ],
+          "text": "Chronic obstructive lung disease"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "SKYSCRAPER,DAVID"
+        },
+        "onsetDateTime": "2018-12-20T04:00:00Z",
+        "recordedDate": "2018-11-20",
+        "recorder": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/practitioner1",
+          "display": "PRACTITIONER, MIKE T"
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition/condition2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition2",
+        "meta": {
+          "lastUpdated": "2022-07-05T00:00:00Z"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ],
+          "text": "Active"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis",
+                "display": "Encounter Diagnosis"
+              }
+            ],
+            "text": "Encounter Diagnosis"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "*Missing*",
+              "display": "Essential Hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-9-cm",
+              "code": "401.9",
+              "display": "UNSPECIFIED ESSENTIAL HYPERTENSION"
+            }
+          ],
+          "text": "Essential Hypertension"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "SKYSCRAPER,DAVID"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/encounter1"
+        },
+        "onsetDateTime": "2019-11-07T12:45:58Z",
+        "recordedDate": "2019-11-07",
+        "asserter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/practitioner1",
+          "display": "PRACTITIONER, MIKE T"
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition/condition5",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition5",
+        "meta": {
+          "lastUpdated": "2022-08-31T00:00:00Z"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ],
+          "text": "Active"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis",
+                "display": "Encounter Diagnosis"
+              }
+            ],
+            "text": "Encounter Diagnosis"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "*Missing*",
+              "display": "OTHER SPECIFIED COUNSELING"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-9-cm",
+              "code": "V65.49",
+              "display": "OTHER SPECIFIED COUNSELING"
+            }
+          ],
+          "text": "OTHER SPECIFIED COUNSELING"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "SKYSCRAPER,DAVID"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/encounter-no-consequence"
+        },
+        "onsetDateTime": "2023-01-16T17:00:00Z",
+        "recordedDate": "2023-01-16",
+        "asserter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/practitioner5",
+          "display": "ASSERTER, MARY Y"
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
 }

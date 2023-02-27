@@ -1,5 +1,8 @@
 package gov.va.vro.mocklh;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mocklh.model.MockBundleStore;
@@ -10,18 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
 public class StoreTest {
-  @Autowired
-  private MockBundleStore store;
+  @Autowired private MockBundleStore store;
 
-  @Autowired
-  ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
   @Test
   @SneakyThrows
@@ -53,6 +51,6 @@ public class StoreTest {
 
     JsonNode json = mapper.readTree(condition);
     JsonNode total = json.get("total");
-    assertEquals(0, total.asInt());
+    assertEquals(3, total.asInt());
   }
 }

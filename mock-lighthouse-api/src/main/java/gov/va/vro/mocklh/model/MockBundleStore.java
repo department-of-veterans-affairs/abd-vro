@@ -1,11 +1,9 @@
 package gov.va.vro.mocklh.model;
 
-import org.springframework.core.io.Resource;
-
 import java.util.HashMap;
 
 public class MockBundleStore {
-  private HashMap<String, MockBundles> store =  new HashMap<>();
+  private HashMap<String, MockBundles> store = new HashMap<>();
 
   public void put(String icn, MockBundles bundles) {
     store.put(icn, bundles);
