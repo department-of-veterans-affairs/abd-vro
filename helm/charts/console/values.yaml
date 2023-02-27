@@ -6,3 +6,5 @@ labels:
 
 image:
   name: dev_vro-console
+
+replicaCount: 1

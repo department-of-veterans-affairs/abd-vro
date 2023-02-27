@@ -14,6 +14,8 @@ images:
   dbInit:
     imageName: dev_vro-db-init
 
+replicaCount: 1
+
 ports:
   - name: http
     containerPort: 8080

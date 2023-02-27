@@ -5,7 +5,7 @@ metadata:
   name: vro-postgres
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:

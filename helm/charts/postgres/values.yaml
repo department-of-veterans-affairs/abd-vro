@@ -3,3 +3,5 @@ labels:
 
 image:
   name: dev_vro-postgres
+
+replicaCount: 1

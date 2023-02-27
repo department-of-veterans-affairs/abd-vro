@@ -5,3 +5,5 @@ labels:
 
 image:
   tag: "latest"
+
+replicaCount: 1
