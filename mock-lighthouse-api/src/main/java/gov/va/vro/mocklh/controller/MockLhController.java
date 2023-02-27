@@ -12,11 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
-import java.util.Map;
 
 @Controller
 @Slf4j
@@ -43,7 +41,8 @@ public class MockLhController implements MockLhApi {
     return response;
   }
 
-  private ResponseEntity<String> getResource(String bearerToken, MultiValueMap<String, String> queryParams, String resourceType) {
+  private ResponseEntity<String> getResource(
+      String bearerToken, MultiValueMap<String, String> queryParams, String resourceType) {
     log.info("Retrieving {}...", resourceType);
 
     HttpHeaders headers = new HttpHeaders();
@@ -52,22 +51,34 @@ public class MockLhController implements MockLhApi {
 
     HttpEntity<String> entity = new HttpEntity<>(headers);
 
-    String url = properties.getFhirUrl() + "/Observation";
-    String fullUrl = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParams(queryParams)
-        .build()
-        .toUriString();
+    String url = properties.getFhirUrl() + "/" + resourceType;
+    String fullUrl =
+        UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams).build().toUriString();
 
     log.info("Calling {}", url);
-    ResponseEntity<String> response = template.exchange(fullUrl, HttpMethod.GET, entity, String.class);
+    ResponseEntity<String> response =
+        template.exchange(fullUrl, HttpMethod.GET, entity, String.class);
 
-    log.info("Observation response: {}", response.getBody());
+    log.info("{} response: {}", resourceType, response.getBody());
 
     return response;
   }
 
   @Override
-  public ResponseEntity<String> getObservation(String bearerToken, MultiValueMap<String, String> queryParams) {
+  public ResponseEntity<String> getObservation(
+      String bearerToken, MultiValueMap<String, String> queryParams) {
     return getResource(bearerToken, queryParams, "Observation");
+  }
+
+  @Override
+  public ResponseEntity<String> getCondition(
+      String bearerToken, MultiValueMap<String, String> queryParams) {
+    return getResource(bearerToken, queryParams, "Condition");
+  }
+
+  @Override
+  public ResponseEntity<String> getMedicationRequest(
+      String bearerToken, MultiValueMap<String, String> queryParams) {
+    return getResource(bearerToken, queryParams, "MedicationRequest");
   }
 }

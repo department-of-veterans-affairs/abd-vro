@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
-import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -154,7 +153,7 @@ public class PassThroughTest {
     return mapper.readTree(response.getBody());
   }
 
-  private void verifyBundle(JsonNode bundle, int count) {
+  private void verifyBundle(JsonNode bundle, int count, int entryCount) {
     assertNotNull(bundle);
 
     JsonNode total = bundle.get("total");
@@ -164,19 +163,42 @@ public class PassThroughTest {
     JsonNode entry = bundle.get("entry");
     assertNotNull(entry);
     assertTrue(entry.isArray());
-    assertEquals(count, entry.size());
+    assertEquals(entryCount, entry.size());
+  }
+
+  private void verifyBundle(JsonNode bundle, int count) {
+    verifyBundle(bundle, count, count);
   }
 
   @SneakyThrows
   @Test
-  void icn1012666073V986297Test() {
-    TestSpec spec = TestSpec.builder()
-        .icn("1012666073V986297")
-        .resourceType("Observation")
-        .code("85354-9")
-        .build();
+  void icn1012666073V986297BloodPressureTest() {
+    TestSpec spec =
+        TestSpec.builder()
+            .icn("1012666073V986297")
+            .resourceType("Observation")
+            .code("85354-9")
+            .build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 8);
+  }
+
+  @SneakyThrows
+  @Test
+  void icn9000682ConditionTest() {
+    TestSpec spec = TestSpec.builder().icn("9000682").resourceType("Condition").build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 14);
+  }
+
+  @SneakyThrows
+  @Test
+  void icn9000682MedicationRequestTest() {
+    TestSpec spec = TestSpec.builder().icn("9000682").resourceType("MedicationRequest").build();
+
+    JsonNode bundle = getBundle(spec);
+    verifyBundle(bundle, 14, 7);
   }
 }

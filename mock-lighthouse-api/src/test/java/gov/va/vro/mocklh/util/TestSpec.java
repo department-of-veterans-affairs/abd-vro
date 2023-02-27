@@ -1,12 +1,8 @@
 package gov.va.vro.mocklh.util;
 
-import gov.va.vro.mocklh.model.LhToken;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Getter
 @Setter
