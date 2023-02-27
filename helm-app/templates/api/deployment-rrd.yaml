@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-rrd
   labels: {{- toYaml .Values.labels.rrd.global | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels: {{- toYaml .Values.labels.rrd.global | nindent 6 }}
   template:
