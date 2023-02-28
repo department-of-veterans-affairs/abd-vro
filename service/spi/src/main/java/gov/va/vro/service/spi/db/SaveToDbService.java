@@ -1,6 +1,7 @@
 package gov.va.vro.service.spi.db;
 
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
@@ -16,6 +17,9 @@ public interface SaveToDbService {
   void insertAssessmentResult(AbdEvidenceWithSummary evidence, String diagnosticCode);
 
   void insertEvidenceSummaryDocument(GeneratePdfPayload request, String documentName);
+
+  void updateEvidenceSummaryDocument(
+      UUID eFolderId, BipFileUploadPayload bipPayload, String diagnosticCode);
 
   void insertOrUpdateExamOrderingStatus(ExamOrder examOrder);
 
