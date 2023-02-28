@@ -97,7 +97,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: SecRel Pipeline
     needs: [publish-to-ghcr, images-for-secrel]
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.0
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.images-for-secrel.outputs.all-images }}
