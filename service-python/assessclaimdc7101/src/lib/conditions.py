@@ -18,28 +18,20 @@ def conditions_calculation(request_body):
     condition_with_date = []
     condition_without_date = []
     conditions_two_years = []
-    lh_count = 0
-    mas_count = 0
-    mas_not_relevant = 0
+    lh_relevant_condition_count = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
-
+        #  Only LH data has ICD codes, so no MAS data will pass the following condition
         if condition_code in hypertension_conditions.conditions:
-            if condition["dataSource"] == "LH":
-                if condition["category"] == "Encounter Diagnosis":
-                    condition["relevant"] = True
-                    lh_count += 1
-            else:
+            if condition["category"] == "Encounter Diagnosis":
                 condition["relevant"] = True
-                mas_count += 1
+                lh_relevant_condition_count += 1
         else:
             condition["relevant"] = False
-            if condition["dataSource"] == "MAS":
-                mas_not_relevant += 1
 
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
@@ -73,9 +65,7 @@ def conditions_calculation(request_body):
         "conditions": condition_with_date,
         "conditionsTwoYears": conditions_two_years,
         "totalConditionsCount": len(veterans_conditions),
-        "relevantConditionsCountLighthouse": lh_count,
-        "relevantConditionsCountMAS": mas_count,
-        "irrelevantConditionsCountMAS": mas_not_relevant
+        "relevantConditionsLighthouseCount": lh_relevant_condition_count,
         }
     )
     return response
