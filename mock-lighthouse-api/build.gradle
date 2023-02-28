@@ -14,7 +14,7 @@ ext {
 
 configurations.all {
   resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
+    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:2.0")
   }
 }
 
