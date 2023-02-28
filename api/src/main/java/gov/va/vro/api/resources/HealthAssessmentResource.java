@@ -40,9 +40,9 @@ public interface HealthAssessmentResource {
   @Operation(
       summary = "Provides health data assessment",
       description =
-          "This endpoint provides health data assessment for a Veteran claim "
-              + "in the form of patient medical data relevant to the specific diagnostic code. "
-              + "Claim id is only used for tracking purposes.")
+          "This endpoint has the same functionality as v1/full-health-data-assessment.  "
+              + "This is the v2 version which just has a different name and uses "
+              + "different security.")
   @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(

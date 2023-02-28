@@ -8,7 +8,6 @@ import gov.va.vro.model.bip.BipContentionResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
@@ -20,15 +19,23 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -37,7 +44,6 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.HigherEnvCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
@@ -47,7 +53,7 @@ public class BipApiService implements IBipApiService {
 
   private static final String HTTPS = "https://";
 
-  @Qualifier("bipRestTemplate")
+  @Qualifier("bipCERestTemplate")
   @NonNull
   private final RestTemplate restTemplate;
 
@@ -61,7 +67,6 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
-      log.info("jwt: {}", headers.get("Authorization")); // TODO: remove it after test.
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
@@ -85,27 +90,13 @@ public class BipApiService implements IBipApiService {
   /**
    * Updates claim status.
    *
-   * @param claimId claim ID for the claim to be updated // * @param statusCodeMsg the new status.
-   * @return a list of messages.
+   * @param claimId claim ID for the claim to be updated.
+   * @return an object with status and message.
    * @throws BipException error occurs
    */
   @Override
   public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
-    try {
-      String url =
-          HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
-      log.info("call {} to set claim RFD status.", url);
-      HttpHeaders headers = getBipHeader();
-      Map<String, String> requestBody = new HashMap<>();
-      requestBody.put("claimLifecycleStatus", ClaimStatus.RFD.getDescription());
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
-    } catch (RestClientException e) {
-      log.error("failed to update status to {} for claim {}.", ClaimStatus.RFD, claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
+    return updateClaimStatus(claimId, ClaimStatus.RFD);
   }
 
   @Override
@@ -122,9 +113,13 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
+      if (bipResponse.getStatusCode() == HttpStatus.OK) {
+        return new BipUpdateClaimResp(HttpStatus.OK, bipResponse.getBody());
+      } else {
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
+      }
     } catch (RestClientException e) {
-      log.error("failed to update status to {} for claim {}.", ClaimStatus.RFD, claimId, e);
+      log.error("failed to update status to {} for claim {}.", status.name(), claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }
@@ -138,10 +133,10 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (HttpStatus.OK.equals(bipResponse.getStatusCode())) {
+      if (HttpStatus.OK == bipResponse.getStatusCode()) {
         BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
         return resp.getContentions();
-      } else if (HttpStatus.NO_CONTENT.equals(bipResponse.getStatusCode())) {
+      } else if (HttpStatus.NO_CONTENT == bipResponse.getStatusCode()) {
         return new ArrayList<>();
       } else {
         log.error(
@@ -168,27 +163,13 @@ public class BipApiService implements IBipApiService {
       HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
+      if (bipResponse.getStatusCode() == HttpStatus.OK) {
+        return new BipUpdateClaimResp(HttpStatus.OK, bipResponse.getBody());
+      } else {
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
+      }
     } catch (RestClientException | JsonProcessingException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
-      throws BipException {
-    try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
-      log.info("Call {} to add claim contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader();
-      String createContention = mapper.writeValueAsString(contention);
-      HttpEntity<String> request = new HttpEntity<>(createContention, headers);
-      log.info("createContesion: \n {}", createContention);
-      ResponseEntity<String> bipResponse = restTemplate.postForEntity(url, request, String.class);
-      return new BipUpdateClaimResp(bipResponse.getStatusCode(), bipResponse.getBody());
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to addClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }

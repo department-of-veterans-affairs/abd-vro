@@ -1,5 +1,4 @@
 # ssl client settings
-
 http:
   client:
     ssl:
@@ -7,5 +6,6 @@ http:
       key-store-password: keystore_pw
 
 spring.config.import: >
-  truststore.yml,
-  client-keystore.yml
+  client-keystore.yml,
+  server-truststore.yml
+

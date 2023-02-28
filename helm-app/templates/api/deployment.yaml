@@ -529,6 +529,16 @@ spec:
                   key: {{ .Values.dataservice.lhAssertionUrl }}
             # Setting these secrets are only needed for the prod cluster
             # For the nonprod cluster, these settings are set directly in application-*.yml files
+            - name: SLACK_EXCEPTION_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.slackExceptionChannel }}
+            - name: SLACK_EXCEPTION_WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.name }}
+                  key: {{ .Values.dataservice.slackExceptionWebhook }}
             - name: LH_TOKEN_URL
               valueFrom:
                 secretKeyRef:

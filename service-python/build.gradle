@@ -5,23 +5,25 @@ plugins {
 }
 
 python {
-  installVirtualenv = true
-}
-
-def requirements = tasks.register("requirements", PythonTask) {
-  module = 'pip'
-  command = "install -r requirements.txt"
+  installVirtualenv = false
+  docker.use = true
+  docker.image = 'python:3.10-bullseye'
 }
 
 pipInstall {
-  // Requirements are installed above because this task does not support
+  // Requirements are installed below because this task does not support
   // `-r assessclaimdc6602/src/requirements.txt` in requirements.txt
   enabled = false
 }
 
+def requirements = tasks.register("requirements", PythonTask) {
+  module = 'pip'
+  command = "install -r service-python/requirements.txt"
+}
+
 def pyisort = tasks.register("pyisort", PythonTask) {
   module = 'isort'
-  command = ". --check --skip tests"
+  command = ". --check --skip tests --skip .venv"
   dependsOn requirements
 }
 
@@ -35,13 +37,14 @@ def pyflake8 = tasks.register("pyflake8", PythonTask) {
 // Also skips pytest when `./gradlew build -x test` is run
 tasks.register("test", PythonTask) {
   module = 'pytest'
-  command = "--cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc"
+  command = "service-python --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=./.coveragerc"
   dependsOn pyflake8
 }
 
 check {
-  dependsOn test
+  dependsOn cleanPython
   dependsOn checkPython
+  dependsOn test
 }
 
 clean.dependsOn(cleanPython)

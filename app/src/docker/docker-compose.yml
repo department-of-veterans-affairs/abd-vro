@@ -165,6 +165,8 @@ services:
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
       BIP_ALIAS: ${BIP_ALIAS}
+      BIP_CLAIM_URL: "mock-bip-claims-api:8097"
+      BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
       - postgres-service
       - rabbitmq-service
@@ -328,5 +330,45 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+    networks:
+      - internal
+
+  mock-bip-ce-api:
+    image: va/abd_vro-mock-bip-ce-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-bip-ce-api
+    ports:
+      - "8094:8094"
+      - "8095:8095"
+      - "8096:8096"
+    environment:
+      <<: *common-vars
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_EVIDENCE_ISS: ${BIP_EVIDENCE_ISS}
+      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+    networks:
+      - internal
+
+  mock-bip-claims-api:
+    image: va/abd_vro-mock-bip-claims-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-bip-claims-api
+    ports:
+      - "8097:8097"
+      - "8098:8098"
+      - "8099:8099"
+    environment:
+      <<: *common-vars
+      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+      BIP_CLAIM_ISS: ${BIP_CLAIM_ISS}
+      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
       - internal

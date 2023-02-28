@@ -12,7 +12,7 @@ COPY ${ENTRYPOINT_FILE} entrypoint.sh
 RUN chmod +x entrypoint.sh
 COPY ${JAR_FILE} mock-bip-ce-api.jar
 
-HEALTHCHECK CMD curl --fail http://localhost:8092/actuator/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8095/actuator/health || exit 1
 
 RUN adduser --no-create-home --disabled-password docker
 USER docker

@@ -7,13 +7,13 @@
   "veteranIdentifiers": {
     "icn": "9000682",
     "ssn": "111-11-1111",
-    "veteranFileId": "string",
+    "veteranFileId": "736444",
     "edipn": "string",
     "participantId": "string"
   },
   "claimDetail": {
-    "benefitClaimId": "1234",
-    "claimSubmissionDateTime": "2018-11-04T17:45:61Z",
+    "benefitClaimId": "1010",
+    "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
       "name": "string",

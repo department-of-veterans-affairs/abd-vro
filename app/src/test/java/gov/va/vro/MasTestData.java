@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MasTestData {
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
-    return getMasAutomatedClaimPayload(123, "1233", "999");
+    return getMasAutomatedClaimPayload(123, "7101", "999");
   }
 
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
@@ -65,7 +65,7 @@ public class MasTestData {
     conditions.setDiagnosticCode(diagnosticCode);
     conditions.setDisabilityActionType("INCREASE");
     ClaimDetail claimDetail = new ClaimDetail();
-    claimDetail.setClaimSubmissionDateTime("2022-02-04");
+    claimDetail.setClaimSubmissionDateTime("2022-02-04T17:45:59Z");
     claimDetail.setConditions(conditions);
     claimDetail.setBenefitClaimId(claimId);
     return claimDetail;

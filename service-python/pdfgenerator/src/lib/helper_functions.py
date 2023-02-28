@@ -5,7 +5,8 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 
-def pdf_helper_0000(data):
+def pdf_helper_asthma(data):
+
     return data
 
 
@@ -15,10 +16,13 @@ def pdf_helper_all(data):
     data["timestamp"] = pytz.utc.localize(datetime.now())
     data["evidence"] = data["evidence"]
     if data["veteranInfo"]["birthdate"] != "":
-        data["veteranInfo"]["birthdate"] = parser.parse(data["veteranInfo"]["birthdate"])
-    if "evidence" in data:
+        birth_date = data["veteranInfo"]["birthdate"].replace("Z", "")
+        data["veteranInfo"]["birthdate"] = parser.parse(birth_date)
+
+    if data["version"] == "v1":
         for medication_info in data["evidence"]["medications"]:
             medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
+
     return data
 
 
@@ -29,7 +33,7 @@ def toc_helper_all(toc_file_path, data):  # pragma: no cover
         file_data = file.read()
 
     file_data = file_data.replace("{{name}}", f"{data['veteranInfo']['first']} {data['veteranInfo']['middle']} {data['veteranInfo']['last']}")
-    file_data = file_data.replace("{{file}}", data['fileIdentifier'])
+    file_data = file_data.replace("{{file}}", data['veteranFileId'])
     file_data = file_data.replace("{{date}}", f"{pytz.utc.localize(datetime.now()).strftime('%b. %d, %Y')}")
 
     generated_toc_path = toc_file_path.replace("base_toc", f"{data['claimSubmissionId']}_toc")

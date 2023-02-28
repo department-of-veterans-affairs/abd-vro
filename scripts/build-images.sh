@@ -13,4 +13,5 @@ npm install -g @stoplight/spectral-cli@6.4.0
 sudo apt-get install shellcheck
 which shellcheck
 
-./gradlew build docker -PGITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+# Skip tests and checks since SecRel calls this script for each image it scans
+./gradlew build docker -x test -x check -PGITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN

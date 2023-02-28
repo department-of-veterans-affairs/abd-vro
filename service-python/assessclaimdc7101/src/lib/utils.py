@@ -1,4 +1,20 @@
+from datetime import datetime
+
 from cerberus import Validator
+
+
+def extract_date(date_string):
+    """
+    Safely reading in a date by handling exceptions
+    :param date_string: Date in expected format UTC Date Time.
+    :return: Python class for datetime
+    """
+    try:
+        date_entity = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%SZ").date()
+    except ValueError:
+        date_entity = datetime.today().date()
+
+    return date_entity
 
 
 def format_date(date_obj):
@@ -23,7 +39,7 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "dateOfClaim": {"type": "string"},
+        "claimSubmissionDateTime": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "disabilityActionType": {"type": "string"},
         "disabilityClassificationCode": {"type": "string"},

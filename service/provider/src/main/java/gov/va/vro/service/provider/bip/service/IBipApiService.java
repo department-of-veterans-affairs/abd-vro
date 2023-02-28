@@ -4,7 +4,6 @@ import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 
@@ -63,16 +62,5 @@ public interface IBipApiService {
    * @throws BipException error occurs.
    */
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
-      throws BipException;
-
-  /**
-   * Adds a contention for a claim.
-   *
-   * @param claimId claim
-   * @param contention contention to be added.
-   * @return an update status information object.
-   * @throws BipException error occurs.
-   */
-  BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
       throws BipException;
 }

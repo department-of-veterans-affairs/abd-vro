@@ -29,8 +29,8 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels: {{- toYaml .Values.labels.api | nindent 4 }}
 spec:
-  hosts: [{{ .Values.environment }}.lighthouse.va.gov]
-  gateways: [istio-system/ldx-nonprod-1-{{ .Values.environment }}-gateway]
+  hosts: [{{ .Values.endpoint }}.lighthouse.va.gov]
+  gateways: [istio-system/ldx-{{ .Values.images.services.environment }}-1-{{ .Values.environment }}-gateway]
   http:
   - match:
     - uri:

@@ -65,18 +65,21 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [{"code": "I10",
                                         "text": "Essential (primary) hypertension",
                                         "recordedDate": "1950-04-06",
-                                        "category": "Encounter Diagnosis"},
-                                       {"code": "1234",
-                                        "text": "snomed diagnosis"}],
+                                        "dataSource": "MAS"},
+                                       {"code": "I10",
+                                        "text": "Essential (primary) hypertension",
+                                        "recordedDate": "",
+                                        "category": "Encounter Diagnosis",
+                                        "dataSource": "LH"}],
                         "procedures": [],
                         "medications": [],
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
                                                'dateFormatted': '11/1/2021',
@@ -127,15 +130,20 @@ from assessclaimdc7101.src.lib import main
                                               'recordedDate': '1950-04-06',
                                               'relevant': True,
                                               'text': 'Essential (primary) hypertension',
-                                              "category": "Encounter Diagnosis"},
-                                             {'code': '1234',
-                                              'relevant': False,
+                                              "partialDate": "",
+                                              "dataSource": "MAS"},
+                                             {"code": "I10",
+                                              "text": "Essential (primary) hypertension",
+                                              "recordedDate": "",
+                                              "category": "Encounter Diagnosis",
+                                              'relevant': True,
                                               'dateFormatted': '',
-                                              'text': 'snomed diagnosis'}],
+                                              "partialDate": "",
+                                              "dataSource": "LH"}],
                               'medications': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'recentBpReadings': 3,
-                                     'relevantConditionsCount': 1,
+                                     'relevantConditionsCount': 2,
                                      'totalBpReadings': 3,
                                      'totalConditionsCount': 2},
                  'sufficientForFastTracking': True,
@@ -184,13 +192,13 @@ from assessclaimdc7101.src.lib import main
                         "conditions": [],
                         "medications": [],
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -251,25 +259,34 @@ from assessclaimdc7101.src.lib import main
                             {"code": "I10",
                              "text": "Essential (primary) hypertension",
                              "recordedDate": "1950-04-06",
-                             "category": "Encounter Diagnosis"},
+                             "category": "Encounter Diagnosis",
+                             "dataSource": "LH"},
                             {"code": "1234",
                              "text": "snomed diagnosis",
-                             "recordedDate": ""
+                             "recordedDate": "",
+                             "category": "",
+                             "dataSource": "LH"
                              },
                         ],
                         "medications": [{
                             "text": "some medication",
                             "relevant": True,
-                            "authoredOn": "1950-04-06T07:24:55Z"
-                        }]
+                            "authoredOn": "1950-04-06T07:24:55Z",
+                        },
+                            {
+                                "text": "some medication",
+                                "relevant": True,
+                                "authoredOn": "",
+                                "partialDate": "**/**/1988"
+                            }]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -291,18 +308,31 @@ from assessclaimdc7101.src.lib import main
                                    'recordedDate': '1950-04-06',
                                    'relevant': True,
                                    'text': 'Essential (primary) hypertension',
-                                   "category": "Encounter Diagnosis"},
+                                   "category": "Encounter Diagnosis",
+                                   "partialDate": "",
+                                   "dataSource": "LH"},
                                   {'code': '1234',
-                                   'dateFormatted': "unparsed ()",
+                                   'dateFormatted': "",
                                    'relevant': False,
                                    'text': 'snomed diagnosis',
-                                   "recordedDate": ""
+                                   "recordedDate": "",
+                                   "partialDate": "",
+                                   "category": "",
+                                   "dataSource": "LH"
                                    }],
                               'medications': [{'authoredOn': '1950-04-06T07:24:55Z',
                                                'dateFormatted': '4/6/1950',
                                                'relevant': True,
-                                               'text': 'some medication'}]},
-                 'evidenceSummary': {'medicationsCount': 1,
+                                               'text': 'some medication',
+                                               "partialDate": ""},
+                                              {
+                                                  "text": "some medication",
+                                                  "relevant": True,
+                                                  "authoredOn": "",
+                                                  "partialDate": "**/**/1988",
+                                                  "dateFormatted": ""
+                                              }]},
+                 'evidenceSummary': {'medicationsCount': 2,
                                      'recentBpReadings': 1,
                                      'relevantConditionsCount': 1,
                                      'totalBpReadings': 1,
@@ -314,7 +344,7 @@ from assessclaimdc7101.src.lib import main
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "2020-11-01",
+                        "bp_readings": [{"date": "", # missing date
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -327,6 +357,20 @@ from assessclaimdc7101.src.lib import main
                                                                  "pressure",
                                                       "unit": "mm[Hg]",
                                                       "value": 100}},
+                                        {'date': '2020-11-01',
+                                         'dateFormatted': '9/1/2020',
+                                         'diastolic': {'code': '8462-4',
+                                                       'display': 'Diastolic blood '
+                                                                  'pressure',
+                                                       'unit': 'mm[Hg]',
+                                                       'value': 90},
+                                         'organization': 'LYONS VA MEDICAL CENTER',
+                                         'practitioner': 'DR. JANE460 DOE922 MD',
+                                         'systolic': {'code': '8480-6',
+                                                      'display': 'Systolic blood '
+                                                                 'pressure',
+                                                      'unit': 'mm[Hg]',
+                                                      'value': 200}},
                                         {"date": "2020-09-01",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
@@ -346,13 +390,13 @@ from assessclaimdc7101.src.lib import main
                             "relevant": True
                         }]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'NEW',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -360,14 +404,14 @@ from assessclaimdc7101.src.lib import main
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
                                                              'unit': 'mm[Hg]',
-                                                             'value': 115},
+                                                             'value': 90},
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'systolic': {'code': '8480-6',
                                                             'display': 'Systolic blood '
                                                                        'pressure',
                                                             'unit': 'mm[Hg]',
-                                                            'value': 100}},
+                                                            'value': 200}},
                                               {'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -381,14 +425,29 @@ from assessclaimdc7101.src.lib import main
                                                             'display': 'Systolic blood '
                                                                        'pressure',
                                                             'unit': 'mm[Hg]',
-                                                            'value': 200}}],
+                                                            'value': 200}},
+                                              {"date": "",
+                                               "dateFormatted": "",
+                                               "diastolic": {"code": "8462-4",
+                                                             "display": "Diastolic blood "
+                                                                        "pressure",
+                                                             "unit": "mm[Hg]",
+                                                             "value": 115},
+                                               "organization": "LYONS VA MEDICAL CENTER",
+                                               "practitioner": "DR. JANE460 DOE922 MD",
+                                               "systolic": {"code": "8480-6",
+                                                            "display": "Systolic blood "
+                                                                       "pressure",
+                                                            "unit": "mm[Hg]",
+                                                            "value": 100}}],
                               'conditions': [],
                               'medications': [{'relevant': True, 'text': 'some medication',
-                                               'dateFormatted': ''}]},
+                                               'dateFormatted': '',
+                                               "partialDate": ""}]},
                  'evidenceSummary': {'medicationsCount': 1,
                                      'recentBpReadings': 2,
                                      'relevantConditionsCount': 0,
-                                     'totalBpReadings': 2,
+                                     'totalBpReadings': 3,
                                      'totalConditionsCount': 0},
                  'sufficientForFastTracking': None,
                  "claimSubmissionId": "1234"}
@@ -397,7 +456,7 @@ from assessclaimdc7101.src.lib import main
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "2020-11-01",
+                        "bp_readings": [{"date": "****-11-01",  # Date is not formatted correctly
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -425,28 +484,15 @@ from assessclaimdc7101.src.lib import main
                                                       "value": 200}}],
                         "conditions": []
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
-                 'evidence': {'bp_readings': [{'date': '2020-11-01',
-                                               'dateFormatted': '11/1/2020',
-                                               'diastolic': {'code': '8462-4',
-                                                             'display': 'Diastolic blood '
-                                                                        'pressure',
-                                                             'unit': 'mm[Hg]',
-                                                             'value': 115},
-                                               'organization': 'LYONS VA MEDICAL CENTER',
-                                               'practitioner': 'DR. JANE460 DOE922 MD',
-                                               'systolic': {'code': '8480-6',
-                                                            'display': 'Systolic blood '
-                                                                       'pressure',
-                                                            'unit': 'mm[Hg]',
-                                                            'value': 180}},
+                 'evidence': {'bp_readings': [
                                               {'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -463,7 +509,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 200}}],
                               'conditions': []},
                  'evidenceSummary': {
-                     'recentBpReadings': 2,
+                     'recentBpReadings': 1,
                      'relevantConditionsCount': 0,
                      'totalBpReadings': 2,
                      'totalConditionsCount': 0},
@@ -527,13 +573,13 @@ from assessclaimdc7101.src.lib import main
                                                       "value": 200}}],
                         "conditions": []
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
@@ -661,13 +707,13 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                         "conditions": []
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {'dateOfClaim': '2021-11-09',
+                {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [{'date': '2021-11-01',
                                                'dateFormatted': '11/1/2021',
@@ -744,13 +790,13 @@ from assessclaimdc7101.src.lib import main
                         "medications": [],
                         "conditions": []
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
                 }
                 ,
-                {"dateOfClaim": "2021-11-09",
+                {"claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                  "disabilityActionType": "INCREASE",
                  "evidence": {"bp_readings": [], "conditions": [], "medications": []},
                  "evidenceSummary": {
@@ -819,7 +865,7 @@ from assessclaimdc7101.src.lib import main
                         ],
                         "medications": []
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "claimSubmissionId": "1234"
                 },
                 {"errorMessage": "error validating request message data",

@@ -12,7 +12,7 @@
     "participantId": "string"
   },
   "claimDetail": {
-    "benefitClaimId": "1234",
+    "benefitClaimId": "2010",
     "claimSubmissionDateTime": "2018-11-04T17:45:61Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {

@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from .codesets import hypertension_conditions
-from .utils import format_date
+from .utils import extract_date, format_date
 
 
 def conditions_calculation(request_body):
@@ -21,26 +21,30 @@ def conditions_calculation(request_body):
     count = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
-    date_of_claim_date = datetime.strptime(request_body["dateOfClaim"], "%Y-%m-%d").date()
+    date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
+        if "partialDate" not in condition.keys():
+            condition["partialDate"] = ""  # PDF template logic assumes this field exists
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
             condition["dateFormatted"] = format_date(condition_date)
             condition_with_date.append(condition)
             if condition_date >= date_of_claim_date - relativedelta(years=2):
                 conditions_two_years.append(condition)
-        except ValueError:
-            condition["dateFormatted"] = f'unparsed ({condition["recordedDate"]})'
-            condition_without_date.append(condition)
-        except KeyError:
+        except (ValueError, KeyError):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
 
-        if condition_code in hypertension_conditions.conditions and condition["category"] == "Encounter Diagnosis":
-            condition["relevant"] = True
-            count += 1
+        if condition_code in hypertension_conditions.conditions:
+            if condition["dataSource"] == "LH":
+                if condition["category"] == "Encounter Diagnosis":
+                    condition["relevant"] = True
+                    count += 1
+            else:
+                condition["relevant"] = True
+                count += 1
         else:
             condition["relevant"] = False
 

@@ -1,4 +1,4 @@
-name: Deploy core services
+name: Deploy VRO service
 
 on:
   workflow_dispatch:
@@ -50,9 +50,10 @@ env:
   SERVICE: ${{ inputs.target_service }}
   DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
   TARGET_ENV: ${{ inputs.target_env }}
+  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
 
 jobs:
-  deploy-core-services:
+  deploy-service:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
@@ -65,6 +66,7 @@ jobs:
           else
             echo -n "${{ secrets.PROD_KUBE_CONFIG }}" | base64 -d > ~/.kube/config
           fi
+          chmod go-rwx ~/.kube/config
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
@@ -78,22 +80,22 @@ jobs:
 
       - name: "Deploy redis to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "redis" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "redis" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
+            ./scripts/deploy-redis.sh ${{ env.TARGET_ENV }} 1
           fi
 
       - name: "Deploy RabbitMQ to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "mq" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "mq" ]
           then
-            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1
+            ./scripts/deploy-mq.sh ${{ env.TARGET_ENV }} 1
           fi
 
       - name: "Deploy DB to ${{ env.TARGET_ENV }} env"
         run: |
-          if [ "${{ env.SERVICE }}" == "all" ] || "${{ env.SERVICE }}" == "db" ]
+          if [ "${{ env.SERVICE }}" == "all" ] || [ "${{ env.SERVICE }}" == "db" ]
           then
             pwd
-            ./scripts/deploy-${{ env.SERVICE }}.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
+            ./scripts/deploy-db.sh ${{ env.TARGET_ENV }} 1 ${{ env.COMMIT_SHA }}
           fi

@@ -16,7 +16,6 @@ class PDFGenerator:
 
     def __init__(self, options, message_data=None):
         self.options = options
-        logging.info(message_data)
         if message_data and "pdfLibrary" in message_data and message_data["pdfLibrary"].lower() in ["wkhtmltopdf", "weasyprint"]:
             self.library = message_data["pdfLibrary"]
         else:
@@ -28,7 +27,7 @@ class PDFGenerator:
         filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
         # Run the helper function for the specific code if it exists
         try:
-            eval(f"pdf_helper_{filled_variables['code']}(filled_variables)")
+            eval(f"pdf_helper_{filled_variables['document_type']}(filled_variables)")
         except: # noqa: E722, E261
             logging.info("No helper function found")
         # Call a helper function that gets run for all codes

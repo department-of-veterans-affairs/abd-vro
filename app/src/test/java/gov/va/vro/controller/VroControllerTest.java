@@ -81,7 +81,7 @@ class VroControllerTest extends BaseControllerTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
+                        + "&routingKey=code.hypertension&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
     // Mock secondary process endpoint
@@ -92,7 +92,7 @@ class VroControllerTest extends BaseControllerTest {
             route
                 .interceptSendToEndpoint(
                     "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.7101&requestTimeout=60000")
+                        + "?routingKey=health-assess.hypertension&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
     // The mock endpoint returns a valid response
@@ -138,7 +138,7 @@ class VroControllerTest extends BaseControllerTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.7101&requestTimeout=60000")
+                        + "&routingKey=code.hypertension&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
     // Mock secondary process endpoint
@@ -149,7 +149,7 @@ class VroControllerTest extends BaseControllerTest {
             route
                 .interceptSendToEndpoint(
                     "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.7101&requestTimeout=60000")
+                        + "?routingKey=health-assess.hypertension&requestTimeout=60000")
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
 

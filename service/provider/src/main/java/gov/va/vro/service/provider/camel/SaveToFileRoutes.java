@@ -17,11 +17,14 @@ class SaveToFileRoutes extends RouteBuilder {
 
   @Override
   public void configure() {
-    // Do not save to file in PROD until we have the encrypted file system in place
-    // and the approved updated ATO
-    if (!config.vroEnv.equalsIgnoreCase("prod") && config.persistTrackingEnabled) {
+    if (config.persistTrackingEnabled) {
+      // for v1
       saveRequestToFile(PrimaryRoutes.INCOMING_CLAIM_WIRETAP);
       saveRequestToFile(PrimaryRoutes.GENERATE_PDF_WIRETAP);
+
+      // for v2
+      saveRequestToFile(MasIntegrationRoutes.MAS_CLAIM_WIRETAP);
+      saveRequestToFile(MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP);
     }
   }
 

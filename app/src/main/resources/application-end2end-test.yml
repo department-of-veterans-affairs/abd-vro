@@ -2,5 +2,4 @@
 # Compare this file with application-local.yml since the both run VRO via docker-compose
 #
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
-
 spring.config.import: application-local.yml

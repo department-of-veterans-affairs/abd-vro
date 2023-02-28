@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main, qa, develop ]
 
+env:
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
+
 jobs:
   notify_push:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
@@ -14,8 +18,16 @@ jobs:
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: C04CA47HV96
+          slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":git-merge: ${{github.ref_type}} `${{github.ref_name}}` was updated \
             by `${{github.event.pusher.name}}` \n\
-            <${{github.event.repository.html_url}}/commits/${{github.ref_name}}|${{github.sha}}>\n\
-            *Commit Message*: ${{github.event.head_commit.message}}"
+            <${{github.event.repository.html_url}}/commits/${{github.ref_name}}|${{github.sha}}>\n"
+
+      - name: "Post Commit Message in Slack thread"
+        # Post in thread to reduce clutter in Slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: "*Commit Message*: \n```${{github.event.head_commit.message}}```"

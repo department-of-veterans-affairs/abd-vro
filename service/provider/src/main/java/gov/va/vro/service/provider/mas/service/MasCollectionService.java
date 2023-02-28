@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.mas.service;
 
 import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthAssessmentSource;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasCollectionStatus;
@@ -45,8 +46,10 @@ public class MasCollectionService {
         log.info(
             "Collection Status Response : Collection Status {} ",
             masCollectionStatus.getCollectionStatus());
-        if ((MasStatus.PROCESSED)
-            .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
+        if ((MasStatus.VRONOTIFIED)
+                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))
+            || (MasStatus.PROCESSED)
+                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
           return true;
         }
       }
@@ -77,10 +80,10 @@ public class MasCollectionService {
           "No annotations found for collection id " + claimPayload.getCollectionId());
     }
     MasCollectionAnnotation masCollectionAnnotation = response.get(0);
+    // Veteran File ID is PII -- do not log it.
     log.info(
-        "Collection Annotation Response : Collection ID  {} and Veteran File ID {}",
-        masCollectionAnnotation.getCollectionsId(),
-        masCollectionAnnotation.getVeteranFileId());
+        "Collection Annotation Response : Collection ID  {}",
+        masCollectionAnnotation.getCollectionsId());
 
     MasCollectionAnnotsResults masCollectionAnnotsResults = new MasCollectionAnnotsResults();
     AbdEvidence abdEvidence =
@@ -94,21 +97,25 @@ public class MasCollectionService {
     healthDataAssessment.setDiagnosticCode(claimPayload.getDiagnosticCode());
     healthDataAssessment.setEvidence(abdEvidence);
     healthDataAssessment.setVeteranIcn(claimPayload.getVeteranIcn());
+    healthDataAssessment.setClaimSubmissionDateTime(claimPayload.getClaimSubmissionDateTime());
     healthDataAssessment.setDisabilityActionType(claimPayload.getDisabilityActionType());
+    healthDataAssessment.setSource(HealthAssessmentSource.MAS);
     return healthDataAssessment;
   }
 
   /**
    * Combines the evidence.
    *
-   * @param lighthouseAssessment lighthouse data
-   * @param masApiAssessment mas api data
    * @return returns health assessment
    */
   public static HealthDataAssessment combineEvidence(
-      HealthDataAssessment lighthouseAssessment, HealthDataAssessment masApiAssessment) {
-    AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
-    AbdEvidence masApiEvidence = masApiAssessment.getEvidence();
+      HealthDataAssessment assessment1, HealthDataAssessment assessment2) {
+    var masAssessment =
+        HealthAssessmentSource.MAS == assessment1.getSource() ? assessment1 : assessment2;
+    var lighthouseAssessment =
+        HealthAssessmentSource.LIGHTHOUSE == assessment1.getSource() ? assessment1 : assessment2;
+    AbdEvidence lighthouseEvidence = masAssessment.getEvidence();
+    AbdEvidence masApiEvidence = lighthouseAssessment.getEvidence();
     // for now, we just add up the lists
     log.info("combineEvidence >> LH  : " + ((lighthouseEvidence != null) ? "not null" : "null"));
     log.info("combineEvidence >> MAS : " + ((masApiEvidence != null) ? "not null" : "null"));
@@ -130,10 +137,11 @@ public class MasCollectionService {
             lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
             masApiEvidence != null ? masApiEvidence.getProcedures() : null));
     HealthDataAssessment combinedAssessment = new HealthDataAssessment();
-    combinedAssessment.setClaimSubmissionId(masApiAssessment.getClaimSubmissionId());
-    combinedAssessment.setDiagnosticCode(masApiAssessment.getDiagnosticCode());
-    combinedAssessment.setVeteranIcn(masApiAssessment.getVeteranIcn());
-    combinedAssessment.setDisabilityActionType(lighthouseAssessment.getDisabilityActionType());
+    combinedAssessment.setClaimSubmissionId(lighthouseAssessment.getClaimSubmissionId());
+    combinedAssessment.setDiagnosticCode(lighthouseAssessment.getDiagnosticCode());
+    combinedAssessment.setVeteranIcn(lighthouseAssessment.getVeteranIcn());
+    combinedAssessment.setDisabilityActionType(masAssessment.getDisabilityActionType());
+    combinedAssessment.setClaimSubmissionDateTime(masAssessment.getClaimSubmissionDateTime());
     combinedAssessment.setEvidence(compositeEvidence);
     return combinedAssessment;
   }

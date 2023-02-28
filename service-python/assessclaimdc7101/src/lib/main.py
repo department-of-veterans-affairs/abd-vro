@@ -18,8 +18,8 @@ def assess_hypertension(event: Dict):
     validation_results = utils.validate_request_body(event)
     response_body = {}
 
-    if "dateOfClaim" not in event:
-        event["dateOfClaim"] = str(date.today())
+    if "claimSubmissionDateTime" not in event:
+        event["claimSubmissionDateTime"] = str(f"{date.today()}T00:00:00Z")
 
     if validation_results["is_valid"]:
         relevant_medication = continuous_medication.continuous_medication_required(
@@ -42,7 +42,8 @@ def assess_hypertension(event: Dict):
         )
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
     else:
-        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
+        logging.info(
+            f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
@@ -58,11 +59,10 @@ def assess_sufficiency(event: Dict):
     :return: response body
     :rtype: dict
     """
-
     validation_results = utils.validate_request_body(event)
     response_body = {}
-    if "dateOfClaim" not in event:
-        event["dateOfClaim"] = str(date.today())
+    if "claimSubmissionDateTime" not in event:
+        event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
         bp_calculation = bp_calculator.bp_reader(event)
@@ -75,7 +75,7 @@ def assess_sufficiency(event: Dict):
             if bp_calculation["oneYearBpReadings"] >= 3:
                 sufficient = True
         if event["disabilityActionType"] == "NEW":
-            bp_display = bp_calculator.sort_bp(event["evidence"]["bp_readings"])  # Include all bp readings to display
+            bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
             if relevant_conditions["relevantConditionsCount"] >= 1:
                 sufficient = False
@@ -97,7 +97,7 @@ def assess_sufficiency(event: Dict):
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"]
                 },
                 "sufficientForFastTracking": sufficient,
-                "dateOfClaim": event["dateOfClaim"],
+                "claimSubmissionDateTime": event["claimSubmissionDateTime"],
                 "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             })
@@ -116,7 +116,8 @@ def assess_sufficiency(event: Dict):
         logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, sufficientForFastTracking: {sufficient}, "
                      f"evidenceSummary: {response_body['evidenceSummary']}")
     else:
-        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
+        logging.info(
+            f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
         response_body["errorMessage"] = "error validating request message data"
         response_body["claimSubmissionId"] = event['claimSubmissionId']
 
