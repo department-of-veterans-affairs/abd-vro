@@ -1,2 +1,0 @@
-ALTER TABLE evidence_summary_document
-RENAME COLUMN location TO veteran_file_id;

@@ -33,7 +33,6 @@ public class ClaimSubmissionRepositoryTest {
     count1.put("count", "1");
     evidenceSummaryDocument.setEvidenceCount(count1);
     evidenceSummaryDocument.setDocumentName("documentName1");
-    evidenceSummaryDocument.setVeteranFileId("12345");
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();

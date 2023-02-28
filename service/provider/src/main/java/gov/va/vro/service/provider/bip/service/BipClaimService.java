@@ -224,7 +224,8 @@ public class BipClaimService {
         FileIdType.FILENUMBER,
         payload.getVeteranIdentifiers().getVeteranFileId(),
         BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-        decoder);
+        decoder,
+        payload.getDiagnosticCode());
     return pdfResponse;
   }
 

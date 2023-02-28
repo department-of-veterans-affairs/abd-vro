@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import java.util.Map;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -28,5 +29,5 @@ public class EvidenceSummaryDocumentEntity extends BaseEntity {
 
   private String documentName;
 
-  private String veteranFileId;
+  private UUID folderId;
 }
