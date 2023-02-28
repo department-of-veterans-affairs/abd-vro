@@ -9,17 +9,27 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MasProcessingService {
 
+  private static final String customDateFormatRegex =
+      "^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])(Z)?$";
+  private static final Pattern customDatePattern = Pattern.compile(customDateFormatRegex);
   private final CamelEntrance camelEntrance;
 
   private final MasConfig masConfig;
@@ -35,11 +45,15 @@ public class MasProcessingService {
    * @return String
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
-    saveToDbService.insertClaim(toClaim(payload));
+    Claim claim = toClaim(payload);
+    saveToDbService.insertClaim(claim);
+    saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
     var offRampReasonOptional = getOffRampReason(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
       payload.setOffRampReason(offRampReason);
+      claim.setOffRampReason(offRampReason);
+      saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
@@ -87,7 +101,8 @@ public class MasProcessingService {
     return Optional.empty();
   }
 
-  public void examOrderingStatus(MasExamOrderStatusPayload payload) {
+  public void examOrderingStatus(MasExamOrderStatusPayload payload, String claimIdType) {
+    saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload, claimIdType));
     camelEntrance.examOrderingStatus(payload);
   }
 
@@ -110,10 +125,52 @@ public class MasProcessingService {
 
   private Claim toClaim(MasAutomatedClaimPayload payload) {
     return Claim.builder()
-        .claimSubmissionId(Integer.toString(payload.getClaimId()))
+        .benefitClaimId(payload.getBenefitClaimId())
         .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(payload.getIdType())
+        .conditionName(payload.getConditionName())
         .diagnosticCode(payload.getDiagnosticCode())
         .veteranIcn(payload.getVeteranIcn())
+        .veteranParticipantId(payload.getVeteranParticipantId())
+        .inScope(payload.isInScope())
+        .disabilityActionType(payload.getDisabilityActionType())
+        .disabilityClassificationCode(payload.getDisabilityClassificationCode())
+        .offRampReason(payload.getOffRampReason())
+        .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
+        .submissionDate(parseCustomDate(payload.getClaimDetail().getClaimSubmissionDateTime()))
+        .build();
+  }
+
+  private OffsetDateTime parseCustomDate(String input) {
+    OffsetDateTime customDateTime = null;
+    try {
+      if (input != null && !input.isBlank()) {
+        // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
+        Matcher customDateMatcher = customDatePattern.matcher(input);
+        if (customDateMatcher.matches()) {
+          Integer year = Integer.parseInt(customDateMatcher.group(1));
+          Integer month = Integer.parseInt(customDateMatcher.group(2));
+          Integer day = Integer.parseInt(customDateMatcher.group(3));
+          LocalDate customDate = LocalDate.of(year, month, day);
+          customDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
+        } else {
+          // Fall back to ISO 8601 Date Time
+          customDateTime = OffsetDateTime.parse(input);
+        }
+      }
+    } catch (Exception e) {
+      log.error("Unable to parse date time. Unexpected date format {}", input);
+    }
+    return customDateTime;
+  }
+
+  private ExamOrder buildExamOrder(MasExamOrderStatusPayload payload, String claimIdType) {
+    OffsetDateTime examDateTime = parseCustomDate(payload.getExamOrderDateTime());
+    return ExamOrder.builder()
+        .collectionId(Integer.toString(payload.getCollectionId()))
+        .idType(claimIdType)
+        .status(payload.getCollectionStatus())
+        .examOrderDateTime(examDateTime)
         .build();
   }
 }

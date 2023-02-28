@@ -6,6 +6,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.mas.MasException;
@@ -64,7 +65,9 @@ public class MasIntegrationProcessors {
         (Function<MasProcessingObject, Claim>)
             payload ->
                 Claim.builder()
-                    .claimSubmissionId(payload.getClaimId())
+                    .benefitClaimId(payload.getBenefitClaimId())
+                    .collectionId(String.valueOf(payload.getCollectionId()))
+                    .idType(payload.getIdType())
                     .diagnosticCode(payload.getDiagnosticCode())
                     .veteranIcn(payload.getVeteranIcn())
                     .build());
@@ -86,7 +89,8 @@ public class MasIntegrationProcessors {
     MasAutomatedClaimPayload claimPayload = transferObject.getClaimPayload();
     GeneratePdfPayload generatePdfPayload = new GeneratePdfPayload();
     generatePdfPayload.setEvidence(transferObject.getEvidence());
-    generatePdfPayload.setClaimSubmissionId(claimPayload.getClaimDetail().getBenefitClaimId());
+    generatePdfPayload.setClaimSubmissionId(String.valueOf(claimPayload.getCollectionId()));
+    generatePdfPayload.setIdType(transferObject.getIdType());
     generatePdfPayload.setPdfTemplate("v2");
     generatePdfPayload.setDiagnosticCode(
         claimPayload.getClaimDetail().getConditions().getDiagnosticCode());
@@ -98,6 +102,19 @@ public class MasIntegrationProcessors {
     String fileId = claimPayload.getVeteranIdentifiers().getVeteranFileId();
     generatePdfPayload.setVeteranFileId(fileId);
     generatePdfPayload.setVeteranInfo(veteranInfo);
+
+    String disabilityActionType = transferObject.getDisabilityActionType();
+    if (disabilityActionType != null) {
+      ClaimCondition condition = new ClaimCondition();
+      condition.setDisabilityActionType(disabilityActionType);
+      String conditionName = transferObject.getConditionName();
+      if (conditionName == null) {
+        conditionName = "Not Available";
+      }
+      condition.setName(conditionName);
+      generatePdfPayload.setConditions(condition);
+    }
+
     log.info(
         "Generating pdf for claim: {} and diagnostic code {}",
         generatePdfPayload.getClaimSubmissionId(),

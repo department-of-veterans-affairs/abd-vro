@@ -40,18 +40,20 @@ def filter_mas_medication(request_body):
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for medication in request_body["evidence"]["medications"]:
-        if "partialDate" not in medication.keys():
-            medication["partialDate"] = ""  # PDF template logic assumes this field exists
-        try:
-            date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
-            medication["dateFormatted"] = format_date(date)
-            medication_with_date.append(medication)
-            if date >= date_of_claim_date - relativedelta(years=2):
-                medication_two_years.append(medication)
-        except (ValueError, KeyError):
-            medication["dateFormatted"] = ''
-            medication_without_date.append(medication)
-
+        if medication["dataSource"] == "MAS":
+            try:
+                date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
+                medication["dateFormatted"] = format_date(date)
+                medication_with_date.append(medication)
+                if date >= date_of_claim_date - relativedelta(years=2):
+                    medication_two_years.append(medication)
+            except (ValueError, KeyError):
+                medication["dateFormatted"] = ''
+                medication_without_date.append(medication)
+            try:
+                medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
+            except (ValueError, KeyError):
+                medication["receiptDate"] = ""
     medication_with_date = sorted(
         medication_with_date,
         key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),

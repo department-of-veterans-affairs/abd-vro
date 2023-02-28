@@ -13,6 +13,7 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,6 +54,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimInfoResponse result = new ClaimInfoResponse();
 
     result.setClaimSubmissionId("claimSubmissionId_" + index);
+    result.setIdType(Claim.V1_ID_TYPE);
     result.setVeteranIcn("icn_" + index);
 
     ContentionInfo contentionInfo = new ContentionInfo();
@@ -91,7 +93,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   @Test
   void testClaimInfoAllUnAuthorized() {
     var responseEntity =
-        restTemplate.exchange("/v1/claim-info", HttpMethod.GET, null, String.class);
+        restTemplate.exchange("/v2/claim-info", HttpMethod.GET, null, String.class);
 
     assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
   }
@@ -107,7 +109,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     HttpEntity<Void> requestEntity = getAuthorizationHeader();
 
     var responseEntity =
-        restTemplate.exchange("/v1/claim-info", HttpMethod.POST, requestEntity, String.class);
+        restTemplate.exchange("/v2/claim-info", HttpMethod.POST, requestEntity, String.class);
 
     assertEquals(HttpStatus.METHOD_NOT_ALLOWED, responseEntity.getStatusCode());
   }
@@ -120,13 +122,13 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Test
   void testClaimInfoAllInvalidQueryParam() {
-    ResponseEntity<String> re0 = callRestWithAuthorization("/v1/claim-info?size=0");
+    ResponseEntity<String> re0 = callRestWithAuthorization("/v2/claim-info?size=0");
     assertEquals(HttpStatus.BAD_REQUEST, re0.getStatusCode());
 
-    ResponseEntity<String> re1 = callRestWithAuthorization("/v1/claim-info?page=x");
+    ResponseEntity<String> re1 = callRestWithAuthorization("/v2/claim-info?page=x");
     assertEquals(HttpStatus.BAD_REQUEST, re1.getStatusCode());
 
-    ResponseEntity<String> re2 = callRestWithAuthorization("/v1/claim-info?page=-1");
+    ResponseEntity<String> re2 = callRestWithAuthorization("/v2/claim-info?page=-1");
     assertEquals(HttpStatus.BAD_REQUEST, re2.getStatusCode());
   }
 
@@ -143,7 +145,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
         .thenThrow(new IllegalStateException("Unexpected input to service."));
     Mockito.when(service.findAllClaimInfo(ArgumentMatchers.eq(params))).thenReturn(serviceOutput);
 
-    ResponseEntity<String> responseEntity = callRestWithAuthorization("/v1/claim-info?size=5");
+    ResponseEntity<String> responseEntity = callRestWithAuthorization("/v2/claim-info?size=5");
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     String body = responseEntity.getBody();
@@ -178,27 +180,27 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   // Verifies default query parameters results in the expected argument to the service call.
   @Test
   void testClaimInfoAllQueryParamDefaults() {
-    String uri0 = "/v1/claim-info";
+    String uri0 = "/v2/claim-info";
     ClaimInfoQueryParams params0 = new ClaimInfoQueryParams(0, 10, null);
     testClaimInfoAllQueryParamDefaults(uri0, params0);
 
-    String uri1 = "/v1/claim-info?size=15";
+    String uri1 = "/v2/claim-info?size=15";
     ClaimInfoQueryParams params1 = new ClaimInfoQueryParams(0, 15, null);
     testClaimInfoAllQueryParamDefaults(uri1, params1);
 
-    String uri2 = "/v1/claim-info?page=1";
+    String uri2 = "/v2/claim-info?page=1";
     ClaimInfoQueryParams params2 = new ClaimInfoQueryParams(1, 10, null);
     testClaimInfoAllQueryParamDefaults(uri2, params2);
 
-    String uri3 = "/v1/claim-info?page=1&size=15";
+    String uri3 = "/v2/claim-info?page=1&size=15";
     ClaimInfoQueryParams params3 = new ClaimInfoQueryParams(1, 15, null);
     testClaimInfoAllQueryParamDefaults(uri3, params3);
 
-    String uri4 = "/v1/claim-info?icn=12345";
+    String uri4 = "/v2/claim-info?icn=12345";
     ClaimInfoQueryParams params4 = new ClaimInfoQueryParams(0, 10, "12345");
     testClaimInfoAllQueryParamDefaults(uri4, params4);
 
-    String uri5 = "/v1/claim-info?page=2&size=16&icn=11145";
+    String uri5 = "/v2/claim-info?page=2&size=16&icn=11145";
     ClaimInfoQueryParams params5 = new ClaimInfoQueryParams(2, 16, "11145");
     testClaimInfoAllQueryParamDefaults(uri5, params5);
   }
@@ -211,12 +213,14 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     String claimSubmissionId = claimInfo.getClaimSubmissionId();
 
     // Return an expected exception if argument does not match.
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString()))
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.isNull()))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.eq(claimSubmissionId)))
+    Mockito.when(
+            service.findClaimInfo(
+                ArgumentMatchers.eq(claimSubmissionId), ArgumentMatchers.anyString()))
         .thenReturn(claimInfo);
 
-    String path = "/v1/claim-info/" + claimSubmissionId;
+    String path = "/v2/claim-info/" + claimSubmissionId + "?claimVersion=v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -229,9 +233,10 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Test
   void testClaimInfoNotValidId() {
-    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString())).thenReturn(null);
+    Mockito.when(service.findClaimInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+        .thenReturn(null);
 
-    String path = "/v1/claim-info/not_an_id";
+    String path = "/v2/claim-info/not_an_id/v1";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
@@ -243,7 +248,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     Mockito.when(service.getClaimMetrics()).thenReturn(info);
 
-    String path = "/v1/claim-metrics";
+    String path = "/v2/claim-metrics";
     ResponseEntity<String> responseEntity = callRestWithAuthorization(path);
 
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -9,12 +9,14 @@ import java.util.List;
 @Getter
 public class MasEventDetails {
 
-  private String claimId;
+  private String benefitClaimId;
   private String collectionId;
   private String veteranIcn;
+  private String conditionName;
   private String diagnosticCode;
   private String offRampReason;
   private String disabilityActionType;
+  private String disabilityClassificationCode;
   private Boolean presumptive;
   private boolean inScope;
   private List<String> flashIds;

@@ -372,3 +372,37 @@ services:
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
       - internal
+
+  mock-mas-api:
+    image: va/abd_vro-mock-mas-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-mas-api
+    ports:
+      - "9001:9001"
+      - "9002:9002"
+    environment:
+      <<: *common-vars
+      MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
+      MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
+      MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
+      MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
+      MAS_API_BAS_URL: ${MAS_API_BAS_URL}
+      MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
+      MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
+      MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+    networks:
+      - internal
+
+  mock-lighthouse-api:
+    image: va/abd_vro-mock-lighthouse-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-lighthouse-api
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
+      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
+      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
+    networks:
+      - internal

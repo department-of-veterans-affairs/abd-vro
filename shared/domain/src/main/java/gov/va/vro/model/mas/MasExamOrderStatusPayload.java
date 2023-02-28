@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -29,7 +31,7 @@ public class MasExamOrderStatusPayload implements Auditable {
   @Schema(description = "Collection Status", example = "DRAFT")
   private String collectionStatus;
 
-  @Schema(description = "Exam order timestamp", example = "2018-11-04T17:45:61Z")
+  @Schema(description = "Exam order timestamp", example = "2018-11-04T17:45:59Z")
   private String examOrderDateTime;
 
   @JsonIgnore
@@ -40,9 +42,12 @@ public class MasExamOrderStatusPayload implements Auditable {
 
   @JsonIgnore
   @Override
-  public String getDetails() {
-    return String.format(
-        "collectionId = %d, collectionStatus = %s", collectionId, collectionStatus);
+  public Map<String, String> getDetails() {
+    Map<String, String> detailsMap = new HashMap<>();
+    detailsMap.put("collectionId", Integer.toString(collectionId));
+    detailsMap.put("collectionStatus", collectionStatus);
+    detailsMap.put("examOrderDateTime", examOrderDateTime);
+    return detailsMap;
   }
 
   @Override

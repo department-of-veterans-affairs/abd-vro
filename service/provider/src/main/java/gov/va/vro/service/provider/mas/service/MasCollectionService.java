@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -114,8 +112,10 @@ public class MasCollectionService {
         HealthAssessmentSource.MAS == assessment1.getSource() ? assessment1 : assessment2;
     var lighthouseAssessment =
         HealthAssessmentSource.LIGHTHOUSE == assessment1.getSource() ? assessment1 : assessment2;
-    AbdEvidence lighthouseEvidence = masAssessment.getEvidence();
-    AbdEvidence masApiEvidence = lighthouseAssessment.getEvidence();
+
+    AbdEvidence masApiEvidence = masAssessment.getEvidence();
+    AbdEvidence lighthouseEvidence = lighthouseAssessment.getEvidence();
+
     // for now, we just add up the lists
     log.info("combineEvidence >> LH  : " + ((lighthouseEvidence != null) ? "not null" : "null"));
     log.info("combineEvidence >> MAS : " + ((masApiEvidence != null) ? "not null" : "null"));
@@ -136,6 +136,11 @@ public class MasCollectionService {
         merge(
             lighthouseEvidence != null ? lighthouseEvidence.getProcedures() : null,
             masApiEvidence != null ? masApiEvidence.getProcedures() : null));
+    if (masApiEvidence != null) {
+      compositeEvidence.setServiceLocations(masApiEvidence.getServiceLocations());
+      List<String> docsWout = masApiEvidence.getDocumentsWithoutAnnotationsChecked();
+      compositeEvidence.setDocumentsWithoutAnnotationsChecked(docsWout);
+    }
     HealthDataAssessment combinedAssessment = new HealthDataAssessment();
     combinedAssessment.setClaimSubmissionId(lighthouseAssessment.getClaimSubmissionId());
     combinedAssessment.setDiagnosticCode(lighthouseAssessment.getDiagnosticCode());
@@ -147,13 +152,13 @@ public class MasCollectionService {
   }
 
   private static <T> List<T> merge(List<T> list1, List<T> list2) {
-    Set<T> result = new LinkedHashSet<>();
+    List<T> result = new ArrayList<>();
     if (list1 != null) {
       result.addAll(list1);
     }
     if (list2 != null) {
       result.addAll(list2);
     }
-    return new ArrayList<>(result);
+    return result;
   }
 }

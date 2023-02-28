@@ -15,7 +15,7 @@ spec:
         - name: {{ .Values.name }}-ghcr
       containers:
         - name: redis-cache
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-redis:latest
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:latest
           env:
             - name: REDIS_PLACEHOLDERS_PASSWORD
               valueFrom:

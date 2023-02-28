@@ -29,7 +29,7 @@ generateImageArgs(){
 
   # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
-    dev|qa) IMG_NAME_PREFIX="${1}_";;
+    dev|qa) IMG_NAME_PREFIX="dev_";;
     sandbox|prod|prod-test) USE_SECREL_IMAGES="true";;
     *) { echo "Unknown environment: $1"; exit 20; }
   esac

@@ -1,0 +1,44 @@
+# spring settings
+spring:
+  profiles:
+    active: ${ENV:default}
+
+# server settings
+server:
+  port: 9001
+
+# Health
+management:
+  server:
+    port: 9002
+    ssl.enabled: false
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState
+        liveness:
+          include: livenessState
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health
+
+# mock mas application specific
+mock-mas:
+  mas-oauth2:
+    token-uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
+    client-id: "${MAS_API_AUTH_CLIENTID:vro_dev}"
+    client-secret: "${MAS_API_AUTH_CLIENT_SECRET}"
+    scope: "${MAS_API_AUTH_SCOPE:openid}"
+    grant-type: client_credentials
+  mas-api:
+    base-url: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+    collection-annots-path: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
+    collection-status-path: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
+    create-exam-order-path: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"

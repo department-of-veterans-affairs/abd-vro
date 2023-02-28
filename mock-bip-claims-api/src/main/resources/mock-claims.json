@@ -1,6 +1,6 @@
 [
   {
-    "description": "for happy path",
+    "description": "off ramp, to be used with only ibm provided collection id 350",
     "claimDetail": {
       "claimId": 1010,
       "tempStationOfJurisdiction": "398",
@@ -9,6 +9,66 @@
     "contentions": [
       {
         "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "for happy path, used with collection id 375",
+    "claimDetail": {
+      "claimId": 1015,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "for happy path, used with collection id 376, presumptive",
+    "claimDetail": {
+      "claimId": 1020,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": "off ramp no data",
+    "claimDetail": {
+      "claimId": 1030,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1031",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",

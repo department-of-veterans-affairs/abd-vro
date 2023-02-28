@@ -3,7 +3,7 @@ plugins {
   id 'local.java.container-spring-conventions'
   id 'starter.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
-  id "io.freefair.lombok" version "6.6.1"
+  id "io.freefair.lombok" version "6.6.3"
   id 'starter.java.build-utils-conventions'
   id 'jacoco'
 }
@@ -24,20 +24,23 @@ sourceSets {
 }
 
 dependencies {
+  implementation project(':shared:domain')
+
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework:spring-web:5.3.23'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.2.5'
-  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.2.5') {
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.4.1'
+  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.1') {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.projectlombok:lombok:1.18.26'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
+  implementation project(path: ':shared:domain')
   // Needed?
   // implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
   // implementation 'com.auth0:java-jwt:4.0.0'
