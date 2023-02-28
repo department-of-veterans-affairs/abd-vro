@@ -588,7 +588,6 @@ from assessclaimdc7101.src.lib import main
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -614,7 +613,7 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsLighthouseCount': 0,
                                      'totalBpReadings': 2,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': False}
         ),
         (
                 {
@@ -682,7 +681,6 @@ from assessclaimdc7101.src.lib import main
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -762,7 +760,7 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsLighthouseCount': 0,
                                      'totalBpReadings': 4,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': False}
         ),
         # Claim for increase
         (
@@ -934,7 +932,6 @@ from assessclaimdc7101.src.lib import main
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [], 'conditions': [], 'medications': [],'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {
                                      'medicationsCount': 0,
@@ -942,7 +939,7 @@ from assessclaimdc7101.src.lib import main
                                      'relevantConditionsLighthouseCount': 0,
                                      'totalBpReadings': 0,
                                      'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'sufficientForFastTracking': False}
         ),
         # Bad data missing action type
         (
