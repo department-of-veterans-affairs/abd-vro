@@ -171,6 +171,10 @@ def validate_request_body(request_body):
                             "onsetDate": {
                                 "type": "string",
                             },
+                            "category": {
+                                "type": "string",
+                                "default": "",
+                            },
                             "abatementDate": {
                                 "type": "string",
                                 "nullable": True
