@@ -34,13 +34,11 @@ public class ClaimRepositoryTest {
     count1.put("count", "1");
     evidenceSummaryDocument1.setEvidenceCount(count1);
     evidenceSummaryDocument1.setDocumentName("documentName1");
-    evidenceSummaryDocument1.setVeteranFileId("12345");
     EvidenceSummaryDocumentEntity evidenceSummaryDocument2 = new EvidenceSummaryDocumentEntity();
     Map<String, String> count2 = new HashMap<>();
     count2.put("count2", "2");
     evidenceSummaryDocument2.setEvidenceCount(count2);
     evidenceSummaryDocument2.setDocumentName("documentName2");
-    evidenceSummaryDocument2.setVeteranFileId("22345");
     Map<String, String> evidence = new HashMap<>();
     evidence.put("medicationsCount", "10");
     AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
@@ -49,8 +47,7 @@ public class ClaimRepositoryTest {
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
-    contention1.addEvidenceSummaryDocument(
-        count1, evidenceSummaryDocument1.getDocumentName(), "33345");
+    contention1.addEvidenceSummaryDocument(count1, evidenceSummaryDocument1.getDocumentName());
     var claim = TestDataSupplier.createClaim("123", veteran);
     claim.addContention(contention1);
     claim = claimRepository.save(claim);
