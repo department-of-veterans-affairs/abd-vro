@@ -46,9 +46,10 @@ public class MasProcessingService {
    */
   public String processIncomingClaim(MasAutomatedClaimPayload payload) {
     log.info(
-        "Process claim {} for collection ID {}",
+        "Process MAS collection {},  claim {} , icn: {}",
+        payload.getCollectionId(),
         payload.getBenefitClaimId(),
-        payload.getCollectionId());
+        payload.getVeteranIcn());
     Claim claim = toClaim(payload);
     saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());

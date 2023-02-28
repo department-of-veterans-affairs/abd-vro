@@ -60,12 +60,14 @@ public class BipCeApiService implements IBipCeApiService {
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
-      log.info("Call {} to uploadEvidenceFile for {} : {}", url, idtype.name(), fileId);
+      log.info("Call {} to uploadEvidenceFile for {}", url, idtype.name());
 
       HttpHeaders headers = getBipHeader();
       String headerFolderUri = String.format(X_FOLDER_URI, idtype.name(), fileId);
       headers.set("X-Folder-URI", headerFolderUri);
-      log.info("X-Folder-URI header is set: {}", headerFolderUri);
+      log.info(
+          "X-Folder-URI header is set: {}",
+          headerFolderUri); // TODO: remove this after test as fileid is there.
 
       String filename = payload.getContentName();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();

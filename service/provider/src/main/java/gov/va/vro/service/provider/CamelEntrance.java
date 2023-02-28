@@ -55,9 +55,10 @@ public class CamelEntrance {
    */
   public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay, int retryCount) {
     log.info(
-        "Notify automated claim for claim ID: {}, collection ID: {}",
+        "Notify automated claim for claim ID: {}, collection ID: {}, icn: {}",
         payload.getBenefitClaimId(),
-        payload.getCollectionId());
+        payload.getCollectionId(),
+        payload.getVeteranIcn());
     producerTemplate.sendBodyAndHeaders(
         MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM,
         payload,

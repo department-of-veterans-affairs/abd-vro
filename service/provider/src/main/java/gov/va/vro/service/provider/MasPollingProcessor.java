@@ -32,10 +32,11 @@ public class MasPollingProcessor implements Processor {
     boolean isCollectionReady =
         masCollectionService.checkCollectionStatus(claimPayload.getCollectionId());
     log.info(
-        "Collection status is {} for collection ID: {}, claim ID: {}",
+        "Collection status is {} for collection ID: {}, claim ID: {}, icn: {}",
         isCollectionReady,
         claimPayload.getCollectionId(),
-        claimPayload.getBenefitClaimId());
+        claimPayload.getBenefitClaimId(),
+        claimPayload.getVeteranIcn());
 
     if (isCollectionReady) {
       camelEntrance.processClaim(claimPayload);

@@ -46,8 +46,9 @@ public class MasController implements MasResource {
           HttpStatus.BAD_REQUEST, "The request does not have a valid BenefitClaimId.");
     }
     log.info(
-        "Related claim ID: {}",
-        payload.getClaimDetail().getBenefitClaimId()); // TODO: remove after test.
+        "MAS collection related claim ID: {}, veteranId (icn): {}",
+        payload.getBenefitClaimId(),
+        payload.getVeteranIcn()); // TODO: remove after test.
     String message = masProcessingService.processIncomingClaim(payload);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);

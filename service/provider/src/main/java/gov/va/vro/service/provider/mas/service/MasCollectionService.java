@@ -69,8 +69,10 @@ public class MasCollectionService {
       throws MasException {
 
     log.info(
-        "Collection {} is ready for processing, calling collection annotation service ",
-        claimPayload.getCollectionId());
+        "Collection {} is ready for processing, calling collection annotation service. Related claim {}, icn {}",
+        claimPayload.getCollectionId(),
+        claimPayload.getBenefitClaimId(),
+        claimPayload.getVeteranIcn());
 
     var response = masApiService.getCollectionAnnotations(claimPayload.getCollectionId());
     if (response.isEmpty()) {
