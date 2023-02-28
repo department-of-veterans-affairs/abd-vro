@@ -2,16 +2,19 @@ package gov.va.vro.service.db;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
+import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.persistence.model.VeteranFlashIdEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
+import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import gov.va.vro.service.db.mapper.ClaimMapper;
@@ -41,6 +44,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   private final ClaimRepository claimRepository;
 
   private final AssessmentResultRepository assessmentResultRepository;
+  private final EvidenceSummaryDocumentRepository evidenceSummaryDocumentRepository;
 
   private final ClaimSubmissionRepository claimSubmissionRepository;
   private final ExamOrderRepository examOrderRepository;
@@ -175,8 +179,36 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       return;
     }
     Map<String, String> evidenceCount = fillEvidenceCounts(request);
-    contention.addEvidenceSummaryDocument(evidenceCount, documentName, request.getVeteranFileId());
+    contention.addEvidenceSummaryDocument(evidenceCount, documentName);
     claimRepository.save(claim);
+  }
+
+  @Override
+  public void updateEvidenceSummaryDocument(
+      UUID eFolderId, BipFileUploadPayload bipPayload, String diagnosticCode) {
+    var claim =
+        claimRepository.findByVbmsId(
+            String.valueOf(bipPayload.getProviderData().getBenefitTypeId()));
+    if (claim.isEmpty()) {
+      log.warn("Could not find claim with vbmsId. Could not attach eFolder ID.");
+      return;
+    }
+    if (eFolderId == null) {
+      log.warn("eFolder ID was null, could not attach to claim.");
+    }
+    ClaimEntity claimEntity = claim.get();
+    ContentionEntity contentionEntity = findContention(claimEntity, diagnosticCode);
+    if (contentionEntity != null) {
+      Optional<EvidenceSummaryDocumentEntity> esd =
+          evidenceSummaryDocumentRepository.findFirstByContentionIdOrderByCreatedAtDesc(
+              contentionEntity.getId());
+      if (esd.isPresent()) {
+        EvidenceSummaryDocumentEntity esdEntity = esd.get();
+        esdEntity.setFolderId(eFolderId);
+        evidenceSummaryDocumentRepository.save(esdEntity);
+        claimRepository.save(claimEntity);
+      }
+    }
   }
 
   @Override
