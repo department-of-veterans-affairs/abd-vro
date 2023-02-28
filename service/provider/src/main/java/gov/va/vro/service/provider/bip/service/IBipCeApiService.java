@@ -18,6 +18,10 @@ public interface IBipCeApiService {
    * @throws BipException exception
    */
   BipFileUploadResp uploadEvidenceFile(
-      FileIdType idType, String fileId, BipFileUploadPayload payload, byte[] fileContent)
+      FileIdType idType,
+      String fileId,
+      BipFileUploadPayload payload,
+      byte[] fileContent,
+      String diagnosticCode)
       throws BipException;
 }
