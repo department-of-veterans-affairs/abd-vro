@@ -326,13 +326,13 @@
                 {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif medication.document == "" %}
-                  n.a.
+                  n.a. - data pulled directly from VistA
                 {% else %}
                   {{ medication.document }}
                 {% endif %}
               {% else %}
                 {% if medication.document == ""%}
-                  n.a.
+                  n.a. - data pulled directly from VistA
                 {% else %}
                   {{ medication.document }}
                 {% endif %}
@@ -377,7 +377,15 @@
               <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
               <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
               <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
-              <td {% if condition.document == "" %}class="empty" {% endif %}>{% if condition.document == ""%}n.a.{% else %}{{ condition.document }}{% endif %}</td>
+              <td {% if condition.document == "" %}class="empty" {% endif %}>
+                {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif condition.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ condition.document }}
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list |length == 0 %}
