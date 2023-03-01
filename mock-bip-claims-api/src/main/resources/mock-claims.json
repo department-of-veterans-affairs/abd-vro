@@ -80,7 +80,7 @@
     ]
   },
   {
-    "description": "for happy path, used with collection id 377 for insufficientEvidenceFlag = false testing",
+    "description": "for happy path, used with collection id 377, and 378 for insufficientEvidenceFlag = false testing",
     "claimDetail": {
       "claimId": 1040,
       "tempStationOfJurisdiction": "398",

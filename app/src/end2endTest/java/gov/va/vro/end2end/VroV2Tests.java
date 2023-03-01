@@ -154,21 +154,22 @@ public class VroV2Tests {
 
     boolean successOrdering = false;
     if (expectedExamOrder != null) {
-      log.info("Wait for examOrder code to execute.");
-      for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-        Thread.sleep(20000);
-        boolean examOrdered = checkExamOrdered(request.getCollectionId());
-        if(examOrdered){
-          successOrdering = true;
-          break;
+      if (expectedExamOrder) {
+        log.info("Wait for examOrder code to execute.");
+        for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+          Thread.sleep(20000);
+          boolean examOrdered = checkExamOrdered(request.getCollectionId());
+          if (examOrdered) {
+            successOrdering = true;
+            break;
+          } else {
+            log.info(
+                "Exam not ordered yet for collection {}. Waiting and rechecking...",
+                request.getCollectionId());
+          }
         }
-        else {
-          log.info("Exam not ordered yet for collection {}. Waiting and rechecking...", request.getCollectionId());
-        }
-      }
-      //Ideally we would have a better end of processing here for false.
-      if(!expectedExamOrder){
-        log.info("Maximum retries achieved and examOrder that was not expected was not issued. Marking test successful");
+      } else {
+        log.info("Negative test case for exam ordering TBD via database check. Skipping polling");
       }
       assertEquals(successOrdering, expectedExamOrder);
     }
@@ -257,9 +258,19 @@ public class VroV2Tests {
         masResponse.getMessage());
   }
 
+  // Test Case that ensures that exam order *is* callled
+  // The data underlying follows the NEW claim, one relevant condition, not enough information path.
   @Test
-  void testAutomatedClaim_orderExam() {
+  void testAutomatedClaim_orderExamNewClaim() {
     testAutomatedClaimFullPositive("377", true, true);
+  }
+
+  // Test case that ensures the exam order *is* callled
+  // The data underlying follows the "increase" claim path where not enough blood pressure readings
+  // exist.
+  @Test
+  void testAutomatedClaim_orderExamIncreaseClaim() {
+    testAutomatedClaimFullPositive("378", true, true);
   }
 
   @SneakyThrows
