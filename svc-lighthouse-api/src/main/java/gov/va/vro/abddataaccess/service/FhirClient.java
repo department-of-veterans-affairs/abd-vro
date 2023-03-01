@@ -227,8 +227,10 @@ public class FhirClient {
       throws AbdException {
     AbdDomain[] domains = dpToDomains.get(claim.getDiagnosticCode());
     if (domains == null) {
+      log.error("domains not found for the claim diagnostic code.");
       return null;
     }
+
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
     for (AbdDomain domain : domains) {
@@ -246,7 +248,7 @@ public class FhirClient {
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;
-    log.info("Retrieve data for {}", domain.name());
+    log.info("Retrieve data for {} for ICN = {}", domain.name(), patientIcn);
 
     List<BundleEntryComponent> records = new ArrayList<>();
     String nextLink = fullUrl;

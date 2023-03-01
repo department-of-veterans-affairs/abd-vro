@@ -15,7 +15,10 @@ public class AbdRabbitReceiver {
 
   @RabbitListener(queues = "${abd-data-access.rabbitmq.claim-submit-queue}")
   AbdResponse receiveMessage(AbdClaim claim) {
-    log.info("Claim submission for icn={}", claim.getVeteranIcn());
+    log.info(
+        "Claim submission for icn={}, claim={}",
+        claim.getVeteranIcn(),
+        claim.getClaimSubmissionId());
     try {
       AbdEvidence evidence = client.getMedicalEvidence(claim);
       AbdResponse response = new AbdResponse(claim, evidence);
