@@ -1,0 +1,731 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 8,
+  "link": [
+    {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986297&_count=100&page=1"
+    },
+    {
+      "relation": "self",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986297&_count=100&page=1"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986297&_count=100&page=1"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J43JWGTMUIXSLF44V6G2GCC7QEGWQ0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J43JWGTMUIXSLF44V6G2GCC7QEGWQ0000",
+        "meta": {
+          "lastUpdated": "2021-07-20T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2021-06-20T15:08:09Z",
+        "issued": "2021-06-20T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 153.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 115.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4ZGLXXLCHMCXQP2PA2X5O6EH7JRA0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4ZGLXXLCHMCXQP2PA2X5O6EH7JRA0000",
+        "meta": {
+          "lastUpdated": "2021-06-10T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2021-05-11T15:08:09Z",
+        "issued": "2021-05-11T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-JD5EJVFSSEP6A6ZIEI55KCKEHLCZZPK44NSDYPMW2PGFV4A3D6FQ0000",
+            "display": "LYONS VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 167.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 93.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4Z4CCVGVDJH2EQRNFGN5XRM7XZXA0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4Z4CCVGVDJH2EQRNFGN5XRM7XZXA0000",
+        "meta": {
+          "lastUpdated": "2021-06-10T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2021-05-11T15:08:09Z",
+        "issued": "2021-05-11T15:08:09Z",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 167.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 93.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4YRZD5J4XP7L4NBN5SLA7VKIGD7A0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4YRZD5J4XP7L4NBN5SLA7VKIGD7A0000",
+        "meta": {
+          "lastUpdated": "2019-05-30T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2019-04-30T15:08:09Z",
+        "issued": "2019-04-30T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 190.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 104.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4YW2OIUPJ46FMYBRBBGLJS4QUTUA0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4YW2OIUPJ46FMYBRBBGLJS4QUTUA0000",
+        "meta": {
+          "lastUpdated": "1987-05-30T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "1987-04-30T15:08:09Z",
+        "issued": "1987-04-30T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 192.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 100.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4YV7WALUHYLIJ4ZWOOBHLY2QDBLA0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4YV7WALUHYLIJ4ZWOOBHLY2QDBLA0000",
+        "meta": {
+          "lastUpdated": "2022-08-19T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2022-07-20T15:08:09Z",
+        "issued": "2022-07-20T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 167.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 93.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J4Y6CHOAHYXGRUJAX3TL2BR6NBSOQ0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J4Y6CHOAHYXGRUJAX3TL2BR6NBSOQ0000",
+        "meta": {
+          "lastUpdated": "2022-07-20T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2022-06-20T15:08:09Z",
+        "issued": "2022-06-20T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 167.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 93.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-XT5YV4HFMF5JSBV2O6SYKK2J437XFDXR3MBFUS7NJU4RRPI5RUDA0000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-XT5YV4HFMF5JSBV2O6SYKK2J437XFDXR3MBFUS7NJU4RRPI5RUDA0000",
+        "meta": {
+          "lastUpdated": "2022-06-19T15:08:09Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986297",
+          "display": "Mr. Jesse Gray"
+        },
+        "effectiveDateTime": "2022-05-20T15:08:09Z",
+        "issued": "2022-05-20T15:08:09Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-IW3YK3BHOKBUACF6FQKT3V7P2T6BY6GA2JUITPGQ6WYPSYYDPC3Q0000",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-QKF4GEFVEPYZLMVPM3O6A74SWWG73P5V2VLMOWCNQJJSC6I7AFJQ0000",
+            "display": "DR. JOHN248 SMITH811 MD"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ],
+              "text": "Systolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 190.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ],
+              "text": "Diastolic blood pressure"
+            },
+            "valueQuantity": {
+              "value": 104.0,
+              "unit": "mm[Hg]",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}
