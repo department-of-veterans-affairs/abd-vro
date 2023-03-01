@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider.bip.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
@@ -224,17 +223,18 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-   BipFileUploadResp bipResp = bipCeApiService.uploadEvidenceFile(
-        FileIdType.FILENUMBER,
-        payload.getVeteranIdentifiers().getVeteranFileId(),
-        BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-        decoder,
-        payload.getDiagnosticCode());
-   if(bipResp != null) {
-     UploadResponse ur = bipResp.getUploadResponse();
-     UUID eFolderId = UUID.fromString(ur.getUuid());
-     saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
-   }
+    BipFileUploadResp bipResp =
+        bipCeApiService.uploadEvidenceFile(
+            FileIdType.FILENUMBER,
+            payload.getVeteranIdentifiers().getVeteranFileId(),
+            BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
+            decoder,
+            payload.getDiagnosticCode());
+    if (bipResp != null) {
+      UploadResponse ur = bipResp.getUploadResponse();
+      UUID eFolderId = UUID.fromString(ur.getUuid());
+      saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+    }
     return pdfResponse;
   }
 
