@@ -5,15 +5,15 @@
   "link": [
     {
       "relation": "first",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986377&_count=100&page=1"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=1012666073V986377&_count=100&page=1"
     },
     {
       "relation": "self",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986377&_count=100&page=1"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=1012666073V986377&_count=100&page=1"
     },
     {
       "relation": "last",
-      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=mock1012666073V986377&_count=100&page=1"
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Condition?patient=1012666073V986377&_count=100&page=1"
     }
   ],
   "entry": [
@@ -58,7 +58,7 @@
           "text": "Essential Hypertension"
         },
         "subject": {
-          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986377",
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1012666073V986377",
           "display": "SKYSCRAPER,DAVID"
         },
         "encounter": {
