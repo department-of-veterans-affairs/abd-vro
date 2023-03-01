@@ -18,11 +18,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,7 @@ public class MockMasController {
   private final MasApiService apiService;
   private final CollectionStore store;
 
-  private final ExamOrderStore examOrderStore;
+  @Autowired private final ExamOrderStore examOrderStore;
 
   @RequestMapping(
       method = RequestMethod.POST,
@@ -116,6 +118,7 @@ public class MockMasController {
               description = "The collectionId given to /pcOrderExam",
               required = true,
               in = ParameterIn.PATH)
+          @PathVariable("collectionsId")
           Integer collectionsId) {
     log.info("Checking if exam ordered for {}.", collectionsId);
 

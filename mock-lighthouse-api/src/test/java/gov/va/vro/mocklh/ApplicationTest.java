@@ -235,7 +235,7 @@ public class ApplicationTest {
 
     TestSpec spec =
         TestSpec.builder()
-            .icn("mock1012666073V986297")
+            .icn("1012666073V986297")
             .resourceType("Observation")
             .code("85354-9")
             .build();
