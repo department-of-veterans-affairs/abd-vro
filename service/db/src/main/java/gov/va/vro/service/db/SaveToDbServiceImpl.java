@@ -204,7 +204,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         EvidenceSummaryDocumentEntity esdEntity = esd.get();
         esdEntity.setFolderId(eFolderId);
         evidenceSummaryDocumentRepository.save(esdEntity);
-        claimRepository.save(claimEntity);
+      } else {
+        log.warn("Could not find evidence summary document by contentionId.");
       }
     }
   }
@@ -346,6 +347,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         return contention;
       }
     }
+    log.warn("Could not find contention with this diagnostic code and claim entity.");
     return null;
   }
 
