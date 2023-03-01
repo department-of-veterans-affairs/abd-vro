@@ -262,7 +262,7 @@ public class VroV2Tests {
   // The data underlying follows the NEW claim, one relevant condition, not enough information path.
   @Test
   void testAutomatedClaim_orderExamNewClaim() {
-    testAutomatedClaimFullPositive("377", true, true);
+    testAutomatedClaimFullPositive("377", false, true);
   }
 
   // Test case that ensures the exam order *is* callled
@@ -270,7 +270,7 @@ public class VroV2Tests {
   // exist.
   @Test
   void testAutomatedClaim_orderExamIncreaseClaim() {
-    testAutomatedClaimFullPositive("378", true, true);
+    testAutomatedClaimFullPositive("378", false, true);
   }
 
   @SneakyThrows
