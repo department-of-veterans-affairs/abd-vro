@@ -65,9 +65,6 @@ public class BipCeApiService implements IBipCeApiService {
       HttpHeaders headers = getBipHeader();
       String headerFolderUri = String.format(X_FOLDER_URI, idtype.name(), fileId);
       headers.set("X-Folder-URI", headerFolderUri);
-      log.info(
-          "X-Folder-URI header is set: {}",
-          headerFolderUri); // TODO: remove this after test as fileid is there.
 
       String filename = payload.getContentName();
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
