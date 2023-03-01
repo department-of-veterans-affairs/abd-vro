@@ -210,7 +210,7 @@ public class ApplicationTest {
     TestSpec spec = TestSpec.builder().icn("9000682").resourceType("Condition").build();
 
     JsonNode bundle = getBundle(spec);
-    verifyBundle(bundle, 14);
+    verifyBundle(bundle, 38);
   }
 
   @SneakyThrows
@@ -223,7 +223,7 @@ public class ApplicationTest {
     TestSpec spec = TestSpec.builder().icn("9000682").resourceType("MedicationRequest").build();
 
     JsonNode bundle = getBundle(spec);
-    verifyBundle(bundle, 14, 7);
+    verifyBundle(bundle, 11, 8);
   }
 
   @SneakyThrows
