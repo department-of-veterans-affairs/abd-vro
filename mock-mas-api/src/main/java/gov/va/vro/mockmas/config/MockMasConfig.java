@@ -3,6 +3,7 @@ package gov.va.vro.mockmas.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockmas.model.CollectionStore;
+import gov.va.vro.mockmas.model.ExamOrderStore;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,9 @@ public class MockMasConfig {
 
   @Value("classpath:annotations/collection-376.json")
   private Resource collection376Resource;
+
+  @Value("classpath:annotations/collection-377.json")
+  private Resource collection377Resource;
 
   @Value("classpath:annotations/collection-500.json")
   private Resource collection500Resource;
@@ -54,9 +58,18 @@ public class MockMasConfig {
     List<MasCollectionAnnotation> collection376 = readFromResource(collection376Resource);
     store.put(376, collection376);
 
+    List<MasCollectionAnnotation> collection377 = readFromResource(collection377Resource);
+    store.put(377, collection377);
+
     List<MasCollectionAnnotation> collection500 = readFromResource(collection500Resource);
     store.put(500, collection500);
 
+    return store;
+  }
+
+  @Bean
+  public ExamOrderStore examOrderStore(){
+    ExamOrderStore store = new ExamOrderStore();
     return store;
   }
 }

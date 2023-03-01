@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
@@ -35,6 +36,8 @@ public class VroV2Tests {
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
 
+  private static final String ORDER_EXAM_BASE_URL = "https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev";
+  private static final String ORDER_EXAM_END_POINT = "/pcOrderExam";
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 
@@ -104,13 +107,27 @@ public class VroV2Tests {
     return false;
   }
 
+  @SneakyThrows
+  private boolean checkExamOrdered(Integer collectionId) {
+      String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_END_POINT + "/" + collectionId;
+      var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
+      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+      boolean examOrdered = testResponse.getBody().isOrdered();
+      if(examOrdered){
+        log.info("{} had exam ordered", collectionId);
+      } else {
+        log.info("{} did NOT have exam ordered", collectionId);
+      }
+      return examOrdered;
+  }
+
   /**
    * Runs a full end-to-end test for the collection id using mock services. Collection id used here
    * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
    * ones in mock-bip-claims-api.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate) {
+  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate, boolean expectedExamOrder) {
 
     // Load the test case
     var path = String.format("test-mas/claim-%s-7101.json", collectionId);
@@ -133,6 +150,11 @@ public class VroV2Tests {
     var masResponse = response.getBody();
     String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
     assertEquals(expectedMessage, masResponse.getMessage());
+
+    if(expectedExamOrder){
+        boolean examOrdered = checkExamOrdered(request.getCollectionId());
+        assertTrue(examOrdered);
+    }
 
     if (!expectedStatusUpdate) {
       return;
@@ -171,7 +193,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaim() {
-    testAutomatedClaimFullPositive("350", false);
+    testAutomatedClaimFullPositive("350", false, false);
   }
 
   /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
@@ -216,6 +238,11 @@ public class VroV2Tests {
     assertEquals(
         "Claim with [collection id = 351] does not qualify for automated processing because it is missing anchors.",
         masResponse.getMessage());
+  }
+
+  @Test
+  void testAutomatedClaim_orderExam() {
+    testAutomatedClaimFullPositive("377", true, true);
   }
 
   @SneakyThrows
@@ -277,7 +304,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaimSufficientSeparate() {
-    testAutomatedClaimFullPositive("375", true);
+    testAutomatedClaimFullPositive("375", true, false);
   }
 
   /**
@@ -289,7 +316,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaimPresumptive() {
-    testAutomatedClaimFullPositive("376", true);
+    testAutomatedClaimFullPositive("376", true, false);
   }
 
   @SneakyThrows
@@ -297,6 +324,6 @@ public class VroV2Tests {
   // At this point it is not ready for automated test since assertions
   // on the end of process is not available easily.
   void testAutomatedSufficiencyIsNull() {
-    testAutomatedClaimFullPositive("500", true);
+    testAutomatedClaimFullPositive("500", true, false);
   }
 }

@@ -3,7 +3,9 @@ package gov.va.vro.mockmas.controller;
 import gov.va.vro.mockmas.config.MasApiService;
 import gov.va.vro.mockmas.model.CollectionStore;
 import gov.va.vro.mockmas.model.ConditionInfo;
+import gov.va.vro.mockmas.model.ExamOrderStore;
 import gov.va.vro.mockmas.model.MasTokenResponse;
+import gov.va.vro.mockmas.model.OrderExamCheckResponse;
 import gov.va.vro.mockmas.model.OrderExamResponse;
 import gov.va.vro.mockmas.model.OrderExamSuccess;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -37,6 +39,8 @@ import java.util.List;
 public class MockMasController {
   private final MasApiService apiService;
   private final CollectionStore store;
+
+  private final ExamOrderStore examOrderStore;
 
   @RequestMapping(
       method = RequestMethod.POST,
@@ -94,6 +98,29 @@ public class MockMasController {
     success.setConditions(Collections.singletonList(conditionInfo));
 
     OrderExamResponse response = new OrderExamResponse(success);
+    examOrderStore.put(request.getCollectionsId(), true);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  /** This service does not exist in the real MAS Service. It is used for end to end testing with this mock only to ensure that the /pcOrderExam path was called correctly. **/
+
+  @RequestMapping(
+          method = RequestMethod.GET,
+          value = "/checkExamOrdered",
+          produces = {MediaType.APPLICATION_JSON_VALUE})
+  ResponseEntity<OrderExamCheckResponse> checkExamOrdered(
+          @Parameter(
+                  name = "collectionsId",
+                  description = "The collectionId given to /pcOrderExam",
+                  required = true,
+                  in = ParameterIn.PATH) int collectionsId) {
+    log.info("Checking if exam ordered for {}.", collectionsId);
+
+    Boolean examOrdered = examOrderStore.get(collectionsId);
+    if(examOrdered == null){
+      examOrdered = false;
+    }
+    OrderExamCheckResponse response = new OrderExamCheckResponse(examOrdered);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
