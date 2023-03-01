@@ -115,11 +115,6 @@
         "code": {
           "coding": [
             {
-              "system": "http://snomed.info/sct",
-              "code": "*Missing*",
-              "display": "Essential Hypertension"
-            },
-            {
               "system": "http://hl7.org/fhir/sid/icd-9-cm",
               "code": "401.9",
               "display": "UNSPECIFIED ESSENTIAL HYPERTENSION"

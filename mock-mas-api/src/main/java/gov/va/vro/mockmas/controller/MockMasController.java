@@ -108,7 +108,7 @@ public class MockMasController {
    */
   @RequestMapping(
       method = RequestMethod.GET,
-      value = "/checkExamOrdered",
+      value = "/checkExamOrdered/{collectionsId}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   ResponseEntity<OrderExamCheckResponse> checkExamOrdered(
       @Parameter(
@@ -116,7 +116,7 @@ public class MockMasController {
               description = "The collectionId given to /pcOrderExam",
               required = true,
               in = ParameterIn.PATH)
-          int collectionsId) {
+          Integer collectionsId) {
     log.info("Checking if exam ordered for {}.", collectionsId);
 
     Boolean examOrdered = examOrderStore.get(collectionsId);

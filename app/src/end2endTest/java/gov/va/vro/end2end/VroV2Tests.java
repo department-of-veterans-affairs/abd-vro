@@ -36,9 +36,8 @@ public class VroV2Tests {
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
 
-  private static final String ORDER_EXAM_BASE_URL =
-      "https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev";
-  private static final String ORDER_EXAM_END_POINT = "/pcOrderExam";
+  private static final String ORDER_EXAM_BASE_URL = "http://localhost:9001";
+  private static final String ORDER_EXAM_CHECK_END_POINT = "/checkExamOrdered";
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 
@@ -110,7 +109,7 @@ public class VroV2Tests {
 
   @SneakyThrows
   private boolean checkExamOrdered(Integer collectionId) {
-    String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_END_POINT + "/" + collectionId;
+    String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_CHECK_END_POINT + "/" + collectionId;
     var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
     assertEquals(HttpStatus.OK, testResponse.getStatusCode());
     boolean examOrdered = testResponse.getBody().isOrdered();
@@ -129,7 +128,7 @@ public class VroV2Tests {
    */
   @SneakyThrows
   private void testAutomatedClaimFullPositive(
-      String collectionId, boolean expectedStatusUpdate, boolean expectedExamOrder) {
+      String collectionId, boolean expectedStatusUpdate, Boolean expectedExamOrder) {
 
     // Load the test case
     var path = String.format("test-mas/claim-%s-7101.json", collectionId);
@@ -153,9 +152,25 @@ public class VroV2Tests {
     String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
     assertEquals(expectedMessage, masResponse.getMessage());
 
-    if (expectedExamOrder) {
-      boolean examOrdered = checkExamOrdered(request.getCollectionId());
-      assertTrue(examOrdered);
+    boolean successOrdering = false;
+    if (expectedExamOrder != null) {
+      log.info("Wait for examOrder code to execute.");
+      for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+        Thread.sleep(20000);
+        boolean examOrdered = checkExamOrdered(request.getCollectionId());
+        if(examOrdered){
+          successOrdering = true;
+          break;
+        }
+        else {
+          log.info("Exam not ordered yet for collection {}. Waiting and rechecking...", request.getCollectionId());
+        }
+      }
+      //Ideally we would have a better end of processing here for false.
+      if(!expectedExamOrder){
+        log.info("Maximum retries achieved and examOrder that was not expected was not issued. Marking test successful");
+      }
+      assertEquals(successOrdering, expectedExamOrder);
     }
 
     if (!expectedStatusUpdate) {
@@ -195,7 +210,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaim() {
-    testAutomatedClaimFullPositive("350", false, false);
+    testAutomatedClaimFullPositive("350", false, null);
   }
 
   /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
@@ -301,24 +316,24 @@ public class VroV2Tests {
    * API and MAS collections. They are not really related. You can check this to see how the pdfs
    * look like with data from both sources.
    *
-   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999375
+   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999375
    */
   @SneakyThrows
   @Test
   void testAutomatedClaimSufficientSeparate() {
-    testAutomatedClaimFullPositive("375", true, false);
+    testAutomatedClaimFullPositive("375", true, null);
   }
 
   /**
    * This is an identical to testAutomatedClaimSufficientSeparate except it is a presumptive case.
    * The file number, collection id and claim numbers also differ.
    *
-   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999376
+   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999376
    */
   @SneakyThrows
   @Test
   void testAutomatedClaimPresumptive() {
-    testAutomatedClaimFullPositive("376", true, false);
+    testAutomatedClaimFullPositive("376", true, null);
   }
 
   @SneakyThrows
@@ -326,6 +341,6 @@ public class VroV2Tests {
   // At this point it is not ready for automated test since assertions
   // on the end of process is not available easily.
   void testAutomatedSufficiencyIsNull() {
-    testAutomatedClaimFullPositive("500", true, false);
+    testAutomatedClaimFullPositive("500", true, null);
   }
 }
