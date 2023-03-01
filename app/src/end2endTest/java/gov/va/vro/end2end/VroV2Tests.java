@@ -36,7 +36,8 @@ public class VroV2Tests {
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
 
-  private static final String ORDER_EXAM_BASE_URL = "https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev";
+  private static final String ORDER_EXAM_BASE_URL =
+      "https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev";
   private static final String ORDER_EXAM_END_POINT = "/pcOrderExam";
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
@@ -109,16 +110,16 @@ public class VroV2Tests {
 
   @SneakyThrows
   private boolean checkExamOrdered(Integer collectionId) {
-      String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_END_POINT + "/" + collectionId;
-      var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
-      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-      boolean examOrdered = testResponse.getBody().isOrdered();
-      if(examOrdered){
-        log.info("{} had exam ordered", collectionId);
-      } else {
-        log.info("{} did NOT have exam ordered", collectionId);
-      }
-      return examOrdered;
+    String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_END_POINT + "/" + collectionId;
+    var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
+    assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+    boolean examOrdered = testResponse.getBody().isOrdered();
+    if (examOrdered) {
+      log.info("{} had exam ordered", collectionId);
+    } else {
+      log.info("{} did NOT have exam ordered", collectionId);
+    }
+    return examOrdered;
   }
 
   /**
@@ -127,7 +128,8 @@ public class VroV2Tests {
    * ones in mock-bip-claims-api.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate, boolean expectedExamOrder) {
+  private void testAutomatedClaimFullPositive(
+      String collectionId, boolean expectedStatusUpdate, boolean expectedExamOrder) {
 
     // Load the test case
     var path = String.format("test-mas/claim-%s-7101.json", collectionId);
@@ -151,9 +153,9 @@ public class VroV2Tests {
     String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
     assertEquals(expectedMessage, masResponse.getMessage());
 
-    if(expectedExamOrder){
-        boolean examOrdered = checkExamOrdered(request.getCollectionId());
-        assertTrue(examOrdered);
+    if (expectedExamOrder) {
+      boolean examOrdered = checkExamOrdered(request.getCollectionId());
+      assertTrue(examOrdered);
     }
 
     if (!expectedStatusUpdate) {

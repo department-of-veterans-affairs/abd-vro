@@ -68,7 +68,7 @@ public class MockMasConfig {
   }
 
   @Bean
-  public ExamOrderStore examOrderStore(){
+  public ExamOrderStore examOrderStore() {
     ExamOrderStore store = new ExamOrderStore();
     return store;
   }
