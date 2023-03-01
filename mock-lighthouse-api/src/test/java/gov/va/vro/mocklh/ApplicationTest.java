@@ -252,7 +252,7 @@ public class ApplicationTest {
     }
 
     TestSpec spec =
-        TestSpec.builder().icn("mock1012666073V986297").resourceType("MedicationRequest").build();
+        TestSpec.builder().icn("1012666073V986297").resourceType("MedicationRequest").build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 10);
@@ -266,7 +266,7 @@ public class ApplicationTest {
     }
 
     TestSpec spec =
-        TestSpec.builder().icn("mock1012666073V986297").resourceType("Condition").build();
+        TestSpec.builder().icn("1012666073V986297").resourceType("Condition").build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 3);
