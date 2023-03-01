@@ -20,7 +20,7 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String onsetDate;
   private String recordedDate;
-  private String relevant;
+  private Boolean relevant;
   private String category;
 
   @Schema(description = "Formatted date", example = "01/01/2023")

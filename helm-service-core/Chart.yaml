@@ -22,4 +22,4 @@ version: 0.1.3
 # incremented each time you make changes to the application.
 # TODO decide: For the VRO Core, this appVersion should probably match the version above
 # since it's (currently) only making Helm configuration changes.
-appVersion: 1.0.26
+appVersion: "1.0.26"

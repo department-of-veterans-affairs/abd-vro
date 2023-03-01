@@ -22,4 +22,4 @@ version: 0.1.3
 # incremented each time you make changes to the application.
 # TODO decide: This should probably match the service's Docker image version
 # Can we reference {{ .Values.images.mq.version }} in this file?
-appVersion: 1.0.25
+appVersion: "1.0.25"
