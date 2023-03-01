@@ -2,7 +2,6 @@ package gov.va.vro.service.db;
 
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
@@ -185,11 +184,9 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   @Override
-  public void updateEvidenceSummaryDocument(
-          UUID eFolderId, MasAutomatedClaimPayload payload) {
+  public void updateEvidenceSummaryDocument(UUID eFolderId, MasAutomatedClaimPayload payload) {
     var claim =
-        claimRepository.findByVbmsId(
-            String.valueOf(payload.getClaimDetail().getBenefitClaimId()));
+        claimRepository.findByVbmsId(String.valueOf(payload.getClaimDetail().getBenefitClaimId()));
     if (claim.isEmpty()) {
       log.warn("Could not find claim with vbmsId. Could not attach eFolder ID.");
       return;
