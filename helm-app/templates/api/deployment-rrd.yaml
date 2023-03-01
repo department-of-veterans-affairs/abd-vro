@@ -2,32 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-rrd
-  labels: {{- toYaml .Values.labels.api | nindent 4 }}
-#  annotations:
-#    app.kubernetes.io/name: {{ .Values.name }}
-#    app.kubernetes.io/version: {{ .Values.version | quote }}
-#    app.kubernetes.io/owner: {{ .Values.owner }}
-#    app.kubernetes.io/env: {{ .Values.environment }}
+  labels: {{- toYaml .Values.labels.rrd.global | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
+    matchLabels: {{- toYaml .Values.labels.rrd.global | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.api | nindent 8 }}
-        sidecar.istio.io/inject: "false"
-#      annotations:
-#        app.kubernetes.io/podname: {{ .Values.name }}
-#        app.kubernetes.io/podversion: {{ .Values.version | quote }}
-#        app.kubernetes.io/podowner: {{ .Values.owner }}
-#        app.kubernetes.io/podenv: {{ .Values.environment }}
+      labels: {{- toYaml .Values.labels.rrd.pod | nindent 8 }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
       containers:
         - name: {{ .Values.name }}-assessclaimdc7101
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC7101.imageName }}:{{ .Values.images.serviceAssessClaimDC7101.tag }}
-          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC7101.imagePullPolicy }}
           env:
             - name: ENV
               value: {{ .Values.environment }}
@@ -52,7 +40,6 @@ spec:
               memory: 1024Mi
         - name: {{ .Values.name }}-assessclaimdc6602
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceAssessClaimDC6602.imageName }}:{{ .Values.images.serviceAssessClaimDC6602.tag }}
-          imagePullPolicy: {{ .Values.images.serviceAssessClaimDC6602.imagePullPolicy }}
           env:
             - name: ENV
               value: {{ .Values.environment }}
@@ -77,7 +64,6 @@ spec:
               memory: 1024Mi
         - name: {{ .Values.name }}-pdfgenerator
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.pdfGenerator.imageName }}:{{ .Values.images.pdfGenerator.tag }}
-          imagePullPolicy: {{ .Values.images.pdfGenerator.imagePullPolicy }}
           env:
             - name: ENV
               value: {{ .Values.environment }}
@@ -109,7 +95,6 @@ spec:
               memory: 1024Mi
         - name: {{ .Values.name }}-service-data-access
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.serviceDataAccess.imageName }}:{{ .Values.images.serviceDataAccess.tag }}
-          imagePullPolicy: {{ .Values.images.serviceDataAccess.imagePullPolicy }}
           env:
             - name: ENV
               value: {{ .Values.environment }}

@@ -33,7 +33,11 @@ public class SlipClaimSubmitRouter {
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
                 + "routingKey=code.%s&requestTimeout=%d",
             diagnosis, DEFAULT_REQUEST_TIMEOUT);
-    log.info("Routing to {}.", route);
+    log.info(
+        "Routing to {} for claim {} in collection {}",
+        route,
+        claim.getBenefitClaimId(),
+        claim.getCollectionId());
     return route;
   }
 
