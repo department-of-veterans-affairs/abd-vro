@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
@@ -7,6 +8,8 @@ import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -220,12 +224,17 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-    bipCeApiService.uploadEvidenceFile(
+   BipFileUploadResp bipResp = bipCeApiService.uploadEvidenceFile(
         FileIdType.FILENUMBER,
         payload.getVeteranIdentifiers().getVeteranFileId(),
         BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
         decoder,
         payload.getDiagnosticCode());
+   if(bipResp != null) {
+     UploadResponse ur = bipResp.getUploadResponse();
+     UUID eFolderId = UUID.fromString(ur.getUuid());
+     saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+   }
     return pdfResponse;
   }
 

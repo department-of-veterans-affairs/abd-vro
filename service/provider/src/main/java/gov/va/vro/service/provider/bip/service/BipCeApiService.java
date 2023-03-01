@@ -97,14 +97,13 @@ public class BipCeApiService implements IBipCeApiService {
       BipFileUploadResp resp = new BipFileUploadResp();
       ObjectMapper objMapper = new ObjectMapper();
       UploadResponse ur = objMapper.readValue(bipResponse.getBody(), UploadResponse.class);
-      UUID eFolderId = UUID.fromString(ur.getUuid());
-      saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload, diagnosticCode);
       log.info(
           "bip response for upload: status: {}, message: {}",
           bipResponse.getStatusCode(),
           bipResponse.getBody());
       resp.setStatus(bipResponse.getStatusCode());
       resp.setMessage(mapper.writeValueAsString(bipResponse.getBody()));
+      resp.setUploadResponse(ur);
       return resp;
     } catch (RestClientException | IOException e) {
       log.error("failed to upload file.", e);

@@ -3,6 +3,7 @@ package gov.va.vro.service.db;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
@@ -185,10 +186,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
 
   @Override
   public void updateEvidenceSummaryDocument(
-      UUID eFolderId, BipFileUploadPayload bipPayload, String diagnosticCode) {
+          UUID eFolderId, MasAutomatedClaimPayload payload) {
     var claim =
         claimRepository.findByVbmsId(
-            String.valueOf(bipPayload.getProviderData().getBenefitTypeId()));
+            String.valueOf(payload.getClaimDetail().getBenefitClaimId()));
     if (claim.isEmpty()) {
       log.warn("Could not find claim with vbmsId. Could not attach eFolder ID.");
       return;
@@ -197,7 +198,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       log.warn("eFolder ID was null, could not attach to claim.");
     }
     ClaimEntity claimEntity = claim.get();
-    ContentionEntity contentionEntity = findContention(claimEntity, diagnosticCode);
+    ContentionEntity contentionEntity = findContention(claimEntity, payload.getDiagnosticCode());
     if (contentionEntity != null) {
       Optional<EvidenceSummaryDocumentEntity> esd =
           evidenceSummaryDocumentRepository.findFirstByContentionIdOrderByCreatedAtDesc(
