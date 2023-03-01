@@ -307,7 +307,7 @@
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
             <td {% if medication.document == "" %}class="empty" {% endif %}>
-              {% if medication.dataSource == "LH" %}
+              {% if medication.dataSource == "MAS" %}
                 {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif medication.document == "" %}
