@@ -265,8 +265,7 @@ public class ApplicationTest {
       return; // No LH environment variable. Bail out.
     }
 
-    TestSpec spec =
-        TestSpec.builder().icn("1012666073V986297").resourceType("Condition").build();
+    TestSpec spec = TestSpec.builder().icn("1012666073V986297").resourceType("Condition").build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 3);
