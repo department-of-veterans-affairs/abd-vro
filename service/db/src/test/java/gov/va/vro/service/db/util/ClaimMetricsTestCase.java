@@ -90,6 +90,7 @@ public class ClaimMetricsTestCase {
     service.insertAssessmentResult(claimEntityId, evidence, "7101");
 
     GeneratePdfPayload gpp = getPdfPayload(evidence.getEvidence());
+    gpp.setIdType(claim.getIdType());
     service.insertEvidenceSummaryDocument(gpp, documentName);
   }
 
