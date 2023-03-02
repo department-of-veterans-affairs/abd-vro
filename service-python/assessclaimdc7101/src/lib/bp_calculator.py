@@ -33,7 +33,7 @@ def bp_reader(request_body):
 
     bp_reading_in_past_year = []
     bp_readings_in_past_two_years = []
-    elevated_bp = []
+    elevated_bp_in_past_two_years = []
     sortable_bp = []
     not_sortable_bp = []
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
@@ -57,7 +57,7 @@ def bp_reader(request_body):
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):
             bp_readings_in_past_two_years.append(reading)
             if reading["systolic"]["value"] >= 160 and reading["diastolic"]["value"] >= 100:
-                elevated_bp.append(reading)
+                elevated_bp_in_past_two_years.append(reading)
 
     result = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
               "oneYearBp": sort_bp(bp_reading_in_past_year),
