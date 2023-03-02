@@ -164,7 +164,8 @@ valueFrom:
 */}}
 
 {{/*
-  Volume for Postgres DB
+  EBS Volume for Postgres DB
+  Containers using this EBS volume must also use pgdata.affinity below
 */}}
 {{- define "vro.volumes.pgdata" -}}
 - name: {{ .Values.global.pgdata.pvcName }}
@@ -178,7 +179,7 @@ valueFrom:
 {{- end }}
 
 {{/*
-  Volume mount for tracking API requests
+  EFS Volume mount for tracking API requests
 */}}
 {{- define "vro.volumes.tracking" -}}
 - name: {{ .Values.global.tracking.pvcName }}
@@ -189,4 +190,19 @@ valueFrom:
 {{- define "vro.volumeMounts.tracking" -}}
 - name: {{ .Values.global.tracking.pvcName }}
   mountPath: {{ .Values.global.tracking.mountPath }}
+{{- end }}
+
+{{/*
+  EBS volumes can only be mounted by containers in the same node.
+  This affinity added to pod specs ensures the pod runs on the same node.
+  https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+*/}}
+{{- define "vro.volume.pgdata.affinity" -}}
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels: {{- toYaml .Values.global.pgdata.labels | nindent 16 }}
+      # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
+      topologyKey: topology.kubernetes.io/zone
 {{- end }}

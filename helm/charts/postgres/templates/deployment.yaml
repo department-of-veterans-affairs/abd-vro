@@ -13,10 +13,12 @@ spec:
       labels:
         sidecar.istio.io/inject: "false"
         {{- toYaml .Values.labels | nindent 8 }}
-        {{- toYaml .Values.pgdata.labels.volume | nindent 8 }}
+        {{- toYaml .Values.global.pgdata.labels | nindent 8 }}
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.volume.pgdata.affinity" . | nindent 6 }}
       # securityContext:
+        # Solution for EFS volume where container requires folder ownership; not required for EBS volume.
         # To address postgres container error "The server must be started by the user that owns the data directory."
         # Container runs as user uid=70(postgres) gid=70(postgres) groups=70(postgres),70(postgres)
         # The pgdata volume is owned by 50016, but this is variable -- TODO: ask LHDI.
@@ -31,15 +33,8 @@ spec:
         # runAsGroup: 70
         # Any files created in the volume will have this group ID:
         # fsGroup: 70
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels: {{- toYaml .Values.labels | nindent 16 }}
-            # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
-            topologyKey: topology.kubernetes.io/zone
       initContainers:
-        - name: {{ .Values.name }}-pvinit
+        - name: pvinit--{{ .Release.Name }}
           image: ghcr.io/department-of-veterans-affairs/dots-tools-jenkins/community-alpine-3:1.0.2
           # The postgres container requires the directory be owned by userid 70
           command: ["sh", "-c", "chown 70:70 /persist/postgres && ls -al /persist/postgres"]
@@ -54,8 +49,7 @@ spec:
               cpu: 100m
               memory: 128Mi
           volumeMounts:
-            - name: persistent-storage
-              mountPath: /persist/postgres
+            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       containers:
         - name: postgres--{{ .Release.Name }}
           image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}

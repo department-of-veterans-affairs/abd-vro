@@ -8,6 +8,8 @@ metadata:
     # https://helm.sh/docs/topics/charts_hooks/#hook-resources-are-not-managed-with-corresponding-releases
     helm.sh/resource-policy: keep
 spec:
+  # EFS volumes allow ReadWriteMany, which enable multiple containers to mount the volume from any node,
+  # providing easier access than EBS volumes (such as the postgres volume).
   accessModes:
     - ReadWriteMany
   # Until we implement a StatefulSet to retain the associated PV, use the non-retain storage class

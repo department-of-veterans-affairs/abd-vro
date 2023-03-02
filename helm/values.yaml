@@ -35,6 +35,7 @@ global:
     claimName: vro-pgdata-efs-claim
     mountPath: /persist/postgres
     storageSize: 2Gi
+    # EBS volumes require podAffinity, which relies on labels
     labels:
       volume: database
   tracking:

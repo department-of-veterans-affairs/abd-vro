@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.global.pgdata.claimName }}
   # The label is needed to ensure containers that use this volume are deployed in the same node. Such containers should
   # use podAffinity https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-  labels: {{- toYaml .Values.pgdata.labels.volume | nindent 4 }}
+  labels: {{- toYaml .Values.global.pgdata.labels | nindent 4 }}
   annotations:
     # As an alternative to a StatefulSet (mentioned below), keep this PVC when the deploy is deleted/uninstalled.
     # Helm will no longer manage it in any way, so this PVC must be manually deleted.

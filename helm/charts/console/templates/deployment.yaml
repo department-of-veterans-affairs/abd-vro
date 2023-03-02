@@ -10,10 +10,13 @@ spec:
     matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels | nindent 8 }}
+      labels:
         sidecar.istio.io/inject: "false"
+        {{- toYaml .Values.labels | nindent 8 }}
+        {{- toYaml .Values.global.pgdata.labels | nindent 8 }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.volume.pgdata.affinity" . | nindent 6 }}
       containers:
         - name: console--{{ .Release.Name }}
           image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
