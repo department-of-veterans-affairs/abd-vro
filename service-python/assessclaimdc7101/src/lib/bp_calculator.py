@@ -60,11 +60,11 @@ def bp_reader(request_body):
                 elevated_bp.append(reading)
 
     result = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
-                                "oneYearBp": sort_bp(bp_reading_in_past_year),
-                                "allBp": sort_bp(sortable_bp) + not_sortable_bp,
-                                "twoYearsBpCount": len(bp_readings_in_past_two_years),
-                                "oneYearBpCount": len(bp_reading_in_past_year),
-                                "twoYearsElevatedBpCount": len(elevated_bp),
-                                "totalBpCount": len(request_body["evidence"]["bp_readings"])}
+              "oneYearBp": sort_bp(bp_reading_in_past_year),
+              "allBp": sort_bp(sortable_bp) + not_sortable_bp,
+              "twoYearsBpCount": len(bp_readings_in_past_two_years),
+              "oneYearBpCount": len(bp_reading_in_past_year),
+              "twoYearsElevatedBpCount": len(elevated_bp),
+              "totalBpCount": len(request_body["evidence"]["bp_readings"])}
 
     return result
