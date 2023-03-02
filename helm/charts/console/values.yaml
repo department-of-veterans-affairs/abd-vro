@@ -2,7 +2,8 @@
 # Tip: https://stackoverflow.com/questions/63157235/how-to-render-only-selected-template-in-helm
 
 labels:
-  app: vro-console
+  # TODO: create separate label so that this console runs in same pod as postgres
+  app: vro-postgres
 
 image:
   name: dev_vro-console

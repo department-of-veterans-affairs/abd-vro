@@ -203,7 +203,10 @@ affinity:
   podAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     - labelSelector:
-        matchLabels: {{- toYaml .Values.global.pgdata.labels | nindent 10 }}
+        matchLabels:
+          {{- toYaml .Values.global.pgdata.labels | nindent 10 }}
+          # app label value must match the labels in postgres/values.yaml
+          app: vro-postgres
       # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
       topologyKey: topology.kubernetes.io/zone
 {{- end }}
