@@ -14,6 +14,8 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+      # volume label is to ensure the db pod runs in the same node as the PVC for db data storage
+      volume: database
 
 images:
   registry: ghcr.io

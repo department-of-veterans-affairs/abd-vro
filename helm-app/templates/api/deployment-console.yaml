@@ -28,6 +28,9 @@ spec:
         - name: {{ .Values.volumes.tracking.name }}
           persistentVolumeClaim:
             claimName: {{ .Values.volumes.tracking.claimName }}
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: ebs-db-claim #This name should match that of the persistent volume claim created above
       containers:
         - name: {{ .Values.name }}-console
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.console.imageName }}:{{ .Values.images.console.tag }}
@@ -131,3 +134,5 @@ spec:
           volumeMounts:
             - name: {{ .Values.volumes.tracking.name }}
               mountPath: {{ .Values.volumes.tracking.mountPath }}
+            - name: persistent-storage
+              mountPath: /persist/postgres
