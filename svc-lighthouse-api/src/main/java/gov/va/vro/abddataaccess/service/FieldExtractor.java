@@ -64,14 +64,14 @@ public class FieldExtractor {
     if (condition.hasCode()) {
       CodeableConcept code = condition.getCode();
       if (code.hasCoding()) {
-        Coding coding = code.getCodingFirstRep();
-
-        if (coding.hasCode()) {
-          result.setCode(coding.getCode());
-        }
-
-        if (coding.hasDisplay()) {
-          result.setText(coding.getDisplay());
+        for (Coding coding : code.getCoding()) {
+          if (coding.hasCode() && !coding.getCode().equals("*Missing*")) {
+            result.setCode(coding.getCode());
+            if (coding.hasDisplay()) {
+              result.setText(coding.getDisplay());
+            }
+            break;
+          }
         }
       }
 
