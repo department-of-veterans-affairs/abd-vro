@@ -25,6 +25,9 @@ images:
   db:
     imageName: dev_vro-postgres
     tag: tagPlaceholder
+  console:
+    imageName: dev_vro-console
+    tag: tagPlaceholder
 
 resources:
   db:
@@ -67,3 +70,13 @@ dbinit:
   urlKey: url
   usernameKey: username
   passwordKey: password
+
+rabbitmq:
+  secretName: rabbitmq
+  usernameKey: User
+  passwordKey: Pass
+
+# Needed to connect to Redis
+redis:
+  secretName: redis
+  passwordKey: redisPassword

@@ -2,32 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-console
-  labels: {{- toYaml .Values.labels.api | nindent 4 }}
-#  annotations:
-#    app.kubernetes.io/name: {{ .Values.name }}
-#    app.kubernetes.io/version: {{ .Values.version | quote }}
-#    app.kubernetes.io/owner: {{ .Values.owner }}
-#    app.kubernetes.io/env: {{ .Values.environment }}
+  labels:
+      app: vro-console
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- toYaml .Values.labels.api | nindent 6 }}
+    matchLabels:
+      app: vro-console
   template:
     metadata:
-      labels: {{- toYaml .Values.labels.api | nindent 8 }}
+      labels:
         sidecar.istio.io/inject: "false"
-#      annotations:
-#        app.kubernetes.io/podname: {{ .Values.name }}
-#        app.kubernetes.io/podversion: {{ .Values.version | quote }}
-#        app.kubernetes.io/podowner: {{ .Values.owner }}
-#        app.kubernetes.io/podenv: {{ .Values.environment }}
+        app: vro-console
+        volume: database
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                volume: database
+            # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
+            topologyKey: topology.kubernetes.io/zone
       volumes:
-        - name: {{ .Values.volumes.tracking.name }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.volumes.tracking.claimName }}
         - name: persistent-storage
           persistentVolumeClaim:
             claimName: ebs-db-claim #This name should match that of the persistent volume claim created above
@@ -84,46 +83,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.passwordKey }}
-            - name: MAS_API_AUTH_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientId }}
-            - name: MAS_API_AUTH_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientSecret }}
-            - name: MAS_API_AUTH_SCOPE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthScope }}
-            - name: MAS_API_AUTH_TOKEN_URI
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthTokenUri }}
-            - name: MAS_API_BAS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiBaseUrl }}
-            - name: MAS_COLLECTION_ANNOTS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionAnnotsPath }}
-            - name: MAS_COLLECTION_STATUS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionStatusPath }}
-            - name: MAS_CREATE_EXAM_ORDER_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCreateExamOrderPath }}
           resources:
             requests:
               cpu: 150m
@@ -132,7 +91,5 @@ spec:
               cpu: 1000m
               memory: 1024Mi
           volumeMounts:
-            - name: {{ .Values.volumes.tracking.name }}
-              mountPath: {{ .Values.volumes.tracking.mountPath }}
             - name: persistent-storage
               mountPath: /persist/postgres
