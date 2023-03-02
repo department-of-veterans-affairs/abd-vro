@@ -14,6 +14,8 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+      # volume label is to ensure the db pod runs in the same node as the PVC for db data storage
+      volume: database
 
 images:
   registry: ghcr.io
@@ -22,6 +24,9 @@ images:
   repo: abd-vro
   db:
     imageName: dev_vro-postgres
+    tag: tagPlaceholder
+  console:
+    imageName: dev_vro-console
     tag: tagPlaceholder
 
 resources:
@@ -65,3 +70,13 @@ dbinit:
   urlKey: url
   usernameKey: username
   passwordKey: password
+
+rabbitmq:
+  secretName: rabbitmq
+  usernameKey: User
+  passwordKey: Pass
+
+# Needed to connect to Redis
+redis:
+  secretName: redis
+  passwordKey: redisPassword
