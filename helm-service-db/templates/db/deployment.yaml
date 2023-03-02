@@ -21,24 +21,6 @@ spec:
                 volume: database
             # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
             topologyKey: topology.kubernetes.io/zone
-      initContainers:
-        - name: {{ .Values.name }}-pvinit
-          image: ghcr.io/department-of-veterans-affairs/dots-tools-jenkins/community-alpine-3:1.0.2
-          # The postgres container requires the directory be owned by userid 70
-          command: ["sh", "-c", "chown 70:70 /persist/postgres && ls -al /persist/postgres"]
-          # Wait forever (for debugging)
-          # command: [ "/bin/sh", "-c", "--" ]
-          # args: [ "while true; do sleep 30; done;" ]
-          resources:
-            requests:
-              cpu: 10m
-              memory: 16Mi
-            limits:
-              cpu: 100m
-              memory: 128Mi
-          volumeMounts:
-            - name: persistent-storage
-              mountPath: /persist/postgres
       volumes:
         - name: persistent-storage
           persistentVolumeClaim:
