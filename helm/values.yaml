@@ -35,6 +35,8 @@ global:
     claimName: vro-pgdata-efs-claim
     mountPath: /persist/postgres
     storageSize: 2Gi
+    labels:
+      volume: database
   tracking:
     pvcName: tracking-persistent-storage
     claimName: vro-tracking-efs-claim
