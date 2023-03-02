@@ -24,7 +24,7 @@ public class StoreTest {
   @Test
   @SneakyThrows
   void testMock1012666073V986297Observation() {
-    String observation = store.getMockObservationBundle("1012666073V986297");
+    String observation = store.getMockObservationBundle("mock1012666073V986297");
     assertNotNull(observation);
 
     JsonNode json = mapper.readTree(observation);
@@ -35,7 +35,7 @@ public class StoreTest {
   @Test
   @SneakyThrows
   void testMock1012666073V986297MedicationRequest() {
-    String medicationRequest = store.getMockMedicationRequestBundle("1012666073V986297");
+    String medicationRequest = store.getMockMedicationRequestBundle("mock1012666073V986297");
     assertNotNull(medicationRequest);
 
     JsonNode json = mapper.readTree(medicationRequest);
@@ -46,7 +46,7 @@ public class StoreTest {
   @Test
   @SneakyThrows
   void testMock1012666073V986297Condition() {
-    String condition = store.getMockConditionBundle("1012666073V986297");
+    String condition = store.getMockConditionBundle("mock1012666073V986297");
     assertNotNull(condition);
 
     JsonNode json = mapper.readTree(condition);

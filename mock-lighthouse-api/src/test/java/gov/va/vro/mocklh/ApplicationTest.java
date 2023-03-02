@@ -235,7 +235,7 @@ public class ApplicationTest {
 
     TestSpec spec =
         TestSpec.builder()
-            .icn("1012666073V986297")
+            .icn("mock1012666073V986297")
             .resourceType("Observation")
             .code("85354-9")
             .build();
@@ -252,7 +252,7 @@ public class ApplicationTest {
     }
 
     TestSpec spec =
-        TestSpec.builder().icn("1012666073V986297").resourceType("MedicationRequest").build();
+        TestSpec.builder().icn("mock1012666073V986297").resourceType("MedicationRequest").build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 10);
@@ -265,7 +265,8 @@ public class ApplicationTest {
       return; // No LH environment variable. Bail out.
     }
 
-    TestSpec spec = TestSpec.builder().icn("1012666073V986297").resourceType("Condition").build();
+    TestSpec spec =
+        TestSpec.builder().icn("mock1012666073V986297").resourceType("Condition").build();
 
     JsonNode bundle = getBundle(spec);
     verifyBundle(bundle, 3);

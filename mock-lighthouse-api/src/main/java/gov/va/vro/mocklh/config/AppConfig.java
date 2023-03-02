@@ -27,10 +27,10 @@ public class AppConfig {
     MockBundleStore store = new MockBundleStore();
 
     MockBundles mb1 = MockBundles.of("mock-bundles/mock1012666073V986297");
-    store.put("1012666073V986297", mb1);
+    store.put("mock1012666073V986297", mb1);
 
     MockBundles mb2 = MockBundles.of("mock-bundles/mock1012666073V986377");
-    store.put("1012666073V986377", mb2);
+    store.put("mock1012666073V986377", mb2);
 
     return store;
   }
