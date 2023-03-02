@@ -36,9 +36,6 @@ images:
   dbInit:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
-  console:
-    imageName: dev_vro-console
-    tag: tagPlaceholder
   serviceDataAccess:
     imageName: dev_vro-service-data-access
     tag: tagPlaceholder
