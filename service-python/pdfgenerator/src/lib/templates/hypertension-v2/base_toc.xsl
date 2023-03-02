@@ -109,7 +109,7 @@
             font-weight: 400;
             font-size: 11px;
             line-height: 15px;
-            width: 178px !important;
+            width: 150px !important;
             padding-right: 0px !important;
             margin-right: 0px !important;
           }
