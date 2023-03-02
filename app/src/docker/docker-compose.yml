@@ -114,8 +114,9 @@ services:
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
+      PGDATA: /persist/data/localdev
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/persist/data
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
