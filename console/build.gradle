@@ -44,7 +44,7 @@ dependencies {
 }
 
 docker {
-  files "src/main/resources/groovysh.rc"
+  files "src/main/resources/groovysh.rc", "src/main/resources/emerg.sh"
 }
 
 spotless {

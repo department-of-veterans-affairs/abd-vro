@@ -169,10 +169,14 @@ services:
       BIP_CLAIM_URL: "mock-bip-claims-api:8097"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
-      - postgres-service
-      - rabbitmq-service
-      - redis-service
-      - db-init
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
     networks:
       - internal
       - external
@@ -316,7 +320,7 @@ services:
 
   console:
     image: va/abd_vro-console:latest
-    <<: *common-security-opt
+    # <<: *common-security-opt
     <<: *common-sde-security
     profiles: ["debug"]
     # stdin and tty are needed for user interaction
@@ -331,6 +335,10 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
     networks:
       - internal
 
