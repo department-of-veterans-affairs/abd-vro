@@ -276,7 +276,7 @@
                 {% if bp_reading.organization == "VAMC Other Output Reports" and bp_reading.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif bp_reading.document == "" %}
-                  n.a.
+                  Pending upload to VBMS eFolder
                 {% else %}
                   {{ bp_reading.document }}
                 {% endif %}
@@ -326,12 +326,12 @@
                 {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif medication.document == "" %}
-                  n.a. - data pulled directly from VistA
+                  Pending upload to VBMS eFolder
                 {% else %}
                   {{ medication.document }}
                 {% endif %}
               {% else %}
-                {% if medication.document == ""%}
+                {% if medication.document == "" %}
                   n.a. - data pulled directly from VistA
                 {% else %}
                   {{ medication.document }}
@@ -381,7 +381,7 @@
                 {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif condition.document == "" %}
-                  n.a. - data pulled directly from VistA
+                  Pending upload to VBMS eFolder
                 {% else %}
                   {{ condition.document }}
                 {% endif %}
