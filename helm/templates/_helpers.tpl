@@ -196,13 +196,14 @@ valueFrom:
   EBS volumes can only be mounted by containers in the same node.
   This affinity added to pod specs ensures the pod runs on the same node.
   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  Remember to also add `.Values.global.pgdata.labels` to spec.template.metadata.labels
 */}}
 {{- define "vro.volume.pgdata.affinity" -}}
 affinity:
   podAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     - labelSelector:
-        matchLabels: {{- toYaml .Values.global.pgdata.labels | nindent 16 }}
+        matchLabels: {{- toYaml .Values.global.pgdata.labels | nindent 10 }}
       # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
       topologyKey: topology.kubernetes.io/zone
 {{- end }}

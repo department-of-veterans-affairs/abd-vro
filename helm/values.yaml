@@ -37,7 +37,7 @@ global:
     storageSize: 2Gi
     # EBS volumes require podAffinity, which relies on labels
     labels:
-      volume: database
+      volume: pgdatabase
   tracking:
     pvcName: tracking-persistent-storage
     claimName: vro-tracking-efs-claim
