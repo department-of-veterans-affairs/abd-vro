@@ -40,11 +40,12 @@ generateDbImageArgs(){
     echo "--set-string images.repo=abd-vro-internal "
   fi
 
-  local PREFIX="db"
+  for PREFIX in db console; do
     local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
     local IMAGE_NAME=${IMG_NAME_PREFIX}$(getVarValue "${PREFIX}" _IMG)
     echo "--set-string images.$HELM_KEY.tag=${_IMAGE_TAG} "
     echo "--set-string images.$HELM_KEY.imageName=${IMAGE_NAME} "
+  done
 }
 VRO_IMAGE_ARGS=$(generateDbImageArgs "${ENV}" "${IMAGE_TAG}")
 
