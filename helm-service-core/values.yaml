@@ -7,14 +7,6 @@ cluster: nonprod
 version: 0.1
 # replicaCount: 1
 
-labels:
-  redis:
-    global: &labels-redis-global
-      app: redis-cache
-    pod:
-      <<: *labels-redis-global
-      sidecar.istio.io/inject: "false"
-
 resources:
   redis:
     requests:
