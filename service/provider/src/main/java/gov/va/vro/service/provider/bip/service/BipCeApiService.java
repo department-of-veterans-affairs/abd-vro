@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
 import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -52,11 +54,17 @@ public class BipCeApiService implements IBipCeApiService {
 
   private final BipApiProps bipApiProps;
 
+  private final SaveToDbService saveToDbService;
+
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Override
   public BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload payload, byte[] fileContent)
+      FileIdType idtype,
+      String fileId,
+      BipFileUploadPayload payload,
+      byte[] fileContent,
+      String diagnosticCode)
       throws BipException {
     try {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
@@ -85,12 +93,15 @@ public class BipCeApiService implements IBipCeApiService {
           ceRestTemplate.postForEntity(url, httpEntity, String.class);
 
       BipFileUploadResp resp = new BipFileUploadResp();
+      ObjectMapper objMapper = new ObjectMapper();
+      UploadResponse ur = objMapper.readValue(bipResponse.getBody(), UploadResponse.class);
       log.info(
           "bip response for upload: status: {}, message: {}",
           bipResponse.getStatusCode(),
           bipResponse.getBody());
       resp.setStatus(bipResponse.getStatusCode());
       resp.setMessage(mapper.writeValueAsString(bipResponse.getBody()));
+      resp.setUploadResponse(ur);
       return resp;
     } catch (RestClientException | IOException e) {
       log.error("failed to upload file.", e);
