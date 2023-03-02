@@ -63,4 +63,6 @@ public interface IBipApiService {
    */
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException;
+
+  boolean verifySpecialIssueTypes();
 }

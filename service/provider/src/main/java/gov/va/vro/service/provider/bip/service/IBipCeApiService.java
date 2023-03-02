@@ -20,4 +20,6 @@ public interface IBipCeApiService {
   BipFileUploadResp uploadEvidenceFile(
       FileIdType idType, String fileId, BipFileUploadPayload payload, byte[] fileContent)
       throws BipException;
+
+  boolean verifyDocumentTypes();
 }

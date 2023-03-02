@@ -25,21 +25,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public interface VerificationResource {
   @Operation(
       summary = "Executes BIP connectivity verification queries.",
-      description = """
+      description =
+          """
           This end-point calls un-consequential GET end-points in BIP Claims and
           BIP Claim Evidence APIs to test connectivity.
           """)
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "200", description = "Successful"),
-          @ApiResponse(
-              responseCode = "401",
-              description = "Unauthorized",
-              content = @Content(schema = @Schema(hidden = true))),
-          @ApiResponse(
-              responseCode = "500",
-              description = "Internal service error",
-              content = @Content(schema = @Schema(hidden = true)))
+        @ApiResponse(responseCode = "200", description = "Successful"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal service error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping("/bip-verification-test")
   @ResponseStatus(HttpStatus.OK)
