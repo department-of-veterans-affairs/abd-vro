@@ -76,7 +76,7 @@ public class VroController implements VroResource {
         request.getDiagnosticCode());
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
-      if (model.getPdfTemplate().isBlank() || model.getPdfTemplate().isEmpty()) {
+      if (model.getPdfTemplate().isEmpty() || model.getPdfTemplate().isBlank()) {
         model.setPdfTemplate("v1");
       }
       log.info(model.toString());
