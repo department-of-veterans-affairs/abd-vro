@@ -230,6 +230,9 @@ public class BipClaimService {
             BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
             decoder,
             payload.getDiagnosticCode());
+    // We check if bipResp is null only so that the uploadPdf() test does not fail in
+    // BipClaimServiceTest.
+    // We created a ticket to fix this test and remove this condition.
     if (bipResp != null) {
       UploadResponse ur = bipResp.getUploadResponse();
       UUID eFolderId = UUID.fromString(ur.getUuid());
