@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -23,8 +22,8 @@ def sort_bp(bp_readings):
 
 def bp_reader(request_body):
     """
-    Determine if there is enough BP data to calculate a predominant reading,
-    and if so return the predominant rating
+    Iterate through all the BP readings received by data sources and determine their recency relative to the date
+     of claim. Flag high BP readings.
 
     :param request_body: request body
     :type request_body: dict
@@ -60,12 +59,12 @@ def bp_reader(request_body):
             if reading["systolic"]["value"] >= 160 and reading["diastolic"]["value"] >= 100:
                 elevated_bp.append(reading)
 
-    predominance_calculation = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
+    result = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
                                 "oneYearBp": sort_bp(bp_reading_in_past_year),
                                 "allBp": sort_bp(sortable_bp) + not_sortable_bp,
-                                "twoYearsBpReadings": len(bp_readings_in_past_two_years),
-                                "oneYearBpReadings": len(bp_reading_in_past_year),
-                                "recentElevatedBpReadings": len(elevated_bp),
-                                "totalBpReadings": len(request_body["evidence"]["bp_readings"])}
+                                "twoYearsBpCount": len(bp_readings_in_past_two_years),
+                                "oneYearBpCount": len(bp_reading_in_past_year),
+                                "twoYearsElevatedBpCount": len(elevated_bp),
+                                "totalBpCount": len(request_body["evidence"]["bp_readings"])}
 
-    return predominance_calculation
+    return result
