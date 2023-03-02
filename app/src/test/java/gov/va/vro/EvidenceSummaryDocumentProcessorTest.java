@@ -32,9 +32,6 @@ import java.util.Date;
 @CamelSpringBootTest
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
-  @Value("classpath:test-data/pdf-generator-mas.json")
-  private Resource pdfGeneratorMas;
-
   @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
@@ -58,7 +55,7 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
     // Call generate-pdf endpoint to activate the Evidence Summary Document processor.
     var mapper = new ObjectMapper();
-    InputStream stream = pdfGeneratorMas.getInputStream();
+    InputStream stream = pdfGeneratorInput01.getInputStream();
     String inputAsString = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
     GeneratePdfRequest input = mapper.readValue(inputAsString, GeneratePdfRequest.class);
     post("/v1/evidence-pdf", input, GeneratePdfResponse.class);

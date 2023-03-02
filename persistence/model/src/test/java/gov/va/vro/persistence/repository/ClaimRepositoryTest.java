@@ -47,7 +47,6 @@ public class ClaimRepositoryTest {
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
-    contention1.addEvidenceSummaryDocument(count1, evidenceSummaryDocument1.getDocumentName());
     var claim = TestDataSupplier.createClaim("123", veteran);
     claim.addContention(contention1);
     claim = claimRepository.save(claim);
