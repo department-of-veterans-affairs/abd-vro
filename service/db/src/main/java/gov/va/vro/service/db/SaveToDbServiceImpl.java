@@ -188,11 +188,11 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     var claim =
         claimRepository.findByVbmsId(String.valueOf(payload.getClaimDetail().getBenefitClaimId()));
     if (claim.isEmpty()) {
-      log.warn("Could not find claim with vbmsId. Could not attach eFolder ID.");
+      log.error("Could not find claim with vbmsId. Could not attach eFolder ID.");
       return;
     }
     if (eFolderId == null) {
-      log.warn("eFolder ID was null, could not attach to claim.");
+      log.error("eFolder ID was null, could not attach to claim.");
     }
     ClaimEntity claimEntity = claim.get();
     ContentionEntity contentionEntity = findContention(claimEntity, payload.getDiagnosticCode());
@@ -205,8 +205,10 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         esdEntity.setFolderId(eFolderId);
         evidenceSummaryDocumentRepository.save(esdEntity);
       } else {
-        log.warn("Could not find evidence summary document by contentionId.");
+        log.error("Could not find evidence summary document by contentionId.");
       }
+    } else {
+      log.error("Could not find a contention for this claim and diagnostic code.");
     }
   }
 
@@ -347,7 +349,6 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         return contention;
       }
     }
-    log.warn("Could not find contention with this diagnostic code and claim entity.");
     return null;
   }
 

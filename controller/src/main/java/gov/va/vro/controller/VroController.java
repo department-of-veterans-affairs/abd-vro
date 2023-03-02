@@ -38,7 +38,6 @@ public class VroController implements VroResource {
   private final GeneratePdfRequestMapper generatePdfRequestMapper;
   private final PostClaimRequestMapper postClaimRequestMapper;
   private final ObjectMapper objectMapper = new ObjectMapper();
-  public static final String CLAIM_V2_ID_TYPE = "mas-Form526Submission";
 
   public ResponseEntity fetchProcess(String claimSubmissionId, String response)
       throws ClaimProcessingException {
@@ -77,11 +76,6 @@ public class VroController implements VroResource {
         request.getDiagnosticCode());
     try {
       GeneratePdfPayload model = generatePdfRequestMapper.toModel(request);
-      if (model.getVeteranFileId() != null) {
-        model.setIdType(CLAIM_V2_ID_TYPE);
-      } else {
-        model.setIdType(Claim.V1_ID_TYPE);
-      }
       log.info(model.toString());
       String response = camelEntrance.generatePdf(model);
       GeneratePdfResponse pdfResponse = objectMapper.readValue(response, GeneratePdfResponse.class);
