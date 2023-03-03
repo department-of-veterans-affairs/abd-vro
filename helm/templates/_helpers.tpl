@@ -9,7 +9,7 @@
 
 {{- define "vro.imagePullSecrets" -}}
 imagePullSecrets:
-- name: {{ .Values.global.images.pullSecretsName }}
+- name: abd-vro-ghcr
 {{- end }}
 
 {{- define "vro.commonEnvVars" -}}

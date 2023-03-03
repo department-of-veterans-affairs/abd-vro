@@ -5,7 +5,7 @@ labels:
   app: vro-console
 
 pvcClaimName:
-  # allow this to be configurable
+  # Allow this to be configurable due to the index as the suffix
   postgres: vro-pgdata-pvc-vro-postgres-0
 
 replicaCount: 1

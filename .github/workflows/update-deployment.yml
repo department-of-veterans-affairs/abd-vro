@@ -67,11 +67,8 @@ on:
         required: true
         type: string
 env:
-  COMMIT_SHA: ${{ inputs.image_tag }}
-  SERVICE: ${{ inputs.target_service }}
-  DEV_KUBE_CONFIG: ${{ secrets.DEV_KUBE_CONFIG }}
-  TARGET_ENV: ${{ inputs.target_env }}
   SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
+  RELEASE_NAME: vro
 
 jobs:
   deploy-service:
@@ -81,7 +78,7 @@ jobs:
       - name: "Set up kube config"
         run: |
           mkdir ~/.kube
-          case "${{ env.TARGET_ENV }}" in
+          case "${{ inputs.target_env }}" in
             dev|qa|sandbox) KUBE_CONFIG="${{ secrets.DEV_KUBE_CONFIG }}";;
             prod-test|prod) KUBE_CONFIG="${{ secrets.PROD_KUBE_CONFIG }}";;
           esac
@@ -91,9 +88,19 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Deploy core to ${{ env.TARGET_ENV }} env"
+      - name: "Deploy core to ${{ inputs.target_env }} env"
         run: |
-          helm upgrade --install vro helm/ -n va-abd-rrd-${{ inputs.target_env }}
+          VALUES_FILE="values-for-${{ inputs.target_env }}.yaml"
+          if [ -e "helm/${VALUES_FILE}" ]; then
+            HELM_ARGS="-f $VALUES_FILE"
+          fi
+
+          case "${{ inputs.target_env }}" in
+            dev|qa|sandbox) HELM_ARGS="$HELM_ARGS";;
+          esac
+
+          helm upgrade --install ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+            ${HELM_ARGS} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \

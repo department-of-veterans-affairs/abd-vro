@@ -40,12 +40,12 @@ global:
   # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
   environment: dev
 
-  # TODO: replace with images.tag or subchart's imageTag?
+  # TODO: Replace with images.tag or subchart's imageTag?
   # version is used in annotations for APP
   version: 0.1
 
   images:
-    pullSecretsName: abd-vro-ghcr
+    # Configurable b/c a different repo is used for signed images
     repo: abd-vro
     services:
       uriPrefix: vro
