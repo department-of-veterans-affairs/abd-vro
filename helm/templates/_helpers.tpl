@@ -12,6 +12,11 @@ imagePullSecrets:
 - name: {{ .Values.global.images.pullSecretsName }}
 {{- end }}
 
+{{- define "vro.commonEnvVars" -}}
+- name: ENV
+  value: {{ required "Expecting dev, prod, etc" .Values.global.environment }}
+{{- end }}
+
 {{- define "vro.imageRegistryPath" -}}
 {{- print "ghcr.io/department-of-veterans-affairs/" .Values.global.images.repo }}
 {{- end }}

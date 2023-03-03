@@ -36,3 +36,5 @@ dependencies:
     condition: redis.enabled
   - name: vro-app-chart
     condition: vro-app.enabled
+  - name: domain-rrd-chart
+    condition: domain-rrd.enabled

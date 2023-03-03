@@ -12,6 +12,8 @@ redis:
   enabled: true
 vro-app:
   enabled: true
+domain-rrd:
+  enabled: true
 # Enable as needed:
 console:
   enabled: false
