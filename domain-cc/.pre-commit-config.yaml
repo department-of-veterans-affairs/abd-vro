@@ -2,15 +2,6 @@
 # Auto-update the config to the latest repos' versions by executing: pre-commit autoupdate
 # Rather than disabling particular hooks (https://pre-commit.com/#temporarily-disabling-hooks), add an `exclude`
 
-# https://pre-commit.com/#regular-expressions
-exclude: >
-  (?x)^(
-      app/src/docker/docker-compose.yml
-  )
-
-# https://pre-commit.com/#confining-hooks-to-run-at-certain-stages
-# default_stages: [commit]
-
 repos:
   - repo: meta
     hooks:
@@ -27,7 +18,6 @@ repos:
         exclude: ^.*helm-.*$
       - id: destroyed-symlinks
       - id: detect-private-key
-        exclude: ^svc-lighthouse-api/.*/test/resources/application-test.properties$
       - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file
       - id: fix-byte-order-marker
       - id: mixed-line-ending
