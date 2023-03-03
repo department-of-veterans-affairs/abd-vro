@@ -52,6 +52,18 @@ jobs:
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:latest"
         docker push "${{ env.GHCR_PATH }}:latest"
 
+  secrel:
+    # only run for the internal repo -- SecRel doesn't work on public repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: SecRel Pipeline
+    needs: publish-image
+    # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
+    with:
+      config-file: .github/secrel/config.yml
+      images: ${{ env.GHCR_PATH }}:${{ inputs.image_tag }}
+    secrets: inherit
+
   notify_push:
     runs-on: ubuntu-latest
     steps:
