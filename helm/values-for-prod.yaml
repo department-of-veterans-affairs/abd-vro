@@ -13,9 +13,7 @@ global:
     storageSize: 2Gi
 
 rabbitmq-chart:
-  image:
-    tag: "3"
+  imageTag: "3"
 
 redis-chart:
-  image:
-    tag: "7"
+  imageTag: "7"

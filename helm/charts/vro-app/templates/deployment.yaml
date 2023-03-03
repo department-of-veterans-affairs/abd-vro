@@ -26,7 +26,7 @@ spec:
       initContainers:
         - name: pg-isready--{{ .Release.Name }}
           # TODO: This simple container does not need to use the big `db` image
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag  | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-postgres:{{ .Values.imageTag  | default .Values.global.imageTag }}
           env:
             - name: POSTGRES_FLYWAY_USER
               valueFrom:
@@ -54,7 +54,7 @@ spec:
               cpu: 10m
               memory: 256Mi
         - name: dbinit--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.images.dbInit.imageName }}:{{ .Values.images.dbInit.tag  | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-db-init:{{ .Values.imageTag  | default .Values.global.imageTag }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
           resources:
@@ -66,7 +66,7 @@ spec:
               memory: 1024Mi
       containers:
         - name: app--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.images.app.imageName }}:{{ .Values.images.app.tag  | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-app:{{ .Values.imageTag  | default .Values.global.imageTag }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}

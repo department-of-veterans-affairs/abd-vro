@@ -2,13 +2,10 @@
 # Tip: https://stackoverflow.com/questions/63157235/how-to-render-only-selected-template-in-helm
 
 labels:
-  # TODO: create separate label so that this console runs in same pod as postgres
   app: vro-console
 
-image:
-  name: dev_vro-console
-
 pvcClaimName:
+  # allow this to be configurable
   postgres: vro-pgdata-pvc-vro-postgres-0
 
 replicaCount: 1

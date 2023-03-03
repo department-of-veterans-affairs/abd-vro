@@ -3,7 +3,6 @@
 labels:
   app: rabbitmq
 
-image:
-  tag: "latest"
+imageTag: "latest"
 
 replicaCount: 1

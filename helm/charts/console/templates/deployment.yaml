@@ -19,7 +19,7 @@ spec:
       {{- include "vro.volume.pgdata.affinity" . | nindent 6 }}
       containers:
         - name: console--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-console:{{ .Values.imageTag | default .Values.global.imageTag }}
           stdin: true
           tty: true
           # Just spin & wait forever

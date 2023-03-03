@@ -8,7 +8,7 @@ spec:
     matchLabels: # has to match .spec.template.metadata.labels
       {{- toYaml .Values.labels | nindent 6 }}
   serviceName: "database-svc"
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   minReadySeconds: 10 # by default is 0
   template:
     metadata:
@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: postgres--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-postgres:{{ .Values.imageTag | default .Values.global.imageTag }}
           env:
             - name: ENV
               value: {{ required "expecting dev, prod, etc" .Values.global.environment }}

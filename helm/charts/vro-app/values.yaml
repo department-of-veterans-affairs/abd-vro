@@ -5,15 +5,6 @@ owner: VA-OCTO
 labels:
   app: vro-app
 
-images:
-  app:
-    imageName: dev_vro-app
-  db:
-    # Being used as the `pg-isready` container
-    imageName: dev_vro-postgres
-  dbInit:
-    imageName: dev_vro-db-init
-
 replicaCount: 1
 
 ports:

@@ -1,16 +1,6 @@
 labels:
   app: domain-rrd-services
 
-images:
-  svcLighthouseApi:
-    imageName: dev_vro-service-data-access
-  pdfGenerator:
-    imageName: dev_vro-service-pdfgenerator
-  dc7101accessor:
-    imageName: dev_vro-service-assessclaimdc7101
-  dc6602accessor:
-    imageName: dev_vro-service-assessclaimdc6602
-
 resources:
   requests:
     cpu: 150m
