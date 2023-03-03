@@ -18,7 +18,11 @@ imagePullSecrets:
 {{- end }}
 
 {{- define "vro.imageRegistryPath" -}}
-{{- print "ghcr.io/department-of-veterans-affairs/" .Values.global.images.repo }}
+{{- print "ghcr.io/department-of-veterans-affairs/" .Values.global.images.repo "/" .Values.global.imagePrefix }}
+{{- end }}
+
+{{- define "vro.imageTag" -}}
+{{- .Values.imageTag  | default .Values.global.imageTag }}
 {{- end }}
 
 {{- define "vro.postgresUrl" -}}

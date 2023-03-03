@@ -17,21 +17,21 @@ spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: dc7101accessor--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-service-assessclaimdc6602:{{ .Values.images.dc7101accessor.tag  | default .Values.global.imageTag }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc6602:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: dc6602accessor--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-service-assessclaimdc7101:{{ .Values.images.dc6602accessor.tag  | default .Values.global.imageTag }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc7101:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: pdfgenerator--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-service-pdfgenerator:{{ .Values.images.pdfGenerator.tag  | default .Values.global.imageTag }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-service-pdfgenerator:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
@@ -39,7 +39,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: service-data-access--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-service-data-access:{{ .Values.images.svcLighthouseApi.tag  | default .Values.global.imageTag }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-service-data-access:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}

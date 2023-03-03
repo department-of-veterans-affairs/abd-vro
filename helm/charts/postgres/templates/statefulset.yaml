@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: postgres--{{ .Release.Name }}
-          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.global.imagePrefix }}vro-postgres:{{ .Values.imageTag | default .Values.global.imageTag }}
+          image: {{ include "vro.imageRegistryPath" . }}/vro-postgres:{{ include "vro.imageTag" . }}
           env:
             - name: ENV
               value: {{ required "expecting dev, prod, etc" .Values.global.environment }}
