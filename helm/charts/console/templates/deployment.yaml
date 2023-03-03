@@ -44,23 +44,6 @@ spec:
           volumeMounts:
             {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
             {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
-        - name: root--{{ .Release.Name }}
-          image: ghcr.io/department-of-veterans-affairs/dots-tools-jenkins/community-alpine-3:1.0.2
-          # The postgres container requires the directory be owned by userid 70
-          # command: ["sh", "-c", "chown 70:70 /persist/postgres && ls -al /persist/postgres"]
-          # Wait forever (for debugging)
-          command: [ "/bin/sh", "-c", "--" ]
-          args: [ "while true; do sleep 30; done;" ]
-          resources:
-            requests:
-              cpu: 10m
-              memory: 16Mi
-            limits:
-              cpu: 100m
-              memory: 128Mi
-          volumeMounts:
-            {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
-            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
         {{- include "vro.volumes.pgdata" . | nindent 8 }}

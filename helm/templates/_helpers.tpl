@@ -170,7 +170,7 @@ valueFrom:
 {{- define "vro.volumes.pgdata" -}}
 - name: {{ .Values.global.pgdata.pvcName }}
   persistentVolumeClaim:
-    claimName: {{ .Values.global.pgdata.claimName }}
+    claimName: {{ .Values.global.pgdata.pvcName }}
 {{- end }}
 
 {{- define "vro.volumeMounts.pgdata" -}}
@@ -184,7 +184,7 @@ valueFrom:
 {{- define "vro.volumes.tracking" -}}
 - name: {{ .Values.global.tracking.pvcName }}
   persistentVolumeClaim:
-    claimName: {{ .Values.global.tracking.claimName }}
+    claimName: {{ .Values.global.tracking.pvcName }}
 {{- end }}
 
 {{- define "vro.volumeMounts.tracking" -}}
@@ -203,10 +203,13 @@ affinity:
   podAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     - labelSelector:
-        matchLabels:
-          {{- toYaml .Values.global.pgdata.labels | nindent 10 }}
+        matchExpressions:
+        - key: volume
+          operator: In
+          values:
+          - pgdatabase
           # app label value must match the labels in postgres/values.yaml
-          app: vro-postgres
+          # app: vro-postgres
       # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
       topologyKey: topology.kubernetes.io/zone
 {{- end }}

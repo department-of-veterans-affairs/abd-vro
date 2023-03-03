@@ -23,24 +23,18 @@ global:
   # ================= Constants =================
   # Should be referenced as .Values.global.someParam
 
-  # name cannot have underscore
-  # Used as imagePullSecrets, secretKeyRef.name, container name prefixes,
-  # virtual-service's uri.prefix and for env vars: SERVER_SERVLET_CONTEXTPATH, STARTER_OPENAPI_SERVERURL
-  #name: abd-vro
   hostnamePrefix: vro
 
   # Persistent Volumes
   pgdata:
-    pvcName: pgdata-persistent-storage
-    claimName: vro-pgdata-efs-claim
+    pvcName: vro-pgdata-pvc
     mountPath: /persist/postgres
     storageSize: 2Gi
     # EBS volumes require podAffinity, which relies on labels
     labels:
       volume: pgdatabase
   tracking:
-    pvcName: tracking-persistent-storage
-    claimName: vro-tracking-efs-claim
+    pvcName: vro-tracking-pvc
     mountPath: /persist/tracking
     storageSize: 1Gi
 

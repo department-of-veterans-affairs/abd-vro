@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  # Also used as the pod's prefix
+  name: vro-postgres
+spec:
+  selector:
+    matchLabels: # has to match .spec.template.metadata.labels
+      {{- toYaml .Values.labels | nindent 6 }}
+  serviceName: "database-svc"
+  replicas: 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels: # has to include .spec.selector.matchLabels
+        sidecar.istio.io/inject: "false"
+        {{- toYaml .Values.labels | nindent 8 }}
+        #TODO: rm { {- toYaml .Values.global.pgdata.labels | nindent 8 }}
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: postgres--{{ .Release.Name }}
+          image: {{ include "vro.imageRegistryPath" . }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Values.global.images.tag }}
+          env:
+            - name: ENV
+              value: {{ required "expecting dev, prod, etc" .Values.global.environment }}
+            # Following is for the DB superuser
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.superUsernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.superPasswordKey }}
+            - name: PGDATA
+              # https://hub.docker.com/_/postgres recommends using a subdirectory under the mounted directory
+              value: {{ .Values.global.pgdata.mountPath }}/pgdata
+            # Following is used to set up a user and DB schema for Flyway migrations
+            - name: FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
+            - name: FLYWAY_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgres.secretKeyRef.name }}
+                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+          ports:
+            - containerPort: {{ .Values.global.service.db.sourcePort }}
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          # This volume is for DB data to be persisted
+          volumeMounts:
+            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
+  volumeClaimTemplates:
+  - metadata:
+      # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>
+      name: {{ .Values.global.pgdata.pvcName }}
+      # The label is needed to ensure containers that use this volume are deployed in the same node. Such containers should
+      # use podAffinity https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+      # labels: { {- toYaml .Values.global.pgdata.labels | nindent 4 }}
+    spec:
+      accessModes:
+        # Due to several issues with EFS (https://dsva.slack.com/archives/C03UA9MV1EH/p1677507203922209),
+        # we're using EBS, which requires mounting containers to be in the same pod.
+        # EBS only supports ReadWriteOnce, which implies:
+        # "the volume can be mounted as read-write by a single node. ReadWriteOnce access mode still can
+        # allow multiple pods to access the volume when the pods are running on the same node."
+        - ReadWriteOnce
+      storageClassName: ebs-sc
+      resources:
+        requests:
+          storage: {{ .Values.global.pgdata.storageSize }}
