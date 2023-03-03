@@ -293,6 +293,12 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
+  @Test
+  void testIncompleteBloodPressures() {
+    testAutomatedClaimFullPositive("377", true);
+  }
+
+  @SneakyThrows
   // @Test You can do this to test cases when Sufficient Evidence is null
   // At this point it is not ready for automated test since assertions
   // on the end of process is not available easily.
