@@ -1,0 +1,126 @@
+name: Update Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - qa
+        - sandbox
+        - prod-test
+        - prod
+
+      image_tag:
+        description: 'First 7 of the commit hash, "latest", or "release-1.2.3"'
+        required: true
+        default: 'latest'
+        type: string
+
+      vro-app:
+        description: 'Enable VRO Application API'
+        required: true
+        type: boolean
+        default: true
+
+      domain-rrd:
+        description: "Enable domain RRD's microservices"
+        required: true
+        type: boolean
+        default: true
+
+      rabbitmq:
+        description: 'Enable MQ'
+        required: true
+        type: boolean
+        default: true
+
+      postgres:
+        description: 'Enable DB'
+        required: true
+        type: boolean
+        default: true
+
+      redis:
+        description: 'Enable Redis'
+        required: true
+        type: boolean
+        default: true
+
+      console:
+        description: 'Enable VRO Console'
+        required: true
+        type: boolean
+        default: false
+
+  # Allow other workflows to call this one
+  workflow_call:
+    inputs:
+      target_env:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+env:
+  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
+  RELEASE_NAME: vro
+
+jobs:
+  update-deployment:
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Set up kube config"
+        run: |
+          mkdir ~/.kube
+          case "${{ inputs.target_env }}" in
+            dev|qa|sandbox) KUBE_CONFIG="${{ secrets.DEV_KUBE_CONFIG }}";;
+            prod-test|prod) KUBE_CONFIG="${{ secrets.PROD_KUBE_CONFIG }}";;
+          esac
+          echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
+          chmod go-rwx ~/.kube/config
+
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
+        run: |
+          HELM_ARGS=""
+
+          VALUES_FILE="helm/values-for-${{ inputs.target_env }}.yaml"
+          if [ -e "${VALUES_FILE}" ]; then
+            HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
+          fi
+
+          set -v
+          if [ "${{ inputs.postgres }}" == "true" ]; then
+            helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+              ${HELM_ARGS} \
+              --set-string global.imageTag=${{ inputs.image_tag }} \
+              --set vro-app.enabled=${{ inputs.vro-app }} \
+              --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
+              --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
+              --set postgres.enabled=false \
+              --set redis.enabled=${{ inputs.redis }} \
+              --set console.enabled=${{ inputs.console }}
+          fi
+
+          helm upgrade --install --atomic ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+            ${HELM_ARGS} \
+            --set-string global.imageTag=${{ inputs.image_tag }} \
+            --set vro-app.enabled=${{ inputs.vro-app }} \
+            --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
+            --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
+            --set postgres.enabled=${{ inputs.postgres }} \
+            --set redis.enabled=${{ inputs.redis }} \
+            --set console.enabled=${{ inputs.console }}
+
+# TODO: retry for StatefulSets
+#   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet: ...
+#   spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 'updateStrategy' and 'minReadySeconds' are forbidden
+# TODO: Add Slack notifications

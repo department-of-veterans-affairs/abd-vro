@@ -1,0 +1,4 @@
+labels:
+  app: vro-postgres
+
+replicaCount: 1

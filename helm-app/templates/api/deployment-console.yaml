@@ -27,6 +27,9 @@ spec:
             # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
             topologyKey: topology.kubernetes.io/zone
       volumes:
+        - name: {{ .Values.volumes.tracking.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.tracking.claimName }}
         - name: persistent-storage
           persistentVolumeClaim:
             claimName: ebs-db-claim #This name should match that of the persistent volume claim created above
@@ -36,6 +39,9 @@ spec:
           imagePullPolicy: {{ .Values.images.console.imagePullPolicy }}
           stdin: true
           tty: true
+          # Just spin & wait forever
+          command: [ "/bin/sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
           env:
             - name: ENV
               value: {{ .Values.environment }}
@@ -93,3 +99,5 @@ spec:
           volumeMounts:
             - name: persistent-storage
               mountPath: /persist/postgres
+            - name: {{ .Values.volumes.tracking.name }}
+              mountPath: {{ .Values.volumes.tracking.mountPath }}
