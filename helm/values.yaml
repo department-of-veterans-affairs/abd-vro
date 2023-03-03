@@ -1,5 +1,8 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
+# To test: helm upgrade --install vro-test helm/ -n va-abd-rrd-dev --set-string global.images.tag=latest \
+#   --set console.enabled=true --set postgres.enabled=true --set vro-app.enabled=false --debug | less
+
 # Normal state:
 rabbitmq:
   enabled: true
@@ -13,15 +16,8 @@ vro-app:
 console:
   enabled: false
 
-# This file makes extensive use of YAML Anchors to reduce repetition.
-
-# global (reserved keyword) allows all subcharts to access values using .Values.global.someKey
-# However, this makes the subchart less independent: https://itnext.io/helm-3-umbrella-charts-global-values-in-sub-charts-666437d4ed28
-# so don't use .Values.global.someKey. Instead, use '<<: *anchor-global'
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
-  # ================= Constants =================
-  # Should be referenced as .Values.global.someParam
 
   hostnamePrefix: vro
 
@@ -34,11 +30,6 @@ global:
     pvcName: vro-tracking-pvc
     mountPath: /persist/tracking
     storageSize: 1Gi
-
-  # Not used: cluster: nonprod
-
-  # ================= Parameters =================
-  # Should be referenced as .Values.global.someParam
 
   # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
   environment: dev
@@ -59,8 +50,6 @@ global:
   # endpoint is api if ENV==prod; otherwise dev
   # Used by virtual-service's hosts
   endpoint: dev
-  # ================= Parameters =================
-
 
   service:
     app:
@@ -77,12 +66,6 @@ global:
     redis:
       sourcePort: 6379
       targetPort: 6379
-
-#  api:
-#    apiKeySecret: api
-#    apiKey01: apiKey01
-#    apiKey02: apiKey02
-#    vroNonProdKey: vroNonProd
 
   rabbitmq:
     secretKeyRef:
@@ -119,7 +102,3 @@ global:
       passwordKey: password
       urlKey: url
     # superDbnameKey: superDbname
-
-# To test:
-#   helm upgrade --install vro-test helm -n va-abd-rrd-dev --set-string global.images.tag=latest --set console.enabled=true --debug
-#   helm upgrade --install vro-test helm -n va-abd-rrd-dev --set rabbitmq.enabled=true --debug
