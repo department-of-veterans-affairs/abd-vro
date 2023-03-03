@@ -3,7 +3,7 @@
 
 labels:
   # TODO: create separate label so that this console runs in same pod as postgres
-  app: vro-postgres
+  app: vro-console
 
 image:
   name: dev_vro-console

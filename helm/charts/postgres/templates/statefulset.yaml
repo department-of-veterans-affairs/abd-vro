@@ -15,9 +15,9 @@ spec:
       labels: # has to include .spec.selector.matchLabels
         sidecar.istio.io/inject: "false"
         {{- toYaml .Values.labels | nindent 8 }}
-        #TODO: rm { {- toYaml .Values.global.pgdata.labels | nindent 8 }}
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.volume.console.affinity" . | nindent 6 }}
       terminationGracePeriodSeconds: 10
       containers:
         - name: postgres--{{ .Release.Name }}
@@ -69,6 +69,7 @@ spec:
           volumeMounts:
             {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
   volumeClaimTemplates:
+  # This template is used to create a PVC
   - metadata:
       # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>
       name: {{ .Values.global.pgdata.pvcName }}

@@ -7,16 +7,13 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels:
+    matchLabels: # must match the pod template's labels
       {{- toYaml .Values.labels | nindent 6 }}
-      # TODO: is the following line needed?
-      {{- toYaml .Values.global.pgdata.labels | nindent 6 }}
   template:
     metadata:
       labels:
         sidecar.istio.io/inject: "false"
         {{- toYaml .Values.labels | nindent 8 }}
-        {{- toYaml .Values.global.pgdata.labels | nindent 8 }}
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       {{- include "vro.volume.pgdata.affinity" . | nindent 6 }}
@@ -36,7 +33,7 @@ spec:
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
           resources:
             requests:
-              cpu: 150m
+              cpu: 10m
               memory: 512Mi
             limits:
               cpu: 1000m
@@ -46,4 +43,8 @@ spec:
             {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
-        {{- include "vro.volumes.pgdata" . | nindent 8 }}
+        #{ {- include "vro.volumes.pgdata" . | nindent 8 }}
+        - name: {{ .Values.global.pgdata.pvcName }}
+          persistentVolumeClaim:
+            # TODO: fix hardcoded name
+            claimName: vro-pgdata-pvc-vro-postgres-0

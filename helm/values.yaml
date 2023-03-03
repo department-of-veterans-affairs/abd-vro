@@ -30,9 +30,6 @@ global:
     pvcName: vro-pgdata-pvc
     mountPath: /persist/postgres
     storageSize: 2Gi
-    # EBS volumes require podAffinity, which relies on labels
-    labels:
-      volume: pgdatabase
   tracking:
     pvcName: vro-tracking-pvc
     mountPath: /persist/tracking

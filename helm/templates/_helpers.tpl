@@ -203,13 +203,27 @@ affinity:
   podAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     - labelSelector:
-        matchExpressions:
-        - key: volume
-          operator: In
-          values:
-          - pgdatabase
-          # app label value must match the labels in postgres/values.yaml
-          # app: vro-postgres
+        matchLabels:
+          # app label's value must match the labels in postgres/values.yaml
+          app: vro-postgres
       # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
+      topologyKey: topology.kubernetes.io/zone
+{{- end }}
+
+{{/*
+   This is needed for example, when the postgres StatefulSet is deleted and redeployed.
+   This affinity will cause the StatefulSet to be deployed in the same node as the console pod,
+   which has mounted the EBS postgres data volume.
+   Without this, the StatefulSet can be created on a different node and will error b/c an EBS
+   volume cannot be mounted on multiple nodes simulaneously.
+*/}}
+{{- define "vro.volume.console.affinity" -}}
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          # app label's value must match the labels in postgres/values.yaml
+          app: vro-console
       topologyKey: topology.kubernetes.io/zone
 {{- end }}
