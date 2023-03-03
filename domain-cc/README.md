@@ -24,3 +24,12 @@ Install dependencies and run webserver
 pip3 install -r requirements.txt
 uvicorn api:app --reload
 ```
+
+## Contributing
+### Install dev dependencies
+```
+source ~/.virtualenvs/domain-cc/bin/activate
+pip install dev-requirements.txt
+# MAKE SURE you are in adb-vro/domain-cc to get the right pre-commit-config.yaml installed
+pre-commit install
+```
