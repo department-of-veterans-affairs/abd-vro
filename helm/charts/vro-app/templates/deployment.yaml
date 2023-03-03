@@ -226,11 +226,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipPassword }}
-            - name: BIP_ALIAS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipAlias }}
           resources:
             requests:
               cpu: 150m

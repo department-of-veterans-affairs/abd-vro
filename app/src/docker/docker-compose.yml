@@ -165,7 +165,6 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_ALIAS: ${BIP_ALIAS}
       BIP_CLAIM_URL: "mock-bip-claims-api:8097"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
