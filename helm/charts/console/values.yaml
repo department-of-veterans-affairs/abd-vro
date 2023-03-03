@@ -8,4 +8,7 @@ labels:
 image:
   name: dev_vro-console
 
+pvcClaimName:
+  postgres: vro-pgdata-pvc-vro-postgres-0
+
 replicaCount: 1

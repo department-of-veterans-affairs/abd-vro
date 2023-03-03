@@ -26,8 +26,7 @@ spec:
           command: [ "/bin/sh", "-c", "--" ]
           args: [ "while true; do sleep 30; done;" ]
           env:
-            - name: ENV
-              value: {{ required "expecting dev, prod, etc" .Values.global.environment }}
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
@@ -43,8 +42,6 @@ spec:
             {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
-        #{ {- include "vro.volumes.pgdata" . | nindent 8 }}
         - name: {{ .Values.global.pgdata.pvcName }}
           persistentVolumeClaim:
-            # TODO: fix hardcoded name
-            claimName: vro-pgdata-pvc-vro-postgres-0
+            claimName: {{ .Values.pvcClaimName.postgres }}

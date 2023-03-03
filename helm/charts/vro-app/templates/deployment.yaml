@@ -71,8 +71,7 @@ spec:
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
-            - name: ENV
-              value: {{ .Values.global.environment }}
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
             - name: apiAuthKey01
               valueFrom:
                 secretKeyRef:
