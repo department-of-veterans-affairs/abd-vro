@@ -71,7 +71,7 @@ env:
   RELEASE_NAME: vro
 
 jobs:
-  deploy-service:
+  update-deployment:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
@@ -88,18 +88,29 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Deploy core to ${{ inputs.target_env }} env"
+      - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
         run: |
-          VALUES_FILE="values-for-${{ inputs.target_env }}.yaml"
-          if [ -e "helm/${VALUES_FILE}" ]; then
-            HELM_ARGS="-f $VALUES_FILE"
+          HELM_ARGS=""
+
+          VALUES_FILE="helm/values-for-${{ inputs.target_env }}.yaml"
+          if [ -e "${VALUES_FILE}" ]; then
+            HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
           fi
 
-          case "${{ inputs.target_env }}" in
-            dev|qa|sandbox) HELM_ARGS="$HELM_ARGS";;
-          esac
+          set -v
+          if [ "${{ inputs.postgres }}" == "true" ]; then
+            helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+              ${HELM_ARGS} \
+              --set-string global.imageTag=${{ inputs.image_tag }} \
+              --set vro-app.enabled=${{ inputs.vro-app }} \
+              --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
+              --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
+              --set postgres.enabled=false \
+              --set redis.enabled=${{ inputs.redis }} \
+              --set console.enabled=${{ inputs.console }}
+          fi
 
-          helm upgrade --install ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          helm upgrade --install --atomic ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             ${HELM_ARGS} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
@@ -108,3 +119,8 @@ jobs:
             --set postgres.enabled=${{ inputs.postgres }} \
             --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
+
+# TODO: retry for StatefulSets
+#   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet: ...
+#   spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 'updateStrategy' and 'minReadySeconds' are forbidden
+# TODO: Add Slack notifications

@@ -1,8 +1,5 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
-# To test: helm upgrade --install vro-test helm/ -n va-abd-rrd-dev \
-#   --set console.enabled=true --set postgres.enabled=true --set vro-app.enabled=false --debug | less
-
 # Normal state:
 rabbitmq:
   enabled: true

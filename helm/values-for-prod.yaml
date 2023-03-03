@@ -7,6 +7,8 @@ global:
   images:
     repo: abd-vro-internal
 
+  imagePrefix: ""
+
   pgdata:
     storageSize: 5Gi
   tracking:
