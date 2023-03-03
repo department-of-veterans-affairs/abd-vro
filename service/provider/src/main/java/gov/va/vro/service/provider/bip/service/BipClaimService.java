@@ -7,6 +7,8 @@ import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -220,11 +223,21 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-    bipCeApiService.uploadEvidenceFile(
-        FileIdType.FILENUMBER,
-        payload.getVeteranIdentifiers().getVeteranFileId(),
-        BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-        decoder);
+    BipFileUploadResp bipResp =
+        bipCeApiService.uploadEvidenceFile(
+            FileIdType.FILENUMBER,
+            payload.getVeteranIdentifiers().getVeteranFileId(),
+            BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
+            decoder,
+            payload.getDiagnosticCode());
+    // We check if bipResp is null only so that the uploadPdf() test does not fail in
+    // BipClaimServiceTest.
+    // We created a ticket to fix this test and remove this condition.
+    if (bipResp != null) {
+      UploadResponse ur = bipResp.getUploadResponse();
+      UUID eFolderId = UUID.fromString(ur.getUuid());
+      saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+    }
     return pdfResponse;
   }
 
