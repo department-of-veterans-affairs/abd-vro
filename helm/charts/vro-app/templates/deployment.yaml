@@ -17,6 +17,7 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels | nindent 8 }}
       annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
         app.kubernetes.io/podowner: {{ .Values.owner }}
         app.kubernetes.io/podname: {{ .Values.name }}
         app.kubernetes.io/podversion: {{ .Values.global.version | quote }}

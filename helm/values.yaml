@@ -30,6 +30,8 @@ global:
   # tag is used to set the default image tag for all VRO images
   imageTag: "latest"
 
+  commitSha: placeholder
+
   # Persistent Volumes
   pgdata:
     pvcName: vro-pgdata-pvc

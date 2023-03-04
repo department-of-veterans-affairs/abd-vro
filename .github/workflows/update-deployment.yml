@@ -101,11 +101,12 @@ jobs:
       - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
         run: |
           if [ "${{ inputs.postgres }}" == "true" ]; then
+            # Delete StatefulSets without deleting pods
             # Workaround for helm upgrade reporting error due to StatefulSets:
             #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
             #     Forbidden: updates to statefulset spec for fields other than ...
             # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
-            kubectl delete statefulsets --cascade=orphan vro-postgres -n va-abd-rrd-${{ inputs.target_env }} || \
+            kubectl delete statefulsets -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan vro-postgres || \
               echo "It's ok if statefulset vro-postgres doesn't exist."
           fi
 
@@ -116,18 +117,16 @@ jobs:
             HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
           fi
 
-          set -v
-          if [ "${{ inputs.rollback }}" == "true" ] || [ ${{ inputs.target_env }} == "prod" ]; then
+          if [ "${{ inputs.rollback }}" == "true" ] || [ "${{ inputs.target_env }}" == "prod" ]; then
             HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
           echo "HELM_ARGS: $HELM_ARGS"
           helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             ${HELM_ARGS} \
-            --set-string info.version=${{ inputs.image_tag }} \
-            --set-string info.git_hash=${GITHUB_SHA} \
-            --set-string info.deploy_env=${{ inputs.target_env }} \
+            --set-string global.environment=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
+            --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
             --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
@@ -135,7 +134,4 @@ jobs:
             --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
 
-# TODO: retry for StatefulSets
-#   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet: ...
-#   spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 'updateStrategy' and 'minReadySeconds' are forbidden
 # TODO: Add Slack notifications

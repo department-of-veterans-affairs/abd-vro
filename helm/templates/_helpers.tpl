@@ -18,7 +18,7 @@ imagePullSecrets:
 {{- end }}
 
 {{- define "vro.imageRegistryPath" -}}
-{{- print "ghcr.io/department-of-veterans-affairs/" .Values.global.images.repo "/" .Values.global.imagePrefix }}
+ghcr.io/department-of-veterans-affairs/{{ .Values.global.images.repo }}/{{ .Values.global.imagePrefix }}
 {{- end }}
 
 {{- define "vro.imageTag" -}}
@@ -32,10 +32,12 @@ imagePullSecrets:
   .Values.global.service.db.databaseName }}
 {{- end }}
 
-{{/***************************************************************
-   Ports for services
-*/}}
-
+{{- define "vro.annotations.pod" -}}
+vro/commit-sha: {{ .Values.global.commitSha }}
+vro/environment: {{ .Values.global.environment }}
+vro/image-repo: {{ .Values.global.images.repo }}
+vro/image-tag: {{ include "vro.imageTag" . | print }}
+{{- end }}
 
 {{/***************************************************************
   Reusable templates for accessing K8s secrets
