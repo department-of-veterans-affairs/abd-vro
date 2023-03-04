@@ -21,6 +21,10 @@ imagePullSecrets:
 ghcr.io/department-of-veterans-affairs/{{ .Values.global.images.repo }}/{{ .Values.global.imagePrefix }}
 {{- end }}
 
+{{- define "vro.containerSuffix" -}}
+--{{ .Values.global.environment }}
+{{- end }}
+
 {{- define "vro.imageTag" -}}
 {{- .Values.imageTag  | default .Values.global.imageTag }}
 {{- end }}
@@ -32,11 +36,13 @@ ghcr.io/department-of-veterans-affairs/{{ .Values.global.images.repo }}/{{ .Valu
   .Values.global.service.db.databaseName }}
 {{- end }}
 
+
 {{- define "vro.annotations.pod" -}}
 vro/commit-sha: {{ .Values.global.commitSha }}
 vro/environment: {{ .Values.global.environment }}
 vro/image-repo: {{ .Values.global.images.repo }}
-vro/image-tag: {{ include "vro.imageTag" . | print }}
+# annotations is a map[string] to string values; print and quote it in case it's a number
+vro/image-tag: {{ include "vro.imageTag" . | print | quote }}
 {{- end }}
 
 {{/***************************************************************

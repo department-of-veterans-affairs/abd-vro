@@ -25,7 +25,7 @@ spec:
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
-        - name: pg-isready--{{ .Release.Name }}
+        - name: pg-isready{{ include "vro.containerSuffix" . }}
           # TODO: This simple container does not need to use the big `db` image
           image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
           env:
@@ -54,7 +54,7 @@ spec:
             limits:
               cpu: 10m
               memory: 256Mi
-        - name: dbinit--{{ .Release.Name }}
+        - name: dbinit{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
@@ -66,7 +66,7 @@ spec:
               cpu: 1000m
               memory: 1024Mi
       containers:
-        - name: app--{{ .Release.Name }}
+        - name: app{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-app:{{ include "vro.imageTag" . }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
