@@ -1,4 +1,4 @@
-name: Publish and deploy images
+name: "4. Publish images, optionally deploy"
 
 on:
   # Allow manual triggering
@@ -39,6 +39,10 @@ on:
         required: false
         type: boolean
         default: true
+      deploy:
+        required: true
+        type: boolean
+        default: false
 
 # Ensures that only one deploy per env will run at a time.
 concurrency:
@@ -67,13 +71,13 @@ jobs:
           [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
           echo "GITHUB_SHA $GITHUB_SHA"
           echo "IMAGE_TAG  $IMAGE_TAG"
-          # Ff the tag is less than 7 characters, fail
-          [ "${#IMAGE_TAG}" lt 7 ] && exit 2
+          # If the tag is less than 7 characters, fail
+          [ "${#IMAGE_TAG}" -lt 7 ] && exit 2
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
           case "${{ inputs.target_env }}" in
-            dev|qa) echo 'image_prefix="dev_"' >> $GITHUB_OUTPUT
-            sandbox|prod-test|prod) echo 'image_prefix=""' >> $GITHUB_OUTPUT
+            dev|qa) echo 'image_prefix=dev_' >> $GITHUB_OUTPUT;;
+            sandbox|prod-test|prod) echo 'image_prefix=' >> $GITHUB_OUTPUT;;
           esac
 
   publish-images:
@@ -126,6 +130,7 @@ jobs:
         run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
+    if: ${{ inputs.deploy }}
     needs: [image-props, publish-images]
     runs-on: ubuntu-latest
     outputs:

@@ -1,4 +1,6 @@
-name: Add issue comment to keep machine user active
+name: "9. Keep machine user active"
+# To keep machine user active, this workflow adds a comment to an issue using
+# the machine user's Personal Access Token.
 # See https://github.com/department-of-veterans-affairs/abd-vro-internal/issues/28
 
 on:

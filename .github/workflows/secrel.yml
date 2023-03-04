@@ -1,4 +1,4 @@
-name: "SecRel workflow"
+name: "2. SecRel workflow"
 
 on:
   # Trigger on every code push to main and develop branches
