@@ -21,6 +21,12 @@ on:
         default: 'latest'
         type: string
 
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        default: false
+        type: boolean
+
       vro-app:
         description: 'Enable VRO Application API'
         required: true
@@ -66,6 +72,9 @@ on:
       image_tag:
         required: true
         type: string
+      rollback:
+        required: true
+        type: boolean
 
 env:
   SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
@@ -91,6 +100,15 @@ jobs:
 
       - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
         run: |
+          if [ "${{ inputs.postgres }}" == "true" ]; then
+            # Workaround for helm upgrade reporting error due to StatefulSets:
+            #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
+            #     Forbidden: updates to statefulset spec for fields other than ...
+            # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
+            kubectl delete statefulsets --cascade=orphan vro-postgres -n va-abd-rrd-${{ inputs.target_env }} || \
+              echo "It's ok if statefulset vro-postgres doesn't exist."
+          fi
+
           HELM_ARGS=""
 
           VALUES_FILE="helm/values-for-${{ inputs.target_env }}.yaml"
@@ -99,20 +117,16 @@ jobs:
           fi
 
           set -v
-          if [ "${{ inputs.postgres }}" == "true" ]; then
-            helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
-              ${HELM_ARGS} \
-              --set-string global.imageTag=${{ inputs.image_tag }} \
-              --set vro-app.enabled=${{ inputs.vro-app }} \
-              --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
-              --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
-              --set postgres.enabled=false \
-              --set redis.enabled=${{ inputs.redis }} \
-              --set console.enabled=${{ inputs.console }}
+          if [ "${{ inputs.rollback }}" == "true" ] || [ ${{ inputs.target_env }} == "prod" ]; then
+            HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
-          helm upgrade --install --atomic ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          echo "HELM_ARGS: $HELM_ARGS"
+          helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             ${HELM_ARGS} \
+            --set-string info.version=${{ inputs.image_tag }} \
+            --set-string info.git_hash=${GITHUB_SHA} \
+            --set-string info.deploy_env=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \

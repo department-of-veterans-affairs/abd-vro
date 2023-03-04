@@ -1,5 +1,7 @@
 
 global:
+  environment: sandbox
+
   images:
     repo: abd-vro-internal
 
