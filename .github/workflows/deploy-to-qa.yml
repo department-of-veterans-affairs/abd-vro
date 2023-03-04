@@ -12,4 +12,5 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       target_env: qa
+      deploy: true
     secrets: inherit

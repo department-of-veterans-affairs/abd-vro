@@ -1,4 +1,4 @@
-name: Delete old workflow runs
+name: "9. Delete old workflow runs"
 on:
   schedule:
     # Run monthly, at 00:00 on the 1st day of month.
