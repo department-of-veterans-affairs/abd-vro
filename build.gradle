@@ -142,7 +142,8 @@ ext {
     ':mock-bip-ce-api',
     ':mock-bip-claims-api',
     ':mock-mas-api',
-    ':mock-lighthouse-api'
+    ':mock-lighthouse-api',
+    ':domain-xample:workflows-xample'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
