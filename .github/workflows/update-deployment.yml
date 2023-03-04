@@ -1,4 +1,4 @@
-name: Update Deployment
+name: "1. Update Deployment"
 
 on:
   workflow_dispatch:
@@ -66,6 +66,7 @@ on:
       image_tag:
         required: true
         type: string
+
 env:
   SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
   RELEASE_NAME: vro

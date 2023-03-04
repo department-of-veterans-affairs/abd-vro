@@ -1,4 +1,4 @@
-name: Publish and deploy images
+name: "4. Publish images, optionally deploy"
 
 on:
   # Allow manual triggering
@@ -25,6 +25,11 @@ on:
         required: true
         type: boolean
         default: true
+      deploy:
+        description: "Deploy to chosen environment?"
+        required: true
+        type: boolean
+        default: false
 
   # Allow other workflows to call this one
   workflow_call:
@@ -39,6 +44,10 @@ on:
         required: false
         type: boolean
         default: true
+      deploy:
+        required: true
+        type: boolean
+        default: false
 
 # Ensures that only one deploy per env will run at a time.
 concurrency:
@@ -67,18 +76,16 @@ jobs:
           [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
           echo "GITHUB_SHA $GITHUB_SHA"
           echo "IMAGE_TAG  $IMAGE_TAG"
-          # Ff the tag is less than 7 characters, fail
-          [ "${#IMAGE_TAG}" lt 7 ] && exit 2
+          # If the tag is less than 7 characters, fail
+          [ "${#IMAGE_TAG}" -lt 7 ] && exit 2
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
           case "${{ inputs.target_env }}" in
-            dev|qa) echo 'image_prefix="dev_"' >> $GITHUB_OUTPUT
-            sandbox|prod-test|prod) echo 'image_prefix=""' >> $GITHUB_OUTPUT
+            dev|qa) echo 'image_prefix=dev_' >> $GITHUB_OUTPUT;;
+            sandbox|prod-test|prod) echo 'image_prefix=' >> $GITHUB_OUTPUT;;
           esac
 
   publish-images:
-    # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     needs: image-props
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
@@ -95,13 +102,13 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: ":arrow_forward: Starting \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            to *${{inputs.target_env}}* using images with prefix \
-            `${{ needs.image-props.outputs.image-prefix }}` \
-            and tag `${{ needs.image-props.outputs.image-tag }}` \n\
-            of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
-            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
+          slack-text: ":arrow_forward: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Publishing> \
+            images with prefix `${{ needs.image-props.outputs.image-prefix }}` \
+            and tag `${{ needs.image-props.outputs.image-tag }}` \
+            from ${{github.ref_type}} `${{github.ref_name}}`, \n\
+            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ...\n\
+            (Deploy to *${{inputs.target_env}}*? ${{ inputs.deploy }})"
 
       - name: "Set slack-thread-id output for later use"
         id: slack-thread-id
@@ -121,11 +128,15 @@ jobs:
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ inputs.run_tests }}
 
+      - name: "Publish-images completed"
+        run: echo "JOB_STATUS=completed" >> $GITHUB_ENV
+
       - name: "Publish-images job cancelled"
         if: cancelled()
         run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
+    if: ${{ inputs.deploy }}
     needs: [image-props, publish-images]
     runs-on: ubuntu-latest
     outputs:
@@ -178,8 +189,7 @@ jobs:
   notify-slack:
     needs: [ publish-images, deploy-images ]
     runs-on: ubuntu-latest
-    # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
-    if: always() && github.repository == 'department-of-veterans-affairs/abd-vro'
+    if: always()
     steps:
       - name: "Set cancelled deployment message"
         if: ${{ needs.publish-images.outputs.job_status == 'cancelled' || needs.deploy-images.outputs.job_status == 'cancelled' }}
@@ -188,13 +198,20 @@ jobs:
           echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
       - name: "Set successful deployment message"
-        if: ${{ needs.deploy-images.outputs.job_status == 'success' }}
+        if: ${{ inputs.deploy }} && ${{ needs.deploy-images.outputs.job_status == 'success' }}
         run: |
           echo 'DEPLOY_STATE_TEXT=:panda_cool: Deployed!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=green-check' >> $GITHUB_ENV
+
+      - name: "Set successful published message"
+        if: ${{ ! inputs.deploy }} && ${{ needs.publish-images.outputs.job_status == 'completed' }}
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:panda-yay: Images published! (No deploy requested)' >> $GITHUB_ENV
           echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
 
-      # If either of the deploy jobs fail,
-      # the DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI should not change from its default "failure" state
+      # If either of the jobs fail,
+      # DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI remain their default "failure" values
+
       - name: "Post deployment status in Slack thread"
         if: always()
         uses: archive/github-actions-slack@v2.6.0

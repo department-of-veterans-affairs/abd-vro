@@ -1,4 +1,4 @@
-name: Publish 3rd-party image
+name: "5. Publish 3rd-party image"
 
 # SecRel will not sign images outside the scope of the repository that's calling SecRel,
 # so the image must exist in abd-vro-internal for SecRel to sign the images (required for sandbox and prod environments).
@@ -31,6 +31,8 @@ env:
 
 jobs:
   publish-image:
+    outputs:
+      published-images: ${{ steps.docker-push.outputs.images_list }}
     runs-on: ubuntu-latest
     steps:
     - name: "Login to GitHub Container Registry"
@@ -41,6 +43,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: "Publish images using tags '${{ inputs.image_tag }}' and 'latest'"
+      id: docker-push
       shell: bash
       run: |
         docker pull "${{ inputs.image_name }}:${{ inputs.image_tag }}"
@@ -52,6 +55,10 @@ jobs:
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:latest"
         docker push "${{ env.GHCR_PATH }}:latest"
 
+        echo "images_list<<EOF" >> $GITHUB_OUTPUT
+        echo "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
   secrel:
     # only run for the internal repo -- SecRel doesn't work on public repos
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
@@ -61,7 +68,7 @@ jobs:
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
     with:
       config-file: .github/secrel/config.yml
-      images: ${{ env.GHCR_PATH }}:${{ inputs.image_tag }}
+      images: ${{ needs.publish-image.outputs.published-images }}
     secrets: inherit
 
   notify_push:
