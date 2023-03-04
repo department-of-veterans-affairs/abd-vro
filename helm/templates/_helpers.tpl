@@ -38,7 +38,7 @@ ghcr.io/department-of-veterans-affairs/{{ .Values.global.images.repo }}/{{ .Valu
 
 
 {{- define "vro.annotations.pod" -}}
-vro/commit-sha: {{ .Values.global.commitSha }}
+# Don't add annotations that change frequently (like global.commitSha) as it will cause the pod to be updated
 vro/environment: {{ .Values.global.environment }}
 vro/image-repo: {{ .Values.global.images.repo }}
 # annotations is a map[string] to string values; print and quote it in case it's a number
