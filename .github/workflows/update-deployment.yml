@@ -27,38 +27,44 @@ on:
         default: false
         type: boolean
 
+      restart:
+        description: 'Shut down current deployment completely, then deploy'
+        required: true
+        default: false
+        type: boolean
+
       vro-app:
-        description: 'Enable VRO Application API'
+        description: 'Enable & update VRO Application API'
         required: true
         type: boolean
         default: true
 
       domain-rrd:
-        description: "Enable domain RRD's microservices"
+        description: "Enable & update domain RRD's microservices"
         required: true
         type: boolean
         default: true
 
       rabbitmq:
-        description: 'Enable MQ'
+        description: 'Enable & update MQ'
         required: true
         type: boolean
         default: true
 
       postgres:
-        description: 'Enable DB'
+        description: 'Enable & update DB'
         required: true
         type: boolean
         default: true
 
       redis:
-        description: 'Enable Redis'
+        description: 'Enable & update Redis'
         required: true
         type: boolean
         default: true
 
       console:
-        description: 'Enable VRO Console'
+        description: 'Enable & update VRO Console'
         required: true
         type: boolean
         default: false
@@ -98,18 +104,23 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      - name: "Shutting down deployment in ${{ inputs.target_env }} env"
+        if: ${{ inputs.restart }}
+        run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
+
+      - name: "Workaround for postgres StatefulSet"
+        if: ${{ ! inputs.restart }} && ${{ inputs.postgres }}
+        run: |
+          # Delete StatefulSets without deleting pods
+          # Workaround for helm upgrade reporting error due to StatefulSets:
+          #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
+          #     Forbidden: updates to statefulset spec for fields other than ...
+          # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
+          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan || \
+            echo "It's ok if statefulset vro-postgres doesn't exist."
+
       - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
         run: |
-          if [ "${{ inputs.postgres }}" == "true" ]; then
-            # Delete StatefulSets without deleting pods
-            # Workaround for helm upgrade reporting error due to StatefulSets:
-            #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
-            #     Forbidden: updates to statefulset spec for fields other than ...
-            # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
-            kubectl delete statefulsets -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan vro-postgres || \
-              echo "It's ok if statefulset vro-postgres doesn't exist."
-          fi
-
           HELM_ARGS=""
 
           VALUES_FILE="helm/values-for-${{ inputs.target_env }}.yaml"
@@ -122,7 +133,8 @@ jobs:
           fi
 
           echo "HELM_ARGS: $HELM_ARGS"
-          helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          helm upgrade ${{ env.RELEASE_NAME }} helm/ \
+            --install --wait -n va-abd-rrd-${{ inputs.target_env }} \
             ${HELM_ARGS} \
             --set-string global.environment=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
