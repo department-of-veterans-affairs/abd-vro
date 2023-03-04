@@ -45,6 +45,6 @@ public interface VerificationResource {
   @GetMapping("/bip-verification-test")
   @ResponseStatus(HttpStatus.OK)
   @Timed(value = "bip-verification-test")
-  @Tag(name = "BIP Verification Test")
+  @Tag(name = "Verification Test")
   ResponseEntity<BipVerificationResponse> bipVerificationTest();
 }

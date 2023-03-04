@@ -65,7 +65,7 @@ public class BipCeApiService implements IBipCeApiService {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
       log.info("Call {} to uploadEvidenceFile for {}", url, idtype.name());
 
-      HttpHeaders headers = getBipHeader();
+      HttpHeaders headers = getBipHeader(MediaType.MULTIPART_FORM_DATA);
       String headerFolderUri = String.format(X_FOLDER_URI, idtype.name(), fileId);
       headers.set("X-Folder-URI", headerFolderUri);
 
@@ -106,7 +106,7 @@ public class BipCeApiService implements IBipCeApiService {
     String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + DOCUMENT_TYPES;
     log.info("Call {} to documentTypes", url);
 
-    HttpHeaders headers = getBipHeader();
+    HttpHeaders headers = getBipHeader(MediaType.APPLICATION_JSON);
     HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
     ResponseEntity<String> response =
@@ -115,10 +115,10 @@ public class BipCeApiService implements IBipCeApiService {
     return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
   }
 
-  private HttpHeaders getBipHeader() throws BipException {
+  private HttpHeaders getBipHeader(MediaType mediaType) throws BipException {
     try {
       HttpHeaders bipHttpHeaders = new HttpHeaders();
-      bipHttpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+      bipHttpHeaders.setContentType(mediaType);
 
       String jwt = createJwt();
       bipHttpHeaders.add("Authorization", "Bearer " + jwt);

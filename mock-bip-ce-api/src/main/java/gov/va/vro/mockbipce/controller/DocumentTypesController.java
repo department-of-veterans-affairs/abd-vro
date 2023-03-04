@@ -13,9 +13,11 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class DocumentTypesController implements DocumentTypesApi {
 
+  /** Not fully implemented. Only used for connectivity testing. */
   @SneakyThrows
   @Override
   public ResponseEntity<String> getDocumentTypes() {
+    log.info("Returning an empty array as document types...");
     return new ResponseEntity<>("[]", HttpStatus.OK);
   }
 }

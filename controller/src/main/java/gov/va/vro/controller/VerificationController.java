@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequiredArgsConstructor
 public class VerificationController implements VerificationResource {
-  private IBipApiService bipApiService;
-  private IBipCeApiService bipCeApiService;
+  private final IBipApiService bipApiService;
+  private final IBipCeApiService bipCeApiService;
 
   @Override
   public ResponseEntity<BipVerificationResponse> bipVerificationTest() {
