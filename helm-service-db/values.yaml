@@ -5,7 +5,7 @@ environment: dev # The .Values.environment is computed by the deploy plugin - it
 cluster: nonprod
 # TODO: How is version used? What should this be set to?
 version: 0.1
-replicaCount: 1
+# replicaCount: 1
 
 labels:
   db:
@@ -14,23 +14,20 @@ labels:
     pod:
       <<: *labels-db-global
       sidecar.istio.io/inject: "false"
+      # volume label is to ensure the db pod runs in the same node as the PVC for db data storage
+      volume: database
 
 images:
   registry: ghcr.io
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
   repo: abd-vro
-# BEGIN image-names-db.sh replacement block (do not modify this block)
-# The following image list is updated by image-names-db.sh
   db:
     imageName: dev_vro-postgres
     tag: tagPlaceholder
-    imagePullPolicy: Always
-  dbInit:
-    imageName: dev_vro-db-init
+  console:
+    imageName: dev_vro-console
     tag: tagPlaceholder
-    imagePullPolicy: Always
-# END image-names-db.sh replacement block (do not modify this block)
 
 resources:
   db:
@@ -73,3 +70,13 @@ dbinit:
   urlKey: url
   usernameKey: username
   passwordKey: password
+
+rabbitmq:
+  secretName: rabbitmq
+  usernameKey: User
+  passwordKey: Pass
+
+# Needed to connect to Redis
+redis:
+  secretName: redis
+  passwordKey: redisPassword

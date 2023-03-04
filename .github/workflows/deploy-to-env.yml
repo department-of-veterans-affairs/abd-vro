@@ -1,4 +1,4 @@
-name: Publish and deploy images
+name: "4. Publish images, optionally deploy"
 
 on:
   # Allow manual triggering
@@ -12,17 +12,19 @@ on:
         options:
           - dev
           - qa
-      image_prefix:
-        description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
-        default: 'dev_'
-        type: choice
-        options:
-          - 'dev_'
-          - ''
+          - sandbox
+          - prod-test
+          - prod
       image_tag:
-        description: 'The tag/version for the image; default is the first 7 of the commit hash'
+        description: "Image tag. If blank, the first 7 characters of the branch's commit hash is used"
         required: false
-        default: ${GITHUB_SHA}
+        type: string
+        default: ''
+      run_tests:
+        description: "Run Gradle tests?"
+        required: true
+        type: boolean
+        default: true
 
   # Allow other workflows to call this one
   workflow_call:
@@ -30,12 +32,17 @@ on:
       target_env:
         required: true
         type: string
-      image_prefix:
-        required: true
-        type: string
       image_tag:
         required: false
         type: string
+      run_tests:
+        required: false
+        type: boolean
+        default: true
+      deploy:
+        required: true
+        type: boolean
+        default: false
 
 # Ensures that only one deploy per env will run at a time.
 concurrency:
@@ -45,30 +52,38 @@ env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   # Default to failure messages
-  DEPLOY_STATE_TEXT: ':panda_shocked: Deployment failed!'
+  DEPLOY_STATE_TEXT: ':panda_shocked: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Deployment> failed!'
   DEPLOY_STATE_EMOJI: 'x'
   JOB_STATUS: 'failed'
 
 jobs:
-  set-image-props:
+  image-props:
     outputs:
-      image-tag: ${{ steps.image-props.outputs.image_tag }}
+      image-tag: ${{ steps.set-image-props.outputs.image_tag }}
+      image-prefix: ${{ steps.set-image-props.outputs.image_prefix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Determine image properties"
-        id: image-props
+        id: set-image-props
         run: |
           IMAGE_TAG=${{ inputs.image_tag }}
           # if $IMAGE_TAG is empty, then set to first characters of GITHUB_SHA
           [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
           echo "GITHUB_SHA $GITHUB_SHA"
           echo "IMAGE_TAG  $IMAGE_TAG"
+          # If the tag is less than 7 characters, fail
+          [ "${#IMAGE_TAG}" -lt 7 ] && exit 2
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+          case "${{ inputs.target_env }}" in
+            dev|qa) echo 'image_prefix=dev_' >> $GITHUB_OUTPUT;;
+            sandbox|prod-test|prod) echo 'image_prefix=' >> $GITHUB_OUTPUT;;
+          esac
 
   publish-images:
     # Since this workflow is only designed for dev and qa, only run this job in the abd-vro repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
-    needs: set-image-props
+    needs: image-props
     outputs:
       slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
       job_status: ${{ env.JOB_STATUS }}
@@ -86,8 +101,9 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: Starting \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|deploy> \
-            to *${{inputs.target_env}}* using images with prefix `${{ inputs.image_prefix }}` \
-            and tag `${{ needs.set-image-props.outputs.image-tag }}` \n\
+            to *${{inputs.target_env}}* using images with prefix \
+            `${{ needs.image-props.outputs.image-prefix }}` \
+            and tag `${{ needs.image-props.outputs.image-tag }}` \n\
             of ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
@@ -99,33 +115,22 @@ jobs:
       # due to a signing issue in SecRel 4. for more details see
       # https://lighthouseva.slack.com/archives/C03UA9MV1EH/p1671643846200589?thread_ts=1671481495.084579&cid=C03UA9MV1EH
 
-      - name: "Test and publish images with prefix '${{ inputs.image_prefix }}' to GHCR"
+      - name: "Test and publish images with prefix '${{ needs.image-props.outputs.image-prefix }}' to GHCR"
         uses: ./.github/actions/publish-images
         with:
-          image_prefix: "${{ inputs.image_prefix }}"
-          image_tag: "${{ needs.set-image-props.outputs.image-tag }}"
+          image_prefix: "${{ needs.image-props.outputs.image-prefix }}"
+          image_tag: "${{ needs.image-props.outputs.image-tag }}"
           access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
-
-      # TODO: Is this really needed?
-      - name: "Remove images locally"
-        run: |
-          source scripts/image_vars.src
-          for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-            IMG_NAME=${{ inputs.image_prefix }}$(getVarValue ${VAR_PREFIX} _IMG)
-            IMG_TAG=${{ needs.set-image-props.outputs.image-tag }}
-            echo "Clean up image '$IMG_NAME' with tags '$IMG_TAG' and 'latest'"
-            docker rmi "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" \
-                       "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
-          done
+          run_tests: ${{ inputs.run_tests }}
 
       - name: "Publish-images job cancelled"
         if: cancelled()
         run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
-    needs: [set-image-props, publish-images]
+    needs: [image-props, publish-images]
     runs-on: ubuntu-latest
     outputs:
       job_status: ${{ env.JOB_STATUS }}
@@ -141,6 +146,13 @@ jobs:
           slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
           slack-text: ":panda_coffee: Deploying to ${{ inputs.target_env }}..."
 
+      #- name: "Deploy to ${{ inputs.target_env }}"
+      #  uses: ./.github/workflows/update-deployment.yml
+      #  with:
+      #    target_env: "${{ inputs.target_env }}"
+      #    image_tag: "${{ needs.image-props.outputs.image-tag }}"
+      #  secrets: inherit
+
       - name: "Set up kube config"
         run: |
           mkdir ~/.kube
@@ -152,11 +164,11 @@ jobs:
         env:
           SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
           SLACK_THREAD_TS: ${{ needs.publish-images.outputs.slack-response-ts }}
-        run: ./scripts/deploy-app.sh "${{ inputs.target_env }}" "${{ needs.set-image-props.outputs.image-tag }}"
+        run: ./scripts/deploy-app.sh "${{ inputs.target_env }}" "${{ needs.image-props.outputs.image-tag }}"
 
       - name: "Wait for LHDI deployment"
         run: |
-          if kubectl -n va-abd-rrd-${{ inputs.target_env }} rollout status deployment/vro-api; then
+          if kubectl -n va-abd-rrd-${{ inputs.target_env }} rollout status deployment/vro-api-app; then
             echo "JOB_STATUS=success" >> $GITHUB_ENV
           else
             # Return nonzero error code so that workflow fails

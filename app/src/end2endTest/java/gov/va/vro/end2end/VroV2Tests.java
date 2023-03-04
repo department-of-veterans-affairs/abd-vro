@@ -272,7 +272,7 @@ public class VroV2Tests {
    * API and MAS collections. They are not really related. You can check this to see how the pdfs
    * look like with data from both sources.
    *
-   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999375
+   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999375
    */
   @SneakyThrows
   @Test
@@ -284,7 +284,7 @@ public class VroV2Tests {
    * This is an identical to testAutomatedClaimSufficientSeparate except it is a presumptive case.
    * The file number, collection id and claim numbers also differ.
    *
-   * <p>After the run get the pdf from http://localhost:8096/retrieved-files/9999376
+   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999376
    */
   @SneakyThrows
   @Test

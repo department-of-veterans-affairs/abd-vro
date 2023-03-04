@@ -1,5 +1,6 @@
 package gov.va.vro.model.bipevidence;
 
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,4 +19,5 @@ import org.springframework.http.HttpStatus;
 public class BipFileUploadResp {
   private HttpStatus status;
   private String message;
+  private UploadResponse uploadResponse;
 }

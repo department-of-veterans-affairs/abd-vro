@@ -11,14 +11,12 @@ replicaCount: 1
 labels:
   api:
     app: abd_vro
-  ourapp:
-    # This is a workaround -- see https://dsva.slack.com/archives/C04CA47HV96/p1674829709129239?thread_ts=1674772120.997269&cid=C04CA47HV96
-#    global: &labels-app-global
-#      app: abd_vro
-#    pod:
-#      <<: *labels-app-global
-#      sidecar.istio.io/inject: "false"
-
+  rrd:
+    global: &labels-rrd-global
+      app: domain-rrd-services
+    pod:
+      <<: *labels-rrd-global
+      sidecar.istio.io/inject: "false"
 images:
   registry: ghcr.io
   org: department-of-veterans-affairs
@@ -31,36 +29,25 @@ images:
   app:
     imageName: dev_vro-app
     tag: tagPlaceholder
-    imagePullPolicy: Always
   db:
     # Being used as the `pg-isready` container
     imageName: dev_vro-postgres
     tag: tagPlaceholder
-    imagePullPolicy: Always
   dbInit:
     imageName: dev_vro-db-init
     tag: tagPlaceholder
-    imagePullPolicy: Always
-  console:
-    imageName: dev_vro-console
-    tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceDataAccess:
     imageName: dev_vro-service-data-access
     tag: tagPlaceholder
-    imagePullPolicy: Always
   pdfGenerator:
     imageName: dev_vro-service-pdfgenerator
     tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceAssessClaimDC7101:
     imageName: dev_vro-service-assessclaimdc7101
     tag: tagPlaceholder
-    imagePullPolicy: Always
   serviceAssessClaimDC6602:
     imageName: dev_vro-service-assessclaimdc6602
     tag: tagPlaceholder
-    imagePullPolicy: Always
 # END image-names.sh replacement block (do not modify this block)
 
 resources:

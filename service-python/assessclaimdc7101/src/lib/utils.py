@@ -33,7 +33,7 @@ def extract_date(date_string):
 
 def format_date(date_obj):
     """
-    Reformat date object by rearranging and cutting out leading zeroes
+    Reformat date object by rearranging and cutting out leading zeroes.
     :param date_obj:
     :return:
     """
@@ -63,6 +63,7 @@ def validate_request_body(request_body):
             "schema": {
                 "medications": {
                     "type": "list",
+                    "default": [],
                     "schema": {
                         "type": "dict",
                         "schema": {
@@ -160,7 +161,7 @@ def validate_request_body(request_body):
                         "schema": {
                             "code": {
                                 "type": "string",
-                                "required": True
+                                "default": "",
                             },
                             "status": {
                                 "type": "string",
@@ -170,6 +171,10 @@ def validate_request_body(request_body):
                             },
                             "onsetDate": {
                                 "type": "string",
+                            },
+                            "category": {
+                                "type": "string",
+                                "default": "",
                             },
                             "abatementDate": {
                                 "type": "string",

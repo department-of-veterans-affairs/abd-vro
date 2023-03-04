@@ -23,13 +23,13 @@ else
   VERSION=${GIT_SHA:0:7}
 fi
 
-source scripts/image_vars_db.src
-generateImageArgs(){
+source scripts/image_vars.src
+generateDbImageArgs(){
   local _IMAGE_TAG=$2
 
   # sandbox (in nonprod cluster) and prod and prod-test (in the prod cluster) requires signed-images from SecRel
   case "$1" in
-    dev|qa) IMG_NAME_PREFIX="${1}_";;
+    dev|qa) IMG_NAME_PREFIX="dev_";;
     sandbox|prod|prod-test) USE_SECREL_IMAGES="true";;
     *) { echo "Unknown environment: $1"; exit 20; }
   esac
@@ -40,14 +40,14 @@ generateImageArgs(){
     echo "--set-string images.repo=abd-vro-internal "
   fi
 
-  for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+  for PREFIX in db console; do
     local HELM_KEY=$(getVarValue "${PREFIX}" _HELM_KEY)
     local IMAGE_NAME=${IMG_NAME_PREFIX}$(getVarValue "${PREFIX}" _IMG)
     echo "--set-string images.$HELM_KEY.tag=${_IMAGE_TAG} "
     echo "--set-string images.$HELM_KEY.imageName=${IMAGE_NAME} "
   done
 }
-VRO_IMAGE_ARGS=$(generateImageArgs "${ENV}" "${IMAGE_TAG}")
+VRO_IMAGE_ARGS=$(generateDbImageArgs "${ENV}" "${IMAGE_TAG}")
 
 COMMON_HELM_ARGS="--set-string environment=${ENV} \
 --set-string info.version=${IMAGE_TAG} \

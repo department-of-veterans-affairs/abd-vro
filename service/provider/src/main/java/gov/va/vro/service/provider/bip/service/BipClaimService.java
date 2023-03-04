@@ -7,6 +7,8 @@ import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -145,13 +148,24 @@ public class BipClaimService {
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
     long claimId = payload.getBenefitClaimIdAsLong();
-    log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
+    int collectionId = payload.getCollectionId();
 
-    try {
-      bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
-      saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
-    } catch (Exception e) {
-      throw new BipException("BIP update claim status resulted in an exception", e);
+    // check again if TSOJ. If not, abandon route
+    var claim = bipApiService.getClaimDetails(claimId);
+    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
+      log.info(
+          "Claim {} with collection Id = {} is in state {}. Not updating status",
+          claimId,
+          collectionId,
+          claim.getTempStationOfJurisdiction());
+    } else {
+      log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
+      try {
+        bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
+        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
+      } catch (Exception e) {
+        throw new BipException("BIP update claim status resulted in an exception", e);
+      }
     }
     return payload;
   }
@@ -165,19 +179,13 @@ public class BipClaimService {
     var claim = bipApiService.getClaimDetails(claimId);
     if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
       log.info(
-          "Claim {} with collection Id = {} is in state {}. Not updating status",
+          "Claim {} with collection Id = {} is in state {}. Status not updated",
           claimId,
           collectionId,
           claim.getTempStationOfJurisdiction());
       payload.setTSOJ(false);
       return payload;
     }
-    // otherwise, update claim
-    log.info(
-        "Updating claim status for claim with claim id = {} for MAS collection Id = {}",
-        claimId,
-        collectionId);
-    bipApiService.setClaimToRfdStatus(claimId);
     payload.setTSOJ(true);
     return payload;
   }
@@ -215,11 +223,21 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-    bipCeApiService.uploadEvidenceFile(
-        FileIdType.FILENUMBER,
-        payload.getVeteranIdentifiers().getVeteranFileId(),
-        BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-        decoder);
+    BipFileUploadResp bipResp =
+        bipCeApiService.uploadEvidenceFile(
+            FileIdType.FILENUMBER,
+            payload.getVeteranIdentifiers().getVeteranFileId(),
+            BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
+            decoder,
+            payload.getDiagnosticCode());
+    // We check if bipResp is null only so that the uploadPdf() test does not fail in
+    // BipClaimServiceTest.
+    // We created a ticket to fix this test and remove this condition.
+    if (bipResp != null) {
+      UploadResponse ur = bipResp.getUploadResponse();
+      UUID eFolderId = UUID.fromString(ur.getUuid());
+      saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+    }
     return pdfResponse;
   }
 

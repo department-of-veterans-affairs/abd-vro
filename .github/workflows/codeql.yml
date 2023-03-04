@@ -1,4 +1,4 @@
-name: "CodeQL security scan"
+name: "3. CodeQL security scan"
 
 on:
   pull_request:

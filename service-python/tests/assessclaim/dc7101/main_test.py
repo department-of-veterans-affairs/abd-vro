@@ -91,8 +91,8 @@ from assessclaimdc7101.src.lib import main
                                            'description': 'Capoten',
                                            'status': 'active'}]},
              'evidenceSummary': {'medicationsCount': 1,
-                                 'recentBpReadings': 2,
-                                 'totalBpReadings': 2},
+                                 'recentBpCount': 2,
+                                 'totalBpCount': 2},
                 "claimSubmissionId": "1234"
             },
         ),
@@ -146,8 +146,8 @@ from assessclaimdc7101.src.lib import main
                 "evidence": {"bp_readings": [], "medications": []},
                 "evidenceSummary": {
                     "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 2,
+                    "recentBpCount": 0,
+                    "totalBpCount": 2,
                 },
                 "claimSubmissionId": "1234"
             },
@@ -167,8 +167,8 @@ from assessclaimdc7101.src.lib import main
                 "evidence": {"bp_readings": [], "medications": []},
                 "evidenceSummary": {
                     "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 0,
+                    "recentBpCount": 0,
+                    "totalBpCount": 0,
                 },
                 "claimSubmissionId": "1234"
             },
@@ -188,8 +188,8 @@ from assessclaimdc7101.src.lib import main
                     "evidence": {"bp_readings": [], "medications": []},
                     "evidenceSummary": {
                         "medicationsCount": 0,
-                        "recentBpReadings": 0,
-                        "totalBpReadings": 0,
+                        "recentBpCount": 0,
+                        "totalBpCount": 0,
                     },
                     "claimSubmissionId": "1234"
                 }

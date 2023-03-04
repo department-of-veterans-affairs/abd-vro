@@ -13,6 +13,18 @@ spec:
     spec:
       imagePullSecrets:
         - name: {{ .Values.name }}-ghcr
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                volume: database
+            # https://stackoverflow.com/questions/72240224/what-is-topologykey-in-pod-affinity
+            topologyKey: topology.kubernetes.io/zone
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: ebs-db-claim #This name should match that of the persistent volume claim created above
       containers:
         - name: postgres-db
           image: {{ .Values.images.registry }}/{{ .Values.images.org }}/{{ .Values.images.repo }}/{{ .Values.images.db.imageName }}:{{ .Values.images.db.tag }}
@@ -29,6 +41,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.dbinit.secretName }}
                   key: {{ .Values.dbinit.superUsernameKey }}
+            - name: PGDATA
+              # https://hub.docker.com/_/postgres recommends using a subdirectory under the mounted directory
+              value: /persist/postgres/pgdata/{{ .Values.environment }}
             - name: FLYWAY_USER
               valueFrom:
                 secretKeyRef:
@@ -47,11 +62,7 @@ spec:
           ports:
             - containerPort: {{ .Values.service.db.sourcePort }}
               protocol: TCP
-      #    volumeMounts:
-      #      - name: persistent-storage
-      #        mountPath: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /persist/postgres
           resources: {{- toYaml .Values.resources.db | nindent 12 }}
-      #volumes:
-      #  - name: persistent-storage
-      #    persistentVolumeClaim:
-      #      claimName: efs-claim #This name should match that of the persistent volume claim created above

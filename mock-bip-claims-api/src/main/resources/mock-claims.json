@@ -1,6 +1,6 @@
 [
   {
-    "description": "for happy path",
+    "description": "off ramp, to be used with only ibm provided collection id 350",
     "claimDetail": {
       "claimId": 1010,
       "tempStationOfJurisdiction": "398",

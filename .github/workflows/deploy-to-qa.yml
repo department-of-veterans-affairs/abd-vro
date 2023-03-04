@@ -1,8 +1,8 @@
 name: Deploy to QA
 
 on:
-  push:
-    branches: [ qa ]
+  # push:
+  #   branches: [ qa ]
 
   # Allow manual triggering
   workflow_dispatch:
@@ -12,6 +12,5 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       target_env: qa
-      # QA uses typically dev_* images
-      image_prefix: dev_
+      deploy: true
     secrets: inherit

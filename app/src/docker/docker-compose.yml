@@ -114,8 +114,9 @@ services:
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
+      PGDATA: /persist/data/localdev
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/persist/data
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
@@ -131,7 +132,7 @@ services:
     networks:
       - internal
     environment:
-      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}?user=${POSTGRES_FLYWAY_USER}&password=${POSTGRES_FLYWAY_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_SCHEMA: ${POSTGRES_SCHEMA}
@@ -168,10 +169,14 @@ services:
       BIP_CLAIM_URL: "mock-bip-claims-api:8097"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
-      - postgres-service
-      - rabbitmq-service
-      - redis-service
-      - db-init
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
     networks:
       - internal
       - external
@@ -332,7 +337,7 @@ services:
 
   console:
     image: va/abd_vro-console:latest
-    <<: *common-security-opt
+    # <<: *common-security-opt
     <<: *common-sde-security
     profiles: ["debug"]
     # stdin and tty are needed for user interaction
@@ -347,6 +352,10 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
     networks:
       - internal
 
@@ -408,5 +417,18 @@ services:
       MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
       MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
       MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+    networks:
+      - internal
+
+  mock-lighthouse-api:
+    image: va/abd_vro-mock-lighthouse-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-lighthouse-api
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
+      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
+      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     networks:
       - internal

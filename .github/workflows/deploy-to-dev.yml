@@ -1,8 +1,10 @@
-name: Deploy to DEV
+name: "1. Deploy to DEV daily (Continuous Delivery)"
 
 on:
-  push:
-    branches: [ develop ]
+  schedule:
+    # Run on weekdays at 19:00 UTC
+    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+    - cron: '0 19 * * 1-5'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -12,5 +14,5 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       target_env: dev
-      image_prefix: dev_
+      deploy: true
     secrets: inherit

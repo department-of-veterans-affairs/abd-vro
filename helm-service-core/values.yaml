@@ -5,15 +5,7 @@ environment: dev # The .Values.environment is computed by the deploy plugin - it
 cluster: nonprod
 # TODO: How is version used? What should this be set to?
 version: 0.1
-replicaCount: 1
-
-labels:
-  redis:
-    global: &labels-redis-global
-      app: redis-cache
-    pod:
-      <<: *labels-redis-global
-      sidecar.istio.io/inject: "false"
+# replicaCount: 1
 
 resources:
   redis:

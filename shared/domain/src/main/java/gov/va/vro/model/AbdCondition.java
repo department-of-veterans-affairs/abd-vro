@@ -20,10 +20,10 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @EqualsAndHashCode.Include private String status;
   @EqualsAndHashCode.Include private String onsetDate;
   private String recordedDate;
-  private String relevant;
+  private Boolean relevant;
   private String category;
 
-  @Schema(description = "Formatted date", example = "01/01/2023")
+  @Schema(description = "Formatted date", example = "12/31/1999")
   private String dateFormatted;
 
   @Schema(description = "Source of this data", example = "LH")
@@ -40,7 +40,7 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
   private String document;
 
-  @Schema(description = "VBMS Receipt Date", example = "04/05/2021")
+  @Schema(description = "VBMS Receipt Date", example = "1999-12-31")
   private String receiptDate;
 
   @Schema(description = "Document Page Number", example = "55")

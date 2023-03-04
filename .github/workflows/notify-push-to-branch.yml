@@ -1,4 +1,4 @@
-name: Notify Slack on branch update
+name: "8. Notify Slack on branch update"
 
 on:
   push:
