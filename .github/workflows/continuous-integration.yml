@@ -1,0 +1,28 @@
+name: "3. Test VRO and publish images (Continuous Integration)"
+
+on:
+  push:
+    branches: [ develop ]
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    uses: ./.github/workflows/test-code.yml
+    secrets: inherit
+
+  codeql:
+    uses: ./.github/workflows/codeql.yml
+    secrets: inherit
+
+  end2end-test:
+    uses: ./.github/workflows/end2end-test.yml
+    secrets: inherit
+
+  deploy-to-dev:
+    uses: ./.github/workflows/publish-maybe-deploy.yml
+    with:
+      target_env: dev
+      deploy: false
+    secrets: inherit

@@ -130,6 +130,7 @@ jobs:
         run: echo "JOB_STATUS=cancelled" >> $GITHUB_ENV
 
   deploy-images:
+    if: ${{ inputs.deploy }}
     needs: [image-props, publish-images]
     runs-on: ubuntu-latest
     outputs:

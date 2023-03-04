@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-qa-images:
-    uses: ./.github/workflows/deploy-to-env.yml
+    uses: ./.github/workflows/publish-maybe-deploy.yml
     with:
       target_env: qa
       deploy: true

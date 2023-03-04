@@ -1,4 +1,4 @@
-name: "3. End-to-end test"
+name: "PR: End-to-end test"
 
 on:
   pull_request:
@@ -8,10 +8,14 @@ on:
 
   # When changes are pushed to special branches
   push:
-    branches: [main, qa, develop]
+    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+    branches: [main, qa]
 
   # Allow manual triggering
   workflow_dispatch:
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
 
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
