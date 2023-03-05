@@ -15,6 +15,12 @@ domain-rrd:
 console:
   enabled: false
 
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"
+
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
 
@@ -23,6 +29,8 @@ global:
   imagePrefix: dev_
   # tag is used to set the default image tag for all VRO images
   imageTag: "latest"
+
+  commitSha: placeholder
 
   # Persistent Volumes
   pgdata:
