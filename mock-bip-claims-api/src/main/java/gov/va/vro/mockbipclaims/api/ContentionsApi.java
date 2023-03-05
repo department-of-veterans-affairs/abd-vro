@@ -215,4 +215,60 @@ public interface ContentionsApi {
           Long claimId,
       @Parameter(name = "UpdateContentionsRequest", required = true) @Valid @RequestBody
           UpdateContentionsRequest updateContentionsRequest);
+
+  /**
+   * GET /contentions/special_issue_types : Returns special issue types.
+   *
+   * <p>Not fully implemented in mock since only used for connectivity testing.
+   */
+  @Operation(
+      operationId = "getSpecialIssueTypes",
+      summary = "Retrieves special issue type.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successful operation.",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = UpdateContentionsResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = UpdateContentionsResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "401",
+            description = "The authentication mechanism failed and hence access is forbidden.",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "500",
+            description =
+                """
+                  There was an error encountered processing the Request.  Response will contain
+                  a  "messages" element that will provide further information on the error.
+                  Please retry.  If problem persists, please contact support with a copy of the
+                  Response.
+                  """,
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            })
+      },
+      security = {@SecurityRequirement(name = "bearerAuth")})
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "/contentions/special_issue_types",
+      produces = {"application/json", "application/problem+json"})
+  ResponseEntity<String> getSpecialIssueTypes();
 }
