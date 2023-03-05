@@ -103,8 +103,14 @@ jobs:
           echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
           chmod go-rwx ~/.kube/config
 
-          echo "Current values:"
+          echo "==================================="
           helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+
+          echo '## Before update' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
           echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
 
       - name: "Checkout source code"
@@ -175,6 +181,7 @@ jobs:
           fi
 
           echo "HELM_ARGS: $HELM_ARGS"
+          echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
@@ -187,9 +194,15 @@ jobs:
             --set postgres.enabled=${{ inputs.postgres }} \
             --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
+          echo "::endgroup::"
 
-          echo "Current values:"
+          echo "==================================="
           helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+
+          echo '## After update' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: "Post failed status message in Slack thread"
         if: ${{ failure() }}
