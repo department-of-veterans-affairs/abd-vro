@@ -40,31 +40,31 @@ on:
         default: true
 
       domain-rrd:
-        description: "Enable & update domain RRD's microservices"
+        description: "Enable & update RRD domain services"
         required: true
         type: boolean
         default: true
 
       rabbitmq:
-        description: 'Enable & update MQ'
+        description: 'Enable MQ'
         required: true
         type: boolean
         default: true
 
       postgres:
-        description: 'Enable & update DB'
+        description: 'Enable DB'
         required: true
         type: boolean
         default: true
 
       redis:
-        description: 'Enable & update Redis'
+        description: 'Enable Redis'
         required: true
         type: boolean
         default: true
 
       console:
-        description: 'Enable & update VRO Console'
+        description: 'Enable VRO Console'
         required: true
         type: boolean
         default: false
@@ -83,7 +83,8 @@ on:
         type: boolean
 
 env:
-  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
   RELEASE_NAME: vro
 
 jobs:
@@ -92,6 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Set up kube config"
+        id: kube-setup
         run: |
           mkdir ~/.kube
           case "${{ inputs.target_env }}" in
@@ -101,9 +103,33 @@ jobs:
           echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
           chmod go-rwx ~/.kube/config
 
+          echo "Current values:"
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+          echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
+
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      - name: "Notify Slack"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":rocket: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
+            in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
+            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
+
+      - name: "Post shutdown message in Slack thread"
+        if: ${{ inputs.restart }}
+        # Post in thread to reduce clutter in Slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":broom: Shutting down current deployment"
       - name: "Shutting down deployment in ${{ inputs.target_env }} env"
         if: ${{ inputs.restart }}
         run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
@@ -111,6 +137,12 @@ jobs:
       - name: "Workaround for postgres StatefulSet"
         if: ${{ ! inputs.restart }} && ${{ inputs.postgres }}
         run: |
+          POSTGRES_ENABLED=${{ fromJSON(steps.kube-setup.outputs.helm_values).postgres.enabled }}
+          echo "POSTGRES_ENABLED=$POSTGRES_ENABLED"
+          if [ "$POSTGRES_ENABLED" == "true" ]; then
+            echo "Yup! Enabled."
+          fi
+
           # Delete StatefulSets without deleting pods
           # Workaround for helm upgrade reporting error due to StatefulSets:
           #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
@@ -119,7 +151,22 @@ jobs:
           kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan || \
             echo "It's ok if statefulset vro-postgres doesn't exist."
 
-      - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
+      - name: "Post deploying message in Slack thread"
+        # Post in thread to reduce clutter in Slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_angel: Deploying:\n\
+            * vro-app: ${{ inputs.vro-app }}\n\
+            * domain-rrd: ${{ inputs.domain-rrd }}\n\
+            * rabbitmq: ${{ inputs.rabbitmq }}\n\
+            * postgres: ${{ inputs.postgres }}\n\
+            * redis: ${{ inputs.redis }}\n\
+            * console: ${{ inputs.console }}\n\
+            Rollback if deployment fails: ${{ inputs.rollback }}"
+      - name: "Deploy ${{ inputs.image_tag }} to *${{ inputs.target_env }}* env"
         run: |
           HELM_ARGS=""
 
@@ -134,7 +181,7 @@ jobs:
 
           echo "HELM_ARGS: $HELM_ARGS"
           helm upgrade ${{ env.RELEASE_NAME }} helm/ \
-            --install --wait -n va-abd-rrd-${{ inputs.target_env }} \
+            --install --reset-values --wait -n va-abd-rrd-${{ inputs.target_env }} \
             ${HELM_ARGS} \
             --set-string global.environment=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
@@ -146,4 +193,39 @@ jobs:
             --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
 
-# TODO: Add Slack notifications
+          echo "Current values:"
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+
+      - name: "Post failed status message in Slack thread"
+        if: ${{ failure() }}
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_cry: Failed deployment to ${{ inputs.target_env }}"
+      - name: "Emoji react to top-level Slack notification"
+        if: ${{ failure() }}
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'x'
+
+      - name: "Post failed status message in Slack thread"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_duck_yay: Completed deployment to ${{ inputs.target_env }}"
+      - name: "Emoji react to top-level Slack notification"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'tada'
