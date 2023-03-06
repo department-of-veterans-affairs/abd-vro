@@ -19,11 +19,3 @@ jobs:
   end2end-test:
     uses: ./.github/workflows/end2end-test.yml
     secrets: inherit
-
-  publish-images:
-    needs: [lint-and-test, codeql, end2end-test]
-    uses: ./.github/workflows/publish-maybe-deploy.yml
-    with:
-      target_env: dev
-      deploy: false
-    secrets: inherit

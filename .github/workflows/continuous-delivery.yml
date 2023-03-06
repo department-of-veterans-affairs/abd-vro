@@ -2,9 +2,9 @@ name: "1. Continuous Delivery (to DEV daily)"
 
 on:
   schedule:
-    # Run on weekdays at 19:00 UTC
+    # Run every day at 19:00 UTC
     # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    - cron: '0 19 * * 1-5'
+    - cron: '0 19 * * *'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -13,8 +13,10 @@ jobs:
   deploy-dev-images:
     # only run in one of the repos
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
-    uses: ./.github/workflows/publish-maybe-deploy.yml
+    name: "Deploy to ${{ inputs.target_env }}"
+    uses: ./.github/workflows/update-deployment.yml
     with:
       target_env: dev
-      deploy: true
+      image_tag: latest
+      rollback: false
     secrets: inherit

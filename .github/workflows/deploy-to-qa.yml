@@ -9,6 +9,8 @@ on:
 
 jobs:
   deploy-qa-images:
+    # only run for the internal repo, where images are published
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     uses: ./.github/workflows/publish-maybe-deploy.yml
     with:
       target_env: qa
