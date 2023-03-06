@@ -24,6 +24,8 @@ redis-chart:
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
 
+  serviceUriPrefix: abd-vro
+
   hostnamePrefix: vro
 
   imagePrefix: dev_
@@ -53,7 +55,6 @@ global:
     # Configurable b/c VRO has 2 repos
     repo: abd-vro-internal
     services:
-      uriPrefix: vro
       environment: nonprod # for APP
 
   # endpoint is api if ENV==prod; otherwise dev

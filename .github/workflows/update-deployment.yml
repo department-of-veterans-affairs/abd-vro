@@ -26,31 +26,26 @@ on:
         required: true
         type: boolean
         default: true
-
       domain-rrd:
         description: "Enable & update RRD domain services"
         required: true
         type: boolean
         default: true
-
       rabbitmq:
         description: 'Enable MQ'
         required: true
         type: boolean
         default: true
-
       postgres:
         description: 'Enable DB'
         required: true
         type: boolean
         default: true
-
       redis:
         description: 'Enable Redis'
         required: true
         type: boolean
         default: true
-
       console:
         description: 'Enable VRO Console'
         required: true
@@ -60,14 +55,13 @@ on:
       rollback:
         description: 'If deploy fails, rollback to previous? (Always true for prod)'
         required: true
-        default: false
         type: boolean
-
+        default: false
       restart:
         description: 'Shut down deployment completely, then redeploy (For emergency use)'
         required: true
-        default: false
         type: boolean
+        default: false
 
   # Allow other workflows to call this one
   workflow_call:
@@ -78,9 +72,40 @@ on:
       image_tag:
         required: true
         type: string
-      rollback:
-        required: true
+
+      vro-app:
+        required: false
         type: boolean
+        default: true
+      domain-rrd:
+        required: false
+        type: boolean
+        default: true
+      rabbitmq:
+        required: false
+        type: boolean
+        default: true
+      postgres:
+        required: false
+        type: boolean
+        default: true
+      redis:
+        required: false
+        type: boolean
+        default: true
+      console:
+        required: false
+        type: boolean
+        default: false
+
+      rollback:
+        required: false
+        type: boolean
+        default: false
+      restart:
+        required: false
+        type: boolean
+        default: false
 
 env:
   # Id for the #benefits-vro-devops Slack channel
@@ -92,6 +117,17 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
+      - name: "Notify Slack"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":rocket: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
+            in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
+            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
+
       - name: "Set up kube config"
         id: kube-setup
         run: |
@@ -104,29 +140,24 @@ jobs:
           chmod go-rwx ~/.kube/config
 
           echo "==================================="
-          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
 
-          echo '## Before update' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+            echo '## Before update' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
 
-          echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
+            echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
+          else
+            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+            # Set helm_values so that subsequent steps that access it don't fail
+            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
+          fi
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
-
-      - name: "Notify Slack"
-        id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: ":rocket: \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
-            in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
-            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
 
       - name: "Post shutdown message in Slack thread"
         if: ${{ inputs.restart }}
