@@ -118,9 +118,9 @@ spec:
             - name: PERSIST_TRACKING_FOLDER
               value: {{ .Values.global.tracking.mountPath }}
             - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.global.images.services.uriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}
             - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.images.services.uriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}
 
             {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
