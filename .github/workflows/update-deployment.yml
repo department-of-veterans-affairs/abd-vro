@@ -21,18 +21,6 @@ on:
         default: 'latest'
         type: string
 
-      rollback:
-        description: 'If deploy fails, rollback to previous? (Always true for prod)'
-        required: true
-        default: false
-        type: boolean
-
-      restart:
-        description: 'Shut down current deployment completely, then deploy'
-        required: true
-        default: false
-        type: boolean
-
       vro-app:
         description: 'Enable & update VRO Application API'
         required: true
@@ -68,6 +56,18 @@ on:
         required: true
         type: boolean
         default: false
+
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        default: false
+        type: boolean
+
+      restart:
+        description: 'Shut down deployment completely, then redeploy (For emergency use)'
+        required: true
+        default: false
+        type: boolean
 
   # Allow other workflows to call this one
   workflow_call:
@@ -105,6 +105,7 @@ jobs:
 
           echo "==================================="
           helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
 
           echo '## Before update' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -198,6 +199,15 @@ jobs:
 
           echo "==================================="
           helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+          # https://kubernetes.io/docs/reference/kubectl/jsonpath/
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods -o jsonpath='{range .items[*]}
+            {"pod: "}{.metadata.name}{range .spec.containers[*]}
+            {"\tname: "}{.name}
+            {"\timage: "}{.image}{end}'
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pvc
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get services
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get events
 
           echo '## After update' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
