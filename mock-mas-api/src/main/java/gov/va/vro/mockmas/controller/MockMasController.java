@@ -148,8 +148,8 @@ public class MockMasController {
 
     Boolean examOrdered = examOrderStore.get(collectionsId);
     if (examOrdered == null) {
-      String reason = "No examOrder found for: " + collectionsId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+      //Not all test cases haver exams ordered. If it's not found just proceed instead of erroring.
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     examOrderStore.reset(collectionsId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
