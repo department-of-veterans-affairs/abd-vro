@@ -62,7 +62,7 @@ dependencies {
   integrationTestImplementation "org.testcontainers:testcontainers:${testcontainers_version}"
   integrationTestImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
   integrationTestImplementation "org.testcontainers:rabbitmq:${testcontainers_version}"
-  integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
+  integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.4'
   integrationTestImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
   integrationTestImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
   integrationTestImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
