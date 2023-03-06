@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class MockMasController {
   private final MasApiService apiService;
   private final CollectionStore store;
 
-  @Autowired private final ExamOrderStore examOrderStore;
+  private final ExamOrderStore examOrderStore;
 
   @RequestMapping(
       method = RequestMethod.POST,
@@ -128,6 +127,32 @@ public class MockMasController {
     }
     OrderExamCheckResponse response = new OrderExamCheckResponse(examOrdered);
     return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  /**
+   * This service does not exist in the real MAS Service. It is used for end to end testing with
+   * this mock only to ensure that the /pcOrderExam path was called correctly. *
+   */
+  @RequestMapping(
+      method = RequestMethod.DELETE,
+      value = "/checkExamOrdered/{collectionsId}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  ResponseEntity<OrderExamCheckResponse> deleteExamCheck(
+      @Parameter(
+              name = "collectionsId",
+              description = "The collectionId given to /pcOrderExam",
+              required = true,
+              in = ParameterIn.PATH)
+          @PathVariable("collectionsId")
+          Integer collectionsId) {
+
+    Boolean examOrdered = examOrderStore.get(collectionsId);
+    if (examOrdered == null) {
+      String reason = "No examOrder found for: " + collectionsId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+    }
+    examOrderStore.reset(collectionsId);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   @RequestMapping(

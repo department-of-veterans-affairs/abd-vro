@@ -13,4 +13,8 @@ public class ExamOrderStore {
   public Boolean get(Integer collectionId) {
     return store.get(collectionId);
   }
+
+  public void reset(Integer collectionId) {
+    store.remove(collectionId);
+  }
 }

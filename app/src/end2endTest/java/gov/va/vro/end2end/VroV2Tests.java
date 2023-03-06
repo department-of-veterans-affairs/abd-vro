@@ -35,9 +35,7 @@ public class VroV2Tests {
 
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
-
-  private static final String ORDER_EXAM_BASE_URL = "http://localhost:9001";
-  private static final String ORDER_EXAM_CHECK_END_POINT = "/checkExamOrdered";
+  private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 
@@ -108,28 +106,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean checkExamOrdered(Integer collectionId) {
-    String url = ORDER_EXAM_BASE_URL + ORDER_EXAM_CHECK_END_POINT + "/" + collectionId;
-    var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
-    assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-    boolean examOrdered = testResponse.getBody().isOrdered();
-    if (examOrdered) {
-      log.info("{} had exam ordered", collectionId);
-    } else {
-      log.info("{} did NOT have exam ordered", collectionId);
-    }
-    return examOrdered;
-  }
-
-  /**
-   * Runs a full end-to-end test for the collection id using mock services. Collection id used here
-   * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
-   * ones in mock-bip-claims-api.
-   */
-  @SneakyThrows
-  private void testAutomatedClaimFullPositive(
-      String collectionId, boolean expectedStatusUpdate, Boolean expectedExamOrder) {
-
+  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
     // Load the test case
     var path = String.format("test-mas/claim-%s-7101.json", collectionId);
     var content = resourceToString(path);
@@ -142,6 +119,7 @@ public class VroV2Tests {
     log.info("Reset data in the mock servers.");
     restTemplate.delete(UPDATES_URL + claimId);
     restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
+    restTemplate.delete(ORDER_EXAM_URL + collectionId);
 
     // Start automated claim
     var requestEntity = getEntity(content);
@@ -151,34 +129,13 @@ public class VroV2Tests {
     var masResponse = response.getBody();
     String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
     assertEquals(expectedMessage, masResponse.getMessage());
+    return request;
+  }
 
-    boolean successOrdering = false;
-    if (expectedExamOrder != null) {
-      if (expectedExamOrder) {
-        log.info("Wait for examOrder code to execute.");
-        for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-          Thread.sleep(20000);
-          boolean examOrdered = checkExamOrdered(request.getCollectionId());
-          if (examOrdered) {
-            successOrdering = true;
-            break;
-          } else {
-            log.info(
-                "Exam not ordered yet for collection {}. Waiting and rechecking...",
-                request.getCollectionId());
-          }
-        }
-      } else {
-        log.info("Negative test case for exam ordering TBD via database check. Skipping polling");
-      }
-      assertEquals(successOrdering, expectedExamOrder);
-    }
-
-    if (!expectedStatusUpdate) {
-      return;
-    }
-
+  @SneakyThrows
+  private void testPDFUpload(MasAutomatedClaimRequest request) {
     // Wait until the evidence pdf is uploaded
+    final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
     boolean successUploading = false;
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
@@ -200,6 +157,55 @@ public class VroV2Tests {
 
     // Verify evidence pdf is uploaded
     assertTrue(successUploading);
+  }
+
+  @SneakyThrows
+  public void testExamOrdered(String collectionId, boolean expectedExamOrder) {
+    boolean successOrdering = false;
+    if (expectedExamOrder) {
+      String url = ORDER_EXAM_URL + collectionId;
+      log.info("Wait for examOrder code to execute.");
+      for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+        Thread.sleep(20000);
+        var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        boolean examOrdered = testResponse.getBody().isOrdered();
+        if (examOrdered) {
+          log.info("{} had exam ordered", collectionId);
+        } else {
+          log.info("{} did NOT have exam ordered", collectionId);
+        }
+        if (examOrdered) {
+          successOrdering = true;
+          break;
+        } else {
+          log.info(
+              "Exam not ordered yet for collection {}. Waiting and rechecking...", collectionId);
+        }
+      }
+    } else {
+      log.info("Negative test case for exam ordering TBD via database check. Skipping polling");
+    }
+    assertEquals(successOrdering, expectedExamOrder);
+  }
+
+  /**
+   * Runs a full end-to-end test for the collection id using mock services. Collection id used here
+   * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
+   * ones in mock-bip-claims-api.
+   */
+  @SneakyThrows
+  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate) {
+
+    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
+    final String claimId = request.getClaimDetail().getBenefitClaimId();
+
+    if (!expectedStatusUpdate) {
+      return;
+    }
+
+    testPDFUpload(request);
+
     // Verify contentions are updated (TODO: verify the actual update here)
     boolean contentionsFound = getFoundStatus(claimId, "contentions");
     assertTrue(contentionsFound);
@@ -211,7 +217,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaim() {
-    testAutomatedClaimFullPositive("350", false, null);
+    testAutomatedClaimFullPositive("350", false);
   }
 
   /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
@@ -262,7 +268,9 @@ public class VroV2Tests {
   // The data underlying follows the NEW claim, one relevant condition, not enough information path.
   @Test
   void testAutomatedClaim_orderExamNewClaim() {
-    testAutomatedClaimFullPositive("377", false, true);
+    MasAutomatedClaimRequest request = startAutomatedClaim("377");
+    testExamOrdered("377", true);
+    testPDFUpload(request);
   }
 
   // Test case that ensures the exam order *is* callled
@@ -270,7 +278,9 @@ public class VroV2Tests {
   // exist.
   @Test
   void testAutomatedClaim_orderExamIncreaseClaim() {
-    testAutomatedClaimFullPositive("378", false, true);
+    MasAutomatedClaimRequest request = startAutomatedClaim("378");
+    testExamOrdered("378", true);
+    testPDFUpload(request);
   }
 
   @SneakyThrows
@@ -332,7 +342,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaimSufficientSeparate() {
-    testAutomatedClaimFullPositive("375", true, null);
+    testAutomatedClaimFullPositive("375", true);
   }
 
   /**
@@ -344,7 +354,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testAutomatedClaimPresumptive() {
-    testAutomatedClaimFullPositive("376", true, null);
+    testAutomatedClaimFullPositive("376", true);
   }
 
   @SneakyThrows
@@ -352,6 +362,6 @@ public class VroV2Tests {
   // At this point it is not ready for automated test since assertions
   // on the end of process is not available easily.
   void testAutomatedSufficiencyIsNull() {
-    testAutomatedClaimFullPositive("500", true, null);
+    testAutomatedClaimFullPositive("500", true);
   }
 }
