@@ -15,14 +15,24 @@ domain-rrd:
 console:
   enabled: false
 
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"
+
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
+
+  serviceUriPrefix: abd-vro
 
   hostnamePrefix: vro
 
   imagePrefix: dev_
   # tag is used to set the default image tag for all VRO images
   imageTag: "latest"
+
+  commitSha: placeholder
 
   # Persistent Volumes
   pgdata:
@@ -42,10 +52,9 @@ global:
   version: 0.1
 
   images:
-    # Configurable b/c a different repo is used for signed images
-    repo: abd-vro
+    # Configurable b/c VRO has 2 repos
+    repo: abd-vro-internal
     services:
-      uriPrefix: vro
       environment: nonprod # for APP
 
   # endpoint is api if ENV==prod; otherwise dev

@@ -51,6 +51,7 @@ public class BipApiService implements IBipApiService {
   private static final String CLAIM_DETAILS = "/claims/%s";
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CONTENTION = "/claims/%s/contentions";
+  private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   private static final String HTTPS = "https://";
 
@@ -184,6 +185,20 @@ public class BipApiService implements IBipApiService {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public boolean verifySpecialIssueTypes() {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+    log.info("Call {} to get special_issue_types", url);
+
+    HttpHeaders headers = getBipHeader();
+    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+    ResponseEntity<String> response =
+        restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
   }
 
   private HttpHeaders getBipHeader() throws BipException {

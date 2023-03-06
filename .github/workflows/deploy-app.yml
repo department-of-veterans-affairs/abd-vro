@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target_env:
-        description: 'Target LHDI environment'
+        description: 'Deprecated: Use the "Update Deployment" workflow instead of this workflow. Target LHDI environment'
         required: true
         default: 'dev'
         type: choice

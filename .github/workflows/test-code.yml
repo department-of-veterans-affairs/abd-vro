@@ -1,4 +1,4 @@
-name: Test code
+name: "PR: Test code"
 
 on:
   # Trigger on all pull requests
@@ -9,26 +9,23 @@ on:
   # Trigger when called by another GitHub Action
   workflow_call:
     secrets:
-      ACCESS_TOKEN:
+      ACCESS_TOKEN_GRADLE_BUILD:
         required: true
 
   # Allow manual triggering
   workflow_dispatch:
 
-env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
-
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    services:
-      rabbitmq:
-        image: rabbitmq:3.8
-        env:
-          RABBITMQ_DEFAULT_USER: guest
-          RABBITMQ_DEFAULT_PASS: guest
-        ports:
-          - 5672:5672
+#    services:
+#      rabbitmq:
+#        image: rabbitmq:3.8
+#        env:
+#          RABBITMQ_DEFAULT_USER: guest
+#          RABBITMQ_DEFAULT_PASS: guest
+#        ports:
+#          - 5672:5672
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -39,4 +36,4 @@ jobs:
       - name: "Run linters and tests"
         # `check` runs hadolint and shellcheck
         # `jacocoTestCoverageVerification` checks for adequate test coverage
-        run: ./gradlew check jacocoTestCoverageVerification
+        run: ./gradlew check jacocoTestCoverageVerification -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}

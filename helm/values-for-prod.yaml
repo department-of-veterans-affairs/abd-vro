@@ -1,11 +1,10 @@
 
 global:
+  environment: prod
+
   # endpoint is api if ENV==prod; otherwise dev
   # Used by virtual-service's hosts
   endpoint: api
-
-  images:
-    repo: abd-vro-internal
 
   imagePrefix: ""
 
@@ -13,9 +12,3 @@ global:
     storageSize: 5Gi
   tracking:
     storageSize: 2Gi
-
-rabbitmq-chart:
-  imageTag: "3"
-
-redis-chart:
-  imageTag: "7"

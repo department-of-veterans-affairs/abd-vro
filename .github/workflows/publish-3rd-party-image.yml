@@ -1,4 +1,4 @@
-name: Publish 3rd-party image
+name: "5. Publish 3rd-party image"
 
 # SecRel will not sign images outside the scope of the repository that's calling SecRel,
 # so the image must exist in abd-vro-internal for SecRel to sign the images (required for sandbox and prod environments).
@@ -31,6 +31,10 @@ env:
 
 jobs:
   publish-image:
+    # only run for the internal repo since they don't need to be in the public repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    outputs:
+      published-images: ${{ steps.docker-push.outputs.images_list }}
     runs-on: ubuntu-latest
     steps:
     - name: "Login to GitHub Container Registry"
@@ -41,6 +45,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: "Publish images using tags '${{ inputs.image_tag }}' and 'latest'"
+      id: docker-push
       shell: bash
       run: |
         docker pull "${{ inputs.image_name }}:${{ inputs.image_tag }}"
@@ -52,7 +57,24 @@ jobs:
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:latest"
         docker push "${{ env.GHCR_PATH }}:latest"
 
+        echo "images_list<<EOF" >> $GITHUB_OUTPUT
+        echo "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+  secrel:
+    # only run for the internal repo -- SecRel doesn't work on public repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: SecRel Pipeline
+    needs: publish-image
+    # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
+    with:
+      config-file: .github/secrel/config.yml
+      images: ${{ needs.publish-image.outputs.published-images }}
+    secrets: inherit
+
   notify_push:
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     runs-on: ubuntu-latest
     steps:
       - name: "Notify Slack"
@@ -62,7 +84,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
-            Check for the package in <https://github.com/orgs/department-of-veterans-affairs/packages?repo_name=${{ github.event.repository.name }}|GHCR>\n\
+            Check for the package in <https://github.com/department-of-veterans-affairs/${{ github.event.repository.name }}/packages|GHCR>\n\
             See thread :thread: to complete any remaining steps..."
 
       - name: "Post follow-on actions in Slack thread"
@@ -78,9 +100,4 @@ jobs:
                is associated with repo `${{ github.repository }}` and is set to `Inherit access from source repository` as instructed by \
                <https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility|LHDI doc>; \
                also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>.\n\
-            2. Add image to the `MANUAL_IMGS_ARRAY` in `.github/workflows/secrel4.yml`\n\
-            3. Create a Helm configuration for the service; mimic files in `helm-service-* folders`\n\
-            4. Create and test `scripts/deploy-${{ inputs.target_image_name }}.sh`\n\
-            \n\
-            Remember to run this workflow in both the public repo (for `dev` and `qa` envs) and internal repo \
-            (for <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Deploying-VRO#ghcr-images|remaining envs> that require signed images)."
+            2. Add it to the Helm configuration; mimic files under the `helm/charts` folders\n"

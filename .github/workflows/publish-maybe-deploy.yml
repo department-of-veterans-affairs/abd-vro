@@ -1,0 +1,194 @@
+name: "4. Publish images, optionally deploy"
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qa
+          - sandbox
+          - prod-test
+          - prod
+      image_tag:
+        description: "Image tag. If blank, the first 7 characters of the branch's commit hash is used"
+        required: false
+        type: string
+        default: ''
+      run_tests:
+        description: "Run Gradle tests?"
+        required: true
+        type: boolean
+        default: true
+      deploy:
+        description: "Deploy to chosen environment?"
+        required: true
+        type: boolean
+        default: false
+
+  # Allow other workflows to call this one
+  workflow_call:
+    inputs:
+      target_env:
+        required: true
+        type: string
+      image_tag:
+        required: false
+        type: string
+      run_tests:
+        required: false
+        type: boolean
+        default: true
+      deploy:
+        required: true
+        type: boolean
+        default: false
+
+# Ensures that only one deploy per env will run at a time.
+concurrency:
+  group: deploy-unsigned-${{ inputs.target_env }}
+
+env:
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
+  # Default to failure messages
+  DEPLOY_STATE_TEXT: ':panda_shocked: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Deployment> failed!'
+  DEPLOY_STATE_EMOJI: 'x'
+
+jobs:
+  image-props:
+    outputs:
+      image-tag: ${{ steps.set-image-props.outputs.image_tag }}
+      image-prefix: ${{ steps.set-image-props.outputs.image_prefix }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Determine image properties"
+        id: set-image-props
+        run: |
+          IMAGE_TAG=${{ inputs.image_tag }}
+          # if $IMAGE_TAG is empty, then set to first characters of GITHUB_SHA
+          [ -z "$IMAGE_TAG" ] && IMAGE_TAG=${GITHUB_SHA:0:7}
+          echo "GITHUB_SHA $GITHUB_SHA"
+          echo "IMAGE_TAG  $IMAGE_TAG"
+          # If the tag is less than 7 characters, fail
+          [ "${#IMAGE_TAG}" -lt 7 ] && exit 2
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+          case "${{ inputs.target_env }}" in
+            dev|qa) echo 'image_prefix=dev_' >> $GITHUB_OUTPUT;;
+            sandbox|prod-test|prod) echo 'image_prefix=' >> $GITHUB_OUTPUT;;
+          esac
+
+  publish-images:
+    # only run for the internal repo, where images are published
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    needs: image-props
+    outputs:
+      slack-response-ts: ${{ steps.slack-thread-id.outputs.slack_thread_ts }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Notify Slack"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":arrow_forward: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Publishing> \
+            images with prefix `${{ needs.image-props.outputs.image-prefix }}` \
+            and tag `${{ needs.image-props.outputs.image-tag }}` \
+            from ${{github.ref_type}} `${{github.ref_name}}`, \n\
+            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ...\n\
+            (Deploy to *${{inputs.target_env}}*? ${{ inputs.deploy }})"
+
+      - name: "Set slack-thread-id output for later use"
+        id: slack-thread-id
+        run: echo "slack_thread_ts=${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}" >> $GITHUB_OUTPUT
+
+      - name: "Test and publish images with prefix '${{ needs.image-props.outputs.image-prefix }}' to GHCR"
+        uses: ./.github/actions/publish-images
+        with:
+          image_prefix: "${{ needs.image-props.outputs.image-prefix }}"
+          image_tag: "${{ needs.image-props.outputs.image-tag }}"
+          access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+          ghcr_username: ${{ github.actor }}
+          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
+          run_tests: ${{ inputs.run_tests }}
+
+      - name: "Set Slack message for image publishing"
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:heavy_check_mark: Images published! (but not deployed)' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+
+      - name: "Publish-images job cancelled"
+        if: cancelled()
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:black_square_for_stop: Images publish cancelled' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
+  deploy-images:
+    if: ${{ inputs.deploy }}
+    needs: [image-props, publish-images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Notify Slack: Deploying to ${{ inputs.target_env }}"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
+          slack-text: ":panda_coffee: Deploying to ${{ inputs.target_env }}..."
+
+      - name: "Deploy to ${{ inputs.target_env }}"
+        uses: ./.github/workflows/update-deployment.yml
+        with:
+          target_env: "${{ inputs.target_env }}"
+          image_tag: "${{ needs.image-props.outputs.image-tag }}"
+          rollback: false
+        secrets: inherit
+
+      - name: "Set Slack message for deploying"
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:rocket: Images deployed!' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=rocket' >> $GITHUB_ENV
+
+      - name: "Deploy job cancelled"
+        if: cancelled()
+        run: |
+          echo 'DEPLOY_STATE_TEXT=:black_square_for_stop: Deployment cancelled' >> $GITHUB_ENV
+          echo 'DEPLOY_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
+  notify-slack:
+    needs: [ publish-images, deploy-images ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      # If the workflow fails, DEPLOY_STATE_TEXT and DEPLOY_STATE_EMOJI remain their original "failure" values
+      - name: "Post deployment status in Slack thread"
+        if: always()
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ needs.publish-images.outputs.slack-response-ts }}
+          slack-text: ${{ env.DEPLOY_STATE_TEXT }}
+      - name: "Emoji react to top-level Slack notification"
+        if: always()
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ needs.publish-images.outputs.slack-response-ts }}
+          slack-emoji-name: ${{ env.DEPLOY_STATE_EMOJI }}
