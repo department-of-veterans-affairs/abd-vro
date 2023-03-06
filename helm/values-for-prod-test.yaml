@@ -2,7 +2,4 @@
 global:
   environment: prod-test
 
-  images:
-    repo: abd-vro-internal
-
   imagePrefix: ""

@@ -50,8 +50,8 @@ global:
   version: 0.1
 
   images:
-    # Configurable b/c a different repo is used for signed images
-    repo: abd-vro
+    # Configurable b/c VRO has 2 repos
+    repo: abd-vro-internal
     services:
       uriPrefix: vro
       environment: nonprod # for APP
