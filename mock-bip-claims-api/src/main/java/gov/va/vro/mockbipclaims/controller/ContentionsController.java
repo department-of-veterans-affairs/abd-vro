@@ -90,4 +90,11 @@ public class ContentionsController implements ContentionsApi {
     actionStore.addContentionsUpdate(claimId);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
+
+  /** Not fully implemented. Only used for connectivity testing. */
+  @Override
+  public ResponseEntity<String> getSpecialIssueTypes() {
+    log.info("Returning an empty array as special issues...");
+    return new ResponseEntity<>("[]", HttpStatus.OK);
+  }
 }

@@ -1,0 +1,14 @@
+
+global:
+  environment: sandbox
+
+  images:
+    repo: abd-vro-internal
+
+  imagePrefix: ""
+
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"

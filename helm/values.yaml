@@ -1,0 +1,113 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+# Normal state:
+rabbitmq:
+  enabled: true
+postgres:
+  enabled: true
+redis:
+  enabled: true
+vro-app:
+  enabled: true
+domain-rrd:
+  enabled: true
+# Enable as needed:
+console:
+  enabled: false
+
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"
+
+# To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
+global:
+
+  hostnamePrefix: vro
+
+  imagePrefix: dev_
+  # tag is used to set the default image tag for all VRO images
+  imageTag: "latest"
+
+  commitSha: placeholder
+
+  # Persistent Volumes
+  pgdata:
+    pvcName: vro-pgdata-pvc
+    mountPath: /persist/postgres
+    storageSize: 2Gi
+  tracking:
+    pvcName: vro-tracking-pvc
+    mountPath: /persist/tracking
+    storageSize: 1Gi
+
+  # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
+  environment: dev
+
+  # TODO: Replace with images.tag or subchart's imageTag?
+  # version is used in annotations for APP
+  version: 0.1
+
+  images:
+    # Configurable b/c a different repo is used for signed images
+    repo: abd-vro
+    services:
+      uriPrefix: vro
+      environment: nonprod # for APP
+
+  # endpoint is api if ENV==prod; otherwise dev
+  # Used by virtual-service's hosts
+  endpoint: dev
+
+  service:
+    app:
+      sourcePort: 8080
+      targetPort: 8080
+    db:
+      sourcePort: 5432
+      targetPort: 5432
+      databaseName: vro
+      schemaName: claims
+    mq:
+      sourcePort: 5672
+      targetPort: 5672
+    redis:
+      sourcePort: 6379
+      targetPort: 6379
+
+  rabbitmq:
+    secretKeyRef:
+      name: rabbitmq
+      usernameKey: User
+      passwordKey: Pass
+
+  redis:
+    secretKeyRef:
+      name: redis
+      passwordKey: redisPassword
+
+  postgres:
+    secretKeyRef:
+      name: postgres
+      urlKey: url
+      usernameKey: username
+      passwordKey: password
+      dbnameKey: dbName
+      schemaKey: schema
+#    dbName: vro
+#    initDbName: vro
+#    initUsernameKey: initUsername
+#    initPasswordKey: initPassword
+
+  dbinit:
+    secretKeyRef:
+      name: dbinit
+      # DB super user; TODO: why isn't this in the postgres.secretKeyRef?
+      superUsernameKey: superUsername
+      superPasswordKey: superPassword
+      # TODO: Do the values for the following always match postgres.secretKeyRef.usernameKey and passwordKey?
+      usernameKey: username
+      passwordKey: password
+      urlKey: url
+    # superDbnameKey: superDbname

@@ -24,4 +24,11 @@ public interface IBipCeApiService {
       byte[] fileContent,
       String diagnosticCode)
       throws BipException;
+
+  /**
+   * Verifies a call to the BIP Claim Evidence API can be made by getting document types.
+   *
+   * @return boolean verification status
+   */
+  boolean verifyDocumentTypes();
 }

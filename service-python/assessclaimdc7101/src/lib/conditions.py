@@ -8,7 +8,7 @@ from .utils import extract_date, format_date
 
 def conditions_calculation(request_body):
     """
-    Determine if there is the veteran requires continuous medication for hypertension
+    Determine if there is the veteran has a hypertension diagnosis
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes
@@ -63,7 +63,7 @@ def conditions_calculation(request_body):
 
     response.update({
         "conditions": condition_with_date,
-        "conditionsTwoYears": conditions_two_years,
+        "twoYearsConditions": conditions_two_years,
         "totalConditionsCount": len(veterans_conditions),
         "relevantConditionsLighthouseCount": lh_relevant_condition_count,
         }
