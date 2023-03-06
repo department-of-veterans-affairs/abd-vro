@@ -6,9 +6,6 @@ global:
   # Used by virtual-service's hosts
   endpoint: api
 
-  images:
-    repo: abd-vro-internal
-
   imagePrefix: ""
 
   pgdata:
