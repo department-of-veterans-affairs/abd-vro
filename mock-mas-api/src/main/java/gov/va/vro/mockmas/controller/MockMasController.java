@@ -148,7 +148,7 @@ public class MockMasController {
 
     Boolean examOrdered = examOrderStore.get(collectionsId);
     if (examOrdered == null) {
-      //Not all test cases haver exams ordered. If it's not found just proceed instead of erroring.
+      // Not all test cases haver exams ordered. If it's not found just proceed instead of erroring.
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     examOrderStore.reset(collectionsId);
