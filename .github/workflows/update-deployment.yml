@@ -140,7 +140,7 @@ jobs:
           chmod go-rwx ~/.kube/config
 
           echo "==================================="
-          if helm list -n va-abd-rrd-dev | grep ${{ env.RELEASE_NAME }}; then
+          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
             kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
 
@@ -151,7 +151,9 @@ jobs:
 
             echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
           else
-            echo "No existing release; creating a new release: ${{ env.RELEASE_NAME }}"
+            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+            # Set helm_values so that subsequent steps that access it don't fail
+            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
           fi
 
       - name: "Checkout source code"
