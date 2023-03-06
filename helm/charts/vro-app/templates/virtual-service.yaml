@@ -9,7 +9,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /{{ .Values.global.images.services.uriPrefix }}
+        prefix: /{{ .Values.global.serviceUriPrefix }}
     route:
     - destination:
         host: {{ .Values.global.hostnamePrefix }}-app
