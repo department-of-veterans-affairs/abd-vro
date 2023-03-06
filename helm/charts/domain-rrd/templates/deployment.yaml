@@ -176,5 +176,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipPassword }}
+            - name: BIP_ALIAS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipAlias }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
