@@ -1,0 +1,20 @@
+name: "1. Continuous Delivery (to DEV daily)"
+
+on:
+  schedule:
+    # Run on weekdays at 19:00 UTC
+    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+    - cron: '0 19 * * 1-5'
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  deploy-dev-images:
+    # only run in one of the repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    uses: ./.github/workflows/publish-maybe-deploy.yml
+    with:
+      target_env: dev
+      deploy: true
+    secrets: inherit

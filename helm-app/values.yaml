@@ -21,7 +21,7 @@ images:
   registry: ghcr.io
   org: department-of-veterans-affairs
   # Note the repo name uses a hypen, not underscore
-  repo: abd-vro
+  repo: abd-vro-internal
   services:
     environment: nonprod
 # BEGIN image-names.sh replacement block (do not modify this block)

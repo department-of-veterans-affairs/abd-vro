@@ -1,0 +1,11 @@
+
+global:
+  environment: sandbox
+
+  imagePrefix: ""
+
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"

@@ -1,0 +1,11 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+# Tip: https://stackoverflow.com/questions/63157235/how-to-render-only-selected-template-in-helm
+
+labels:
+  app: vro-console
+
+pvcClaimName:
+  # Allow this to be configurable due to the index as the suffix
+  postgres: vro-pgdata-pvc-vro-postgres-0
+
+replicaCount: 1

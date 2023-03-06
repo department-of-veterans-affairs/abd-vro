@@ -1,4 +1,4 @@
-name: "SecRel workflow"
+name: "2. SecRel workflow"
 
 on:
   # Trigger on every code push to main and develop branches
@@ -18,8 +18,6 @@ env:
 
 jobs:
   publish-to-ghcr:
-    # only run for the internal repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
     runs-on: ubuntu-latest
@@ -62,45 +60,25 @@ jobs:
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ steps.image-props.outputs.run_tests }}
 
-  images-for-secrel:
-    runs-on: ubuntu-latest
-    needs:
-      - publish-to-ghcr
-    outputs:
-      all-images: ${{ steps.append-images.outputs.all_images }}
-    steps:
-      - name: "Append 3rd-party images"
-        id: append-images
-        run: |
-          echo "all_images<<EOF" >> $GITHUB_OUTPUT
-          echo "${{ needs.publish-to-ghcr.outputs.vro-images }}" >> $GITHUB_OUTPUT
-          MANUAL_IMGS_ARRAY=( mirror-rabbitmq:latest mirror-redis:latest )
-          for MANUAL_IMAGE in ${MANUAL_IMGS_ARRAY[@]}; do
-            # SecRel will not sign images outside the scope of the repository that's calling SecRel,
-            # so the image must exist in abd-vro-internal
-            echo "ghcr.io/department-of-veterans-affairs/abd-vro-internal/${MANUAL_IMAGE}" >> $GITHUB_OUTPUT
-          done
-          echo "EOF" >> $GITHUB_OUTPUT
-
   debug-job:
     runs-on: ubuntu-latest
-    needs: [publish-to-ghcr, images-for-secrel]
+    needs: publish-to-ghcr
     steps:
       - name: show vars
         run: |
           echo "ref_name: ${{github.ref_name}}"
           echo "vro-images: ${{ needs.publish-to-ghcr.outputs.vro-images }}"
-          echo "all-images: ${{ needs.images-for-secrel.outputs.all-images }}"
 
   secrel:
     # only run for the internal repo -- SecRel doesn't work on public repos
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: SecRel Pipeline
-    needs: [publish-to-ghcr, images-for-secrel]
+    needs: publish-to-ghcr
+    # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
     with:
       config-file: .github/secrel/config.yml
-      images: ${{ needs.images-for-secrel.outputs.all-images }}
+      images: ${{ needs.publish-to-ghcr.outputs.vro-images }}
     secrets: inherit
 
   notify-secrel-error:

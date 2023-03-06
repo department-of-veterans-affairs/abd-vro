@@ -298,8 +298,37 @@
             "partial_date": "",
             "sorted_date": "2022-12-23Z",
             "dbq_type": ""
-          }
-        ]
+          },
+          {
+            "annot_type": "medical_condition",
+            "annot_name": "",
+            "annot_val": "Essential Hypertension",
+            "page_num": "33",
+            "dates": "",
+            "observation_date": "2022-08-15Z",
+            "end": 888,
+            "acd_pref_name": "primary hyper-tension",
+            "spellcheck_val": "Essential Hypertension",
+            "relevant": false,
+            "partial_date": "",
+            "sorted_date": "2022-12-23Z",
+            "dbq_type": ""
+          },
+          {
+            "annot_type": "medication",
+            "annot_name": "",
+            "annot_val": "Losartan",
+            "page_num": "44",
+            "dates": "",
+            "observation_date": "2022-08-16Z",
+            "end": 9444,
+            "acd_pref_name": "losartan",
+            "spellcheck_val": "losartan",
+            "relevant": true,
+            "partial_date": "",
+            "sorted_date": "2022-12-23Z",
+            "dbq_type": ""
+          }        ]
       }
     ],
     "documentsWithoutAnnotationsChecked": [
