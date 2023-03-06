@@ -29,6 +29,9 @@ import java.util.stream.Collectors;
 
 /** It contains the functions to extract data from FHIR objects for Abd data models. */
 public class FieldExtractor {
+
+  private static final String SNOMED = "http://snomed.info";
+
   private static String toDate(DateTimeType dateTimeType) {
     String value = dateTimeType.asStringValue();
     if (value == null) {
@@ -52,6 +55,17 @@ public class FieldExtractor {
     return fmt.format(date);
   }
 
+  public static Coding getAValidCoding(CodeableConcept code) {
+    if (code.hasCoding()) {
+      for (Coding coding : code.getCoding()) {
+        if (coding.hasCode() && !coding.getSystem().trim().startsWith(SNOMED)) {
+          return coding;
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * Creates an {@link AbdCondition} from a Fhir {@link Condition}.
    *
@@ -63,15 +77,11 @@ public class FieldExtractor {
 
     if (condition.hasCode()) {
       CodeableConcept code = condition.getCode();
-      if (code.hasCoding()) {
-        for (Coding coding : code.getCoding()) {
-          if (coding.hasCode() && !coding.getCode().equals("*Missing*")) {
-            result.setCode(coding.getCode());
-            if (coding.hasDisplay()) {
-              result.setText(coding.getDisplay());
-            }
-            break;
-          }
+      Coding coding = getAValidCoding(code);
+      if (coding != null) {
+        result.setCode(coding.getCode());
+        if (coding.hasDisplay()) {
+          result.setText(coding.getDisplay());
         }
       }
 
