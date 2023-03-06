@@ -2,9 +2,6 @@
 global:
   environment: sandbox
 
-  images:
-    repo: abd-vro-internal
-
   imagePrefix: ""
 
 rabbitmq-chart:
