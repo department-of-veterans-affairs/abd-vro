@@ -95,10 +95,10 @@ from assessclaimdc7101.src.lib import bp_calculator
                         },
                         {
                             "diastolic": {
-                                "value": 110
+                                "value": 0
                             },
                             "systolic": {
-                                "value": 200
+                                "value": 0
                             },
                             "receiptDate": "",
                             "date": "2021-09-01"
@@ -121,8 +121,8 @@ from assessclaimdc7101.src.lib import bp_calculator
                 {'allBp': [{'date': '2021-09-01',
                             "receiptDate": "",
                             'dateFormatted': '9/1/2021',
-                            'diastolic': {'value': 110},
-                            'systolic': {'value': 200}},
+                            'diastolic': {'value': 0},
+                            'systolic': {'value': 0}},
                            {'date': '2020-11-09',
                             "receiptDate": "",
                             'dateFormatted': '11/9/2020',
@@ -133,30 +133,26 @@ from assessclaimdc7101.src.lib import bp_calculator
                             'dateFormatted': '11/1/2019',
                             'diastolic': {'value': 115},
                             'systolic': {'value': 180}}],
-                 'oneYearBp': [{'date': '2021-09-01',
-                                "receiptDate": "",
-                                'dateFormatted': '9/1/2021',
-                                'diastolic': {'value': 110},
-                                'systolic': {'value': 200}},
+                 'oneYearBp': [
                                {'date': '2020-11-09',
                                 "receiptDate": "",
                                 'dateFormatted': '11/9/2020',
                                 'diastolic': {'value': 120},
                                 'systolic': {'value': 210}}],
-                 'oneYearBpReadings': 2,
-                 'recentElevatedBpReadings': 2,
+                 'oneYearBpReadings': 1,
+                 'recentElevatedBpReadings': 1,
                  'totalBpReadings': 3,
                  'twoYearsBp': [{'date': '2021-09-01',
                                  "receiptDate": "",
                                  'dateFormatted': '9/1/2021',
-                                 'diastolic': {'value': 110},
-                                 'systolic': {'value': 200}},
+                                 'diastolic': {'value': 0},
+                                 'systolic': {'value': 0}},
                                 {'date': '2020-11-09',
                                  "receiptDate": "",
                                  'dateFormatted': '11/9/2020',
                                  'diastolic': {'value': 120},
                                  'systolic': {'value': 210}}],
-                 'twoYearsBpReadings': 2}
+                 'twoYearsBpReadings': 1}
         ),
         (
                 {

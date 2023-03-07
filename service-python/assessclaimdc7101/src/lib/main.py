@@ -71,7 +71,6 @@ def assess_sufficiency(event: Dict):
         relevant_conditions = conditions.conditions_calculation(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["conditionsTwoYears"]
-        total_relevant_conditions = relevant_conditions["relevantConditionsLighthouseCount"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -82,7 +81,7 @@ def assess_sufficiency(event: Dict):
         if event["disabilityActionType"] == "NEW":
             bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
-            if total_relevant_conditions >= 1:
+            if relevant_conditions["relevantConditionsLighthouseCount"] >= 1:
                 if bp_calculation["twoYearsBpReadings"] >= 3:
                     sufficient = True
                 else:

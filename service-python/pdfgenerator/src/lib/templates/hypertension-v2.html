@@ -266,7 +266,7 @@
         <tbody>
           {% for bp_reading in evidence.bp_readings %}
           <tr>
-            <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
+            <th>{{ bp_reading.systolic.value }}/{{ bp_reading.diastolic.value }}</th>
             <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
             <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == ""%}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
