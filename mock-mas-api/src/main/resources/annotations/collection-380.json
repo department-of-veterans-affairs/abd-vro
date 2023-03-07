@@ -96,7 +96,7 @@
           {
             "annot_type": "blood_pressure",
             "annot_name": "BP",
-            "annot_val": "155/-",
+            "annot_val": "160/100",
             "page_num": "18, 41",
             "dates": "",
             "observation_date": "2022-05-21Z",
@@ -111,7 +111,7 @@
           {
             "annot_type": "blood_pressure",
             "annot_name": "BP",
-            "annot_val": "-/92",
+            "annot_val": "120/92",
             "page_num": "83, 86",
             "dates": "",
             "observation_date": "2022-07-17Z",
@@ -126,7 +126,7 @@
           {
             "annot_type": "blood_pressure",
             "annot_name": "BP",
-            "annot_val": "139/-",
+            "annot_val": "139/77",
             "page_num": "576, 753, 878",
             "dates": "",
             "observation_date": "2022-08-11Z",

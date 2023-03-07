@@ -32,7 +32,6 @@ public class MasCollectionAnnotsResults {
   private static final String BP_DIASTOLIC_DISPLAY = "Diastolic blood pressure";
   private static final String BP_UNIT = "mm[Hg]";
 
-
   /**
    * Maps annotations to evidence.
    *
@@ -69,10 +68,10 @@ public class MasCollectionAnnotsResults {
 
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
-                  ">>>> Annotation Type <<<<<< : {} ",
-                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
+              ">>>> Annotation Type <<<<<< : {} ",
+              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
           MasAnnotType annotationType =
-                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
+              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
           switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
@@ -116,7 +115,7 @@ public class MasCollectionAnnotsResults {
     abdEvidence.setBloodPressures(bpReadings);
     abdEvidence.setServiceLocations(serviceLocations);
     abdEvidence.setDocumentsWithoutAnnotationsChecked(
-            masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
+        masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
     return abdEvidence;
   }
 
@@ -126,10 +125,9 @@ public class MasCollectionAnnotsResults {
     AbdBpMeasurement systolicReading = new AbdBpMeasurement();
     systolicReading.setCode(BP_SYSTOLIC_CODE);
     systolicReading.setDisplay(BP_SYSTOLIC_DISPLAY);
-    if (bpValues[0].equals("-")){
+    if (bpValues[0].equals("-")) {
       systolicReading.setValue(BigDecimal.valueOf(0));
-    }
-    else{
+    } else {
       systolicReading.setValue(new BigDecimal(bpValues[0]).setScale(1, RoundingMode.HALF_UP));
     }
     systolicReading.setUnit(BP_UNIT);
@@ -137,10 +135,9 @@ public class MasCollectionAnnotsResults {
     AbdBpMeasurement diastolicReading = new AbdBpMeasurement();
     diastolicReading.setCode(BP_DIASTOLIC_CODE);
     diastolicReading.setDisplay(BP_DIASTOLIC_DISPLAY);
-    if(bpValues[1].equals("-")){
+    if (bpValues[1].equals("-")) {
       diastolicReading.setValue(BigDecimal.valueOf(0));
-    }
-    else{
+    } else {
       diastolicReading.setValue(new BigDecimal(bpValues[1]).setScale(1, RoundingMode.HALF_UP));
     }
     diastolicReading.setUnit(BP_UNIT);
@@ -180,7 +177,7 @@ public class MasCollectionAnnotsResults {
   }
 
   private static AbdMedication createMedication(
-          boolean isConditionAsthma, MasAnnotation masAnnotation) {
+      boolean isConditionAsthma, MasAnnotation masAnnotation) {
     AbdMedication abdMedication = new AbdMedication();
     abdMedication.setDataSource(DATA_SOURCE);
     abdMedication.setStatus(null);

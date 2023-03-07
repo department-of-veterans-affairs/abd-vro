@@ -9,7 +9,7 @@ def set_empty_readings(value):
     if value == 0:
         string_value = "-"
     else:
-        string_value = str(value)
+        string_value = str(int(value))
     return string_value
 
 
