@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Mapper(
@@ -19,7 +21,17 @@ public interface ExamOrderInfoResponseMapper {
   @Mapping(
       target = "hasAssociatedClaimSubmission",
       expression = "java(examOrderEntity.getClaimSubmission() != null)")
+  @Mapping(
+      target = "orderedAt",
+      expression = "java(convertOrderedAt(examOrderEntity.getOrderedAt()))")
   ExamOrderInfoResponse toExamOrderInfoResponse(ExamOrderEntity examOrderEntity);
 
   List<ExamOrderInfoResponse> toExamOrderInfoResponses(Iterable<ExamOrderEntity> examOrderEntities);
+
+  default LocalDateTime convertOrderedAt(OffsetDateTime offsetOrdered) {
+    if (offsetOrdered != null) {
+      return offsetOrdered.toLocalDateTime();
+    }
+    return null;
+  }
 }
