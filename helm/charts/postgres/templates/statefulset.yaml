@@ -15,12 +15,14 @@ spec:
       labels: # has to include .spec.selector.matchLabels
         sidecar.istio.io/inject: "false"
         {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       {{- include "vro.volume.console.affinity" . | nindent 6 }}
       terminationGracePeriodSeconds: 20
       containers:
-        - name: postgres--{{ .Release.Name }}
+        - name: postgres{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
           env:
             - name: ENV

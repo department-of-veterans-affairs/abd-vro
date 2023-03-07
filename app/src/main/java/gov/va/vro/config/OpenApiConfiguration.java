@@ -54,7 +54,8 @@ public class OpenApiConfiguration {
             new Tag().name("Claim Metrics"),
             new Tag().name("Health Assessment"),
             new Tag().name("MAS Integration"),
-            new Tag().name("Xample Domain"));
+            new Tag().name("Xample Domain"),
+            new Tag().name("Verification Test"));
 
     OpenAPI config =
         new OpenAPI()

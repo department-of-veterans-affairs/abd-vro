@@ -180,9 +180,9 @@ spec:
                   name: {{ .Values.postgres.secretName }}
                   key: {{ .Values.postgres.schemaKey }}
             - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.name }}
+              value: /{{ .Values.name }}-orig
             - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.name }}
+              value: /{{ .Values.name }}-orig
             - name: RABBITMQ_PLACEHOLDERS_HOST
               value: {{ .Chart.Name }}-rabbit-mq-service
             - name: RABBITMQ_PLACEHOLDERS_USERNAME

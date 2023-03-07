@@ -2,6 +2,7 @@ name: "9. Delete old workflow runs"
 on:
   schedule:
     # Run monthly, at 00:00 on the 1st day of month.
+    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
     - cron: '0 0 1 * *'
 
   # Allow manual triggering

@@ -1,4 +1,4 @@
-name: "3. Test VRO and publish images (Continuous Integration)"
+name: "3. Continuous Integration (test then publish images)"
 
 on:
   push:
@@ -18,11 +18,4 @@ jobs:
 
   end2end-test:
     uses: ./.github/workflows/end2end-test.yml
-    secrets: inherit
-
-  deploy-to-dev:
-    uses: ./.github/workflows/publish-maybe-deploy.yml
-    with:
-      target_env: dev
-      deploy: false
     secrets: inherit

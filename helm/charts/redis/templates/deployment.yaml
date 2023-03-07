@@ -11,6 +11,8 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels | nindent 8 }}
         sidecar.istio.io/inject: "false"
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
