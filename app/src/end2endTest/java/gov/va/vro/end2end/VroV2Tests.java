@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -9,6 +10,9 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
+import gov.va.vro.model.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.claimmetrics.ContentionInfo;
+import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -32,7 +37,7 @@ public class VroV2Tests {
   private static final String BASE_URL = "http://localhost:8080/v2";
   private static final String EXAM_ORDERING_STATUS_URL = BASE_URL + "/examOrderingStatus";
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
-
+  private static final String CLAIM_INFO_URL = BASE_URL + "/claim-info/";
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
@@ -187,6 +192,37 @@ public class VroV2Tests {
       log.info("Negative test case for exam ordering TBD via database check. Skipping polling");
     }
     assertEquals(successOrdering, expectedExamOrder);
+  }
+
+  @SneakyThrows
+  private void testClaimSufficientStatus(String collectionId, Boolean expectedSufficientValue) {
+
+    String url = CLAIM_INFO_URL + collectionId;
+    AssessmentInfo foundAssessment = null;
+    log.info("Waiting for claim processing to finish and assessment database results");
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      try {
+        ResponseEntity<ClaimInfoResponse> testResponse =
+            restTemplate.getForEntity(url, ClaimInfoResponse.class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        ClaimInfoResponse cir = testResponse.getBody();
+        assertNotNull(cir);
+        List<ContentionInfo> contentionList = cir.getContentions();
+        assertEquals(1, contentionList.size());
+        List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+        assertEquals(1, assessmentList.size());
+        foundAssessment = assessmentList.get(0);
+        break;
+      } catch (Exception exception) {
+        log.info(
+            "Did not find asessment result for collection id {} with message {} .. retrying",
+            collectionId,
+            exception.getMessage());
+      }
+    }
+    assertNotNull(foundAssessment);
+    assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
   }
 
   /**
@@ -358,10 +394,9 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  // @Test You can do this to test cases when Sufficient Evidence is null
-  // At this point it is not ready for automated test since assertions
-  // on the end of process is not available easily.
+   @Test
   void testAutomatedSufficiencyIsNull() {
     testAutomatedClaimFullPositive("500", true);
+    testClaimSufficientStatus("500", null);
   }
 }
