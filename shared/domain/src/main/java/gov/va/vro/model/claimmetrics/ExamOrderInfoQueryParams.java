@@ -14,6 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class ExamOrderInfoQueryParams {
-    @Builder.Default private int page = 0;
-    @Builder.Default private int size = 10;
+  @Builder.Default private int page = 0;
+  @Builder.Default private int size = 10;
 }

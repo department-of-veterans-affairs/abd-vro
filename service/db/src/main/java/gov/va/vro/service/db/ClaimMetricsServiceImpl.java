@@ -45,7 +45,6 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
 
   private final ExamOrderInfoResponseMapper examOrderInfoResponseMapper;
 
-
   @Override
   public ClaimMetricsResponse getClaimMetrics() {
     ClaimMetricsResponse metrics = new ClaimMetricsResponse();
@@ -105,9 +104,10 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params){
+  public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params) {
     Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
-    List<ExamOrderInfoResponse> examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    List<ExamOrderInfoResponse> examOrdersInfo =
+        examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     return new ExamOrdersInfo(examOrdersInfo, examOrders.getTotalElements());
   }
 }

@@ -15,5 +15,4 @@ public interface ClaimMetricsService {
   ClaimsInfo findAllClaimInfo(ClaimInfoQueryParams params);
 
   ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params);
-
 }

@@ -10,18 +10,16 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 @Mapper(
-        componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = ContentionInfoMapper.class,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+    componentModel = "spring",
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = ContentionInfoMapper.class,
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ExamOrderInfoResponseMapper {
 
-    @Mapping(
-            target = "hasAssociatedClaimSubmission",
-            expression =
-                    "java(examOrderEntity.getClaimSubmission() != null)")
-    ExamOrderInfoResponse toExamOrderInfoResponse(ExamOrderEntity examOrderEntity);
+  @Mapping(
+      target = "hasAssociatedClaimSubmission",
+      expression = "java(examOrderEntity.getClaimSubmission() != null)")
+  ExamOrderInfoResponse toExamOrderInfoResponse(ExamOrderEntity examOrderEntity);
 
-    List<ExamOrderInfoResponse> toExamOrderInfoResponses(Iterable<ExamOrderEntity> examOrderEntities);
-
+  List<ExamOrderInfoResponse> toExamOrderInfoResponses(Iterable<ExamOrderEntity> examOrderEntities);
 }

@@ -17,10 +17,10 @@ import java.time.OffsetDateTime;
 @Builder
 @EqualsAndHashCode
 public class ExamOrderInfoResponse {
-    private String collectionId;
-    private String status;
-    private OffsetDateTime orderedAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private boolean hasAssociatedClaimSubmission;
+  private String collectionId;
+  private String status;
+  private OffsetDateTime orderedAt;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private boolean hasAssociatedClaimSubmission;
 }

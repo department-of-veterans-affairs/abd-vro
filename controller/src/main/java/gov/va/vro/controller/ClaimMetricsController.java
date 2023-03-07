@@ -68,9 +68,9 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<List<ExamOrderInfoResponse>> allExamOrderInfo(
-          Integer page, Integer size){
-    ExamOrderInfoQueryParams params = ExamOrderInfoQueryParams.builder().page(page).size(size).build();
+  public ResponseEntity<List<ExamOrderInfoResponse>> allExamOrderInfo(Integer page, Integer size) {
+    ExamOrderInfoQueryParams params =
+        ExamOrderInfoQueryParams.builder().page(page).size(size).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findAllExamOrderInfo(params);
     return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
   }

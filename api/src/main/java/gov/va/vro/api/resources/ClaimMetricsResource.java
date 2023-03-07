@@ -116,36 +116,35 @@ public interface ClaimMetricsResource {
           Integer size,
       @RequestParam(name = "icn", required = false) String icn);
 
-    @Operation(
-            summary = "Retrieves all exam order records",
-            description = "This endpoint retrieves exam order metrics for all entries page by page.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Successful"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Bad Request",
-                            content = @Content(schema = @Schema(hidden = true))),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(schema = @Schema(hidden = true))),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal service error",
-                            content = @Content(schema = @Schema(hidden = true)))
-            })
-    @ResponseStatus(HttpStatus.OK)
-    @Timed(value = "exam-order-info")
-    @Tag(name = "Claim Metrics")
-    @RequestMapping(value = "/exam-order-info", method = RequestMethod.GET)
-    @ResponseBody
-    ResponseEntity<List<ExamOrderInfoResponse>> allExamOrderInfo(
-            @RequestParam(name = "page", required = false, defaultValue = "0")
-            @Min(value = 0, message = "invalid page number")
-            Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "10")
-            @Min(value = 1, message = "invalid size")
-            Integer size);
+  @Operation(
+      summary = "Retrieves all exam order records",
+      description = "This endpoint retrieves exam order metrics for all entries page by page.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal service error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "exam-order-info")
+  @Tag(name = "Claim Metrics")
+  @RequestMapping(value = "/exam-order-info", method = RequestMethod.GET)
+  @ResponseBody
+  ResponseEntity<List<ExamOrderInfoResponse>> allExamOrderInfo(
+      @RequestParam(name = "page", required = false, defaultValue = "0")
+          @Min(value = 0, message = "invalid page number")
+          Integer page,
+      @RequestParam(name = "size", required = false, defaultValue = "10")
+          @Min(value = 1, message = "invalid size")
+          Integer size);
 }
-
