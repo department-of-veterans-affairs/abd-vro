@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+
+  <title></title>
+
+  <style>
+  </style>
+
+</head>
+
+<body>
+  {% for section, section_value in default_data %}
+  <h1>{{section}}</h1>
+  {{ section_value |tojson }}
+  <h1>JSON Data</h1>
+  {{ default_data |tojson }}
+  {% block body %}{% endblock %}
+
+</body>
+
+</html>

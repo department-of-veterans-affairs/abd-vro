@@ -4,6 +4,7 @@ import os
 
 import pdfkit
 from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2.exceptions import TemplateNotFound
 
 from .helper_functions import *  # noqa: F403
 
@@ -16,8 +17,11 @@ class PDFGenerator:
         self.options = options
 
     def generate_template_variables(self, template_name: str, pdf_data: dict) -> dict:
-        placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_name}.json")))
-        filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
+        try:
+            placeholder_variables = json.load(open(os.path.join(lib_dir, f"template_variables/{template_name}.json")))
+            filled_variables = {key: pdf_data.get(key, placeholder_variables[key]) for key in placeholder_variables}
+        except FileNotFoundError:
+            filled_variables = {"default_data": pdf_data}
         # Run the helper function for the specific code if it exists
         try:
             eval(f"pdf_helper_{filled_variables['document_type']}(filled_variables)")
@@ -33,7 +37,10 @@ class PDFGenerator:
             loader=PackageLoader(loader_path),
             autoescape=select_autoescape()
         )
-        template = jinja_env.get_template(f"{template_name}.html")
+        try:
+            template = jinja_env.get_template(f"{template_name}.html")
+        except TemplateNotFound:
+            template = jinja_env.get_template("default.html")
         generated_html = template.render(**template_variables)
 
         return generated_html
