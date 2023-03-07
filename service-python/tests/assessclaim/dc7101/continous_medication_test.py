@@ -1,10 +1,10 @@
 import pytest
 
-from assessclaimdc7101.src.lib import continuous_medication
+from assessclaimdc7101.src.lib import medications
 
 
 @pytest.mark.parametrize(
-    "request_body, continuous_medication_required_calculation",
+    "request_body, medication_required_calculation",
     [
         (
             {
@@ -128,20 +128,20 @@ from assessclaimdc7101.src.lib import continuous_medication
         ),
     ],
 )
-def test_continuous_medication_required(
-    request_body, continuous_medication_required_calculation
+def test_medication_required(
+    request_body, medication_required_calculation
 ):
     """
-    Test the history of continuous medication required algorithm
+    Test the medication algorithm
 
-    :param request_body: request body with blood pressure readings and other data
+    :param request_body: request body with medications
     :type request_body: dict
-    :param continuous_medication_required_calculation: correct return value from algorithm
-    :type continuous_medication_required_calculation: dict
+    :param medication_required_calculation: correct return value from algorithm
+    :type medication_required_calculation: dict
     """
     assert (
-        continuous_medication.continuous_medication_required(request_body)
-        == continuous_medication_required_calculation
+        medications.medication_required(request_body)
+        == medication_required_calculation
     )
 
 
@@ -307,6 +307,6 @@ def test_continuous_medication_required(
 def test_filter_mas_medication(request_body, mas_medication_calculation):
 
     assert (
-            continuous_medication.filter_mas_medication(request_body)
+            medications.filter_mas_medication(request_body)
             == mas_medication_calculation
     )

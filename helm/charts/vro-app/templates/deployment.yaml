@@ -17,6 +17,7 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels | nindent 8 }}
       annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
         app.kubernetes.io/podowner: {{ .Values.owner }}
         app.kubernetes.io/podname: {{ .Values.name }}
         app.kubernetes.io/podversion: {{ .Values.global.version | quote }}
@@ -24,7 +25,7 @@ spec:
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
-        - name: pg-isready--{{ .Release.Name }}
+        - name: pg-isready{{ include "vro.containerSuffix" . }}
           # TODO: This simple container does not need to use the big `db` image
           image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
           env:
@@ -53,7 +54,7 @@ spec:
             limits:
               cpu: 10m
               memory: 256Mi
-        - name: dbinit--{{ .Release.Name }}
+        - name: dbinit{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
@@ -65,7 +66,7 @@ spec:
               cpu: 1000m
               memory: 1024Mi
       containers:
-        - name: app--{{ .Release.Name }}
+        - name: app{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-app:{{ include "vro.imageTag" . }}
           ports: {{- toYaml .Values.ports | nindent 10 }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
@@ -117,9 +118,9 @@ spec:
             - name: PERSIST_TRACKING_FOLDER
               value: {{ .Values.global.tracking.mountPath }}
             - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.global.images.services.uriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}
             - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.images.services.uriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}
 
             {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}

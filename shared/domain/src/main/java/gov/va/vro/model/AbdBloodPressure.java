@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
   @EqualsAndHashCode.Include
-  @Schema(description = "The date blood pressure is taken", example = "2020-08-05")
+  @Schema(description = "The date blood pressure is taken", example = "1999-12-31")
   private String date;
 
   @EqualsAndHashCode.Include
@@ -42,7 +42,7 @@ public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
       example = "Medical Treatment Record - Government Facility")
   private String document;
 
-  @Schema(description = "VBMS Receipt Date", example = "04/05/2021")
+  @Schema(description = "VBMS Receipt Date", example = "1999-12-31")
   private String receiptDate;
 
   @Schema(description = "Document Page Number", example = "55")
@@ -51,7 +51,7 @@ public class AbdBloodPressure implements Comparable<AbdBloodPressure> {
   @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
   private String documentId;
 
-  @Schema(description = "Formatted date", example = "01/01/2023")
+  @Schema(description = "Formatted date", example = "12/31/1999")
   private String dateFormatted;
 
   @Schema(description = "Source of this data", example = "LH")

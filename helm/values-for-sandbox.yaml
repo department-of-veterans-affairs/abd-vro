@@ -1,12 +1,7 @@
 
 global:
-  images:
-    repo: abd-vro-internal
+  environment: sandbox
+  endpoint: sandbox.lighthouse.va.gov
+  lhdiCluster: nonprod
 
   imagePrefix: ""
-
-rabbitmq-chart:
-  imageTag: "3"
-
-redis-chart:
-  imageTag: "7"
