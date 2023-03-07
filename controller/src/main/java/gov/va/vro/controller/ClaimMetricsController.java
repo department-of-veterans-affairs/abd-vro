@@ -4,8 +4,11 @@ import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.resources.ClaimMetricsResource;
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -62,5 +65,13 @@ public class ClaimMetricsController implements ClaimMetricsResource {
         ClaimInfoQueryParams.builder().page(page).size(size).icn(icn).build();
     ClaimsInfo claimsInfo = claimMetricsService.findAllClaimInfo(params);
     return ResponseEntity.ok(claimsInfo.getClaimInfoList());
+  }
+
+  @Override
+  public ResponseEntity<List<ExamOrderInfoResponse>> allExamOrderInfo(
+          Integer page, Integer size){
+    ExamOrderInfoQueryParams params = ExamOrderInfoQueryParams.builder().page(page).size(size).build();
+    ExamOrdersInfo examOrdersInfo = claimMetricsService.findAllExamOrderInfo(params);
+    return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
   }
 }
