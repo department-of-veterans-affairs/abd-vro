@@ -373,7 +373,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
   }
 
   private ExamOrderEntity createExamOrder(ExamOrder examOrder) {
-    // Currently ExamOrders only come from MAS
+    // Currently ExamOrders only come from MAS or VRO sending to MAS
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             examOrder.getCollectionId(), examOrder.getIdType());
