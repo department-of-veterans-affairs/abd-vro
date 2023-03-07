@@ -185,7 +185,7 @@ services:
     image: va/abd_vro-workflows-xample:latest
     <<: *common-security-opt
     <<: *common-sde-security
-    # profiles: ["xample"]
+    profiles: ["xample"]
     environment:
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
