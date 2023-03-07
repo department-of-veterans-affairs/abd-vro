@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.camel.CamelEntry;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -24,6 +25,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CamelEntrance {
 
+  public static final String IMVP_EXCHANGE = "imvp";
+  public static final String NOTIFY_AUTOMATED_CLAIM_QUEUE = "notifyAutomatedClaim";
+
+  private final CamelEntry camelEntry;
   private final ProducerTemplate producerTemplate;
 
   public String submitClaimFull(Claim claim) {
@@ -59,8 +64,9 @@ public class CamelEntrance {
         payload.getBenefitClaimId(),
         payload.getCollectionId(),
         payload.getVeteranIcn());
-    producerTemplate.sendBodyAndHeaders(
-        MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM,
+    camelEntry.inOnly(
+        IMVP_EXCHANGE,
+        NOTIFY_AUTOMATED_CLAIM_QUEUE,
         payload,
         Map.of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,

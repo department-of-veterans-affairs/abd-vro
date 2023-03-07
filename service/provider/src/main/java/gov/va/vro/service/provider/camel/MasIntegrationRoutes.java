@@ -1,8 +1,16 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.*;
+import static gov.va.vro.service.provider.CamelEntrance.IMVP_EXCHANGE;
+import static gov.va.vro.service.provider.CamelEntrance.NOTIFY_AUTOMATED_CLAIM_QUEUE;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -38,7 +46,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
       "rabbitmq:mas-notification-exchange?queue=mas-notification"
           + "-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
+  public static final String ENDPOINT_AUTOMATED_CLAIM =
+      RabbitMqCamelUtils.rabbitmqConsumerEndpoint(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE);
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
@@ -102,6 +111,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
+        .convertBodyTo(MasAutomatedClaimPayload.class)
         .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
