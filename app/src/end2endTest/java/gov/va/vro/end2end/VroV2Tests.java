@@ -360,7 +360,7 @@ public class VroV2Tests {
   @SneakyThrows
   @Test
   void testIncompleteBloodPressures() {
-    testAutomatedClaimFullPositive("377", true);
+    testAutomatedClaimFullPositive("380", true);
   }
 
   @SneakyThrows
