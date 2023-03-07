@@ -143,8 +143,8 @@
     ]
   },
   "evidenceSummary": {
-    "totalBpReadings": 8,
-    "recentBpReadings": 3,
+    "totalBpCount": 8,
+    "recentBpCount": 3,
     "medicationsCount": 7
   },
   "claimSubmissionId": "7001"

@@ -63,4 +63,11 @@ public interface IBipApiService {
    */
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException;
+
+  /**
+   * Verifies a call to the BIP Claims API can be made by getting document types.
+   *
+   * @return boolean verification status
+   */
+  boolean verifySpecialIssueTypes();
 }

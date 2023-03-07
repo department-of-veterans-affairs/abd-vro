@@ -61,9 +61,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'diastolic': {'value': 110},
                                 'receiptDate': '11/1/2022',
                                 'systolic': {'value': 200}}],
-                 'oneYearBpReadings': 2,
-                 'recentElevatedBpReadings': 2,
-                 'totalBpReadings': 2,
+                 'oneYearBpCount': 2,
+                 'twoYearsElevatedBpCount': 2,
+                 'totalBpCount': 2,
                  'twoYearsBp': [{'dataSource': 'MAS',
                                  'date': '2021-11-01',
                                  'dateFormatted': '11/1/2021',
@@ -76,7 +76,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'diastolic': {'value': 110},
                                  'receiptDate': '11/1/2022',
                                  'systolic': {'value': 200}}],
-                 'twoYearsBpReadings': 2}
+                 'twoYearsBpCount': 2}
         ),
         # 3 reading test case with one out of range date
         (
@@ -304,9 +304,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'dateFormatted': '5/13/2021',
                                 'diastolic': {'value': 113},
                                 'systolic': {'value': 131}}],
-                 'oneYearBpReadings': 7,
-                 'recentElevatedBpReadings': 4,
-                 'totalBpReadings': 7,
+                 'oneYearBpCount': 7,
+                 'twoYearsElevatedBpCount': 4,
+                 'totalBpCount': 7,
                  'twoYearsBp': [{'date': '2021-10-14',
                                  "receiptDate": "",
                                  'dateFormatted': '10/14/2021',
@@ -342,7 +342,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'dateFormatted': '5/13/2021',
                                  'diastolic': {'value': 113},
                                  'systolic': {'value': 131}}],
-                 'twoYearsBpReadings': 7}
+                 'twoYearsBpCount': 7}
         ),
         (
                 {
@@ -470,9 +470,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'diastolic': {'value': 104},
                                 'systolic': {'value': 120}},
                                ],
-                 'oneYearBpReadings': 5,
-                 'recentElevatedBpReadings': 3,
-                 'totalBpReadings': 6,
+                 'oneYearBpCount': 5,
+                 'twoYearsElevatedBpCount': 3,
+                 'totalBpCount': 6,
                  'twoYearsBp': [{'date': '2021-10-14',
                                  "receiptDate": "",
                                  'dateFormatted': '10/14/2021',
@@ -499,7 +499,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'diastolic': {'value': 104},
                                  'systolic': {'value': 120}},
                                 ],
-                 'twoYearsBpReadings': 5}
+                 'twoYearsBpCount': 5}
         ),
         (
                 {
@@ -646,9 +646,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'dateFormatted': '5/13/2021',
                                 'diastolic': {'value': 113},
                                 'systolic': {'value': 131}}],
-                 'oneYearBpReadings': 6,
-                 'recentElevatedBpReadings': 3,
-                 'totalBpReadings': 7,
+                 'oneYearBpCount': 6,
+                 'twoYearsElevatedBpCount': 3,
+                 'totalBpCount': 7,
                  'twoYearsBp': [{'date': '2021-10-14',
                                  "receiptDate": "",
                                  'dateFormatted': '10/14/2021',
@@ -684,7 +684,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'dateFormatted': '11/8/2020',
                                  'diastolic': {'value': 105},
                                  'systolic': {'value': 154}}],
-                 'twoYearsBpReadings': 7}
+                 'twoYearsBpCount': 7}
         ),
         (
                 {
@@ -784,9 +784,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                              'display': 'Systolic blood pressure',
                                              'unit': 'mm[Hg]',
                                              'value': 200}}],
-                 'oneYearBpReadings': 2,
-                 'recentElevatedBpReadings': 1,
-                 'totalBpReadings': 2,
+                 'oneYearBpCount': 2,
+                 'twoYearsElevatedBpCount': 1,
+                 'totalBpCount': 2,
                  'twoYearsBp': [{'date': '2021-10-01',
                                  'dateFormatted': '10/1/2021',
                                  "receiptDate": "",
@@ -813,7 +813,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                               'display': 'Systolic blood pressure',
                                               'unit': 'mm[Hg]',
                                               'value': 200}}],
-                 'twoYearsBpReadings': 2}
+                 'twoYearsBpCount': 2}
         ),
         (
                 {
@@ -913,9 +913,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                              'display': 'Systolic blood pressure',
                                              'unit': 'mm[Hg]',
                                              'value': 180}}],
-                 'oneYearBpReadings': 2,
-                 'recentElevatedBpReadings': 2,
-                 'totalBpReadings': 2,
+                 'oneYearBpCount': 2,
+                 'twoYearsElevatedBpCount': 2,
+                 'totalBpCount': 2,
                  'twoYearsBp': [{'date': '2021-10-10',
                                  "receiptDate": "",
                                  'dateFormatted': '10/10/2021',
@@ -942,7 +942,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                               'display': 'Systolic blood pressure',
                                               'unit': 'mm[Hg]',
                                               'value': 180}}],
-                 'twoYearsBpReadings': 2}
+                 'twoYearsBpCount': 2}
         ),
         # 1 reading
         (
@@ -999,9 +999,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                              'display': 'Systolic blood pressure',
                                              'unit': 'mm[Hg]',
                                              'value': 180}}],
-                 'oneYearBpReadings': 1,
-                 'recentElevatedBpReadings': 1,
-                 'totalBpReadings': 1,
+                 'oneYearBpCount': 1,
+                 'twoYearsElevatedBpCount': 1,
+                 'totalBpCount': 1,
                  'twoYearsBp': [{'date': '2021-11-01',
                                  'dateFormatted': '11/1/2021',
                                  "receiptDate": "",
@@ -1015,7 +1015,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                               'display': 'Systolic blood pressure',
                                               'unit': 'mm[Hg]',
                                               'value': 180}}],
-                 'twoYearsBpReadings': 1}
+                 'twoYearsBpCount': 1}
         ),
         # 0 readings
         (
@@ -1027,11 +1027,11 @@ from assessclaimdc7101.src.lib import bp_calculator
                 },
                 {'allBp': [],
                  'oneYearBp': [],
-                 'oneYearBpReadings': 0,
-                 'recentElevatedBpReadings': 0,
-                 'totalBpReadings': 0,
+                 'oneYearBpCount': 0,
+                 'twoYearsElevatedBpCount': 0,
+                 'totalBpCount': 0,
                  'twoYearsBp': [],
-                 'twoYearsBpReadings': 0}
+                 'twoYearsBpCount': 0}
         )
     ],
 )

@@ -1,0 +1,21 @@
+name: "3. Continuous Integration (test then publish images)"
+
+on:
+  push:
+    branches: [ develop ]
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    uses: ./.github/workflows/test-code.yml
+    secrets: inherit
+
+  codeql:
+    uses: ./.github/workflows/codeql.yml
+    secrets: inherit
+
+  end2end-test:
+    uses: ./.github/workflows/end2end-test.yml
+    secrets: inherit

@@ -6,7 +6,7 @@ from assessclaimdc7101.src.lib import main
 @pytest.mark.parametrize(
     "request_body, response",
     [
-        # New claim with two recent BP (one elevated, one normal) and relevant condition
+        # New claim with two twoYears BP (one elevated, one normal) and relevant condition
         (
                 {
                     "evidence": {
@@ -179,15 +179,16 @@ from assessclaimdc7101.src.lib import main
                                               'text': 'Essential (primary) hypertension'}],
                               'medications': [],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 3,
+                 'evidenceSummary': {'medicationsCount': 0,
+                                     'oneYearBpCount': 3,
                                      'relevantConditionsLighthouseCount': 1,
-                                     'totalBpReadings': 3,
-                                     'totalConditionsCount': 3},
+                                     'totalBpCount': 3,
+                                     'totalConditionsCount': 3,
+                                     'twoYearsBpCount': 3,
+                                     'twoYearsElevatedBpCount': 2},
                  'sufficientForFastTracking': True}
         ),
-        # New claim with two recent BP both elevated and no condition
+        # New claim with two twoYears BP both elevated and no condition
         (
                 {
                     "evidence": {
@@ -283,12 +284,15 @@ from assessclaimdc7101.src.lib import main
                  'evidenceSummary': {
                                      'medicationsCount': 0,
                                      'recentBpReadings': 1,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 2,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 2,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 2,
+                                     'twoYearsElevatedBpCount': 2},
                  'sufficientForFastTracking': None}
         ),
-        # New claim with relevant condition but no recent BP
+        # New claim with relevant condition but no twoYears BP
         (
                 {
                     "evidence": {
@@ -404,15 +408,16 @@ from assessclaimdc7101.src.lib import main
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
                                                'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'medicationsCount': 2,
-                                     'recentBpReadings': 1,
+                 'evidenceSummary': {'medicationsCount': 2,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 1,
-                                     'totalBpReadings': 1,
-                                     'totalConditionsCount': 2},
+                                     'totalBpCount': 1,
+                                     'totalConditionsCount': 2,
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1},
                  'sufficientForFastTracking': False}
         ),
-        # New claim with no condition and no recent BP, BP not elevated
+        # New claim with no condition and no twoYears BP, BP not elevated
         (
                 {
                     "evidence": {
@@ -538,12 +543,13 @@ from assessclaimdc7101.src.lib import main
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
                                                'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'medicationsCount': 1,
-                                     'recentBpReadings': 2,
+                 'evidenceSummary': {'medicationsCount': 1,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 3,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 3,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 2,
+                                     'twoYearsElevatedBpCount': 0},
                  'sufficientForFastTracking': None}
         ),
         # Claim for increase, not enough BP readings
@@ -607,12 +613,15 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
+                              'medications': [],
                               'documentsWithoutAnnotationsChecked': ['{guid}']},
-                 'evidenceSummary': {
-                                     'recentBpReadings': 1,
+                 'evidenceSummary': {'medicationsCount': 0,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 2,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 2,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1},
                  'sufficientForFastTracking': False}
         ),
         (
@@ -754,12 +763,15 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
+                              'medications':[],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'recentBpReadings': 4,
+                 'evidenceSummary': {'medicationsCount': 0,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 4,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 4,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 4,
+                                     'twoYearsElevatedBpCount': 4},
                  'sufficientForFastTracking': False}
         ),
         # Claim for increase
@@ -906,12 +918,13 @@ from assessclaimdc7101.src.lib import main
                               'conditions': [],
                               'medications': [],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 4,
+                 'evidenceSummary': {'medicationsCount': 0,
+                                     'oneYearBpCount': 4,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 4,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 4,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 4,
+                                     'twoYearsElevatedBpCount': 4},
                  'sufficientForFastTracking': True}
 
         ),
@@ -933,12 +946,13 @@ from assessclaimdc7101.src.lib import main
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
                  'evidence': {'bp_readings': [], 'conditions': [], 'medications': [],'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 0,
+                 'evidenceSummary': {'medicationsCount': 0,
+                                     'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
-                                     'totalBpReadings': 0,
-                                     'totalConditionsCount': 0},
+                                     'totalBpCount': 0,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 0,
+                                     'twoYearsElevatedBpCount': 0},
                  'sufficientForFastTracking': False}
         ),
         # Bad data missing action type

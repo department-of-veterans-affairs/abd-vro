@@ -1,4 +1,4 @@
-name: Update Deployment
+name: "1. Update Deployment"
 
 on:
   workflow_dispatch:
@@ -22,37 +22,43 @@ on:
         type: string
 
       vro-app:
-        description: 'Enable VRO Application API'
+        description: 'Enable & update VRO Application API'
         required: true
         type: boolean
         default: true
-
       domain-rrd:
-        description: "Enable domain RRD's microservices"
+        description: "Enable & update RRD domain services"
         required: true
         type: boolean
         default: true
-
       rabbitmq:
         description: 'Enable MQ'
         required: true
         type: boolean
         default: true
-
       postgres:
         description: 'Enable DB'
         required: true
         type: boolean
         default: true
-
       redis:
         description: 'Enable Redis'
         required: true
         type: boolean
         default: true
-
       console:
         description: 'Enable VRO Console'
+        required: true
+        type: boolean
+        default: false
+
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        type: boolean
+        default: false
+      restart:
+        description: 'Shut down deployment completely, then redeploy (For emergency use)'
         required: true
         type: boolean
         default: false
@@ -66,8 +72,44 @@ on:
       image_tag:
         required: true
         type: string
+
+      vro-app:
+        required: false
+        type: boolean
+        default: true
+      domain-rrd:
+        required: false
+        type: boolean
+        default: true
+      rabbitmq:
+        required: false
+        type: boolean
+        default: true
+      postgres:
+        required: false
+        type: boolean
+        default: true
+      redis:
+        required: false
+        type: boolean
+        default: true
+      console:
+        required: false
+        type: boolean
+        default: false
+
+      rollback:
+        required: false
+        type: boolean
+        default: false
+      restart:
+        required: false
+        type: boolean
+        default: false
+
 env:
-  SLACK_BOT_ACCESS_TOKEN_DEVOPS: ${{ secrets.SLACK_BOT_ACCESS_TOKEN_DEVOPS }}
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
   RELEASE_NAME: vro
 
 jobs:
@@ -75,7 +117,19 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
+      - name: "Notify Slack"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":rocket: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
+            in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
+            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
+
       - name: "Set up kube config"
+        id: kube-setup
         run: |
           mkdir ~/.kube
           case "${{ inputs.target_env }}" in
@@ -85,10 +139,71 @@ jobs:
           echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
           chmod go-rwx ~/.kube/config
 
+          echo "==================================="
+          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+
+            echo '## Before update' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
+            echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
+            # Show values with an `enabled` key
+            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+          else
+            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+            # Set helm_values so that subsequent steps that access it don't fail
+            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
+          fi
+
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Deploy ${{ inputs.image_tag }} to ${{ inputs.target_env }} env"
+      - name: "Post shutdown message in Slack thread"
+        if: ${{ inputs.restart }}
+        # Post in thread to reduce clutter in Slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":broom: Shutting down current deployment"
+      - name: "Shutting down deployment in ${{ inputs.target_env }} env"
+        if: ${{ inputs.restart }}
+        run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
+
+      - name: "Workaround for postgres StatefulSet"
+        # If upgrading existing deployment and you want postgres and it's already enabled, then
+        # apply the workaround to delete StatefulSets without deleting pods (allow pods to be temporarily orphaned)
+        if: (!inputs.restart) && inputs.postgres && fromJSON(steps.kube-setup.outputs.helm_values).postgres.enabled
+        run: |
+          # This is a workaround for `helm upgrade` reporting error due to a StatefulSet:
+          #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
+          #     Forbidden: updates to statefulset spec for fields other than ...
+          # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
+
+          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan --wait
+
+      - name: "Post deploying message in Slack thread"
+        # Post in thread to reduce clutter in Slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_angel: Deploying:\n\
+            - vro-app: *${{ inputs.vro-app }}*\n\
+            - domain-rrd: *${{ inputs.domain-rrd }}*\n\
+            - rabbitmq: *${{ inputs.rabbitmq }}*\n\
+            - postgres: *${{ inputs.postgres }}*\n\
+            - redis: *${{ inputs.redis }}*\n\
+            - console: ${{ inputs.console }}\n\
+            Rollback if deployment fails: ${{ inputs.rollback }}\n\
+            Restart before deployment: ${{ inputs.restart }}"
+      - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           HELM_ARGS=""
 
@@ -97,30 +212,73 @@ jobs:
             HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
           fi
 
-          set -v
-          if [ "${{ inputs.postgres }}" == "true" ]; then
-            helm upgrade --install --wait ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
-              ${HELM_ARGS} \
-              --set-string global.imageTag=${{ inputs.image_tag }} \
-              --set vro-app.enabled=${{ inputs.vro-app }} \
-              --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
-              --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
-              --set postgres.enabled=false \
-              --set redis.enabled=${{ inputs.redis }} \
-              --set console.enabled=${{ inputs.console }}
+          if [ "${{ inputs.rollback }}" == "true" ] || [ "${{ inputs.target_env }}" == "prod" ]; then
+            HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
-          helm upgrade --install --atomic ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          echo "HELM_ARGS: $HELM_ARGS"
+          echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
+          helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+            --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
+            --set-string global.environment=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
+            --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
             --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
             --set postgres.enabled=${{ inputs.postgres }} \
             --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
+          echo "::endgroup::"
 
-# TODO: retry for StatefulSets
-#   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet: ...
-#   spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 'updateStrategy' and 'minReadySeconds' are forbidden
-# TODO: Add Slack notifications
+          echo "==================================="
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+          # https://kubernetes.io/docs/reference/kubectl/jsonpath/
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods -o jsonpath='{range .items[*]}
+            {"pod: "}{.metadata.name}{range .spec.containers[*]}
+            {"\tname: "}{.name}
+            {"\timage: "}{.image}{end}'
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pvc
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get services
+          kubectl -n va-abd-rrd-${{ inputs.target_env }} get events
+
+          echo '## After update' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: "Post failed status message in Slack thread"
+        if: ${{ failure() }}
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_cry: Failed deployment to *${{ inputs.target_env }}*"
+      - name: "Emoji react to top-level Slack notification"
+        if: ${{ failure() }}
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'x'
+
+      - name: "Post failed status message in Slack thread"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_duck_yay: Completed deployment to ${{ inputs.target_env }}"
+      - name: "Emoji react to top-level Slack notification"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'tada'

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,7 @@ public class BipCeApiService implements IBipCeApiService {
   private static final String HTTPS = "https://";
 
   private static final String UPLOAD_FILE = "/files";
+  private static final String DOCUMENT_TYPES = "/documentTypes";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
@@ -70,7 +73,7 @@ public class BipCeApiService implements IBipCeApiService {
       String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + UPLOAD_FILE;
       log.info("Call {} to uploadEvidenceFile for {}", url, idtype.name());
 
-      HttpHeaders headers = getBipHeader();
+      HttpHeaders headers = getBipHeader(MediaType.MULTIPART_FORM_DATA);
       String headerFolderUri = String.format(X_FOLDER_URI, idtype.name(), fileId);
       headers.set("X-Folder-URI", headerFolderUri);
 
@@ -109,10 +112,24 @@ public class BipCeApiService implements IBipCeApiService {
     }
   }
 
-  private HttpHeaders getBipHeader() throws BipException {
+  @Override
+  public boolean verifyDocumentTypes() {
+    String url = HTTPS + bipApiProps.getEvidenceBaseUrl() + DOCUMENT_TYPES;
+    log.info("Call {} to documentTypes", url);
+
+    HttpHeaders headers = getBipHeader(MediaType.APPLICATION_JSON);
+    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+    ResponseEntity<String> response =
+        ceRestTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
+  }
+
+  private HttpHeaders getBipHeader(MediaType mediaType) throws BipException {
     try {
       HttpHeaders bipHttpHeaders = new HttpHeaders();
-      bipHttpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+      bipHttpHeaders.setContentType(mediaType);
 
       String jwt = createJwt();
       bipHttpHeaders.add("Authorization", "Bearer " + jwt);
