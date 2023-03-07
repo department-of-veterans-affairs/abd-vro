@@ -149,7 +149,10 @@ jobs:
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
 
-            echo "helm_values=$(helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} -o json)" >> $GITHUB_OUTPUT
+            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
+            echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
+            # Show values with an `enabled` key
+            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
             # Set helm_values so that subsequent steps that access it don't fail
@@ -192,13 +195,14 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying:\n\
-            \  * vro-app: ${{ inputs.vro-app }}\n\
-            \  * domain-rrd: ${{ inputs.domain-rrd }}\n\
-            \  * rabbitmq: ${{ inputs.rabbitmq }}\n\
-            \  * postgres: ${{ inputs.postgres }}\n\
-            \  * redis: ${{ inputs.redis }}\n\
-            \  * console: ${{ inputs.console }}\n\
-            Rollback if deployment fails: ${{ inputs.rollback }}"
+            - vro-app: *${{ inputs.vro-app }}*\n\
+            - domain-rrd: *${{ inputs.domain-rrd }}*\n\
+            - rabbitmq: *${{ inputs.rabbitmq }}*\n\
+            - postgres: *${{ inputs.postgres }}*\n\
+            - redis: *${{ inputs.redis }}*\n\
+            - console: ${{ inputs.console }}\n\
+            Rollback if deployment fails: ${{ inputs.rollback }}\n\
+            Restart before deployment: ${{ inputs.restart }}"
       - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           HELM_ARGS=""
