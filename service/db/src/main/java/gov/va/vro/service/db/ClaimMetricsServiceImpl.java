@@ -16,6 +16,7 @@ import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
+import gov.va.vro.service.db.mapper.ExamOrderInfoResponseMapper;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +107,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   @Override
   public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params){
     Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
-    List<ExamOrderInfoResponse> examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponse(examOrders);
+    List<ExamOrderInfoResponse> examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     return new ExamOrdersInfo(examOrdersInfo, examOrders.getTotalElements());
   }
 }

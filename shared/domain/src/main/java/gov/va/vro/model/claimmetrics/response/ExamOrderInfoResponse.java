@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @NoArgsConstructor
@@ -19,5 +20,7 @@ public class ExamOrderInfoResponse {
     private String collectionId;
     private String status;
     private OffsetDateTime orderedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private boolean hasAssociatedClaimSubmission;
 }
