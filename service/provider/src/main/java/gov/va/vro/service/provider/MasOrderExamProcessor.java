@@ -55,7 +55,6 @@ public class MasOrderExamProcessor implements Processor {
               .collectionId(Integer.toString(claimPayload.getCollectionId()))
               .idType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE)
               .status(SUBMITTED_STATUS)
-              .examOrderDateTime(OffsetDateTime.now())
               .build();
       saveToDbService.insertOrUpdateExamOrderingStatus(examOrder);
       exchange.setProperty("orderExamResponse", response);
