@@ -228,6 +228,7 @@ bip:
 truststore: "${BIP_TRUSTSTORE}"
 truststore_password: "${BIP_PASSWORD}"
 keystore: "${BIP_KEYSTORE}"
+bipalias: "${BIP_ALIAS}"
 
 claim:
   special_issue_1: "RDR1"
