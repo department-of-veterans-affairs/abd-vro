@@ -180,6 +180,23 @@ services:
       - internal
       - external
 
+  workflows-xample:
+    image: va/abd_vro-workflows-xample:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    profiles: ["xample"]
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *postgres-vars
+    depends_on:
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   svc-assessor-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
     <<: *common-security-opt
