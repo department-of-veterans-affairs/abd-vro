@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/")
 public interface DocumentTypesApi {
   /**
-   * GET /documentTypes: Retrieve possible document types.
+   * GET /documenttypes: Retrieve possible document types.
    *
    * <p>The return object is not implemented for Mock. We are only testing connectivity.
    */
@@ -97,7 +97,7 @@ public interface DocumentTypesApi {
       security = {@SecurityRequirement(name = "bearer-key")})
   @RequestMapping(
       method = RequestMethod.GET,
-      value = "/documentTypes",
+      value = "/documenttypes",
       produces = {"application/json"})
   ResponseEntity<String> getDocumentTypes();
 }

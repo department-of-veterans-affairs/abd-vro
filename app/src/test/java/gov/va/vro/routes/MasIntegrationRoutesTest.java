@@ -35,6 +35,8 @@ import java.util.Collections;
 
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
+  private static final long DEFAULT_REQUEST_TIMEOUT = 120000;
+
   @Autowired CamelEntrance camelEntrance;
 
   @MockBean IMasApiService masApiService;
@@ -96,7 +98,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "claim-submit-full",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
-            + "requestTimeout=60000&routingKey=code.hypertension",
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT
+            + "&routingKey=code.hypertension",
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
@@ -110,7 +114,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "mas-processing",
         "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.hypertension&"
-            + "requestTimeout=60000",
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT,
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
