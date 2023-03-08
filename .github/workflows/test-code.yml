@@ -37,3 +37,11 @@ jobs:
         # `check` runs hadolint and shellcheck
         # `jacocoTestCoverageVerification` checks for adequate test coverage
         run: ./gradlew check jacocoTestCoverageVerification -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+
+      - name: "Test Report"
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: JUnit Tests
+          path: "**/build/test-results/test/TEST-*.xml"
+          reporter: java-junit

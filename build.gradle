@@ -111,9 +111,7 @@ subprojects {
     tasks.withType(Test) {
       afterTest { TestDescriptor descriptor, TestResult result ->
         if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
-          failedTests << [
-            "${descriptor.className}::${descriptor.name}"
-          ]
+          failedTests << "${descriptor.className}::${descriptor.name}"
         }
       }
     }
@@ -122,7 +120,7 @@ subprojects {
       if(!failedTests.empty){
         println "Failed tests:"
         failedTests.each { failedTest ->
-          println failedTest
+          println "- " + failedTest
         }
         println ""
       }
