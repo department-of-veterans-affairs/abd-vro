@@ -128,14 +128,6 @@ exportSecretIfUnset LH_PRIVATE_KEY
 export MAS_API_AUTH_CLIENTID=vro_dev
 exportSecretIfUnset MAS_API_AUTH_CLIENT_SECRET
 
-# TODO: Move these to application*.yml
-export MAS_API_AUTH_TOKEN_URI=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
-export MAS_API_AUTH_SCOPE=openid
-export MAS_API_BAS_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
-export MAS_COLLECTION_ANNOTS_PATH=/pcQueryCollectionAnnots
-export MAS_COLLECTION_STATUS_PATH=/pcCheckCollectionStatus
-export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
-
 ###
 ### Integration with BIP ###
 ##
