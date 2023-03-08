@@ -40,7 +40,7 @@ public class DocumentTypesTest {
     headers.set("Authorization", "Bearer " + jwt);
 
     HttpEntity<Void> entity = new HttpEntity<>(headers);
-    String url = "https://localhost:" + port + "/documentTypes";
+    String url = "https://localhost:" + port + "/documenttypes";
     ResponseEntity<String> response =
         restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
