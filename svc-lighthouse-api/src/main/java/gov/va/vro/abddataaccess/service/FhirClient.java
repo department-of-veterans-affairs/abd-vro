@@ -165,6 +165,7 @@ public class FhirClient {
   }
 
   private List<AbdCondition> getPatientConditions(List<BundleEntryComponent> entries) {
+    log.info("Extract patient condition entries. number of entries: {}", entries.size());
     List<AbdCondition> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Condition resource = (Condition) entry.getResource();
@@ -188,6 +189,7 @@ public class FhirClient {
   }
 
   private List<AbdProcedure> getPatientProcedures(List<BundleEntryComponent> entries) {
+    log.info("Extract patient procedure entries. number of entries: {}", entries.size());
     List<AbdProcedure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Procedure resource = (Procedure) entry.getResource();
