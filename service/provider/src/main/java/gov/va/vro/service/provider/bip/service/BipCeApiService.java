@@ -49,7 +49,7 @@ public class BipCeApiService implements IBipCeApiService {
   private static final String HTTPS = "https://";
 
   private static final String UPLOAD_FILE = "/files";
-  private static final String DOCUMENT_TYPES = "/documentTypes";
+  private static final String DOCUMENT_TYPES = "/documenttypes";
 
   @Qualifier("bipCERestTemplate")
   @NonNull

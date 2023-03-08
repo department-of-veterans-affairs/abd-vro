@@ -46,9 +46,6 @@ public class BipApiConfig {
   @Value("${keystore}")
   private String keystore;
 
-  @Value("${bipalias}")
-  private String alias;
-
   @Bean
   public BipApiProps getBipApiProps() {
     return new BipApiProps();
