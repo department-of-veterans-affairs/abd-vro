@@ -113,15 +113,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_REQUEST_INJECTION)
         .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
-        .log("1 ${headers} ${body}")
+        .log("A ${headers} ${body}")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .log("2 ${headers} ${body}")
+        .log("B ${headers} ${body}")
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
         .log("1 ${headers} ${body}")
+        .removeHeaders("CamelRabbitmq*")
         // .convertBodyTo(MasAutomatedClaimPayload.class)
         // .log("2 ${headers} ${body}")
         // .convertBodyTo(byte[].class)
@@ -134,6 +135,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
+        .log("6 ${headers} ${body}")
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
@@ -143,6 +145,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(processClaimRouteId)
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
+        .log("7 ${headers} ${body}")
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
