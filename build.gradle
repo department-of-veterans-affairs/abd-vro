@@ -109,21 +109,23 @@ subprojects {
     ext.failedTests = []
     // add a listener to all tasks of type Test
     tasks.withType(Test) {
-        afterTest { TestDescriptor descriptor, TestResult result ->
-            if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
-                failedTests << ["${descriptor.className}::${descriptor.name}"]
-            }
+      afterTest { TestDescriptor descriptor, TestResult result ->
+        if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+          failedTests << [
+            "${descriptor.className}::${descriptor.name}"
+          ]
         }
+      }
     }
     // print out tracked failed tests when the build has finished
     gradle.buildFinished {
-        if(!failedTests.empty){
-            println "Failed tests:"
-            failedTests.each { failedTest ->
-                println failedTest
-            }
-            println ""
+      if(!failedTests.empty){
+        println "Failed tests:"
+        failedTests.each { failedTest ->
+          println failedTest
         }
+        println ""
+      }
     }
   }
 }
