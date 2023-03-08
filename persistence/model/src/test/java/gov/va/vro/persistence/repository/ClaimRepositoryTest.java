@@ -48,7 +48,7 @@ public class ClaimRepositoryTest {
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
-    var claim = TestDataSupplier.createClaim("123", veteran);git st
+    var claim = TestDataSupplier.createClaim("123", veteran);
     claim.addContention(contention1);
     var claimSubmission = TestDataSupplier.createClaimSubmission(claim, REF_ID, ID_TYPE);
     claim.addClaimSubmission(claimSubmission);
