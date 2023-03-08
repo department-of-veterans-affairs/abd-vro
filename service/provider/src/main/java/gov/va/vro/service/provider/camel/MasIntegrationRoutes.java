@@ -111,6 +111,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureAutomatedClaim() {
     from(ENDPOINT_REQUEST_INJECTION)
+        .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
         .log("1 ${headers} ${body}")
         .convertBodyTo(MasAutomatedClaimPayload.class)
