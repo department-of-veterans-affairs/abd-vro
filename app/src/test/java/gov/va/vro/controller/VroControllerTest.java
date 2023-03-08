@@ -50,6 +50,8 @@ import java.util.function.Function;
 @CamelSpringBootTest
 class VroControllerTest extends BaseControllerTest {
 
+  private static final int TIME_OUT = 120000;
+
   @Autowired private AppTestUtil util;
 
   @Autowired protected CamelContext camelContext;
@@ -80,7 +82,8 @@ class VroControllerTest extends BaseControllerTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.hypertension&requestTimeout=60000")
+                        + "&routingKey=code.hypertension&requestTimeout="
+                        + TIME_OUT)
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
     // Mock secondary process endpoint
@@ -91,7 +94,8 @@ class VroControllerTest extends BaseControllerTest {
             route
                 .interceptSendToEndpoint(
                     "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.hypertension&requestTimeout=60000")
+                        + "?routingKey=health-assess.hypertension&requestTimeout="
+                        + TIME_OUT)
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
     // The mock endpoint returns a valid response
@@ -141,7 +145,8 @@ class VroControllerTest extends BaseControllerTest {
                 .interceptSendToEndpoint(
                     "rabbitmq:claim-submit-exchange"
                         + "?queue=claim-submit"
-                        + "&routingKey=code.hypertension&requestTimeout=60000")
+                        + "&routingKey=code.hypertension&requestTimeout="
+                        + TIME_OUT)
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit"));
     // Mock secondary process endpoint
@@ -152,7 +157,8 @@ class VroControllerTest extends BaseControllerTest {
             route
                 .interceptSendToEndpoint(
                     "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.hypertension&requestTimeout=60000")
+                        + "?routingKey=health-assess.hypertension&requestTimeout="
+                        + TIME_OUT)
                 .skipSendToOriginalEndpoint()
                 .to("mock:claim-submit-full"));
 
