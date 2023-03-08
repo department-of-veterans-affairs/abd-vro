@@ -8,7 +8,7 @@ vro:
     # Parsed by CamelDtoClassesProperties
     dto-classes:
       - gov.va.vro.service.spi.model.*
-      - gov.va.vro.model.mas.*
+#      - gov.va.vro.model.mas.*
       - gov.va.vro.model.*
 
 # See https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-DisablingJMX
