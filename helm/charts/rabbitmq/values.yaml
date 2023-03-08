@@ -1,0 +1,8 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+labels:
+  app: rabbitmq
+
+imageTag: "latest"
+
+replicaCount: 1

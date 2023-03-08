@@ -1,4 +1,4 @@
-name: Mirroring
+name: "8. Mirroring"
 
 on:
   pull_request:
