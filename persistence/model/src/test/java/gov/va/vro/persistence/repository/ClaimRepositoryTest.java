@@ -22,7 +22,8 @@ public class ClaimRepositoryTest {
   @Test
   void test() {
     Date icnTimestamp = new Date();
-
+    var REF_ID = "222";
+    var ID_TYPE = "TEST_TYPE";
     var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
@@ -47,12 +48,19 @@ public class ClaimRepositoryTest {
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
-    var claim = TestDataSupplier.createClaim("123", veteran);
+    var claim = TestDataSupplier.createClaim("123", veteran);git st
     claim.addContention(contention1);
+    var claimSubmission = TestDataSupplier.createClaimSubmission(claim, REF_ID, ID_TYPE);
+    claim.addClaimSubmission(claimSubmission);
     claim = claimRepository.save(claim);
     assertNotNull(claim.getId());
     assertNotNull(claim.getCreatedAt());
     assertNotNull(claim.getContentions().get(0));
     assertEquals(claim.getContentions().get(0).getDiagnosticCode(), "c1");
+    assertNotNull(claim.getClaimSubmissions());
+    var savedSubmission = claim.getClaimSubmissions().iterator().next();
+    assertNotNull(savedSubmission);
+    assertEquals(REF_ID, savedSubmission.getReferenceId());
+    assertEquals(ID_TYPE, savedSubmission.getIdType());
   }
 }
