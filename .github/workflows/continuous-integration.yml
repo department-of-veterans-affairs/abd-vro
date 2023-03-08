@@ -1,4 +1,7 @@
-name: "3. Continuous Integration (test then publish images)"
+name: "3. Continuous Integration (run tests and checks)"
+# Runs tests and checks with merged code in the public repo so that the PR author is notified of failures.
+# The SecRel workflow (in the internal repo) publishes `dev_` images, regardless of test failures, for manual testing.
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/CI-CD-Workflows
 
 on:
   push:
