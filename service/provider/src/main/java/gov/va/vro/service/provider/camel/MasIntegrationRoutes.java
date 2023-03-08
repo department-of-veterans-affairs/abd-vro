@@ -115,18 +115,23 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId("mas-request-injection")
         .log("A ${headers} ${body}")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .log("B ${headers} ${body}")
+        .log("B ${exchange.pattern}: ${headers} ${body}")
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-        .log("1 ${headers} ${body}")
+        .log("1 ${exchange.pattern}: ${headers} ${body}")
         // Clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it doesn't interfere
         // with future sending to rabbitmq endpoints
+        // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
+        // > if the source queue has a routing key set in the headers,
+        // > it will pass down to the destination and not be overriden with the URI query parameters.
         // https://stackoverflow.com/a/50087665
-        // https://users.camel.apache.narkive.com/weJH1I5T/camel-rabbitmq#post4
-        .removeHeaders("CamelRabbitmq*")
+        // Not rabbitmq specific: https://camel.apache.org/manual/faq/how-to-remove-the-http-protocol-headers-in-the-camel-message.html
+        // Old but relevant: https://users.camel.apache.narkive.com/weJH1I5T/camel-rabbitmq#post4
+        // or set the headers before sending: https://stackoverflow.com/a/50087665
+        //.removeHeaders("CamelRabbitmq*")
         // .convertBodyTo(MasAutomatedClaimPayload.class)
         // .log("2 ${headers} ${body}")
         // .convertBodyTo(byte[].class)
@@ -139,17 +144,24 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
-        .log("6 ${headers} ${body}")
+        .log("5 ${exchange.pattern}: ${headers} ${body}")
         .delay(header(MAS_DELAY_PARAM))
+        .setExchangePattern(ExchangePattern.InOut)
+        .process(exchange -> {
+          var input = exchange.getIn().getBody();
+          exchange.getMessage().setBody(input);
+        })
+        .log("6 ${exchange.pattern}: ${headers} ${body}")
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
     from(ENDPOINT_MAS)
         .routeId(processClaimRouteId)
+        .log("7 ${exchange.pattern}: ${headers} ${body}")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
-        .log("7 ${headers} ${body}")
+        .log("8 ${headers} ${body}")
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
