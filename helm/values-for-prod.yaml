@@ -1,10 +1,8 @@
 
 global:
   environment: prod
-
-  # endpoint is api if ENV==prod; otherwise dev
-  # Used by virtual-service's hosts
-  endpoint: api
+  endpoint: api.lighthouse.va.gov
+  lhdiCluster: prod
 
   imagePrefix: ""
 

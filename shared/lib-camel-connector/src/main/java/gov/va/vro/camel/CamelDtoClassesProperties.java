@@ -32,6 +32,7 @@ public class CamelDtoClassesProperties {
   private List<String> dtoClasses;
 
   List<Class> getActualDtoClasses() throws IOException {
+    log.info("Loading classes specified in vro.camel.dto-classes: {}", dtoClasses);
     return dtoClasses.stream()
         .map(
             classname -> {
