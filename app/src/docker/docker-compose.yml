@@ -6,6 +6,7 @@ networks:
 
 volumes:
   pgdata:
+  tracking:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -114,9 +115,9 @@ services:
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
-      PGDATA: /persist/data/localdev
+      PGDATA: /persist/postgres/pgdata
     volumes:
-      - pgdata:/persist/data
+      - pgdata:/persist/postgres
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
@@ -355,6 +356,9 @@ services:
         condition: service_started
       db-init:
         condition: service_started
+    volumes:
+      - pgdata:/persist/postgres
+      - tacking:/persist/tracking
     networks:
       - internal
 

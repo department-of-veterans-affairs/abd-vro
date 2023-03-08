@@ -114,14 +114,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
         .log("A ${headers} ${body}")
-        .convertBodyTo(MasAutomatedClaimPayload.class)
-        .log("B ${exchange.pattern}: ${headers} ${body}")
-        .to(ENDPOINT_AUTOMATED_CLAIM);
-
-    var checkClaimRouteId = "mas-claim-notification";
-    from(ENDPOINT_AUTOMATED_CLAIM)
-        .routeId(checkClaimRouteId)
-        .log("1 ${exchange.pattern}: ${headers} ${body}")
         // Clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it doesn't interfere
         // with future sending to rabbitmq endpoints
         // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
@@ -131,26 +123,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // Not rabbitmq specific: https://camel.apache.org/manual/faq/how-to-remove-the-http-protocol-headers-in-the-camel-message.html
         // Old but relevant: https://users.camel.apache.narkive.com/weJH1I5T/camel-rabbitmq#post4
         // or set the headers before sending: https://stackoverflow.com/a/50087665
-        //.removeHeaders("CamelRabbitmq*")
-        // .convertBodyTo(MasAutomatedClaimPayload.class)
-        // .log("2 ${headers} ${body}")
-        // .convertBodyTo(byte[].class)
-        // .convertBodyTo(String.class)
-        // .log("3 ${headers} ${body}")
-        // .convertBodyTo(byte[].class)
-        // .convertBodyTo(MasAutomatedClaimPayload.class)
+        .removeHeaders("CamelRabbitmq*")
+        .convertBodyTo(MasAutomatedClaimPayload.class)
         .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .log("B ${exchange.pattern}: ${headers} ${body}")
+        .to(ENDPOINT_AUTOMATED_CLAIM);
+
+    var checkClaimRouteId = "mas-claim-notification";
+    from(ENDPOINT_AUTOMATED_CLAIM)
+        .routeId(checkClaimRouteId)
+        .log("1 ${exchange.pattern}: ${headers} ${body}")
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
         .log("5 ${exchange.pattern}: ${headers} ${body}")
         .delay(header(MAS_DELAY_PARAM))
-        .setExchangePattern(ExchangePattern.InOut)
-        .process(exchange -> {
-          var input = exchange.getIn().getBody();
-          exchange.getMessage().setBody(input);
-        })
         .log("6 ${exchange.pattern}: ${headers} ${body}")
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);

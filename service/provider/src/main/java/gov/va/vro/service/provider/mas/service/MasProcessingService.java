@@ -71,19 +71,13 @@ public class MasProcessingService {
       return offRampReason;
     }
 
-    if (!true) {
-      camelEntrance.notifyAutomatedClaim(
-          payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
-    } else {
-      var headers =
-          Map.of(
-              MasIntegrationRoutes.MAS_DELAY_PARAM,
-              masConfig.getMasProcessingInitialDelay(),
-              MasIntegrationRoutes.MAS_RETRY_PARAM,
-              masConfig.getMasRetryCount());
-      camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
-    }
-
+    var headers =
+        Map.of(
+            MasIntegrationRoutes.MAS_DELAY_PARAM,
+            masConfig.getMasProcessingInitialDelay(),
+            MasIntegrationRoutes.MAS_RETRY_PARAM,
+            masConfig.getMasRetryCount());
+    camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
