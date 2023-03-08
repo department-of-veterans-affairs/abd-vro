@@ -140,6 +140,7 @@ public class MasProcessingService {
         .inScope(payload.isInScope())
         .disabilityActionType(payload.getDisabilityActionType())
         .disabilityClassificationCode(payload.getDisabilityClassificationCode())
+        .presumptiveFlag(payload.isPresumptive() != null && payload.isPresumptive())
         .offRampReason(payload.getOffRampReason())
         .submissionSource(payload.getClaimDetail().getClaimSubmissionSource())
         .submissionDate(parseCustomDate(payload.getClaimDetail().getClaimSubmissionDateTime()))

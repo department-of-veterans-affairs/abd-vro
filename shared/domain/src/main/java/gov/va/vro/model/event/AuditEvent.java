@@ -93,8 +93,11 @@ public class AuditEvent {
         + '\''
         + ", payloadType="
         + payloadType
+        + ", eventId="
+        + eventId
         + ", message='"
         + message
+        + '\''
         + '}';
   }
 }
