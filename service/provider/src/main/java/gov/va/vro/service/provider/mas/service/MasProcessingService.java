@@ -71,7 +71,8 @@ public class MasProcessingService {
       return offRampReason;
     }
 
-    var headers= Map.of(
+    var headers =
+        Map.of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,
             masConfig.getMasProcessingInitialDelay(),
             MasIntegrationRoutes.MAS_RETRY_PARAM,

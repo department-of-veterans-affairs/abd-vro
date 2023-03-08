@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.camel.CamelEntry;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
