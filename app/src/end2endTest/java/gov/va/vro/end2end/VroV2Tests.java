@@ -234,7 +234,7 @@ public class VroV2Tests {
             log.error(
                 "CollectionId {} came back with more than one contention. Cannot determine which one to check",
                 collectionId);
-              break;
+            break;
           }
         }
       } catch (Exception exception) {
