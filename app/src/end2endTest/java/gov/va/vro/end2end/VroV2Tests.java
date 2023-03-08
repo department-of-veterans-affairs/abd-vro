@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,13 @@ public class VroV2Tests {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   private final RestTemplate restTemplate = new RestTemplate();
+
+  // Authorization for Claim Info e2e since it cannot be accessed unauthorized.
+  private HttpEntity<Void> getAuthorizationHeader() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "test-key-01");
+    return new HttpEntity<>(headers);
+  }
 
   /*
    * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
@@ -199,21 +207,36 @@ public class VroV2Tests {
 
     String url = CLAIM_INFO_URL + collectionId;
     AssessmentInfo foundAssessment = null;
+    HttpEntity<Void> requestEntity = getAuthorizationHeader();
+
     log.info("Waiting for claim processing to finish and assessment database results");
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
       Thread.sleep(20000);
       try {
         ResponseEntity<ClaimInfoResponse> testResponse =
-            restTemplate.getForEntity(url, ClaimInfoResponse.class);
+            restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
         ClaimInfoResponse cir = testResponse.getBody();
-        assertNotNull(cir);
-        List<ContentionInfo> contentionList = cir.getContentions();
-        assertEquals(1, contentionList.size());
-        List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
-        assertEquals(1, assessmentList.size());
-        foundAssessment = assessmentList.get(0);
-        break;
+        if (cir != null) {
+          List<ContentionInfo> contentionList = cir.getContentions();
+          if (contentionList.size() == 1) {
+            List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+            if (assessmentList.size() == 1) {
+              foundAssessment = assessmentList.get(0);
+              break;
+            } else if (assessmentList.size() > 1) {
+              log.error(
+                  "CollectionId {} came back with more than one assessment result. Cannot determine which one to check",
+                  collectionId);
+              break;
+            }
+          } else if (contentionList.size() > 1) {
+            log.error(
+                "CollectionId {} came back with more than one contention. Cannot determine which one to check",
+                collectionId);
+              break;
+          }
+        }
       } catch (Exception exception) {
         log.info(
             "Did not find asessment result for collection id {} with message {} .. retrying",
@@ -394,7 +417,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-   @Test
+  @Test
   void testAutomatedSufficiencyIsNull() {
     // Offramp claims do not go through pdf process per VRO workflow diagram.
     testAutomatedClaimFullPositive("500", false);
