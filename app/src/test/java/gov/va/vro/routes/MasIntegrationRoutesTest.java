@@ -94,7 +94,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
-        "claim-submit",
+        "claim-submit-full",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
             + "requestTimeout=60000&routingKey=code.hypertension",
         "mock:claim-submit");
