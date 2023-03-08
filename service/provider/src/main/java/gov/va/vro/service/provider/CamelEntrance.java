@@ -25,7 +25,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CamelEntrance {
 
-  private final CamelEntry camelEntry;
   private final ProducerTemplate producerTemplate;
 
   public String submitClaimFull(Claim claim) {
