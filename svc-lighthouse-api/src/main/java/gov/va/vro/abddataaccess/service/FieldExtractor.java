@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class FieldExtractor {
 
   private static final String SNOMED = "http://snomed.info";
+  private static final String MISSING = "*Missing*";
 
   private static String toDate(DateTimeType dateTimeType) {
     String value = dateTimeType.asStringValue();
@@ -58,7 +59,9 @@ public class FieldExtractor {
   public static Coding getAValidCoding(CodeableConcept code) {
     if (code.hasCoding()) {
       for (Coding coding : code.getCoding()) {
-        if (coding.hasCode() && !coding.getSystem().trim().startsWith(SNOMED)) {
+        if (coding.hasCode()
+            && !coding.getSystem().trim().startsWith(SNOMED)
+            && !coding.getCode().startsWith(MISSING)) {
           return coding;
         }
       }
