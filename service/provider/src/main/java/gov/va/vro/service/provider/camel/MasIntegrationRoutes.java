@@ -1,7 +1,5 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.CamelEntrance.IMVP_EXCHANGE;
-import static gov.va.vro.service.provider.CamelEntrance.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
@@ -46,7 +44,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
       "rabbitmq:mas-notification-exchange?queue=mas-notification"
           + "-queue&routingKey=mas-notification&requestTimeout=0";
 
-  public static final String ENDPOINT_AUTOMATED_CLAIM =
+  public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
+
+  public static final String IMVP_EXCHANGE = "imvp";
+  public static final String NOTIFY_AUTOMATED_CLAIM_QUEUE = "notifyAutomatedClaim";
+  public static final String ENDPOINT_REQUEST_INJECTION =
       RabbitMqCamelUtils.rabbitmqConsumerEndpoint(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE);
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
@@ -108,9 +110,23 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureAutomatedClaim() {
+    from(ENDPOINT_REQUEST_INJECTION)
+        .routeId("mas-request-injection")
+        .log("1 ${headers} ${body}")
+        .convertBodyTo(MasAutomatedClaimPayload.class)
+        .log("2 ${headers} ${body}")
+        .to(ENDPOINT_AUTOMATED_CLAIM);
+
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
+        .log("1 ${headers} ${body}")
+        .convertBodyTo(MasAutomatedClaimPayload.class)
+        .log("2 ${headers} ${body}")
+        .convertBodyTo(byte[].class)
+        .convertBodyTo(String.class)
+        .log("3 ${headers} ${body}")
+        .convertBodyTo(byte[].class)
         .convertBodyTo(MasAutomatedClaimPayload.class)
         .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
