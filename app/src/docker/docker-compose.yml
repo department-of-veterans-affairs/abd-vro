@@ -177,6 +177,8 @@ services:
         condition: service_started
       db-init:
         condition: service_started
+    volumes:
+      - tracking:/persist/tracking
     networks:
       - internal
       - external
@@ -358,7 +360,7 @@ services:
         condition: service_started
     volumes:
       - pgdata:/persist/postgres
-      - tacking:/persist/tracking
+      - tracking:/persist/tracking
     networks:
       - internal
 

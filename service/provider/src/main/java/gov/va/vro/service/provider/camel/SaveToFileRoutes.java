@@ -19,19 +19,19 @@ class SaveToFileRoutes extends RouteBuilder {
   public void configure() {
     if (config.persistTrackingEnabled) {
       // for v1
-      saveRequestToFile(PrimaryRoutes.INCOMING_CLAIM_WIRETAP);
-      saveRequestToFile(PrimaryRoutes.GENERATE_PDF_WIRETAP);
+      saveRequestToFile(PrimaryRoutes.INCOMING_CLAIM_WIRETAP, "claimSubmissionId");
+      saveRequestToFile(PrimaryRoutes.GENERATE_PDF_WIRETAP, "claimSubmissionId");
 
       // for v2
-      saveRequestToFile(MasIntegrationRoutes.MAS_CLAIM_WIRETAP);
-      saveRequestToFile(MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP);
+      saveRequestToFile(MasIntegrationRoutes.MAS_CLAIM_WIRETAP, "collectionId");
+      saveRequestToFile(MasIntegrationRoutes.EXAM_ORDER_STATUS_WIRETAP, "collectionId");
     }
   }
 
-  private void saveRequestToFile(String tapBasename) {
+  private void saveRequestToFile(String tapBasename, String idField) {
     from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
         .routeId("saveToFile-" + tapBasename)
-        .setHeader(Exchange.FILE_NAME, filepath("claimSubmissionId"))
+        .setHeader(Exchange.FILE_NAME, filepath(idField))
         .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename));
   }
 
