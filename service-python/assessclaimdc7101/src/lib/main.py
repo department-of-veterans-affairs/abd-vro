@@ -72,7 +72,6 @@ def assess_sufficiency(event: Dict):
         relevant_medications = medications.filter_mas_medication(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["twoYearsConditions"]
-        total_relevant_conditions = relevant_conditions["relevantConditionsLighthouseCount"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -83,7 +82,7 @@ def assess_sufficiency(event: Dict):
         if event["disabilityActionType"] == "NEW":
             bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
-            if total_relevant_conditions >= 1:
+            if relevant_conditions["relevantConditionsLighthouseCount"] >= 1:
                 if bp_calculation["twoYearsBpCount"] >= 3:
                     sufficient = True
                 else:
@@ -106,6 +105,8 @@ def assess_sufficiency(event: Dict):
                 "evidenceSummary": {
                     "totalBpCount": bp_calculation["totalBpCount"],
                     "twoYearsBpCount": bp_calculation["twoYearsBpCount"],
+                    "oneYearBpCount": bp_calculation["oneYearBpCount"],
+                    "twoYearsElevatedBpCount": bp_calculation["twoYearsElevatedBpCount"],
                     "relevantConditionsLighthouseCount": relevant_conditions["relevantConditionsLighthouseCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"],
                     "medicationsCount": relevant_medications["medicationsCount"]

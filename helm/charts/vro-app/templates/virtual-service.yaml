@@ -4,14 +4,16 @@ metadata:
   name: {{ .Values.global.hostnamePrefix }}-virtservice
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
-  hosts: [{{ .Values.global.endpoint }}.lighthouse.va.gov]
-  gateways: [istio-system/ldx-{{ .Values.global.images.services.environment }}-1-{{ .Values.global.environment }}-gateway]
+  # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
+  hosts: [{{ .Values.global.endpoint }}]
+  gateways: [istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway]
   http:
   - match:
     - uri:
-        prefix: /{{ .Values.global.images.services.uriPrefix }}
+        prefix: /{{ .Values.global.serviceUriPrefix }}
     route:
     - destination:
+        # Should match metadata.name in helm/charts/vro-app/templates/service.yaml
         host: {{ .Values.global.hostnamePrefix }}-app
         port:
           number: 8080

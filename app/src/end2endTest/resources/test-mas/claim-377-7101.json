@@ -1,0 +1,29 @@
+{
+  "dob": "1970-02-19",
+  "firstName": "Janet",
+  "lastName": "Barista",
+  "gender": "female",
+  "collectionId": 377,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986377",
+    "ssn": "111-11-1377",
+    "veteranFileId": "9999377",
+    "edipn": "1010234-377",
+    "participantId": "88888377"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1040",
+    "claimSubmissionDateTime": "2023-02-27Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hypertension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "NEW",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "Agent Orange Exposure Verified"
+  ]
+}
