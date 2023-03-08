@@ -14,7 +14,9 @@
   <meta name="pdfkit-margin-right" content="0.5in"/>
   <meta name="pdfkit-margin-top" content="0.5in"/>
   <meta name="pdfkit-margin-bottom" content="0.5in"/>
+  <!-- Formula for Zoom: (Default DPI / Desired DPI) -->
   <meta name="pdfkit-zoom" content="1.33"/>
+  <!-- Default DPI = 96 but does not work. Just marking as 72 to keep track for future edits -->
   <meta name="pdfkit-dpi" content="72"/>
 
   <!-- Bootstrap CSS -->
@@ -180,9 +182,9 @@
         <thead>
           <tr>
             <th style="width: 118px !important;">Key terms</th>
-            <th>Document</th>
+            <th style="width: 280px !important;">Document</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 80px !important;">Page number(s) / Event ID(s)</th>
+            <th style="width: 80px !important;">Page number(s)</th>
             <th style="width: 260px !important;">Document ID</th>
           </tr>
         </thead>
@@ -257,7 +259,7 @@
           <tr>
             <th style="width: 70px !important;">Blood pressure</th>
             <th style="width: 90px !important;">Observation date</th>
-            <th>Source</th>
+            <th style="width: 257px !important;">Source</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
             <th style="width: 260px !important;">Document ID</th>
@@ -271,7 +273,7 @@
             <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == "" %}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == "" %}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
-            <td {% if bp_reading.document == "" %}class="empty" {% endif %}>
+            <td style="white-space: nowrap;" {% if bp_reading.document == "" %}class="empty" {% endif %}>
               {% if bp_reading.dataSource == "MAS" %}
                 {% if bp_reading.organization == "VAMC Other Output Reports" and bp_reading.document == "" %}
                   Pending upload to VBMS eFolder
@@ -290,6 +292,11 @@
             </td>
           </tr>
           {% endfor %}
+          {% if evidence.bp_readings |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No blood pressure readings found through automated review.</td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
@@ -307,9 +314,9 @@
         <thead>
           <tr>
             <th style="width: 153px !important;">Key terms</th>
-            <th>Observation date</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 174px !important;">Source</th>
-            <th>VBMS receipt date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
             <th>Document ID</th>
           </tr>
@@ -322,7 +329,7 @@
             <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
-            <td {% if medication.document == "" %}class="empty" {% endif %}>
+            <td style="white-space: nowrap;" {% if medication.document == "" %}class="empty" {% endif %}>
               {% if medication.dataSource == "MAS" %}
                 {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
                   Pending upload to VBMS eFolder
@@ -363,9 +370,9 @@
         <thead>
           <tr>
             <th style="width: 153px !important;">Key terms</th>
-            <th>Observation date</th>
+            <th style="width: 90px !important;">Observation date</th>
             <th style="width: 174px !important;">Source</th>
-            <th>VBMS receipt date</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
             <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
             <th>Document ID</th>
           </tr>
@@ -378,7 +385,7 @@
               <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
               <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
               <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
-              <td {% if condition.document == "" %}class="empty" {% endif %}>
+              <td style="white-space: nowrap;" {% if condition.document == "" %}class="empty" {% endif %}>
                 {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif condition.document == "" %}
@@ -425,7 +432,7 @@
           <tr>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
-            <td>{{ review }}</td>
+            <td style="white-space: nowrap;">{{ review }}</td>
           </tr>
           {% endfor %}
           {% if evidence.documentsWithoutAnnotationsChecked |length == 0 %}
@@ -440,7 +447,7 @@
   <div class="pagebreak"> </div>
   <!-- About this document -->
   <div class="row">
-    <div class="col">
+    <div class="col" style="max-width: 530px !important;">
       <h1 class="m-0 mb-13"><b>About this document</b></h1>
       <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
       <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
