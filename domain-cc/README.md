@@ -29,7 +29,7 @@ uvicorn api:app --reload
 ### Install dev dependencies
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
-pip install dev-requirements.txt
+pip install -r dev-requirements.txt
 # MAKE SURE you are in adb-vro/domain-cc to get the right pre-commit-config.yaml installed
 pre-commit install
 ```
