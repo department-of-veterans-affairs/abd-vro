@@ -122,6 +122,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
         .log("1 ${headers} ${body}")
+        // Clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it doesn't interfere
+        // with future sending to rabbitmq endpoints
+        // https://stackoverflow.com/a/50087665
+        // https://users.camel.apache.narkive.com/weJH1I5T/camel-rabbitmq#post4
         .removeHeaders("CamelRabbitmq*")
         // .convertBodyTo(MasAutomatedClaimPayload.class)
         // .log("2 ${headers} ${body}")

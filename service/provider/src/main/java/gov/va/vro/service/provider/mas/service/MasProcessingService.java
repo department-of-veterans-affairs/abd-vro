@@ -71,7 +71,7 @@ public class MasProcessingService {
       return offRampReason;
     }
 
-    if(!true) {
+    if (!true) {
       camelEntrance.notifyAutomatedClaim(
           payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
     } else {
