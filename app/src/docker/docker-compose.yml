@@ -178,6 +178,7 @@ services:
       db-init:
         condition: service_started
     volumes:
+      # path needs to be consistent with $PERSIST_TRACKING_FOLDER
       - tracking:/persist/tracking
     networks:
       - internal
