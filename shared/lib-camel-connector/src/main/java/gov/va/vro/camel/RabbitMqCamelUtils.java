@@ -35,9 +35,10 @@ public class RabbitMqCamelUtils {
   }
 
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {
-    if(!rabbitMqUri.startsWith("rabbitmq:"))
-      throw new IllegalArgumentException("Endpoint URI must be for RabbitMQ");
-    return builder.from(rabbitMqUri)
+    if (!rabbitMqUri.startsWith("rabbitmq:"))
+      throw new IllegalArgumentException("Endpoint URI must be for RabbitMQ: " + rabbitMqUri);
+    return builder
+        .from(rabbitMqUri)
         // Good practice to remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
         // doesn't interfere with subsequent sending to rabbitmq endpoints
         // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:

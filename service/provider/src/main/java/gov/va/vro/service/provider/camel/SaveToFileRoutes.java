@@ -50,7 +50,7 @@ class SaveToFileRoutes extends RouteBuilder {
   }
 
   private void saveRequestToFile(String tapBasename, String idField) {
-    var mqUri = VroCamelUtils.wiretapConsumer("toFile", tapBasename);
+    var mqUri = RabbitMqCamelUtils.wiretapConsumer("toFile", tapBasename);
     RabbitMqCamelUtils.fromRabbitmq(this, mqUri)
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath(idField))
