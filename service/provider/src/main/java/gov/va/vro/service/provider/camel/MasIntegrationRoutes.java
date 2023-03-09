@@ -120,7 +120,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // > to the destination and not be overriden with the URI query parameters.
         .removeHeaders("CamelRabbitmq*")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     var checkClaimRouteId = "mas-claim-notification";
@@ -135,7 +135,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    from(ENDPOINT_MAS)
+    RabbitMqCamelUtils.fromRabbitmq(this, ENDPOINT_MAS)
         .routeId(processClaimRouteId)
         .removeHeaders("CamelRabbitmq*")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
@@ -253,7 +253,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
