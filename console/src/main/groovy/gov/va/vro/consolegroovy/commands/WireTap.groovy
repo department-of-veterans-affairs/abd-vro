@@ -56,9 +56,13 @@ class WireTap extends CommandSupport {
     @Override
     void configure() throws Exception {
       RabbitMqCamelUtils.fromRabbitmq(this, tapEndpoint)
-          .routeId("console-${tapName}")
+          .routeId(routeId(tapName))
           .process(prettyPrinter)
           .to("log:${tapName}?plain=true")
+    }
+
+    static String routeId(tapName){
+      return "console-${tapName}"
     }
 
     Processor prettyPrinter = { Exchange exchange ->
