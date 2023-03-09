@@ -6,6 +6,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -120,7 +121,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // > to the destination and not be overriden with the URI query parameters.
         .removeHeaders("CamelRabbitmq*")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     var checkClaimRouteId = "mas-claim-notification";
@@ -135,7 +136,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    from(ENDPOINT_MAS)
+    RabbitMqCamelUtils.fromRabbitmq(this, ENDPOINT_MAS)
         .routeId(processClaimRouteId)
         .removeHeaders("CamelRabbitmq*")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
@@ -200,7 +201,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .wireTap(ENDPOINT_OFFRAMP)
-        .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
+        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
@@ -253,7 +254,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
