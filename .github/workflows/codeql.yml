@@ -21,6 +21,10 @@ on:
   # Trigger when called by another GitHub Action
   workflow_call:
 
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     name: Analyze
