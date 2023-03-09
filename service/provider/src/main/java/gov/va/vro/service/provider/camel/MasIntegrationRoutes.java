@@ -6,6 +6,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -200,7 +201,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .wireTap(ENDPOINT_OFFRAMP)
-        .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
+        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
