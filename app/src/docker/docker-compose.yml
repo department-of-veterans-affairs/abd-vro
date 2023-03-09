@@ -311,7 +311,7 @@ services:
     <<: *common-sde-security
     <<: *python-healthcheck
     environment:
-      DOCKER: true
+      MODE: "docker"
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
