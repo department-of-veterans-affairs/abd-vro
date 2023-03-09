@@ -1,11 +1,16 @@
 package gov.va.vro.service.provider.mas.service;
 
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHANGE;
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
+
+import gov.va.vro.camel.CamelEntry;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -18,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +43,8 @@ public class MasProcessingService {
   private final BipClaimService bipClaimService;
 
   private final SaveToDbService saveToDbService;
+
+  private final CamelEntry camelEntry;
 
   /**
    * Processes incoming claim.
@@ -62,8 +70,14 @@ public class MasProcessingService {
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
-    camelEntrance.notifyAutomatedClaim(
-        payload, masConfig.getMasProcessingInitialDelay(), masConfig.getMasRetryCount());
+
+    var headers =
+        Map.of(
+            MasIntegrationRoutes.MAS_DELAY_PARAM,
+            masConfig.getMasProcessingInitialDelay(),
+            MasIntegrationRoutes.MAS_RETRY_PARAM,
+            masConfig.getMasRetryCount());
+    camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
