@@ -54,9 +54,9 @@ public class CamelEntry {
    * https://stackoverflow.com/a/50860718
    *
    * <p>Unfortunately Exchange properties are not preserved over RabbitMQ -- see
-   * https://camel.apache.org/components/3.19.x/rabbitmq-component.html
-   * so the options are to use headers (which are preserved over RabbitMQ)
-   * or move the header/properties to be part of the message body.
+   * https://camel.apache.org/components/3.19.x/rabbitmq-component.html so the options are to use
+   * headers (which are preserved over RabbitMQ) or move the header/properties to be part of the
+   * message body.
    *
    * @param headers
    */
