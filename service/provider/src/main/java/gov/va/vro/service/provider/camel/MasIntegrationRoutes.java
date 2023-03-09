@@ -1,8 +1,15 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.*;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -39,6 +46,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
           + "-queue&routingKey=mas-notification&requestTimeout=0";
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
+
+  public static final String IMVP_EXCHANGE = "imvp";
+  public static final String NOTIFY_AUTOMATED_CLAIM_QUEUE = "notifyAutomatedClaim";
+  public static final String ENDPOINT_REQUEST_INJECTION =
+      RabbitMqCamelUtils.rabbitmqConsumerEndpoint(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE);
 
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
@@ -99,10 +111,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureAutomatedClaim() {
+    from(ENDPOINT_REQUEST_INJECTION)
+        .setExchangePattern(ExchangePattern.InOnly)
+        .routeId("mas-request-injection")
+        // Remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey headers so they don't
+        // interfere with future sending to rabbitmq endpoints
+        // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
+        // > if the source queue has a routing key set in the headers, it will pass down
+        // > to the destination and not be overriden with the URI query parameters.
+        .removeHeaders("CamelRabbitmq*")
+        .convertBodyTo(MasAutomatedClaimPayload.class)
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .to(ENDPOINT_AUTOMATED_CLAIM);
+
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
@@ -112,8 +136,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    from(ENDPOINT_MAS)
+    RabbitMqCamelUtils.fromRabbitmq(this, ENDPOINT_MAS)
         .routeId(processClaimRouteId)
+        .removeHeaders("CamelRabbitmq*")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
@@ -176,7 +201,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .wireTap(ENDPOINT_OFFRAMP)
-        .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
+        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
@@ -229,7 +254,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);

@@ -107,7 +107,7 @@ export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
 export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
 
 # For local testing of dev and qa environments
-export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
+# export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
 
 ###
 ### Slack notifications ###

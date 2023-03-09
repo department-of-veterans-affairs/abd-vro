@@ -17,6 +17,9 @@ on:
   # Trigger when called by another GitHub Action
   workflow_call:
 
+concurrency:
+  group: end2end-${{ github.ref }}
+
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
@@ -67,3 +70,10 @@ jobs:
 
       - name: "Clean docker volumes"
         run: ./gradlew dockermaintainerclean
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/*/*.xml

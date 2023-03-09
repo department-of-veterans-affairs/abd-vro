@@ -82,7 +82,7 @@ server:
     timeout: 60000
   servlet:
     session:
-      timeout: 60000
+      timeout: 120000
 
 log4j2:
   formatMsgNoLookups: true
@@ -114,7 +114,7 @@ spring:
       maxRequestSize: 25MB
       enabled: true
     session:
-      timeout: 60000
+      timeout: 120000
   resources:
     add-mappings: false
   mvc:
@@ -182,7 +182,7 @@ vro:
     tracking:
       enabled: true
       # Dependent on the mountPath configured in Kubernetes
-      base_folder: ${PERSIST_TRACKING_FOLDER}
+      base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
     info:

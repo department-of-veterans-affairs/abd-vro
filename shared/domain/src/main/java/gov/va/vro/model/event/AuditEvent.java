@@ -95,6 +95,7 @@ public class AuditEvent {
         + payloadType
         + ", message='"
         + message
+        + '\''
         + '}';
   }
 }
