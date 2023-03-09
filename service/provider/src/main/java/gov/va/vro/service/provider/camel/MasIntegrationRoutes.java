@@ -176,7 +176,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .wireTap(ENDPOINT_OFFRAMP)
-        .onPrepare(auditProcessor(assessorErrorRouteId, "Sufficiency cannot be determined"))
+        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
