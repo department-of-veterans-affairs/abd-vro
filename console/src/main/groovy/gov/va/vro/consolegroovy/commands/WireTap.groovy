@@ -1,5 +1,6 @@
 package gov.va.vro.consolegroovy.commands
 
+import gov.va.vro.camel.RabbitMqCamelUtils
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import org.apache.camel.CamelContext
@@ -54,7 +55,7 @@ class WireTap extends CommandSupport {
 
     @Override
     void configure() throws Exception {
-      from(tapEndpoint)
+      RabbitMqCamelUtils.fromRabbitmq(this, tapEndpoint)
           .routeId("console-${tapName}")
           .process(prettyPrinter)
           .to("log:${tapName}?plain=true")

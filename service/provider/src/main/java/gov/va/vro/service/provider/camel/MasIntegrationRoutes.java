@@ -135,7 +135,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    from(ENDPOINT_MAS)
+    RabbitMqCamelUtils.fromRabbitmq(this, ENDPOINT_MAS)
         .routeId(processClaimRouteId)
         .removeHeaders("CamelRabbitmq*")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
