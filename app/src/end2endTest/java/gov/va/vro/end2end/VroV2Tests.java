@@ -16,6 +16,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,13 +50,6 @@ public class VroV2Tests {
 
   private final RestTemplate restTemplate = new RestTemplate();
 
-  // Authorization for Claim Info e2e since it cannot be accessed unauthorized.
-  private HttpEntity<Void> getAuthorizationHeader() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("X-API-Key", "test-key-01");
-    return new HttpEntity<>(headers);
-  }
-
   /*
    * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
    * Eventually we should refactor this out into its own test suite with other endpoints
@@ -64,7 +58,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus_disallowedCharacters() {
     var request = getOrderingStatusDisallowedCharacters();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     try {
       restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
@@ -76,7 +70,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus_invalidRequest() {
     var request = getOrderingStatusInvalidRequest();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     try {
       restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
@@ -92,7 +86,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus() {
     var request = getOrderingStatusValidRequest();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     var response =
         restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -135,7 +129,7 @@ public class VroV2Tests {
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
 
     // Start automated claim
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -207,7 +201,7 @@ public class VroV2Tests {
 
     String url = CLAIM_INFO_URL + collectionId;
     AssessmentInfo foundAssessment = null;
-    HttpEntity<Void> requestEntity = getAuthorizationHeader();
+    HttpEntity<Void> requestEntity = getTokenAuthHeaders();
 
     log.info("Waiting for claim processing to finish and assessment database results");
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
@@ -217,31 +211,32 @@ public class VroV2Tests {
             restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
         ClaimInfoResponse cir = testResponse.getBody();
-        if (cir != null) {
-          List<ContentionInfo> contentionList = cir.getContentions();
-          if (contentionList.size() == 1) {
-            List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
-            if (assessmentList.size() == 1) {
-              foundAssessment = assessmentList.get(0);
-              break;
-            } else if (assessmentList.size() > 1) {
-              log.error(
-                  "CollectionId {} came back with more than one assessment result. Cannot determine which one to check",
-                  collectionId);
-              break;
-            }
-          } else if (contentionList.size() > 1) {
-            log.error(
-                "CollectionId {} came back with more than one contention. Cannot determine which one to check",
-                collectionId);
+        assertNotNull(cir, "Claim Info Response was null, cannot continue");
+        List<ContentionInfo> contentionList = cir.getContentions();
+        if (contentionList.size() == 1) {
+          List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+          // If assessment list size is zero, we may not be finished processing, and should try
+          // again.
+          if (assessmentList.size() == 1) {
+            foundAssessment = assessmentList.get(0);
             break;
+          } else if (assessmentList.size() > 1) {
+            Assertions.fail(
+                "CollectionId "
+                    + collectionId
+                    + " came back with more than one assessment result. Cannot determine which one to check");
           }
+        } else if (contentionList.size() > 1) {
+          Assertions.fail(
+              "CollectionId "
+                  + collectionId
+                  + " came back with more than one contention. Cannot determine which one to check");
         }
-      } catch (Exception exception) {
+      } catch (HttpStatusCodeException exception) {
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         log.info(
-            "Did not find asessment result for collection id {} with message {} .. retrying",
-            collectionId,
-            exception.getMessage());
+            "Did not find asessment result for collection id {} with message .. retrying",
+            collectionId);
       }
     }
     assertNotNull(foundAssessment);
@@ -285,7 +280,7 @@ public class VroV2Tests {
   void testAutomatedClaimNonExistentClaimId() {
     var path = "test-mas/claim-801-7101-nonexistent-claimid.json";
     var content = resourceToString(path);
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     try {
       var response =
           restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
@@ -300,7 +295,7 @@ public class VroV2Tests {
     var path = "test-mas/claim-350-7101-outofscope.json";
     var content = resourceToString(path);
     String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
@@ -314,7 +309,7 @@ public class VroV2Tests {
     var path = "test-mas/claim-351-7101-noanchor.json";
     var content = resourceToString(path);
     String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
@@ -380,15 +375,18 @@ public class VroV2Tests {
     return objectMapper.writeValueAsString(payload);
   }
 
-  private HttpEntity<String> getEntity(String content) {
-    return new HttpEntity<>(content, getHttpHeaders());
+  // Authorization for Claim Info e2e
+  private HttpEntity<Void> getTokenAuthHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "test-key-01");
+    return new HttpEntity<>(headers);
   }
 
-  private static HttpHeaders getHttpHeaders() {
+  private HttpEntity<String> getBearerAuthEntity(String content) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(JWT_TOKEN);
-    return headers;
+    return new HttpEntity<>(content, headers);
   }
 
   /**
