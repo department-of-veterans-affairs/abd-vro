@@ -59,9 +59,8 @@ class SaveToFileRoutes extends RouteBuilder {
         .removeHeaders("CamelRabbitmq*")
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath(idField))
-        .log("saveRequestToFile: ${headers} ")
         .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename))
-        .log("saved ${headers} ${body}");
+        .log("savedRequestToFile: ${headers}");
   }
 
   private ValueBuilder filepath(String idField) {
