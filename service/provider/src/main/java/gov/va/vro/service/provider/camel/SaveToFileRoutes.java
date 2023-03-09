@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.service.provider.ServiceProviderConfig;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Exchange;
@@ -49,14 +50,8 @@ class SaveToFileRoutes extends RouteBuilder {
   }
 
   private void saveRequestToFile(String tapBasename, String idField) {
-    // TODO: make this reusable
-    from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
-        // Good practice to clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
-        // doesn't interfere with subsequent sending to rabbitmq endpoints
-        // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
-        // > if the source queue has a routing key set in the headers, it will pass down to
-        // > the destination and not be overriden with the URI query parameters.
-        .removeHeaders("CamelRabbitmq*")
+    var mqUri = RabbitMqCamelUtils.wiretapConsumer("toFile", tapBasename);
+    RabbitMqCamelUtils.fromRabbitmq(this, mqUri)
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath(idField))
         .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename))
