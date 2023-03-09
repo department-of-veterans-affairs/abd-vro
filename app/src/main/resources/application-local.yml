@@ -3,12 +3,6 @@
 #
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 
-vro:
-  persist:
-    tracking:
-      enabled: true
-      base_folder: /tmp/persist/tracking
-
 logging:
   level:
     org.springframework.jdbc.core: INFO
