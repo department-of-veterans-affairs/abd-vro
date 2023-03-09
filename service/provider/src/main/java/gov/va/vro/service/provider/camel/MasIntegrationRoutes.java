@@ -148,6 +148,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var processClaimRouteId = "mas-claim-processing";
     from(ENDPOINT_MAS)
         .routeId(processClaimRouteId)
+        .removeHeaders("CamelRabbitmq*")
         .log("7 ${exchange.pattern}: ${headers} ${body}")
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))

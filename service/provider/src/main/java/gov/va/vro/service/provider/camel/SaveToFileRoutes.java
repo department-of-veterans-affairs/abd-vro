@@ -7,7 +7,13 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.support.builder.ValueBuilder;
 import org.springframework.stereotype.Component;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 @RequiredArgsConstructor
 @Component
@@ -18,6 +24,9 @@ class SaveToFileRoutes extends RouteBuilder {
   @Override
   public void configure() {
     if (config.persistTrackingEnabled) {
+      // checks if folder is writeable
+      logToFile("VRO started");
+
       // for v1
       saveRequestToFile(PrimaryRoutes.INCOMING_CLAIM_WIRETAP, "claimSubmissionId");
       saveRequestToFile(PrimaryRoutes.GENERATE_PDF_WIRETAP, "claimSubmissionId");
@@ -28,11 +37,31 @@ class SaveToFileRoutes extends RouteBuilder {
     }
   }
 
+  private void logToFile(String fileContents) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+    String filename = df.format(Calendar.getInstance().getTime());
+    var path = Paths.get(config.baseTrackingFolder, filename);
+    try (PrintWriter printWriter = new PrintWriter(new FileWriter(path.toFile()))) {
+      printWriter.println(fileContents);
+    } catch (IOException e) {
+      log.error("Cannot write to " + config.baseTrackingFolder, e);
+    }
+  }
+
   private void saveRequestToFile(String tapBasename, String idField) {
+    // TODO: make this reusable
     from(VroCamelUtils.wiretapConsumer("toFile", tapBasename))
+        // Good practice to clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
+        // doesn't interfere with subsequent sending to rabbitmq endpoints
+        // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
+        // > if the source queue has a routing key set in the headers, it will pass down to
+        // > the destination and not be overriden with the URI query parameters.
+        .removeHeaders("CamelRabbitmq*")
         .routeId("saveToFile-" + tapBasename)
         .setHeader(Exchange.FILE_NAME, filepath(idField))
-        .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename));
+        .log("saveRequestToFile: ${headers} ")
+        .to("file:" + Paths.get(config.baseTrackingFolder, tapBasename))
+        .log("saved ${headers} ${body}");
   }
 
   private ValueBuilder filepath(String idField) {
