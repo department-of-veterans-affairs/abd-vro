@@ -17,8 +17,8 @@ def pdf_helper_all(data: dict) -> dict:
 
     data["timestamp"] = pytz.utc.localize(datetime.now())
     # Find out if the PDF is being generated locally(VENV, script, etc.) or through Docker. Depending on which, set the appropriate base path for fonts, images, etc.
-    docker_mode = os.environ.get("DOCKER", False)
-    if docker_mode:
+    run_mode = os.environ.get("DOCKER", "local")
+    if run_mode == "docker":
         data["base_path"] = "/home/docker/public"
     else:
         current_dir = os.path.abspath(os.path.dirname(__file__))
