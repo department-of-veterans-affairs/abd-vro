@@ -71,6 +71,9 @@ services:
   rabbitmq-service:
     image: rabbitmq:3-management
     hostname: rabbitmq-service
+    # Specifying user to reduce/eliminate startup error about erlang.cookie
+    # based on https://github.com/docker-library/rabbitmq/issues/318
+    user: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
