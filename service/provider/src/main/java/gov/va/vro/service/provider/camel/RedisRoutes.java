@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.redis.RedisConstants;
 import org.apache.camel.model.RouteDefinition;
@@ -27,7 +28,8 @@ class RedisRoutes extends RouteBuilder {
 
   private void saveToRedis(String tapBasename, String idField, String hashKey) throws Exception {
     RouteDefinition routeDef =
-        from(VroCamelUtils.wiretapConsumer("redis", tapBasename)).routeId("redis-" + tapBasename);
+        from(RabbitMqCamelUtils.wiretapConsumer("redis", tapBasename))
+            .routeId("redis-" + tapBasename);
     appendRedisCommand(routeDef, "HSET", redisKey(idField), hashKey).to(REDIS_ENDPOINT);
   }
 
