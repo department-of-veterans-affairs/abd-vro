@@ -113,35 +113,24 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_REQUEST_INJECTION)
         .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
-        .log("A ${headers} ${body}")
-        // Clear the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it doesn't interfere
-        // with future sending to rabbitmq endpoints
+        // Remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey headers so they don't
+        // interfere with future sending to rabbitmq endpoints
         // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
-        // > if the source queue has a routing key set in the headers,
-        // > it will pass down to the destination and not be overriden with the URI query
-        // parameters.
-        // https://stackoverflow.com/a/50087665
-        // Not rabbitmq specific:
-        // https://camel.apache.org/manual/faq/how-to-remove-the-http-protocol-headers-in-the-camel-message.html
-        // Old but relevant: https://users.camel.apache.narkive.com/weJH1I5T/camel-rabbitmq#post4
-        // or set the headers before sending: https://stackoverflow.com/a/50087665
+        // > if the source queue has a routing key set in the headers, it will pass down
+        // > to the destination and not be overriden with the URI query parameters.
         .removeHeaders("CamelRabbitmq*")
         .convertBodyTo(MasAutomatedClaimPayload.class)
         .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
-        .log("B ${exchange.pattern}: ${headers} ${body}")
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-        .log("1 ${exchange.pattern}: ${headers} ${body}")
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
-        .log("5 ${exchange.pattern}: ${headers} ${body}")
         .delay(header(MAS_DELAY_PARAM))
-        .log("6 ${exchange.pattern}: ${headers} ${body}")
         .setExchangePattern(ExchangePattern.InOnly)
         .to(ENDPOINT_MAS);
 
