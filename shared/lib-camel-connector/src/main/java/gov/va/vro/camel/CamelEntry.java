@@ -46,14 +46,14 @@ public class CamelEntry {
   }
 
   /**
-   * <p>Same as {@link #inOnly} except include headers on the message.
+   * Same as {@link #inOnly} except include headers on the message.
    *
    * <p>From https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example: "camel’s
    * exchange headers are not for custom data exchange (even though it is possible for us to use
    * them in that way) but usually for protocol-related parameters" Also see
    * https://stackoverflow.com/a/50860718
    *
-   * Properties are not preserved over RabbitMQ -- see
+   * <p>Properties are not preserved over RabbitMQ -- see
    * https://camel.apache.org/components/3.19.x/rabbitmq-component.html
    *
    * @param headers
