@@ -15,6 +15,9 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+concurrency:
+  group: lintAndTest-${{ github.ref }}
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
