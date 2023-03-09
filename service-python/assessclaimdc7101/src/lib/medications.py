@@ -5,9 +5,9 @@ from dateutil.relativedelta import relativedelta
 from .utils import extract_date, format_date
 
 
-def continuous_medication_required(request_body):
+def medication_required(request_body):
     """
-    Determine if there is the veteran requires continuous medication for hypertension
+    Determine if there is the veteran requires medication for hypertension
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes

@@ -24,7 +24,7 @@ repos:
       - id: check-shebang-scripts-are-executable
         exclude: ^scripts/.*\.src$
       - id: check-yaml
-        exclude: ^.*helm-.*$
+        exclude: ^.*helm.*$
       - id: destroyed-symlinks
       - id: detect-private-key
         exclude: ^svc-lighthouse-api/.*/test/resources/application-test.properties$

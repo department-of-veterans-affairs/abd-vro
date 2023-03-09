@@ -103,12 +103,35 @@ subprojects {
       // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
       checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
     }
+
+    // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442
+    // add a collection to track failedTests
+    ext.failedTests = []
+    // add a listener to all tasks of type Test
+    tasks.withType(Test) {
+      afterTest { TestDescriptor descriptor, TestResult result ->
+        if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+          failedTests << "${descriptor.className}::${descriptor.name}"
+        }
+      }
+    }
+    // print out tracked failed tests when the build has finished
+    gradle.buildFinished {
+      if(!failedTests.empty){
+        println "Failed tests:"
+        failedTests.each { failedTest ->
+          println "- " + failedTest
+        }
+        println ""
+      }
+    }
   }
 }
 
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
+  // Modules that use Java code
   codeModules = [
     ':app',
     ':api',
@@ -123,8 +146,12 @@ ext {
     ':mock-bip-claims-api',
     ':mock-shared',
     ':mock-mas-api',
-    ':mock-lighthouse-api'
+    ':mock-lighthouse-api',
+    ':domain-xample:api-controller',
+    ':domain-xample:shared',
+    ':domain-xample:workflows-xample'
   ]
+  // Modules that create Docker images
   dockerModules = [
     ':app',
     ':db-init',
@@ -137,7 +164,8 @@ ext {
     ':mock-bip-ce-api',
     ':mock-bip-claims-api',
     ':mock-mas-api',
-    ':mock-lighthouse-api'
+    ':mock-lighthouse-api',
+    ':domain-xample:workflows-xample'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')

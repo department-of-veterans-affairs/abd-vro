@@ -1,0 +1,12 @@
+
+global:
+  environment: prod
+  endpoint: api.lighthouse.va.gov
+  lhdiCluster: prod
+
+  imagePrefix: ""
+
+  pgdata:
+    storageSize: 5Gi
+  tracking:
+    storageSize: 2Gi
