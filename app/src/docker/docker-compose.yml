@@ -158,7 +158,7 @@ services:
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      PERSIST_TRACKING_FOLDER: ${PERSIST_TRACKING_FOLDER}
+      PERSIST_TRACKING_FOLDER: /persist/tracking
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
@@ -178,7 +178,7 @@ services:
       db-init:
         condition: service_started
     volumes:
-      # path needs to be consistent with $PERSIST_TRACKING_FOLDER
+      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
       - tracking:/persist/tracking
     networks:
       - internal
