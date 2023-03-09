@@ -13,9 +13,6 @@ on:
   push:
     branches: [main, develop]
 
-  # Allow manual triggering
-  workflow_dispatch:
-
 jobs:
   security:
     runs-on: ubuntu-latest

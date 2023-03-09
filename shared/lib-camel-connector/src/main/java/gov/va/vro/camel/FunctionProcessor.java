@@ -7,7 +7,9 @@ import org.apache.camel.Processor;
 import java.util.function.Function;
 
 /**
- * An alternative to "bean", which is stable under refactoring.
+ * @Deprecated Use {@link gov.va.vro.camel.processor.FunctionProcessor} instead.
+ *
+ * <p>An alternative to "bean", which is stable under refactoring.
  *
  * <p>For example, bean(ClaimService.class, "process") will break at runtime if we refactor the
  * method name to "processClaim".

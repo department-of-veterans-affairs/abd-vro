@@ -1,4 +1,4 @@
-name: Mirroring
+name: "8. Mirroring"
 
 on:
   pull_request:
@@ -20,6 +20,7 @@ on:
 # Ensures that only one mirror task will run at a time.
 concurrency:
   group: git-mirror
+  cancel-in-progress: true
 
 jobs:
   to_internal_repo:

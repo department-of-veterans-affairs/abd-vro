@@ -188,6 +188,11 @@ public class MockBipApiService implements IBipApiService {
     }
   }
 
+  @Override
+  public boolean verifySpecialIssueTypes() {
+    return true;
+  }
+
   private BipClaim buildClaim(int claimId, String station) {
     var claim = new BipClaim();
     claim.setClaimId(Integer.toString(claimId));

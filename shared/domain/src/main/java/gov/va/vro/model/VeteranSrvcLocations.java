@@ -20,7 +20,7 @@ public class VeteranSrvcLocations {
       example = "VA 21-3101 Request for Information")
   private String document;
 
-  @Schema(description = "VBMS Receipt Date", example = "2021-04-05")
+  @Schema(description = "VBMS Receipt Date", example = "1999-12-31")
   private String receiptDate;
 
   @Schema(description = "Document Page Number", example = "55")

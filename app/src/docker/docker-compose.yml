@@ -6,6 +6,7 @@ networks:
 
 volumes:
   pgdata:
+  tracking:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -114,9 +115,9 @@ services:
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
-      PGDATA: /persist/data/localdev
+      PGDATA: /persist/postgres/pgdata
     volumes:
-      - pgdata:/persist/data
+      - pgdata:/persist/postgres
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
@@ -157,7 +158,7 @@ services:
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      PERSIST_TRACKING_FOLDER: ${PERSIST_TRACKING_FOLDER}
+      PERSIST_TRACKING_FOLDER: /persist/tracking
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
@@ -165,17 +166,40 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_ALIAS: ${BIP_ALIAS}
       BIP_CLAIM_URL: "mock-bip-claims-api:8097"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
-      - postgres-service
-      - rabbitmq-service
-      - redis-service
-      - db-init
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
+    volumes:
+      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
+      - tracking:/persist/tracking
     networks:
       - internal
       - external
+
+  workflows-xample:
+    image: va/abd_vro-workflows-xample:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    profiles: ["xample"]
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *postgres-vars
+    depends_on:
+      postgres-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
 
   svc-assessor-dc7101:
     image: va/abd_vro-assessclaimdc7101:latest
@@ -316,7 +340,7 @@ services:
 
   console:
     image: va/abd_vro-console:latest
-    <<: *common-security-opt
+    # <<: *common-security-opt
     <<: *common-sde-security
     profiles: ["debug"]
     # stdin and tty are needed for user interaction
@@ -331,6 +355,13 @@ services:
         condition: service_started
       rabbitmq-service:
         condition: service_healthy
+      redis-service:
+        condition: service_started
+      db-init:
+        condition: service_started
+    volumes:
+      - pgdata:/persist/postgres
+      - tracking:/persist/tracking
     networks:
       - internal
 

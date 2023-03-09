@@ -96,10 +96,12 @@ include ':mock-bip-ce-api'
 include ':mock-bip-claims-api'
 include ':mock-mas-api'
 include 'mock-lighthouse-api'
+include ':domain-xample:api-controller'
+include ':domain-xample:shared'
+include ':domain-xample:workflows-xample'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
   include ':service-python:assessclaimdc6522'
   include ':service-python:assessclaimcancer'
 }
-

@@ -16,5 +16,10 @@ EXPOSE 8081
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 
 RUN adduser --no-create-home --disabled-password docker
+
+# This is required to ensure the folder is writeable
+# This folder should correspond with $PERSIST_TRACKING_FOLDER
+RUN mkdir -p /persist/tracking && chown docker:docker /persist/tracking
+
 USER docker
 CMD ["sh", "entrypoint.sh"]

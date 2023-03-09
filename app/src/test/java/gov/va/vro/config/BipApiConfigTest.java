@@ -64,7 +64,6 @@ class BipApiConfigTest {
       config.setTrustStore(store);
       config.setKeystore(store);
       config.setPassword("vropassword");
-      config.setAlias("alias");
       RestTemplate template = config.getHttpsRestTemplate(new RestTemplateBuilder());
       assertNotNull(template);
     } catch (Exception e) {
