@@ -63,7 +63,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response1 = masProcessingService.processIncomingClaim(request1);
     // wrong diagnostic code
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 71], and [disability action type = INCREASE] is not in scope.",
+        "Claim with [collection id = 123], [diagnostic code = 71], and"
+            + " [disability action type = INCREASE] is not in scope.",
         response1);
 
     var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
@@ -71,7 +72,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response2 = masProcessingService.processIncomingClaim(request2);
     // wrong disability action
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 7101], and [disability action type = OTHER] is not in scope.",
+        "Claim with [collection id = 123], [diagnostic code = 7101], and"
+            + " [disability action type = OTHER] is not in scope.",
         response2);
   }
 
@@ -85,7 +87,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
     var response = masProcessingService.processIncomingClaim(request1);
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 7101], [disability action type = NEW] and [flashIds = null] is not presumptive.",
+        "Claim with [collection id = 123], [diagnostic code = 7101],"
+            + " [disability action type = NEW] and [flashIds = null] is not presumptive.",
         response);
   }
 
@@ -99,7 +102,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
     var response = masProcessingService.processIncomingClaim(request);
     assertEquals(
-        "Claim with [collection id = 123] does not qualify for automated processing because it is missing anchors.",
+        "Claim with [collection id = 123] does not qualify for "
+            + "automated processing because it is missing anchors.",
         response);
   }
 

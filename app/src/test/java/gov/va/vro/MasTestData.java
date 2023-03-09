@@ -45,6 +45,14 @@ public class MasTestData {
         .build();
   }
 
+  /**
+   * Build claim request.
+   *
+   * @param collectionId collection ID.
+   * @param diagnosticCode diagnostic code.
+   * @param benefitClaimId benefit claim ID
+   * @return Claim request
+   */
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest(
       int collectionId, String diagnosticCode, String benefitClaimId) {
     VeteranIdentifiers veteranIdentifiers = getVeteranIdentifiers();
