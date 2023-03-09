@@ -9,7 +9,7 @@ ARG JAR_FILE
 WORKDIR /project
 COPY ${JAR_FILE} mock-mas-api.jar
 
-HEALTHCHECK CMD curl --fail http://localhost:8095/actuator/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:9002/actuator/health || exit 1
 
 RUN adduser --no-create-home --disabled-password docker
 USER docker
