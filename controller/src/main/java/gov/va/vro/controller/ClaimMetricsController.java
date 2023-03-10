@@ -42,7 +42,7 @@ public class ClaimMetricsController implements ClaimMetricsResource {
         default -> {
           log.warn("Invalid version given to claim info. Must be v1 or v2 if given");
           String msg = HttpStatus.BAD_REQUEST.getReasonPhrase();
-          throw new ClaimProcessingException(claimSubmissionId, HttpStatus.BAD_GATEWAY, msg);
+          throw new ClaimProcessingException(claimSubmissionId, HttpStatus.BAD_REQUEST, msg);
         }
       }
     }
