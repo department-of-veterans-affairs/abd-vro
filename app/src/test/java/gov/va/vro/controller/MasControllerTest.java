@@ -91,13 +91,13 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimOutOfScope() throws Exception {
     var offrampCalled = new AtomicBoolean(false);
     adviceWith(
-            camelContext,
-            "mas-offramp",
-            route ->
-                route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
-                    .skipSendToOriginalEndpoint()
-                    .to(mockMasOfframpEndpoint))
+        camelContext,
+        "mas-offramp",
+        route ->
+            route
+                .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
+                .skipSendToOriginalEndpoint()
+                .to(mockMasOfframpEndpoint))
         .end();
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(
@@ -111,13 +111,13 @@ public class MasControllerTest extends BaseControllerTest {
         });
     var completeCalled = new AtomicBoolean(false);
     adviceWith(
-            camelContext,
-            "mas-complete-claim",
-            route ->
-                route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
-                    .skipSendToOriginalEndpoint()
-                    .to(mockMasCompleteEndpoint))
+        camelContext,
+        "mas-complete-claim",
+        route ->
+            route
+                .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
+                .skipSendToOriginalEndpoint()
+                .to(mockMasCompleteEndpoint))
         .end();
     mockMasCompleteEndpoint.whenAnyExchangeReceived(
         exchange -> {
@@ -139,13 +139,13 @@ public class MasControllerTest extends BaseControllerTest {
   void automatedClaimInScope() throws Exception {
 
     adviceWith(
-            camelContext,
-            "mas-claim-notification",
-            route ->
-                route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM)
-                    .skipSendToOriginalEndpoint()
-                    .to("mock:mas-notification"))
+        camelContext,
+        "mas-claim-notification",
+        route ->
+            route
+                .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM)
+                .skipSendToOriginalEndpoint()
+                .to("mock:mas-notification"))
         .end();
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(exchange -> {});

@@ -17,9 +17,6 @@ public class MasTestData {
     return getMasAutomatedClaimPayload(123, "7101", "999");
   }
 
-  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
-    return getMasAutomatedClaimRequest(123, "1233", "999");
-  }
 
   /**
    * Gets the automated claim payload.
@@ -43,6 +40,10 @@ public class MasTestData {
         .claimDetail(claimDetail)
         .correlationId(UUID.randomUUID().toString())
         .build();
+  }
+
+  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
+    return getMasAutomatedClaimRequest(123, "1233", "999");
   }
 
   /**
