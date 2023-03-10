@@ -172,7 +172,8 @@ public interface MockLhApi {
       summary = "Retrieves MedicationRequest bundle.",
       description =
           """
-          For actual ICN's this returns the MedicationRequest bundle from the LH server. Otherwise this
+          For actual ICN's this returns the MedicationRequest bundle 
+          from the LH server. Otherwise this
           returns a mock MedicationRequest bundle.
           """,
       responses = {
