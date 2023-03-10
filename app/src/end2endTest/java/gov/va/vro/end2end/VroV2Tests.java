@@ -433,6 +433,12 @@ public class VroV2Tests {
 
   @SneakyThrows
   @Test
+  void testIncompleteBloodPressures() {
+    testAutomatedClaimFullPositive("380", true);
+  }
+
+  @SneakyThrows
+  @Test
   void testAutomatedSufficiencyIsNull() {
     // Offramp claims do not go through pdf process per VRO workflow diagram.
     testAutomatedClaimFullPositive("500", false);

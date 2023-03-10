@@ -36,6 +36,7 @@ def bp_reader(request_body):
     elevated_bp_in_past_two_years = []
     sortable_bp = []
     not_sortable_bp = []
+    partial_bp_two_years = []
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
     bp_readings = request_body["evidence"]["bp_readings"]
 
@@ -52,6 +53,12 @@ def bp_reader(request_body):
             not_sortable_bp.append(reading)
             reading["dateFormatted"] = ''
             continue  # If there is no date associated
+
+        if reading["systolic"]["value"] == 0 or reading["diastolic"]["value"] == 0:
+            if bp_reading_date >= date_of_claim_date - relativedelta(years=2):
+                partial_bp_two_years.append(reading)  # to be displayed in PDF
+            continue
+
         if bp_reading_date >= date_of_claim_date - relativedelta(years=1):
             bp_reading_in_past_year.append(reading)
         if bp_reading_date >= date_of_claim_date - relativedelta(years=2):
@@ -59,7 +66,7 @@ def bp_reader(request_body):
             if reading["systolic"]["value"] >= 160 and reading["diastolic"]["value"] >= 100:
                 elevated_bp_in_past_two_years.append(reading)
 
-    result = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years),
+    result = {"twoYearsBp": sort_bp(bp_readings_in_past_two_years + partial_bp_two_years),
               "oneYearBp": sort_bp(bp_reading_in_past_year),
               "allBp": sort_bp(sortable_bp) + not_sortable_bp,
               "twoYearsBpCount": len(bp_readings_in_past_two_years),

@@ -5,8 +5,18 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 
-def pdf_helper_asthma(data):
+def set_empty_readings(value):
+    if value == 0:
+        string_value = "-"
+    else:
+        string_value = str(int(value))
+    return string_value
 
+
+def pdf_helper_hypertension(data):
+    for reading in data["evidence"]["bp_readings"]:
+        reading["systolic"]["value"] = set_empty_readings(reading["systolic"]["value"])
+        reading["diastolic"]["value"] = set_empty_readings(reading["diastolic"]["value"])
     return data
 
 
@@ -32,7 +42,8 @@ def toc_helper_all(toc_file_path, data):  # pragma: no cover
     with open(toc_file_path, 'r') as file:
         file_data = file.read()
 
-    file_data = file_data.replace("{{name}}", f"{data['veteranInfo']['first']} {data['veteranInfo']['middle']} {data['veteranInfo']['last']}")
+    file_data = file_data.replace("{{name}}",
+                                  f"{data['veteranInfo']['first']} {data['veteranInfo']['middle']} {data['veteranInfo']['last']}")
     file_data = file_data.replace("{{file}}", data['veteranFileId'])
     file_data = file_data.replace("{{date}}", f"{pytz.utc.localize(datetime.now()).strftime('%b. %d, %Y')}")
 
