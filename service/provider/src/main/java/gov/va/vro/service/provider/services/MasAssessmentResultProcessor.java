@@ -26,6 +26,5 @@ public class MasAssessmentResultProcessor implements Processor {
       return;
     }
     saveToDbService.insertAssessmentResult(evidence, diagnosticCode);
-    saveToDbService.updateSufficientEvidenceFlag(evidence, diagnosticCode);
   }
 }

@@ -2,15 +2,21 @@ package gov.va.vro.service.db;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
+import gov.va.vro.persistence.model.ExamOrderEntity;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
+import gov.va.vro.service.db.mapper.ExamOrderInfoResponseMapper;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +37,13 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private final ClaimSubmissionRepository claimSubmissionRepository;
 
   private final AssessmentResultRepository assessmentResultRepository;
-
   private final EvidenceSummaryDocumentRepository evidenceSummaryDocumentRepository;
 
+  private final ExamOrderRepository examOrderRepository;
+
   private final ClaimInfoResponseMapper claimInfoResponseMapper;
+
+  private final ExamOrderInfoResponseMapper examOrderInfoResponseMapper;
 
   @Override
   public ClaimMetricsResponse getClaimMetrics() {
@@ -85,5 +94,20 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     Page<ClaimEntity> claims = findAllClaimInfoPage(params);
     List<ClaimInfoResponse> claimsInfo = claimInfoResponseMapper.toClaimInfoResponses(claims);
     return new ClaimsInfo(claimsInfo, claims.getTotalElements());
+  }
+
+  private Page<ExamOrderEntity> findAllExamOrderInfoPage(ExamOrderInfoQueryParams params) {
+    int size = params.getSize();
+    int page = params.getPage();
+    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    return examOrderRepository.findAll(pageRequest);
+  }
+
+  @Override
+  public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params) {
+    Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
+    List<ExamOrderInfoResponse> examOrdersInfo =
+        examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    return new ExamOrdersInfo(examOrdersInfo, examOrders.getTotalElements());
   }
 }

@@ -141,6 +141,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     }
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     assessmentResultEntity.setEvidenceCountSummary(summary);
+    assessmentResultEntity.setSufficientEvidenceFlag(
+        evidenceResponse.getSufficientForFastTracking());
     ContentionEntity contention = findContention(claimEntity, diagnosticCode);
     if (contention == null) {
       log.warn("Could not match contention with diagnostic code");

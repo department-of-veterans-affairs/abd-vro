@@ -17,4 +17,5 @@ import java.util.Map;
 @EqualsAndHashCode
 public class AssessmentInfo {
   private Map<String, String> evidenceInfo;
+  private Boolean sufficientEvidenceFlag;
 }

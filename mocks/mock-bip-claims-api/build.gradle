@@ -1,0 +1,41 @@
+
+plugins {
+  id 'local.java.container-spring-conventions'
+  id 'starter.std.java.library-spring-conventions'
+  id 'io.spring.dependency-management'
+  id "io.freefair.lombok" version "6.6.3"
+  id 'starter.java.build-utils-conventions'
+  id 'jacoco'
+}
+
+description = 'Mock Bip Claims Service'
+
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
+  }
+}
+
+dependencies {
+  implementation project(':shared:domain')
+  implementation project(':mocks:mock-shared')
+
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+  implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework:spring-web:5.3.23'
+
+  implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+  implementation "io.jsonwebtoken:jjwt:${io_jsonwebtoken_version}"
+
+  // https://mvnrepository.com/artifact/commons-io/commons-io
+  implementation 'commons-io:commons-io:2.11.0'
+
+  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+}
