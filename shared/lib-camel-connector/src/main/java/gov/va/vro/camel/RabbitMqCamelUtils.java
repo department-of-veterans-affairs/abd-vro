@@ -18,7 +18,7 @@ public class RabbitMqCamelUtils {
     return rabbitmqTopicConsumerEndpoint("tap-" + tapBasename, queuePrefix + "-" + tapBasename);
   }
 
-  static String rabbitmqTopicConsumerEndpoint(String exchangeName, String queueName) {
+  public static String rabbitmqTopicConsumerEndpoint(String exchangeName, String queueName) {
     return "rabbitmq:" + exchangeName + "?exchangeType=topic&queue=" + queueName;
   }
 
@@ -32,6 +32,11 @@ public class RabbitMqCamelUtils {
     // queue name
     // At least for Camel, the routingKey parameter is needed to route messages to the queue.
     return "rabbitmq:" + exchangeName + "?routingKey=" + routingKey + "&queue=" + routingKey;
+  }
+
+  public static RouteDefinition fromRabbitmq(
+      RouteBuilder builder, String exchangeName, String routingKey) {
+    return fromRabbitmq(builder, rabbitmqConsumerEndpoint(exchangeName, routingKey));
   }
 
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {
