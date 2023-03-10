@@ -1,5 +1,6 @@
 package gov.va.vro.abddataaccess.service;
 
+import static gov.va.vro.abddataaccess.service.FieldExtractor.getAValidCoding;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +34,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Unit tests for FieldExtractor.
@@ -187,7 +187,7 @@ class FieldExtractorTest {
           resource.getPerformer().stream()
               .filter(p -> p.hasReference() & p.hasDisplay())
               .map(Reference::getReference)
-              .collect(Collectors.toList());
+              .toList();
       if (!references.isEmpty()) {
         boolean hasPractitioner = references.stream().anyMatch(r -> r.contains("Practitioner"));
         boolean hasOrganization = references.stream().anyMatch(r -> r.contains("Organization"));
@@ -218,8 +218,8 @@ class FieldExtractorTest {
     log.info("abdCondition: {}", abdCondition.getText());
     if (condition.hasCode()) {
       CodeableConcept codeableConcept = condition.getCode();
-      if (codeableConcept.hasCoding()) {
-        Coding coding = codeableConcept.getCodingFirstRep();
+      Coding coding = getAValidCoding(codeableConcept);
+      if (coding != null) {
         assertEquals(
             Optional.ofNullable(coding.getCode()).orElse(""),
             Optional.ofNullable(abdCondition.getCode()).orElse(""));
