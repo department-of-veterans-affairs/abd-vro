@@ -43,9 +43,11 @@ public class ClaimInfoResponseMapperTest {
     ContentionEntity contentionEntity = new ContentionEntity();
     contentionEntity.setDiagnosticCode(diagnosticCode);
 
+    final Boolean sufficientEvidence = true;
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     Map<String, String> areEvidenceInfo = ImmutableMap.of("k1", "v1", "k2", "v2");
     assessmentResultEntity.setEvidenceCountSummary(areEvidenceInfo);
+    assessmentResultEntity.setSufficientEvidenceFlag(sufficientEvidence);
     contentionEntity.addAssessmentResult(assessmentResultEntity);
 
     EvidenceSummaryDocumentEntity esdEntity = new EvidenceSummaryDocumentEntity();
@@ -81,6 +83,7 @@ public class ClaimInfoResponseMapperTest {
     assertEquals(1, assessments.size());
     AssessmentInfo assessmentInfo = assessments.get(0);
     assertEquals(areEvidenceInfo, assessmentInfo.getEvidenceInfo());
+    assertEquals(sufficientEvidence, assessmentInfo.getSufficientEvidenceFlag());
 
     List<DocumentInfo> documents = contentionInfo.getDocuments();
     assertNotNull(documents);
