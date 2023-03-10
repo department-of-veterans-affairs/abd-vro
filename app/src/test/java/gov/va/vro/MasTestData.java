@@ -17,7 +17,6 @@ public class MasTestData {
     return getMasAutomatedClaimPayload(123, "7101", "999");
   }
 
-
   /**
    * Gets the automated claim payload.
    *

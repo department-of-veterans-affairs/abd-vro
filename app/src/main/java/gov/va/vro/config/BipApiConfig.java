@@ -67,7 +67,7 @@ public class BipApiConfig {
   }
 
   /**
-   * Get Rest template for BIP API connection
+   * Get Rest template for BIP API connection.
    *
    * @param builder RestTemplateBuilder
    * @return Rest template, request factory
