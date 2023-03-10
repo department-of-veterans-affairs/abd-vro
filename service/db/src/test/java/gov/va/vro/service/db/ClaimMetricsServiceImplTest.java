@@ -1,17 +1,24 @@
 package gov.va.vro.service.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.db.util.ClaimMetricsTestCase;
 import gov.va.vro.service.spi.model.Claim;
+import gov.va.vro.service.spi.model.ExamOrder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +26,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -122,5 +130,33 @@ public class ClaimMetricsServiceImplTest {
 
     ClaimInfoResponse cir = claimMetricsService.findClaimInfo("not_id", Claim.V1_ID_TYPE);
     assertNull(cir);
+  }
+
+  @Test
+  void testFindExamOrderInfo() {
+    OffsetDateTime examTime = OffsetDateTime.now();
+    ExamOrder testExamOrder = new ExamOrder();
+    testExamOrder.setCollectionId("123");
+    testExamOrder.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+    testExamOrder.setExamOrderDateTime(examTime);
+    saveToDbService.insertOrUpdateExamOrderingStatus(testExamOrder);
+
+    ExamOrder examOrderNoTimeStamp = new ExamOrder();
+    examOrderNoTimeStamp.setCollectionId("124");
+    examOrderNoTimeStamp.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+    saveToDbService.insertOrUpdateExamOrderingStatus(examOrderNoTimeStamp);
+
+    ExamOrderInfoQueryParams params = ExamOrderInfoQueryParams.builder().build();
+    ExamOrdersInfo eoir = claimMetricsService.findAllExamOrderInfo(params);
+    List<ExamOrderInfoResponse> examOrderResponses = eoir.getExamOrderInfoList();
+
+    assertEquals(2, examOrderResponses.size());
+    assertEquals(
+        examOrderNoTimeStamp.getCollectionId(), examOrderResponses.get(0).getCollectionId());
+    assertNull(examOrderResponses.get(0).getOrderedAt());
+    assertFalse(examOrderResponses.get(0).isHasAssociatedClaimSubmission());
+    assertEquals(testExamOrder.getCollectionId(), examOrderResponses.get(1).getCollectionId());
+    assertNotNull(examOrderResponses.get(1).getOrderedAt());
+    assertFalse(examOrderResponses.get(0).isHasAssociatedClaimSubmission());
   }
 }

@@ -38,7 +38,7 @@ class WireTap extends CommandSupport {
   }
 
   Closure<String> wireTapSubscriptionEndpoint = { String tapName ->
-    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()
+    RabbitMqCamelUtils.rabbitmqTopicConsumerEndpoint("tap-${tapName}", "console-${tapName}")
   }
 
   String subscribeToTopic(String wireTapName) {
