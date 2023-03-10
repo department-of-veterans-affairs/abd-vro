@@ -15,17 +15,13 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+concurrency:
+  group: lintAndTest-${{ github.ref }}
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-#    services:
-#      rabbitmq:
-#        image: rabbitmq:3.8
-#        env:
-#          RABBITMQ_DEFAULT_USER: guest
-#          RABBITMQ_DEFAULT_PASS: guest
-#        ports:
-#          - 5672:5672
+
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -37,3 +33,12 @@ jobs:
         # `check` runs hadolint and shellcheck
         # `jacocoTestCoverageVerification` checks for adequate test coverage
         run: ./gradlew check jacocoTestCoverageVerification -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+
+      - name: Publish Test Results
+        # Known issue: Associates results to random workflow
+        # https://github.com/EnricoMi/publish-unit-test-result-action/issues/12
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/*/*.xml

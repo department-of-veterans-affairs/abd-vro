@@ -135,10 +135,8 @@ class SaveToDbServiceImplTest {
     AbdEvidenceWithSummary evidence = new AbdEvidenceWithSummary();
     evidence.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
     evidence.setEvidenceSummary(evidenceMap);
-    // evidence flag is currently null
-    saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
     evidence.setSufficientForFastTracking(false);
-    saveToDbService.updateSufficientEvidenceFlag(evidence, "7101");
+    saveToDbService.insertAssessmentResult(claimBeforeAssessment.getId(), evidence, "7101");
     ClaimEntity result = claimRepository.findByVbmsId("1234").orElseThrow();
     assertNotNull(result);
     assertNotNull(result.getContentions().get(0).getAssessmentResults().get(0));

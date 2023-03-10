@@ -12,7 +12,7 @@ runs:
     - name: "Set up VRO build env"
       uses: ./.github/actions/setup-vro
 
-    - name: "Build Docker images"
+    - name: "Build Docker images without testing"
       shell: bash
       # Do not call ./gradlew build, which will run tests
       run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
