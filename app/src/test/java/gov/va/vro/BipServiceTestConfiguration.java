@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
  * BIP test configuration.
  *
  * @author warren @Date 2/10/23
- * */
+ */
 @TestConfiguration
 public class BipServiceTestConfiguration {
 
