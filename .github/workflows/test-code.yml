@@ -17,6 +17,7 @@ on:
 
 concurrency:
   group: lintAndTest-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint-and-test:
@@ -29,12 +30,18 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
-      - name: "Run linters and tests"
-        # `check` runs hadolint and shellcheck
-        # `jacocoTestCoverageVerification` checks for adequate test coverage
-        run: ./gradlew check jacocoTestCoverageVerification -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+      - name: "Run quick linters"
+        run: |
+          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} spotlessCheck shellcheck lintDockerfile
+      - name: "Run tests and checks"
+        # `check` runs all checks, including spectralLint, hadolint, and shellcheck
+        run: |
+          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} test check
+      - name: "Check for adequate test coverage"
+        run: |
+          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} jacocoLogTestCoverage jacocoTestCoverageVerification
 
-      - name: Publish Test Results
+      - name: "Publish Test Results as PR comment and GH Check Run"
         # Known issue: Associates results to random workflow
         # https://github.com/EnricoMi/publish-unit-test-result-action/issues/12
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -42,3 +49,32 @@ jobs:
         with:
           files: |
             **/build/test-results/*/*.xml
+
+      - name: "Aggregate JaCoCo reports"
+        # `jacocoAggregatedReport` reports aggregated coverage of all the subprojects
+        #     excluding integrationTest and end2endTest (which are run elsewhere)
+        run: |
+          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} \
+            jacocoAggregatedReport -x integrationTest -x end2endTest
+      - name: "Report JaCoCo Coverage as a GH Check Run"
+        # This takes about 1 minute, so don't run on PRs
+        # if: github.event_name != 'pull_request'
+        id: jacoco_reporter
+        uses: PavanMudigonda/jacoco-reporter@v4.8
+        with:
+          coverage_results_path: build/reports/jacoco/jacocoAggregatedReport/jacocoAggregatedReport.xml
+          coverage_report_name: Coverage
+          coverage_report_title: JaCoCo
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+          minimum_coverage: 80
+          fail_below_threshold: false
+          publish_only_summary: false
+      - name: "Add JaCoCo Coverage Report as PR comment"
+        if: github.event_name == 'pull_request'
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/jacocoAggregatedReport/jacocoAggregatedReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
+          title: "JaCoCo Test Coverage"
