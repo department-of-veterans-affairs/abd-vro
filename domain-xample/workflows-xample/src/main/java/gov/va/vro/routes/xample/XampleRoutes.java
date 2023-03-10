@@ -49,7 +49,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
         new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
             SomeDtoModel.class, model -> model.status(StatusValue.RECEIVED));
 
-    from(RabbitMqCamelUtils.rabbitmqConsumerEndpoint(V3_EXCHANGE, POST_RESOURCE_QUEUE))
+    RabbitMqCamelUtils.fromRabbitmq(this, V3_EXCHANGE, POST_RESOURCE_QUEUE)
         // Set the route's id so that log messages for this route are easily identified
         .id("postXResource-route")
 
