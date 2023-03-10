@@ -15,17 +15,13 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+concurrency:
+  group: lintAndTest-${{ github.ref }}
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-#    services:
-#      rabbitmq:
-#        image: rabbitmq:3.8
-#        env:
-#          RABBITMQ_DEFAULT_USER: guest
-#          RABBITMQ_DEFAULT_PASS: guest
-#        ports:
-#          - 5672:5672
+
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3

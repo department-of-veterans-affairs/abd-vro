@@ -1,0 +1,28 @@
+name: "8. Mirroring on passing tests"
+
+on:
+  workflow_run:
+    workflows: ["PR: Test code"]
+    types: [completed]
+
+# Ensures that only one mirror task will run at a time.
+concurrency:
+  group: git-mirror
+  cancel-in-progress: true
+
+jobs:
+  to_internal_repo:
+    # only run this job in the abd-vro repo
+    if: (github.repository == 'department-of-veterans-affairs/abd-vro') && (github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: yesolutions/mirror-action@master
+        with:
+          REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          GIT_SSH_NO_VERIFY_HOST: "true"

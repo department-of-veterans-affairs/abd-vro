@@ -6,6 +6,7 @@ networks:
 
 volumes:
   pgdata:
+  tracking:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -70,6 +71,9 @@ services:
   rabbitmq-service:
     image: rabbitmq:3-management
     hostname: rabbitmq-service
+    # Specifying user to reduce/eliminate startup error about erlang.cookie
+    # based on https://github.com/docker-library/rabbitmq/issues/318
+    user: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
@@ -114,9 +118,9 @@ services:
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
       FLYWAY_PASSWORD: ${POSTGRES_FLYWAY_PASSWORD}
       FLYWAY_DB: ${POSTGRES_DB}
-      PGDATA: /persist/data/localdev
+      PGDATA: /persist/postgres/pgdata
     volumes:
-      - pgdata:/persist/data
+      - pgdata:/persist/postgres
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
@@ -157,7 +161,7 @@ services:
       <<: *redis-placeholder-vars
       <<: *postgres-vars
       <<: *mas-vars
-      PERSIST_TRACKING_FOLDER: ${PERSIST_TRACKING_FOLDER}
+      PERSIST_TRACKING_FOLDER: /persist/tracking
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
@@ -176,6 +180,9 @@ services:
         condition: service_started
       db-init:
         condition: service_started
+    volumes:
+      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
+      - tracking:/persist/tracking
     networks:
       - internal
       - external
@@ -355,6 +362,9 @@ services:
         condition: service_started
       db-init:
         condition: service_started
+    volumes:
+      - pgdata:/persist/postgres
+      - tracking:/persist/tracking
     networks:
       - internal
 

@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -9,12 +10,17 @@ import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
+import gov.va.vro.model.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.claimmetrics.ContentionInfo;
+import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -32,7 +39,7 @@ public class VroV2Tests {
   private static final String BASE_URL = "http://localhost:8080/v2";
   private static final String EXAM_ORDERING_STATUS_URL = BASE_URL + "/examOrderingStatus";
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
-
+  private static final String CLAIM_INFO_URL = BASE_URL + "/claim-info/";
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
@@ -51,7 +58,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus_disallowedCharacters() {
     var request = getOrderingStatusDisallowedCharacters();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     try {
       restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
@@ -63,7 +70,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus_invalidRequest() {
     var request = getOrderingStatusInvalidRequest();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     try {
       restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, String.class);
       fail("Should have thrown exception");
@@ -79,7 +86,7 @@ public class VroV2Tests {
   @Test
   void testExamOrderingStatus() {
     var request = getOrderingStatusValidRequest();
-    var requestEntity = getEntity(request);
+    var requestEntity = getBearerAuthEntity(request);
     var response =
         restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -122,7 +129,7 @@ public class VroV2Tests {
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
 
     // Start automated claim
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -189,6 +196,53 @@ public class VroV2Tests {
     assertEquals(successOrdering, expectedExamOrder);
   }
 
+  @SneakyThrows
+  private void testClaimSufficientStatus(String collectionId, Boolean expectedSufficientValue) {
+
+    String url = CLAIM_INFO_URL + collectionId;
+    AssessmentInfo foundAssessment = null;
+    HttpEntity<Void> requestEntity = getTokenAuthHeaders();
+
+    log.info("Waiting for claim processing to finish and assessment database results");
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      try {
+        ResponseEntity<ClaimInfoResponse> testResponse =
+            restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        ClaimInfoResponse cir = testResponse.getBody();
+        assertNotNull(cir, "Claim Info Response was null, cannot continue");
+        List<ContentionInfo> contentionList = cir.getContentions();
+        if (contentionList.size() == 1) {
+          List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+          // If assessment list size is zero, we may not be finished processing, and should try
+          // again.
+          if (assessmentList.size() == 1) {
+            foundAssessment = assessmentList.get(0);
+            break;
+          } else if (assessmentList.size() > 1) {
+            Assertions.fail(
+                "CollectionId "
+                    + collectionId
+                    + " came back with more than one assessment result. Cannot determine which one to check");
+          }
+        } else if (contentionList.size() > 1) {
+          Assertions.fail(
+              "CollectionId "
+                  + collectionId
+                  + " came back with more than one contention. Cannot determine which one to check");
+        }
+      } catch (HttpStatusCodeException exception) {
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        log.info(
+            "Did not find asessment result for collection id {} with message .. retrying",
+            collectionId);
+      }
+    }
+    assertNotNull(foundAssessment);
+    assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
+  }
+
   /**
    * Runs a full end-to-end test for the collection id using mock services. Collection id used here
    * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
@@ -226,7 +280,7 @@ public class VroV2Tests {
   void testAutomatedClaimNonExistentClaimId() {
     var path = "test-mas/claim-801-7101-nonexistent-claimid.json";
     var content = resourceToString(path);
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     try {
       var response =
           restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
@@ -241,7 +295,7 @@ public class VroV2Tests {
     var path = "test-mas/claim-350-7101-outofscope.json";
     var content = resourceToString(path);
     String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
@@ -255,7 +309,7 @@ public class VroV2Tests {
     var path = "test-mas/claim-351-7101-noanchor.json";
     var content = resourceToString(path);
     String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getEntity(content);
+    var requestEntity = getBearerAuthEntity(content);
     var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
@@ -321,15 +375,18 @@ public class VroV2Tests {
     return objectMapper.writeValueAsString(payload);
   }
 
-  private HttpEntity<String> getEntity(String content) {
-    return new HttpEntity<>(content, getHttpHeaders());
+  // Authorization for Claim Info e2e
+  private HttpEntity<Void> getTokenAuthHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "test-key-01");
+    return new HttpEntity<>(headers);
   }
 
-  private static HttpHeaders getHttpHeaders() {
+  private HttpEntity<String> getBearerAuthEntity(String content) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(JWT_TOKEN);
-    return headers;
+    return new HttpEntity<>(content, headers);
   }
 
   /**
@@ -358,10 +415,10 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  // @Test You can do this to test cases when Sufficient Evidence is null
-  // At this point it is not ready for automated test since assertions
-  // on the end of process is not available easily.
+  @Test
   void testAutomatedSufficiencyIsNull() {
-    testAutomatedClaimFullPositive("500", true);
+    // Offramp claims do not go through pdf process per VRO workflow diagram.
+    testAutomatedClaimFullPositive("500", false);
+    testClaimSufficientStatus("500", null);
   }
 }

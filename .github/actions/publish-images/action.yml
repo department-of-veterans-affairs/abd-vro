@@ -56,7 +56,6 @@ runs:
     - name: "Tag and push images using commit hash and `latest`"
       shell: bash
       run: |
-        # ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${{ inputs.image_tag }}" "${{ inputs.image_prefix }}"
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
           GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)

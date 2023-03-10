@@ -6,13 +6,6 @@
 # If environment variable doesn't exist and doesn't have default, it fails fast and an exception will be thrown.
 # This is beneficial to indicate that the environment variable wasn't configured.
 
-vro:
-  persist:
-    tracking:
-      enabled: true
-      # Dependent on the mountPath configured in Kubernetes
-      base_folder: ${PERSIST_TRACKING_FOLDER}
-
 logging:
   level:
     org.springframework.jdbc.core: INFO
