@@ -237,13 +237,15 @@ public class VroV2Tests {
             Assertions.fail(
                 "CollectionId "
                     + collectionId
-                    + " came back with more than one assessment result. Cannot determine which one to check");
+                    + " came back with more than one assessment result. "
+                    + "Cannot determine which one to check");
           }
         } else if (contentionList.size() > 1) {
           Assertions.fail(
               "CollectionId "
                   + collectionId
-                  + " came back with more than one contention. Cannot determine which one to check");
+                  + " came back with more than one contention. "
+                  + "Cannot determine which one to check");
         }
       } catch (HttpStatusCodeException exception) {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());

@@ -66,6 +66,13 @@ public class BipApiConfig {
     return keyStore;
   }
 
+  /**
+   * Get Rest template for BIP API connection
+   *
+   * @param builder RestTemplateBuilder
+   * @return Rest template, request factory
+   * @throws BipException failure to create connection
+   */
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
