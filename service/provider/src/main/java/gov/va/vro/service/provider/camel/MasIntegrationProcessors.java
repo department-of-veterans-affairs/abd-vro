@@ -137,4 +137,17 @@ public class MasIntegrationProcessors {
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
     };
   }
+
+  public static Processor slackEventProcessor(String routeId, String message) {
+    return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getMessage().getBody(MasProcessingObject.class);
+      String msg = message;
+      if (masProcessingObject != null) {
+        msg += " collection ID: " + masProcessingObject.getCollectionId();
+      }
+      var auditable = exchange.getMessage().getBody(Auditable.class);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, msg));
+    };
+  }
 }

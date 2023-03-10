@@ -142,11 +142,11 @@ ext {
     ':service:spi',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api',
-    ':mock-bip-claims-api',
-    ':mock-shared',
-    ':mock-mas-api',
-    ':mock-lighthouse-api',
+    ':mocks:mock-bip-ce-api',
+    ':mocks:mock-bip-claims-api',
+    ':mocks:mock-shared',
+    ':mocks:mock-mas-api',
+    ':mocks:mock-lighthouse-api',
     ':domain-xample:api-controller',
     ':domain-xample:shared',
     ':domain-xample:workflows-xample'
@@ -161,10 +161,10 @@ ext {
     ':service-python:featuretoggle',
     ':svc-lighthouse-api',
     ':console',
-    ':mock-bip-ce-api',
-    ':mock-bip-claims-api',
-    ':mock-mas-api',
-    ':mock-lighthouse-api',
+    ':mocks:mock-bip-ce-api',
+    ':mocks:mock-bip-claims-api',
+    ':mocks:mock-mas-api',
+    ':mocks:mock-lighthouse-api',
     ':domain-xample:workflows-xample'
   ]
   if (project.hasProperty("enablePrototype")) {

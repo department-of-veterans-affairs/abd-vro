@@ -57,15 +57,13 @@ public class ContentionEntity extends BaseEntity {
   /**
    * Adds assessment result to a claim.
    *
-   * @param ar assessment result entity
+   * @param assessmentResultEntity assessment result entity
    * @return returns the assessment result
    */
-  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
-    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
-    assessmentResult.setContention(this);
-    assessmentResult.setEvidenceCountSummary(ar.getEvidenceCountSummary());
-    assessmentResults.add(assessmentResult);
-    return assessmentResult;
+  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity assessmentResultEntity) {
+    assessmentResultEntity.setContention(this);
+    assessmentResults.add(assessmentResultEntity);
+    return assessmentResultEntity;
   }
 
   /**
