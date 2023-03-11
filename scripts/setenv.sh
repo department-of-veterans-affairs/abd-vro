@@ -76,8 +76,22 @@ exportFile(){
 # Set the prefix for container names used by docker-compose
 # Not necessary, but it shortens the default prefix `abd-vro`
 export COMPOSE_PROJECT_NAME=vro
-# Determines which containers are started by docker-compose
-export COMPOSE_PROFILES=assessors,feat-toggle,pdf-gen
+
+# COMPOSE_PROFILES determines which containers are started by docker-compose.
+# This allows developers to start only the containers they need for their current work.
+# See https://docs.docker.com/compose/profiles/
+# Refer to the src/docker/docker-compose.yml file for profile names.
+# For the iMVP, set to "v2,v2-mocks,pdfgen,lh"
+# - "v2" = all service for v2
+# - "v2-mocks" = all mocks for v2
+# - "pdfgen" = pdf generator microservice
+# - "lh" = Lighthouse API client microservice and the mock LH API
+# For minimal VRO, set to "" (empty string). This starts the app and required application services.
+# To start all containers, set to "all".
+# To start a specific container (along with containers it depends_on), run:
+#   cd app/src/docker
+#   docker-compose up $CONTAINER_NAME
+export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
 
 ###
 ### Credentials for VRO internal services ###
