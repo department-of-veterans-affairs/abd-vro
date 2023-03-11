@@ -91,7 +91,7 @@ export COMPOSE_PROJECT_NAME=vro
 # See https://docs.docker.com/compose/profiles/
 # Refer to the src/docker/docker-compose.yml file for profile names.
 # For the iMVP, set to "v2,v2-mocks,pdfgen,lh"
-# - "v2" = all service for v2
+# - "v2" = all services for v2
 # - "v2-mocks" = all mocks for v2
 # - "pdfgen" = pdf generator microservice
 # - "lh" = Lighthouse API client microservice and the mock LH API
