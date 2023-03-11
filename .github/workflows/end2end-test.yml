@@ -1,4 +1,4 @@
-name: "PR: End-to-end test"
+name: "PR: End-to-end test for v2"
 
 on:
   pull_request:
@@ -41,6 +41,7 @@ jobs:
       - name: "Start the containers"
         run: |
           source scripts/setenv.sh
+          export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
           export -p | sed 's/declare -x //'
           ./gradlew :app:dockerComposeUp
         env:

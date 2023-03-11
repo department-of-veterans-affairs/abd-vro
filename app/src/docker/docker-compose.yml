@@ -223,7 +223,7 @@ services:
       - internal
 
   svc-assessor-dc6602:
-    profiles: ["all","svc","assessor"]
+    profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
     <<: *common-sde-security

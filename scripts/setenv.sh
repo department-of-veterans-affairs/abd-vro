@@ -59,9 +59,18 @@ getSecret(){
 exportSecretIfUnset(){
   local VAR_VALUE=$(eval echo "\$$1")
   if [ "${VAR_VALUE}" ]; then
-    >&2 echo "$1 already set -- not overriding."
+    >&2 echo "Not overriding: $1 already set."
   else
     eval "export $1=\$(getSecret $1)"
+  fi
+}
+
+exportIfUnset(){
+  local VAR_VALUE=$(eval echo "\$$1")
+  if [ "${VAR_VALUE}" ]; then
+    >&2 echo "Not overriding: $1 already set to: '${VAR_VALUE}'"
+  else
+    eval "export $1=$2"
   fi
 }
 
@@ -86,12 +95,14 @@ export COMPOSE_PROJECT_NAME=vro
 # - "v2-mocks" = all mocks for v2
 # - "pdfgen" = pdf generator microservice
 # - "lh" = Lighthouse API client microservice and the mock LH API
-# For minimal VRO, set to "" (empty string). This starts the app and required application services.
+# For minimal VRO, set to " " (space). This starts the app and required application services.
+#   (A space is used to distinguish it from an empty string, which is interpreted as
+#   being unset by function exportIfUnset.)
 # To start all containers, set to "all".
 # To start a specific container (along with containers it depends_on), run:
 #   cd app/src/docker
 #   docker-compose up $CONTAINER_NAME
-export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
+exportIfUnset COMPOSE_PROFILES "v2,v2-mocks,pdfgen,lh"
 
 ###
 ### Credentials for VRO internal services ###
