@@ -2,8 +2,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
   id 'starter.std.java.library-spring-conventions'
-  //    id 'java'
-  //    id 'org.springframework.boot'
 }
 
 dependencies {
