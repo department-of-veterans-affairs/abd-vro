@@ -8,11 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(
     scanBasePackages = {"gov.va.vro.routes.xample", "gov.va.vro.camel"}
-    // Exclude to avoid error "org.springdoc.hateoas.SpringDocHateoasConfiguration required a bean
-    // ..."
     // Add DataSourceAutoConfiguration.class if no Spring DataSources are set up.
-    // exclude = {SpringDocHateoasConfiguration.class}
-)
+    )
 // Needed to interface with the DB
 @EnableJpaRepositories("gov.va.vro.persistence.repository")
 @EntityScan("gov.va.vro.persistence.model")
