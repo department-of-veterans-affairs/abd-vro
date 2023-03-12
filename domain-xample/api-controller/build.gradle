@@ -14,4 +14,7 @@ dependencies {
   implementation project(':domain-xample:shared')
   // api project(':shared:lib-camel-connector')
   implementation project(':shared:lib-camel-connector')
+
+  implementation "org.zalando:problem-spring-web"
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
 }

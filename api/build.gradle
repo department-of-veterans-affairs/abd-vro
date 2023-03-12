@@ -5,6 +5,7 @@ plugins {
 dependencies {
   implementation project(':shared:domain')
 
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'
   implementation 'gov.va.starter:exceptions'
 }

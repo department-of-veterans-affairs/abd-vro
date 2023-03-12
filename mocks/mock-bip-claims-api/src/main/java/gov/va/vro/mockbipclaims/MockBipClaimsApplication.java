@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(
     exclude = {
-      org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
       DataSourceAutoConfiguration.class
     })
 @ComponentScan(basePackages = {"gov.va.vro.mockbipclaims", "gov.va.vro.mockshared"})

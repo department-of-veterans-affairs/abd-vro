@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication(
     exclude = {
-      org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
       DataSourceAutoConfiguration.class
     })
 @EnableConfigurationProperties({MasApiProperties.class, MasOauth2Properties.class})
