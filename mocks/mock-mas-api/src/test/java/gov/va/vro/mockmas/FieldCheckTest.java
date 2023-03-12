@@ -7,7 +7,6 @@ import gov.va.vro.model.mas.MasAnnotation;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,12 +15,11 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 /**
- * For now checks for incomplete blood pressure with plans to extends to other fields.
- * To use change mcp-mas properties in application-test.yml to point to your environment
- * values (i.e. prod-test), uncomment @Test, and update for collection ids you want to
- * check. Once it is run search for "Incomplete reading" tp see the incomplete reading.
+ * For now checks for incomplete blood pressure with plans to extends to other fields. To use change
+ * mcp-mas properties in application-test.yml to point to your environment values (i.e. prod-test),
+ * uncomment @Test, and update for collection ids you want to check. Once it is run search for
+ * "Incomplete reading" tp see the incomplete reading.
  */
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
@@ -29,8 +27,7 @@ import java.util.List;
 public class FieldCheckTest {
   private static final String BP_READING_REGEX = "^\\d{1,3}\\/\\d{1,3}$";
 
-  @Autowired
-  private MasApiService apiService;
+  @Autowired private MasApiService apiService;
 
   void checkBloodPressure(List<MasCollectionAnnotation> collections) {
     for (MasCollectionAnnotation collection : collections) {
@@ -42,7 +39,7 @@ public class FieldCheckTest {
         log.info("");
         continue;
       }
-      for (MasDocument document: documents) {
+      for (MasDocument document : documents) {
         log.info("Document: {}", document.getDocTypeDescription());
         log.info("===================");
         List<MasAnnotation> annotations = document.getAnnotations();
@@ -67,7 +64,8 @@ public class FieldCheckTest {
           ++bpIncompleteCount;
         }
         log.info("");
-        log.info("Total BP Count: {}, incomplete BP Count: {}", bpAnnotationCount, bpIncompleteCount);
+        log.info(
+            "Total BP Count: {}, incomplete BP Count: {}", bpAnnotationCount, bpIncompleteCount);
       }
     }
   }
@@ -81,7 +79,7 @@ public class FieldCheckTest {
       List<MasCollectionAnnotation> collections = apiService.getAnnotation(collectionId);
       log.info("******************************************************");
       if (collections == null) {
-        log.info("Collection {} cannot be found",collectionId);
+        log.info("Collection {} cannot be found", collectionId);
       } else {
         checkBloodPressure(collections);
       }
