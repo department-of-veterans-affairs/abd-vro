@@ -1,5 +1,7 @@
 package gov.va.vro.services.xample;
 
+import gov.va.vro.model.xample.SomeDtoModel;
+import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -19,7 +21,7 @@ import java.util.concurrent.CountDownLatch;
 @SpringBootApplication
 @Slf4j
 public class JavaMicroserviceApplication {
-  // https://spring.io/guides/gs/messaging-rabbitmq/
+  // Also see https://spring.io/guides/gs/messaging-rabbitmq/
 
   @Bean
   public CountDownLatch shutdownLatch() {
@@ -78,29 +80,14 @@ public class JavaMicroserviceApplication {
     RabbitListenerErrorHandler handler=new RabbitListenerErrorHandler() {
       @Override
       public Object handleError(Message amqpMessage, org.springframework.messaging.Message<?> message, ListenerExecutionFailedException exception) throws Exception {
-        log.info("Hey hey", exception);
+        log.info("Oh no!", exception);
+
+        if (message != null && message.getHeaders().getReplyChannel()!=null)
+          return new SomeDtoModel("", "", StatusValue.ERROR.name(), exception.getMessage());
+
         return null;
       }
     };
     return handler;
   }
-
-  // @Bean
-  // MessageListenerAdapter listenerAdapter(Receiver receiver) {
-  //   return new MessageListenerAdapter(receiver, "receiveMessage");
-  // }
-
-  // @Bean
-  // SimpleMessageListenerContainer container(
-  //     ConnectionFactory connectionFactory,
-  //     MessageListenerAdapter listenerAdapter,
-  //     MessageConverter msgConverter) {
-  //   SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-  //   container.setConnectionFactory(connectionFactory);
-  //   container.setQueueNames(queueName);
-  //   container.setMessageListener(listenerAdapter);
-  //   // listenerAdapter.setMessageConverter(msgConverter);
-  //   //container.setErrorHandler(t -> {}); // TODO
-  //   return container;
-  // }
 }

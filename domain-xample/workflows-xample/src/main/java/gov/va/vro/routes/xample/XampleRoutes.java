@@ -134,7 +134,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
         .to("direct:no-where")
         //
         .end() // end ChoiceDefinition
-        .log("Finally returning from service: ${body.getClass()}: ${body}");
+        .log("Response from service: ${body.getClass()}: ${body}");
   }
 
   final String SERVICE_A_ENDPOINT = "direct:serviceA";
@@ -153,7 +153,8 @@ public class XampleRoutes extends EndpointRouteBuilder {
 
   void configureRouteToServiceJ() {
     // Always use this utility method to send to RabbitMQ
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, SERVICE_J_ENDPOINT, "xample", "serviceJ");
+    RabbitMqCamelUtils.addToRabbitmqRoute(this, SERVICE_J_ENDPOINT, "xample", "serviceJ")
+        .convertBodyTo(SomeDtoModel.class);
   }
 
   void configureFetchResourceRoute() {
