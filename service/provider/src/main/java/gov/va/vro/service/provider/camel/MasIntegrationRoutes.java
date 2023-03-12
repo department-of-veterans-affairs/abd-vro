@@ -120,8 +120,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
     final String MAS_NOTIFICATION_EXCHANGE = "mas-notification-exchange";
     final String MAS_NOTIFICATION_ROUTING_KEY = "mas-notification";
     RabbitMqCamelUtils.addToRabbitmqRoute(
-        this, DIRECT_TO_MQ_MAS, MAS_NOTIFICATION_EXCHANGE,
-        MAS_NOTIFICATION_ROUTING_KEY, "&requestTimeout=0");
+        this,
+        DIRECT_TO_MQ_MAS,
+        MAS_NOTIFICATION_EXCHANGE,
+        MAS_NOTIFICATION_ROUTING_KEY,
+        "&requestTimeout=0");
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
@@ -135,8 +138,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(DIRECT_TO_MQ_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    RabbitMqCamelUtils.fromRabbitmq(this, MAS_NOTIFICATION_EXCHANGE,
-        MAS_NOTIFICATION_ROUTING_KEY)
+    RabbitMqCamelUtils.fromRabbitmq(this, MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY)
         .routeId(processClaimRouteId)
         // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))

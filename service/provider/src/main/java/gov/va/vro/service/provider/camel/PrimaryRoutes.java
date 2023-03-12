@@ -92,7 +92,7 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private String pdfRoute(String queueName) {
-    String uri="direct:rabbitmq-"+queueName;
+    String uri = "direct:rabbitmq-" + queueName;
     RabbitMqCamelUtils.addToRabbitmqRoute(this, uri, PDF_EXCHANGE, queueName);
     return uri;
   }

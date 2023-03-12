@@ -49,8 +49,13 @@ public class RabbitMqCamelUtils {
       RouteBuilder builder, String fromUri, String exchangeName, String routingKey) {
     return addToRabbitmqRoute(builder, fromUri, exchangeName, routingKey, "");
   }
+
   public static RouteDefinition addToRabbitmqRoute(
-    RouteBuilder builder, String fromUri, String exchangeName, String routingKey, String rabbitmqParams) {
+      RouteBuilder builder,
+      String fromUri,
+      String exchangeName,
+      String routingKey,
+      String rabbitmqParams) {
     return builder
         .from(fromUri)
         // Remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
@@ -59,6 +64,6 @@ public class RabbitMqCamelUtils {
         // > if the source queue has a routing key set in the headers, it will pass down to
         // > the destination and not be overriden with the URI query parameters.
         .removeHeaders("CamelRabbitmq*")
-        .to(rabbitmqProducerEndpoint(exchangeName, routingKey)+rabbitmqParams);
+        .to(rabbitmqProducerEndpoint(exchangeName, routingKey) + rabbitmqParams);
   }
 }
