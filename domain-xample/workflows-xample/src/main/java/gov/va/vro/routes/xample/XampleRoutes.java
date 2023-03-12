@@ -99,6 +99,10 @@ public class XampleRoutes extends EndpointRouteBuilder {
   }
 
   void configureServicesRoute() {
+    final String DIRECT_TO_MQ_XAMPLE_SERVICE_J = "direct:toMq-xample--serviceJ";
+    RabbitMqCamelUtils.addToRabbitmqRoute(
+        this, DIRECT_TO_MQ_XAMPLE_SERVICE_J, "xample", "serviceJ");
+
     // Route to particular service depending on message body
     // Demonstrates different ways to trigger a service
     from(FANCY_SERVICE_ENDPOINT)
@@ -110,7 +114,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
         // https://camel.apache.org/components/3.19.x/eips/bean-eip.html
         .bean(ServiceB.class)
         .otherwise()
-        .to(RabbitMqCamelUtils.rabbitmqProducerEndpoint("xample", "serviceC"))
+        .to(DIRECT_TO_MQ_XAMPLE_SERVICE_J)
         .end() // end ChoiceDefinition
         .log("Finally returning from service: ${body.getClass()}: ${body}");
 

@@ -14,7 +14,7 @@ public class MessageQueueConfiguration {
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
-    log.info("ConnectionFactory: connecting to {}", messageQueueProps.getHost());
+    log.info("rabbitmq ConnectionFactory: connecting to {}", messageQueueProps.getHost());
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(messageQueueProps.getHost());
     factory.setPort(messageQueueProps.getPort());
