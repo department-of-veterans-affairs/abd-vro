@@ -9,7 +9,6 @@ dependencies {
   implementation project(':service:provider')
   implementation project(':service:spi')
 
-  implementation "org.zalando:problem-spring-web"
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
 
   implementation "gov.va.starter:exceptions"
