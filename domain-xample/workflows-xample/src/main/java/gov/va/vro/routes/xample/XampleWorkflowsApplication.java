@@ -6,10 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(
-    scanBasePackages = {"gov.va.vro.routes.xample", "gov.va.vro.camel"}
-    // Add DataSourceAutoConfiguration.class if no Spring DataSources are set up.
-    )
+@SpringBootApplication(scanBasePackages = {"gov.va.vro.routes.xample", "gov.va.vro.camel"})
 // Needed to interface with the DB
 @EnableJpaRepositories("gov.va.vro.persistence.repository")
 @EntityScan("gov.va.vro.persistence.model")

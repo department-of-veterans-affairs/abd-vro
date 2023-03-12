@@ -6,10 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication(
-    exclude = {
-      // DataSourceAutoConfiguration.class
-    })
+@SpringBootApplication
 @EnableConfigurationProperties({MasApiProperties.class, MasOauth2Properties.class})
 public class MockMasApplication {
 
