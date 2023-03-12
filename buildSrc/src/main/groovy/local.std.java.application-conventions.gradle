@@ -37,6 +37,12 @@ plugins {
 }
 
 dependencies {
+    implementation "org.zalando:problem-spring-web"
+    implementation "org.springdoc:springdoc-openapi-ui"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core"
+    //implementation "org.springdoc:springdoc-openapi-security"
+    implementation "org.springdoc:springdoc-openapi-data-rest"
+
     testImplementation 'org.mock-server:mockserver-netty'
     // open tracing testing/mock support
     testImplementation 'io.opentracing:opentracing-mock'
