@@ -16,6 +16,7 @@ buildscript {
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
   id("org.ajoberstar.grgit") version "${grgit_version}" apply false
+  id("io.freefair.lombok") version "6.6.3" apply false
   id("org.springframework.boot") version "${spring_boot_version}" apply false
   id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
   id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
