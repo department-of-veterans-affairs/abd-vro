@@ -135,7 +135,8 @@ services:
   db-init:
     image: va/abd_vro-db-init:latest
     depends_on:
-      - postgres-service
+      postgres-service:
+        condition: service_healthy
     networks:
       - internal
     environment:
@@ -176,7 +177,7 @@ services:
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:
@@ -201,7 +202,7 @@ services:
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
     networks:
@@ -363,7 +364,7 @@ services:
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:

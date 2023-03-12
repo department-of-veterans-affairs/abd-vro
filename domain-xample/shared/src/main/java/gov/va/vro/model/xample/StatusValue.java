@@ -4,5 +4,6 @@ public enum StatusValue {
   ERROR,
   RECEIVED,
   PROCESSING,
-  DONE
+  DONE,
+  NOT_FOUND
 }
