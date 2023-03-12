@@ -4,6 +4,10 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
 }
 
+ext {
+  jacocoExclude = ['**/*Application.*']
+}
+
 dependencies {
   implementation project(':domain-xample:shared')
   implementation project(':shared:lib-camel-connector')
@@ -21,6 +25,10 @@ dependencies {
   implementation "org.springframework.boot:spring-boot-starter-data-redis"
   implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
+
+  testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
+  testImplementation "com.github.fppt:jedis-mock:1.0.6"
+  testImplementation 'org.slf4j:slf4j-simple:2.0.6'
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
   // in order to convert ClaimEntity.createdAt into JSON.
