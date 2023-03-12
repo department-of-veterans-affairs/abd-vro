@@ -26,7 +26,8 @@ dependencies {
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
 
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.projectlombok:lombok:1.18.26'

@@ -3,17 +3,11 @@
  * Includes proper dependencies for lombok and mapstruct annotation processing.
  */
 
-// starter.java.build-javatarget-conventions
-
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // aren't needed for all subprojects:
-    implementation "org.zalando:problem-spring-web"
-    implementation "org.springdoc:springdoc-openapi-ui"
-    implementation "org.springdoc:springdoc-openapi-webmvc-core"
-    //implementation "org.springdoc:springdoc-openapi-security"
-    implementation "org.springdoc:springdoc-openapi-data-rest"
+    implementation 'javax.validation:validation-api'
+
     implementation 'org.mapstruct:mapstruct'
 
     compileOnly 'org.projectlombok:lombok'
