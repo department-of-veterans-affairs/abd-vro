@@ -15,5 +15,7 @@ class MessageQueueProperties {
   private String host;
   private int port;
   private String username;
+  // can we set defaults to use env var?
+  // resources/conf-camel-rabbitmq.yml
   private String password;
 }

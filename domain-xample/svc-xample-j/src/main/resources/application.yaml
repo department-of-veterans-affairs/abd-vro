@@ -1,0 +1,14 @@
+springdoc.api-docs.enabled: false
+
+spring:
+  main:
+    # Disable to avoid "Web application could not be started"
+    web-application-type: none
+
+
+  # Specify where Spring connects to RabbitMQ
+  rabbitmq:
+    host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
+    port: 5672
+    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"

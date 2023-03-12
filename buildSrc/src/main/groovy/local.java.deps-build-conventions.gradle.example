@@ -8,6 +8,7 @@
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // aren't needed for all subprojects:
     implementation "org.zalando:problem-spring-web"
     implementation "org.springdoc:springdoc-openapi-ui"
     implementation "org.springdoc:springdoc-openapi-webmvc-core"

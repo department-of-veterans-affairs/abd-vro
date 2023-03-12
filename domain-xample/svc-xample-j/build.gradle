@@ -1,0 +1,37 @@
+
+plugins {
+  //  id 'java'
+  //  id 'org.springframework.boot'
+
+  //  have to use this b/c dep ':domain-xample:shared'
+  id 'local.java.container-spring-conventions'
+  // needed?
+  id 'starter.std.java.library-spring-conventions'
+}
+
+ext {
+  jacocoExclude = ['**/*Application.*']
+}
+
+dependencies {
+  implementation project(':domain-xample:shared')
+  //  implementation project(':persistence:model')
+
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+  //  testImplementation "com.github.fppt:jedis-mock:1.0.6"
+  testImplementation 'org.slf4j:slf4j-simple:2.0.6'
+
+  // why? NoClassDefFoundError: javax/servlet/http/HttpServletRequest
+  // due to some dependency
+  //  implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+  // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+  // in order to convert ClaimEntity.createdAt into JSON.
+  // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
+  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+}
