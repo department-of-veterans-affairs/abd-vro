@@ -40,10 +40,10 @@ jobs:
         - dev_vro-console
         - dev_vro-db-init
         - dev_vro-postgres
-        - dev_vro-service-assessclaimdc6602
-        - dev_vro-service-assessclaimdc7101
+        - dev_vro-svc-assessclaimdc6602
+        - dev_vro-svc-assessclaimdc7101
         - dev_vro-svc-lighthouse-api
-        - dev_vro-service-pdfgenerator
+        - dev_vro-svc-pdfgenerator
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"

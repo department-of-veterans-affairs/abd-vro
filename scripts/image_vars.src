@@ -55,18 +55,18 @@ export svcLighthouseApi_IMG="vro-svc-lighthouse-api"
 
 # --- featuretoggle in folder ./service-python/featuretoggle
 export svcFeatureToggle_GRADLE_IMG="va/abd_vro-featuretoggle"
-export svcFeatureToggle_IMG="vro-service-featuretoggle"
+export svcFeatureToggle_IMG="vro-svc-featuretoggle"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
 export svcPdfGenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
-export svcPdfGenerator_IMG="vro-service-pdfgenerator"
+export svcPdfGenerator_IMG="vro-svc-pdfgenerator"
 
 # --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
 export svcAssessorDc7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
-export svcAssessorDc7101_IMG="vro-service-assessclaimdc7101"
+export svcAssessorDc7101_IMG="vro-svc-assessclaimdc7101"
 
 # --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
 export svcAssessorDc6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
-export svcAssessorDc6602_IMG="vro-service-assessclaimdc6602"
+export svcAssessorDc6602_IMG="vro-svc-assessclaimdc6602"
 
 # End of file

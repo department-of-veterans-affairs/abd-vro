@@ -41,8 +41,7 @@ bash_var_prefix() {
 # These names need to match the images specified in Helm configs
 prod_image_name() {
   case "$1" in
-    # svc-lighthouse-api) echo "vro-service-data-access";;
-    pdfgenerator|featuretoggle|assessclaim*) echo "vro-service-$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "vro-svc-$1";; #TODO: rename these folders so that we can use the "vro-$1" pattern
     *) echo "vro-$1";;
   esac
 }
