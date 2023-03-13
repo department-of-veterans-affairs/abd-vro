@@ -105,3 +105,6 @@ if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6522'
   include ':service-python:assessclaimcancer'
 }
+include 'mocks:mock-slack'
+findProject(':mocks:mock-slack')?.name = 'mock-slack'
+

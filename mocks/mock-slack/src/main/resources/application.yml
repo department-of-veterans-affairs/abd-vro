@@ -1,0 +1,30 @@
+# spring settings
+spring:
+  profiles:
+    active: ${ENV:default}
+
+# server settings
+server:
+  port: 9004
+
+# Health
+management:
+  server:
+    port: 9005
+    ssl.enabled: false
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState
+        liveness:
+          include: livenessState
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health

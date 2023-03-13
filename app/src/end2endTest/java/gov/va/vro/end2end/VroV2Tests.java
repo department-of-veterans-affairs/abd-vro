@@ -43,6 +43,9 @@ public class VroV2Tests {
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
+
+  private static final String SLACK_URL = "http://localhost:9004/slack-messages/";
+
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 
@@ -290,8 +293,28 @@ public class VroV2Tests {
     }
   }
 
+  @SneakyThrows
+  private boolean testOffRampSlackMessage(int collectionId) {
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(5000);
+      String url = SLACK_URL + collectionId;
+      try {
+        ResponseEntity<String> testResponse = restTemplate.getForEntity(url, String.class);
+        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        return true;
+      } catch (HttpStatusCodeException exception) {
+        log.info("Did not find slack message for {}. Retrying...", collectionId);
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+      }
+    }
+    return false;
+  }
+
   @Test
-  void testAutomatedClaim_outOfScope() {
+  @SneakyThrows
+  void testAutomatedClaimOutOfScope() {
+    restTemplate.delete( SLACK_URL + 350);
+
     var path = "test-mas/claim-350-7101-outofscope.json";
     var content = resourceToString(path);
     String url = BASE_URL + "/automatedClaim";
@@ -302,6 +325,9 @@ public class VroV2Tests {
     assertEquals(
         "Claim with [collection id = 350], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.",
         masResponse.getMessage());
+
+    boolean slackResult = testOffRampSlackMessage(350);
+    assertTrue(slackResult);
   }
 
   @Test
