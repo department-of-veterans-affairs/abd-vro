@@ -9,15 +9,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class XampleJavaMicroservice {
-  @RabbitListener(queues = "#{queue.name}", errorHandler="xampleErrorHandler")
+  @RabbitListener(queues = "#{queue1.name}", errorHandler="xampleErrorHandler")
   public SomeDtoModel receiveMessage(SomeDtoModel model) {
     log.info("Received: " + model);
     try {
       Thread.sleep(1000);
-      model.setStatus(StatusValue.DONE.name());
+      // To test an error response, throw exception if resourceId is not an integer
+      Integer.parseInt(model.getResourceId());
+      model.status(StatusValue.DONE);
+      model.setStatusCode(200);
     } catch (Throwable t) {
-      model.setStatus(StatusValue.ERROR.name());
-      model.setReason(t.getMessage());
+      log.error("Simulated error: "+t);
+      model.setStatusCode(417);
+      model.setStatusMessage(t.toString());
     }
     return model;
   }

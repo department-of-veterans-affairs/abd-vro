@@ -43,7 +43,12 @@ public class ResourceMapperImplTest {
 
   @Test
   void testToResourceResponse() {
-    SomeDtoModel model = new SomeDtoModel("320", "A", StatusValue.PROCESSING.name(), null);
+    SomeDtoModel model =
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.PROCESSING.name())
+            .build();
 
     ResourceResponse response = impl.toResourceResponse(model);
     assertEquals(response.getResourceId(), model.getResourceId());

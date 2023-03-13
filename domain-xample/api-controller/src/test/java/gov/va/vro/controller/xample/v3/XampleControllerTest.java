@@ -32,7 +32,12 @@ public class XampleControllerTest {
   @Test
   @SneakyThrows
   void testPostResource() {
-    var camelResult = new SomeDtoModel("320", "A", StatusValue.PROCESSING.name(), null);
+    var camelResult =
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.PROCESSING.name())
+            .build();
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);
@@ -49,7 +54,12 @@ public class XampleControllerTest {
   @SneakyThrows
   void testPostResourceWithErrorStatus() {
     var camelResult =
-        new SomeDtoModel("320", "A", StatusValue.ERROR.name(), "Some Exception was thrown");
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.ERROR.name())
+            .statusMessage("Some Exception was thrown")
+            .build();
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);
@@ -84,7 +94,12 @@ public class XampleControllerTest {
   @Test
   @SneakyThrows
   void testGetResource() {
-    var camelResult = new SomeDtoModel("320", "A", StatusValue.DONE.name(), null);
+    var camelResult =
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.DONE.name())
+            .build();
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);
@@ -99,7 +114,11 @@ public class XampleControllerTest {
   @SneakyThrows
   void testGetResourceWithUnknownId() {
     var camelResult =
-        new SomeDtoModel("320", "A", StatusValue.NOT_FOUND.name(), "Some Exception was thrown");
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.NOT_FOUND.name())
+            .build();
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);
@@ -114,7 +133,12 @@ public class XampleControllerTest {
   @SneakyThrows
   void testGetResourceWithErrorStatus() {
     var camelResult =
-        new SomeDtoModel("320", "A", StatusValue.ERROR.name(), "Some Exception was thrown");
+        SomeDtoModel.builder()
+            .resourceId("320")
+            .diagnosticCode("A")
+            .status(StatusValue.ERROR.name())
+            .statusMessage("Some Exception was thrown")
+            .build();
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);

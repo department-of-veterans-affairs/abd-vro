@@ -41,7 +41,7 @@ public class XampleController implements XampleResource {
       log.info("RESPONSE from postXResource returned status: {}", result.getStatus());
       ResourceResponse response = resourceMapper.toResourceResponse(result);
       if (StatusValue.ERROR.name().equals(result.getStatus())) {
-        log.warn("RESPONSE from postXResource returned error reason: {}", result.getReason());
+        log.warn("RESPONSE from postXResource returned status: {}", result.getStatusMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
       }
       return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -70,7 +70,7 @@ public class XampleController implements XampleResource {
     if (response.getStatus().equals("NOT_FOUND")) {
       return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     } else if (response.getStatus().equals("ERROR")) {
-      log.info("RESPONSE from fetchProcess returned error reason: {}", response.getReason());
+      log.info("RESPONSE from fetchProcess returned status: {}", response.getStatusMessage());
       return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return new ResponseEntity<>(response, HttpStatus.OK);
