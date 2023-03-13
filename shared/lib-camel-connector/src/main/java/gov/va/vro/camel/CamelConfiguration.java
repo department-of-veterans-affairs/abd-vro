@@ -23,11 +23,6 @@ public class CamelConfiguration {
   private final CamelDtoClassesProperties camelDtoClassesProperties;
 
   @Bean
-  ObjectMapper mapper() {
-    return new ObjectMapper();
-  }
-
-  @Bean
   CamelContextConfiguration contextConfiguration(ObjectMapper mapper) {
     return new CamelContextConfiguration() {
       @Override
