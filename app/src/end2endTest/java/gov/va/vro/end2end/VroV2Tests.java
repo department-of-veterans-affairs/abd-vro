@@ -360,39 +360,44 @@ public class VroV2Tests {
     log.info("rdr1 is removed for {}", claimId);
   }
 
-  @Test
-  @SneakyThrows
-  void testAutomatedClaimOutOfScope() {
-    String collectionId = "10";
-
-    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec();
-    spec.setCollectionId(collectionId);
-    spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
-    spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
-    spec.setCheckSlack(true);
-
+  private void testAutomatedClaimPreCamelOffRamp(AutomatedClaimTestSpec spec) {
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
 
-    boolean slackResult = testOffRampSlackMessage(collectionId);
+    boolean slackResult = testOffRampSlackMessage(spec.getCollectionId());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     testSpecialIssueRdr1Removed(claimId);
   }
 
+  /**
+   * Out of scope test case because of disability action type. Rest response message,
+   * Slack message and removal of RDR1 special issue are verified.
+   */
   @Test
-  void testAutomatedClaim_missingAnchor() {
-    var path = "test-mas/claim-351-7101-noanchor.json";
-    var content = resourceToString(path);
-    String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getBearerAuthEntity(content);
-    var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    var masResponse = response.getBody();
-    assertEquals(
-        "Claim with [collection id = 351] does not qualify for automated processing because it is missing anchors.",
-        masResponse.getMessage());
+  void testAutomatedClaimOutOfScope() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
+    spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedMessage(
+        "Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
+    spec.setCheckSlack(true);
+
+    testAutomatedClaimPreCamelOffRamp(spec);
+  }
+
+  /**
+   * Missing anchor test case because of wrong temporary jurisdiction station. Rest response
+   * message, Slack message and removal of RDR1 special issue are verified.
+   */
+  @Test
+  void testAutomatedClaimMissingAnchor() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
+    spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setExpectedMessage(
+        "Claim with [collection id = 20] does not qualify for automated processing because it is missing anchors.");
+    spec.setCheckSlack(true);
+
+    testAutomatedClaimPreCamelOffRamp(spec);
   }
 
   // Test Case that ensures that exam order *is* callled

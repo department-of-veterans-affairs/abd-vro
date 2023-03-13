@@ -8,7 +8,7 @@
     "icn": "icn-not-needed-10",
     "ssn": "010-11-1111",
     "veteranFileId": "file-id-not-needed-010",
-    "edipn": "string",
+    "edipn": "edipn-10",
     "participantId": "participant-id-010"
   },
   "claimDetail": {

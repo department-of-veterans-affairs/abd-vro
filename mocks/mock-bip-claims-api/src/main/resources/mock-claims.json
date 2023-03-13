@@ -120,7 +120,7 @@
     ]
   },
   {
-    "description": "identical to happy path except , used for out of scope",
+    "description": "identical to happy path except used for out of scope",
     "claimDetail": {
       "claimId": 3010,
       "tempStationOfJurisdiction": "398"
@@ -141,12 +141,12 @@
   {
     "description": "wrong temp station of jurisdiction",
     "claimDetail": {
-      "claimId": 2010,
+      "claimId": 3020,
       "tempStationOfJurisdiction": "391"
     },
     "contentions": [
       {
-        "contentionId": "2011",
+        "contentionId": "3021",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
