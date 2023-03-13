@@ -75,17 +75,17 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Notify Slack"
+      - name: "Slack: workflow triggered"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Publishing> \
-            images with prefix `${{ steps.image-props.outputs.image_prefix }}` \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|SecRel running>: \
+            Publishing images with prefix `${{ steps.image-props.outputs.image_prefix }}` \
             and tag `${{ steps.image-props.outputs.image_tag }}` \
-            from ${{github.ref_type}} `${{github.ref_name}}`, \n\
+            from ${{github.ref_type}} `${{github.ref_name}}`, \
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ...\n"
 
       - name: "Publish ${{ steps.image-props.outputs.image_prefix }} images to GHCR"
@@ -99,13 +99,13 @@ jobs:
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ steps.image-props.outputs.run_tests }}
 
-      - name: "Post progress in Slack thread: Images published"
+      - name: "Slack thread: Images published"
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_builder: Images published!"
+          slack-text: ":panda_builder: Images published! (but not yet signed)"
 
   debug-job:
     runs-on: ubuntu-latest
@@ -130,10 +130,10 @@ jobs:
 
   notify-secrel-error:
     needs: secrel
-    if: needs.secrel.result == 'failure'
+    if: always() && needs.secrel.result == 'failure'
     runs-on: ubuntu-latest
     steps:
-      - name: "Notify of SecRel Failure at top-level Slack"
+      - name: "Slack: SecRel Failure"
         uses: archive/github-actions-slack@v2.6.0
         # only run for the internal repo
         if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
@@ -150,18 +150,18 @@ jobs:
     if: always()
     steps:
       - name: "If failure, set Slack message to: Workflow failed!"
-        if: failure()
+        if: needs.publish-to-ghcr.result == 'failure'
         run: |
           echo 'WORKFLOW_STATE_TEXT=:panda_blank: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Workflow> failed!' >> $GITHUB_ENV
           echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
 
-      - name: "If cancelled, set Slack message to: Workflow cancelled"
-        if: cancelled()
+      - name: "If skipped, set Slack message to: Workflow skipped"
+        if: needs.publish-to-ghcr.result == 'skipped' || needs.secrel.result == 'skipped'
         run: |
-          echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: Workflow cancelled' >> $GITHUB_ENV
+          echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: Workflow cancelled or skipped' >> $GITHUB_ENV
           echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
-      - name: "Set final Slack message to: Images published"
+      - name: "Set final Slack message to: Images published but not signed"
         if: needs.publish-to-ghcr.result == 'success' && needs.secrel.result != 'success'
         run: |
           echo 'WORKFLOW_STATE_TEXT=:panda_cop: Images published but not signed' >> $GITHUB_ENV
@@ -173,7 +173,7 @@ jobs:
           echo 'WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!' >> $GITHUB_ENV
           echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
 
-      - name: "Post final status in Slack thread"
+      - name: "Slack thread: Post final status"
         if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -181,7 +181,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ needs.publish-to-ghcr.outputs.slack-response-ts }}
           slack-text: ${{ env.WORKFLOW_STATE_TEXT }}
-      - name: "Emoji react to top-level Slack notification"
+      - name: "Slack emoji: React success on top-level Slack notification"
         if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
