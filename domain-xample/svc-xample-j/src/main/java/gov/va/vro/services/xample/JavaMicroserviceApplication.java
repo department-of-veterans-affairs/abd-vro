@@ -1,7 +1,6 @@
 package gov.va.vro.services.xample;
 
 import gov.va.vro.model.xample.SomeDtoModel;
-import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -54,18 +53,18 @@ public class JavaMicroserviceApplication {
   // declared as top-level Spring beans in order to be set up properly.
 
   @Bean
-  Queue queue() {
+  Queue queue1() {
     return new Queue(queueName, true, false, true);
   }
 
   @Bean
-  DirectExchange exchange() {
+  DirectExchange exchange1() {
     return new DirectExchange(exchangeName, true, true);
   }
 
   @Bean
-  Binding binding(Queue queue, DirectExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+  Binding binding1() {
+    return BindingBuilder.bind(queue1()).to(exchange1()).with(routingKey);
   }
 
   @Bean
@@ -82,8 +81,14 @@ public class JavaMicroserviceApplication {
       public Object handleError(Message amqpMessage, org.springframework.messaging.Message<?> message, ListenerExecutionFailedException exception) throws Exception {
         log.info("Oh no!", exception);
 
-        if (message != null && message.getHeaders().getReplyChannel()!=null)
-          return new SomeDtoModel("", "", StatusValue.ERROR.name(), exception.getMessage());
+        if (message != null && message.getHeaders().getReplyChannel()!=null){
+          var errorModel=SomeDtoModel.builder().resourceId("").diagnosticCode("")
+                             .statusCode(500)
+                             .statusMessage(exception.toString())
+              .build();
+
+          return errorModel;
+        }
 
         return null;
       }
