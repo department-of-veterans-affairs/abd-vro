@@ -14,10 +14,6 @@ from assessclaimdc6602v2.src.lib import queues as q6602v2
 from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
 from assessclaimdc7101.src.lib import queues as q7101
 
-from ... import logging_setup
-
-logging_setup.set_format()
-
 
 @pytest.mark.parametrize(
     "queue, service_queue_name", [
