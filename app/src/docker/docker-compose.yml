@@ -24,7 +24,9 @@ x-mas-vars: &mas-vars
   MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
   MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
-  SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
+  # could not find another way to overwrite this since due to its name
+  # env var always override application.yml property.
+  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:9008/slack-messages"
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
@@ -451,5 +453,20 @@ services:
       <<: *common-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
+    networks:
+      - internal
+
+  mock-slack:
+    profiles: ["all","mock","lh","v2-mocks"]
+    image: va/abd_vro-mock-slack:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-slack
+    ports:
+      - "9008:9008"
+      - "9009:9009"
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
     networks:
       - internal

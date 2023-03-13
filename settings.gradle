@@ -96,6 +96,7 @@ include ':mocks:mock-bip-ce-api'
 include ':mocks:mock-bip-claims-api'
 include ':mocks:mock-mas-api'
 include ':mocks:mock-lighthouse-api'
+include ':mocks:mock-slack'
 include ':domain-xample:api-controller'
 include ':domain-xample:shared'
 include ':domain-xample:workflows-xample'
@@ -105,6 +106,3 @@ if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6522'
   include ':service-python:assessclaimcancer'
 }
-include 'mocks:mock-slack'
-findProject(':mocks:mock-slack')?.name = 'mock-slack'
-

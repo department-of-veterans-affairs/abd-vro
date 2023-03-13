@@ -12,7 +12,6 @@ import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
-import gov.va.vro.model.bip.BipContentionResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
@@ -155,7 +154,7 @@ public class VroV2Tests {
     restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
     if (spec.isCheckSlack()) {
-      restTemplate.delete( SLACK_URL + collectionId);
+      restTemplate.delete(SLACK_URL + collectionId);
     }
 
     // Start automated claim
@@ -355,7 +354,7 @@ public class VroV2Tests {
     ClaimContention contention = contentions.get(0);
     List<String> specialIssueCodes = contention.getSpecialIssueCodes();
     assertNotNull(specialIssueCodes);
-    for (String specialIssueCode: specialIssueCodes) {
+    for (String specialIssueCode : specialIssueCodes) {
       assertNotEquals("RDR1", specialIssueCode, "RDR1 should have been removed");
     }
     log.info("rdr1 is removed for {}", claimId);
@@ -369,7 +368,8 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec();
     spec.setCollectionId(collectionId);
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
-    spec.setExpectedMessage("Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
+    spec.setExpectedMessage(
+        "Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
     spec.setCheckSlack(true);
 
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);

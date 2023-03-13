@@ -147,6 +147,7 @@ ext {
     ':mocks:mock-shared',
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
+    ':mocks:mock-slack',
     ':domain-xample:api-controller',
     ':domain-xample:shared',
     ':domain-xample:workflows-xample'
@@ -165,6 +166,7 @@ ext {
     ':mocks:mock-bip-claims-api',
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
+    ':mocks:mock-slack',
     ':domain-xample:workflows-xample'
   ]
   if (project.hasProperty("enablePrototype")) {
