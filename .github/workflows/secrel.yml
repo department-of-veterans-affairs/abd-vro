@@ -37,6 +37,7 @@ jobs:
   publish-to-ghcr:
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
+      slack-response-ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
     runs-on: ubuntu-latest
     steps:
       - name: "Determine image prefix and tag"
@@ -106,20 +107,8 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-optional-thread_ts: ${{ needs.publish-to-ghcr.outputs.slack-response-ts }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_builder: Images published!"
-
-      - name: "Set final Slack message to: Images published"
-        # This message will be overridden if SecRel passes
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:panda_cop: Images published but not signed' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=panda_cop' >> $GITHUB_ENV
-
-      - name: "Set Slack message to: Workflow cancelled"
-        if: cancelled()
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: Image-publish cancelled' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
 
   debug-job:
     runs-on: ubuntu-latest
@@ -152,11 +141,11 @@ jobs:
           echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
 
   notify-secrel-error:
-    if: failure()
     needs: secrel
+    if: needs.secrel.result == 'failure'
     runs-on: ubuntu-latest
     steps:
-      - name: "Notify Slack on SecRel Failure"
+      - name: "Notify of SecRel Failure at top-level Slack"
         uses: archive/github-actions-slack@v2.6.0
         # only run for the internal repo
         if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
@@ -172,7 +161,32 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - name: "If failure, set Slack message to: Workflow failed!"
+        if: failure()
+        run: |
+          echo 'WORKFLOW_STATE_TEXT=:panda_blank: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Workflow> failed!' >> $GITHUB_ENV
+          echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
+
+      - name: "If cancelled, set Slack message to: Workflow cancelled"
+        if: cancelled()
+        run: |
+          echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: Workflow cancelled' >> $GITHUB_ENV
+          echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+
+      - name: "Set final Slack message to: Images published"
+        if: needs.publish-to-ghcr.result == 'success' && needs.secrel.result != 'success'
+        run: |
+          echo 'WORKFLOW_STATE_TEXT=:panda_cop: Images published but not signed' >> $GITHUB_ENV
+          echo 'WORKFLOW_STATE_EMOJI=panda_cop' >> $GITHUB_ENV
+
+      - name: "If success, set Slack message to: SecRel passed"
+        if: needs.secrel.result == 'success'
+        run: |
+          echo 'WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!' >> $GITHUB_ENV
+          echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
+
       - name: "Post final status in Slack thread"
+        if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -180,6 +194,7 @@ jobs:
           slack-optional-thread_ts: ${{ needs.publish-to-ghcr.outputs.slack-response-ts }}
           slack-text: ${{ env.WORKFLOW_STATE_TEXT }}
       - name: "Emoji react to top-level Slack notification"
+        if: always()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
