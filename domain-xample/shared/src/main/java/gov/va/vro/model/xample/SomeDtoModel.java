@@ -17,7 +17,12 @@ public class SomeDtoModel {
   @NonNull private String diagnosticCode;
 
   private String status;
-  private String reason;
+
+  // For interfacing with microservices:
+  // Refer to https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+  @Builder.Default private int statusCode = 0;
+  // Message to go with the statusCode
+  private String statusMessage;
 
   // Fluent accessors to make setting multiply fields less verbose
   public SomeDtoModel status(StatusValue status) {
@@ -25,8 +30,9 @@ public class SomeDtoModel {
     return this;
   }
 
-  public SomeDtoModel reason(String someReason) {
-    setReason(someReason);
+  public SomeDtoModel status(StatusValue status, String message) {
+    setStatus(status.name());
+    setStatusMessage(message);
     return this;
   }
 }

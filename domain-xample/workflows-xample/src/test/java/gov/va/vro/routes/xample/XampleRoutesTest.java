@@ -65,7 +65,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     if (isUseAdviceWith()) context.start();
   }
 
-  SomeDtoModel someDtoModel = new SomeDtoModel("320", "A", null, null);
+  SomeDtoModel someDtoModel = SomeDtoModel.builder().resourceId("320").diagnosticCode("A").build();
 
   @Test
   @SneakyThrows
@@ -149,7 +149,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     var response = template.requestBody(STARTING_URI, someDtoModel, SomeDtoModel.class);
     assertEquals(response.getResourceId(), someDtoModel.getResourceId());
     assertEquals(response.getStatus(), StatusValue.ERROR.name());
-    assertTrue(response.getReason().contains(errorMsg));
+    assertTrue(response.getStatusMessage().contains(errorMsg));
 
     assertMockEndpointsSatisfied();
   }
