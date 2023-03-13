@@ -204,33 +204,29 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  public void testExamOrdered(String collectionId, boolean expectedExamOrder) {
+  private void testExamOrdered(String collectionId) {
     boolean successOrdering = false;
-    if (expectedExamOrder) {
-      String url = ORDER_EXAM_URL + collectionId;
-      log.info("Wait for examOrder code to execute.");
-      for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-        Thread.sleep(20000);
-        var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
-        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-        boolean examOrdered = testResponse.getBody().isOrdered();
-        if (examOrdered) {
-          log.info("{} had exam ordered", collectionId);
-        } else {
-          log.info("{} did NOT have exam ordered", collectionId);
-        }
-        if (examOrdered) {
-          successOrdering = true;
-          break;
-        } else {
-          log.info(
-              "Exam not ordered yet for collection {}. Waiting and rechecking...", collectionId);
-        }
+    String url = ORDER_EXAM_URL + collectionId;
+    log.info("Wait for examOrder code to execute.");
+    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
+      Thread.sleep(20000);
+      var testResponse = restTemplate.getForEntity(url, OrderExamCheckResponse.class);
+      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+      boolean examOrdered = testResponse.getBody().isOrdered();
+      if (examOrdered) {
+        log.info("{} had exam ordered", collectionId);
+      } else {
+        log.info("{} did NOT have exam ordered", collectionId);
       }
-    } else {
-      log.info("Negative test case for exam ordering TBD via database check. Skipping polling");
+      if (examOrdered) {
+        successOrdering = true;
+        break;
+      } else {
+        log.info(
+            "Exam not ordered yet for collection {}. Waiting and rechecking...", collectionId);
+      }
     }
-    assertEquals(successOrdering, expectedExamOrder);
+    assertTrue(successOrdering, "Exam is not ordered");
   }
 
   @SneakyThrows
@@ -400,23 +396,33 @@ public class VroV2Tests {
     testAutomatedClaimPreCamelOffRamp(spec);
   }
 
-  // Test Case that ensures that exam order *is* callled
-  // The data underlying follows the NEW claim, one relevant condition, not enough information path.
-  @Test
-  void testAutomatedClaim_orderExamNewClaim() {
-    MasAutomatedClaimRequest request = startAutomatedClaim("377");
-    testExamOrdered("377", true);
+  private void testAutomatedClaimOrderExam(String collectionId) {
+  log.info("testing ordering exam for collection {}", collectionId);
+    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
+    testExamOrdered(collectionId);
     testPDFUpload(request);
+    String claimId = request.getClaimDetail().getBenefitClaimId();
+    testSpecialIssueRdr1Removed(claimId);
   }
 
-  // Test case that ensures the exam order *is* callled
-  // The data underlying follows the "increase" claim path where not enough blood pressure readings
-  // exist.
+  /**
+   * Test Case that ensures that exam order *is* called. The data underlying follows the NEW
+   * claim, one relevant condition, not enough information path. Rest response message, exam
+   * being ordered, pdf upload, and removal of RDR1 special issue are verified.
+   */
   @Test
-  void testAutomatedClaim_orderExamIncreaseClaim() {
-    MasAutomatedClaimRequest request = startAutomatedClaim("378");
-    testExamOrdered("378", true);
-    testPDFUpload(request);
+  void testAutomatedClaimOrderExamNewClaim() {
+    testAutomatedClaimOrderExam("377");
+  }
+
+  /**
+   * Test Case that ensures that exam order *is* called. The data underlying follows the
+   * "increase" claim path where not enough blood pressure readings exist. Rest response
+   * message, exam being ordered, pdf upload, and removal of RDR1 special issue are verified.
+   */
+  @Test
+  void testAutomatedClaimOrderExamIncreaseClaim() {
+    testAutomatedClaimOrderExam("378");
   }
 
   @SneakyThrows
