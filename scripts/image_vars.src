@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+VRO_IMAGES_ARR=( app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602"
+export VRO_IMAGES="app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( app postgres dbinit console svclighthouseapi featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
-export VAR_PREFIXES="app postgres dbinit console svclighthouseapi featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602"
+VAR_PREFIXES_ARR=( app postgres dbinit console svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+export VAR_PREFIXES="app postgres dbinit console svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -52,10 +52,6 @@ export console_IMG="vro-console"
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
 export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
 export svclighthouseapi_IMG="vro-svc-lighthouse-api"
-
-# --- featuretoggle in folder ./service-python/featuretoggle
-export featuretoggle_GRADLE_IMG="va/abd_vro-featuretoggle"
-export featuretoggle_IMG="vro-svc-featuretoggle"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
 export pdfgenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"

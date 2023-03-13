@@ -3,7 +3,7 @@
 # This is a quick and dirty script to generate image_vars.src that is compatible with Bash 3.
 # This script can be replaced with for example a Gradle task later.
 
-# Be consistent about naming our images. This script will help us migrate to get inconsistencies.
+# Be consistent about naming our images. This script helps us understand inconsistencies.
 # The aim is to have all functions use the default case `*)`.
 
 gradle_folder() {
@@ -13,6 +13,7 @@ gradle_folder() {
   esac
 }
 
+# These are used in docker-compose.yml files
 gradle_image_name() {
   case "$1" in
     *) echo "va/abd_vro-$1";;
@@ -35,7 +36,7 @@ prod_image_name() {
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
+IMAGES=( app postgres db-init console svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -103,8 +104,6 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     PREFIX=$(bash_var_prefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
-
-    # echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
   echo '# End of file'

@@ -44,6 +44,11 @@ jobs:
         - dev_vro-svc-assessclaimdc7101
         - dev_vro-svc-lighthouse-api
         - dev_vro-svc-pdfgenerator
+        # TODO: in April 2023, remove the following lines for old images
+        - dev_vro-service-assessclaimdc6602
+        - dev_vro-service-assessclaimdc7101
+        - dev_vro-service-data-access
+        - dev_vro-service-pdfgenerator
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
