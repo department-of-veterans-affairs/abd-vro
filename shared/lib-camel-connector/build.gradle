@@ -16,5 +16,5 @@ dependencies {
   // To fix jackson error: Java 8 date/time type `java.time.Instant` not supported by default
   // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+  // runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }

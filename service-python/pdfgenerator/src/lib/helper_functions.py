@@ -6,9 +6,24 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 
+def set_empty_readings(value):
+    if value == 0:
+        string_value = "-"
+    else:
+        string_value = str(int(value))
+    return string_value
+
+
+def pdf_helper_hypertension(data):
+    for reading in data["evidence"]["bp_readings"]:
+        reading["systolic"]["value"] = set_empty_readings(reading["systolic"]["value"])
+        reading["diastolic"]["value"] = set_empty_readings(reading["diastolic"]["value"])
+    return data
+
+
 def pdf_helper_all(data: dict) -> dict:
     """Adds/modifies the data for all PDFs like adding the timestamp
-
+    
     :param data: PDF data that will be used in the template
     :type data: dict
     :return: The modified PDF data

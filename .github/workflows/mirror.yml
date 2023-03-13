@@ -11,9 +11,11 @@ on:
   push:
     branches: [ main, qa, develop ]
 
-  # When a Git reference (Git branch or tag) is created or deleted
+  # When a Git reference (Git branch or tag) is created
   create:
-  delete:
+  # A PR merge pushes to `develop` and deletes the PR branch, causing this action to be triggered twice.
+  # So don't trigger on branch delete. Old branches will be deleted on the next mirroring.
+  # delete:
 
   # Allow manual triggering
   workflow_dispatch:

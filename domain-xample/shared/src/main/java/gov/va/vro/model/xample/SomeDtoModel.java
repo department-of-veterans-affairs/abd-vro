@@ -8,7 +8,8 @@ import lombok.NonNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+// Use toBuilder as a copy constructor
+@Builder(toBuilder = true)
 @Data
 public class SomeDtoModel {
   @NonNull private String resourceId;
