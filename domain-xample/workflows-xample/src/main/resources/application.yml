@@ -33,5 +33,4 @@ logging:
 #    org.hibernate.type.descriptor.sql.BasicBinder: INFO # TRACE
 
 spring.config.import: >
-  conf-camel.yml,
-  conf-camel-rabbitmq.yml
+  conf-camel.yml

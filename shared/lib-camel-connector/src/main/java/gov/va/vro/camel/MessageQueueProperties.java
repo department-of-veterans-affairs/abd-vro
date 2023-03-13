@@ -10,12 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "message-queue")
+@ConfigurationProperties(prefix = "spring.rabbitmq")
 class MessageQueueProperties {
-  private String host;
-  private int port;
-  private String username;
-  // can we set defaults to use env var?
-  // resources/conf-camel-rabbitmq.yml
-  private String password;
+  private String host = "localhost";
+  private int port = 5672;
+  private String username = "guest";
+  private String password = "guest";
 }
