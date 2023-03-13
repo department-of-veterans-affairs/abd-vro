@@ -24,11 +24,11 @@ bash_var_prefix() {
   case "$1" in
     postgres) echo "db";;
     db-init) echo "dbInit";;
-    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
-    pdfgenerator) echo "pdfGenerator";;                  # TODO: rename to svcPdfGenerator
+    svc-lighthouse-api) echo "svcLighthouseApi";;
+    pdfgenerator) echo "svcPdfGenerator";;
     featuretoggle) echo "svcFeatureToggle";;
-    assessclaimdc7101) echo "serviceAssessClaimDC7101";; # TODO: rename to svcAssessorDc7101
-    assessclaimdc6602) echo "serviceAssessClaimDC6602";; # TODO: rename to svcAssessorDc6602
+    assessclaimdc7101) echo "svcAssessorDc7101";;
+    assessclaimdc6602) echo "svcAssessorDc6602";;
     app|*) echo "$1";;
   esac
 }
