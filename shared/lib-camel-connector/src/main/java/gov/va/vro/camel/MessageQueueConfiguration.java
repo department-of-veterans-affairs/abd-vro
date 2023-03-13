@@ -1,6 +1,8 @@
 package gov.va.vro.camel;
 
 import com.rabbitmq.client.ConnectionFactory;
+import gov.va.vro.camel.config.MessageQueueEnvVariables;
+import gov.va.vro.camel.config.MessageQueueProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -10,16 +12,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class MessageQueueConfiguration {
-  private final MessageQueueProperties messageQueueProps;
+  private final MessageQueueProperties mqProperties;
+  private final MessageQueueEnvVariables mqEnvVariables;
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
-    log.info("rabbitmq ConnectionFactory: connecting to {}", messageQueueProps.getHost());
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost(messageQueueProps.getHost());
-    factory.setPort(messageQueueProps.getPort());
-    factory.setUsername(messageQueueProps.getUsername());
-    factory.setPassword(messageQueueProps.getPassword());
+
+    // Prefer environment variables over properties in application.yml
+    factory.setHost(mqEnvVariables.getHost());
+    factory.setPort(mqEnvVariables.getPort());
+    factory.setUsername(mqEnvVariables.getUsername());
+    factory.setPassword(mqEnvVariables.getPassword());
+
+    if (factory.getHost() == null) factory.setHost(mqProperties.getHost());
+    if (factory.getPort() == 0) factory.setPort(mqProperties.getPort());
+    if (factory.getUsername() == null) factory.setUsername(mqProperties.getUsername());
+    if (factory.getPassword() == null) factory.setPassword(mqProperties.getPassword());
+
+    log.info(
+        "rabbitmq ConnectionFactory: connecting to {}:{}", factory.getHost(), factory.getPort());
     return factory;
   }
 }

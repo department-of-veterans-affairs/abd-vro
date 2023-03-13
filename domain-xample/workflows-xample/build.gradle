@@ -21,11 +21,6 @@ dependencies {
   // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
   implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
 
-  // Redis
-  implementation "org.springframework.boot:spring-boot-starter-data-redis"
-  implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
-  implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
-
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
   testImplementation "com.github.fppt:jedis-mock:1.0.6"
   testImplementation 'org.slf4j:slf4j-simple:2.0.6'
@@ -34,5 +29,5 @@ dependencies {
   // in order to convert ClaimEntity.createdAt into JSON.
   // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-  runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+  //runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }
