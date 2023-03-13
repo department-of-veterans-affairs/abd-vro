@@ -1,15 +1,19 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
+import gov.va.vro.model.bip.BipContentionResp;
+import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
@@ -43,8 +47,8 @@ public class VroV2Tests {
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
-
-  private static final String SLACK_URL = "http://localhost:9004/slack-messages/";
+  private static final String SLACK_URL = "http://localhost:9008/slack-messages/";
+  private static final String CONTENTIONS_URL = "http://localhost:8099/claims/%s/contentions";
 
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
@@ -116,9 +120,29 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
+  private List<ClaimContention> getUpdatedContentions(String claimId) {
+    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
+      Thread.sleep(10);
+      String url = UPDATES_URL + claimId + "/" + "contentions";
+      var testResponse = restTemplate.getForEntity(url, UpdatesResponse.class);
+      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+      UpdatesResponse body = testResponse.getBody();
+      if (body.isFound()) {
+        log.info("Claim {} contentions are updated.", claimId);
+        return body.getContentions();
+      } else {
+        log.info("Claim {} contentions are not updated. Retrying...", claimId);
+      }
+    }
+    return null;
+  }
+
+  @SneakyThrows
+  private MasAutomatedClaimRequest startAutomatedClaim(AutomatedClaimTestSpec spec) {
+    final String collectionId = spec.getCollectionId();
+
     // Load the test case
-    var path = String.format("test-mas/claim-%s-7101.json", collectionId);
+    var path = spec.getPayloadPath();
     var content = resourceToString(path);
 
     // Extract claim id and file number and reset previous actions for those in mocks
@@ -130,6 +154,9 @@ public class VroV2Tests {
     restTemplate.delete(UPDATES_URL + claimId);
     restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
+    if (spec.isCheckSlack()) {
+      restTemplate.delete( SLACK_URL + collectionId);
+    }
 
     // Start automated claim
     var requestEntity = getBearerAuthEntity(content);
@@ -137,9 +164,17 @@ public class VroV2Tests {
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    String expectedMessage = String.format("Received Claim for collection Id %s.", collectionId);
-    assertEquals(expectedMessage, masResponse.getMessage());
+    assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
     return request;
+  }
+
+  @SneakyThrows
+  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec();
+    spec.setCollectionId(collectionId);
+    spec.setPayloadPath(String.format("test-mas/claim-%s-7101.json", collectionId));
+    spec.setExpectedMessage(String.format("Received Claim for collection Id %s.", collectionId));
+    return startAutomatedClaim(spec);
   }
 
   @SneakyThrows
@@ -294,7 +329,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean testOffRampSlackMessage(int collectionId) {
+  private boolean testOffRampSlackMessage(String collectionId) {
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
       Thread.sleep(5000);
       String url = SLACK_URL + collectionId;
@@ -310,24 +345,40 @@ public class VroV2Tests {
     return false;
   }
 
+  private void testSpecialIssueRdr1Removed(String claimId) {
+    List<ClaimContention> contentions = getUpdatedContentions(claimId);
+    assertNotNull(contentions, "Contentions are not updated to remove special issue.");
+    log.info("Claim {} contentions have been updated.", claimId);
+
+    // Only have single issue claims for now
+    assertEquals(1, contentions.size());
+    ClaimContention contention = contentions.get(0);
+    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+    assertNotNull(specialIssueCodes);
+    for (String specialIssueCode: specialIssueCodes) {
+      assertNotEquals("RDR1", specialIssueCode, "RDR1 should have been removed");
+    }
+    log.info("rdr1 is removed for {}", claimId);
+  }
+
   @Test
   @SneakyThrows
   void testAutomatedClaimOutOfScope() {
-    restTemplate.delete( SLACK_URL + 350);
+    String collectionId = "10";
 
-    var path = "test-mas/claim-350-7101-outofscope.json";
-    var content = resourceToString(path);
-    String url = BASE_URL + "/automatedClaim";
-    var requestEntity = getBearerAuthEntity(content);
-    var response = restTemplate.postForEntity(url, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    var masResponse = response.getBody();
-    assertEquals(
-        "Claim with [collection id = 350], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.",
-        masResponse.getMessage());
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec();
+    spec.setCollectionId(collectionId);
+    spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedMessage("Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
+    spec.setCheckSlack(true);
 
-    boolean slackResult = testOffRampSlackMessage(350);
-    assertTrue(slackResult);
+    MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+
+    boolean slackResult = testOffRampSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+
+    final String claimId = request.getClaimDetail().getBenefitClaimId();
+    testSpecialIssueRdr1Removed(claimId);
   }
 
   @Test

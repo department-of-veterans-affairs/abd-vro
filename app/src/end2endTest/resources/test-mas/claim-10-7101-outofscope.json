@@ -1,29 +1,29 @@
 {
   "dob": "2000-02-19",
   "firstName": "Rick",
-  "lastName": "Smith",
-  "gender": "string",
-  "collectionId": 350,
+  "lastName": "Outofscope",
+  "gender": "male",
+  "collectionId": 10,
   "veteranIdentifiers": {
-    "icn": "9000682",
-    "ssn": "111-11-1111",
-    "veteranFileId": "string",
+    "icn": "icn-not-needed-10",
+    "ssn": "010-11-1111",
+    "veteranFileId": "file-id-not-needed-010",
     "edipn": "string",
-    "participantId": "participant1"
+    "participantId": "participant-id-010"
   },
   "claimDetail": {
     "benefitClaimId": "3010",
-    "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
+    "claimSubmissionDateTime": "2017-10-06T18:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
       "name": "blood pressure",
       "diagnosticCode": "7101",
       "disabilityActionType": "DECREASE",
       "disabilityClassificationCode": "3460",
-      "ratedDisabilityId": "string"
+      "ratedDisabilityId": "unknown"
     }
   },
   "veteranFlashIds": [
-    "999"
+    "Agent Orange Exposure Verified"
   ]
 }

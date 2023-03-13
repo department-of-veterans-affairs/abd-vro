@@ -5,12 +5,12 @@ spring:
 
 # server settings
 server:
-  port: 9004
+  port: 9008
 
 # Health
 management:
   server:
-    port: 9005
+    port: 9009
     ssl.enabled: false
   endpoint:
     health:

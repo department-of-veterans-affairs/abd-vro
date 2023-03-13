@@ -1,6 +1,7 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
+import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,8 +42,13 @@ public class UpdatesController implements UpdatesApi {
 
   @Override
   public ResponseEntity<UpdatesResponse> getContentionsUpdates(Long claimId) {
-    boolean found = store.isContentionsUpdated(claimId);
+    ClaimStoreItem item = claimStore.get(claimId);
+    boolean found = (item != null && store.isContentionsUpdated(claimId));
     UpdatesResponse body = new UpdatesResponse(found);
+    if (found) {
+      List<ContentionSummary> contentions = item.getContentions();
+      body.setContentions(contentions);
+    }
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 }

@@ -1,5 +1,9 @@
 package gov.va.vro.mockslack;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import gov.va.vro.mockslack.model.SlackMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,18 +18,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("test")
 public class MockSlackAppTest {
   private final RestTemplate template = new RestTemplate();
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private String message(int collectionId, String diagnosticCode, String actionType) {
     String p1 = String.format("[collection id = %s]", collectionId);

@@ -49,7 +49,7 @@ public class MockSlackController implements MockSlackApi {
 
   @Override
   public ResponseEntity<Void> deleteSlackMessage(Integer collectionId) {
-    log.info("retrieving slack message for collection {}...", collectionId);
+    log.info("deleting slack message for collection {}...", collectionId);
     store.remove(collectionId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

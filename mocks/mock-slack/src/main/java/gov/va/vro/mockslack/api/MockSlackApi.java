@@ -85,11 +85,9 @@ public interface MockSlackApi {
   @Operation(
       operationId = "deleteSlackMessage",
       summary = "Deletes the slack message for the collection.",
-      description ="Deletes the slack message for the collection.",
+      description = "Deletes the slack message for the collection.",
       responses = {
-        @ApiResponse(
-            responseCode = "204",
-            description = "Success."),
+        @ApiResponse(responseCode = "204", description = "Success."),
         @ApiResponse(
             responseCode = "500",
             description = "Internal error",
@@ -99,8 +97,6 @@ public interface MockSlackApi {
                   schema = @Schema(implementation = String.class))
             })
       })
-  @RequestMapping(
-      method = RequestMethod.DELETE,
-      value = "/slack-messages/{collectionId}")
+  @RequestMapping(method = RequestMethod.DELETE, value = "/slack-messages/{collectionId}")
   ResponseEntity<Void> deleteSlackMessage(@PathVariable("collectionId") Integer collectionId);
 }

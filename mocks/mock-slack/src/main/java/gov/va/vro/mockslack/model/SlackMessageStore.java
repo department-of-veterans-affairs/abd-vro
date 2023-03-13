@@ -14,5 +14,7 @@ public class SlackMessageStore {
     return store.get(collectionId);
   }
 
-  public void remove(Integer collectionId) { store.remove(collectionId); }
+  public void remove(Integer collectionId) {
+    store.remove(collectionId);
+  }
 }

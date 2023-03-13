@@ -120,7 +120,7 @@
     ]
   },
   {
-    "description": "identical to happy path, used for out of scope",
+    "description": "identical to happy path except , used for out of scope",
     "claimDetail": {
       "claimId": 3010,
       "tempStationOfJurisdiction": "398"
