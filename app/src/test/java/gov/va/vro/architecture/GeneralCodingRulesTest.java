@@ -37,7 +37,7 @@ public class GeneralCodingRulesTest {
   public void noFieldInjection() {
     GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(
         classes.that(
-            resideOutsideOfPackage("gov.va.vro.config")
+            resideOutsideOfPackage("gov.va.vro..config")
                 .and(not(annotatedWith(Configuration.class)))));
   }
 

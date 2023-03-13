@@ -3,6 +3,13 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
 }
 
+ext {
+  jacocoExclude = [
+    '**/api/**/*(Request|Response).*',
+    '**/api/**/*Exception.*'
+  ]
+}
+
 dependencies {
   // Used by API classes
   implementation 'io.micrometer:micrometer-core'
@@ -14,4 +21,6 @@ dependencies {
   implementation project(':domain-xample:shared')
   // api project(':shared:lib-camel-connector')
   implementation project(':shared:lib-camel-connector')
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
 }

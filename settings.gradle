@@ -99,6 +99,7 @@ include ':mocks:mock-lighthouse-api'
 include ':domain-xample:api-controller'
 include ':domain-xample:shared'
 include ':domain-xample:workflows-xample'
+include ':domain-xample:svc-xample-j'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
