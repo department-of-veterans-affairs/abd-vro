@@ -19,8 +19,5 @@ dependencies {
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-  // testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  // testImplementation 'org.springframework.amqp:spring-rabbit-test'
-  // testImplementation "com.github.fppt:jedis-mock:1.0.6"
   testImplementation 'org.slf4j:slf4j-simple:2.0.6'
 }
