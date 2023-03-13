@@ -12,9 +12,6 @@ spec:
   # providing easier access than EBS volumes (such as the postgres volume).
   accessModes:
     - ReadWriteMany
-  # Until we implement a StatefulSet to retain the associated PV, use the non-retain storage class
-  # so that we are not creating a bunch of orphaned PVs when deploy-app.sh calls `helm del`.
-  # https://dsva.slack.com/archives/C04CA47HV96/p1671058797549319?thread_ts=1670468543.753259&cid=C04CA47HV96
   storageClassName: efs-sc
   resources:
     requests:
