@@ -223,21 +223,24 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-    BipFileUploadResp bipResp =
-        bipCeApiService.uploadEvidenceFile(
-            FileIdType.FILENUMBER,
-            payload.getVeteranIdentifiers().getVeteranFileId(),
-            BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-            decoder,
-            payload.getDiagnosticCode());
-    // We check if bipResp is null only so that the uploadPdf() test does not fail in
-    // BipClaimServiceTest.
-    // We created a ticket to fix this test and remove this condition.
-    if (bipResp != null) {
+    try {
+      BipFileUploadResp bipResp =
+          bipCeApiService.uploadEvidenceFile(
+              FileIdType.FILENUMBER,
+              payload.getVeteranIdentifiers().getVeteranFileId(),
+              BipFileUploadPayload.builder()
+                  .contentName(filename)
+                  .providerData(providerData)
+                  .build(),
+              decoder,
+              payload.getDiagnosticCode());
       UploadResponse ur = bipResp.getUploadResponse();
       UUID eFolderId = UUID.fromString(ur.getUuid());
       saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+    } catch (Exception e) {
+      log.error("Could not get the eFolder ID from BIP for this PDF upload.");
     }
+
     return pdfResponse;
   }
 
