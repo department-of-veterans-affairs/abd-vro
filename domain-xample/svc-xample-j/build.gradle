@@ -1,0 +1,26 @@
+
+plugins {
+  id 'java'
+  id "io.freefair.lombok"
+  id 'org.springframework.boot'
+  id 'local.java.container-spring-conventions'
+}
+
+ext {
+  jacocoExclude = ['**/*Application.*']
+}
+
+dependencies {
+  implementation project(':domain-xample:shared')
+
+  implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+
+  // RabbitMQ
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+  // testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  // testImplementation 'org.springframework.amqp:spring-rabbit-test'
+  // testImplementation "com.github.fppt:jedis-mock:1.0.6"
+  testImplementation 'org.slf4j:slf4j-simple:2.0.6'
+}

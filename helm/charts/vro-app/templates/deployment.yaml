@@ -68,7 +68,10 @@ spec:
       containers:
         - name: app{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-app:{{ include "vro.imageTag" . }}
-          ports: {{- toYaml .Values.ports | nindent 10 }}
+          ports: {{- toYaml .Values.ports | nindent 12 }}
+            - containerPort: {{ .Values.global.service.app.sourcePort }}
+              protocol: TCP
+              name: http
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:

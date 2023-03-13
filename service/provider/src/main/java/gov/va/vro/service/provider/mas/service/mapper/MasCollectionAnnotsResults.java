@@ -31,7 +31,6 @@ public class MasCollectionAnnotsResults {
   private static final String BP_DIASTOLIC_CODE = "8462-4";
   private static final String BP_DIASTOLIC_DISPLAY = "Diastolic blood pressure";
   private static final String BP_UNIT = "mm[Hg]";
-  private static final String BP_READING_REGEX = "^\\d{1,3}\\/\\d{1,3}$";
 
   /**
    * Maps annotations to evidence.
@@ -89,13 +88,11 @@ public class MasCollectionAnnotsResults {
               conditions.add(abdCondition);
             }
             case LABRESULT, BLOOD_PRESSURE -> {
-              if (isConditionBp && masAnnotation.getAnnotVal().matches(BP_READING_REGEX)) {
-                AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
-                abdBloodPressure.setDocument(documentId);
-                abdBloodPressure.setReceiptDate(receiptDate);
-                abdBloodPressure.setOrganization(source);
-                bpReadings.add(abdBloodPressure);
-              }
+              AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
+              abdBloodPressure.setDocument(documentId);
+              abdBloodPressure.setReceiptDate(receiptDate);
+              abdBloodPressure.setOrganization(source);
+              bpReadings.add(abdBloodPressure);
             }
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
@@ -128,13 +125,21 @@ public class MasCollectionAnnotsResults {
     AbdBpMeasurement systolicReading = new AbdBpMeasurement();
     systolicReading.setCode(BP_SYSTOLIC_CODE);
     systolicReading.setDisplay(BP_SYSTOLIC_DISPLAY);
-    systolicReading.setValue(new BigDecimal(bpValues[0]).setScale(1, RoundingMode.HALF_UP));
+    if (bpValues[0].equals("-")) {
+      systolicReading.setValue(BigDecimal.valueOf(0));
+    } else {
+      systolicReading.setValue(new BigDecimal(bpValues[0]).setScale(1, RoundingMode.HALF_UP));
+    }
     systolicReading.setUnit(BP_UNIT);
 
     AbdBpMeasurement diastolicReading = new AbdBpMeasurement();
     diastolicReading.setCode(BP_DIASTOLIC_CODE);
     diastolicReading.setDisplay(BP_DIASTOLIC_DISPLAY);
-    diastolicReading.setValue(new BigDecimal(bpValues[1]).setScale(1, RoundingMode.HALF_UP));
+    if (bpValues[1].equals("-")) {
+      diastolicReading.setValue(BigDecimal.valueOf(0));
+    } else {
+      diastolicReading.setValue(new BigDecimal(bpValues[1]).setScale(1, RoundingMode.HALF_UP));
+    }
     diastolicReading.setUnit(BP_UNIT);
 
     AbdBloodPressure abdBloodPressure = new AbdBloodPressure();

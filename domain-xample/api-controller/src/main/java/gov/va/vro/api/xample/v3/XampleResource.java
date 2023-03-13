@@ -1,6 +1,7 @@
 package gov.va.vro.api.xample.v3;
 
 import gov.va.vro.api.xample.ResourceException;
+import gov.va.vro.model.xample.SomeDtoModel;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,6 +78,6 @@ public interface XampleResource {
             description = "Xample Resource: Server Error",
             content = @Content(schema = @Schema(hidden = true))),
       })
-  ResponseEntity<Object> getResource(@PathVariable String resourceId)
+  ResponseEntity<SomeDtoModel> getResource(@PathVariable String resourceId)
       throws MethodArgumentNotValidException, ResourceException;
 }

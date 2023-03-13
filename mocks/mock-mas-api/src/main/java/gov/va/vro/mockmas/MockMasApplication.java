@@ -4,14 +4,9 @@ import gov.va.vro.mockmas.config.MasApiProperties;
 import gov.va.vro.mockmas.config.MasOauth2Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication(
-    exclude = {
-      org.springdoc.hateoas.SpringDocHateoasConfiguration.class,
-      DataSourceAutoConfiguration.class
-    })
+@SpringBootApplication
 @EnableConfigurationProperties({MasApiProperties.class, MasOauth2Properties.class})
 public class MockMasApplication {
 

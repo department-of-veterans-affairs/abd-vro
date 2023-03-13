@@ -1,4 +1,4 @@
-package gov.va.vro.camel;
+package gov.va.vro.camel.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "message-queue")
-class MessageQueueProperties {
-  private String host;
-  private int port;
-  private String username;
-  private String password;
+@ConfigurationProperties(prefix = "spring.rabbitmq")
+public class MessageQueueProperties {
+  private String host = "localhost";
+  private int port = 5672;
+  private String username = "guest";
+  private String password = "guest";
 }
