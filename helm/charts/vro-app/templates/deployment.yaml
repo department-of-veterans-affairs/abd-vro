@@ -54,7 +54,7 @@ spec:
             limits:
               cpu: 10m
               memory: 256Mi
-        - name: dbinit{{ include "vro.containerSuffix" . }}
+        - name: db-init{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
