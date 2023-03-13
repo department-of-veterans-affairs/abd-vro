@@ -23,7 +23,6 @@ def pdf_helper_hypertension(data):
 
 def pdf_helper_all(data: dict) -> dict:
     """Adds/modifies the data for all PDFs like adding the timestamp
-    
     :param data: PDF data that will be used in the template
     :type data: dict
     :return: The modified PDF data
