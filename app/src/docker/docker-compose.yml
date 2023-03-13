@@ -334,7 +334,7 @@ services:
 
   svc-lighthouse-api:
     profiles: ["all","svc","lh"]
-    image: va/abd_vro-service-data-access:latest
+    image: va/abd_vro-svc-lighthouse-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
     environment:

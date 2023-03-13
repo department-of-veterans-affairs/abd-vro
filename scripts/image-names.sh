@@ -15,12 +15,12 @@ gradle_folder() {
 
 gradle_image_name() {
   case "$1" in
-    svc-lighthouse-api) echo "va/abd_vro-service-data-access";; # TODO: update image name
+    # svc-lighthouse-api) echo "va/abd_vro-service-data-access";;
     *) echo "va/abd_vro-$1";;
   esac
 }
 
-helm_image_key() {
+bash_var_prefix() {
   case "$1" in
     postgres) echo "db";;
     db-init) echo "dbInit";;
@@ -33,18 +33,15 @@ helm_image_key() {
   esac
 }
 
-bash_var_prefix() {
-  helm_image_key "$@"
-}
+#nonprod_image_name() {
+#  VROENV=${2:-dev}
+#  echo "${VROENV}_$(prod_image_name "$1")"
+#}
 
-nonprod_image_name() {
-  VROENV=${2:-dev}
-  echo "${VROENV}_$(prod_image_name "$1")"
-}
-
+# These names need to match the images specified in Helm configs
 prod_image_name() {
   case "$1" in
-    svc-lighthouse-api) echo "vro-service-data-access";; # TODO: update image name
+    # svc-lighthouse-api) echo "vro-service-data-access";;
     pdfgenerator|featuretoggle|assessclaim*) echo "vro-service-$1";;
     *) echo "vro-$1";;
   esac
@@ -120,37 +117,37 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
 
-    echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
+    # echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
   echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
 
-images_for_helm-app_values_yaml(){
-  local _ENV=$1
-  echo '# BEGIN image-names.sh replacement block (do not modify this block)
-# The following image list is updated by image-names.sh'
-for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-  echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
-    imageName: ${_ENV}_$(getVarValue "${PREFIX}" _IMG)
-    tag: tagPlaceholder"
-done
-echo '# END image-names.sh replacement block (do not modify this block)'
-}
+#images_for_helm_app_values_yaml(){
+#  local _ENV=$1
+#  echo '# BEGIN image-names.sh replacement block (do not modify this block)
+## The following image list is updated by image-names.sh'
+#for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+#  echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
+#    imageName: ${_ENV}_$(getVarValue "${PREFIX}" _IMG)
+#    tag: tagPlaceholder"
+#done
+#echo '# END image-names.sh replacement block (do not modify this block)'
+#}
 
 # shellcheck source=image_vars.src
-source "$SRC_FILE"
-VALUES_YML_IMAGES=$(images_for_helm-app_values_yaml dev)
+#source "$SRC_FILE"
+#VALUES_YML_IMAGES=$(images_for_helm_app_values_yaml dev)
 
-if which sed > /dev/null; then
-  echo "=== Writing images to helm-app/values-updated.yaml"
-  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
-    helmc-app/values.yaml <<< "$VALUES_YML_IMAGES" > helm-app/values-updated.yaml
-  echo "Differences:"
-  diff helm-app/values.yaml helm-app/values-updated.yaml
-else
-  echo
-  echo "=== Paste the following into helm-app/values.yaml"
-  echo "$VALUES_YML_IMAGES"
-fi
+#if which sed > /dev/null; then
+#  echo "=== Writing images to helm-app/values-updated.yaml"
+#  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
+#    helmc-app/values.yaml <<< "$VALUES_YML_IMAGES" > helm-app/values-updated.yaml
+#  echo "Differences:"
+#  diff helm-app/values.yaml helm-app/values-updated.yaml
+#else
+#  echo
+#  echo "=== Paste the following into helm-app/values.yaml"
+#  echo "$VALUES_YML_IMAGES"
+#fi

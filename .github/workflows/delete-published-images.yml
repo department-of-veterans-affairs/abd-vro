@@ -42,7 +42,7 @@ jobs:
         - dev_vro-postgres
         - dev_vro-service-assessclaimdc6602
         - dev_vro-service-assessclaimdc7101
-        - dev_vro-service-data-access
+        - dev_vro-svc-lighthouse-api
         - dev_vro-service-pdfgenerator
     runs-on: ubuntu-latest
     steps:
