@@ -40,10 +40,12 @@ class PDFGenerator:
 
     def generate_pdf_from_string(self, template_name: str, html: str, data, output=False) -> bytes or bool:
         base_toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/base_toc.xsl")
+        css_file_path = os.path.join(lib_dir, f"templates/{template_name}/base.css")
+
         if os.path.isfile(base_toc_file_path):
             # Call a helper function that make adjustments to toc before creating
             generated_toc_file_path = toc_helper_all(base_toc_file_path, data) # noqa: F405, E261
             toc = {'xsl-style-sheet': generated_toc_file_path}
-            return pdfkit.from_string(html, output, options=self.options, toc=toc, verbose=False)
+            return pdfkit.from_string(html, output, css=css_file_path, options=self.options, toc=toc, verbose=True)
         else:
-            return pdfkit.from_string(html, output, options=self.options, verbose=False)
+            return pdfkit.from_string(html, output, css=css_file_path, options=self.options, verbose=False)

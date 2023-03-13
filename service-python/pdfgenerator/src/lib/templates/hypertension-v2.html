@@ -62,93 +62,6 @@
       font-weight: 700;
       font-style: italic;
     }
-    body {
-      padding: 12px 32px;
-      color: #212121;
-      font-family: NotoSans;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 16px;
-    }
-    p {
-      color: #212121;
-      font-family: NotoSans;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 16px;
-    }
-    h1 {
-      font-family: Bitter;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 22px;
-    }
-    h2 {
-      font-family: Bitter;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 16px;
-    }
-    a {
-      color: #004795 !important;
-      text-decoration-line: underline;
-    }
-    table {
-      border: 1px solid #757575;
-    }
-    table, th, td {
-      text-align: left;
-      font-size: 11px;
-      font-family: NotoSans;
-    }
-    thead th {
-      background-color: #F1F1F1;
-    }
-    th {
-      font-family: NotoSans;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 11px;
-      line-height: 15px;
-    }
-    td {
-      font-family: NotoSans;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 11px;
-      line-height: 15px;
-    }
-    .empty {
-      font-family: NotoSans;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 11px;
-      line-height: 15px;
-      color: #323A45;
-    }
-    .footnote {
-      font-family: NotoSans;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 11px;
-      line-height: 15px;
-    }
-    .mb-13 {
-      margin-bottom: 13px !important;
-    }
-    .mb-30 {
-      margin-bottom: 30px !important;
-    }
-    @media print {
-      .pagebreak {
-        clear: both;
-        page-break-after: always;
-      }
-    }
   </style>
 
 </head>
@@ -165,9 +78,9 @@
   <div class="row m-0">
     <div class="col">
       <p class="m-0 mb-30">
-        <i class="fas fa-fw fa-check-circle" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.<br>
-        <i class="fas fa-fw fa-check-circle" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> The Veteran is claiming a condition that may be presumptive based on their service.<br>
-        <i class="far fa-fw fa-calendar-check" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.
+        <i class="fas fa-fw fa-check-circle icon"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.<br>
+        <i class="fas fa-fw fa-check-circle icon"></i> The Veteran is claiming a condition that may be presumptive based on their service.<br>
+        <i class="far fa-fw fa-calendar-check icon"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.
       </p>
     </div>
   </div>
@@ -195,7 +108,7 @@
             <td>{{ location.document }}</td>
             <td>{{ location.receiptDate }}</td>
             <td>{{ location.page }}</td>
-            <td style="white-space: nowrap !important;">{{ location.documentId }}</td>
+            <td class="document">{{ location.documentId }}</td>
           </tr>
           {% endfor %}
           {% if evidence.serviceLocations |length == 0 %}
@@ -273,7 +186,7 @@
             <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
             <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == "" %}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
             <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == "" %}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
-            <td style="white-space: nowrap;" {% if bp_reading.document == "" %}class="empty" {% endif %}>
+            <td class="document {% if bp_reading.document == '' %}empty{% endif %}">
               {% if bp_reading.dataSource == "MAS" %}
                 {% if bp_reading.organization == "VAMC Other Output Reports" and bp_reading.document == "" %}
                   Pending upload to VBMS eFolder
@@ -329,7 +242,7 @@
             <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
             <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
             <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
-            <td style="white-space: nowrap;" {% if medication.document == "" %}class="empty" {% endif %}>
+            <td class="document {% if medication.document == '' %}empty{% endif %}">
               {% if medication.dataSource == "MAS" %}
                 {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
                   Pending upload to VBMS eFolder
@@ -385,7 +298,7 @@
               <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
               <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
               <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
-              <td style="white-space: nowrap;" {% if condition.document == "" %}class="empty" {% endif %}>
+              <td class="document {% if condition.document == '' %}empty{% endif %}">
                 {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
                   Pending upload to VBMS eFolder
                 {% elif condition.document == "" %}
@@ -432,7 +345,7 @@
           <tr>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
-            <td style="white-space: nowrap;">{{ review }}</td>
+            <td class="document">{{ review }}</td>
           </tr>
           {% endfor %}
           {% if evidence.documentsWithoutAnnotationsChecked |length == 0 %}
