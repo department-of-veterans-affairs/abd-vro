@@ -45,7 +45,10 @@ jobs:
         # Known issue: Associates results to random workflow
         # https://github.com/EnricoMi/publish-unit-test-result-action/issues/12
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        # Skip if Dependabot created the PR due to check-runs permission error
+        # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
+        # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions#responding-to-events
+        if: always() && github.actor != 'dependabot[bot]'
         with:
           files: |
             **/build/test-results/*/*.xml
