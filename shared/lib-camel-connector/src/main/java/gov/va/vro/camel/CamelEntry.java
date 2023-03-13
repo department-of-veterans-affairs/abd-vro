@@ -32,7 +32,7 @@ public class CamelEntry {
    */
   public <T> T inOut(String exchangeName, String entryName, Object body, Class<T> responseClass) {
     return producerTemplate.requestBody(
-        toMessageQueueUri(exchangeName, entryName), body, responseClass);
+        toMqProducerUri(exchangeName, entryName), body, responseClass);
   }
 
   /**
@@ -42,7 +42,7 @@ public class CamelEntry {
    * @param body The message payload to send
    */
   public void inOnly(String exchangeName, String entryName, Object body) {
-    producerTemplate.sendBody(toMessageQueueUri(exchangeName, entryName), body);
+    producerTemplate.sendBody(toMqProducerUri(exchangeName, entryName), body);
   }
 
   /**
@@ -61,15 +61,15 @@ public class CamelEntry {
    * @param headers
    */
   public void inOnly(String exchangeName, String entryName, Object body, Map headers) {
-    producerTemplate.sendBodyAndHeaders(toMessageQueueUri(exchangeName, entryName), body, headers);
+    producerTemplate.sendBodyAndHeaders(toMqProducerUri(exchangeName, entryName), body, headers);
   }
 
   /** Same as {@link #inOnly} except don't wait for the workflow to finish (asynchronous). */
   public void asyncInOnly(String exchangeName, String entryName, Object body) {
-    producerTemplate.asyncSendBody(toMessageQueueUri(exchangeName, entryName), body);
+    producerTemplate.asyncSendBody(toMqProducerUri(exchangeName, entryName), body);
   }
 
-  public static String toMessageQueueUri(String exchangeName, String routingKey) {
+  public static String toMqProducerUri(String exchangeName, String routingKey) {
     return RabbitMqCamelUtils.rabbitmqProducerEndpoint(exchangeName, routingKey);
   }
 }

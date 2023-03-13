@@ -1,0 +1,18 @@
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+dependencies {
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    implementation 'javax.validation:validation-api'
+
+    implementation 'org.mapstruct:mapstruct'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+
+}

@@ -20,11 +20,10 @@ import java.util.List;
 public class CamelConfiguration {
   private final CamelContext camelContext;
   private final CamelUtils camelUtils;
-  private final ObjectMapper mapper;
   private final CamelDtoClassesProperties camelDtoClassesProperties;
 
   @Bean
-  CamelContextConfiguration contextConfiguration() {
+  CamelContextConfiguration contextConfiguration(ObjectMapper mapper) {
     return new CamelContextConfiguration() {
       @Override
       public void beforeApplicationStart(CamelContext context) {
@@ -36,7 +35,7 @@ public class CamelConfiguration {
       public void afterApplicationStart(CamelContext camelContext) {
         try {
           List<Class> dtoClasses = camelDtoClassesProperties.getActualDtoClasses();
-          registerTypeConverters(dtoClasses);
+          registerTypeConverters(dtoClasses, mapper);
         } catch (IOException e) {
           log.error("Check the vro.camel.dto-classes property", e);
         }
@@ -45,12 +44,12 @@ public class CamelConfiguration {
             camelContext.getEndpoints().size()
                 + " endpoints: \n\t- "
                 + camelUtils.endpointsToString("\n\t- "));
-        log.info("\n=====================================");
+        log.info("Application started\n=====================================");
       }
     };
   }
 
-  void registerTypeConverters(Collection<Class> dtoClasses) {
+  void registerTypeConverters(Collection<Class> dtoClasses, ObjectMapper mapper) {
     CamelDtoConverter dtoConverter = new CamelDtoConverter(dtoClasses, mapper);
 
     TypeConverterRegistry registry = camelContext.getTypeConverterRegistry();

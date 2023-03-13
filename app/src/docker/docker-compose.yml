@@ -67,6 +67,9 @@ x-python-healthcheck: &python-healthcheck
     retries: 5
 
 services:
+  # Containers with the `-service` suffix are need by the VRO app.
+  # Containers with the `svc-` prefix are microservices to support domain workflows.
+  # Containers with the `mock-` prefix are used for development and testing.
 
   rabbitmq-service:
     image: rabbitmq:3-management
@@ -132,7 +135,8 @@ services:
   db-init:
     image: va/abd_vro-db-init:latest
     depends_on:
-      - postgres-service
+      postgres-service:
+        condition: service_healthy
     networks:
       - internal
     environment:
@@ -173,7 +177,7 @@ services:
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:
@@ -191,20 +195,37 @@ services:
     image: va/abd_vro-workflows-xample:latest
     <<: *common-security-opt
     <<: *common-sde-security
-    profiles: ["xample"]
+    profiles: ["all","xample"]
     environment:
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
+  svc-xample-j:
+    image: va/abd_vro-svc-xample-j:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    profiles: ["all","svc","xample"]
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      postgres-service:
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
 
   svc-assessor-dc7101:
+    profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc7101:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -219,6 +240,7 @@ services:
       - internal
 
   svc-assessor-dc6602:
+    profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc6602:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -233,6 +255,7 @@ services:
       - internal
 
   svc-assessor-dc6602v2:
+    profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6602v2:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -245,9 +268,9 @@ services:
         condition: service_healthy
     networks:
       - internal
-    profiles: ["prototype"]
 
   svc-assessor-cancer:
+    profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimcancer:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -260,25 +283,9 @@ services:
         condition: service_healthy
     networks:
       - internal
-    profiles: [ "prototype" ]
-
-  svc-feature-toggle:
-    image: va/abd_vro-featuretoggle:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    environment:
-      <<: *redis-placeholder-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
-    depends_on:
-      redis-service:
-        condition: service_started
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
 
   svc-assessor-dc6510:
+    profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6510:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -291,9 +298,9 @@ services:
         condition: service_healthy
     networks:
       - internal
-    profiles: ["prototype"]
 
   svc-assessor-dc6522:
+    profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6522:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -306,9 +313,9 @@ services:
         condition: service_healthy
     networks:
       - internal
-    profiles: ["prototype"]
 
   svc-pdf-generator:
+    profiles: ["all","svc","pdfgen"]
     image: va/abd_vro-pdfgenerator:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -326,6 +333,7 @@ services:
       - internal
 
   svc-lighthouse-api:
+    profiles: ["all","svc","lh"]
     image: va/abd_vro-service-data-access:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -341,11 +349,28 @@ services:
     networks:
       - internal
 
+  svc-feature-toggle:
+    profiles: ["all","svc","feature-toggle"]
+    image: va/abd_vro-featuretoggle:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    environment:
+      <<: *redis-placeholder-vars
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      redis-service:
+        condition: service_started
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   console:
+    profiles: ["all","console"]
     image: va/abd_vro-console:latest
     # <<: *common-security-opt
     <<: *common-sde-security
-    profiles: ["debug"]
     # stdin and tty are needed for user interaction
     stdin_open: true
     tty: true
@@ -355,7 +380,7 @@ services:
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:
@@ -369,6 +394,7 @@ services:
       - internal
 
   mock-bip-ce-api:
+    profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-ce-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -389,6 +415,7 @@ services:
       - internal
 
   mock-bip-claims-api:
+    profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-claims-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -409,6 +436,7 @@ services:
       - internal
 
   mock-mas-api:
+    profiles: ["all","mock","mas","v2-mocks"]
     image: va/abd_vro-mock-mas-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
@@ -430,6 +458,7 @@ services:
       - internal
 
   mock-lighthouse-api:
+    profiles: ["all","mock","lh","v2-mocks"]
     image: va/abd_vro-mock-lighthouse-api:latest
     <<: *common-security-opt
     <<: *common-sde-security
