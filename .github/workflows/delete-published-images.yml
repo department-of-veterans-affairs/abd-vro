@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       retain_days:
-        description: 'Delete images older than this many days in both repos'
+        description: 'Delete images older than this many days'
         required: true
         type: number
         default: 30
@@ -27,13 +27,12 @@ on:
 jobs:
   delete_images:
     # Don't need to run in both repos since we can delete in both repos from either repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
         repo:
-        - abd-vro
         - abd-vro-internal
         # Do NOT delete non-dev images, which will be managed in a different workflow
         package:
