@@ -59,9 +59,18 @@ getSecret(){
 exportSecretIfUnset(){
   local VAR_VALUE=$(eval echo "\$$1")
   if [ "${VAR_VALUE}" ]; then
-    >&2 echo "$1 already set -- not overriding."
+    >&2 echo "Not overriding: $1 already set."
   else
     eval "export $1=\$(getSecret $1)"
+  fi
+}
+
+exportIfUnset(){
+  local VAR_VALUE=$(eval echo "\$$1")
+  if [ "${VAR_VALUE}" ]; then
+    >&2 echo "Not overriding: $1 already set to: '${VAR_VALUE}'"
+  else
+    eval "export $1=$2"
   fi
 }
 
@@ -76,8 +85,24 @@ exportFile(){
 # Set the prefix for container names used by docker-compose
 # Not necessary, but it shortens the default prefix `abd-vro`
 export COMPOSE_PROJECT_NAME=vro
-# Determines which containers are started by docker-compose
-export COMPOSE_PROFILES=assessors,feat-toggle,pdf-gen
+
+# COMPOSE_PROFILES determines which containers are started by docker-compose.
+# This allows developers to start only the containers they need for their current work.
+# See https://docs.docker.com/compose/profiles/
+# Refer to the src/docker/docker-compose.yml file for profile names.
+# For the iMVP, set to "v2,v2-mocks,pdfgen,lh"
+# - "v2" = all services for v2
+# - "v2-mocks" = all mocks for v2
+# - "pdfgen" = pdf generator microservice
+# - "lh" = Lighthouse API client microservice and the mock LH API
+# For minimal VRO, set to " " (space). This starts the app and required application services.
+#   (A space is used to distinguish it from an empty string, which is interpreted as
+#   being unset by function exportIfUnset.)
+# To start all containers, set to "all".
+# To start a specific container (along with containers it depends_on), run:
+#   cd app/src/docker
+#   docker-compose up $CONTAINER_NAME
+exportIfUnset COMPOSE_PROFILES "v2,v2-mocks,pdfgen,lh"
 
 ###
 ### Credentials for VRO internal services ###
@@ -107,7 +132,7 @@ export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
 export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
 
 # For local testing of dev and qa environments
-export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
+# export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
 
 ###
 ### Slack notifications ###

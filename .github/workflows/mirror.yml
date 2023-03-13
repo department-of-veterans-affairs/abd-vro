@@ -1,25 +1,29 @@
 name: "8. Mirroring"
 
 on:
-  pull_request:
-    branches: [ main, qa, develop ]
-    # Limit to certain PR event types since this action could trigger actions to run in the mirror repo
-    types: [opened, synchronize, reopened, ready_for_review, review_requested]
+  # Don't mirror every commit to a PR; mirror-on-test-success.yml mirrors when the PR's testing passes
+  # pull_request:
+  #   branches: [ main, qa, develop ]
+  #   # Limit to certain PR event types since this action could trigger actions to run in the mirror repo
+  #   types: [opened, synchronize, reopened, ready_for_review, review_requested]
 
   # When changes are pushed to special branches
   push:
     branches: [ main, qa, develop ]
 
-  # When a Git reference (Git branch or tag) is created or deleted
+  # When a Git reference (Git branch or tag) is created
   create:
-  delete:
+  # A PR merge pushes to `develop` and deletes the PR branch, causing this action to be triggered twice.
+  # So don't trigger on branch delete. Old branches will be deleted on the next mirroring.
+  # delete:
 
   # Allow manual triggering
   workflow_dispatch:
 
-# Ensures that only one mirror task will run at a time.
+# Don't need more than one of these mirroring workflows; run the latest one.
 concurrency:
   group: git-mirror
+  cancel-in-progress: true
 
 jobs:
   to_internal_repo:

@@ -182,7 +182,7 @@ vro:
     tracking:
       enabled: true
       # Dependent on the mountPath configured in Kubernetes
-      base_folder: ${PERSIST_TRACKING_FOLDER}
+      base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
     info:

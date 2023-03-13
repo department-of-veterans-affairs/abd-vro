@@ -41,10 +41,10 @@ public class XampleController implements XampleResource {
       log.info("RESPONSE from postXResource returned status: {}", result.getStatus());
       ResourceResponse response = resourceMapper.toResourceResponse(result);
       if (StatusValue.ERROR.name().equals(result.getStatus())) {
-        log.warn("RESPONSE from postXResource returned error reason: {}", result.getReason());
+        log.warn("RESPONSE from postXResource returned status: {}", result.getStatusMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      return new ResponseEntity<>(response, HttpStatus.OK);
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       log.error("Error in Post XResource", ex);
       throw new ResourceException(request.getResourceId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
@@ -52,7 +52,7 @@ public class XampleController implements XampleResource {
   }
 
   @Override
-  public ResponseEntity<Object> getResource(String resourceId) throws ResourceException {
+  public ResponseEntity<SomeDtoModel> getResource(String resourceId) throws ResourceException {
     log.info("Fetching pdf for resource: {}", resourceId);
     try {
       var response =
@@ -64,26 +64,15 @@ public class XampleController implements XampleResource {
     }
   }
 
-  private ResponseEntity fetchProcess(String resourceId, SomeDtoModel response) throws IOException {
-    // XResourceResponse response = objectMapper.readValue(responseJson, XResourceResponse.class);
+  private ResponseEntity<SomeDtoModel> fetchProcess(String resourceId, SomeDtoModel response)
+      throws IOException {
     log.info("RESPONSE from fetchProcess returned status: {}", response.getStatus());
-    //    if (response.hasContent()) {
-    //      byte[] decoder = Base64.getDecoder().decode(response.getPdfData());
-    //      try (InputStream is = new ByteArrayInputStream(decoder)) {
-    //        InputStreamResource resource = new InputStreamResource(is);
-    //        String diagnosis = StringUtils.capitalize(response.getDiagnosis());
-    //        HttpHeaders headers = getHttpHeaders(diagnosis);
-    //        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-    //      }
-    //    } else
-    {
-      if (response.getStatus().equals("NOT_FOUND")) {
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-      } else if (response.getStatus().equals("ERROR")) {
-        log.info("RESPONSE from fetchProcess returned error reason: {}", response.getReason());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-      return new ResponseEntity<>(response, HttpStatus.OK);
+    if (response.getStatus().equals("NOT_FOUND")) {
+      return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    } else if (response.getStatus().equals("ERROR")) {
+      log.info("RESPONSE from fetchProcess returned status: {}", response.getStatusMessage());
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

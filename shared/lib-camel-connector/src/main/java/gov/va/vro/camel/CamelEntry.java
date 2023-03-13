@@ -32,7 +32,7 @@ public class CamelEntry {
    */
   public <T> T inOut(String exchangeName, String entryName, Object body, Class<T> responseClass) {
     return producerTemplate.requestBody(
-        toMessageQueueUri(exchangeName, entryName), body, responseClass);
+        toMqProducerUri(exchangeName, entryName), body, responseClass);
   }
 
   /**
@@ -42,24 +42,34 @@ public class CamelEntry {
    * @param body The message payload to send
    */
   public void inOnly(String exchangeName, String entryName, Object body) {
-    producerTemplate.sendBody(toMessageQueueUri(exchangeName, entryName), body);
+    producerTemplate.sendBody(toMqProducerUri(exchangeName, entryName), body);
   }
 
   /**
    * Same as {@link #inOnly} except include headers on the message.
    *
+   * <p>From https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example: "camel’s
+   * exchange headers are not for custom data exchange (even though it is possible for us to use
+   * them in that way) but usually for protocol-related parameters" Also see
+   * https://stackoverflow.com/a/50860718
+   *
+   * <p>Unfortunately Exchange properties are not preserved over RabbitMQ -- see
+   * https://camel.apache.org/components/3.19.x/rabbitmq-component.html so the options are to use
+   * headers (which are preserved over RabbitMQ) or move the header/properties to be part of the
+   * message body.
+   *
    * @param headers
    */
   public void inOnly(String exchangeName, String entryName, Object body, Map headers) {
-    producerTemplate.sendBodyAndHeaders(toMessageQueueUri(exchangeName, entryName), body, headers);
+    producerTemplate.sendBodyAndHeaders(toMqProducerUri(exchangeName, entryName), body, headers);
   }
 
   /** Same as {@link #inOnly} except don't wait for the workflow to finish (asynchronous). */
   public void asyncInOnly(String exchangeName, String entryName, Object body) {
-    producerTemplate.asyncSendBody(toMessageQueueUri(exchangeName, entryName), body);
+    producerTemplate.asyncSendBody(toMqProducerUri(exchangeName, entryName), body);
   }
 
-  public static String toMessageQueueUri(String exchangeName, String routingKey) {
+  public static String toMqProducerUri(String exchangeName, String routingKey) {
     return RabbitMqCamelUtils.rabbitmqProducerEndpoint(exchangeName, routingKey);
   }
 }

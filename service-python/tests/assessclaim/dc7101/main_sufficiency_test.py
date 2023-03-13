@@ -215,7 +215,7 @@ from assessclaimdc7101.src.lib import main
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
                                     "unit": "mm[Hg]",
-                                    "value": 110
+                                    "value": 0
                                 },
                                 "systolic": {
                                     "code": "8480-6",
@@ -266,7 +266,7 @@ from assessclaimdc7101.src.lib import main
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
                                                              'unit': 'mm[Hg]',
-                                                             'value': 110},
+                                                             'value': 0},
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
@@ -279,15 +279,15 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
-                              'medications': [],
-                              'documentsWithoutAnnotationsChecked': []},
+                              'documentsWithoutAnnotationsChecked': [],
+                              'medications': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
                                      'totalBpCount': 2,
                                      'totalConditionsCount': 0,
-                                     'twoYearsBpCount': 2,
-                                     'twoYearsElevatedBpCount': 2},
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1},
                  'sufficientForFastTracking': None}
         ),
         # New claim with relevant condition but no twoYears BP

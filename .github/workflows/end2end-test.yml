@@ -1,4 +1,4 @@
-name: "PR: End-to-end test"
+name: "PR: End-to-end test for v2"
 
 on:
   pull_request:
@@ -16,6 +16,9 @@ on:
 
   # Trigger when called by another GitHub Action
   workflow_call:
+
+concurrency:
+  group: end2end-${{ github.ref }}
 
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
@@ -38,6 +41,7 @@ jobs:
       - name: "Start the containers"
         run: |
           source scripts/setenv.sh
+          export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
           export -p | sed 's/declare -x //'
           ./gradlew :app:dockerComposeUp
         env:
@@ -67,10 +71,3 @@ jobs:
 
       - name: "Clean docker volumes"
         run: ./gradlew dockermaintainerclean
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            **/build/test-results/*/*.xml
