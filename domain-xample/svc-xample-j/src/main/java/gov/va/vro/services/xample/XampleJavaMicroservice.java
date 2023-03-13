@@ -14,9 +14,9 @@ public class XampleJavaMicroservice {
     log.info("Received: " + model);
     try {
       Thread.sleep(1000);
-      model.setStatus(StatusValue.DONE.name());
       // To test an error response, throw exception if resourceId is not an integer
       Integer.parseInt(model.getResourceId());
+      model.status(StatusValue.DONE);
       model.setStatusCode(200);
     } catch (Throwable t) {
       log.error("Simulated error: "+t);
