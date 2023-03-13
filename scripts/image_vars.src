@@ -11,8 +11,8 @@ export VRO_IMAGES="app postgres db-init console svc-lighthouse-api featuretoggle
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( app db dbInit console svcLighthouseApi svcFeatureToggle svcPdfGenerator svcAssessorDc7101 svcAssessorDc6602 )
-export VAR_PREFIXES="app db dbInit console svcLighthouseApi svcFeatureToggle svcPdfGenerator svcAssessorDc7101 svcAssessorDc6602"
+VAR_PREFIXES_ARR=( app postgres dbinit console svclighthouseapi featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+export VAR_PREFIXES="app postgres dbinit console svclighthouseapi featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -38,35 +38,35 @@ export app_GRADLE_IMG="va/abd_vro-app"
 export app_IMG="vro-app"
 
 # --- postgres in folder ./postgres
-export db_GRADLE_IMG="va/abd_vro-postgres"
-export db_IMG="vro-postgres"
+export postgres_GRADLE_IMG="va/abd_vro-postgres"
+export postgres_IMG="vro-postgres"
 
 # --- db-init in folder ./db-init
-export dbInit_GRADLE_IMG="va/abd_vro-db-init"
-export dbInit_IMG="vro-db-init"
+export dbinit_GRADLE_IMG="va/abd_vro-db-init"
+export dbinit_IMG="vro-db-init"
 
 # --- console in folder ./console
 export console_GRADLE_IMG="va/abd_vro-console"
 export console_IMG="vro-console"
 
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
-export svcLighthouseApi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
-export svcLighthouseApi_IMG="vro-svc-lighthouse-api"
+export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
+export svclighthouseapi_IMG="vro-svc-lighthouse-api"
 
 # --- featuretoggle in folder ./service-python/featuretoggle
-export svcFeatureToggle_GRADLE_IMG="va/abd_vro-featuretoggle"
-export svcFeatureToggle_IMG="vro-svc-featuretoggle"
+export featuretoggle_GRADLE_IMG="va/abd_vro-featuretoggle"
+export featuretoggle_IMG="vro-svc-featuretoggle"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
-export svcPdfGenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
-export svcPdfGenerator_IMG="vro-svc-pdfgenerator"
+export pdfgenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
+export pdfgenerator_IMG="vro-svc-pdfgenerator"
 
 # --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
-export svcAssessorDc7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
-export svcAssessorDc7101_IMG="vro-svc-assessclaimdc7101"
+export assessclaimdc7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
+export assessclaimdc7101_IMG="vro-svc-assessclaimdc7101"
 
 # --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
-export svcAssessorDc6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
-export svcAssessorDc6602_IMG="vro-svc-assessclaimdc6602"
+export assessclaimdc6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
+export assessclaimdc6602_IMG="vro-svc-assessclaimdc6602"
 
 # End of file
