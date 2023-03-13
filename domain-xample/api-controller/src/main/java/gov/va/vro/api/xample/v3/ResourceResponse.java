@@ -14,5 +14,6 @@ public class ResourceResponse {
   @NotBlank private String resourceId;
   private String diagnosticCode;
   private String status;
-  private String reason;
+  private int statusCode;
+  private String statusMessage;
 }
