@@ -39,7 +39,7 @@ jobs:
             authored by `${{github.event.head_commit.author.username}}`\n\
             `${{ steps.get-pr-title.outputs.first_line }}`"
 
-      - name: "Post Commit Message in Slack thread"
+      - name: "Slack thread: Post git commit message"
         if: steps.get-pr-title.outputs.multiline == 'true'
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0

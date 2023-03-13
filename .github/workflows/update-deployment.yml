@@ -117,7 +117,7 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-      - name: "Notify Slack"
+      - name: "Slack: workflow triggered"
         id: notify-slack
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -162,8 +162,8 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Post shutdown message in Slack thread"
-        if: ${{ inputs.restart }}
+      - name: "Slack thread: Post shutdown message"
+        if: inputs.restart
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -172,7 +172,7 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":broom: Shutting down current deployment"
       - name: "Shutting down deployment in ${{ inputs.target_env }} env"
-        if: ${{ inputs.restart }}
+        if: inputs.restart
         run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
 
       - name: "Workaround for postgres StatefulSet"
@@ -187,7 +187,7 @@ jobs:
 
           kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan --wait
 
-      - name: "Post deploying message in Slack thread"
+      - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -249,16 +249,16 @@ jobs:
           helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
-      - name: "Post failed status message in Slack thread"
-        if: ${{ failure() }}
+      - name: "Slack thread: Post failed status message"
+        if: failure()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_cry: Failed deployment to *${{ inputs.target_env }}*"
-      - name: "Emoji react to top-level Slack notification"
-        if: ${{ failure() }}
+      - name: "Slack emoji: React failure on top-level Slack notification"
+        if: failure()
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
@@ -267,14 +267,14 @@ jobs:
           slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-emoji-name: 'x'
 
-      - name: "Post failed status message in Slack thread"
+      - name: "Slack thread: Post success status message"
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_duck_yay: Completed deployment to ${{ inputs.target_env }}"
-      - name: "Emoji react to top-level Slack notification"
+      - name: "Slack emoji: React success on top-level Slack notification"
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction

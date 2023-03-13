@@ -87,7 +87,7 @@ jobs:
             Check for the package in <https://github.com/department-of-veterans-affairs/${{ github.event.repository.name }}/packages|GHCR>\n\
             See thread :thread: to complete any remaining steps..."
 
-      - name: "Post follow-on actions in Slack thread"
+      - name: "Slack thread: Post follow-on TODO actions"
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:
