@@ -3,6 +3,7 @@ plugins {
   id 'java'
   id "io.freefair.lombok"
   id 'org.springframework.boot'
+  id 'local.java.container-spring-conventions'
 }
 
 ext {

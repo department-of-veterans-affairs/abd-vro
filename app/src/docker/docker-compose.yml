@@ -208,6 +208,22 @@ services:
     networks:
       - internal
 
+  svc-xample-j:
+    image: va/abd_vro-svc-xample-j:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    profiles: ["all","svc","xample"]
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      postgres-service:
+        condition: service_healthy
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   svc-assessor-dc7101:
     profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc7101:latest

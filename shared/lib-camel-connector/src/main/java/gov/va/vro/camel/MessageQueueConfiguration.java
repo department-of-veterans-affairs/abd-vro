@@ -1,6 +1,8 @@
 package gov.va.vro.camel;
 
 import com.rabbitmq.client.ConnectionFactory;
+import gov.va.vro.camel.config.MessageQueueEnvVariables;
+import gov.va.vro.camel.config.MessageQueueProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

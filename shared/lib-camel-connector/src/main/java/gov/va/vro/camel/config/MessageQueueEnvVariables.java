@@ -1,4 +1,4 @@
-package gov.va.vro.camel;
+package gov.va.vro.camel.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-class MessageQueueEnvVariables {
+public class MessageQueueEnvVariables {
   @Value("${RABBITMQ_PLACEHOLDERS_HOST:#{null}}")
   private String host;
 
-  @Value("${RABBITMQ_PLACEHOLDERS_PORT:0}")
+  @Value("${RABBITMQ_PORT:0}")
   private int port = 0;
 
   @Value("${RABBITMQ_PLACEHOLDERS_USERNAME:#{null}}")
