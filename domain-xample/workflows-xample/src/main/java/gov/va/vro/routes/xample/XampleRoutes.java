@@ -166,7 +166,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
         (exchange, cause) -> {
           var body = exchange.getMessage().getBody(SomeDtoModel.class);
           // Populate the status and reason for the response
-          return body.status(StatusValue.ERROR).reason(cause.toString());
+          return body.status(StatusValue.ERROR, cause.toString());
         };
 
     OnExceptionHelper.catchExceptionsFor(this, Throwable.class, true, exceptionHandler)
