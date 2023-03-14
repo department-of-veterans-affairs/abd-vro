@@ -25,6 +25,11 @@ on:
         required: true
         type: boolean
         default: true
+      run_secrel:
+        description: "Run SecRel and sign images?"
+        required: true
+        type: boolean
+        default: true
 
 env:
   # Id for the #benefits-vro-devops Slack channel
@@ -32,9 +37,12 @@ env:
 
 jobs:
   publish-to-ghcr:
+    # only run for the internal repo, where the images are published
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
       slack-response-ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+      run-secrel: ${{ steps.image-props.outputs.run_secrel }}
     runs-on: ubuntu-latest
     steps:
       - name: "Determine image prefix and tag"
@@ -45,9 +53,11 @@ jobs:
           case "${{ github.event_name }}" in
             workflow_dispatch) IMG_PREFIX="${{ inputs.image_prefix }}"
                                RUN_GRADLE_TESTS=${{ inputs.run_tests }}
+                               RUN_SECREL=${{ inputs.run_secrel }}
                                ;;
             push|release|*)    IMG_PREFIX="dev_"
                                RUN_GRADLE_TESTS=true
+                               RUN_SECREL=true
                                ;;
           esac
           IMG_TAG=${GITHUB_SHA:0:7}
@@ -65,6 +75,7 @@ jobs:
           echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
           echo "image_tag=${IMG_TAG}" >> $GITHUB_OUTPUT
           echo "run_tests=${RUN_GRADLE_TESTS}" >> $GITHUB_OUTPUT
+          echo "run_secrel=${RUN_SECREL}" >> $GITHUB_OUTPUT
 
       - name: "DEBUG"
         run: |
@@ -118,7 +129,7 @@ jobs:
 
   secrel:
     # only run for the internal repo -- SecRel doesn't work on public repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal' && needs.publish-to-ghcr.outputs.run-secrel == 'true'
     name: SecRel Pipeline
     needs: publish-to-ghcr
     # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
