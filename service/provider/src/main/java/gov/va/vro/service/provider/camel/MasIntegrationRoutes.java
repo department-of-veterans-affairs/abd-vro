@@ -25,13 +25,14 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
+import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
-import gov.va.vro.service.provider.services.LhBackoffProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -66,6 +67,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
+
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
@@ -98,7 +101,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
-  private final LhBackoffProcessor lhBackoffProcessor;
+  private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
   @Override
   public void configure() {
@@ -211,7 +214,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureCollectEvidence() {
-    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -223,21 +225,22 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .doTry()
-        .to(lighthouseEndpoint) // call Lighthouse
-        .doCatch(ExternalCallException.class)
-        .process(
-            lhBackoffProcessor) // if call to LH fails, we retry with exponential delays per retry
-        .to(lighthouseEndpoint) // call Lighthouse again
-        .end()
+          .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse
+        .endDoTry()
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+          .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse again
+        .endDoCatch()
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
-    from(lighthouseEndpoint)
+    from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId("mas-automated-claim-lighthouse")
         .process(payloadToClaimProcessor())
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
+        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
+        .process(healthAssessmentErrCheckProcessor); //Check for errors, and throw or do not alter exchange
+
   }
 
   private void configureUploadPdf() {
