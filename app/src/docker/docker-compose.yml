@@ -238,6 +238,8 @@ services:
         condition: service_healthy
     networks:
       - internal
+    build:
+      context: ./service-python
 
   svc-assessor-dc6602:
     profiles: ["all","svc","assessor","v2"]
@@ -253,6 +255,8 @@ services:
         condition: service_healthy
     networks:
       - internal
+    build:
+      context: ./service-python
 
   svc-assessor-dc6602v2:
     profiles: ["all","svc","assessor","prototype"]
