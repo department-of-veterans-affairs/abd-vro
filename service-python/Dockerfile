@@ -11,11 +11,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Send logs directly to container
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker && mkdir -p /home/docker/shared
+RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker
 RUN adduser --disabled-password docker && chown -hR docker:docker /home/docker/
 
 COPY --chown=docker:docker . /home/docker/
-COPY --chown=docker:docker ../shared /home/docker/shared
+COPY --chown=docker:docker ./././*.py /home/docker/
 WORKDIR /home/docker
 RUN pip install --no-cache-dir -r requirements.txt
 

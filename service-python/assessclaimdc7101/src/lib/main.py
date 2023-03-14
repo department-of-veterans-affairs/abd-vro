@@ -1,7 +1,9 @@
 import logging
 from datetime import date
 from typing import Dict
-from .shared import data_model
+
+import data_model
+
 from . import bp_calculator, conditions, medications, utils
 
 
