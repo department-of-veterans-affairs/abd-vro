@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @Slf4j
 public class MockSlackController implements MockSlackApi {
-  private final Pattern PATTERN = Pattern.compile("^.*collection id = (\\d{1,6}).*$");
+  private final Pattern collectionIdPattern;
 
   private final SlackMessageStore store;
 
@@ -26,7 +26,7 @@ public class MockSlackController implements MockSlackApi {
     log.info("posting slack message...");
     String text = slackMessage.getText();
     log.info("slack message is {}...", text);
-    Matcher matcher = PATTERN.matcher(text);
+    Matcher matcher = collectionIdPattern.matcher(text);
     if (!matcher.find()) {
       String message = "No collection id found in message";
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
