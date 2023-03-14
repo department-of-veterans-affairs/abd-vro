@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 import pytest
 
 from assessclaimdc6602.src.lib import main
@@ -108,7 +106,6 @@ def test_main(request_body, response):
     :param response: response after running data through algorithms
     :type response: dict
     """
-    data_model = Mock(autospec=True, create=True)
     api_response = main.assess_asthma(request_body)
 
     assert api_response == response
