@@ -16,6 +16,7 @@ buildscript {
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
   id("org.ajoberstar.grgit") version "${grgit_version}" apply false
+  id("io.freefair.lombok") version "6.6.3" apply false
   id("org.springframework.boot") version "${spring_boot_version}" apply false
   id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
   id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
@@ -150,7 +151,8 @@ ext {
     ':mocks:mock-slack',
     ':domain-xample:api-controller',
     ':domain-xample:shared',
-    ':domain-xample:workflows-xample'
+    ':domain-xample:workflows-xample',
+    ':domain-xample:svc-xample-j'
   ]
   // Modules that create Docker images
   dockerModules = [
@@ -167,7 +169,8 @@ ext {
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
-    ':domain-xample:workflows-xample'
+    ':domain-xample:workflows-xample',
+    ':domain-xample:svc-xample-j'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')

@@ -9,6 +9,8 @@ dependencies {
   implementation project(':service:provider')
   implementation project(':service:spi')
 
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+
   implementation "gov.va.starter:exceptions"
 
   // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api

@@ -137,7 +137,8 @@ services:
   db-init:
     image: va/abd_vro-db-init:latest
     depends_on:
-      - postgres-service
+      postgres-service:
+        condition: service_healthy
     networks:
       - internal
     environment:
@@ -178,7 +179,7 @@ services:
       BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:
@@ -203,7 +204,23 @@ services:
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
+  svc-xample-j:
+    image: va/abd_vro-svc-xample-j:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    profiles: ["all","svc","xample"]
+    environment:
+      <<: *rabbitmq-placeholder-vars
+      <<: *rabbitmq-client-vars
+    depends_on:
+      postgres-service:
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
     networks:
@@ -306,6 +323,7 @@ services:
     <<: *common-sde-security
     <<: *python-healthcheck
     environment:
+      MODE: "docker"
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -365,7 +383,7 @@ services:
       <<: *postgres-vars
     depends_on:
       postgres-service:
-        condition: service_started
+        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
       redis-service:
