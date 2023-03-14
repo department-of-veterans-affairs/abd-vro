@@ -1,11 +1,5 @@
 # https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
 
-vro:
-  camel:
-    dto-classes:
-      - gov.va.vro.service.spi.model.*
-      - gov.va.vro.model.mas.*
-
 # See https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-DisablingJMX
 # camel.springboot.jmx-enabled = false
 

@@ -42,13 +42,28 @@ public class RabbitMqCamelUtils {
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {
     if (!rabbitMqUri.startsWith("rabbitmq:"))
       throw new IllegalArgumentException("Endpoint URI must be for RabbitMQ: " + rabbitMqUri);
+    return builder.from(rabbitMqUri);
+  }
+
+  public static RouteDefinition addToRabbitmqRoute(
+      RouteBuilder builder, String fromUri, String exchangeName, String routingKey) {
+    return addToRabbitmqRoute(builder, fromUri, exchangeName, routingKey, "");
+  }
+
+  public static RouteDefinition addToRabbitmqRoute(
+      RouteBuilder builder,
+      String fromUri,
+      String exchangeName,
+      String routingKey,
+      String rabbitmqParams) {
     return builder
-        .from(rabbitMqUri)
-        // Good practice to remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
+        .from(fromUri)
+        // Remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
         // doesn't interfere with subsequent sending to rabbitmq endpoints
         // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
         // > if the source queue has a routing key set in the headers, it will pass down to
         // > the destination and not be overriden with the URI query parameters.
-        .removeHeaders("CamelRabbitmq*");
+        .removeHeaders("CamelRabbitmq*")
+        .to(rabbitmqProducerEndpoint(exchangeName, routingKey) + rabbitmqParams);
   }
 }

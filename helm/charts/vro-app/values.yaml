@@ -8,9 +8,6 @@ labels:
 replicaCount: 1
 
 ports:
-  - name: http
-    containerPort: 8080
-    protocol: TCP
   - name: liveness
     containerPort: 8081
     protocol: TCP

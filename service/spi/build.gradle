@@ -4,5 +4,6 @@ plugins {
 
 dependencies {
   implementation project(':shared:domain')
+
   // implementation "gov.va.starter:exceptions"
 }

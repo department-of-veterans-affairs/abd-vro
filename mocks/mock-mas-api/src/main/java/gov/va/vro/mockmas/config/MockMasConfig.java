@@ -30,6 +30,9 @@ public class MockMasConfig {
   @Value("classpath:annotations/collection-378.json")
   private Resource collection378Resource;
 
+  @Value("classpath:annotations/collection-380.json")
+  private Resource collection380Resource;
+
   @Value("classpath:annotations/collection-500.json")
   private Resource collection500Resource;
 
@@ -66,6 +69,9 @@ public class MockMasConfig {
 
     List<MasCollectionAnnotation> collection378 = readFromResource(collection378Resource);
     store.put(378, collection378);
+
+    List<MasCollectionAnnotation> collection380 = readFromResource(collection380Resource);
+    store.put(380, collection380);
 
     List<MasCollectionAnnotation> collection500 = readFromResource(collection500Resource);
     store.put(500, collection500);

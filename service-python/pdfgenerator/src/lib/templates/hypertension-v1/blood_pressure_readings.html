@@ -14,7 +14,7 @@
 {% if evidence.bp_readings %}
     {% for measurement in evidence.bp_readings %}
         <p>
-            <b>Blood pressure: {{ measurement.systolic.value|round }}/{{ measurement.diastolic.value|round }} </b>
+            <b>Blood pressure: {{ measurement.systolic.value }}/{{ measurement.diastolic.value }} </b>
             <br />
             Taken on: {{ measurement.date }}
             <br />
