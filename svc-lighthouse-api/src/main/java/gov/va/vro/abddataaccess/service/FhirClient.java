@@ -127,7 +127,13 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
+              AbdDomain.CONDITION,
+              (id) -> {
+                SearchSpec result = new SearchSpec("Condition");
+                result.setSearchParams(new String[] {"patient", "category"});
+                result.setSearchValues(new String[] {id, "encounter-diagnosis"});
+                return result;
+              }));
 
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
