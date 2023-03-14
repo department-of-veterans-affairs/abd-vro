@@ -225,10 +225,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .doTry()
-          .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
-          .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse again
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse again
         .endDoCatch()
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
@@ -239,8 +239,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(payloadToClaimProcessor())
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
-        .process(healthAssessmentErrCheckProcessor); //Check for errors, and throw or do not alter exchange
-
+        .process(healthAssessmentErrCheckProcessor); // Check for errors, and throw or do not alter
+    // exchange
   }
 
   private void configureUploadPdf() {
