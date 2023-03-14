@@ -15,7 +15,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
 
-/** @author warren @Date 1/5/23 */
+/**
+ * BIP API configuration tests.
+ *
+ * @author warren @Date 1/5/23
+ */
 @ActiveProfiles("test")
 @SpringBootTest
 class BipApiConfigTest {

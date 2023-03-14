@@ -26,6 +26,13 @@ public class MockBundles {
     }
   }
 
+  /**
+   * Mock bundles.
+   *
+   * @param basePath base path
+   * @return bundles
+   * @throws IOException missing bundle
+   */
   public static MockBundles of(String basePath) throws IOException {
     MockBundles result = new MockBundles();
     for (String resourceType : RESOURCE_TYPES) {
