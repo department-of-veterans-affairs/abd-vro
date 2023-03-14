@@ -1,6 +1,7 @@
 package gov.va.vro.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,6 +19,7 @@ import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +35,16 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class VroV2Tests {
@@ -57,6 +65,50 @@ public class VroV2Tests {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   private final RestTemplate restTemplate = new RestTemplate();
+
+  @Test
+  @SneakyThrows
+  void testUniqueAutomatedClaimPayloads() {
+    var resource = this.getClass().getClassLoader().getResource("test-mas");
+    List<File> files = Files.walk(Paths.get(resource.toURI()))
+        .filter(Files::isRegularFile)
+        .filter(p -> p.getFileName().toString().endsWith(".json"))
+        .map(x -> x.toFile())
+        .collect(Collectors.toList());
+
+    Set<Integer> collectionIds = new HashSet<>();
+    Set<String> icns = new HashSet<>();
+    Set<String> claimIds = new HashSet<>();
+    Set<String> fileids = new HashSet<>();
+    for (File file: files) {
+      String content = Files.readString(file.toPath());
+      var request = objectMapper.readValue(content, MasAutomatedClaimRequest.class);
+      Integer collectionId = request.getCollectionId();
+      assertNotNull(collectionId);
+      assertFalse(collectionIds.contains(collectionId), String.format("collection id {} is not unique", collectionId));
+      collectionIds.add(collectionId);
+
+      VeteranIdentifiers identifiers = request.getVeteranIdentifiers();
+      assertNotNull(identifiers);
+
+      String icn = identifiers.getIcn();
+      assertNotNull(icn);
+      assertFalse(icns.contains(icn), String.format("icn %s is not unique", icn));
+      icns.add(icn);
+
+      String fileId = identifiers.getVeteranFileId();
+      assertNotNull(fileId);
+      assertFalse(fileids.contains(fileId), String.format("file id %s is not unique", fileId));
+      fileids.add(fileId);
+
+      var claimDetail = request.getClaimDetail();
+      assertNotNull(claimDetail);
+      String claimId = claimDetail.getBenefitClaimId();
+      assertNotNull(claimId);
+      assertFalse(claimIds.contains(claimId), String.format("claim id %s is not unique", claimId));
+      claimIds.add(claimId);
+    }
+  }
 
   /*
    * This test checks the RequestBodyAdvice sanitizing logic for disallowed characters.
