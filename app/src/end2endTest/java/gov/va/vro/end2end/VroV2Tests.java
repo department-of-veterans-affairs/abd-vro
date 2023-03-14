@@ -70,22 +70,25 @@ public class VroV2Tests {
   @SneakyThrows
   void testUniqueAutomatedClaimPayloads() {
     var resource = this.getClass().getClassLoader().getResource("test-mas");
-    List<File> files = Files.walk(Paths.get(resource.toURI()))
-        .filter(Files::isRegularFile)
-        .filter(p -> p.getFileName().toString().endsWith(".json"))
-        .map(x -> x.toFile())
-        .collect(Collectors.toList());
+    List<File> files =
+        Files.walk(Paths.get(resource.toURI()))
+            .filter(Files::isRegularFile)
+            .filter(p -> p.getFileName().toString().endsWith(".json"))
+            .map(x -> x.toFile())
+            .collect(Collectors.toList());
 
     Set<Integer> collectionIds = new HashSet<>();
     Set<String> icns = new HashSet<>();
     Set<String> claimIds = new HashSet<>();
     Set<String> fileids = new HashSet<>();
-    for (File file: files) {
+    for (File file : files) {
       String content = Files.readString(file.toPath());
       var request = objectMapper.readValue(content, MasAutomatedClaimRequest.class);
       Integer collectionId = request.getCollectionId();
       assertNotNull(collectionId);
-      assertFalse(collectionIds.contains(collectionId), String.format("collection id {} is not unique", collectionId));
+      assertFalse(
+          collectionIds.contains(collectionId),
+          String.format("collection id {} is not unique", collectionId));
       collectionIds.add(collectionId);
 
       VeteranIdentifiers identifiers = request.getVeteranIdentifiers();
