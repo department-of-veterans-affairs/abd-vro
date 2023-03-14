@@ -2,7 +2,8 @@ package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
 import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
-import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
@@ -34,10 +35,10 @@ public class UpdatesController implements UpdatesApi {
   }
 
   @Override
-  public ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
+  public ResponseEntity<LifecycleUpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
     boolean found = (item != null && store.isLifecycleStatusUpdated(claimId));
-    UpdatesResponse body = new UpdatesResponse(found);
+    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
     if (found) {
       String status = item.getClaimDetail().getClaimLifecycleStatus();
       body.setStatus(status);
@@ -46,10 +47,10 @@ public class UpdatesController implements UpdatesApi {
   }
 
   @Override
-  public ResponseEntity<UpdatesResponse> getContentionsUpdates(Long claimId) {
+  public ResponseEntity<ContentionUpdatesResponse> getContentionsUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
     boolean found = (item != null && store.isContentionsUpdated(claimId));
-    UpdatesResponse body = new UpdatesResponse(found);
+    ContentionUpdatesResponse body = new ContentionUpdatesResponse(found);
     if (found) {
       List<ContentionSummary> contentions = item.getContentions();
       body.setContentions(contentions);

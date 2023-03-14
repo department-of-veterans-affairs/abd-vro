@@ -1,21 +1,17 @@
 package gov.va.vro.mockbipclaims.model.mock.response;
 
-import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdatesResponse {
+public class LifecycleUpdatesResponse {
   private boolean found;
-  private List<ContentionSummary> contentions = null;
   private String status;
 
-  public UpdatesResponse(boolean found) {
+  public LifecycleUpdatesResponse(boolean found) {
     this.found = found;
   }
 }

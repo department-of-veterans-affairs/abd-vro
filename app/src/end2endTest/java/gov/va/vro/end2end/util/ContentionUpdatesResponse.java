@@ -8,8 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UpdatesResponse {
+public class ContentionUpdatesResponse {
   private boolean found;
   private List<ClaimContention> contentions;
-  private String status;
 }

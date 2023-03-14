@@ -9,9 +9,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
+import gov.va.vro.end2end.util.ContentionUpdatesResponse;
+import gov.va.vro.end2end.util.LifecycleUpdatesResponse;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
-import gov.va.vro.end2end.util.UpdatesResponse;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
@@ -106,9 +107,9 @@ public class VroV2Tests {
     for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
       Thread.sleep(10);
       String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
-      var testResponse = restTemplate.getForEntity(url, UpdatesResponse.class);
+      var testResponse = restTemplate.getForEntity(url, LifecycleUpdatesResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-      UpdatesResponse body = testResponse.getBody();
+      LifecycleUpdatesResponse body = testResponse.getBody();
       if (body.isFound()) {
         log.info("Claim {} lifecycle status is updated.", claimId);
         return body.getStatus();
@@ -124,9 +125,9 @@ public class VroV2Tests {
     for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
       Thread.sleep(10);
       String url = UPDATES_URL + claimId + "/" + "contentions";
-      var testResponse = restTemplate.getForEntity(url, UpdatesResponse.class);
+      var testResponse = restTemplate.getForEntity(url, ContentionUpdatesResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-      UpdatesResponse body = testResponse.getBody();
+      ContentionUpdatesResponse body = testResponse.getBody();
       if (body.isFound()) {
         log.info("Claim {} contentions are updated.", claimId);
         return body.getContentions();
