@@ -228,7 +228,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             lhBackoffProcessor) // if call to LH fails, we retry with exponential delays per retry
         .to(lighthouseEndpoint) // call Lighthouse again
-        .endDoTry()
+        .end()
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
