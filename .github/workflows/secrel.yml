@@ -19,7 +19,7 @@ on:
         type: choice
         options:
           - "dev_"
-          - ""
+          - " "
       run_tests:
         description: "Run Gradle tests?"
         required: true
@@ -49,20 +49,22 @@ jobs:
         id: image-props
         run: |
           echo "ref_name: ${{ github.ref_name }}"
-          # Set defaults based on event_name
-          case "${{ github.event_name }}" in
-            workflow_dispatch) IMG_PREFIX="${{ inputs.image_prefix }}"
-                               RUN_GRADLE_TESTS=${{ inputs.run_tests }}
-                               RUN_SECREL=${{ inputs.run_secrel }}
-                               ;;
-            push|release|*)    IMG_PREFIX="dev_"
-                               RUN_GRADLE_TESTS=true
-                               RUN_SECREL=true
-                               ;;
-          esac
+          # Set defaults
+          IMG_PREFIX="dev_"
+          RUN_GRADLE_TESTS=true
+          RUN_SECREL=true
           IMG_TAG=${GITHUB_SHA:0:7}
 
-          # Override defaults
+          # Change defaults if workflow was dispatched manually
+          case "${{ github.event_name }}" in
+            workflow_dispatch)
+              [ "${{ inputs.image_prefix }}" == " " ] && IMG_PREFIX=""
+              RUN_GRADLE_TESTS=${{ inputs.run_tests }}
+              RUN_SECREL=${{ inputs.run_secrel }}
+              ;;
+          esac
+
+          # Override some defaults depending on the branch
           case "${{ github.ref_name }}" in
             main)      IMG_PREFIX=""
                        ;;
