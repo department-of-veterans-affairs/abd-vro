@@ -15,7 +15,7 @@ RUN apk update && apk --no-cache add expat=2.5.0-r0 && mkdir -p /home/docker
 RUN adduser --disabled-password docker && chown -hR docker:docker /home/docker/
 
 COPY --chown=docker:docker . /home/docker/
-COPY --chown=docker:docker ../*.py /home/docker/
+ADD --chown=docker:docker ../*.py /home/docker/
 WORKDIR /home/docker
 RUN pip install --no-cache-dir -r requirements.txt
 
