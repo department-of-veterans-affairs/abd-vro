@@ -1,6 +1,6 @@
 # .coveragerc to control coverage.py
 [run]
-omit = main_consumer.py
+omit = main_consumer.py,local_pdf_test.py
 
 [report]
 # Regexes for lines to exclude from consideration

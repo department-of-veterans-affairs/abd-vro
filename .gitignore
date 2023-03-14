@@ -102,4 +102,5 @@ __pycache__
 ### PDF Generator Specific Files
 test.pdf
 test.html
-generated_toc.xsl
+*_toc.xsl
+!base_toc.xsl
