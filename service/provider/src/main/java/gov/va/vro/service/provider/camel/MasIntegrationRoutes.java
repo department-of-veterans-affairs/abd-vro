@@ -16,6 +16,7 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.ExternalCallException;
 import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
@@ -25,6 +26,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.services.LhBackoffProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
@@ -95,6 +97,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
+
+  private final LhBackoffProcessor lhBackoffProcessor;
 
   @Override
   public void configure() {
@@ -218,7 +222,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .doTry()
         .to(lighthouseEndpoint) // call Lighthouse
+        .doCatch(ExternalCallException.class)
+        .process(
+            lhBackoffProcessor) // if call to LH fails, we retry with exponential delays per retry
+        .to(lighthouseEndpoint) // call Lighthouse again
+        .endDoTry()
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
