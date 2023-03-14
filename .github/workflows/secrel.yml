@@ -19,7 +19,7 @@ on:
         type: choice
         options:
           - "dev_"
-          - " "
+          - "(no prefix)"
       run_tests:
         description: "Run Gradle tests?"
         required: true
@@ -58,7 +58,7 @@ jobs:
           # Change defaults if workflow was dispatched manually
           case "${{ github.event_name }}" in
             workflow_dispatch)
-              [ "${{ inputs.image_prefix }}" == " " ] && IMG_PREFIX=""
+              [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
               RUN_GRADLE_TESTS=${{ inputs.run_tests }}
               RUN_SECREL=${{ inputs.run_secrel }}
               ;;
