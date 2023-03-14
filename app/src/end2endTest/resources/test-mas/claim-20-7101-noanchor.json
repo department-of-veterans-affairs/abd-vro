@@ -12,7 +12,7 @@
     "participantId": "participant-id-020"
   },
   "claimDetail": {
-    "benefitClaimId": "2010",
+    "benefitClaimId": "3020",
     "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {

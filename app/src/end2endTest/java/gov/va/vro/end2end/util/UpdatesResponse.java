@@ -11,4 +11,5 @@ import java.util.List;
 public class UpdatesResponse {
   private boolean found;
   private List<ClaimContention> contentions;
+  private String status;
 }

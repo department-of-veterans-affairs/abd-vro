@@ -25,6 +25,7 @@ public class MockSlackController implements MockSlackApi {
   public ResponseEntity<String> postSlackMessage(SlackMessage slackMessage) {
     log.info("posting slack message...");
     String text = slackMessage.getText();
+    log.info("slack message is {}...", text);
     Matcher matcher = PATTERN.matcher(text);
     if (!matcher.find()) {
       String message = "No collection id found in message";

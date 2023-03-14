@@ -35,8 +35,13 @@ public class UpdatesController implements UpdatesApi {
 
   @Override
   public ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
-    boolean found = store.isLifecycleStatusUpdated(claimId);
+    ClaimStoreItem item = claimStore.get(claimId);
+    boolean found = (item != null && store.isLifecycleStatusUpdated(claimId));
     UpdatesResponse body = new UpdatesResponse(found);
+    if (found) {
+      String status = item.getClaimDetail().getClaimLifecycleStatus();
+      body.setStatus(status);
+    }
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 

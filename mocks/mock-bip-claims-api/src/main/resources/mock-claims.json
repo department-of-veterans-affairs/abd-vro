@@ -60,6 +60,26 @@
     ]
   },
   {
+    "description": "for happy path incomplete bps, used with collection id 380",
+    "claimDetail": {
+      "claimId": 1055,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
     "description": "off ramp no data",
     "claimDetail": {
       "claimId": 1030,

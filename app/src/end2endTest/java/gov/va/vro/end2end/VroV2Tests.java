@@ -13,6 +13,7 @@ import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.UpdatesResponse;
 import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
@@ -101,21 +102,21 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean getFoundStatus(String claimId, String type) {
+  private String getUpdatedLifecycleStatus(String claimId) {
     for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
       Thread.sleep(10);
-      String url = UPDATES_URL + claimId + "/" + type;
+      String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
       var testResponse = restTemplate.getForEntity(url, UpdatesResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
       UpdatesResponse body = testResponse.getBody();
       if (body.isFound()) {
-        log.info("{} is updated.", type);
-        return true;
+        log.info("Claim {} lifecycle status is updated.", claimId);
+        return body.getStatus();
       } else {
-        log.info("{} is not updated. Retrying...", type);
+        log.info("Claim {} lifecycle status is not updated. Retrying...", claimId);
       }
     }
-    return false;
+    return null;
   }
 
   @SneakyThrows
@@ -277,34 +278,24 @@ public class VroV2Tests {
   }
 
   /**
-   * Runs a full end-to-end test for the collection id using mock services. Collection id used here
-   * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
-   * ones in mock-bip-claims-api.
+   * Runs a full end-to-end test for the collection id using mock services. Collection id used
+   * here should be one of the preloaded ones in mock-mas-api amd the benefit claim id should
+   * one of the ones in mock-bip-claims-api. This verifies rest message, pdf upload, rdr1
+   * special issue removal and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId, boolean expectedStatusUpdate) {
-
+  private void testAutomatedClaimFullPositive(String collectionId) {
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
-
-    if (!expectedStatusUpdate) {
-      return;
-    }
-
     testPDFUpload(request);
-
-    // Verify contentions are updated (TODO: verify the actual update here)
-    boolean contentionsFound = getFoundStatus(claimId, "contentions");
-    assertTrue(contentionsFound);
-    // Verify lifecycle status is updated (TODO: verify the actual update here)
-    boolean lifecycleStatusFound = getFoundStatus(claimId, "lifecycle_status");
-    assertTrue(lifecycleStatusFound);
+    testSpecialIssueRdr1Removed(claimId);
+    testLifecycleStatusUpdated(claimId);
   }
 
   @SneakyThrows
   @Test
   void testAutomatedClaim() {
-    testAutomatedClaimFullPositive("350", false);
+    startAutomatedClaim("350");
   }
 
   /** Tests if Bip Claim Api 404 for non-existent claim results in 400 on our end. */
@@ -354,6 +345,13 @@ public class VroV2Tests {
       assertNotEquals("RDR1", specialIssueCode, "RDR1 should have been removed");
     }
     log.info("rdr1 is removed for {}", claimId);
+  }
+
+  private void testLifecycleStatusUpdated(String claimId) {
+    String status = getUpdatedLifecycleStatus(claimId);
+    assertNotNull(status, "Lifecycle status has not been updated.");
+    log.info("Claim {} lifecycle status has been updated.", claimId);
+    assertEquals(ClaimStatus.RFD.getDescription(), status);
   }
 
   private void testAutomatedClaimPreCamelOffRamp(AutomatedClaimTestSpec spec) {
@@ -478,41 +476,40 @@ public class VroV2Tests {
   }
 
   /**
-   * This is a positive end to end set. Two set of blood pressures and medications come from Health
-   * API and MAS collections. They are not really related. You can check this to see how the pdfs
-   * look like with data from both sources.
-   *
-   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999375
+   * This is a full positive end-to-end test for an increase case.
+   * See testAutomatedClaimFullPositiveTwo to see what is being verified.
+   * After the run get the pdf from http://localhost:8096/received-files/9999375
    */
-  @SneakyThrows
   @Test
-  void testAutomatedClaimSufficientSeparate() {
-    testAutomatedClaimFullPositive("375", true);
+  void testAutomatedClaimFullPositiveIncrease() {
+    testAutomatedClaimFullPositive("375");
   }
 
   /**
-   * This is an identical to testAutomatedClaimSufficientSeparate except it is a presumptive case.
-   * The file number, collection id and claim numbers also differ.
-   *
-   * <p>After the run get the pdf from http://localhost:8096/recieved-files/9999376
+   * This is a full positive end-to-end test for an presumptive case.
+   * See testAutomatedClaimFullPositiveTwo to see what is being verified.
+   * After the run get the pdf from http://localhost:8096/received-files/9999376
    */
-  @SneakyThrows
   @Test
-  void testAutomatedClaimPresumptive() {
-    testAutomatedClaimFullPositive("376", true);
+  void testAutomatedClaimFullPositivePresumptive() {
+    testAutomatedClaimFullPositive("376");
   }
 
-  @SneakyThrows
+  /**
+   * This is a full positive end-to-end test for a case with incomplete blood pressures.
+   * See testAutomatedClaimFullPositiveTwo to see what is being verified.
+   * After the run get the pdf from http://localhost:8096/received-files/9999380
+   */
   @Test
-  void testIncompleteBloodPressures() {
-    testAutomatedClaimFullPositive("380", true);
+  void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
+    testAutomatedClaimFullPositive("380");
   }
 
   @SneakyThrows
   @Test
   void testAutomatedSufficiencyIsNull() {
     // Offramp claims do not go through pdf process per VRO workflow diagram.
-    testAutomatedClaimFullPositive("500", false);
+    startAutomatedClaim("500");
     testClaimSufficientStatus("500", null);
   }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public class UpdatesResponse {
   private boolean found;
   private List<ContentionSummary> contentions = null;
+  private String status;
 
   public UpdatesResponse(boolean found) {
     this.found = found;
