@@ -119,7 +119,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_builder: Images published! (but not yet signed)"
+          slack-text: ":panda_builder: Images published! Performing SecRel, then image signing..."
 
   debug-job:
     runs-on: ubuntu-latest
@@ -164,29 +164,28 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: "If failure, set Slack message to: Workflow failed!"
-        if: needs.publish-to-ghcr.result == 'failure'
+      - name: "Set status message"
         run: |
-          echo 'WORKFLOW_STATE_TEXT=:panda_blank: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Workflow> failed!' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
-
-      - name: "If skipped, set Slack message to: Workflow skipped"
-        if: needs.publish-to-ghcr.result == 'skipped' || needs.secrel.result == 'skipped'
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: Workflow cancelled or skipped' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
-
-      - name: "Set final Slack message to: Images published but not signed"
-        if: needs.publish-to-ghcr.result == 'success' && needs.secrel.result != 'success'
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:panda_cop: Images published but not signed' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=panda_cop' >> $GITHUB_ENV
-
-      - name: "If success, set Slack message to: SecRel passed"
-        if: needs.secrel.result == 'success'
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
+          URL=${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}
+          if [ "${{needs.publish-to-ghcr.result}}" == 'failure' ]; then
+            echo 'WORKFLOW_STATE_TEXT=:panda_blank: <$URL|Publishing> failed!' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
+          elif [ "${{needs.secrel.result}}" == 'failure' ]; then
+            echo 'WORKFLOW_STATE_TEXT=:panda_cop: <$URL|SecRel> failed!' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
+          elif [ "${{needs.secrel.result}}" == 'success' ]; then
+            echo 'WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
+          elif [ "${{needs.publish-to-ghcr.result}}" == 'skipped' ]; then
+            echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|Publishing> cancelled or skipped' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+          elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "true" ] && [ "${{needs.secrel.result}}" == 'skipped' ]; then
+            echo 'WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|SecRel> cancelled or skipped' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+          else
+            echo 'WORKFLOW_STATE_TEXT=publish: ${{needs.publish-to-ghcr.result}}; secrel: ${{needs.secrel.result}}' >> $GITHUB_ENV
+            echo 'WORKFLOW_STATE_EMOJI=shrug' >> $GITHUB_ENV
+          fi
 
       - name: "Slack thread: Post final status"
         if: always()
