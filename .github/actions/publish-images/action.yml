@@ -60,13 +60,14 @@ runs:
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
           GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
           IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
+          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
 
           echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:${{ inputs.image_tag }}' and '$IMG_NAME:latest'"
-          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}"
-          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
+          docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:${{ inputs.image_tag }}"
+          docker push "${GHCR_PATH}:${{ inputs.image_tag }}"
 
-          echo "Pushing all tags for image '$IMG_NAME'"
-          docker push --all-tags "ghcr.io/${{ github.repository }}/${IMG_NAME}"
+          docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
+          docker push "${GHCR_PATH}:latest"
         done
 
     - name: "Published images list"
@@ -79,7 +80,8 @@ runs:
         echo "images<<EOF" >> $GITHUB_OUTPUT
         for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
           IMG_NAME=${{ inputs.image_prefix }}$(getVarValue "${VAR_PREFIX}" _IMG)
-          echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
-          echo "* ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+          echo "${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          echo "* ${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
         done
         echo "EOF" >> $GITHUB_OUTPUT
