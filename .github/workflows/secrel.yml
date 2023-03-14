@@ -95,7 +95,8 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":arrow_forward: \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|SecRel running>: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
+            SecRel running (#${{ github.run_number }})>: \
             Publishing images with prefix `${{ steps.image-props.outputs.image_prefix }}` \
             and tag `${{ steps.image-props.outputs.image_tag }}` \
             from ${{github.ref_type}} `${{github.ref_name}}`, \
@@ -153,7 +154,8 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: ":redlight: SecRel scan <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|failed>! \n\
+          slack-text: ":redlight: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
+              SecRel scan (#${{ github.run_number }}) failed>! \n\
               ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
               caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
