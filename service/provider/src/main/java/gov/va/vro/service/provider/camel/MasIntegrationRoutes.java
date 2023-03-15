@@ -5,6 +5,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combine
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
@@ -224,12 +225,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .doTry()
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse
-        .endDoTry()
-        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call Lighthouse again
-        .endDoCatch()
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
@@ -237,10 +233,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId("mas-automated-claim-lighthouse")
         .process(payloadToClaimProcessor())
+        .doTry()
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
-        .process(healthAssessmentErrCheckProcessor); // Check for errors, and throw or do not alter
-    // exchange
+        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .endDoTry()
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
+        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .endDoCatch()        // Do not check again for errors, as we will not retry.
+        .onException(ExchangeTimedOutException.class, ExternalCallException.class)        // But do handle the errors to permit processing to continue
+        .handled(true)
+        .process(lighthouseContinueProcessor());
   }
 
   private void configureUploadPdf() {

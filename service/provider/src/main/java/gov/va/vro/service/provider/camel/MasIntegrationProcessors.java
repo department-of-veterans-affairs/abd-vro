@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.HealthAssessmentSource;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
@@ -148,6 +149,14 @@ public class MasIntegrationProcessors {
       }
       var auditable = exchange.getMessage().getBody(Auditable.class);
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, msg));
+    };
+  }
+
+  public static Processor lighthouseContinueProcessor(){
+    return exchange -> {
+      HealthDataAssessment hda = new HealthDataAssessment();
+      hda.setSource(HealthAssessmentSource.LIGHTHOUSE);
+      exchange.getMessage().setBody(hda);
     };
   }
 }
