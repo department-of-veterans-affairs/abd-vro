@@ -1,6 +1,5 @@
 package gov.va.vro.mockbipclaims.model.mock.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class UpdatesResponse {
+public class LifecycleUpdatesResponse {
   private boolean found;
+  private String status;
+
+  public LifecycleUpdatesResponse(boolean found) {
+    this.found = found;
+  }
 }

@@ -329,13 +329,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
               auditEventService.logEvent(event);
             });
 
+    String webhook = masConfig.getSlackExceptionWebhook();
+    String channel = masConfig.getSlackExceptionChannel();
+    String slackRoute = String.format("slack:#%s?webhookUrl=%s", channel, webhook);
+    log.info("Routing to slack: {}", slackRoute);
     from(ENDPOINT_SLACK_EVENT)
         .routeId("mas-slack-event")
-        .filter(exchange -> StringUtils.isNotBlank(masConfig.getSlackExceptionWebhook()))
+        .filter(exchange -> StringUtils.isNotBlank(webhook))
         .process(FunctionProcessor.fromFunction(AuditEvent::toString))
-        .to(
-            String.format(
-                "slack:#%s?webhookUrl=%s",
-                masConfig.getSlackExceptionChannel(), masConfig.getSlackExceptionWebhook()));
+        .to(slackRoute);
   }
 }
