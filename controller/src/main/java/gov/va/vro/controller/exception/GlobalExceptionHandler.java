@@ -128,7 +128,7 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles general, unspecified exceptions (catch-all)
+   * Handles general, unspecified exceptions (catch-all).
    *
    * @param exception the exception
    * @return returns exception
