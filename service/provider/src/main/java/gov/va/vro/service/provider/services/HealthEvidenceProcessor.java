@@ -27,8 +27,7 @@ public class HealthEvidenceProcessor implements Processor {
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
 
     String evidenceError = evidence.getErrorMessage();
-    if (evidenceError != null
-        && !"insufficientHealthDataToOrderExam".equalsIgnoreCase(evidenceError)) {
+    if (evidenceError != null) {
       log.error("Health Assessment Failed");
       throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
     }
