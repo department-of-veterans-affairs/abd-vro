@@ -1,6 +1,6 @@
 package gov.va.vro.abddataaccess.service;
 
-import static gov.va.vro.abddataaccess.service.FieldExtractor.getAValidCoding;
+import static gov.va.vro.abddataaccess.service.FieldExtractor.getValidCoding;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -218,7 +218,7 @@ class FieldExtractorTest {
     log.info("abdCondition: {}", abdCondition.getText());
     if (condition.hasCode()) {
       CodeableConcept codeableConcept = condition.getCode();
-      Coding coding = getAValidCoding(codeableConcept);
+      Coding coding = getValidCoding(codeableConcept);
       if (coding != null) {
         assertEquals(
             Optional.ofNullable(coding.getCode()).orElse(""),

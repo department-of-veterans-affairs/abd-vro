@@ -17,10 +17,6 @@ public class MasTestData {
     return getMasAutomatedClaimPayload(123, "7101", "999");
   }
 
-  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
-    return getMasAutomatedClaimRequest(123, "1233", "999");
-  }
-
   /**
    * Gets the automated claim payload.
    *
@@ -45,6 +41,18 @@ public class MasTestData {
         .build();
   }
 
+  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
+    return getMasAutomatedClaimRequest(123, "1233", "999");
+  }
+
+  /**
+   * Build claim request.
+   *
+   * @param collectionId collection ID.
+   * @param diagnosticCode diagnostic code.
+   * @param benefitClaimId benefit claim ID
+   * @return Claim request
+   */
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest(
       int collectionId, String diagnosticCode, String benefitClaimId) {
     VeteranIdentifiers veteranIdentifiers = getVeteranIdentifiers();
