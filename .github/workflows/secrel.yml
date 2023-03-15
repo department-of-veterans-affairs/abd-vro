@@ -86,7 +86,8 @@ jobs:
             Publishing images with prefix `${{ steps.image-props.outputs.image_prefix }}` \
             and tag `${{ steps.image-props.outputs.image_tag }}` \
             from ${{github.ref_type}} `${{github.ref_name}}`, \
-            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ...\n"
+            caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` \
+            (Run tests? ${{ steps.image-props.outputs.run_tests }})...\n"
 
       - name: "Publish ${{ steps.image-props.outputs.image_prefix }} images to GHCR"
         id: publish-images
