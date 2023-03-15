@@ -215,6 +215,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureCollectEvidence() {
+    String lighthouseRetryRoute = "direct:lighthouse-retry";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -227,22 +228,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .end()
-        .onException(
-            ExchangeTimedOutException
-                .class) // But do handle the errors to permit processing to continue
-        .handled(true)
-        .process(lighthouseContinueProcessor()) // end multicast
-        .onException(
-            ExternalCallException
-                .class) // But do handle the errors to permit processing to continue
-        .handled(true)
-        .process(lighthouseContinueProcessor())
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId("mas-automated-claim-lighthouse")
         .process(payloadToClaimProcessor())
+        .to(lighthouseRetryRoute)
+        .onException(
+            ExchangeTimedOutException
+                .class) // But do handle the errors to permit processing to continue
+        .handled(true)
+        .process(lighthouseContinueProcessor());
+
+    from(lighthouseRetryRoute)
         .doTry()
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
@@ -251,9 +250,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
-        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
-        .endDoCatch(); // Do not check again for errors, as we will not retry.
-    // end multicast
+            // If an error comes back in the healthAssessmentObject that is okay, we just let it flow through this time.
+        .endDoCatch();
   }
 
   private void configureUploadPdf() {

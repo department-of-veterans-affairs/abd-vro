@@ -152,7 +152,7 @@ public class MasIntegrationProcessors {
     };
   }
 
-  public static Processor lighthouseContinueProcessor(){
+  public static Processor lighthouseContinueProcessor() {
     return exchange -> {
       HealthDataAssessment hda = new HealthDataAssessment();
       hda.setSource(HealthAssessmentSource.LIGHTHOUSE);
