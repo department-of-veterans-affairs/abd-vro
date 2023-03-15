@@ -33,6 +33,10 @@ public class MockSlackAppTest {
 
   @LocalServerPort private int port;
 
+  private String getBaseUrl() {
+    return "http://localhost:" + port + "/slack-messages";
+  }
+
   private String message(int collectionId, String diagnosticCode, String actionType) {
     String p1 = String.format("[collection id = %s]", collectionId);
     String p2 = String.format("[diagnostic code = %s]", diagnosticCode);
@@ -40,13 +44,7 @@ public class MockSlackAppTest {
     return "Claim with " + p1 + ", " + p2 + ", and " + p3 + " is not in scope";
   }
 
-  @Test
-  void postGetDeleteTest() {
-    int collectionId = 350;
-
-    String url = "http://localhost:" + port + "/slack-messages";
-    String text = message(collectionId, "7101", "DECREASE");
-
+  private ResponseEntity<String> postSlackMessage(String text) {
     SlackMessage slackMessage = new SlackMessage(text);
 
     HttpHeaders headers = new HttpHeaders();
@@ -54,25 +52,43 @@ public class MockSlackAppTest {
 
     HttpEntity<SlackMessage> entity = new HttpEntity<>(slackMessage, headers);
 
-    ResponseEntity<String> response = template.postForEntity(url, entity, String.class);
+    return template.postForEntity(getBaseUrl(), entity, String.class);
+  }
+
+  @Test
+  void postGetDeleteTest() {
+    int collectionId = 350;
+    String text = message(collectionId, "7101", "DECREASE");
+
+    ResponseEntity<String> response = postSlackMessage(text);
+
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("ok", response.getBody());
 
-    String getUrl = url + "/" + collectionId;
-    ResponseEntity<SlackMessage> getResponse = template.getForEntity(getUrl, SlackMessage.class);
+    String url = getBaseUrl() + "/" + collectionId;
+    ResponseEntity<SlackMessage> getResponse = template.getForEntity(url, SlackMessage.class);
     assertEquals(HttpStatus.OK, getResponse.getStatusCode());
     SlackMessage actualSlackMessage = getResponse.getBody();
     assertNotNull(actualSlackMessage);
     assertEquals(text, actualSlackMessage.getText());
 
-    String delUrl = url + "/" + collectionId;
-    template.delete(delUrl);
+    template.delete(url);
 
     try {
-      template.getForEntity(getUrl, SlackMessage.class);
+      template.getForEntity(url, SlackMessage.class);
       fail("Should have gotten 404");
     } catch (HttpStatusCodeException exception) {
       assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
+  }
+
+  @Test
+  void collectionIdNotANumberTest() {
+    try {
+      postSlackMessage("the collection id = not a number");
+      fail("Expected a bad request");
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
   }
 

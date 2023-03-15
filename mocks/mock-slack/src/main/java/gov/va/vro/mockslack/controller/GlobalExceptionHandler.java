@@ -23,19 +23,6 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles invalid (not a number) collection id exception.
-   *
-   * @param exception the exception
-   * @return http response
-   */
-  @ExceptionHandler(NumberFormatException.class)
-  public ResponseEntity<String> handleException(NumberFormatException exception) {
-    String message = "Invalid collection id";
-    log.info(message, exception);
-    return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
    * Handles general, unspecified exceptions (catch-all).
    *
    * @param exception the exception
