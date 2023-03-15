@@ -1,10 +1,9 @@
 FROM eclipse-temurin:17-jre-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
-# hadolint ignore=DL3018
 # libcap is needed to make vault work -- https://github.com/hashicorp/vault/issues/10924#issuecomment-1153603833
-RUN apk update \
-    && apk --no-cache add expat=2.5.0-r0 sudo curl vault libcap \
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 sudo curl vault libcap \
     && setcap -r /usr/sbin/vault
 
 # The following is needed to run the emerg.sh script as root for access to /persist
