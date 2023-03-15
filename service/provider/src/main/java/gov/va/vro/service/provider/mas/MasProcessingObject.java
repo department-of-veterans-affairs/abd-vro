@@ -6,6 +6,8 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class MasProcessingObject implements Auditable {
 
@@ -18,14 +20,20 @@ public class MasProcessingObject implements Auditable {
     return claimPayload.getCollectionId();
   }
 
-  public String getClaimId() {
+  // benefitClaimId (aka vbmsId)
+  public String getBenefitClaimId() {
     return claimPayload.getClaimDetail().getBenefitClaimId();
   }
 
-  public long getClaimIdAsLong() {
-    String claimIdString = getClaimId();
+  // TODO: verify that vbmsId is always a long or check the API spec where this long is submitted
+  public long getBenefitClaimIdAsLong() {
+    String claimIdString = getBenefitClaimId();
     long claimId = Long.parseLong(claimIdString);
     return claimId;
+  }
+
+  public String getIdType() {
+    return claimPayload.getIdType();
   }
 
   public String getVeteranIcn() {
@@ -42,12 +50,16 @@ public class MasProcessingObject implements Auditable {
   }
 
   @Override
-  public String getDetails() {
+  public Map<String, String> getDetails() {
     return claimPayload.getDetails();
   }
 
   public String getDisabilityActionType() {
     return claimPayload.getDisabilityActionType();
+  }
+
+  public String getConditionName() {
+    return claimPayload.getConditionName();
   }
 
   @Override

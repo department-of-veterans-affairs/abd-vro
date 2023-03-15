@@ -4,12 +4,12 @@ import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
-import gov.va.vro.abddataaccess.model.AbdBloodPressure;
 import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.abddataaccess.model.AbdCondition;
-import gov.va.vro.abddataaccess.model.AbdEvidence;
-import gov.va.vro.abddataaccess.model.AbdMedication;
-import gov.va.vro.abddataaccess.model.AbdProcedure;
+import gov.va.vro.model.AbdBloodPressure;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -30,12 +30,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class FhirClient {
@@ -165,6 +167,7 @@ public class FhirClient {
   }
 
   private List<AbdCondition> getPatientConditions(List<BundleEntryComponent> entries) {
+    log.info("Extract patient condition entries. number of entries: {}", entries.size());
     List<AbdCondition> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Condition resource = (Condition) entry.getResource();
@@ -188,6 +191,7 @@ public class FhirClient {
   }
 
   private List<AbdProcedure> getPatientProcedures(List<BundleEntryComponent> entries) {
+    log.info("Extract patient procedure entries. number of entries: {}", entries.size());
     List<AbdProcedure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Procedure resource = (Procedure) entry.getResource();
@@ -227,16 +231,30 @@ public class FhirClient {
       throws AbdException {
     AbdDomain[] domains = dpToDomains.get(claim.getDiagnosticCode());
     if (domains == null) {
+      log.error("domains not found for the claim diagnostic code.");
       return null;
     }
+
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
-    for (AbdDomain domain : domains) {
+    result =
+        Arrays.stream(domains)
+            .parallel()
+            .collect(Collectors.toMap(d -> d, d -> getBundleEntryComponents(patientIcn, d)));
+    return result;
+  }
+
+  @NotNull
+  private List<BundleEntryComponent> getBundleEntryComponents(String patientIcn, AbdDomain domain) {
+    Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
+    try {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
-      result.put(domain, records);
+      return records;
+    } catch (AbdException e) {
+      log.error("Failure in get light house patient data for {}", domain.name(), e);
+      return null;
     }
-    return result;
   }
 
   private List<BundleEntryComponent> getRecords(
@@ -246,7 +264,7 @@ public class FhirClient {
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;
-    log.info("Retrieve data for {}", domain.name());
+    log.info("Retrieve data for {} for ICN = {}", domain.name(), patientIcn);
 
     List<BundleEntryComponent> records = new ArrayList<>();
     String nextLink = fullUrl;
@@ -281,7 +299,9 @@ public class FhirClient {
    * @throws AbdException error occurs.
    */
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
+    log.info("===Get LH FHIR data");
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
+    log.info("===Received LH FHIR data");
     if (components == null) {
       return null;
     }
@@ -296,6 +316,7 @@ public class FhirClient {
    */
   @NotNull
   public AbdEvidence getAbdEvidence(Map<AbdDomain, List<BundleEntryComponent>> components) {
+    log.info("========converting LH Fhir data");
     AbdEvidence result = new AbdEvidence();
     for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent : components.entrySet()) {
       List<BundleEntryComponent> entries = entryComponent.getValue();
@@ -320,6 +341,7 @@ public class FhirClient {
         }
       }
     }
+    log.info("========got converted LH Fhir data");
     return result;
   }
 }

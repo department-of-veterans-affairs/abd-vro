@@ -3,7 +3,11 @@ package gov.va.vro.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.HealthAssessmentSource;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import org.junit.jupiter.api.Test;
 
@@ -19,15 +23,15 @@ public class MasCollectionServiceTest {
     lighthouseAssessment.setSource(HealthAssessmentSource.LIGHTHOUSE);
     lighthouseAssessment.setEvidence(
         createEvidence(
-            Arrays.asList(createMedication("med1"), createMedication("med2")),
-            Collections.singletonList(createCondition("cond2"))));
+            Arrays.asList(createMedication("med1", "LH"), createMedication("med2", "LH")),
+            Collections.singletonList(createCondition("cond2", "LH"))));
     var masAssessment = createAssessment(null);
     masAssessment.setSource(HealthAssessmentSource.MAS);
     masAssessment.setDisabilityActionType("INCREASE");
     masAssessment.setEvidence(
         createEvidence(
-            Collections.singletonList(createMedication("med1")),
-            Collections.singletonList(createCondition("cond1"))));
+            Collections.singletonList(createMedication("med1", "MAS")),
+            Arrays.asList(createCondition("cond1", "MAS"), createCondition("cond2", "MAS"))));
     var result = MasCollectionService.combineEvidence(lighthouseAssessment, masAssessment);
     assertEquals("INCREASE", result.getDisabilityActionType());
     assertEquals("12345", result.getDiagnosticCode());
@@ -36,21 +40,23 @@ public class MasCollectionServiceTest {
     var evidence = result.getEvidence();
     assertTrue(evidence.getBloodPressures().isEmpty());
     assertTrue(evidence.getProcedures().isEmpty());
-    assertEquals(2, evidence.getMedications().size());
-    assertEquals(2, evidence.getConditions().size());
+    assertEquals(3, evidence.getMedications().size());
+    assertEquals(3, evidence.getConditions().size());
   }
 
-  private AbdCondition createCondition(String code) {
+  private AbdCondition createCondition(String code, String source) {
     var condition = new AbdCondition();
     condition.setCode(code);
     condition.setText("text");
+    condition.setDataSource(source);
     return condition;
   }
 
-  private AbdMedication createMedication(String route) {
+  private AbdMedication createMedication(String route, String source) {
     var medication = new AbdMedication();
     medication.setRoute(route);
     medication.setDescription("medication");
+    medication.setDataSource(source);
     return medication;
   }
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.BipServiceTestConfiguration;
 import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
@@ -13,8 +14,10 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasEventDetails;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.SneakyThrows;
@@ -24,6 +27,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Import(BipServiceTestConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MasControllerTest extends BaseControllerTest {
 
@@ -47,9 +52,12 @@ public class MasControllerTest extends BaseControllerTest {
 
   @Autowired private ClaimRepository claimRepository;
 
+  @Autowired private ClaimSubmissionRepository claimSubmissionRepository;
+
   @Autowired private AuditEventRepository auditEventRepository;
+
+  public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
   private ObjectMapper objectMapper = new ObjectMapper();
-  ;
 
   @Test
   @SneakyThrows
@@ -82,7 +90,6 @@ public class MasControllerTest extends BaseControllerTest {
   @Test
   void automatedClaimOutOfScope() throws Exception {
     var offrampCalled = new AtomicBoolean(false);
-    var completeCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
             "mas-offramp",
@@ -90,18 +97,19 @@ public class MasControllerTest extends BaseControllerTest {
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-offramp"))
+                    .to(mockMasOfframpEndpoint))
         .end();
     // The mock endpoint returns a valid response
     mockMasOfframpEndpoint.whenAnyExchangeReceived(
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Claim with [collection id = 123], [diagnostic code = 1233], and [disability action type = INCREASE] is not in scope.",
+              "Claim with [collection id = 123], [diagnostic code = 1233], and"
+                  + " [disability action type = INCREASE] is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
-
+    var completeCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
             "mas-complete-claim",
@@ -109,7 +117,7 @@ public class MasControllerTest extends BaseControllerTest {
                 route
                     .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE)
                     .skipSendToOriginalEndpoint()
-                    .to("mock:mas-complete"))
+                    .to(mockMasCompleteEndpoint))
         .end();
     mockMasCompleteEndpoint.whenAnyExchangeReceived(
         exchange -> {
@@ -153,8 +161,8 @@ public class MasControllerTest extends BaseControllerTest {
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
     assertTrue(audits.size() > 0);
     var audit = audits.get(0);
-    var details = objectMapper.readValue(audit.getDetails(), MasEventDetails.class);
-    assertEquals("999", details.getClaimId());
+    var details = objectMapper.convertValue(audit.getDetails(), MasEventDetails.class);
+    assertEquals("999", details.getBenefitClaimId());
     assertEquals("567", details.getCollectionId());
     assertEquals("7101", details.getDiagnosticCode());
     assertEquals("X", details.getVeteranIcn());
@@ -181,9 +189,13 @@ public class MasControllerTest extends BaseControllerTest {
   }
 
   private void verifyClaimPersisted(MasAutomatedClaimRequest request) {
-    var claim =
-        claimRepository.findByClaimSubmissionId(request.getClaimDetail().getBenefitClaimId()).get();
-    assertEquals(request.getCollectionId().toString(), claim.getCollectionId());
+    var claim = claimRepository.findByVbmsId(request.getClaimDetail().getBenefitClaimId()).get();
+    var claimSubmissionList =
+        claimSubmissionRepository.findByReferenceIdAndIdType(
+            String.valueOf(request.getCollectionId()), DEFAULT_ID_TYPE);
+    for (ClaimSubmissionEntity submission : claimSubmissionList) {
+      assertEquals(request.getCollectionId().toString(), submission.getReferenceId());
+    }
     assertEquals(request.getVeteranIdentifiers().getIcn(), claim.getVeteran().getIcn());
     var contentions = claim.getContentions();
     assertEquals(1, contentions.size());

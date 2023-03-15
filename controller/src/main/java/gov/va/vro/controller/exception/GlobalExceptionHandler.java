@@ -141,14 +141,16 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  /**
+   * Handles BIP Exceptions.
+   *
+   * @param exception the exception
+   * @return returns response
+   */
   @ExceptionHandler(BipException.class)
   public ResponseEntity<ClaimProcessingError> handleBipClaimException(BipException exception) {
     log.error("BIP exception: {}", exception.getMessage(), exception);
     ClaimProcessingError cpe = new ClaimProcessingError(exception.getMessage());
-    return new ResponseEntity<>(
-        cpe,
-        exception.getStatus() == HttpStatus.NOT_FOUND
-            ? HttpStatus.BAD_REQUEST
-            : exception.getStatus());
+    return new ResponseEntity<>(cpe, exception.getStatus());
   }
 }

@@ -14,7 +14,9 @@
   <meta name="pdfkit-margin-right" content="0.5in"/>
   <meta name="pdfkit-margin-top" content="0.5in"/>
   <meta name="pdfkit-margin-bottom" content="0.5in"/>
+  <!-- Formula for Zoom: (Default DPI / Desired DPI) -->
   <meta name="pdfkit-zoom" content="1.33"/>
+  <!-- Default DPI = 96 but does not work. Just marking as 72 to keep track for future edits -->
   <meta name="pdfkit-dpi" content="72"/>
 
   <!-- Bootstrap CSS -->
@@ -26,37 +28,37 @@
   <style>
     @font-face {
       font-family: Bitter;
-      src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
+      src: url("{{base_path}}/fonts/bitter-regular-webfont.ttf");
       font-weight: normal;
       font-style: normal;
     }
     @font-face {
       font-family: Bitter;
-      src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
+      src: url("{{base_path}}/fonts/bitter-bold-webfont.ttf");
       font-weight: 700;
       font-style: normal;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+      src: url("{{base_path}}/fonts/notosans-regular-webfont.ttf");
       font-weight: 400;
       font-style: normal;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
+      src: url("{{base_path}}/fonts/notosans-italic-webfont.ttf");
       font-weight: 400;
       font-style: italic;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-bold-webfont.ttf");
+      src: url("{{base_path}}/fonts/notosans-bold-webfont.ttf");
       font-weight: 700;
       font-style: normal;
     }
     @font-face {
       font-family: NotoSans;
-      src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
+      src: url("{{base_path}}/fonts/notosans-bolditalic-webfont.ttf");
       font-weight: 700;
       font-style: italic;
     }
@@ -180,10 +182,10 @@
         <thead>
           <tr>
             <th style="width: 118px !important;">Key terms</th>
-            <th>Document</th>
+            <th style="width: 280px !important;">Document</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page(s)</th>
-            <th style="width: 240px !important;">Document ID</th>
+            <th style="width: 80px !important;">Page number(s)</th>
+            <th style="width: 260px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
@@ -210,7 +212,7 @@
   <div class="row">
     <div class="col">
       <h2 class="m-0 mb-13">&zwnj;<b>Condition history</b></h2>
-      <p>The VistA EHR search found the following diagnosis information in VHA records as of <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
+      <p>The VistA EHR search found the following diagnosis information in VHA records as of  <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
     </div>
   </div>
   <div class="row">
@@ -226,7 +228,7 @@
           {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list %}
             <tr>
               <th>{{ condition.text}}</th>
-              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}Non-confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list |length == 0 %}
@@ -247,7 +249,7 @@
     <div class="col">
       <h1 class="m-0 mb-30"><b>Condition: Hypertension</b></h1>
       <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension – blood pressure readings</b></h2>
-      <p class="m-0 mb-13">The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
+      <p class="m-0 mb-13">The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of  <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
     </div>
   </div>
   <div class="row">
@@ -255,25 +257,46 @@
       <table id="schedular-evidence-bp" class="table table-bordered">
         <thead>
           <tr>
-            <th style="width: 67px !important;">Blood pressure</th>
+            <th style="width: 70px !important;">Blood pressure</th>
             <th style="width: 90px !important;">Observation date</th>
-            <th>Source</th>
+            <th style="width: 257px !important;">Source</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page(s)</th>
-            <th style="width: 240px !important;">Document ID</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th style="width: 260px !important;">Document ID</th>
           </tr>
         </thead>
         <tbody>
           {% for bp_reading in evidence.bp_readings %}
           <tr>
-            <th>{{ bp_reading.systolic.value |int }}/{{ bp_reading.diastolic.value |int }}</th>
+            <th>{{ bp_reading.systolic.value }}/{{ bp_reading.diastolic.value }}</th>
             <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
-            <td>VAMC record - {{ bp_reading.organization }}</td>
-            <td class="empty">n.a.</td>
-            <td class="empty">n.a.</td>
-            <td class="empty">n.a. - see VistA/Capri to verify</td>
+            <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
+            <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == "" %}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
+            <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == "" %}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
+            <td style="white-space: nowrap;" {% if bp_reading.document == "" %}class="empty" {% endif %}>
+              {% if bp_reading.dataSource == "MAS" %}
+                {% if bp_reading.organization == "VAMC Other Output Reports" and bp_reading.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif bp_reading.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ bp_reading.document }}
+                {% endif %}
+              {% else %}
+                {% if bp_reading.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ bp_reading.document }}
+                {% endif %}
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
+          {% if evidence.bp_readings |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No blood pressure readings found through automated review.</td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
@@ -290,23 +313,39 @@
       <table id="schedular-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key terms</th>
+            <th style="width: 153px !important;">Key terms</th>
             <th style="width: 90px !important;">Observation date</th>
-            <th style="width: 204px !important;">Source</th>
+            <th style="width: 174px !important;">Source</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page number(s)</th>
-            <th style="width: 245px !important;">Document ID</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th>Document ID</th>
           </tr>
         </thead>
         <tbody>
           {% for medication in evidence.medications %}
           <tr>
             <th>{{ medication.description }}</th>
-            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}No confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
-            <td>Source Sample</td>
-            <td>1/3/2023</td>
-            <td>20, 21</td>
-            <td>{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}</td>
+            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}Non-confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
+            <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
+            <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
+            <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
+            <td style="white-space: nowrap;" {% if medication.document == "" %}class="empty" {% endif %}>
+              {% if medication.dataSource == "MAS" %}
+                {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% else %}
+                {% if medication.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
           {% if evidence.medications |length == 0 %}
@@ -330,23 +369,31 @@
       <table id="other-medical-evidence" class="table table-bordered">
         <thead>
           <tr>
-            <th>Key terms</th>
+            <th style="width: 153px !important;">Key terms</th>
             <th style="width: 90px !important;">Observation date</th>
-            <th style="width: 204px !important;">Source</th>
+            <th style="width: 174px !important;">Source</th>
             <th style="width: 90px !important;">VBMS receipt date</th>
-            <th style="width: 70px !important;">Page number(s)</th>
-            <th style="width: 245px !important;">Document ID</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th>Document ID</th>
           </tr>
         </thead>
         <tbody>
           {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list %}
             <tr>
               <th>{{ condition.text }}</th>
-              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}No confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
-              <td>Source Sample</td>
-              <td>1/3/2023</td>
-              <td>20, 21</td>
-              <td>{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}</td>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}Non-confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
+              <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
+              <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
+              <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
+              <td style="white-space: nowrap;" {% if condition.document == "" %}class="empty" {% endif %}>
+                {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif condition.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ condition.document }}
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
           {% if evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list |length == 0 %}
@@ -367,7 +414,7 @@
   <!-- Relevant documents with no keywords found -->
   <div class="row mt-3">
     <div class="col">
-      <h1 class="m-0 mb-13"><b>Relevant documents with no keywords found</b></h1>
+      <h1 class="m-0 mb-13"><b>Relevant documents unavailable for automated review</b></h1>
     </div>
   </div>
   <div class="row">
@@ -381,14 +428,14 @@
           </tr>
         </thead>
         <tbody>
-          {% for review in evidence.unavailable_reviews %}
+          {% for review in evidence.documentsWithoutAnnotationsChecked %}
           <tr>
             <td class="empty">n.a.</td>
             <td class="empty">n.a.</td>
-            <td>{{ review.document_id }}</td>
+            <td style="white-space: nowrap;">{{ review }}</td>
           </tr>
           {% endfor %}
-          {% if evidence.unavailable_reviews |length == 0 %}
+          {% if evidence.documentsWithoutAnnotationsChecked |length == 0 %}
           <tr>
             <td colspan="3" class="empty">The automated review scanned all relevant documents.</td>
           </tr>
@@ -400,7 +447,7 @@
   <div class="pagebreak"> </div>
   <!-- About this document -->
   <div class="row">
-    <div class="col">
+    <div class="col" style="max-width: 530px !important;">
       <h1 class="m-0 mb-13"><b>About this document</b></h1>
       <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
       <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
@@ -423,5 +470,4 @@
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
 </body>
-
 </html>

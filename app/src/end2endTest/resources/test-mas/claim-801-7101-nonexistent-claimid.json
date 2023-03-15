@@ -1,0 +1,29 @@
+{
+  "dob": "2000-08-01",
+  "firstName": "Richard",
+  "lastName": "Malone",
+  "gender": "male",
+  "collectionId": 801,
+  "veteranIdentifiers": {
+    "icn": "9000355",
+    "ssn": "111-11-1801",
+    "veteranFileId": "736801",
+    "edipn": "6377716VV801",
+    "participantId": "7677801"
+  },
+  "claimDetail": {
+    "benefitClaimId": "998899",
+    "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
+    "claimSubmissionSource": "VA.GOV",
+    "conditions": {
+      "name": "HYPERTENSION",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "234555"
+    }
+  },
+  "veteranFlashIds": [
+    "888"
+  ]
+}

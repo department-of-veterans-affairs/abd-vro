@@ -2,18 +2,10 @@
 # Compare this file with application-local.yml since the both run VRO via docker-compose
 #
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
-# server-truststore and client-keystore hold the certificates for the Mock BIP CE Server (base64 p12 files)
-spring.config.import: > 
-  application-local.yml, 
-  server-truststore.yml,
-  client-keystore.yml
+spring.config.import: application-local.yml
 
-# Settings for Mutual TLS and Jwt authentication with the Mock BIP Evidence Server
-bip:
-  evidenceClientId: VRO
-  evidenceSecret: theSecret
-  evidenceBaseURL: "mock-bip-ce-api:8094"
-  evidenceIssuer: VRO
-  applicationName: VRO
-  stationId: 281
-truststore_password: keystore_pw
+spring.security.oauth2.client.provider.mas.uri: "http://mock-mas-api:9001/token"
+
+masAPIProvider.baseURL: "http://mock-mas-api:9001"
+masAPIProvider.createExamOrderPath: "/pcOrderExam"
+

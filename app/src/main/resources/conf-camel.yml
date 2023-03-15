@@ -5,11 +5,9 @@ vro:
   camel_rest_api.enable: true
   camel:
     # Can use specific class or all classes in package name (using suffix '.*')
-    # Parsed by CamelDtoClassesProperties
+    # Parsed by CamelDtoClassesProperties. `gov.va.vro.model.*` is already included
     dto-classes:
       - gov.va.vro.service.spi.model.*
-      - gov.va.vro.model.mas.*
-      - gov.va.vro.model.*
 
 # See https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html#SpringBoot-DisablingJMX
 # camel.springboot.jmx-enabled = false

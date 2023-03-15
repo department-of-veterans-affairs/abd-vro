@@ -7,7 +7,9 @@ import gov.va.vro.api.resources.HealthAssessmentResource;
 import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
 import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,18 @@ public class HealthAssessmentController implements HealthAssessmentResource {
         claim.getClaimSubmissionId(),
         claim.getVeteranIcn());
     try {
+      String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode());
+      if (diagnosis == null) {
+        throw new ClaimProcessingException(
+            claim.getClaimSubmissionId(),
+            HttpStatus.BAD_REQUEST,
+            String.format(
+                "Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
+      }
       Claim model = postClaimRequestMapper.toModel(claim);
+      // PostClaimMapper is used in both v1 (VroController) and v2. To differentiate the path we are
+      // on, set the type here. which is v2 for this file.
+      model.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
       String responseAsString = camelEntrance.submitClaimFull(model);
 
       AbdEvidenceWithSummary response =

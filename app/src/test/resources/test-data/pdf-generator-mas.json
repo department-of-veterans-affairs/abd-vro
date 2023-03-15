@@ -1,6 +1,7 @@
 {
   "claimSubmissionId": "1234",
   "diagnosticCode": "7101",
+  "pdfTemplate": "v2",
   "conditions":  {
     "disabilityActionType": "NEW",
     "name": "high blood pressure"
@@ -122,6 +123,9 @@
         "practitioner": "DR. JOHN248 SMITH811 MD",
         "organization": "LYONS VA MEDICAL CENTER"
       }
+    ],
+    "documentsWithoutAnnotationsChecked": [
+      "{guid1}"
     ]
   }
 }

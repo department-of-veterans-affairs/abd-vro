@@ -13,42 +13,41 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css"  rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 
-        <title>Table of Contents</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <style>
           @font-face {
             font-family: Bitter;
-                  src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
+                  src: url("{{base_path}}/fonts/bitter-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: Bitter;
-                  src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
+                  src: url("{{base_path}}/fonts/bitter-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-regular-webfont.ttf");
             font-weight: 400;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-italic-webfont.ttf");
             font-weight: 400;
             font-style: italic;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-bold-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-bolditalic-webfont.ttf");
             font-weight: 700;
             font-style: italic;
           }
@@ -110,7 +109,7 @@
             font-weight: 400;
             font-size: 11px;
             line-height: 15px;
-            width: 178px !important;
+            width: 150px !important;
             padding-right: 0px !important;
             margin-right: 0px !important;
           }
@@ -200,41 +199,63 @@
               <b>Claims Processors:</b> This document summarizes data from VHA locations that use VistA/CAPRI, as well as scanned text from relevant documents in the Veteran’s eFolder on the date of claim.
             </p>
             <p class="mb-30">
-              <b>Notice(s):</b> Some relevant data may be missing and some of the same data may appear twice. Learn more in the <a href="https://www.va.gov">About this document</a> section.
+              <b>Notice(s):</b> Some relevant data may be missing and some of the same data may appear twice. Learn more in the <xsl:apply-templates select="outline:item/outline:item[starts-with(@title, 'About this document')]">
+                <xsl:with-param name="link_type" select="'hyperlink'" />
+              </xsl:apply-templates> section.
             </p>
           </div>
         </div>
         <div class="row flex">
           <div style="max-width: 470px !important; margin-top: 30px !important">
             <h2 class="margin-13">&#8204;<b>Table of contents</b></h2>
-            <ul><xsl:apply-templates select="outline:item/outline:item"/></ul>
+            <ul>
+              <xsl:apply-templates select="outline:item/outline:item[not(starts-with(@title, '&#x200c;'))]">
+                <xsl:with-param name="link_type" select="'toc'" />
+              </xsl:apply-templates>
+            </ul>
           </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
       </body>
     </html>
   </xsl:template>
+
   <xsl:template match="outline:item">
-    <li>
-      <xsl:if test="not(starts-with(@title, '&#x200c;'))">
-      <!-- <xsl:if test="@title!=''"> -->
-        <div>
-          <a>
-            <xsl:if test="@link">
-              <xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@backLink">
-              <xsl:attribute name="name"><xsl:value-of select="@backLink"/></xsl:attribute>
-            </xsl:if>
-            <xsl:value-of select="@title" />
-          </a>
-          <span> <xsl:value-of select="@page" /> </span>
-        </div>
+    <xsl:param name="link_type" select="'toc'" />
+    <xsl:if test="$link_type='toc'">
+      <li>
+        <xsl:if test="not(starts-with(@title, '&#x200c;'))">
+          <div>
+            <a>
+              <xsl:if test="@link">
+                <xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
+              </xsl:if>
+              <xsl:if test="@backLink">
+                <xsl:attribute name="name"><xsl:value-of select="@backLink"/></xsl:attribute>
+              </xsl:if>
+              <xsl:value-of select="@title" />
+            </a>
+            <span> <xsl:value-of select="@page" /> </span>
+          </div>
+        </xsl:if>
+        <ul>
+          <xsl:comment>added to prevent self-closing tags in QtXmlPatterns</xsl:comment>
+          <xsl:apply-templates select="outline:item"/>
+        </ul>
+      </li>
+    </xsl:if>
+    <xsl:if test="$link_type='hyperlink'">
+      <xsl:if test="starts-with(@title, 'About this document')">
+        <a>
+          <xsl:if test="@link">
+            <xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
+          </xsl:if>
+          <xsl:if test="@backLink">
+            <xsl:attribute name="name"><xsl:value-of select="@backLink"/></xsl:attribute>
+          </xsl:if>
+          <xsl:value-of select="@title" />
+        </a>
       </xsl:if>
-      <ul>
-        <xsl:comment>added to prevent self-closing tags in QtXmlPatterns</xsl:comment>
-        <xsl:apply-templates select="outline:item"/>
-      </ul>
-    </li>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>

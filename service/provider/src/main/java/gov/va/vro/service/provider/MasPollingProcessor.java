@@ -31,11 +31,20 @@ public class MasPollingProcessor implements Processor {
 
     boolean isCollectionReady =
         masCollectionService.checkCollectionStatus(claimPayload.getCollectionId());
+    log.info(
+        "Collection status is {} for collection ID: {}, claim ID: {}, icn: {}",
+        isCollectionReady,
+        claimPayload.getCollectionId(),
+        claimPayload.getBenefitClaimId(),
+        claimPayload.getVeteranIcn());
 
     if (isCollectionReady) {
       camelEntrance.processClaim(claimPayload);
     } else {
-      log.info("Collection {} is not ready. Requeue..ing...", claimPayload.getCollectionId());
+      log.info(
+          "Collection {} is not ready. Retrying... {}",
+          claimPayload.getCollectionId(),
+          retryCounts);
       // re-request after some time
       camelEntrance.notifyAutomatedClaim(
           claimPayload, masDelays.getMasProcessingSubsequentDelay(), retryCounts - 1);

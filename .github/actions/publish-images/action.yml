@@ -4,19 +4,28 @@ description: Builds, tags, and publish VRO's Docker images
 inputs:
   access_token:
     description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
+    type: string
     required: true
-  target_env:
-    description: 'TARGET_ENV like dev or qa'
+  image_prefix:
+    description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
+    type: string
+    default: 'dev_'
+  image_tag:
+    description: 'The tag/version for the image, e.g., first 7 of the commit hash or "release-1.2.3"'
+    type: string
     required: true
   ghcr_username:
     description: 'GHCR username'
+    type: string
     required: true
   ghcr_password:
     description: 'GHCR password or access token'
+    type: string
     required: true
   run_tests:
     description: 'Run test before publishing images'
-    default: 'true'
+    type: boolean
+    default: true
 
 outputs:
   images_list:
@@ -33,7 +42,7 @@ runs:
         access_token: ${{ inputs.access_token }}
 
     - name: "Test code"
-      if: inputs.run_tests == 'true'
+      if: inputs.run_tests
       shell: bash
       run: ./gradlew check -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
 
@@ -46,22 +55,31 @@ runs:
 
     - name: "Tag and push images using commit hash and `latest`"
       shell: bash
-      env:
-        COMMIT_SHA: ${{ github.sha }}
-      run: ./scripts/tag-and-push-images.sh "${{ github.repository }}" "${COMMIT_SHA:0:7}" "${{ inputs.target_env }}"
+      run: |
+        source scripts/image_vars.src
+        for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+          GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
+          IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
+
+          echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:${{ inputs.image_tag }}' and '$IMG_NAME:latest'"
+          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}"
+          docker tag "$GRADLE_IMG_NAME" "ghcr.io/${{ github.repository }}/${IMG_NAME}:latest"
+
+          echo "Pushing all tags for image '$IMG_NAME'"
+          docker push --all-tags "ghcr.io/${{ github.repository }}/${IMG_NAME}"
+        done
 
     - name: "Published images list"
       id: published-images
       shell: bash
-      env:
-        COMMIT_SHA: ${{ github.sha }}
       run: |
         docker image list
-        IMG_TAG=${COMMIT_SHA:0:7}
         source scripts/image_vars.src
+        echo "## Published images" >> $GITHUB_STEP_SUMMARY
         echo "images<<EOF" >> $GITHUB_OUTPUT
-        for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-          IMG_NAME=${{ inputs.target_env }}_$(getVarValue "${PREFIX}" _IMG)
-          echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${IMG_TAG}" >> $GITHUB_OUTPUT
+        for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+          IMG_NAME=${{ inputs.image_prefix }}$(getVarValue "${VAR_PREFIX}" _IMG)
+          echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          echo "* ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
         done
         echo "EOF" >> $GITHUB_OUTPUT

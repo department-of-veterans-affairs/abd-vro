@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
@@ -17,7 +18,6 @@ import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
-import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -34,6 +34,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Collections;
 
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
+
+  private static final long DEFAULT_REQUEST_TIMEOUT = 120000;
 
   @Autowired CamelEntrance camelEntrance;
 
@@ -78,13 +80,27 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             .isPresent());
   }
 
-  private MasProcessingObject processClaim(boolean sufficientEvidence) throws Exception {
+  @Test
+  void processClaimInsufficientEvidenceAccessError() throws Exception {
+    var mpo = processClaim(null);
+    Thread.sleep(200);
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
+    assertTrue(
+        audits.stream()
+            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .findFirst()
+            .isPresent());
+  }
+
+  private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
 
     // Mock a return value when claim-submit (lighthouse) is invoked
     replaceEndpoint(
         "claim-submit",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
-            + "requestTimeout=60000&routingKey=code.hypertension",
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT
+            + "&routingKey=code.hypertension",
         "mock:claim-submit");
 
     mockClaimSubmit.whenAnyExchangeReceived(
@@ -98,7 +114,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "mas-processing",
         "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.hypertension&"
-            + "requestTimeout=60000",
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT,
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
@@ -113,7 +130,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "generate-pdf",
-        VroCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
+        RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
         "mock:empty-endpoint");
 
     replaceEndpoint(
@@ -138,9 +155,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     var response = camelEntrance.processClaim(payload);
 
     // verify if order exam was called based on the sufficient evidence flag
-    if (sufficientEvidence) {
+    if (sufficientEvidence == null) {
       Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
-    } else {
+    } else if (sufficientEvidence != null && sufficientEvidence == true) {
+      Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
+    } else if (sufficientEvidence != null && sufficientEvidence == false) {
       var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamRequest.class);
       Mockito.verify(masApiService, Mockito.times(1)).orderExam(argumentCaptor.capture());
       MasOrderExamRequest orderExamRequest = argumentCaptor.getValue();

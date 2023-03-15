@@ -1,10 +1,10 @@
 package gov.va.vro.abddataaccess.service;
 
-import gov.va.vro.abddataaccess.model.AbdBloodPressure;
-import gov.va.vro.abddataaccess.model.AbdBpMeasurement;
-import gov.va.vro.abddataaccess.model.AbdCondition;
-import gov.va.vro.abddataaccess.model.AbdMedication;
-import gov.va.vro.abddataaccess.model.AbdProcedure;
+import gov.va.vro.model.AbdBloodPressure;
+import gov.va.vro.model.AbdBpMeasurement;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.AbdProcedure;
 import org.hl7.fhir.r4.model.Annotation;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 
 /** It contains the functions to extract data from FHIR objects for Abd data models. */
 public class FieldExtractor {
+
+  private static final String SNOMED = "http://snomed.info";
+  private static final String MISSING = "*Missing*";
+
   private static String toDate(DateTimeType dateTimeType) {
     String value = dateTimeType.asStringValue();
     if (value == null) {
@@ -53,6 +57,25 @@ public class FieldExtractor {
   }
 
   /**
+   * Get the ICD code from a coding.
+   *
+   * @param code code
+   * @return valid ICD code
+   */
+  public static Coding getValidCoding(CodeableConcept code) {
+    if (code.hasCoding()) {
+      for (Coding coding : code.getCoding()) {
+        if (coding.hasCode()
+            && !coding.getSystem().trim().startsWith(SNOMED)
+            && !coding.getCode().startsWith(MISSING)) {
+          return coding;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * Creates an {@link AbdCondition} from a Fhir {@link Condition}.
    *
    * @param condition a Fhir Condition object.
@@ -63,13 +86,9 @@ public class FieldExtractor {
 
     if (condition.hasCode()) {
       CodeableConcept code = condition.getCode();
-      if (code.hasCoding()) {
-        Coding coding = code.getCodingFirstRep();
-
-        if (coding.hasCode()) {
-          result.setCode(coding.getCode());
-        }
-
+      Coding coding = getValidCoding(code);
+      if (coding != null) {
+        result.setCode(coding.getCode());
         if (coding.hasDisplay()) {
           result.setText(coding.getDisplay());
         }

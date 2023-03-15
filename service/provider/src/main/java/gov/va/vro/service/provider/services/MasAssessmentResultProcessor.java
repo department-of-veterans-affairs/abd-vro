@@ -19,6 +19,8 @@ public class MasAssessmentResultProcessor implements Processor {
   public void process(Exchange exchange) throws Exception {
     var evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
     String diagnosticCode = exchange.getProperty("diagnosticCode", String.class);
+    String idType = exchange.getProperty("idType", String.class);
+    evidence.setIdType(idType);
     if (diagnosticCode == null) {
       log.warn("Diagnostic Code was empty, exiting.");
       return;

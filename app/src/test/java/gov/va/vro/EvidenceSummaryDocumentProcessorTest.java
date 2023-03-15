@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -31,19 +32,24 @@ import java.nio.charset.StandardCharsets;
 @CamelSpringBootTest
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
-  @Value("classpath:test-data/pdf-generator-mas.json")
+  @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
   @Autowired protected ClaimRepository claimRepository;
+
+  Date icnTimestamp = new Date();
 
   @Test
   @DirtiesContext
   void positiveEvidenceSummaryDocumentProcessor() throws Exception {
     // Create veteran, claim, and contention and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    Date icnTimestamp = new Date();
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
+    // referenceId must match in the PDF requests sent later.
+    var claim = TestDataSupplier.createClaim(null, veteran, "1234");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 
@@ -73,12 +79,12 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
   @DirtiesContext
   void negativeEvidenceSummaryDocumentProcessorWrongDiagnosticCode() throws Exception {
     // Create veteran and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
 
     // Create a contention and set an invalid diagnostic code, then create claim and add.
     ContentionEntity contention = new ContentionEntity("1111");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    var claim = TestDataSupplier.createClaim(null, veteran, "refId");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class SlipClaimSubmitRouter {
 
-  private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+  private static final long DEFAULT_REQUEST_TIMEOUT = 120000;
   public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
   /**
@@ -33,7 +33,11 @@ public class SlipClaimSubmitRouter {
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
                 + "routingKey=code.%s&requestTimeout=%d",
             diagnosis, DEFAULT_REQUEST_TIMEOUT);
-    log.info("Routing to {}.", route);
+    log.info(
+        "Routing to {} for claim {} in collection {}",
+        route,
+        claim.getBenefitClaimId(),
+        claim.getCollectionId());
     return route;
   }
 

@@ -19,7 +19,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,13 +45,13 @@ import javax.crypto.spec.SecretKeySpec;
  * @author warren @Date 10/31/22
  */
 @Service
-@Conditional(BipConditions.HigherEnvCondition.class)
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
   private static final String CLAIM_DETAILS = "/claims/%s";
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CONTENTION = "/claims/%s/contentions";
+  private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   private static final String HTTPS = "https://";
 
@@ -83,9 +83,20 @@ public class BipApiService implements IBipApiService {
             bipResponse.getBody());
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
+    } catch (JsonProcessingException e) {
+      log.error("json processing error", e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (HttpStatusCodeException e) {
+      String message = "Failed to get claim info for claim ID " + claimId;
+      log.error(message, e);
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        throw new BipException(HttpStatus.BAD_REQUEST, message);
+      } else {
+        throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      }
+    } catch (RestClientException e) {
+      log.error("failed to update status to {} for claim {}.", claimId, e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -174,6 +185,20 @@ public class BipApiService implements IBipApiService {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public boolean verifySpecialIssueTypes() {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+    log.info("Call {} to get special_issue_types", url);
+
+    HttpHeaders headers = getBipHeader();
+    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+    ResponseEntity<String> response =
+        restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
   }
 
   private HttpHeaders getBipHeader() throws BipException {

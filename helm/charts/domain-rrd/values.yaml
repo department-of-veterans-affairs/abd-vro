@@ -1,0 +1,68 @@
+labels:
+  app: domain-rrd-services
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+replicaCount: 1
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+
+# The following are for secretKeyRef
+
+api:
+  apiKeySecret: api
+  apiKey01: apiKey01
+  apiKey02: apiKey02
+  vroNonProdKey: vroNonProd
+
+mas:
+  keyName: mas
+  masApiAuthClientId: masApiAuthClientId
+  masApiAuthClientSecret: masApiAuthClientSecret
+  masApiAuthScope: masApiAuthScope
+  masApiAuthTokenUri: masApiAuthTokenUri
+  masApiBaseUrl: masApiBaseUrl
+  masCollectionAnnotsPath: masCollectionAnnotsPath
+  masCollectionStatusPath: masCollectionStatusPath
+  masCreateExamOrderPath: masCreateExampOrderPath
+
+bip:
+  keyName: bip
+  bipApplicationId: bipApplicationId
+  bipApplicationIss: bipApplicationIss
+  bipClaimSecret: bipClaimSecret
+  bipClaimUrl: bipClaimUrl
+  bipClaimUserId: bipClaimUserId
+  bipEvidenceSecret: bipEvidenceSecret
+  bipEvidenceUrl: bipEvidenceUrl
+  bipEvidenceUserId: bipEvidenceUserId
+  bipStationId: bipStationId
+  bipKeyStore: bipKeystore
+  bipTrustStore: bipTruststore
+  bipPassword: bipPassword
+  bipAlias: bipAlias
+
+dataservice:
+  # TODO: change the secretKeyRefName's value to be more specific; must also update in all LHDI envs
+  secretKeyRefName: abd-vro
+  lhTokenUrl: lhTokenUrl
+  lhFhirUrl: lhFhirUrl
+  lhPrivateKey: lhPrivateKey
+  lhAssertionUrl: lhAssertionUrl
+  lhAccessClientId: lhAccessClientId
+#  lhApiAuthUrl: lhApiAuthUrl
+#  vroAudUrl: vroAudUrl
+#  lhVroApiKey: lhVroApiKey
+#  validateToken: validateToken
+#  slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
+#  slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK

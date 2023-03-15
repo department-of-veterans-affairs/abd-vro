@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +21,13 @@ public class ClaimRepositoryTest {
 
   @Test
   void test() {
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    Date icnTimestamp = new Date();
+    var REF_ID = "222";
+    var ID_TYPE = "TEST_TYPE";
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     assertNotNull(veteran.getIcn());
+    assertNotNull(veteran.getIcnTimestamp());
     assertNotNull(veteran.getCreatedAt());
     assertNotNull(veteran.getUpdatedAt());
     EvidenceSummaryDocumentEntity evidenceSummaryDocument1 = new EvidenceSummaryDocumentEntity();
@@ -43,12 +48,19 @@ public class ClaimRepositoryTest {
     contention1.addAssessmentResult(assessmentResult);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument1);
     contention1.addEvidenceSummaryDocument(evidenceSummaryDocument2);
-    var claim = TestDataSupplier.createClaim("123", "type", veteran);
+    var claim = TestDataSupplier.createClaim("123", veteran);
     claim.addContention(contention1);
+    var claimSubmission = TestDataSupplier.createClaimSubmission(claim, REF_ID, ID_TYPE);
+    claim.addClaimSubmission(claimSubmission);
     claim = claimRepository.save(claim);
     assertNotNull(claim.getId());
     assertNotNull(claim.getCreatedAt());
     assertNotNull(claim.getContentions().get(0));
     assertEquals(claim.getContentions().get(0).getDiagnosticCode(), "c1");
+    assertNotNull(claim.getClaimSubmissions());
+    var savedSubmission = claim.getClaimSubmissions().iterator().next();
+    assertNotNull(savedSubmission);
+    assertEquals(REF_ID, savedSubmission.getReferenceId());
+    assertEquals(ID_TYPE, savedSubmission.getIdType());
   }
 }

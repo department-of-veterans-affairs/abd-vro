@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Also used as the pod's prefix
+  name: vro-console
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: # must match the pod template's labels
+      {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        sidecar.istio.io/inject: "false"
+        {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.volume.pgdata.affinity" . | nindent 6 }}
+      containers:
+        - name: console{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-console:{{ include "vro.imageTag" . }}
+          stdin: true
+          tty: true
+          # Just spin & wait forever
+          command: [ "/bin/sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
+          env:
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
+            {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+          resources:
+            requests:
+              cpu: 10m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          volumeMounts:
+            {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
+            {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
+      volumes:
+        {{- include "vro.volumes.tracking" . | nindent 8 }}
+        - name: {{ .Values.global.pgdata.pvcName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.pvcClaimName.postgres }}

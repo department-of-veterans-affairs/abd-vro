@@ -1,14 +1,22 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.*;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
@@ -39,6 +47,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_AUTOMATED_CLAIM = "seda:automated-claim";
 
+  public static final String IMVP_EXCHANGE = "imvp";
+  public static final String NOTIFY_AUTOMATED_CLAIM_QUEUE = "notifyAutomatedClaim";
+
   public static final String ENDPOINT_EXAM_ORDER_STATUS = "direct:exam-order-status";
 
   public static final String MAS_DELAY_PARAM = "masDelay";
@@ -58,6 +69,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_OFFRAMP = "seda:offramp";
 
+  public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
+
+  public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
+
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
@@ -71,6 +86,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final MasPollingProcessor masPollingProcessor;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
+
+  private final MasAccessErrProcessor masAccessErrProcessor;
 
   private final MasCollectionService masCollectionService;
   private final MasAssessmentResultProcessor masAssessmentResultProcessor;
@@ -92,28 +109,45 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureAutomatedClaim() {
+    RabbitMqCamelUtils.fromRabbitmq(this, IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE)
+        .setExchangePattern(ExchangePattern.InOnly)
+        .routeId("mas-request-injection")
+        .convertBodyTo(MasAutomatedClaimPayload.class)
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .to(ENDPOINT_AUTOMATED_CLAIM);
+
+    final String DIRECT_TO_MQ_MAS = "direct:toMq-mas-notification";
+    final String MAS_NOTIFICATION_EXCHANGE = "mas-notification-exchange";
+    final String MAS_NOTIFICATION_ROUTING_KEY = "mas-notification";
+    RabbitMqCamelUtils.addToRabbitmqRoute(
+        this,
+        DIRECT_TO_MQ_MAS,
+        MAS_NOTIFICATION_EXCHANGE,
+        MAS_NOTIFICATION_ROUTING_KEY,
+        "&requestTimeout=0");
+
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-        .wireTap(VroCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
+        // Msg body is still a MasAutomatedClaimPayload
         .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
-        .to(ENDPOINT_MAS);
+        .to(DIRECT_TO_MQ_MAS);
 
     var processClaimRouteId = "mas-claim-processing";
-    from(ENDPOINT_MAS)
+    RabbitMqCamelUtils.fromRabbitmq(this, MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY)
         .routeId(processClaimRouteId)
+        // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
         .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
         .process(masPollingProcessor)
-        .setExchangePattern(ExchangePattern.InOnly);
+        .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
 
   private void configureMasProcessing() {
     String routeId = "mas-processing";
-
-    String orderExamEndpoint = "direct:order-exam";
 
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
@@ -121,22 +155,35 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("idType", simple("${body.idType}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
+        // TODO remove unmarshal calls if possible: unmarshalling should be automatic
         .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
-        // Conditionally order exam
-        .to(orderExamEndpoint)
-        // Upload PDF
+        .choice()
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
+        // Order Exam only if the Sufficient For Fast Tracking is "false"
+        .to(ENDPOINT_ORDER_EXAM)
+        // Upload PDF only if SufficientForFastTracking is either true or false
         .to(ENDPOINT_UPLOAD_PDF)
         // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE);
+        .to(ENDPOINT_MAS_COMPLETE)
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
+        // Upload PDF only if SufficientForFastTracking is either true or false
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
+        .to(ENDPOINT_MAS_COMPLETE)
+        .otherwise()
+        // Off ramp if the Sufficient For Fast Tracking is null
+        .to(ENDPOINT_ACCESS_ERR)
+        .end();
 
-    // Call "Order Exam" in the absence of evidence
+    // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    from(orderExamEndpoint)
+    from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
         .routeId(orderExamRouteId)
         .choice()
@@ -147,6 +194,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .log("MAS Order Exam response: ${body}")
         .end();
+
+    // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
+    var assessorErrorRouteId = "assessorError";
+    from(ENDPOINT_ACCESS_ERR)
+        .routeId(assessorErrorRouteId)
+        .log("Assessor Error. Off-ramping claim")
+        .process(masAccessErrProcessor)
+        .wireTap(ENDPOINT_OFFRAMP)
+        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
+        .to(ENDPOINT_MAS_COMPLETE);
   }
 
   private void configureCollectEvidence() {
@@ -163,7 +220,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(lighthouseEndpoint) // call Lighthouse
         .end() // end multicast
-        .process(combineExchangesProcessor()); // returns HealthDataAssessment
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(lighthouseEndpoint)
         .routeId("mas-automated-claim-lighthouse")
@@ -197,7 +255,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(VroCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
@@ -211,7 +269,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Removing Special Issue"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
         .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking}"))
+        // Mark the claim as "RFD" only if the Sufficient For Fast Tracking is "true"
+        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
         .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))

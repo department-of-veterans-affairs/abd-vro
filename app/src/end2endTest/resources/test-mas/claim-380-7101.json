@@ -1,0 +1,30 @@
+{
+  "dob": "1970-02-19",
+  "firstName": "Michael",
+  "lastName": "Streetwalker",
+  "gender": "male",
+  "collectionId": 380,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986377",
+    "ssn": "111-11-1375",
+    "veteranFileId": "9999380",
+    "edipn": "1010234-375",
+    "participantId": "88888375"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1015",
+    "claimSubmissionDateTime": "2023-01-05Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375",
+    "Agent Orange Exposure Verified"
+  ]
+}

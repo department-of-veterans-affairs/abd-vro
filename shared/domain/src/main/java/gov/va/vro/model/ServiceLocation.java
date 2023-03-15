@@ -20,7 +20,7 @@ public class ServiceLocation {
       example = "VA 21-3101 Request for Information")
   private String document;
 
-  @Schema(description = "Receipt date", example = "01/01/2023")
+  @Schema(description = "Receipt date", example = "1999-12-31")
   private String receiptDate;
 
   @Schema(description = "Page", example = "1")

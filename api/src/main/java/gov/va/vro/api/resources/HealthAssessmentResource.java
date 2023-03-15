@@ -27,22 +27,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v2", produces = "application/json")
-@SecurityRequirement(name = "Bearer Authentication")
-@SecurityScheme(
-    name = "Bearer Authentication",
-    type = SecuritySchemeType.HTTP,
-    bearerFormat = "JWT",
-    scheme = "bearer",
-    in = SecuritySchemeIn.HEADER)
+@SecurityRequirement(name = "X-API-Key")
+@SecurityScheme(name = "X-API-Key", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @Timed
 public interface HealthAssessmentResource {
 
   @Operation(
       summary = "Provides health data assessment",
       description =
-          "This endpoint has the same functionality as v1/full-health-data-assessment.  "
-              + "This is the v2 version which just has a different name and uses "
-              + "different security.")
+          "This endpoint has the same functionality as v1/full-health-data-assessment, although "
+              + "it will only get a health assessment for claims submitted to v2 endpoints. "
+              + "To see v1 claims, use the v1/full-health-assessment endpoint.")
   @PostMapping("/health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(

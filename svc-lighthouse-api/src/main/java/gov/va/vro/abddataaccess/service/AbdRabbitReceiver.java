@@ -1,8 +1,8 @@
 package gov.va.vro.abddataaccess.service;
 
 import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.abddataaccess.model.AbdEvidence;
 import gov.va.vro.abddataaccess.model.AbdResponse;
+import gov.va.vro.model.AbdEvidence;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,10 @@ public class AbdRabbitReceiver {
 
   @RabbitListener(queues = "${abd-data-access.rabbitmq.claim-submit-queue}")
   AbdResponse receiveMessage(AbdClaim claim) {
-    log.info("Claim submission for icn={}", claim.getVeteranIcn());
+    log.info(
+        "Claim submission for icn={}, claim={}",
+        claim.getVeteranIcn(),
+        claim.getClaimSubmissionId());
     try {
       AbdEvidence evidence = client.getMedicalEvidence(claim);
       AbdResponse response = new AbdResponse(claim, evidence);

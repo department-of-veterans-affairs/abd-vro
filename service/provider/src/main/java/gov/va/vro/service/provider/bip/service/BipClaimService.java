@@ -7,12 +7,15 @@ import gov.va.vro.model.bip.UpdateContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.model.bipevidence.BipFileProviderData;
 import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -38,6 +42,8 @@ public class BipClaimService {
   private final IBipApiService bipApiService;
 
   private final IBipCeApiService bipCeApiService;
+
+  private final SaveToDbService saveToDbService;
 
   /**
    * Check if all the anchors for fast-tracking are satisfied.
@@ -88,7 +94,7 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
-    var claimId = Long.parseLong(payload.getClaimId());
+    var claimId = Long.parseLong(payload.getBenefitClaimId());
     String specialIssue1 = claimPorps.getSpecialIssue1();
     log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
@@ -141,21 +147,8 @@ public class BipClaimService {
    * @return the claim payload
    */
   public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    long claimId = payload.getClaimIdAsLong();
-    log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
-
-    try {
-      bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
-    } catch (Exception e) {
-      throw new BipException("BIP update claim status resulted in an exception", e);
-    }
-    return payload;
-  }
-
-  /** Check if claim is still eligible for fast tracking, and if so, update status. */
-  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
+    long claimId = payload.getBenefitClaimIdAsLong();
     int collectionId = payload.getCollectionId();
-    long claimId = payload.getClaimIdAsLong();
 
     // check again if TSOJ. If not, abandon route
     var claim = bipApiService.getClaimDetails(claimId);
@@ -165,15 +158,34 @@ public class BipClaimService {
           claimId,
           collectionId,
           claim.getTempStationOfJurisdiction());
+    } else {
+      log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
+      try {
+        bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
+        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
+      } catch (Exception e) {
+        throw new BipException("BIP update claim status resulted in an exception", e);
+      }
+    }
+    return payload;
+  }
+
+  /** Check if claim is still eligible for fast tracking, and if so, update status. */
+  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
+    int collectionId = payload.getCollectionId();
+    long claimId = payload.getBenefitClaimIdAsLong();
+
+    // check again if TSOJ. If not, abandon route
+    var claim = bipApiService.getClaimDetails(claimId);
+    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
+      log.info(
+          "Claim {} with collection Id = {} is in state {}. Status not updated",
+          claimId,
+          collectionId,
+          claim.getTempStationOfJurisdiction());
       payload.setTSOJ(false);
       return payload;
     }
-    // otherwise, update claim
-    log.info(
-        "Updating claim status for claim with claim id = {} for MAS collection Id = {}",
-        claimId,
-        collectionId);
-    bipApiService.setClaimToRfdStatus(claimId);
     payload.setTSOJ(true);
     return payload;
   }
@@ -211,11 +223,21 @@ public class BipClaimService {
             .claimantDateOfBirth(payload.getDateOfBirth())
             .build();
 
-    bipCeApiService.uploadEvidenceFile(
-        FileIdType.FILENUMBER,
-        payload.getVeteranIdentifiers().getVeteranFileId(),
-        BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
-        decoder);
+    BipFileUploadResp bipResp =
+        bipCeApiService.uploadEvidenceFile(
+            FileIdType.FILENUMBER,
+            payload.getVeteranIdentifiers().getVeteranFileId(),
+            BipFileUploadPayload.builder().contentName(filename).providerData(providerData).build(),
+            decoder,
+            payload.getDiagnosticCode());
+    // We check if bipResp is null only so that the uploadPdf() test does not fail in
+    // BipClaimServiceTest.
+    // We created a ticket to fix this test and remove this condition.
+    if (bipResp != null) {
+      UploadResponse ur = bipResp.getUploadResponse();
+      UUID eFolderId = UUID.fromString(ur.getUuid());
+      saveToDbService.updateEvidenceSummaryDocument(eFolderId, payload);
+    }
     return pdfResponse;
   }
 

@@ -1,166 +1,89 @@
 {
-  "veteranIcn": "9000682",
+  "claimSubmissionId": "7002",
   "diagnosticCode": "6602",
   "evidence": {
     "medications": [
       {
-        "status": "Active",
-        "description": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler",
-        "refills": 0,
-        "asthmaRelevant": true,
-        "authoredOn": "1952-04-12T04:00:00Z",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "description": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler",
-        "refills": 0,
-        "asthmaRelevant": true,
-        "authoredOn": "1952-04-12T04:00:00Z",
-        "dosageInstructions": [
-          "QID PRN"
-        ],
-        "route": "INHALATION ORAL",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
-        ],
-        "description": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler",
-        "refills": 0,
-        "asthmaRelevant": true,
-        "authoredOn": "1952-04-12T12:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
-        ],
-        "description": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler",
-        "refills": 0,
-        "asthmaRelevant": true,
-        "authoredOn": "1952-04-12T12:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "Naproxen sodium 220 MG Oral Tablet"
-        ],
-        "description": "Naproxen sodium 220 MG Oral Tablet",
-        "refills": 0,
         "asthmaRelevant": false,
-        "authoredOn": "2014-11-27T13:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "Ibuprofen 200 MG Oral Tablet"
-        ],
-        "description": "Ibuprofen 200 MG Oral Tablet",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "2012-11-16T13:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "Acetaminophen 160 MG"
-        ],
-        "description": "Acetaminophen 160 MG",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "2009-08-04T12:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
-        "route": "As directed by physician.",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "description": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "1953-04-26T04:00:00Z",
-        "dataSource": "LH"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet"
-        ],
-        "description": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "1953-04-26T12:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
-          "As directed by physician."
-        ],
+        "authoredOn": "2009-08-06T13:17:22Z",
         "dataSource": "LH",
-        "route": "As directed by physician."
-      },
-      {
-        "status": "Active",
-        "description": "Hydrochlorothiazide 6.25 MG",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "1950-04-06T04:00:00Z",
+        "description": "Levothyroxine Sodium 0.075 MG Oral Tablet",
         "dosageInstructions": [
-          "QD"
-        ],
-        "dataSource": "LH",
-        "route": "ORAL"
-      },
-      {
-        "status": "Active",
-        "notes": [
-          "Hydrochlorothiazide 6.25 MG"
-        ],
-        "description": "Hydrochlorothiazide 6.25 MG",
-        "refills": 0,
-        "asthmaRelevant": false,
-        "authoredOn": "1950-04-06T12:24:55Z",
-        "dosageInstructions": [
-          "Once per day.",
+          "Take 1 time(s) every 60.0 day(s) - spread out evenly.",
           "As directed by physician."
         ],
+        "notes": [
+          "Levothyroxine Sodium 0.075 MG Oral Tablet"
+        ],
+        "refills": 0,
         "route": "As directed by physician.",
-        "dataSource": "LH"
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Clopidogrel 75 MG Oral Tablet",
+        "notes": [
+          "Clopidogrel 75 MG Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet",
+        "notes": [
+          "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Simvastatin 20 MG Oral Tablet",
+        "refills": 3,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray",
+        "refills": 1,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "1999-01-20T15:27:05Z",
+        "dataSource": "LH",
+        "description": "Sertraline 100 MG Oral Tablet",
+        "notes": [
+          "Sertraline 100 MG Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "1999-01-20T15:27:05Z",
+        "dataSource": "LH",
+        "description": "Acetaminophen/Hydrocodone",
+        "notes": [
+          "Acetaminophen/Hydrocodone"
+        ],
+        "refills": 0,
+        "status": "Active"
       }
     ]
   },
   "evidenceSummary": {
-    "relevantMedCount": 4,
-    "totalMedCount": 11
+    "relevantMedCount": 0,
+    "totalMedCount": 7
   },
-  "claimSubmissionId": "7002",
-  "sufficientForFastTracking": false
+  "veteranIcn": "9000682"
 }

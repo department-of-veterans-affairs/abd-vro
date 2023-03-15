@@ -1,0 +1,243 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Also used as the pod's prefix
+  name: vro-app
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+  annotations:
+    app.kubernetes.io/owner: {{ .Values.owner }}
+    app.kubernetes.io/name: {{ .Values.name }}
+    app.kubernetes.io/version: {{ .Values.global.version | quote }}
+    app.kubernetes.io/env: {{ .Values.global.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+        app.kubernetes.io/podowner: {{ .Values.owner }}
+        app.kubernetes.io/podname: {{ .Values.name }}
+        app.kubernetes.io/podversion: {{ .Values.global.version | quote }}
+        app.kubernetes.io/podenv: {{ .Values.global.environment }}
+    spec:
+      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        - name: pg-isready{{ include "vro.containerSuffix" . }}
+          # TODO: This simple container does not need to use the big `db` image
+          image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
+          env:
+            - name: POSTGRES_FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
+                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgres.secretKeyRef.name }}
+                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /bin/sh -c "
+                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
+                  echo 'Waiting for Postgres DB to be available'
+                  sleep 5
+                done
+              "
+          resources:
+            # TODO: reduce resources since this container requires very little
+            limits:
+              cpu: 10m
+              memory: 256Mi
+        - name: dbinit{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
+          env:
+            {{- include "vro.flyway.envVars" . | nindent 12 }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+      containers:
+        - name: app{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-app:{{ include "vro.imageTag" . }}
+          ports: {{- toYaml .Values.ports | nindent 12 }}
+            - containerPort: {{ .Values.global.service.app.sourcePort }}
+              protocol: TCP
+              name: http
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
+          env:
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
+            - name: apiAuthKey01
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey01 }}
+            - name: apiAuthKey02
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.apiKeySecret}}
+                  key: {{ .Values.api.apiKey02 }}
+            - name: LH_API_AUTH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.lhApiAuthUrl }}
+            - name: SLACK_EXCEPTION_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.slackExceptionChannel }}
+            - name: SLACK_EXCEPTION_WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.slackExceptionWebhook }}
+            - name: VRO_AUD_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.vroAudUrl }}
+            - name: LH_VRO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.lhVroApiKey }}
+            - name: VALIDATE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dataservice.secretKeyRefName }}
+                  key: {{ .Values.dataservice.validateToken }}
+            - name: JAVA_OPTS
+              value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.global.tracking.mountPath }}
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: /{{ .Values.global.serviceUriPrefix }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.global.serviceUriPrefix }}
+
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
+            {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+
+            - name: MAS_API_AUTH_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientId }}
+            - name: MAS_API_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthClientSecret }}
+            - name: MAS_API_AUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthScope }}
+            - name: MAS_API_AUTH_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BAS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masApiBaseUrl }}
+            - name: MAS_COLLECTION_ANNOTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionAnnotsPath }}
+            - name: MAS_COLLECTION_STATUS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCollectionStatusPath }}
+            - name: MAS_CREATE_EXAM_ORDER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mas.keyName }}
+                  key: {{ .Values.mas.masCreateExamOrderPath }}
+
+            - name: BIP_APPLICATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationId }}
+            - name: BIP_APPLICATION_ISS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipApplicationIss }}
+            - name: BIP_CLAIM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimSecret }}
+            - name: BIP_CLAIM_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUrl }}
+            - name: BIP_CLAIM_USERID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipClaimUserId }}
+            - name: BIP_EVIDENCE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceSecret }}
+            - name: BIP_EVIDENCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUrl }}
+            - name: BIP_EVIDENCE_USERID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipEvidenceUserId }}
+            - name: BIP_STATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipStationId }}
+            - name: BIP_KEYSTORE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipKeyStore }}
+            - name: BIP_TRUSTSTORE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipTrustStore }}
+            - name: BIP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bip.keyName }}
+                  key: {{ .Values.bip.bipPassword }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          volumeMounts:
+            {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
+      volumes:
+        {{- include "vro.volumes.tracking" . | nindent 8 }}

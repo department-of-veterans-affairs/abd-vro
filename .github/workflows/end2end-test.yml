@@ -1,4 +1,4 @@
-name: End-to-end test
+name: "PR: End-to-end test for v2"
 
 on:
   pull_request:
@@ -8,15 +8,23 @@ on:
 
   # When changes are pushed to special branches
   push:
-    branches: [main, qa, develop]
+    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+    branches: [main, qa]
 
   # Allow manual triggering
   workflow_dispatch:
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: end2end-${{ github.ref }}
 
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
+  MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
 
 jobs:
   end2end-test:
@@ -33,6 +41,7 @@ jobs:
       - name: "Start the containers"
         run: |
           source scripts/setenv.sh
+          export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
           export -p | sed 's/declare -x //'
           ./gradlew :app:dockerComposeUp
         env:

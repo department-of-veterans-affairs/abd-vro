@@ -1,10 +1,10 @@
 import pytest
 
-from assessclaimdc7101.src.lib import continuous_medication
+from assessclaimdc7101.src.lib import medications
 
 
 @pytest.mark.parametrize(
-    "request_body, continuous_medication_required_calculation",
+    "request_body, medication_required_calculation",
     [
         (
             {
@@ -128,20 +128,20 @@ from assessclaimdc7101.src.lib import continuous_medication
         ),
     ],
 )
-def test_continuous_medication_required(
-    request_body, continuous_medication_required_calculation
+def test_medication_required(
+    request_body, medication_required_calculation
 ):
     """
-    Test the history of continuous medication required algorithm
+    Test the medication algorithm
 
-    :param request_body: request body with blood pressure readings and other data
+    :param request_body: request body with medications
     :type request_body: dict
-    :param continuous_medication_required_calculation: correct return value from algorithm
-    :type continuous_medication_required_calculation: dict
+    :param medication_required_calculation: correct return value from algorithm
+    :type medication_required_calculation: dict
     """
     assert (
-        continuous_medication.continuous_medication_required(request_body)
-        == continuous_medication_required_calculation
+        medications.medication_required(request_body)
+        == medication_required_calculation
     )
 
 
@@ -158,6 +158,8 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
@@ -171,7 +173,8 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
+                            "receiptDate": "",
+                            "dataSource": "MAS"
                         }
                     ],
                     "medicationsCount": 1,
@@ -187,6 +190,8 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
@@ -200,7 +205,8 @@ def test_continuous_medication_required(
                             "dateFormatted": "4/6/2020",
                             "description": "Benazepril",
                             "status": "active",
-                            "partialDate": ""
+                            "receiptDate": "",
+                            "dataSource": "MAS"
                         }
                     ],
                     "medicationsCount": 1,
@@ -216,6 +222,9 @@ def test_continuous_medication_required(
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
+
                             }
                         ]
                     },
@@ -236,17 +245,23 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "",
+                                "receiptDate": "",
+                                "dataSource": "MAS"
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
+                                "receiptDate": "",
                                 "authoredOn": "2021-04-06T04:00:00Z",
+                                "dataSource": "LH"
                             },
                             {
                                 "description": "some medication",
                                 "status": "active",
                                 "authoredOn": "",
-                                "partialDate": "**/**/1988"
+                                "receiptDate": "",
+                                "partialDate": "**/**/1988",
+                                "dataSource": "MAS"
                             },
                         ],
                     },
@@ -256,28 +271,24 @@ def test_continuous_medication_required(
                 {
                     "medications": [
                         {
-                            "description": "Advil",
-                            "status": "active",
-                            "dateFormatted": "4/6/2021",
-                            "authoredOn": "2021-04-06T04:00:00Z",
-                            "partialDate": ""
-                        },
-                        {
                             "description": "Benazepril",
                             "status": "active",
                             "dateFormatted": "",
+                            "receiptDate": "",
                             "authoredOn": "",
-                            "partialDate": ""
+                            "dataSource": "MAS"
                         },
                         {
                             "description": "some medication",
                             "status": "active",
                             "authoredOn": "",
+                            "receiptDate": "",
                             "dateFormatted": "",
-                            "partialDate": "**/**/1988"
+                            "partialDate": "**/**/1988",
+                            "dataSource": "MAS"
                         },
                     ],
-                    "medicationsCount": 3,
+                    "medicationsCount": 2,
                 },
         ),
         (
@@ -296,6 +307,6 @@ def test_continuous_medication_required(
 def test_filter_mas_medication(request_body, mas_medication_calculation):
 
     assert (
-            continuous_medication.filter_mas_medication(request_body)
+            medications.filter_mas_medication(request_body)
             == mas_medication_calculation
     )
