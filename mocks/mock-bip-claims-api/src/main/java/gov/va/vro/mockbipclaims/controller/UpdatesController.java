@@ -1,7 +1,9 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
-import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
+import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,16 +35,26 @@ public class UpdatesController implements UpdatesApi {
   }
 
   @Override
-  public ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
-    boolean found = store.isLifecycleStatusUpdated(claimId);
-    UpdatesResponse body = new UpdatesResponse(found);
+  public ResponseEntity<LifecycleUpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
+    ClaimStoreItem item = claimStore.get(claimId);
+    boolean found = (item != null && store.isLifecycleStatusUpdated(claimId));
+    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
+    if (found) {
+      String status = item.getClaimDetail().getClaimLifecycleStatus();
+      body.setStatus(status);
+    }
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 
   @Override
-  public ResponseEntity<UpdatesResponse> getContentionsUpdates(Long claimId) {
-    boolean found = store.isContentionsUpdated(claimId);
-    UpdatesResponse body = new UpdatesResponse(found);
+  public ResponseEntity<ContentionUpdatesResponse> getContentionsUpdates(Long claimId) {
+    ClaimStoreItem item = claimStore.get(claimId);
+    boolean found = (item != null && store.isContentionsUpdated(claimId));
+    ContentionUpdatesResponse body = new ContentionUpdatesResponse(found);
+    if (found) {
+      List<ContentionSummary> contentions = item.getContentions();
+      body.setContentions(contentions);
+    }
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 }

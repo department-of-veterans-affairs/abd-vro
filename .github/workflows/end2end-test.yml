@@ -23,7 +23,7 @@ concurrency:
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
-  SLACK_EXCEPTION_WEBHOOK: ${{ secrets.SLACK_EXCPTN_WEBHOOK_NONPROD }}
+  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:9008/slack-messages"
   MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
 
 jobs:
