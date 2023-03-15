@@ -152,10 +152,21 @@ public class MasIntegrationProcessors {
     };
   }
 
+  /**
+   * This sets up a skeleton lighthouse HealthDataAsessment object in the event of a timeout from
+   * lighthouse. We know the fields we MUST have for evidence merge from the properties we saved on
+   * the exchange.
+   *
+   * @return
+   */
   public static Processor lighthouseContinueProcessor() {
     return exchange -> {
+      MasProcessingObject mpo = exchange.getProperty("payload", MasProcessingObject.class);
       HealthDataAssessment hda = new HealthDataAssessment();
       hda.setSource(HealthAssessmentSource.LIGHTHOUSE);
+      hda.setDiagnosticCode(mpo.getDiagnosticCode());
+      hda.setClaimSubmissionId(Integer.toString(mpo.getCollectionId()));
+      hda.setVeteranIcn(mpo.getVeteranIcn());
       exchange.getMessage().setBody(hda);
     };
   }
