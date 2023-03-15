@@ -83,7 +83,7 @@ public class MockSlackAppTest {
   }
 
   @Test
-  void collectionIdNotANumberTest() {
+  void collectionIdNotNumberTest() {
     try {
       postSlackMessage("the collection id = not a number");
       fail("Expected a bad request");
