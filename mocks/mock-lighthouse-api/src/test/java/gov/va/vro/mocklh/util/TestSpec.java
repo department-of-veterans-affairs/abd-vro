@@ -24,6 +24,12 @@ public class TestSpec {
     return getBaseUrl(port) + "/token";
   }
 
+  /**
+   * Get URL
+   *
+   * @param port port
+   * @return URL
+   */
   public String getUrl(int port) {
     String baseUrl = "http://localhost:" + port;
 

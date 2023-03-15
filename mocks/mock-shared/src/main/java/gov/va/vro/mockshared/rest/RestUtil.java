@@ -17,6 +17,13 @@ import java.security.KeyStore;
 import javax.net.ssl.SSLContext;
 
 public class RestUtil {
+  /**
+   * Get HTTP Rest template.
+   *
+   * @param builder builder
+   * @param spec spec
+   * @return Rest template request factory
+   */
   @SneakyThrows
   public static RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder, KeystoreSpec spec) {
     KeyStore keyStore = spec.getKeystore();
@@ -37,6 +44,12 @@ public class RestUtil {
     return new RestTemplate(requestFactory);
   }
 
+  /**
+   * Get servlet container.
+   *
+   * @param httpPort HTTP port
+   * @return tomcat webserver factory
+   */
   public static ServletWebServerFactory getServletContainer(int httpPort) {
     Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
     connector.setPort(httpPort);

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdatesResponse {
+public class LifecycleUpdatesResponse {
   private boolean found;
+  private String status;
 }

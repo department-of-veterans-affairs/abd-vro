@@ -1,6 +1,7 @@
 package gov.va.vro.mockbipclaims.api;
 
-import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -52,14 +53,14 @@ public interface UpdatesApi {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = UpdatesResponse.class))
+                  schema = @Schema(implementation = LifecycleUpdatesResponse.class))
             })
       })
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/updates/{claimId}/lifecycle_status",
       produces = {"application/json"})
-  ResponseEntity<UpdatesResponse> getLifecycleStatusUpdates(
+  ResponseEntity<LifecycleUpdatesResponse> getLifecycleStatusUpdates(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",
@@ -82,14 +83,14 @@ public interface UpdatesApi {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = UpdatesResponse.class))
+                  schema = @Schema(implementation = LifecycleUpdatesResponse.class))
             })
       })
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/updates/{claimId}/contentions",
       produces = {"application/json"})
-  ResponseEntity<UpdatesResponse> getContentionsUpdates(
+  ResponseEntity<ContentionUpdatesResponse> getContentionsUpdates(
       @Parameter(
               name = "claimId",
               description = "The CorpDB BNFT_CLAIM_ID",

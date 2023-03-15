@@ -11,7 +11,8 @@ import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
-import gov.va.vro.mockbipclaims.model.mock.response.UpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
 import gov.va.vro.mockshared.jwt.JwtGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -162,7 +163,8 @@ public class TestHelper {
    */
   public boolean isLifecycleStatusUpdated(TestSpec spec) {
     String url = spec.getUrl("/updates/" + spec.getClaimId() + "/lifecycle_status");
-    UpdatesResponse response = restTemplate.getForObject(url, UpdatesResponse.class);
+    LifecycleUpdatesResponse response =
+        restTemplate.getForObject(url, LifecycleUpdatesResponse.class);
     return response.isFound();
   }
 
@@ -174,7 +176,8 @@ public class TestHelper {
    */
   public boolean isContentionsUpdated(TestSpec spec) {
     String url = spec.getUrl("/updates/" + spec.getClaimId() + "/contentions");
-    UpdatesResponse response = restTemplate.getForObject(url, UpdatesResponse.class);
+    ContentionUpdatesResponse response =
+        restTemplate.getForObject(url, ContentionUpdatesResponse.class);
     return response.isFound();
   }
 

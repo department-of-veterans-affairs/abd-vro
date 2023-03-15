@@ -44,6 +44,11 @@ public class JwtSpecification extends DefaultClaims {
     return SignatureAlgorithm.HS256;
   }
 
+  /**
+   * Get signing key.
+   *
+   * @return cryptographic key
+   */
   public Key getSigningKey() {
     SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
     byte[] secretBytes = getSecret().getBytes(StandardCharsets.UTF_8);
