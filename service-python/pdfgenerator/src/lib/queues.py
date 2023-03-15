@@ -15,19 +15,28 @@ GENERATE_FETCH_QUEUE = queue_config["generate_fetch_queue_name"]
 
 
 def on_generate_callback(channel, method, properties, body):
+    """Gets called when messages arrive in the GENERATE_QUEUE
+    :param channel: Object to make further modifications like adding queues, publishing, etc.
+    :type channel: pika.channel.Channel
+    :param method: Details on how the data was passed to the queue
+    :type method: pika.spec.Basic.Deliver
+    :param properties: Additional data used for replying and correlating messages
+    :type properties: pika.spec.BasicProperties
+    :param body: Request data that's passed to the PDF for generation
+    :type body: bytes
+    """
+
     try:
         redis_client = RedisClient(redis_config)
         pdf_generator = PDFGenerator(pdf_options)
 
         message = json.loads(body)
-        # logging.info(f" Received message: {message}")
         claim_id = message["claimSubmissionId"]
         diagnosis_code = message["diagnosticCode"]
         message["veteran_info"] = message["veteranInfo"]
         pdf_template = message['pdfTemplate']
         template_name = codes[diagnosis_code] + "-" + pdf_template
         variables = pdf_generator.generate_template_variables(template_name, message)
-        # logging.info(f"Variables: {variables}")
         template = pdf_generator.generate_template_file(template_name, variables)
         pdf = pdf_generator.generate_pdf_from_string(template_name, template, variables)
         redis_client.save_hash_data(f"{claim_id}-pdf", mapping={"contents": base64.b64encode(pdf).decode("ascii"), "diagnosis": codes[diagnosis_code]})
@@ -47,6 +56,17 @@ def on_generate_callback(channel, method, properties, body):
 
 
 def on_fetch_callback(channel, method, properties, body):
+    """Gets called when messages arrive in the FETCH_QUEUE
+    :param channel: Object to make further modifications like adding queues, publishing, etc.
+    :type channel: pika.channel.Channel
+    :param method: Details on how the data was passed to the queue
+    :type method: pika.spec.Basic.Deliver
+    :param properties: Additional data used for replying and correlating messages
+    :type properties: pika.spec.BasicProperties
+    :param body: Request data that's passed to the PDF for generation
+    :type body: bytes
+    """
+
     try:
         redis_client = RedisClient(redis_config)
         binding_key = method.routing_key
@@ -67,6 +87,11 @@ def on_fetch_callback(channel, method, properties, body):
 
 
 def queue_setup(channel):
+    """Gets called wby the main_consumer to setup all the available queues and their callbacks
+    :param channel: Object to make further modifications like adding queues, publishing, etc.
+    :type channel: pika.channel.Channel
+    """
+
     channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
     # Generate PDF Queue
     channel.queue_declare(queue=GENERATE_QUEUE, durable=True, auto_delete=True)

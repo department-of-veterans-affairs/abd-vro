@@ -1,0 +1,20 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 0,
+  "link": [
+    {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986500&_count=100&page=1"
+    },
+    {
+      "relation": "self",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986500&_count=100&page=1"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=mock1012666073V986500&_count=100&page=1"
+    }
+  ],
+  "entry": []
+}

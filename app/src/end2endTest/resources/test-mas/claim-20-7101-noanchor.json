@@ -1,18 +1,18 @@
 {
   "dob": "2000-02-19",
   "firstName": "Rick",
-  "lastName": "Smith",
-  "gender": "string",
-  "collectionId": 351,
+  "lastName": "Noanchor",
+  "gender": "make",
+  "collectionId": 20,
   "veteranIdentifiers": {
-    "icn": "9000682",
-    "ssn": "111-11-1111",
-    "veteranFileId": "string",
-    "edipn": "string",
-    "participantId": "participant1"
+    "icn": "icn-not-needed-20",
+    "ssn": "020-11-1111",
+    "veteranFileId": "file-id-not-needed-020",
+    "edipn": "edipn-20",
+    "participantId": "participant-id-020"
   },
   "claimDetail": {
-    "benefitClaimId": "2010",
+    "benefitClaimId": "3020",
     "claimSubmissionDateTime": "2018-11-04T17:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
@@ -24,6 +24,6 @@
     }
   },
   "veteranFlashIds": [
-    "999"
+    "Agent Orange Exposure Verified"
   ]
 }
