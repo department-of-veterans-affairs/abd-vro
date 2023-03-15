@@ -250,7 +250,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
-            // If an error comes back in the healthAssessmentObject that is okay, we just let it flow through this time.
+        // If an error comes back in the healthAssessmentObject that is okay, we just let it flow
+        // through this time.
         .endDoCatch();
   }
 
