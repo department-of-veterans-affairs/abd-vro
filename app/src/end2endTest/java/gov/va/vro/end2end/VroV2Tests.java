@@ -231,17 +231,17 @@ public class VroV2Tests {
     return request;
   }
 
+  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    return startAutomatedClaim(spec);
+  }
+
   private AutomatedClaimTestSpec specFor200(String collectionId) {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec();
     spec.setCollectionId(collectionId);
     spec.setPayloadPath(String.format("test-mas/claim-%s-7101.json", collectionId));
     spec.setExpectedMessage(String.format("Received Claim for collection Id %s.", collectionId));
     return spec;
-  }
-
-  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    return startAutomatedClaim(spec);
   }
 
   @SneakyThrows
@@ -365,7 +365,7 @@ public class VroV2Tests {
     testLifecycleStatusUpdated(claimId);
   }
 
-  /**
+  /*
    * This uses the single available collection from MAS development server. Since the collection has
    * no blood pressure it is matched with a LH Health sandbox example without any recent blood
    * pressure to result in a off ramping example.
@@ -453,7 +453,8 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and [disability action type = DECREASE] is not in scope.");
+        "Claim with [collection id = 10], [diagnostic code = 7101], and "
+            + "[disability action type = DECREASE] is not in scope.");
     spec.setCheckSlack(true);
 
     testAutomatedClaimOffRamp(spec);
@@ -468,7 +469,8 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for automated processing because it is missing anchors.");
+        "Claim with [collection id = 20] does not qualify for "
+            + "automated processing because it is missing anchors.");
     spec.setCheckSlack(true);
 
     testAutomatedClaimOffRamp(spec);
