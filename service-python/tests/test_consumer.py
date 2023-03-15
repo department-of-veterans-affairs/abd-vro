@@ -1,34 +1,13 @@
-import pytest
 import logging
 from unittest import mock
 
-from assessclaimdc6602.src import logging_setup as asthma_logging
-from assessclaimdc6602.src import main_consumer as asthma_consumer
-from assessclaimdc7101.src import logging_setup as hypertension_logging
-from assessclaimdc7101.src import main_consumer as hypertension_consumer
-from pdfgenerator.src import logging_setup as pdf_logging
-from pdfgenerator.src import main_consumer as pdf_consumer
+import logging_setup
+import main_consumer
 
 
-@pytest.mark.parametrize(
-    "consumer",
-    [
-        (
-                hypertension_consumer
-        ),
-        (
-                asthma_consumer
-        ),
-        (
-                pdf_consumer
-        )
-    ]
-)
-def test_main_consumer_construction(consumer):
+def test_main_consumer_construction():
     """
     Test the main consumer's ability to create a connection and setup queues
-    :param consumer: RabbitMQ consumer setup with pika
-    :return:
     """
 
     CONSUMER_TEST_CONFIG = {
@@ -40,30 +19,16 @@ def test_main_consumer_construction(consumer):
         "timeout": int(60 * 60 * 3)
     }
 
-    with mock.patch.object(consumer.RabbitMQConsumer,
+    with mock.patch.object(main_consumer.RabbitMQConsumer,
                            '_create_connection', autospec=True):
-        test_consumer = consumer.RabbitMQConsumer(CONSUMER_TEST_CONFIG)
+        test_consumer = main_consumer.RabbitMQConsumer(CONSUMER_TEST_CONFIG)
 
     assert test_consumer.config == CONSUMER_TEST_CONFIG
     assert test_consumer.channel.basic_consume()
-    assert consumer.logger  # Ensure logging setup is called
+    assert main_consumer.logger  # Ensure logging setup is called
 
 
-@pytest.mark.parametrize(
-    "logging_setup",
-    [
-        (
-                hypertension_logging
-        ),
-        (
-                asthma_logging
-        ),
-        (
-                pdf_logging
-        )
-    ]
-)
-def test_logging_setup(logging_setup):
+def test_logging_setup():
     """
     Test that the script for setting up logging calls the method to get the logger and format date correctly
     """
