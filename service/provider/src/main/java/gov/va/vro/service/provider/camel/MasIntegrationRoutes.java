@@ -226,7 +226,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .to(ENDPOINT_LIGHTHOUSE_EVIDENCE)
-        .end() // end multicast
+        .end()
+        .onException(
+            ExchangeTimedOutException
+                .class) // But do handle the errors to permit processing to continue
+        .handled(true)
+        .process(lighthouseContinueProcessor()) // end multicast
+        .onException(
+            ExternalCallException
+                .class) // But do handle the errors to permit processing to continue
+        .handled(true)
+        .process(lighthouseContinueProcessor())
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
@@ -242,10 +252,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
         .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
-        .endDoCatch()        // Do not check again for errors, as we will not retry.
-        .onException(ExchangeTimedOutException.class, ExternalCallException.class)        // But do handle the errors to permit processing to continue
-        .handled(true)
-        .process(lighthouseContinueProcessor());
+        .endDoCatch(); // Do not check again for errors, as we will not retry.
+    // end multicast
   }
 
   private void configureUploadPdf() {
