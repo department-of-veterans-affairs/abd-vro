@@ -58,7 +58,6 @@ public class MasControllerTest extends BaseControllerTest {
 
   public static final String DEFAULT_ID_TYPE = "va.gov-Form526Submission";
   private ObjectMapper objectMapper = new ObjectMapper();
-  ;
 
   @Test
   @SneakyThrows
@@ -91,7 +90,6 @@ public class MasControllerTest extends BaseControllerTest {
   @Test
   void automatedClaimOutOfScope() throws Exception {
     var offrampCalled = new AtomicBoolean(false);
-    var completeCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
             "mas-offramp",
@@ -106,11 +104,12 @@ public class MasControllerTest extends BaseControllerTest {
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Claim with [collection id = 123], [diagnostic code = 1233], and [disability action type = INCREASE] is not in scope.",
+              "Claim with [collection id = 123], [diagnostic code = 1233], and"
+                  + " [disability action type = INCREASE] is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
-
+    var completeCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
             "mas-complete-claim",

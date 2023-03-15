@@ -22,6 +22,12 @@ public class AppConfig {
     return new ObjectMapper();
   }
 
+  /**
+   * Mock bundle store.
+   *
+   * @return store
+   * @throws IOException Missing files
+   */
   @Bean
   public MockBundleStore muckBundleStore() throws IOException {
     MockBundleStore store = new MockBundleStore();

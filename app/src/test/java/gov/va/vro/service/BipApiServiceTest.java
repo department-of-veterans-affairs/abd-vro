@@ -32,7 +32,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-/** @author warren @Date 2/2/23 */
+/**
+ * BIP service tests.
+ *
+ * @author warren @Date 2/2/23
+ */
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class BipApiServiceTest {
@@ -65,9 +69,9 @@ public class BipApiServiceTest {
 
   @Mock private BipApiProps bipApiProps;
 
-  private String getTestData(String data_file) throws Exception {
+  private String getTestData(String dataFile) throws Exception {
     String filename =
-        Objects.requireNonNull(getClass().getClassLoader().getResource(data_file)).getPath();
+        Objects.requireNonNull(getClass().getClassLoader().getResource(dataFile)).getPath();
     Path filePath = Path.of(filename);
     return Files.readString(filePath);
   }

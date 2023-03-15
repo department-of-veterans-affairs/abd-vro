@@ -60,7 +60,12 @@ public class VroV2Tests {
   private static final String CONTENTIONS_URL = "http://localhost:8099/claims/%s/contentions";
 
   private static final String JWT_TOKEN =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUxYjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00MWE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWwvYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05NmY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUx"
+          + "YjA4ZiJ9.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTY0MTA2Nzk0OSwianRpIjoiNzEwOTAyMGEtMzlkOS00M"
+          + "WE4LThlNzgtNTllZjAwYTlkNDJlIiwiaXNzIjoiaHR0cHM6Ly9zYW5kYm94LWFwaS52YS5nb3YvaW50ZXJuYWw"
+          + "vYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05N"
+          + "mY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB"
+          + "2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -139,9 +144,11 @@ public class VroV2Tests {
       fail("Should have thrown exception");
     } catch (Exception e) {
       assertTrue(
-          "400 : \"{\"message\":\"collectionId: Collection ID is required\\ncollectionStatus: Collection Status is required\"}\""
+          ("400 : \"{\"message\":\"collectionId: Collection ID is required\\ncollectionStatus:"
+                      + " Collection Status is required\"}\"")
                   .equals(e.getMessage())
-              || "400 : \"{\"message\":\"collectionStatus: Collection Status is required\\ncollectionId: Collection ID is required\"}\""
+              || ("400 : \"{\"message\":\"collectionStatus: Collection Status is required\\"
+                      + "ncollectionId: Collection ID is required\"}\"")
                   .equals(e.getMessage()));
     }
   }
@@ -238,7 +245,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private void testPDFUpload(MasAutomatedClaimRequest request) {
+  private void testPdfUpload(MasAutomatedClaimRequest request) {
     // Wait until the evidence pdf is uploaded
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
@@ -264,6 +271,11 @@ public class VroV2Tests {
     assertTrue(successUploading);
   }
 
+  /**
+   * Test the exam ordered endpoint.
+   *
+   * @param collectionId collection ID
+   */
   @SneakyThrows
   private void testExamOrdered(String collectionId) {
     boolean successOrdering = false;
@@ -317,13 +329,15 @@ public class VroV2Tests {
             Assertions.fail(
                 "CollectionId "
                     + collectionId
-                    + " came back with more than one assessment result. Cannot determine which one to check");
+                    + " came back with more than one assessment result. "
+                    + "Cannot determine which one to check");
           }
         } else if (contentionList.size() > 1) {
           Assertions.fail(
               "CollectionId "
                   + collectionId
-                  + " came back with more than one contention. Cannot determine which one to check");
+                  + " came back with more than one contention. "
+                  + "Cannot determine which one to check");
         }
       } catch (HttpStatusCodeException exception) {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -346,7 +360,7 @@ public class VroV2Tests {
   private void testAutomatedClaimFullPositive(String collectionId) {
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testPDFUpload(request);
+    testPdfUpload(request);
     testSpecialIssueRdr1Removed(claimId);
     testLifecycleStatusUpdated(claimId);
   }
@@ -464,7 +478,7 @@ public class VroV2Tests {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     testExamOrdered(collectionId);
-    testPDFUpload(request);
+    testPdfUpload(request);
     String claimId = request.getClaimDetail().getBenefitClaimId();
     testSpecialIssueRdr1Removed(claimId);
   }
