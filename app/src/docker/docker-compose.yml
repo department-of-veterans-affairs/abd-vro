@@ -24,9 +24,7 @@ x-mas-vars: &mas-vars
   MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
   MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
   MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
-  # could not find another way to overwrite this since due to its name
-  # env var always override application.yml property.
-  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:9008/slack-messages"
+  SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}

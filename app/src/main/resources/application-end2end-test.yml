@@ -17,7 +17,5 @@ masAPIProvider.createExamOrderPath: "/pcOrderExam"
 
 slack:
   exception:
-    webhook: "http://mock-slack:9004"
+    webhook: "http://mock-slack:9008/slack-messages"
     channel: benefits-vro-end2end
-
-camel.component.slack.serverUrl: "http://mock-slack:9004"
