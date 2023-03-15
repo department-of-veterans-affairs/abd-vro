@@ -59,80 +59,18 @@
             font-size: 12px;
             line-height: 16px;
           }
-          p {
-            color: #212121;
-            font-family: NotoSans;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 16px;
-          }
-          h1 {
-            font-family: Bitter;
-            font-style: normal;
-            font-weight: 700;
-            font-size: 18px;
-            line-height: 22px;
-          }
-          h2 {
-            font-family: Bitter;
-            font-style: normal;
-            font-weight: 700;
-            font-size: 14px;
-            line-height: 16px;
-          }
-          a {
-            color: #004795 !important;
-            text-decoration: underline !important;
-          }
           table {
-            border: 1px solid #757575;
             width: 378px !important;
           }
-          table, th, td {
-            text-align: left;
-            font-size: 11px;
-            font-family: NotoSans;
-          }
+
           th {
-            font-family: NotoSans;
-            font-style: normal;
-            font-weight: 700;
-            font-size: 11px;
-            line-height: 15px;
             width: auto;
             white-space: nowrap;
           }
           td {
-            font-family: NotoSans;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 11px;
-            line-height: 15px;
             width: 150px !important;
             padding-right: 0px !important;
             margin-right: 0px !important;
-          }
-          .empty {
-            font-family: NotoSans;
-            font-style: italic;
-            font-weight: 400;
-            font-size: 11px;
-            line-height: 15px;
-            color: #323A45;
-          }
-          .footnote {
-            font-family: NotoSans;
-            font-style: italic;
-            font-weight: 400;
-            font-size: 11px;
-            line-height: 15px;
-          }
-          .mb-13 {
-            margin-bottom: 13px !important;
-          }
-          .mb-30 {
-            margin-bottom: 30px !important;
           }
           .flex {
             display: -webkit-box; /* wkhtmltopdf uses this one */
@@ -161,14 +99,7 @@
           }
           ul ul {
             padding-left: 1em;
-          }
             text-decoration: underline !important;
-          }
-          @media print {
-            .pagebreak {
-              clear: both;
-              page-break-after: always;
-            }
           }
         </style>
       </head>
