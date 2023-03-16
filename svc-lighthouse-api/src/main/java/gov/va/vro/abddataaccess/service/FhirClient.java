@@ -219,8 +219,10 @@ public class FhirClient {
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
-      AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      result.add(summary);
+      AbdBloodPressure bpReading = FieldExtractor.extractBloodPressure(resource);
+      if ((bpReading.getDiastolic() != null) || (bpReading.getSystolic() != null)) {
+        result.add(bpReading);
+      }
     }
     result.sort(null);
     return result;
