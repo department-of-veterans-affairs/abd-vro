@@ -44,7 +44,7 @@ public class GeneratePdfRequest {
   private AbdEvidence evidence;
 
   @Nullable
-  @Schema(description = "PDF template to generate", example = "v1")
+  @Schema(description = "PDF template to generate", example = "v1", allowableValues = {"v1", "v2", null})
   private String pdfTemplate;
 
   @Schema(description = "Documents unavailable for automated review")
