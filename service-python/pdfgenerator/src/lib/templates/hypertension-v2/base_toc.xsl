@@ -137,6 +137,27 @@
           .flex {
             display: -webkit-box; /* wkhtmltopdf uses this one */
             display: flex;
+            -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+            justify-content: center;
+          }
+          .flex > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+          }
+          span {
+            float: right;
+          }
+          li {
+            list-style: none;
+          }
+          ul {
+            padding-left: 0;
+          }
+          ul div {
+            border-bottom: 1px solid rgb(200,200,200);
+            margin: 0 !important;
+            padding: 7px 0 !important;
           }
           ul ul {
             padding-left: 1em;
