@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class MasVeteranFlashConfig {
 
   @Bean
-  MasVeteranFlashProps MasVeteranFlashConfigLoad(
+  MasVeteranFlashProps masVeteranFlashConfigLoad(
       @Value("${masVeteranFlashIds.agentOrange}") String[] agentOrangeFlashIds) {
     return MasVeteranFlashProps.getInstance(agentOrangeFlashIds);
   }

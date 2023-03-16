@@ -56,7 +56,13 @@ public class FieldExtractor {
     return fmt.format(date);
   }
 
-  public static Coding getAValidCoding(CodeableConcept code) {
+  /**
+   * Get the ICD code from a coding.
+   *
+   * @param code code
+   * @return valid ICD code
+   */
+  public static Coding getValidCoding(CodeableConcept code) {
     if (code.hasCoding()) {
       for (Coding coding : code.getCoding()) {
         if (coding.hasCode()
@@ -80,7 +86,7 @@ public class FieldExtractor {
 
     if (condition.hasCode()) {
       CodeableConcept code = condition.getCode();
-      Coding coding = getAValidCoding(code);
+      Coding coding = getValidCoding(code);
       if (coding != null) {
         result.setCode(coding.getCode());
         if (coding.hasDisplay()) {
