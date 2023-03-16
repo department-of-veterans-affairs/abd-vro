@@ -97,7 +97,6 @@ spring:
     group:
       # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
       local: nonprod
-      end2end-test: nonprod
       # Remaining profiles are for deployment to LHDI's EKS environments
       # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
       # along with application-$ENV.yml
