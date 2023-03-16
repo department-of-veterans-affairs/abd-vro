@@ -114,6 +114,7 @@ env:
 
 jobs:
   update-deployment:
+    # secrets DEV_KUBE_CONFIG and PROD_KUBE_CONFIG are set in this repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
