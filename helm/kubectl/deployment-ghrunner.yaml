@@ -2,7 +2,7 @@
 # Once the pod is up and running, it should be visible here in your repo:
 # https://github.com/department-of-veterans-affairs/abd-vro-internal/runners
 # This is needed to access LHDI's Hashicorp Vault b/c the runner must be in the VA network
-# to access LHDI's Vault.
+# to access LHDI's Vault and have the VA's CA certs installed.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +20,8 @@ spec:
         app: github-runner
         sidecar.istio.io/inject: "false"
     spec:
-      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      imagePullSecrets:
+        - name: abd-vro-ghcr
       containers:
         - name: github-runner
           image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:latest
@@ -32,6 +33,7 @@ spec:
               value: "abd-vro-internal"
             - name: RUNNER_LABEL
               # comma separated list of labels to associate with the runner; useful for specifying which runners to use
+              # see deploy-secrets.yml GitHub workflow
               value: "vro-runner"
             - name: ACCESS_TOKEN
               valueFrom:
