@@ -41,6 +41,9 @@ class PDFGenerator:
     def generate_pdf_from_string(self, template_name: str, html: str, data, output=False) -> bytes or bool:
         base_toc_file_path = os.path.join(lib_dir, f"templates/{template_name}/base_toc.xsl")
         css_file_path = os.path.join(lib_dir, f"templates/{template_name}/base.css")
+        # If the CSS file does not exist for the template, use the one in the shared folder
+        if not os.path.isfile(css_file_path):
+            css_file_path = os.path.join(lib_dir, "templates/shared/base.css")
 
         if os.path.isfile(base_toc_file_path):
             # Call a helper function that make adjustments to toc before creating
