@@ -1,14 +1,24 @@
 import functools
 import json
 import logging
+import os
 import time
 
 import pika
 
+RABBITMQ_CONFIG = {
+    "host": os.environ.get("RABBITMQ_PLACEHOLDERS_HOST", "localhost"),
+    "username": os.environ.get("RABBITMQ_PLACEHOLDERS_USERNAME", "guest"),
+    "password": os.environ.get("RABBITMQ_PLACEHOLDERS_USERPASSWORD", "guest"),
+    "port": int(os.environ.get("RABBITMQ_PORT", 5672)),
+    "retry_limit": int(os.environ.get("RABBITMQ_RETRY_LIMIT", 3)),
+    "timeout": int(os.environ.get("RABBITMQ_TIMEOUT", 60 * 60 * 3)),  # 3 hours
+}
+
 
 class Service:
-    def __init__(self, config, exchange, consumers):
-        self.config = config
+    def __init__(self, exchange, consumers, config={}):
+        self.config = {**RABBITMQ_CONFIG, **config}
         self.exchange = exchange
         self.consumers = consumers
 
