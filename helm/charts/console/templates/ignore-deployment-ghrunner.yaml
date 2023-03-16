@@ -1,0 +1,55 @@
+# Self-hosted GitHub Action runner
+# Once the pod is up and running, it should be visible here in your repo:
+# https://github.com/department-of-veterans-affairs/abd-vro-internal/runners
+# This is needed to access LHDI's Hashicorp Vault b/c the runner must be in the VA network
+# to access LHDI's Vault.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vro-runner
+  labels:
+    app: github-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-runner
+  template:
+    metadata:
+      labels:
+        app: github-runner
+        sidecar.istio.io/inject: "false"
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: github-runner
+          image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:latest
+          imagePullPolicy: Always
+          env:
+            - name: ORGANIZATION
+              value: "department-of-veterans-affairs"
+            - name: REPOSITORY_NAME
+              value: "abd-vro-internal"
+            - name: RUNNER_LABEL
+              # comma separated list of labels to associate with the runner; useful for specifying which runners to use
+              value: "vro-runner"
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-access-token
+                  key: GITHUB_ACCESS_TOKEN
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+---
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: github-access-token
+#type: Opaque
+#data:
+#  GITHUB_ACCESS_TOKEN: $GITHUB_ACCESS_TOKEN
