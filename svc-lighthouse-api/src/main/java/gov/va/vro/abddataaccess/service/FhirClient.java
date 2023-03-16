@@ -129,7 +129,13 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
+              AbdDomain.CONDITION,
+              (id) -> {
+                SearchSpec result = new SearchSpec("Condition");
+                result.setSearchParams(new String[] {"patient", "category"});
+                result.setSearchValues(new String[] {id, "encounter-diagnosis"});
+                return result;
+              }));
 
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
@@ -299,9 +305,7 @@ public class FhirClient {
    * @throws AbdException error occurs.
    */
   public AbdEvidence getMedicalEvidence(AbdClaim claim) throws AbdException {
-    log.info("===Get LH FHIR data");
     Map<AbdDomain, List<BundleEntryComponent>> components = getDomainBundles(claim);
-    log.info("===Received LH FHIR data");
     if (components == null) {
       return null;
     }
@@ -316,7 +320,6 @@ public class FhirClient {
    */
   @NotNull
   public AbdEvidence getAbdEvidence(Map<AbdDomain, List<BundleEntryComponent>> components) {
-    log.info("========converting LH Fhir data");
     AbdEvidence result = new AbdEvidence();
     for (Map.Entry<AbdDomain, List<BundleEntryComponent>> entryComponent : components.entrySet()) {
       List<BundleEntryComponent> entries = entryComponent.getValue();
@@ -341,7 +344,6 @@ public class FhirClient {
         }
       }
     }
-    log.info("========got converted LH Fhir data");
     return result;
   }
 }
