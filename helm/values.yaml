@@ -89,11 +89,11 @@ global:
   postgres:
     secretKeyRef:
       name: postgres
-      urlKey: url
+#      urlKey: url
       usernameKey: username
       passwordKey: password
-      dbnameKey: dbName
-      schemaKey: schema
+#      dbnameKey: dbName
+#      schemaKey: schema
 #    dbName: vro
 #    initDbName: vro
 #    initUsernameKey: initUsername
@@ -108,5 +108,5 @@ global:
       # TODO: Do the values for the following always match postgres.secretKeyRef.usernameKey and passwordKey?
       usernameKey: username
       passwordKey: password
-      urlKey: url
+#      urlKey: url
     # superDbnameKey: superDbname

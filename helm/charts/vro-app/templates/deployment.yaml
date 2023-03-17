@@ -35,10 +35,11 @@ spec:
                   name: {{ .Values.global.dbinit.secretKeyRef.name }}
                   key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+              value: {{ .Values.global.service.db.databaseName }}
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.global.postgres.secretKeyRef.name }}
+#                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
           command:
             - /bin/sh
             - -c

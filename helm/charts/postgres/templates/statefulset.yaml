@@ -53,10 +53,11 @@ spec:
                   name: {{ .Values.global.dbinit.secretKeyRef.name }}
                   key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
             - name: FLYWAY_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+              value: {{ .Values.global.service.db.databaseName }}
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.global.postgres.secretKeyRef.name }}
+#                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
           ports:
             - containerPort: {{ .Values.global.service.db.sourcePort }}
               protocol: TCP
