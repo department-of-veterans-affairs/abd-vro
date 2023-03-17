@@ -188,6 +188,14 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
+  public BipUpdateClaimResp updateClaimContentionWithStatus(
+      long claimId, UpdateContentionReq contention, ClaimStatus status) throws BipException {
+    contention.getUpdateContentions().parallelStream()
+        .forEach(c -> c.setLifecycleStatus(status.getDescription()));
+    return updateClaimContention(claimId, contention);
+  }
+
+  @Override
   public boolean verifySpecialIssueTypes() {
     String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
     log.info("Call {} to get special_issue_types", url);

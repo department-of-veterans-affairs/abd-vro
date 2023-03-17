@@ -54,7 +54,7 @@ public interface IBipApiService {
   List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
   /**
-   * Updates a contention in a cloim.
+   * Updates a contention in a claim.
    *
    * @param claimId claim ID.
    * @param contention updated contention.
@@ -63,6 +63,18 @@ public interface IBipApiService {
    */
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException;
+
+  /**
+   * Updates a contention in a claim and sets the contention status.
+   *
+   * @param claimId claim ID.
+   * @param contention updated contention.
+   * @param status the status of the contention.
+   * @return an object with the information of update status and a message.
+   * @throws BipException error occurs.
+   */
+  BipUpdateClaimResp updateClaimContentionWithStatus(
+      long claimId, UpdateContentionReq contention, ClaimStatus status) throws BipException;
 
   /**
    * Verifies a call to the BIP Claims API can be made by getting document types.

@@ -136,7 +136,7 @@ public class BipClaimService {
             .collect(Collectors.toList());
     UpdateContentionReq request =
         UpdateContentionReq.builder().updateContentions(updateContentions).build();
-    bipApiService.updateClaimContention(claimId, request);
+    bipApiService.updateClaimContentionWithStatus(claimId, request, ClaimStatus.RFD);
     return payload;
   }
 

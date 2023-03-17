@@ -189,6 +189,14 @@ public class MockBipApiService implements IBipApiService {
   }
 
   @Override
+  public BipUpdateClaimResp updateClaimContentionWithStatus(
+      long claimId, UpdateContentionReq contention, ClaimStatus status) throws BipException {
+    contention.getUpdateContentions().parallelStream()
+        .forEach(c -> c.setLifecycleStatus(status.getDescription()));
+    return updateClaimContention(claimId, contention);
+  }
+
+  @Override
   public boolean verifySpecialIssueTypes() {
     return true;
   }
