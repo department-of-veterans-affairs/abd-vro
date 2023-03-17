@@ -1,0 +1,23 @@
+FROM eclipse-temurin:17-jre-alpine
+LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
+
+# curl is needed for HEALTHCHECK
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 curl
+
+ARG HEALTHCHECK_PORT_ARG=8080
+ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
+HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
+
+RUN adduser --no-create-home --disabled-password docker
+USER docker
+
+ARG JAR_FILE
+ENV JAR_FILENAME=${JAR_FILE}
+WORKDIR /project
+COPY ${JAR_FILE} fat.jar
+
+# https://spring.io/guides/topicals/spring-boot-docker/ states:
+# The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
+# The advantage is that the java process responds to KILL signals sent to the container.
+ENTRYPOINT ["java", "-jar", "fat.jar"]
