@@ -476,6 +476,19 @@ public class VroV2Tests {
     testAutomatedClaimOffRamp(spec);
   }
 
+  /** Missing RDR1 test case, verify we are not updating the claim record. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssue() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("11");
+    spec.setPayloadPath("test-mas/claim-30-7101-noanchor.json");
+    spec.setExpectedMessage(
+        "Claim with [collection id = 11] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    spec.setCheckSlack(true);
+
+    testAutomatedClaimOffRamp(spec);
+  }
+
   private void testAutomatedClaimOrderExam(String collectionId) {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
