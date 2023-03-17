@@ -24,7 +24,7 @@ spec:
         - name: abd-vro-ghcr
       containers:
         - name: github-runner
-          image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:latest
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:0.1.0
           imagePullPolicy: Always
           env:
             - name: ORGANIZATION
@@ -47,11 +47,3 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
----
-#apiVersion: v1
-#kind: Secret
-#metadata:
-#  name: github-access-token
-#type: Opaque
-#data:
-#  GITHUB_ACCESS_TOKEN: $GITHUB_ACCESS_TOKEN

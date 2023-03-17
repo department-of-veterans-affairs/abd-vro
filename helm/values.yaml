@@ -88,12 +88,13 @@ global:
 
   postgres:
     secretKeyRef:
+      # For normal DB clients to connect
       name: postgres
-      urlKey: url
       usernameKey: username
       passwordKey: password
-      dbnameKey: dbName
-      schemaKey: schema
+      #urlKey: url
+      #dbnameKey: dbName
+      #schemaKey: schema
 #    dbName: vro
 #    initDbName: vro
 #    initUsernameKey: initUsername
@@ -102,11 +103,12 @@ global:
   dbinit:
     secretKeyRef:
       name: dbinit
-      # DB super user; TODO: why isn't this in the postgres.secretKeyRef?
+      # DB super user
       superUsernameKey: superUsername
       superPasswordKey: superPassword
-      # TODO: Do the values for the following always match postgres.secretKeyRef.usernameKey and passwordKey?
+      # DB admin user; for Flyway to do DB migrations
+      # used as POSTGRES_FLYWAY_USER (in pg-isready container) and FLYWAY_USER (in the postgres and dbinit containers)
       usernameKey: username
       passwordKey: password
-      urlKey: url
+    # urlKey: url
     # superDbnameKey: superDbname
