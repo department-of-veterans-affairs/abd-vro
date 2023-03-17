@@ -20,7 +20,7 @@ public class AbdEncounter {
     @EqualsAndHashCode.Include private String reasonCode;
     @EqualsAndHashCode.Include private String status;
     @EqualsAndHashCode.Include private String periodEnd;
-    @EqualsAndHashCode.Include private String class;
+    @EqualsAndHashCode.Include private String encounterClass;
 
     @Schema(description = "Source of this data", example = "LH")
     private String dataSource = "LH";
