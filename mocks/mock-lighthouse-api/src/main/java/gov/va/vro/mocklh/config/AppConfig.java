@@ -3,12 +3,17 @@ package gov.va.vro.mocklh.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mocklh.model.MockBundleStore;
 import gov.va.vro.mocklh.model.MockBundles;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.IOException;
 
+@Slf4j
 @Configuration
 public class AppConfig {
 
@@ -30,22 +35,30 @@ public class AppConfig {
    */
   @Bean
   public MockBundleStore muckBundleStore() throws IOException {
+    log.info("Loading mock bundles from resources");
     MockBundleStore store = new MockBundleStore();
 
-    MockBundles mb1 = MockBundles.of("mock-bundles/mock1012666073V986297");
-    store.put("mock1012666073V986297", mb1);
+    String baseFolder = "mock-bundles";
 
-    MockBundles mb2 = MockBundles.of("mock-bundles/mock1012666073V986377");
-    store.put("mock1012666073V986377", mb2);
+    PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
+    Resource[] resources = r.getResources(baseFolder + "/*");
+    for (Resource mockBundle : resources) {
+      log.info("loading a particular mock bundle");
+      File mockBundleDir = mockBundle.getFile();
+      log.info(
+          "File found with name "
+              + mockBundleDir.getName()
+              + " isDir "
+              + mockBundleDir.isDirectory());
+      if (mockBundleDir.isDirectory()) {
+        String bundlePath = baseFolder + "/" + mockBundleDir.getName();
+        log.info("Directory found with path " + bundlePath);
+        MockBundles mb = MockBundles.of(bundlePath);
+        store.put(mockBundleDir.getName(), mb);
+      }
+    }
 
-    MockBundles mb3 = MockBundles.of("mock-bundles/mock1012666073V986378");
-    store.put("mock1012666073V986378", mb3);
-
-    MockBundles mb4 = MockBundles.of("mock-bundles/mock1012666073V986380");
-    store.put("mock1012666073V986380", mb4);
-
-    MockBundles mb5 = MockBundles.of("mock-bundles/mock1012666073V986500");
-    store.put("mock1012666073V986500", mb5);
+    log.info("returning loaded resources");
 
     MockBundles mb6 = MockBundles.of("mock-bundles/mock1012666073V986400");
     store.put("mock1012666073V986400", mb6);
