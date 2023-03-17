@@ -505,6 +505,12 @@ public class VroV2Tests {
     testAutomatedClaimOrderExam("378");
   }
 
+  /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */
+  @Test
+  void testLHDataOnlyClaimOrderExamIncreaseClaim() {
+    testAutomatedClaimOrderExam("401");
+  }
+
   @SneakyThrows
   private String resourceToString(String path) {
     var io = this.getClass().getClassLoader().getResourceAsStream(path);
@@ -565,6 +571,12 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimFullPositiveIncrease() {
     testAutomatedClaimFullPositive("375");
+  }
+
+  /** This is a full positive end-to-end test for an increase case with LightHouse data only. */
+  @Test
+  void testLHDataOnlyClaimFullPositiveIncrease() {
+    testAutomatedClaimFullPositive("401");
   }
 
   /**
