@@ -8,7 +8,8 @@ public enum AbdDomain {
   MEDICATION("launch patient/MedicationRequest.read"),
   BLOOD_PRESSURE("launch patient/Observation.read"),
   PROCEDURE("launch patient/Procedure.read"),
-  CONDITION("launch patient/Condition.read");
+  CONDITION("launch patient/Condition.read"),
+  ENCOUNTER("launch patient/Encounter.read");
 
   private final String scope;
 

@@ -37,7 +37,7 @@ public class BipClaimService {
 
   public static final String TSOJ = "398";
 
-  private final ClaimProps claimPorps;
+  private final ClaimProps claimProps;
 
   private final IBipApiService bipApiService;
 
@@ -70,8 +70,8 @@ public class BipClaimService {
     }
     log.info(
         "SPECIAL_ISSUE_1: {}, SPECIAL_ISSUE_2: {}",
-        claimPorps.getSpecialIssue1(),
-        claimPorps.getSpecialIssue2());
+        claimProps.getSpecialIssue1(),
+        claimProps.getSpecialIssue2());
     // collect all special issues
     var specialIssues =
         contentions.stream()
@@ -81,8 +81,8 @@ public class BipClaimService {
             .map(String::toLowerCase) // Ignore case
             .collect(Collectors.toSet());
     boolean hasSpecialIssues =
-        specialIssues.contains(claimPorps.getSpecialIssue1().toLowerCase())
-            && specialIssues.contains(claimPorps.getSpecialIssue2().toLowerCase());
+        specialIssues.contains(claimProps.getSpecialIssue1().toLowerCase())
+            && specialIssues.contains(claimProps.getSpecialIssue2().toLowerCase());
     log.info("Has special issues: {}", hasSpecialIssues);
     return hasSpecialIssues;
   }
@@ -95,7 +95,7 @@ public class BipClaimService {
    */
   public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
     var claimId = Long.parseLong(payload.getBenefitClaimId());
-    String specialIssue1 = claimPorps.getSpecialIssue1();
+    String specialIssue1 = claimProps.getSpecialIssue1();
     log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
 
     var contentions = bipApiService.getClaimContentions(claimId);
@@ -118,7 +118,7 @@ public class BipClaimService {
         // remove string from contention
         List<String> updatedCodes =
             contention.getSpecialIssueCodes().stream()
-                .filter(code -> !claimPorps.getSpecialIssue1().equalsIgnoreCase(code))
+                .filter(code -> !claimProps.getSpecialIssue1().equalsIgnoreCase(code))
                 .collect(Collectors.toList());
         var update = contention.toBuilder().specialIssueCodes(updatedCodes).build();
         updatedContentions.add(update);
