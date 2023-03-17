@@ -31,7 +31,7 @@ env:
 
 jobs:
   publish-image:
-    # only run for the internal repo since they don't need to be in the public repo
+    # only run for the internal repo since the images don't need to be in the public repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       published-images: ${{ steps.docker-push.outputs.images_list }}

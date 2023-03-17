@@ -34,7 +34,7 @@ env:
 
 jobs:
   publish_image:
-    # only run for the internal repo since they don't need to be in the public repo
+    # The image is expected to be in the internal repo
     if: inputs.publish_new_image && (github.repository == 'department-of-veterans-affairs/abd-vro-internal')
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +45,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
       - name: "Build image"
         run: |
           docker build . -f ${{ env.DOCKERFILE }} -t ghcr.io/${{ github.repository }}/vro-ghrunner:latest .
@@ -54,9 +57,8 @@ jobs:
 
   start-stop-runner:
     name: "${{ inputs.runner_action }} in ${{ inputs.target_env }}"
-    # only run in one of the repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     needs: publish_image
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: "Set up kube config"
