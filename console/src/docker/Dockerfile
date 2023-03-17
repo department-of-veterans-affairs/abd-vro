@@ -1,10 +1,8 @@
 FROM eclipse-temurin:17-jre-alpine
 LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
-# libcap and openssl is needed to make vault work -- https://github.com/hashicorp/vault/issues/10924#issuecomment-1153603833
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 sudo curl vault libcap openssl \
-    && setcap -r /usr/sbin/vault
+RUN apk update && apk --no-cache add expat=2.5.0-r0 sudo curl
 
 # The following is needed to run the emerg.sh script as root for access to /persist
 COPY emerg.sh /

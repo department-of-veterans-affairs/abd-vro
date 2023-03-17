@@ -8,8 +8,9 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 USER root
 
 # gettext-base provides envsubst needed by deploy-secrets.yml
+# vault is useful for testing access to Vault
 RUN apt-get update -y && \
-    apt-get install gettext-base -y --no-install-recommends && \
+    apt-get install gettext-base vault -y --no-install-recommends && \
     apt-get clean
 
 USER docker
