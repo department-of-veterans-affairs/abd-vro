@@ -1,4 +1,4 @@
-name: "1. Continuous Delivery (to DEV daily)"
+name: "7. Self-hosted GitHub runner"
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
         - stop
 
       publish_new_image:
-        description: 'Publish a new runner image? (Usually not needed)'
+        description: 'Publish a updated runner image? (Rarely needed)'
         required: true
         default: false
         type: boolean
@@ -34,6 +34,7 @@ env:
 
 jobs:
   publish_image:
+    name: "Publish runner image"
     # The image is expected to be in the internal repo
     if: inputs.publish_new_image && (github.repository == 'department-of-veterans-affairs/abd-vro-internal')
     runs-on: ubuntu-latest
@@ -50,13 +51,13 @@ jobs:
 
       - name: "Build image"
         run: |
-          docker build . -f ${{ env.DOCKERFILE }} -t ghcr.io/${{ github.repository }}/vro-ghrunner:latest .
+          docker build -f ${{ env.DOCKERFILE }} -t ghcr.io/${{ github.repository }}/vro-ghrunner:latest .
       - name: "Publish image"
         run: |
           docker push ghcr.io/${{ github.repository }}/vro-ghrunner:latest
 
   start-stop-runner:
-    name: "${{ inputs.runner_action }} in ${{ inputs.target_env }}"
+    name: "${{ inputs.runner_action }} runner in ${{ inputs.target_env }}"
     needs: publish_image
     if: always()
     runs-on: ubuntu-latest
@@ -75,12 +76,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Deploy runner"
-        if: inputs.runner_action == "start"
+        if: inputs.runner_action == 'start'
         run: |
           kubectl -n va-abd-rrd-${{ inputs.target_env }} apply -f ${{ env.DEPLOYMENT_YAML }}
           echo "Check for runner at https://github.com/department-of-veterans-affairs/abd-vro-internal/settings/actions/runners"
 
       - name: "Delete runner"
-        if: inputs.runner_action == "stop"
+        if: inputs.runner_action == 'stop'
         run: |
           kubectl -n va-abd-rrd-${{ inputs.target_env }} delete -f ${{ env.DEPLOYMENT_YAML }}

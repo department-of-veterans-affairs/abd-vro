@@ -24,7 +24,7 @@ spec:
         - name: abd-vro-ghcr
       containers:
         - name: github-runner
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:0.1.0
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
           imagePullPolicy: Always
           env:
             - name: ORGANIZATION
