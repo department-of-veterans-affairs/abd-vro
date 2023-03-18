@@ -25,13 +25,13 @@ COPY Dockerfile ${ENTRYPOINT_FILE}* ./
 
 # Run entrypoint.sh if it exists, otherwise run jar file
 # https://stackoverflow.com/a/33439625
-RUN echo $'#!/bin/sh\n\
+RUN /bin/echo -e $'#!/bin/sh\n\
 if [ -e entrypoint.sh ]; then\n\
   exec ./entrypoint.sh "$@"\n\
 else\n\
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}" \n\
   exec java -jar fat.jar "$@"\n\
-fi' > entrypoint-default.sh; chmod +x entrypoint-default.sh
+fi' > entrypoint-default.sh && chmod +x entrypoint-default.sh
 
 # https://spring.io/guides/topicals/spring-boot-docker/ states:
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
