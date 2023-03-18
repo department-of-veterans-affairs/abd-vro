@@ -9,7 +9,7 @@ plugins {
 }
 
 docker {
-    files "build/libs/${bootJar.archiveFileName.get()}", "src/docker/entrypoint.sh"
+    files "build/libs/${bootJar.archiveFileName.get()}", "src/docker/entrypoint.sh", new File(project.rootDir, 'buildSrc/entrypoint-default.sh')
     buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
 }
 
