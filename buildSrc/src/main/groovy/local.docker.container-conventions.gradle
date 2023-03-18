@@ -28,7 +28,7 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        dockerfile new File(project.rootDir, 'buildSrc/Dockerfile-jre')
+        dockerfile new File(project.rootDir, 'buildSrc/docker-jre/Dockerfile')
 }
 
 dockerRun {

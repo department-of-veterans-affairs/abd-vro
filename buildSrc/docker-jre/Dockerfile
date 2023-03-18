@@ -1,3 +1,7 @@
+# This file is referenced from local.docker.container-conventions.gradle.
+# It acts as the default Dockerfile for Java-based containers, i.e., those created by build.gradle
+# that use the local.docker.container-conventions plugin (directly or indirectly).
+# To override this file, create a src/docker/Dockerfile file in your Gradle module.
 FROM eclipse-temurin:17-jre-alpine
 
 # curl is needed for HEALTHCHECK
