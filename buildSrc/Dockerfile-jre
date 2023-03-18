@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-
 # hadolint ignore=DL3018
 RUN apk update && apk --no-cache add expat=2.5.0-r0 curl
 
+# 8080 is the default port that spring-actuator uses
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
 HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
@@ -17,7 +18,22 @@ ENV JAR_FILENAME=${JAR_FILE}
 WORKDIR /project
 COPY ${JAR_FILE} fat.jar
 
+ARG ENTRYPOINT_FILE
+# Workaround to copy ENTRYPOINT_FILE that may not exist
+# https://stackoverflow.com/a/46801962
+COPY Dockerfile ${ENTRYPOINT_FILE}* ./
+
+# Run entrypoint.sh if it exists, otherwise run entrypoint-default.sh
+# https://stackoverflow.com/a/33439625
+RUN echo $'#!/bin/sh\n\
+  if [ -e entrypoint.sh ]; then\n\
+    exec entrypoint.sh "$@"\n\
+  else\n\
+    echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}" \n\
+    exec java -jar fat.jar "$@"\n\
+  fi' > entrypoint-default.sh && chmod +x entrypoint-default.sh
+
 # https://spring.io/guides/topicals/spring-boot-docker/ states:
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.
-ENTRYPOINT ["java", "-jar", "fat.jar"]
+ENTRYPOINT ["/project/entrypoint-default.sh"]
