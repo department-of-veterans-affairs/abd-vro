@@ -1,0 +1,24 @@
+# Source this file to set VRO environment variables set by K8s
+
+# Don't run if this file is not being sourced
+case ${0##*/} in
+  sh|-sh|dash|-dash)
+    echo "Usage: source set-env.src"
+    exit 1
+    ;;
+esac
+
+for VAR in $(env | cut -d '=' -f 1 | grep "^VRO_SECRETS"); do
+  echo "- Found env variable: $VAR"
+  VAR_VALUE=$(eval echo -n "\$$VAR")
+  if [ "$VAR_VALUE" ] && VAR_DECODED=$(echo -n "$VAR_VALUE" | base64 -d); then
+    DECODED_LENGTH=$(echo -n "$VAR_DECODED" | wc -m)
+    if [ "$DECODED_LENGTH" -gt 7 ]; then
+      echo "-- Setting the following variables"
+      echo "$VAR_DECODED" | cut -d '=' -f 1 | cut -d ' ' -f 2
+      eval $VAR_DECODED
+    else
+      echo "-- Decoded value is too short!"
+    fi
+  fi
+done
