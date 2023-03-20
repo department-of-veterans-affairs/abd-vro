@@ -114,6 +114,7 @@ env:
 
 jobs:
   update-deployment:
+    # Required secrets are set in the public repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:

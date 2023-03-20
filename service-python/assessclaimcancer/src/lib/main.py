@@ -2,7 +2,9 @@ import logging
 from datetime import date
 from typing import Dict
 
-from . import condition, medication, utils
+import data_model
+
+from . import condition, medication
 
 
 def assess_cancer(event: Dict):
@@ -14,7 +16,7 @@ def assess_cancer(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = utils.validate_request_body(event)
+    validation_results = data_model.validate_request_body(event)
     response_body = {}
     cancer_type = "respiratory"
     if "dateOfClaim" not in event:

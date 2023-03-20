@@ -21,11 +21,13 @@ def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
     def serr = new StringBuilder()
     doLast {
         ext.targets.each { f ->
-            def cmdLine = "${ext.binary} ${f}"
-            def proc = cmdLine.execute(null, project.projectDir)
-            proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(ext.taskTimeout)
-            result |= proc.exitValue()
+            if (file(f).exists()) {
+                def cmdLine = "${ext.binary} ${f}"
+                def proc = cmdLine.execute(null, project.projectDir)
+                proc.consumeProcessOutput(sout, serr)
+                proc.waitForOrKill(ext.taskTimeout)
+                result |= proc.exitValue()
+            }
         }
         if (result != 0 && serr) {
             ant.fail(serr) }

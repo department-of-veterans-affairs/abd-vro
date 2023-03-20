@@ -12,7 +12,7 @@ def validate_request_body(request_body):
     """
     schema = {
         "veteranIcn": {"type": "string"},
-        "dateOfClaim": {"type": "string"},
+        "claimSubmissionDateTime": {"type": "string"},
         "diagnosticCode": {"type": "string"},
         "disabilityActionType": {"type": "string"},
         "disabilityClassificationCode": {"type": "string"},
@@ -22,6 +22,7 @@ def validate_request_body(request_body):
             "schema": {
                 "medications": {
                     "type": "list",
+                    "default": [],
                     "schema": {
                         "type": "dict",
                         "schema": {
@@ -40,6 +41,26 @@ def validate_request_body(request_body):
                                 "type": "list",
                                 "nullable": True,
                                 "schema": {"type": "string"},
+                            },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
                             },
                         },
                     },
@@ -72,29 +93,22 @@ def validate_request_body(request_body):
                             "date": {"type": "string"},
                             "practitioner": {"type": "string", "nullable": True},
                             "organization": {"type": "string", "nullable": True},
-                        },
-                    },
-                },
-                "procedures": {
-                    "type": "list",
-                    "schema": {
-                        "type": "dict",
-                        "schema": {
-                            "code": {
+                            "document": {
                                 "type": "string",
+                                "default": "",
                             },
-                            "codeSystem": {
-                                "type": "string"
-                            },
-                            "text": {
-                                "type": "string"
-                            },
-                            "performedDate": {
-                                "type": "string"
-                            },
-                            "status": {
+                            "page": {
                                 "type": "string",
+                                "default": "",
                             },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            }
                         },
                     },
                 },
@@ -105,7 +119,7 @@ def validate_request_body(request_body):
                         "schema": {
                             "code": {
                                 "type": "string",
-                                "required": True
+                                "default": "",
                             },
                             "status": {
                                 "type": "string",
@@ -115,15 +129,34 @@ def validate_request_body(request_body):
                             },
                             "onsetDate": {
                                 "type": "string",
-                                "nullable": True
                             },
-                            "recordedDate": {
+                            "category": {
                                 "type": "string",
-                                "nullable": True
+                                "default": "",
                             },
                             "abatementDate": {
                                 "type": "string",
                                 "nullable": True
+                            },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
                             }
                         }
                     }
@@ -134,4 +167,4 @@ def validate_request_body(request_body):
     v = Validator(schema)
     v.allow_unknown = True
 
-    return {"is_valid": v.validate(request_body), "errors": v.errors}
+    return {"is_valid": v.validate(request_body), "errors": v.errors, "request_body": v.normalized(request_body)}
