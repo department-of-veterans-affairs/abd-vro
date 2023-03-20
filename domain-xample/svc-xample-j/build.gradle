@@ -19,5 +19,9 @@ dependencies {
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+  // Actuator for health check
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
   testImplementation 'org.slf4j:slf4j-simple:2.0.6'
 }
