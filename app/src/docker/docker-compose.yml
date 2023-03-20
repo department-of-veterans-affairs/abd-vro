@@ -402,7 +402,7 @@ services:
     hostname: mock-bip-ce-api
     ports:
       - "8094:8094"
-      - "8095:8095"
+# health check is on 8080 and doesn't need to be exposed - "8095:8095"
       - "8096:8096"
     environment:
       <<: *common-vars
@@ -423,7 +423,7 @@ services:
     hostname: mock-bip-claims-api
     ports:
       - "8097:8097"
-      - "8098:8098"
+# health check is on 8080 and doesn't need to be exposed - "8098:8098"
       - "8099:8099"
     environment:
       <<: *common-vars
@@ -444,7 +444,7 @@ services:
     hostname: mock-mas-api
     ports:
       - "9001:9001"
-      - "9002:9002"
+# health check is on 8080 and doesn't need to be exposed - "9002:9002"
     environment:
       <<: *common-vars
       MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
@@ -480,7 +480,7 @@ services:
     hostname: mock-slack
     ports:
       - "9008:9008"
-      - "9009:9009"
+# health check is on 8080 and doesn't need to be exposed - "9009:9009"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
