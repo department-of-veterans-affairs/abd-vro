@@ -1,5 +1,6 @@
 plugins {
   id 'local.std.java.application-conventions'
+  id 'starter.std.java.library-spring-conventions'
   id 'starter.java.config-conventions'
   id 'starter.java.build-utils-conventions'
   id 'org.unbroken-dome.test-sets' version '4.0.0'
@@ -25,12 +26,11 @@ tasks.withType(Test).named("end2endTest") {
 dependencies {
   implementation project(':shared:domain')
   implementation project(':api')
-  implementation project(':controller')
   implementation project(':domain-xample:api-controller')
   implementation project(':persistence:model')
-  implementation project(':service:provider')
   implementation project(':service:spi')
   implementation project(':service:db')
+  api project(':shared:lib-camel-connector')
 
   implementation 'gov.va.starter:open-api'
   // Provides http://localhost:8081/health endpoint used in app's Dockerfile
@@ -39,6 +39,10 @@ dependencies {
   implementation 'gov.va.starter:tracing'
   implementation 'gov.va.starter:error-handling'
   implementation 'gov.va.starter:exceptions'
+
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+  implementation 'com.google.guava:guava:31.1-jre'
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -50,6 +54,17 @@ dependencies {
   implementation "org.springframework.security:spring-security-core:${spring_security_version}"
   implementation "org.springframework.security:spring-security-config:${spring_security_version}"
   implementation "org.springframework.security:spring-security-web:${spring_security_version}"
+
+  // Apache Camel
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-slack-starter:${camel_version}"
+
+  // Redis
+  implementation "org.springframework.boot:spring-boot-starter-data-redis"
+  implementation "org.apache.camel.springboot:camel-spring-redis-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jsonpath-starter:${camel_version}"
 
   //MAS oAuth2 webclient libs
   implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
@@ -72,13 +87,16 @@ dependencies {
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 
   testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-  testImplementation "io.jsonwebtoken:jjwt:0.2"
+  implementation 'io.jsonwebtoken:jjwt:0.2'
+  testImplementation 'io.jsonwebtoken:jjwt:0.2'
 
   // end to end dependencies
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
   end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
   end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
+
+  compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }
 
 openApi {
