@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/department-of-veterans-affairs/bgs-ext.git
+  revision: aaa0e7e38ce0e2b54a1ed9ba8dd05af36b092666
+  specs:
+    bgs_ext (0.21.3)
+      httpclient
+      nokogiri (>= 1.13.6)
+      savon (= 2.12)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -68,6 +77,9 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    akami (1.3.1)
+      gyoku (>= 0.4.0)
+      nokogiri
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
@@ -90,6 +102,13 @@ GEM
     erubi (1.12.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    gyoku (1.4.0)
+      builder (>= 2.1.2)
+      rexml (~> 3.0)
+    httpclient (2.8.3)
+    httpi (2.5.0)
+      rack
+      socksify
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.1.5)
@@ -129,6 +148,7 @@ GEM
     nokogiri (1.14.2)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    nori (2.6.0)
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -168,10 +188,19 @@ GEM
       io-console (~> 0.5)
     rexml (3.2.5)
     rubyzip (2.3.2)
+    savon (2.12.0)
+      akami (~> 1.2)
+      builder (>= 2.1.2)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
     selenium-webdriver (4.8.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    socksify (1.7.1)
     sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -191,6 +220,10 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    wasabi (3.7.0)
+      addressable
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.2)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -212,6 +245,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bgs_ext!
   bootsnap
   capybara
   debug
