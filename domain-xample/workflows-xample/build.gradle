@@ -21,6 +21,10 @@ dependencies {
   // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
   implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
 
+  // Actuator for health check
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
   testImplementation "com.github.fppt:jedis-mock:1.0.7"
   testImplementation 'org.slf4j:slf4j-simple:2.0.6'
