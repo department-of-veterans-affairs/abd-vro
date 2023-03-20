@@ -27,7 +27,7 @@ dependencies {
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
   testImplementation "com.github.fppt:jedis-mock:1.0.7"
-  testImplementation 'org.slf4j:slf4j-simple:2.0.6'
+  testImplementation 'org.slf4j:slf4j-simple:2.0.7'
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
   // in order to convert ClaimEntity.createdAt into JSON.
