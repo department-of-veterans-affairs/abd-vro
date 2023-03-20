@@ -576,7 +576,7 @@ public class VroV2Tests {
   /** This is a full positive end-to-end test for an increase case with LightHouse data only. */
   @Test
   void testLHDataOnlyClaimFullPositiveIncrease() {
-    testAutomatedClaimFullPositive("401");
+    testAutomatedClaimFullPositive("400");
   }
 
   /**
