@@ -3,13 +3,13 @@
   "firstName": "Janet",
   "lastName": "NoMasRRD",
   "gender": "female",
-  "collectionId": 400,
+  "collectionId": 401,
   "veteranIdentifiers": {
-    "icn": "mock1012666073V986400",
+    "icn": "mock1012666073V986401",
     "ssn": "111-11-1400",
-    "veteranFileId": "9999400",
+    "veteranFileId": "9999401",
     "edipn": "1010234-400",
-    "participantId": "88888400"
+    "participantId": "88888401"
   },
   "claimDetail": {
     "benefitClaimId": "2020",

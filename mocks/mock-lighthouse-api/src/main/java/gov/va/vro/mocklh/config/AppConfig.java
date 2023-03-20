@@ -5,11 +5,8 @@ import gov.va.vro.mocklh.model.MockBundleStore;
 import gov.va.vro.mocklh.model.MockBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 
 @Configuration
@@ -35,18 +32,26 @@ public class AppConfig {
   public MockBundleStore muckBundleStore() throws IOException {
     MockBundleStore store = new MockBundleStore();
 
-    String baseFolder = "mock-bundles";
+    MockBundles mb1 = MockBundles.of("mock-bundles/mock1012666073V986297");
+    store.put("mock1012666073V986297", mb1);
 
-    PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
-    Resource[] resources = r.getResources("/" + baseFolder + "/*");
-    for (Resource mockBundle : resources) {
-      File mockBundleDir = mockBundle.getFile();
-      if (mockBundleDir.isDirectory()) {
-        String bundlePath = baseFolder + "/" + mockBundleDir.getName();
-        MockBundles mb = MockBundles.of(bundlePath);
-        store.put(mockBundleDir.getName(), mb);
-      }
-    }
+    MockBundles mb2 = MockBundles.of("mock-bundles/mock1012666073V986377");
+    store.put("mock1012666073V986377", mb2);
+
+    MockBundles mb3 = MockBundles.of("mock-bundles/mock1012666073V986378");
+    store.put("mock1012666073V986378", mb3);
+
+    MockBundles mb4 = MockBundles.of("mock-bundles/mock1012666073V986380");
+    store.put("mock1012666073V986380", mb4);
+
+    MockBundles mb5 = MockBundles.of("mock-bundles/mock1012666073V986500");
+    store.put("mock1012666073V986500", mb5);
+
+    MockBundles mb6 = MockBundles.of("mock-bundles/mock1012666073V986400");
+    store.put("mock1012666073V986400", mb6);
+
+    MockBundles mb7 = MockBundles.of("mock-bundles/mock1012666073V986401");
+    store.put("mock1012666073V986401", mb7);
 
     return store;
   }
