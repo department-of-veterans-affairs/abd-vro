@@ -33,7 +33,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework:spring-web:5.3.23'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.4.2'
-  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.2') {
+  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.3') {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
