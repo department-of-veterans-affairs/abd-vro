@@ -69,30 +69,13 @@ public class ContentionEntity extends BaseEntity {
   /**
    * Adds evidence summary document to contention entity.
    *
-   * @param request evidence summary document entity.
+   * @param document evidence summary document entity.
    * @return returns the evidence summary document.
    */
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
-      EvidenceSummaryDocumentEntity request) {
-    EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
-    document.setDocumentName(request.getDocumentName());
-    document.setEvidenceCount(request.getEvidenceCount());
+      EvidenceSummaryDocumentEntity document) {
     document.setContention(this);
     evidenceSummaryDocuments.add(document);
     return document;
-  }
-
-  /**
-   * Add evidence summary document to contention entity.
-   *
-   * @param evidenceCount evidence counts
-   * @param documentName document name
-   */
-  public void addEvidenceSummaryDocument(Map<String, String> evidenceCount, String documentName) {
-    EvidenceSummaryDocumentEntity esd = new EvidenceSummaryDocumentEntity();
-    esd.setEvidenceCount(evidenceCount);
-    esd.setDocumentName(documentName);
-    esd.setContention(this);
-    evidenceSummaryDocuments.add(esd);
   }
 }
