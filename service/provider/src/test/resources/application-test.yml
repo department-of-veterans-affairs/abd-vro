@@ -1,0 +1,38 @@
+# This file is loaded when a test is annotated with @ActiveProfiles("test")
+# Spring will load main/resources/application.yml, followed by this file.
+# Since we want tests to be as close as possible to the deployed app, don't create test/resources/application.yml.
+# If test/resources/application.yml exists, it will override main/resources/application.yml.
+
+# Since this is for tests, override some main/resources/application.yml Spring settings
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+    hikari:
+      jdbc-url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=RUNSCRIPT FROM 'classpath:init.sql'
+      username: sa
+      password: sap
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    properties:
+      hibernate:
+        generate_statistics: false
+        jdbc:
+          lob:
+            non_contextual_creation=true:
+
+logging:
+  register-shutdown-hook: true
+  level:
+    org.springframework.jdbc.core: INFO # DEBUG
+    org.springframework.jdbc.core.JdbcTemplate: INFO # DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO # TRACE
+    org.hibernate.SQL: INFO # DEBUG
+    org.type.descriptor.sql.BasicBinder: INFO # TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO # TRACE
