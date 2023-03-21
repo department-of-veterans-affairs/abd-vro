@@ -1,3 +1,7 @@
+# This file is referenced from local.python.container-service-convention.
+# It acts as the default Dockerfile for Python-based containers, i.e., those created by build.gradle
+# that use the local.python.container-service-convention plugin.
+# To override this file, create a src/docker/Dockerfile file in your Gradle module.
 ARG BASE_IMAGE="python:3.10-alpine"
 FROM ${BASE_IMAGE}
 

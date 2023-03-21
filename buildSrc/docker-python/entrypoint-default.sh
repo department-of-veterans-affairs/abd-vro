@@ -1,6 +1,6 @@
 #!/bin/sh
 # This file is copied into the container by the Dockerfile.
-# It is referenced from local.java.container-spring-conventions.gradle.
+# It is referenced from local.python.container-service-convention.
 # To run your own script, create src/docker/entrypoint.sh in your Gradle module.
 
 # Run entrypoint.sh if it exists, otherwise run jar file
