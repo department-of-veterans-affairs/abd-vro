@@ -31,8 +31,6 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: guest
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: guest
       REDIS_PLACEHOLDERS_HOST: vro-api-redis-service
-    build:
-      dockerfile: ./Dockerfile
     ports:
       - "5000:5000"
     networks:
