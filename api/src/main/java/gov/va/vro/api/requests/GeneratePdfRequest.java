@@ -47,7 +47,7 @@ public class GeneratePdfRequest {
   @Schema(
       description = "PDF template to generate",
       example = "v1",
-      allowableValues = {"v1", "v2", "", null})
+      allowableValues = {"v1", "v2", ""})
   private String pdfTemplate;
 
   @Schema(description = "Documents unavailable for automated review")
