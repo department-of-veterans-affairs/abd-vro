@@ -217,8 +217,6 @@ services:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
     depends_on:
-      postgres-service:
-        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
     networks:
