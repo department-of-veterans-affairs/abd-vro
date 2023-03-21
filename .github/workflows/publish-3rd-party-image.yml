@@ -31,7 +31,7 @@ env:
 
 jobs:
   publish-image:
-    # only run for the internal repo since they don't need to be in the public repo
+    # only run for the internal repo since the images don't need to be in the public repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       published-images: ${{ steps.docker-push.outputs.images_list }}
@@ -87,7 +87,7 @@ jobs:
             Check for the package in <https://github.com/department-of-veterans-affairs/${{ github.event.repository.name }}/packages|GHCR>\n\
             See thread :thread: to complete any remaining steps..."
 
-      - name: "Post follow-on actions in Slack thread"
+      - name: "Slack thread: Post follow-on TODO actions"
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:

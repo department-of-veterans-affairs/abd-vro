@@ -60,6 +60,26 @@
     ]
   },
   {
+    "description": "for happy path incomplete bps, used with collection id 380",
+    "claimDetail": {
+      "claimId": 1055,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
     "description": "off ramp no data",
     "claimDetail": {
       "claimId": 1030,
@@ -88,7 +108,7 @@
     },
     "contentions": [
       {
-        "contentionId": "1041",
+        "contentionId": "1140",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
@@ -108,7 +128,7 @@
     },
     "contentions": [
       {
-        "contentionId": "1041",
+        "contentionId": "1141",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
@@ -120,7 +140,7 @@
     ]
   },
   {
-    "description": "identical to happy path, used for out of scope",
+    "description": "identical to happy path except used for out of scope",
     "claimDetail": {
       "claimId": 3010,
       "tempStationOfJurisdiction": "398"
@@ -141,12 +161,12 @@
   {
     "description": "wrong temp station of jurisdiction",
     "claimDetail": {
-      "claimId": 2010,
+      "claimId": 3020,
       "tempStationOfJurisdiction": "391"
     },
     "contentions": [
       {
-        "contentionId": "2011",
+        "contentionId": "3021",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",

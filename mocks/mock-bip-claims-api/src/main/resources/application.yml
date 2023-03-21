@@ -29,7 +29,7 @@ logging:
 # Health
 management:
   server:
-    port: 8098
+    port: 8080
     ssl.enabled: false
   endpoint:
     health:
