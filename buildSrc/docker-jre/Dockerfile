@@ -21,7 +21,6 @@ ARG ENTRYPOINT_FILE
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists, otherwise run jar file
 COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
-RUN chmod +x entrypoint*.sh && chown docker:docker /project
 
 # === Image layers above this line are general and will be reused as cache when building the image.
 # Put commands that produce project-specific image layers below this line.
@@ -30,6 +29,7 @@ ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
 COPY ${JAR_FILE} fat.jar
 
+RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
 USER docker
 # https://spring.io/guides/topicals/spring-boot-docker/ states:
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.

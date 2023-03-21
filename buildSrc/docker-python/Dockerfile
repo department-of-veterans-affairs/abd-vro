@@ -18,7 +18,6 @@ ARG ENTRYPOINT_FILE
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists, otherwise run jar file
 COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
-RUN chmod +x entrypoint*.sh && chown docker:docker /project
 
 # Used to specify the service folder you want to build if running locally
 # No longer write *.pyc files to disk
@@ -29,9 +28,11 @@ ENV PYTHONUNBUFFERED 1
 # === Image layers above this line are general and will be reused as cache when building the image.
 # Put commands that produce project-specific image layers below this line.
 
+# Copy over all files specified in local.python.container-service-convention
 COPY . ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN chmod +x entrypoint*.sh && chown -R docker:docker .
 USER docker
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.
