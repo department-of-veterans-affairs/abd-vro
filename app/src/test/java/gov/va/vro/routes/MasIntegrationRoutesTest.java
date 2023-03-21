@@ -94,7 +94,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
 
-    // Mock a return value when claim-submit (lighthouse) is invoked
+    // Mock a return value when claim-submit-full (lighthouse) is invoked
     replaceEndpoint(
         "claim-submit-full",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
