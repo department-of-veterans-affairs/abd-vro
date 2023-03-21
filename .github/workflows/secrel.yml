@@ -34,9 +34,6 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
-  # Default to failure messages
-  WORKFLOW_STATE_TEXT: ':panda_blank: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Publish> failed!'
-  WORKFLOW_STATE_EMOJI: 'x'
 
 jobs:
   publish-to-ghcr:
@@ -145,15 +142,6 @@ jobs:
       config-file: .github/secrel/config.yml
       images: ${{ needs.publish-to-ghcr.outputs.vro-images }}
     secrets: inherit
-
-  notify-secrel-success:
-    needs: secrel
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Set Slack message to: SecRel passed"
-        run: |
-          echo 'WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!' >> $GITHUB_ENV
-          echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
 
   notify-secrel-error:
     needs: secrel
