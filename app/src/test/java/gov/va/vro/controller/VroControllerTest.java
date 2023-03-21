@@ -71,37 +71,16 @@ class VroControllerTest extends BaseControllerTest {
   @Test
   @DirtiesContext
   void postFullHealthAssessment() throws Exception {
+    adviceWith(camelContext,
+            "claim-submit-full",
+            route -> route
+            .interceptSendToEndpoint("rabbitmq:*")
+            .skipSendToOriginalEndpoint()
+            .to("mock:claim-submit-full"));
 
-    // intercept the original endpoint, skip it and replace it with the mock
-    // endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.hypertension&requestTimeout="
-                        + TIME_OUT)
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
-    adviceWith(
-        camelContext,
-        null,
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.hypertension&requestTimeout="
-                        + TIME_OUT)
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
-    // The mock endpoint returns a valid response
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(
-            claim -> util.claimToResponse(claim, true, null)));
+     mockFullHealthEndpoint.whenAnyExchangeReceived(
+         FunctionProcessor.<Claim, String>fromFunction(
+             claim -> util.claimToResponse(claim, true, null)));
 
     HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
     request.setClaimSubmissionId("1234");
@@ -139,7 +118,7 @@ class VroControllerTest extends BaseControllerTest {
   void fullHealthAssessmentMissingEvidence() throws Exception {
     adviceWith(
         camelContext,
-        "claim-submit-full",
+        "claim-submit",
         route ->
             route
                 .interceptSendToEndpoint(
@@ -152,7 +131,7 @@ class VroControllerTest extends BaseControllerTest {
     // Mock secondary process endpoint
     adviceWith(
         camelContext,
-        null,
+        "claim-submit-full",
         route ->
             route
                 .interceptSendToEndpoint(

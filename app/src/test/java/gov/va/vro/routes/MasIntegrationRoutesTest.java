@@ -50,7 +50,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:sufficiency-assess")
   private MockEndpoint mockSufficiencyAssess;
 
-  @EndpointInject("mock:claim-submit")
+  @EndpointInject("mock:claim-submit-full")
   private MockEndpoint mockClaimSubmit;
 
   @EndpointInject("mock:empty-endpoint")
@@ -101,7 +101,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             + "requestTimeout="
             + DEFAULT_REQUEST_TIMEOUT
             + "&routingKey=code.hypertension",
-        "mock:claim-submit");
+        "mock:claim-submit-full");
 
     mockClaimSubmit.whenAnyExchangeReceived(
         exchange -> {
