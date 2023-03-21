@@ -15,11 +15,10 @@ ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
 COPY ${JAR_FILE} fat.jar
 
-RUN chmod +x entrypoint.sh  && chown -R docker:docker /project \
-    && mkdir -p /project/build/tomcat && chmod 777 /project/build/tomcat
-
 # This is required to ensure the folder is writeable
 # This folder should correspond with $PERSIST_TRACKING_FOLDER
 RUN mkdir -p /persist/tracking && chown -R docker:docker /persist/tracking
 
+RUN mkdir -p /project/build/tomcat && chmod +x entrypoint.sh  && chown -R docker:docker /project
 USER docker
+ENTRYPOINT ["/project/entrypoint-default.sh"]
