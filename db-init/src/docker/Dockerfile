@@ -1,4 +1,4 @@
-FROM flyway/flyway:9.15-alpine
+FROM flyway/flyway:9.16-alpine
 
 RUN apk update && apk --no-cache add expat=2.5.0-r0 && rm -rf /var/cache/apk/*
 
