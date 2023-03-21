@@ -12,8 +12,6 @@ services:
     ports:
       - "5672:5672"
   dc7101:
-    build:
-      context: ../dc7101/.
     image: "dc7101"
     environment:
       RABBITMQ_HOST: "vro-api-rabbit-mq-service"
