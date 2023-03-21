@@ -321,6 +321,7 @@ services:
     <<: *common-sde-security
     <<: *python-healthcheck
     environment:
+      MODE: "docker"
       <<: *redis-placeholder-vars
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
@@ -401,7 +402,7 @@ services:
     hostname: mock-bip-ce-api
     ports:
       - "8094:8094"
-      - "8095:8095"
+# health check is on 8080 and doesn't need to be exposed - "8095:8095"
       - "8096:8096"
     environment:
       <<: *common-vars
@@ -422,7 +423,7 @@ services:
     hostname: mock-bip-claims-api
     ports:
       - "8097:8097"
-      - "8098:8098"
+# health check is on 8080 and doesn't need to be exposed - "8098:8098"
       - "8099:8099"
     environment:
       <<: *common-vars
@@ -443,7 +444,7 @@ services:
     hostname: mock-mas-api
     ports:
       - "9001:9001"
-      - "9002:9002"
+# health check is on 8080 and doesn't need to be exposed - "9002:9002"
     environment:
       <<: *common-vars
       MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
@@ -468,5 +469,20 @@ services:
       <<: *common-vars
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
+    networks:
+      - internal
+
+  mock-slack:
+    profiles: ["all","mock","lh","v2-mocks"]
+    image: va/abd_vro-mock-slack:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-slack
+    ports:
+      - "9008:9008"
+# health check is on 8080 and doesn't need to be exposed - "9009:9009"
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
     networks:
       - internal

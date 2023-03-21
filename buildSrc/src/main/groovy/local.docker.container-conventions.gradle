@@ -24,7 +24,11 @@ docker {
     tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
     tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
     noCache false // Use image caches; only recreate if different
-    dockerfile file('src/docker/Dockerfile')
+
+    if (file('src/docker/Dockerfile').exists())
+        dockerfile file('src/docker/Dockerfile')
+    else
+        dockerfile new File(project.rootDir, 'buildSrc/docker-jre/Dockerfile')
 }
 
 dockerRun {

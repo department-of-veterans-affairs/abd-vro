@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 import pytest
 
-from pdfgenerator.src.lib import settings
 from pdfgenerator.src.lib.pdf_generator import PDFGenerator
 
 lib_dir = os.path.dirname(__file__)
@@ -30,6 +29,7 @@ def test_default_template_variables(template):
     # these variables are only available when the pdf_generator is called so no need to compare
     del generated_variables["timestamp"]
     del generated_variables["start_date"]
+    del generated_variables["base_path"]
 
     # reset this field because it gets turned into a datetime object so it wont match
     generated_variables["veteranInfo"]["birthdate"] = default_variables["veteranInfo"]["birthdate"]

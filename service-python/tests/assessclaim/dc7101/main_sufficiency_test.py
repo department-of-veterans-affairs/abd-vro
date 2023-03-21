@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimdc7101.src.lib import main
 
 
@@ -82,8 +81,7 @@ from assessclaimdc7101.src.lib import main
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
@@ -236,12 +234,10 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -338,8 +334,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
@@ -405,7 +400,7 @@ from assessclaimdc7101.src.lib import main
                                                'relevant': True,
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
-                                               'documentsWithoutAnnotationsChecked': []},
+                              'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 2,
                                      'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 1,
@@ -419,7 +414,7 @@ from assessclaimdc7101.src.lib import main
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "", # missing date
+                        "bp_readings": [{"date": "", # missing date # noqa: E261
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -470,12 +465,10 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -540,7 +533,7 @@ from assessclaimdc7101.src.lib import main
                                                'relevant': True,
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
-                                               'documentsWithoutAnnotationsChecked': []},
+                              'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 1,
                                      'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,
@@ -587,8 +580,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
@@ -683,8 +675,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
@@ -836,8 +827,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
@@ -938,12 +928,11 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'evidence': {'bp_readings': [], 'conditions': [], 'medications': [],'documentsWithoutAnnotationsChecked': []},
+                 'evidence': {'bp_readings': [], 'conditions': [], 'medications': [], 'documentsWithoutAnnotationsChecked': []},
                  'evidenceSummary': {'medicationsCount': 0,
                                      'oneYearBpCount': 0,
                                      'relevantConditionsLighthouseCount': 0,

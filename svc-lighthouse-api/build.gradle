@@ -90,6 +90,9 @@ task integrationTest(type: Test) {
 }
 
 docker {
+  // buildArgs is immutable so we have to set it this way
+  buildArgs(["HEALTHCHECK_PORT_ARG" : "8081"] << buildArgs)
+
   // TODO: remove this line after renaming the image
   name "${dockerRegistry}/${rootProject.name}-service-data-access"
 }

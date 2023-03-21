@@ -1,0 +1,29 @@
+{
+  "dob": "2000-02-19",
+  "firstName": "Rick",
+  "lastName": "Outofscope",
+  "gender": "male",
+  "collectionId": 10,
+  "veteranIdentifiers": {
+    "icn": "icn-not-needed-10",
+    "ssn": "010-11-1111",
+    "veteranFileId": "file-id-not-needed-010",
+    "edipn": "edipn-10",
+    "participantId": "participant-id-010"
+  },
+  "claimDetail": {
+    "benefitClaimId": "3010",
+    "claimSubmissionDateTime": "2017-10-06T18:45:59Z",
+    "claimSubmissionSource": "VA.GOV",
+    "conditions": {
+      "name": "blood pressure",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "DECREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "unknown"
+    }
+  },
+  "veteranFlashIds": [
+    "Agent Orange Exposure Verified"
+  ]
+}

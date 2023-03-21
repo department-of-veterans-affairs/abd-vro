@@ -39,6 +39,14 @@ public class VroController implements VroResource {
   private final PostClaimRequestMapper postClaimRequestMapper;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  /**
+   * Fetch PDF and turn it into an HTTP response.
+   *
+   * @param claimSubmissionId Claim submission ID
+   * @param response response
+   * @return PDF document
+   * @throws ClaimProcessingException PDF document not found
+   */
   public ResponseEntity fetchProcess(String claimSubmissionId, String response)
       throws ClaimProcessingException {
     try {

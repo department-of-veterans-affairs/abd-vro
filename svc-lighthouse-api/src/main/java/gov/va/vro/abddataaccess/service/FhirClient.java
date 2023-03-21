@@ -30,12 +30,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class FhirClient {
@@ -127,7 +129,13 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
+              AbdDomain.CONDITION,
+              (id) -> {
+                SearchSpec result = new SearchSpec("Condition");
+                result.setSearchParams(new String[] {"patient", "category"});
+                result.setSearchValues(new String[] {id, "encounter-diagnosis"});
+                return result;
+              }));
 
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
@@ -235,12 +243,24 @@ public class FhirClient {
 
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
-    for (AbdDomain domain : domains) {
+    result =
+        Arrays.stream(domains)
+            .parallel()
+            .collect(Collectors.toMap(d -> d, d -> getBundleEntryComponents(patientIcn, d)));
+    return result;
+  }
+
+  @NotNull
+  private List<BundleEntryComponent> getBundleEntryComponents(String patientIcn, AbdDomain domain) {
+    Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
+    try {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
-      result.put(domain, records);
+      return records;
+    } catch (AbdException e) {
+      log.error("Failure in get light house patient data for {}", domain.name(), e);
+      return null;
     }
-    return result;
   }
 
   private List<BundleEntryComponent> getRecords(
