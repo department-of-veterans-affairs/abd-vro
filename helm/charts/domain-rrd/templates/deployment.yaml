@@ -15,6 +15,7 @@ spec:
         {{- toYaml .Values.labels | nindent 8 }}
       annotations:
         {{- include "vro.annotations.pod" . | nindent 8 }}
+        {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
