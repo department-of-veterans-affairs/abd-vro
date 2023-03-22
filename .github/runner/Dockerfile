@@ -18,4 +18,6 @@ RUN apt-get update -y && \
     apt update && apt install vault &&  \
     apt-get clean
 
+COPY set-k8s-secrets.sh .
+
 USER docker

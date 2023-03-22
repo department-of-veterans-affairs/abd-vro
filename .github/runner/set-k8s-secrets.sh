@@ -3,7 +3,7 @@
 # input
 TARGET_ENV=dev
 # From lightkeeper
-KUBE_CONFIG=
+# KUBE_CONFIG=
 # Copied from the Vault web GUI
 VAULT_TOKEN=
 TEAM_NAME=vro-admins
@@ -12,23 +12,26 @@ VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
 # Corresponds to subfolder of the paths to Vault secrets
 SERVICE_NAMES="db mq redis"
 
+# Not needed when run within K8s
 setupKubeConfig(){
   echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
   chmod go-rwx ~/.kube/config
 }
-setupKubeConfig
 
 loginVault(){
   vault login "$VAULT_TOKEN"
 }
-loginVault
 
 queryVault(){
   FOLDER=$1
   JSON_DEFAULT=$(vault read -format=json "$TEAM_NAME/deploy/default/$FOLDER")
-  JSON_TARGET=$(vault read -format=json "$TEAM_NAME/deploy/$TARGET_ENV/$FOLDER")
-  # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
-  echo "$JSON_DEFAULT" "$JSON_TARGET" | jq -s '.[0].data * .[1].data'
+  if JSON_TARGET=$(vault read -format=json "$TEAM_NAME/deploy/$TARGET_ENV/$FOLDER"); then
+    # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
+    echo "$JSON_DEFAULT" "$JSON_TARGET" | jq -s '.[0].data * .[1].data'
+  else
+    # No overriding secrets for $TARGET_ENV
+    echo "$JSON_DEFAULT" | jq '.data'
+  fi
 }
 
 dumpYaml(){
@@ -48,28 +51,32 @@ $2
 splitSecretData(){
   ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"') #|@sh
   echo "$ENV_VARS" | while read K V; do
+    >&2 echo "  - key: $K"
     echo "  $K: $(echo -n "$V" )" #| base64 -w0
   done
 }
 addCmdAsSecretData(){
   EXPORT_CMDS=$(echo "$2" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' || exit 3)
+  >&2 echo $(echo "$2" | jq -r 'to_entries | .[] | "  - key: \(.key)"')
   # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
   echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
 }
 collectSecretData(){
   for VRO_SECRETS in "$@"; do
+    >&2 echo "## Setting secret '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
     echo "$(addCmdAsSecretData "$VRO_SECRETS" "$JSON")"
   done
 }
 
-# For each SERVICE_NAMES, set a SECRET_NAME secret, where
+# For each SERVICE_NAMES, set a SERVICE_NAME secret, where
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.
 for SERVICE_NAME in $SERVICE_NAMES; do
+  >&2 echo "## Setting secret 'vro-$SERVICE_NAME'"
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
-  dumpYaml "$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
+  dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
     kubectl -n "va-abd-rrd-${TARGET_ENV}" apply -f -
 done
 
