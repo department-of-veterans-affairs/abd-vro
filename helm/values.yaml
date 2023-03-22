@@ -86,12 +86,12 @@ global:
       name: redis
       passwordKey: redisPassword
 
-  postgres:
-    secretKeyRef:
+#  postgres:
+#    secretKeyRef:
       # For normal DB clients to connect
-      name: postgres
-      usernameKey: username
-      passwordKey: password
+#      name: postgres
+#      usernameKey: username
+#      passwordKey: password
       #urlKey: url
       #dbnameKey: dbName
       #schemaKey: schema

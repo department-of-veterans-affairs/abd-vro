@@ -109,29 +109,29 @@ valueFrom:
   value: {{ include "vro.postgresUrl" . }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.urlKey }}
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.usernameKey }}
+      name: vro-db
+      key: DB_CLIENTUSER_NAME
 - name: POSTGRES_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.passwordKey }}
+      name: vro-db
+      key: DB_CLIENTUSER_PASS
 - name: POSTGRES_DB
   value: {{ .Values.global.service.db.databaseName }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: POSTGRES_SCHEMA
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
 {{- end }}
 
@@ -159,30 +159,30 @@ valueFrom:
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
 - name: FLYWAY_PLACEHOLDERS_USERNAME
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.usernameKey }}
+      name: vro-db
+      key: DB_CLIENTUSER_NAME
 - name: FLYWAY_PLACEHOLDERS_DB_NAME
   value: {{ .Values.global.service.db.databaseName }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.postgres.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
 - name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.secretKeyRef.name }}
-      key: {{ .Values.global.postgres.secretKeyRef.passwordKey }}
+      name: vro-db
+      key: DB_CLIENTUSER_PASS
 {{- end }}
 
 {{/***************************************************************
