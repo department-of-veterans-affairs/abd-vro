@@ -1,6 +1,6 @@
 # Creates image for self-hosted GitHub runner, which is used to access the VA's LHDI Hashicorp Vault.
 # When deployed in LHDI, the runner runs in the VA's network, which is required to access Vault.
-# To publish or start the runner, use GitHub Action workflow gh-runner.yml
+# To publish or start this runner, use GitHub Action workflow deploy-secrets.yml
 
 FROM ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:0.1.24
 
