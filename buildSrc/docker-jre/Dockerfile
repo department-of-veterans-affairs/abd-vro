@@ -1,6 +1,6 @@
-# This file is referenced from local.docker.container-conventions.gradle.
+# This file is referenced from local.java.docker.container-conventions.gradle.
 # It acts as the default Dockerfile for Java-based containers, i.e., those created by build.gradle
-# that use the local.docker.container-conventions plugin (directly or indirectly).
+# that use the local.java.docker.container-conventions plugin (directly or indirectly).
 # To override this file, create a src/docker/Dockerfile file in your Gradle module.
 FROM eclipse-temurin:17-jre-alpine
 
@@ -15,23 +15,22 @@ ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
 HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
 
-# === Image layers above this line are general and will be reused as cache.
-# Put commands that produce project-specific image layers below this line.
-
-ARG JAR_FILE
-ENV JAR_FILENAME=${JAR_FILE}
 WORKDIR /project
-COPY ${JAR_FILE} fat.jar
-
 ARG ENTRYPOINT_FILE
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists, otherwise run jar file
 COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
-RUN chmod +x entrypoint*.sh
 
+# === Image layers above this line are general and will be reused as cache when building the image.
+# Put commands that produce project-specific image layers below this line.
+
+ARG JAR_FILE
+ENV JAR_FILENAME=${JAR_FILE}
+COPY ${JAR_FILE} fat.jar
+
+RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
 USER docker
-
 # https://spring.io/guides/topicals/spring-boot-docker/ states:
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.
