@@ -32,6 +32,38 @@ public class FieldExtractor {
 
   private static final String SNOMED = "http://snomed.info";
   private static final String MISSING = "*Missing*";
+  public static final String SYSTOLOC_BP_CODE = "8480-6";
+  public static final String DIASTOLOC_BP_CODE = "8462-4";
+  private static final String BP_UNIT = "mm[Hg]";
+  private static final String SYSTOLIC_DES = "Systolic blood pressure";
+  private static final String DIASTOLIC_DES = "Diastolic blood pressure";
+
+  private enum BP_MEASURE {
+    SYSTOLIC(SYSTOLOC_BP_CODE, SYSTOLIC_DES, BP_UNIT),
+    DIASTOLIC(DIASTOLOC_BP_CODE, DIASTOLIC_DES, BP_UNIT);
+
+    private String code;
+    private String unit;
+    private String display;
+
+    BP_MEASURE(String code, String display, String unit) {
+      this.code = code;
+      this.display = display;
+      this.unit = unit;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public String getUnit() {
+      return unit;
+    }
+
+    public String getDisplay() {
+      return display;
+    }
+  }
 
   private static String toDate(DateTimeType dateTimeType) {
     String value = dateTimeType.asStringValue();
@@ -286,11 +318,11 @@ public class FieldExtractor {
             Coding codingInner = codeableConcept.getCodingFirstRep();
             if (codingInner.hasCode()) {
               String bpType = codingInner.getCode();
-              if ("8480-6".equals(bpType)) {
+              if (SYSTOLOC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setSystolic(m);
               }
-              if ("8462-4".equals(bpType)) {
+              if (DIASTOLOC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setDiastolic(m);
               }
@@ -315,6 +347,23 @@ public class FieldExtractor {
           });
     }
 
+    // Set default systolic and diastolic blood pressure value if not exist to keep consistence with
+    // MAS BP reading.
+    if (result.getDiastolic() == null) {
+      result.setDiastolic(getDefaultBpMeasurement(BP_MEASURE.DIASTOLIC));
+    }
+    if (result.getSystolic() == null) {
+      result.setSystolic(getDefaultBpMeasurement(BP_MEASURE.SYSTOLIC));
+    }
+    return result;
+  }
+
+  private static AbdBpMeasurement getDefaultBpMeasurement(BP_MEASURE measurement) {
+    AbdBpMeasurement result = new AbdBpMeasurement();
+    result.setCode(measurement.code);
+    result.setUnit(measurement.getUnit());
+    result.setDisplay(measurement.getDisplay());
+    result.setValue(BigDecimal.valueOf(0));
     return result;
   }
 }
