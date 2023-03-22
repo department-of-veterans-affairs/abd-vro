@@ -61,15 +61,15 @@ vro/deploy-time: {{ now | date "2006-01-02T15:04" }}
 {{- define "vro.valueFromSecret.rabbitmqUser" -}}
 valueFrom:
   secretKeyRef:
-    name: {{ .Values.global.rabbitmq.secretKeyRef.name }}
-    key: {{ .Values.global.rabbitmq.secretKeyRef.usernameKey }}
+    name: vro-mq
+    key: MQ_CLIENTUSER_NAME
 {{- end }}
 
 {{- define "vro.valueFromSecret.rabbitmqPwd" -}}
 valueFrom:
   secretKeyRef:
-    name: {{ .Values.global.rabbitmq.secretKeyRef.name }}
-    key: {{ .Values.global.rabbitmq.secretKeyRef.passwordKey }}
+    name: vro-mq
+    key: MQ_CLIENTUSER_PASS
 {{- end }}
 
 {{/***************************************************************

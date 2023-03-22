@@ -75,11 +75,11 @@ global:
       sourcePort: 6379
       targetPort: 6379
 
-  rabbitmq:
-    secretKeyRef:
-      name: rabbitmq
-      usernameKey: User
-      passwordKey: Pass
+#  rabbitmq:
+#    secretKeyRef:
+#      name: rabbitmq
+#      usernameKey: User
+#      passwordKey: Pass
 
 #  redis:
 #    secretKeyRef:
