@@ -728,30 +728,66 @@
       }
     },
     {
-      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/12345",   "resource": {
-      "resourceType": "Observation",     "id": "12345",     "meta": {
-        "lastUpdated": "2021-10-02T00:00:00Z"     },     "status": "final",     "category": [
-        {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/12345",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "12345",
+        "meta": {
+          "lastUpdated": "2021-10-02T00:00:00Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/observation-category",             "code": "vital-signs",             "display": "Vital Signs"           }
-          ],         "text": "Vital Signs"       }
-      ],     "code": {
-        "coding": [
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ],
+          "text": "Blood pressure systolic and diastolic"
+        },
+        "subject": {
+          "reference": "https://api.va.gov/services/fhir/v0/r4/Patient/999999999",
+          "display": "PATIENT, THE"
+        },
+        "effectiveDateTime": "2020-03-04T18:17:26Z",
+        "issued": "2020-08-08T15:27:47Z",
+        "performer": [
           {
-            "system": "http://loinc.org",           "code": "85354-9",           "display": "Blood pressure systolic and diastolic"         }
-        ],       "text": "Blood pressure systolic and diastolic"     },     "subject": {
-        "reference": "https://api.va.gov/services/fhir/v0/r4/Patient/999999999",       "display": "PATIENT, THE"     },     "effectiveDateTime": "2020-03-04T18:17:26Z",     "issued": "2020-08-08T15:27:47Z",     "performer": [
-        {
-          "reference": "https://api.va.gov/services/fhir/v0/r4/Practitioner/746637388444",         "display": "PRACTITIONER, PERFORMER"       },       {
-          "reference": "https://api.va.gov/services/fhir/v0/r4/Organization/985888885",         "display": "WASHINGTON VA MEDICAL CENTER"       }
-      ],     "dataAbsentReason": {
-        "coding": [
+            "reference": "https://api.va.gov/services/fhir/v0/r4/Practitioner/746637388444",
+            "display": "PRACTITIONER, PERFORMER"
+          },
           {
-            "system": "http://hl7.org/fhir/data-absent-reason",           "code": "unknown",           "display": "Unknown"         }
-        ],       "text": "Unknown"     }
-    },   "search": {
-      "mode": "match"   }
+            "reference": "https://api.va.gov/services/fhir/v0/r4/Organization/985888885",
+            "display": "WASHINGTON VA MEDICAL CENTER"
+          }
+        ],
+        "dataAbsentReason": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/data-absent-reason",
+              "code": "unknown",
+              "display": "Unknown"
+            }
+          ],
+          "text": "Unknown"
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
     }
   ]
 }
