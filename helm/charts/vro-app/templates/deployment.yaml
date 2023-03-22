@@ -33,8 +33,8 @@ spec:
             - name: POSTGRES_FLYWAY_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+                  name: vro-db
+                  key: DB_FLYWAYUSER_NAME
             - name: POSTGRES_DB
               value: {{ .Values.global.service.db.databaseName }}
 #              valueFrom:

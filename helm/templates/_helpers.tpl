@@ -97,8 +97,8 @@ valueFrom:
 - name: REDIS_PLACEHOLDERS_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.redis.secretKeyRef.name }}
-      key: {{ .Values.global.redis.secretKeyRef.passwordKey }}
+      name: vro-redis
+      key: REDIS_PLACEHOLDERS_PASSWORD
 {{- end }}
 
 {{/*
@@ -143,18 +143,18 @@ valueFrom:
   value: {{ include "vro.postgresUrl" . }}
 #  valueFrom:
 #    secretKeyRef:
-#      name: {{ .Values.global.dbinit.secretKeyRef.name }}
+#      name: vro-db
 #      key: {{ .Values.global.dbinit.secretKeyRef.urlKey }}
 - name: FLYWAY_USER
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.dbinit.secretKeyRef.name }}
-      key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+      name: vro-db
+      key: DB_FLYWAYUSER_NAME
 - name: FLYWAY_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.dbinit.secretKeyRef.name }}
-      key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
+      name: vro-db
+      key: DB_FLYWAYUSER_PASS
 - name: FLYWAY_SCHEMA
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:

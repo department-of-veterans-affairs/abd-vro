@@ -81,10 +81,10 @@ global:
       usernameKey: User
       passwordKey: Pass
 
-  redis:
-    secretKeyRef:
-      name: redis
-      passwordKey: redisPassword
+#  redis:
+#    secretKeyRef:
+#      name: redis
+#      passwordKey: redisPassword
 
 #  postgres:
 #    secretKeyRef:
@@ -100,15 +100,15 @@ global:
 #    initUsernameKey: initUsername
 #    initPasswordKey: initPassword
 
-  dbinit:
-    secretKeyRef:
-      name: dbinit
-      # DB super user
-      superUsernameKey: superUsername
-      superPasswordKey: superPassword
-      # DB admin user; for Flyway to do DB migrations
-      # used as POSTGRES_FLYWAY_USER (in pg-isready container) and FLYWAY_USER (in the postgres and dbinit containers)
-      usernameKey: username
-      passwordKey: password
+#  dbinit:
+#    secretKeyRef:
+#      name: dbinit
+#      # DB super user
+#      superUsernameKey: superUsername
+#      superPasswordKey: superPassword
+#      # DB admin user; for Flyway to do DB migrations
+#      # used as POSTGRES_FLYWAY_USER (in pg-isready container) and FLYWAY_USER (in the postgres and dbinit containers)
+#      usernameKey: username
+#      passwordKey: password
     # urlKey: url
     # superDbnameKey: superDbname
