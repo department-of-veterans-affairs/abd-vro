@@ -98,7 +98,7 @@ valueFrom:
   valueFrom:
     secretKeyRef:
       name: vro-redis
-      key: REDIS_PLACEHOLDERS_PASSWORD
+      key: REDIS_CLIENTUSER_PASS
 {{- end }}
 
 {{/*
