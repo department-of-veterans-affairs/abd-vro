@@ -23,7 +23,7 @@ on:
         - stop
 
       publish_new_image:
-        description: 'Publish a updated runner image? (Rarely needed)'
+        description: 'Publish an updated runner image? (Rarely needed)'
         required: true
         default: false
         type: boolean

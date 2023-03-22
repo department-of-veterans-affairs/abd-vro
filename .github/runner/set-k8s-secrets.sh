@@ -1,11 +1,16 @@
 #!/bin/bash
 
 # input
-TARGET_ENV=
+TARGET_ENV=dev
+# From lightkeeper
 KUBE_CONFIG=
+# Copied from the Vault web GUI
+VAULT_TOKEN=
+TEAM_NAME=vro-admins
 # These are the env variable names, as well as part of the Vault path
 VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
-SERVICE_NAMES="postgres redis ..."
+# Corresponds to subfolder of the paths to Vault secrets
+SERVICE_NAMES="db mq redis"
 
 setupKubeConfig(){
   echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
@@ -13,9 +18,17 @@ setupKubeConfig(){
 }
 setupKubeConfig
 
+loginVault(){
+  vault login "$VAULT_TOKEN"
+}
+loginVault
+
 queryVault(){
-  # TODO
-  query "deploy/${{input.target_env}}/$1" -o json
+  FOLDER=$1
+  JSON_DEFAULT=$(vault read -format=json "$TEAM_NAME/deploy/default/$FOLDER")
+  JSON_TARGET=$(vault read -format=json "$TEAM_NAME/deploy/$TARGET_ENV/$FOLDER")
+  # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
+  echo "$JSON_DEFAULT" "$JSON_TARGET" | jq -s '.[0].data * .[1].data'
 }
 
 dumpYaml(){
@@ -33,13 +46,13 @@ $2
 }
 
 splitSecretData(){
-  ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value|@sh)"')
+  ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"') #|@sh
   echo "$ENV_VARS" | while read K V; do
-    echo "  $K: $(echo -n "$V" | base64 -w0)"
+    echo "  $K: $(echo -n "$V" )" #| base64 -w0
   done
 }
 addCmdAsSecretData(){
-  EXPORT_CMDS=$(echo "$2" | jq -r 'to_entries | .[] | "export \(.key)=\(.value|@sh)"' || exit 3)
+  EXPORT_CMDS=$(echo "$2" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' || exit 3)
   # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
   echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
 }
@@ -63,8 +76,8 @@ done
 # Set the `vro-secrets` secret, where for each key-value pair,
 # the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
 # of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
-# and evaluated by set-env.src in each VRO container.
-# New environment variables can be added to these secrets without modifying
+# and evaluated by set-env-secrets.src in each VRO container.
+# Advantage: New environment variables can be added to these secrets without modifying
 # Helm configurations -- simply add them to Vault.
 SECRET_DATA=$(collectSecretData $VRO_SECRETS_NAMES)
 dumpYaml vro-secrets "$SECRET_DATA" | \
