@@ -86,7 +86,7 @@ for SERVICE_NAME in $SERVICE_NAMES; do
 done
 
 # These are the env variable names, as well as part of the Vault path
-VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
+VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACk VRO_SECRETS_MAS VRO_SECRETS_BIP VRO_SECRETS_LH"
 # Set the `vro-secrets` secret, where for each key-value pair,
 # the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
 # of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
