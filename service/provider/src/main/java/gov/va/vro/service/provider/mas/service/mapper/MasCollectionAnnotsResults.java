@@ -101,7 +101,7 @@ public class MasCollectionAnnotsResults {
               abdCondition.setOrganization(source);
               conditions.add(abdCondition);
             }
-            case LABRESULT, BLOOD_PRESSURE -> {
+            case BLOOD_PRESSURE -> {
               AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
               abdBloodPressure.setDocument(documentId);
               abdBloodPressure.setReceiptDate(receiptDate);
