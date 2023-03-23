@@ -1,30 +1,26 @@
 #!/bin/bash
 
-# input
-: ${TARGET_ENV:=dev}
 # From lightkeeper
-# KUBE_CONFIG=
+[ "$KUBE_CONFIG" ] || { echo "Missing KUBE_CONFIG"; exit 2; }
 # Copied from the Vault web GUI
-: ${VAULT_TOKEN:=}
+[ "$VAULT_TOKEN" ] || { echo "Missing VAULT_TOKEN"; exit 3; }
 
-# GitHub Team name, which used as the root path for Vault secrets
-# https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
-TEAM_NAME=vro-admins
-# These are the env variable names, as well as part of the Vault path
-VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
-# Corresponds to subfolder of the paths to Vault secrets
-SERVICE_NAMES="db mq redis"
+: ${TARGET_ENV:=dev}
 
-# Not needed when run within K8s
 setupKubeConfig(){
+  mkdir -p ~/.kube
   echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
   chmod go-rwx ~/.kube/config
 }
 
+export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
 loginVault(){
   vault login "$VAULT_TOKEN"
 }
 
+# GitHub Team name, which used as the root path for Vault secrets
+# https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
+TEAM_NAME=vro-admins
 queryVault(){
   FOLDER=$1
   JSON_DEFAULT=$(vault read -format=json "$TEAM_NAME/deploy/default/$FOLDER")
@@ -72,6 +68,8 @@ collectSecretData(){
   done
 }
 
+# Corresponds to subfolder of the paths to Vault secrets
+SERVICE_NAMES="db mq redis"
 # For each SERVICE_NAMES, set a SERVICE_NAME secret, where
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.
@@ -83,6 +81,8 @@ for SERVICE_NAME in $SERVICE_NAMES; do
     kubectl -n "va-abd-rrd-${TARGET_ENV}" apply -f -
 done
 
+# These are the env variable names, as well as part of the Vault path
+VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
 # Set the `vro-secrets` secret, where for each key-value pair,
 # the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
 # of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
