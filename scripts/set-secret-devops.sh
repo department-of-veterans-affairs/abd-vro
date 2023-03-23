@@ -8,24 +8,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-: ${SLACK_TOKEN:=$1}
-
-[ "$SLACK_TOKEN" ] || { echo "Missing SLACK_TOKEN"; exit 3; }
-
-dumpYaml(){
-  # Do not modify indentation
-  echo "
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: $1
-data:
-$2
-"
-}
-
-export SLACK_TOKEN_BASE64=$(echo -n "$SLACK_TOKEN" | base64)
+export SLACK_TOKEN_BASE64=$(echo -n "$1" | base64)
 # Only need in the 1 namespace, let's use dev
-dumpYaml "devops" "  SLACK_BOT_ACCESS_TOKEN_DEVOPS: $SLACK_TOKEN_BASE64" | \
+scripts/echo-secret-yaml.sh "devops" "  SLACK_BOT_ACCESS_TOKEN_DEVOPS: $SLACK_TOKEN_BASE64" | \
   kubectl -n "va-abd-rrd-dev" apply -f -
