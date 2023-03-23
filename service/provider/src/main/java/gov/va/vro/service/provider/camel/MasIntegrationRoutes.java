@@ -226,8 +226,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE)
-        .end()
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
+        .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
@@ -235,21 +235,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId("mas-automated-claim-lighthouse")
         .process(payloadToClaimProcessor())
         .to(lighthouseRetryRoute)
-        .onException(
-            ExchangeTimedOutException
-                .class) // But do handle the errors to permit processing to continue
+        // Handle the errors to permit processing to continue
+        .onException(ExchangeTimedOutException.class)
         .handled(true)
         .process(lighthouseContinueProcessor());
 
     from(lighthouseRetryRoute)
         .doTry()
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
+        .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class))
+        .convertBodyTo(HealthDataAssessment.class)
         // If an error comes back in the healthAssessmentObject that is okay, we just let it flow
         // through this time.
         .endDoCatch();

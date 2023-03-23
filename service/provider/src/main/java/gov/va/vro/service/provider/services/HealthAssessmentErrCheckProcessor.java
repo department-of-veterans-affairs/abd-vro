@@ -20,7 +20,7 @@ public class HealthAssessmentErrCheckProcessor implements Processor {
     HealthDataAssessment hda = exchange.getMessage().getBody(HealthDataAssessment.class);
 
     if (hda.getErrorMessage() != null) {
-      log.info("Health Data Assessment sent back with error : {}", hda.getErrorMessage());
+      log.error("Health Data Assessment sent back with error : {}", hda.getErrorMessage());
       throw new ExternalCallException(hda.getErrorMessage());
     }
     // Else processing should continue do not alter the exchange body or properties
