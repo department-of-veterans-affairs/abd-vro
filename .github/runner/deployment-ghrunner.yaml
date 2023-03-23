@@ -43,10 +43,11 @@ spec:
                 secretKeyRef:
                   name: github-access-token
                   key: GITHUB_ACCESS_TOKEN
-            - name: KUBE_CONFIG
-              value: $KUBE_CONFIG
             - name: VAULT_TOKEN
-              value: $VAULT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: devops
+                  key: VAULT_TOKEN
             - name: TARGET_ENV
               value: $TARGET_ENV
           resources:

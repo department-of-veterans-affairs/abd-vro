@@ -1,22 +1,12 @@
 #!/bin/bash
 
-# From lightkeeper
-[ "$KUBE_CONFIG" ] || { echo "Missing KUBE_CONFIG"; exit 2; }
-# Copied from the Vault web GUI
-[ "$VAULT_TOKEN" ] || { echo "Missing VAULT_TOKEN"; exit 3; }
-
 : ${TARGET_ENV:=dev}
 
-setupKubeConfig(){
-  mkdir -p ~/.kube
-  echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
-  chmod go-rwx ~/.kube/config
-}
+# Originates from the Vault web GUI
+[ "$VAULT_TOKEN" ] || { echo "Missing VAULT_TOKEN"; exit 3; }
 
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
-loginVault(){
-  vault login "$VAULT_TOKEN"
-}
+vault login "$VAULT_TOKEN" || { echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN"; exit 4; }
 
 # GitHub Team name, which used as the root path for Vault secrets
 # https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
@@ -62,7 +52,7 @@ addCmdAsSecretData(){
 }
 collectSecretData(){
   for VRO_SECRETS in "$@"; do
-    >&2 echo "## Setting secret '$VRO_SECRETS'"
+    >&2 echo "\n## Setting secret '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
     echo "$(addCmdAsSecretData "$VRO_SECRETS" "$JSON")"
   done
@@ -74,7 +64,7 @@ SERVICE_NAMES="db mq redis"
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.
 for SERVICE_NAME in $SERVICE_NAMES; do
-  >&2 echo "## Setting secret 'vro-$SERVICE_NAME'"
+  >&2 echo "\n## Setting secret 'vro-$SERVICE_NAME'"
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
   dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
