@@ -1,6 +1,6 @@
 import pytest
 
-from assessclaimdc7101.src.lib import utils
+from data_model import validate_request_body
 
 
 @pytest.mark.parametrize(
@@ -106,6 +106,6 @@ def test_validate_request_body(request_body, result_is_valid, errors):
     :param errors: expected errors from malformed message
     :return:
     """
-    result = utils.validate_request_body(request_body)
+    result = validate_request_body(request_body)
     assert result["is_valid"] == result_is_valid
     assert result["errors"] == errors

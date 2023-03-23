@@ -9,8 +9,12 @@ plugins {
 }
 
 docker {
-    // Refer to service-python/Dockerfile
-    dockerfile file('../Dockerfile')
+    if (file('src/docker/Dockerfile').exists())
+        dockerfile file('src/docker/Dockerfile')
+    else
+        dockerfile new File(project.rootDir, 'buildSrc/docker-python/Dockerfile')
+
+    files "src/docker/entrypoint.sh", new File(project.rootDir, 'buildSrc/docker-python/entrypoint-default.sh')
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
@@ -19,36 +23,6 @@ docker {
     copySpec.into(".").from("../"){
         include("*.py")
     }
-}
-
-def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
-    group = JavaBasePlugin.VERIFICATION_GROUP
-    description = "Use linter (default hadolint) to perform static analysis on Dockerfile"
-    ext.binary = "hadolint"
-    ext.targets = [ "../Dockerfile" ]
-    ext.taskTimeout = 10000L
-    def result = 0
-    def sout = new StringBuilder()
-    def serr = new StringBuilder()
-    doLast {
-        ext.targets.each { f ->
-            def cmdLine = "${ext.binary} ${f}"
-            def proc = cmdLine.execute(null, project.projectDir)
-            proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(ext.taskTimeout)
-            result |= proc.exitValue()
-        }
-        if (result != 0 && serr) {
-            ant.fail(serr) }
-        else if (result != 0) {
-            ant.fail(sout)
-        }
-        return result
-    }
-}
-
-tasks.named("check").configure {
-    dependsOn lintDockerfile
 }
 
 dockerRun {

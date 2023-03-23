@@ -1,7 +1,4 @@
 spring:
-  main:
-    # Disable to avoid "Web application could not be started"
-    web-application-type: none
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
@@ -15,6 +12,16 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+
+## Actuator for health check
+management:
+  server:
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
 
 # https://stackoverflow.com/questions/36583185/spring-data-jpa-could-not-initialize-proxy-no-session-with-methods-marke
 # Degrades performance but only for this Docker image, which is acceptable
