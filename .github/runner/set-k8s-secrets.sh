@@ -100,7 +100,7 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
 # Or use preStop hook to delete those secrets on this pod's shutdown.
 # But restarted pods will fail b/c secrets aren't available.
-# Or at least delete the VAULT_TOKEN secret
+# Or delete at least the VAULT_TOKEN secret.
 
 # For viewing the container output
 sleep 60
