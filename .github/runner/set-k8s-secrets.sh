@@ -42,7 +42,6 @@ dumpYaml(){
   echo "
 apiVersion: v1
 kind: Secret
-immutable: true
 type: Opaque
 metadata:
   name: $1
@@ -101,6 +100,3 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # Or use preStop hook to delete those secrets on this pod's shutdown.
 # But restarted pods will fail b/c secrets aren't available.
 # Or delete at least the VAULT_TOKEN secret.
-
-# For viewing the container output
-sleep 60
