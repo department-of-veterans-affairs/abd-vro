@@ -26,10 +26,12 @@ spec:
         - name: github-runner
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
           imagePullPolicy: Always
-          # Just spin & wait forever
-          command: [ "/bin/sh", "-c", "--" ]
-          args: [ "while true; do sleep 30; done;" ]
+          # For debugging: spin & wait forever without running entrypoint script
+          # command: [ "/bin/sh", "-c", "--" ]
+          # args: [ "while true; do sleep 30; done;" ]
           env:
+            # ORGANIZATION, REPOSITORY_NAME, RUNNER_LABEL, ACCESS_TOKEN are used to register
+            # this runner with a repo.
             - name: ORGANIZATION
               value: "department-of-veterans-affairs"
             - name: REPOSITORY_NAME
@@ -43,17 +45,21 @@ spec:
                 secretKeyRef:
                   name: github-access-token
                   key: GITHUB_ACCESS_TOKEN
+            # The following are used by set-k8s-secrets.sh
+            - name: TARGET_ENV
+              value: $TARGET_ENV
+            - name: KUBE_CONFIG
+              value: $KUBE_CONFIG
             - name: VAULT_TOKEN
+              # TODO: Is there a more secure way to pass this token to the container?
               valueFrom:
                 secretKeyRef:
                   name: devops
                   key: VAULT_TOKEN
-            - name: TARGET_ENV
-              value: $TARGET_ENV
           resources:
             requests:
               cpu: 10m
               memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 100m
+              memory: 256Mi

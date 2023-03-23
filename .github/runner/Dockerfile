@@ -22,4 +22,4 @@ COPY set-k8s-secrets.sh ./
 RUN chown docker:docker set-k8s-secrets.sh
 
 USER docker
-ENTRYPOINT ["./set-k8s-secrets.sh"]
+ENTRYPOINT ["/set-k8s-secrets.sh"]

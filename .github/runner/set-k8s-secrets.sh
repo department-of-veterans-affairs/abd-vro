@@ -1,10 +1,23 @@
 #!/bin/bash
+# This script runs in the gh-runner container to set K8s secrets needed by VRO containers.
 
-: ${TARGET_ENV:=dev}
+NAMESPACE=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+: ${TARGET_ENV:=${NAMESPACE#va-abd-rrd-}}
+echo "TARGET_ENV=$TARGET_ENV"
+
+if [ "$KUBE_CONFIG" ]; then
+  # Enable setting secrets in either cluster
+  mkdir -p ~/.kube
+  echo -n "${KUBE_CONFIG}" > ~/.kube/config
+  chmod go-rwx ~/.kube/config
+else
+  echo "Missing KUBE_CONFIG. Using kubectl namespace of container."
+fi
 
 # Originates from the Vault web GUI
 [ "$VAULT_TOKEN" ] || { echo "Missing VAULT_TOKEN"; exit 3; }
 
+# All secrets are in the Vault in mapi
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
 vault login "$VAULT_TOKEN" || { echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN"; exit 4; }
 
@@ -18,7 +31,8 @@ queryVault(){
     # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
     echo "$JSON_DEFAULT" "$JSON_TARGET" | jq -s '.[0].data * .[1].data'
   else
-    # No overriding secrets for $TARGET_ENV
+    # Not overriding default secrets for $TARGET_ENV
+    >&2 echo "(Using only default secrets)"
     echo "$JSON_DEFAULT" | jq '.data'
   fi
 }
@@ -84,5 +98,6 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" apply -f -
 
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
-# Or use preStop hook to delete those secrets on pod shutdown.
+# Or use preStop hook to delete those secrets on this pod's shutdown.
 # But restarted pods will fail b/c secrets aren't available.
+# Or at least delete the VAULT_TOKEN secret
