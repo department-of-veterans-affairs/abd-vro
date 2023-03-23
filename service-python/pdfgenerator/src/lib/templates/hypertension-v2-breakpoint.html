@@ -207,7 +207,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Condition History -->
   <div class="row">
     <div class="col">
@@ -242,7 +241,6 @@
         interaction with the patient, such as during an appointment or in-patient treatment. It may be a preliminary assessment.</i></p>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   {% endif %}
   <!-- Hypertension -->
   <div class="row">
@@ -301,7 +299,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Schedular evidence -->
   <div class="row">
     <div class="col">
@@ -357,7 +354,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Other medical evidence -->
   <div class="row">
     <div class="col">
@@ -481,7 +477,7 @@
           followingHeight = tables[i + 1].offsetHeight;
         }
 
-        if (currentHeight + followingHeight < 550) {
+        if (currentHeight + followingHeight > 550) {
           const parentRow = tables[i].closest('.row');
           const pagebreak = document.createElement('div');
           pagebreak.classList.add('pagebreak');
