@@ -1,7 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditPropertyProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
@@ -9,6 +8,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generat
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -245,7 +245,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .handled(true)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
-            auditPropertyProcessor(
+            slackEventPropertyProcessor(
                 lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
         .process(lighthouseContinueProcessor()) // But keep processing
         .end(); // End of onException

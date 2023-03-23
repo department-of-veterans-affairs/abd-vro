@@ -143,24 +143,36 @@ public class MasIntegrationProcessors {
     return exchange -> {
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
-      String msg = message;
-      if (masProcessingObject != null) {
-        msg += " collection ID: " + masProcessingObject.getCollectionId();
-      }
-      var auditable = exchange.getMessage().getBody(Auditable.class);
-      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, msg));
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
     };
   }
 
   // Used for inline grabbing of errors that need to go to audit and slack, but the
   // MasProcessingObject was stored
   // not in the body at that point in the code.
-  public static Processor auditPropertyProcessor(
+  public static Processor slackEventPropertyProcessor(
       String routeId, String message, String exchangeProperty) {
     return exchange -> {
-      var auditable = exchange.getProperty(exchangeProperty, Auditable.class);
-      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+      MasProcessingObject masProcessingObject =
+          exchange.getProperty(exchangeProperty, MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
     };
+  }
+
+  public static String getSlackMessage(MasProcessingObject mpo, String originalMessage) {
+    String msg = originalMessage;
+    if (mpo != null) {
+      msg += " collection ID: " + mpo.getCollectionId();
+    }
+    return msg;
   }
 
   /**
