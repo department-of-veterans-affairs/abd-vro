@@ -9,7 +9,7 @@
 
 {{- define "vro.imagePullSecrets" -}}
 imagePullSecrets:
-- name: abd-vro-ghcr
+- name: devops-ghcr
 {{- end }}
 
 {{- define "vro.commonEnvVars" -}}
