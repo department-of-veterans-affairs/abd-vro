@@ -157,7 +157,7 @@ public class MasIntegrationProcessors {
    * lighthouse. We know the fields we MUST have for evidence merge from the properties we saved on
    * the exchange.
    *
-   * We do this because of the request here
+   * <p>We do this because of the request here
    * https://github.com/department-of-veterans-affairs/abd-vro/issues/1314 That asks us to continue
    * processing as if nothing has gone wrong in this case other than notifying slack.
    *
