@@ -26,6 +26,9 @@ spec:
         - name: github-runner
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
           imagePullPolicy: Always
+          # Just spin & wait forever
+          command: [ "/bin/sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
           env:
             - name: ORGANIZATION
               value: "department-of-veterans-affairs"
