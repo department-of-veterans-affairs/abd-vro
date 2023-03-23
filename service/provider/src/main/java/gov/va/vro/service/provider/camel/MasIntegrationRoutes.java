@@ -74,8 +74,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
-  public static final String ENDPOINT_OFFRAMP = "seda:offramp";
-
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
 
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
@@ -111,7 +109,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public void configure() {
     configureAuditing();
     configureNotify();
-    configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
@@ -213,7 +210,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(assessorErrorRouteId)
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .wireTap(ENDPOINT_OFFRAMP)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
         .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
@@ -325,21 +322,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
                 }));
   }
 
-  private void configureOffRamp() {
-    from(ENDPOINT_OFFRAMP)
-        .routeId("mas-offramp")
-        .multicast()
-        .to(ENDPOINT_SLACK_EVENT)
-        .to(ENDPOINT_AUDIT_EVENT);
-  }
-
   private void configureNotify() {
-    // This exists exclusively to not change the route id from the offramp one. which may change in
-    // the future or is misnamed but already externally exposed.
-    // Not all Slack notifications that also need audit logging *are* offramping, and having that
-    // routeId exposed (sent to slack and audit) is only going to create confusion.
     from(ENDPOINT_NOTIFY_AUDIT)
-        .routeId("vro-error-notify")
+        .routeId("vro-notify")
         .multicast()
         .to(ENDPOINT_SLACK_EVENT)
         .to(ENDPOINT_AUDIT_EVENT);
