@@ -26,6 +26,7 @@ spec:
         - name: github-runner
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
           imagePullPolicy: Always
+          restartPolicy: Never
           # For debugging: spin & wait forever without running entrypoint script
           # command: [ "/bin/sh", "-c", "--" ]
           # args: [ "while true; do sleep 30; done;" ]
