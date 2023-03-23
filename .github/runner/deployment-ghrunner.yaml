@@ -24,7 +24,7 @@ spec:
         - name: abd-vro-ghcr
       containers:
         - name: github-runner
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
+          image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:0.1.24
           imagePullPolicy: Always
           # For debugging: spin & wait forever without running entrypoint script
           # command: [ "/bin/sh", "-c", "--" ]
@@ -38,24 +38,12 @@ spec:
               value: "abd-vro-internal"
             - name: RUNNER_LABEL
               # comma separated list of labels to associate with the runner; useful for specifying which runners to use
-              # see deploy-secrets.yml GitHub workflow
               value: "vro-runner"
             - name: ACCESS_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: github-access-token
                   key: GITHUB_ACCESS_TOKEN
-            # The following are used by set-k8s-secrets.sh
-            - name: TARGET_ENV
-              value: $TARGET_ENV
-            - name: KUBE_CONFIG
-              value: $KUBE_CONFIG
-            - name: VAULT_TOKEN
-              # TODO: Is there a more secure way to pass this token to the container?
-              valueFrom:
-                secretKeyRef:
-                  name: devops
-                  key: VAULT_TOKEN
           resources:
             requests:
               cpu: 10m

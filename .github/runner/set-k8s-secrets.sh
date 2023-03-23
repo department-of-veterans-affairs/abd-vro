@@ -102,5 +102,5 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # But restarted pods will fail b/c secrets aren't available.
 # Or at least delete the VAULT_TOKEN secret
 
-# For debugging: spin & wait forever without running entrypoint script
-while true; do sleep 30; done;
+# For viewing the container output
+sleep 60
