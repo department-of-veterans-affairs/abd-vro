@@ -8,7 +8,7 @@ echo "TARGET_ENV=$TARGET_ENV"
 if [ "$KUBE_CONFIG" ]; then
   # Enable setting secrets in either cluster
   mkdir -p ~/.kube
-  echo -n "${KUBE_CONFIG}" > ~/.kube/config
+  echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
   chmod go-rwx ~/.kube/config
 else
   echo "Missing KUBE_CONFIG. Using kubectl namespace of container."
@@ -66,7 +66,7 @@ addCmdAsSecretData(){
 }
 collectSecretData(){
   for VRO_SECRETS in "$@"; do
-    >&2 echo "\n## Setting secret '$VRO_SECRETS'"
+    >&2 echo -e "\n## Setting secret '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
     echo "$(addCmdAsSecretData "$VRO_SECRETS" "$JSON")"
   done
@@ -78,7 +78,7 @@ SERVICE_NAMES="db mq redis"
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.
 for SERVICE_NAME in $SERVICE_NAMES; do
-  >&2 echo "\n## Setting secret 'vro-$SERVICE_NAME'"
+  >&2 echo -e "\n## Setting secret 'vro-$SERVICE_NAME'"
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
   dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
@@ -101,3 +101,6 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # Or use preStop hook to delete those secrets on this pod's shutdown.
 # But restarted pods will fail b/c secrets aren't available.
 # Or at least delete the VAULT_TOKEN secret
+
+# For debugging: spin & wait forever without running entrypoint script
+while true; do sleep 30; done;
