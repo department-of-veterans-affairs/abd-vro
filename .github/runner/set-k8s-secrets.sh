@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # input
-TARGET_ENV=dev
+: ${TARGET_ENV:=dev}
 # From lightkeeper
 # KUBE_CONFIG=
 # Copied from the Vault web GUI
-VAULT_TOKEN=
+: ${VAULT_TOKEN:=}
+
+# GitHub Team name, which used as the root path for Vault secrets
+# https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
 TEAM_NAME=vro-admins
 # These are the env variable names, as well as part of the Vault path
 VRO_SECRETS_NAMES="VRO_SECRETS_APP VRO_SECRETS_BIP VRO_SECRETS_LH"
