@@ -242,13 +242,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(lighthouseRetryRoute)
         // Handle the errors to permit processing to continue
         .onException(
-            ExchangeTimedOutException
-                .class, ExternalCallException.class) // But do handle the errors to permit processing to continue
+            ExchangeTimedOutException.class,
+            ExternalCallException
+                .class) // But do handle the errors to permit processing to continue
         .handled(true)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) //Send error notification to slack
-        .onPrepare(auditPropertyProcessor(lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
-        .process(lighthouseContinueProcessor()) //But keep processing
-        .end(); //End of onException
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            auditPropertyProcessor(
+                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
+        .process(lighthouseContinueProcessor()) // But keep processing
+        .end(); // End of onException
 
     from(lighthouseRetryRoute)
         .doTry()
@@ -330,15 +333,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_AUDIT_EVENT);
   }
 
-  private void configureNotify(){
-    // This exists exclusively to not change the route id from the offramp one. which may change in the future or is misnamed but already externally exposed.
-    // Not all Slack notifications that also need audit logging *are* offramping, and having that routeId exposed (sent to slack and audit) is only going to create confusion.
+  private void configureNotify() {
+    // This exists exclusively to not change the route id from the offramp one. which may change in
+    // the future or is misnamed but already externally exposed.
+    // Not all Slack notifications that also need audit logging *are* offramping, and having that
+    // routeId exposed (sent to slack and audit) is only going to create confusion.
     from(ENDPOINT_NOTIFY_AUDIT)
-            .routeId("vro-error-notify")
-            .multicast()
-            .to(ENDPOINT_SLACK_EVENT)
-            .to(ENDPOINT_AUDIT_EVENT);
-}
+        .routeId("vro-error-notify")
+        .multicast()
+        .to(ENDPOINT_SLACK_EVENT)
+        .to(ENDPOINT_AUDIT_EVENT);
+  }
 
   /** Configure auditing. */
   public void configureAuditing() {

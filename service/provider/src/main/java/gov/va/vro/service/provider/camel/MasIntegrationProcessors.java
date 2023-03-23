@@ -152,10 +152,11 @@ public class MasIntegrationProcessors {
     };
   }
 
-
-  // Used for inline grabbing of errors that need to go to audit and slack, but the MasProcessingObject was stored
+  // Used for inline grabbing of errors that need to go to audit and slack, but the
+  // MasProcessingObject was stored
   // not in the body at that point in the code.
-  public static Processor auditPropertyProcessor(String routeId, String message, String exchangeProperty){
+  public static Processor auditPropertyProcessor(
+      String routeId, String message, String exchangeProperty) {
     return exchange -> {
       var auditable = exchange.getProperty(exchangeProperty, Auditable.class);
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
