@@ -58,10 +58,25 @@ splitSecretData(){
   done
 }
 addCmdAsSecretData(){
-  EXPORT_CMDS=$(echo "$2" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' || exit 3)
+  EXPORT_CMDS=$(toExportCmds "$2" || exit 3)
   >&2 echo "keys: $(echo "$2" | jq -r 'to_entries | .[] | " \(.key)"')"
   # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
   echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
+}
+toExportCmds(){
+  echo "$1" | jq -r -c 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
+    # If variable name ends with '_BASE64', decode it before exporting
+    NEW_VARNAME=${K//_BASE64/}
+    if [ "$NEW_VARNAME" = "$K" ]; then
+      >&2 echo "Leaving the value of $K as is"
+    elif echo $K | grep '_BASE64$' > /dev/null; then
+      DECODED=$(echo "$V" | base64 -d)
+      >&2 echo "Decoding $K as $NEW_VARNAME"
+      echo "export $NEW_VARNAME='$DECODED'"
+    else
+      >&2 echo "Unexpected -- Leaving the value of $K as is"
+    fi
+  done
 }
 collectSecretData(){
   for VRO_SECRETS in "$@"; do

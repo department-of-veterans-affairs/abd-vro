@@ -41,11 +41,11 @@ readinessProbe:
 
 # The following are for secretKeyRef
 
-api:
-  apiKeySecret: api
-  apiKey01: apiKey01
-  apiKey02: apiKey02
-  vroNonProdKey: vroNonProd
+#api:
+#  apiKeySecret: api
+#  apiKey01: apiKey01
+#  apiKey02: apiKey02
+#  vroNonProdKey: vroNonProd
 
 mas:
   keyName: mas

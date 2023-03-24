@@ -1,4 +1,4 @@
-name: "1. Update Deployment"
+name: "1. (Internal) Update Deployment"
 
 on:
   workflow_dispatch:
@@ -114,8 +114,8 @@ env:
 
 jobs:
   update-deployment:
-    # Required secrets are set in the public repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    # Required secrets are set in the specific repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     runs-on: ubuntu-latest
     steps:
       - name: "Slack: workflow triggered"
