@@ -53,7 +53,7 @@ $2
 splitSecretData(){
   ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"') #|@sh
   echo "$ENV_VARS" | while read K V; do
-    >&2 echo "  - key: $K"
+    >&2 echo -e "  - key: $K\n"
     echo "  $K: $(echo -n "$V" )" #| base64 -w0
   done
 }
@@ -81,7 +81,7 @@ for SERVICE_NAME in $SERVICE_NAMES; do
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
   dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
-    kubectl -n "va-abd-rrd-${TARGET_ENV}" apply -f -
+    kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
 done
 
 # These are the env variable names, as well as part of the Vault path
@@ -93,8 +93,9 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_MAS VRO_SECRETS
 # Advantage: New environment variables can be added to these secrets without modifying
 # Helm configurations -- simply add them to Vault.
 SECRET_DATA=$(collectSecretData $VRO_SECRETS_NAMES)
+dumpYaml vro-secrets "$SECRET_DATA"
 dumpYaml vro-secrets "$SECRET_DATA" | \
-  kubectl -n "va-abd-rrd-${TARGET_ENV}" apply -f -
+  kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
 
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
 # Or use preStop hook to delete those secrets on this pod's shutdown.

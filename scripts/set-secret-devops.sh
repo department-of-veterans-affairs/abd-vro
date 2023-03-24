@@ -11,4 +11,4 @@ fi
 export SLACK_TOKEN_BASE64=$(echo -n "$1" | base64)
 # Only need in the 1 namespace, let's use dev
 scripts/echo-secret-yaml.sh "devops" "  SLACK_BOT_ACCESS_TOKEN_DEVOPS: $SLACK_TOKEN_BASE64" | \
-  kubectl -n "va-abd-rrd-dev" apply -f -
+  kubectl -n "va-abd-rrd-dev" replace --force -f -
