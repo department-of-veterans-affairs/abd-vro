@@ -23,6 +23,7 @@ import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -72,6 +73,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
 
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
+  public static final String ENDPOINT_UPLOAD_PDF_AFTER_EXAM = "direct:upload-pdf-after-exam";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
@@ -161,7 +163,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-          .onPrepare(auditProcessor(routeId, "Started claim processing."))
+        .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("idType", simple("${body.idType}"))
@@ -175,18 +177,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
         // Order Exam only if the Sufficient For Fast Tracking is "false"
         .to(ENDPOINT_ORDER_EXAM)
-        // Upload PDF only if SufficientForFastTracking is either true or false
-        .to(ENDPOINT_UPLOAD_PDF)
-        .onException(ExchangeTimedOutException.class)
-        .handled(true)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-                slackEventProcessor(
-                        routeId, "PDF upload failed after exam order requested."))
-            .end()
+        // Upload PDF but catch errors since exam was ordered and continue
+        .to(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
         // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE)
-        .endChoice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
         // Upload PDF only if SufficientForFastTracking is either true or false
         .to(ENDPOINT_UPLOAD_PDF)
@@ -268,6 +262,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureUploadPdf() {
+    String afterExamOrderRoute = "mas-upload-pdf-after-exam-order";
+
+    // Wrapper route to allow camel to be happy about exception catching. Only needed in some upload
+    // PDF scenarios.
+    from(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
+        .to(ENDPOINT_UPLOAD_PDF)
+        .onException(ExchangeTimedOutException.class, BipException.class)
+        .handled(true)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            slackEventPropertyProcessor(
+                afterExamOrderRoute, "PDF upload failed after exam order requested.", "payload"))
+        .end();
+
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
