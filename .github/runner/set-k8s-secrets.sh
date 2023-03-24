@@ -51,15 +51,13 @@ $2
 }
 
 splitSecretData(){
-  ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"') #|@sh
-  echo "$ENV_VARS" | while read K V; do
+  echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
     >&2 echo "  - key: $K"
     echo "  $K: $(echo -n "$V" )" #| base64 -w0
   done
 }
 addCmdAsSecretData(){
   EXPORT_CMDS=$(toExportCmds "$2" || exit 3)
-  >&2 echo "keys: $(echo "$2" | jq -r 'to_entries | .[] | " \(.key)"')"
   # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
   echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
 }
@@ -68,13 +66,15 @@ toExportCmds(){
     # If variable name ends with '_BASE64', decode it before exporting
     NEW_VARNAME=${K//_BASE64/}
     if [ "$NEW_VARNAME" = "$K" ]; then
-      >&2 echo "Leaving the value of $K as is"
+      >&2 echo "  - key: $K Leaving the value as is"
+      echo "export $K='$V'"
     elif echo $K | grep '_BASE64$' > /dev/null; then
-      DECODED=$(echo "$V" | base64 -d)
-      >&2 echo "Decoding $K as $NEW_VARNAME"
+      DECODED="$(echo "$V" | base64 -d)"
+      >&2 echo "  - key: $K Decoding as $NEW_VARNAME"
       echo "export $NEW_VARNAME='$DECODED'"
     else
-      >&2 echo "Unexpected -- Leaving the value of $K as is"
+      >&2 echo "  - key: $K Unexpected; leaving the value as is"
+      echo "export $K='$V'"
     fi
   done
 }
@@ -116,3 +116,6 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # Or use preStop hook to delete those secrets on this pod's shutdown.
 # But restarted pods will fail b/c secrets aren't available.
 # Or delete at least the VAULT_TOKEN secret.
+
+# For debugging
+sleep 600

@@ -159,16 +159,22 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipStationId }}
-            - name: BIP_KEYSTORE
+
+            - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipKeyStore }}
-            - name: BIP_TRUSTSTORE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipTrustStore }}
+                  name: vro-secrets
+                  key: VRO_SECRETS_BIP
+#            - name: BIP_KEYSTORE
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.bip.keyName }}
+#                  key: {{ .Values.bip.bipKeyStore }}
+#            - name: BIP_TRUSTSTORE
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.bip.keyName }}
+#                  key: {{ .Values.bip.bipTrustStore }}
             - name: BIP_PASSWORD
               valueFrom:
                 secretKeyRef:

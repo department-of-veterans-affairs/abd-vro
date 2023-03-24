@@ -47,8 +47,8 @@ bip:
 #  bipEvidenceUrl: bipEvidenceUrl
   bipEvidenceUserId: bipEvidenceUserId
   bipStationId: bipStationId
-  bipKeyStore: bipKeystore
-  bipTrustStore: bipTruststore
+#  bipKeyStore: bipKeystore
+#  bipTrustStore: bipTruststore
   bipPassword: bipPassword
   bipAlias: bipAlias
 
