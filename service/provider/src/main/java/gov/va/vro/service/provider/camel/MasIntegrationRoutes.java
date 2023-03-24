@@ -23,7 +23,6 @@ import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
-import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -267,9 +266,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wrapper route to allow camel to be happy about exception catching. Only needed in some upload
     // PDF scenarios.
     from(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
+        .process(
+            exchange -> {
+              log.error("HMD inside the safe upload PDF");
+            })
         .to(ENDPOINT_UPLOAD_PDF)
-        .onException(ExchangeTimedOutException.class, BipException.class)
+        .onException(Throwable.class)
         .handled(true)
+        .process(
+            exchange -> {
+              log.error("HMD inside the safe upload PDF exception handling");
+            })
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventPropertyProcessor(
