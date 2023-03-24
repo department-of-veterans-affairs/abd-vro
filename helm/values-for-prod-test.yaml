@@ -5,3 +5,10 @@ global:
   lhdiCluster: prod
 
   imagePrefix: ""
+
+  bip:
+    bipEvidenceUrl: vefs-claimevidence-prodtest.prod8.bip.va.gov/api/v1/rest
+
+vro-app-chart:
+  validateToken: NO
+  vroAudUrl: https://api.va.gov/services/abd-vro

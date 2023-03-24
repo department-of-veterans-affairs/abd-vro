@@ -6,7 +6,16 @@ global:
 
   imagePrefix: ""
 
+  bip:
+    bipEvidenceUrl: vefs-claimevidence.prod8.bip.va.gov/api/v1/rest
+
   pgdata:
     storageSize: 5Gi
   tracking:
     storageSize: 2Gi
+
+vro-app-chart:
+  # TODO: Is NO desired?
+  validateToken: NO
+  # TODO: Is prod-test desired?
+  vroAudUrl: https://api.va.gov/services/abd-vro-prod-test

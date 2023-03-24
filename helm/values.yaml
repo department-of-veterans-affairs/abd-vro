@@ -75,6 +75,9 @@ global:
       sourcePort: 6379
       targetPort: 6379
 
+  bip:
+    bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
+
 #  rabbitmq:
 #    secretKeyRef:
 #      name: rabbitmq

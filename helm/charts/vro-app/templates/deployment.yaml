@@ -78,46 +78,53 @@ spec:
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
-            - name: apiAuthKey01
+            - name: VRO_SECRETS_API
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  key: {{ .Values.api.apiKey01 }}
-            - name: apiAuthKey02
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  key: {{ .Values.api.apiKey02 }}
+                  name: vro-secrets
+                  key: VRO_SECRETS_API
+#            - name: apiAuthKey01
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.api.apiKeySecret}}
+#                  key: {{ .Values.api.apiKey01 }}
+#            - name: apiAuthKey02
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.api.apiKeySecret}}
+#                  key: {{ .Values.api.apiKey02 }}
+
             - name: LH_API_AUTH_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dataservice.secretKeyRefName }}
                   key: {{ .Values.dataservice.lhApiAuthUrl }}
-            - name: SLACK_EXCEPTION_CHANNEL
+
+            - name: VRO_SECRETS_SLACK
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.slackExceptionChannel }}
-            - name: SLACK_EXCEPTION_WEBHOOK
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.slackExceptionWebhook }}
+                  name: vro-secrets
+                  key: VRO_SECRETS_SLACK
+#            - name: SLACK_EXCEPTION_CHANNEL
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.dataservice.secretKeyRefName }}
+#                  key: {{ .Values.dataservice.slackExceptionChannel }}
+#            - name: SLACK_EXCEPTION_WEBHOOK
+#              valueFrom:
+#                secretKeyRef:
+#                  name: {{ .Values.dataservice.secretKeyRefName }}
+#                  key: {{ .Values.dataservice.slackExceptionWebhook }}
+
             - name: VRO_AUD_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.vroAudUrl }}
+              value: {{ .Values.vroAudUrl }}
             - name: LH_VRO_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dataservice.secretKeyRefName }}
                   key: {{ .Values.dataservice.lhVroApiKey }}
             - name: VALIDATE_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.validateToken }}
+              value: {{ .Values.validateToken }}
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
@@ -203,10 +210,7 @@ spec:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipEvidenceSecret }}
             - name: BIP_EVIDENCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUrl }}
+              value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_EVIDENCE_USERID
               valueFrom:
                 secretKeyRef:

@@ -148,10 +148,7 @@ spec:
                   name: {{ .Values.bip.keyName }}
                   key: {{ .Values.bip.bipEvidenceSecret }}
             - name: BIP_EVIDENCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUrl }}
+              value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_EVIDENCE_USERID
               valueFrom:
                 secretKeyRef:
