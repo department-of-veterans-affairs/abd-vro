@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.HealthAssessmentSource;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
@@ -148,6 +149,29 @@ public class MasIntegrationProcessors {
       }
       var auditable = exchange.getMessage().getBody(Auditable.class);
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, msg));
+    };
+  }
+
+  /**
+   * This sets up a skeleton lighthouse HealthDataAsessment object in the event of a timeout from
+   * lighthouse. We know the fields we MUST have for evidence merge from the properties we saved on
+   * the exchange.
+   *
+   * <p>We do this because of the request here
+   * https://github.com/department-of-veterans-affairs/abd-vro/issues/1314 That asks us to continue
+   * processing as if nothing has gone wrong in this case other than notifying slack.
+   *
+   * @return
+   */
+  public static Processor lighthouseContinueProcessor() {
+    return exchange -> {
+      MasProcessingObject mpo = exchange.getProperty("payload", MasProcessingObject.class);
+      HealthDataAssessment hda = new HealthDataAssessment();
+      hda.setSource(HealthAssessmentSource.LIGHTHOUSE);
+      hda.setDiagnosticCode(mpo.getDiagnosticCode());
+      hda.setClaimSubmissionId(Integer.toString(mpo.getCollectionId()));
+      hda.setVeteranIcn(mpo.getVeteranIcn());
+      exchange.getMessage().setBody(hda);
     };
   }
 }

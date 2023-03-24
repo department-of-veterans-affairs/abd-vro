@@ -5,6 +5,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combine
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 
@@ -16,6 +17,7 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.ExternalCallException;
 import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
@@ -24,12 +26,14 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
+import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -64,6 +68,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
+
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
@@ -95,6 +101,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
+
+  private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
   @Override
   public void configure() {
@@ -207,7 +215,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureCollectEvidence() {
-    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
+    String lighthouseRetryRoute = "direct:lighthouse-retry";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -218,16 +226,32 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(lighthouseEndpoint) // call Lighthouse
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
-    from(lighthouseEndpoint)
+    from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId("mas-automated-claim-lighthouse")
         .process(payloadToClaimProcessor())
+        .to(lighthouseRetryRoute)
+        // Handle the errors to permit processing to continue
+        .onException(ExchangeTimedOutException.class)
+        .handled(true)
+        .process(lighthouseContinueProcessor());
+
+    from(lighthouseRetryRoute)
+        .doTry()
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
+        .convertBodyTo(HealthDataAssessment.class)
+        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .endDoTry()
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .convertBodyTo(HealthDataAssessment.class)
+        // If an error comes back in the healthAssessmentObject that is okay, we just let it flow
+        // through this time.
+        .endDoCatch();
   }
 
   private void configureUploadPdf() {
