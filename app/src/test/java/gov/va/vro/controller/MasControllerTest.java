@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MasControllerTest extends BaseControllerTest {
 
-  @EndpointInject("mock:mas-offramp")
+  @EndpointInject("mock:vro-notify")
   private MockEndpoint mockMasOfframpEndpoint;
 
   @EndpointInject("mock:mas-complete")
@@ -92,10 +92,10 @@ public class MasControllerTest extends BaseControllerTest {
     var offrampCalled = new AtomicBoolean(false);
     adviceWith(
             camelContext,
-            "mas-offramp",
+            "vro-notify",
             route ->
                 route
-                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_OFFRAMP)
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT)
                     .skipSendToOriginalEndpoint()
                     .to(mockMasOfframpEndpoint))
         .end();
