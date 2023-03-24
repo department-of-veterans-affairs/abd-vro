@@ -161,15 +161,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_PROCESSING)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Started claim processing."))
+          .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("idType", simple("${body.idType}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
-        // TODO remove unmarshal calls if possible: unmarshalling should be automatic
-        .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .convertBodyTo(AbdEvidenceWithSummary.class)
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
@@ -178,8 +177,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_ORDER_EXAM)
         // Upload PDF only if SufficientForFastTracking is either true or false
         .to(ENDPOINT_UPLOAD_PDF)
+        .onException(ExchangeTimedOutException.class)
+        .handled(true)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+                slackEventProcessor(
+                        routeId, "PDF upload failed after exam order requested."))
+            .end()
         // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE)
+        .endChoice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
         // Upload PDF only if SufficientForFastTracking is either true or false
         .to(ENDPOINT_UPLOAD_PDF)
