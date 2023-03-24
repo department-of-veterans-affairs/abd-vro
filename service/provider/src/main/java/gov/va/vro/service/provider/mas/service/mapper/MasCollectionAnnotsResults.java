@@ -52,8 +52,7 @@ public class MasCollectionAnnotsResults {
    * @return abd evidence
    */
   public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation)
-      throws MasException {
-
+    {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
@@ -133,15 +132,13 @@ public class MasCollectionAnnotsResults {
     return abdEvidence;
   }
 
-  private static AbdBloodPressure createBloodPressure(MasAnnotation masAnnotation)
-      throws MasException {
+  private static AbdBloodPressure createBloodPressure(MasAnnotation masAnnotation) {
     log.info("MasAnnotation: {}", masAnnotation.getAnnotVal());
     // Pattern to handle - "120/80 mg/dL"; // or "120/80" or "-/80" or "120/-"
     Pattern pattern = Pattern.compile(MAS_BP_READING_VERIFICATION);
     Matcher matcher = pattern.matcher(masAnnotation.getAnnotVal());
     if (!matcher.matches()) {
-      throw new MasException(
-          "Invalid blood pressure data in the MAS annotation. " + masAnnotation.getAnnotVal());
+      log.error("Invalid blood pressure data in the MAS annotation. {}", masAnnotation.getAnnotVal());
     }
     pattern = Pattern.compile(MAS_BP_READING);
     matcher = pattern.matcher(masAnnotation.getAnnotVal());
