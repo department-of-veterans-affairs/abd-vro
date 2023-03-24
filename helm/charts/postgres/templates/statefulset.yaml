@@ -56,8 +56,8 @@ spec:
               value: {{ .Values.global.service.db.databaseName }}
 #              valueFrom:
 #                secretKeyRef:
-#                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-#                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+#                  name: { { .Values.global.postgres.secretKeyRef.name }}
+#                  key: { { .Values.global.postgres.secretKeyRef.dbnameKey }}
           ports:
             - containerPort: {{ .Values.global.service.db.sourcePort }}
               protocol: TCP

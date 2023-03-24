@@ -12,7 +12,7 @@ RUN chmod a+x /emerg.sh && \
 
 WORKDIR /project
 ARG ENTRYPOINT_FILE
-COPY groovysh.rc entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY groovysh.rc set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE
 COPY ${JAR_FILE} fat.jar

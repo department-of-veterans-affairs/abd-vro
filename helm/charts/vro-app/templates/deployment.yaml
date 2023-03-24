@@ -37,10 +37,6 @@ spec:
                   key: DB_FLYWAYUSER_NAME
             - name: POSTGRES_DB
               value: {{ .Values.global.service.db.databaseName }}
-#              valueFrom:
-#                secretKeyRef:
-#                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-#                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
           command:
             - /bin/sh
             - -c
@@ -86,13 +82,13 @@ spec:
 #            - name: apiAuthKey01
 #              valueFrom:
 #                secretKeyRef:
-#                  name: {{ .Values.api.apiKeySecret}}
-#                  key: {{ .Values.api.apiKey01 }}
+#                  name: { { .Values.api.apiKeySecret}}
+#                  key: { { .Values.api.apiKey01 }}
 #            - name: apiAuthKey02
 #              valueFrom:
 #                secretKeyRef:
-#                  name: {{ .Values.api.apiKeySecret}}
-#                  key: {{ .Values.api.apiKey02 }}
+#                  name: { { .Values.api.apiKeySecret}}
+#                  key: { { .Values.api.apiKey02 }}
 
             - name: LH_API_AUTH_URL
               valueFrom:
@@ -108,13 +104,13 @@ spec:
 #            - name: SLACK_EXCEPTION_CHANNEL
 #              valueFrom:
 #                secretKeyRef:
-#                  name: {{ .Values.dataservice.secretKeyRefName }}
-#                  key: {{ .Values.dataservice.slackExceptionChannel }}
+#                  name: { { .Values.dataservice.secretKeyRefName }}
+#                  key: { { .Values.dataservice.slackExceptionChannel }}
 #            - name: SLACK_EXCEPTION_WEBHOOK
 #              valueFrom:
 #                secretKeyRef:
-#                  name: {{ .Values.dataservice.secretKeyRefName }}
-#                  key: {{ .Values.dataservice.slackExceptionWebhook }}
+#                  name: { { .Values.dataservice.secretKeyRefName }}
+#                  key: { { .Values.dataservice.slackExceptionWebhook }}
 
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
@@ -124,7 +120,8 @@ spec:
                   name: {{ .Values.dataservice.secretKeyRefName }}
                   key: {{ .Values.dataservice.lhVroApiKey }}
             - name: VALIDATE_TOKEN
-              value: {{ .Values.validateToken }}
+              # Must quote, otherwise YAML interprets as a boolean false
+              value: {{ .Values.validateToken | quote }}
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER

@@ -110,7 +110,7 @@ valueFrom:
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.urlKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.urlKey }}
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
@@ -126,13 +126,13 @@ valueFrom:
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: POSTGRES_SCHEMA
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.schemaKey }}
 {{- end }}
 
 {{/*
@@ -144,7 +144,7 @@ valueFrom:
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.dbinit.secretKeyRef.urlKey }}
+#      key: { { .Values.global.dbinit.secretKeyRef.urlKey }}
 - name: FLYWAY_USER
   valueFrom:
     secretKeyRef:
@@ -160,7 +160,7 @@ valueFrom:
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.schemaKey }}
 - name: FLYWAY_PLACEHOLDERS_USERNAME
   valueFrom:
     secretKeyRef:
@@ -171,13 +171,13 @@ valueFrom:
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.dbnameKey }}
 - name: FLYWAY_PLACEHOLDERS_SCHEMA_NAME
   value: {{ .Values.global.service.db.schemaName }}
 #  valueFrom:
 #    secretKeyRef:
 #      name: vro-db
-#      key: {{ .Values.global.postgres.secretKeyRef.schemaKey }}
+#      key: { { .Values.global.postgres.secretKeyRef.schemaKey }}
 - name: FLYWAY_PLACEHOLDERS_USER_PASSWORD
   valueFrom:
     secretKeyRef:

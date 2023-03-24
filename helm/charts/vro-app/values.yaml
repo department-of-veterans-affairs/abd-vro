@@ -89,5 +89,6 @@ dataservice:
   slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
   slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
+# Must use quotes; otherwise, helm interprets as a boolean false
 validateToken: NO
 vroAudUrl: https://sandbox-api.va.gov/services/abd-vro

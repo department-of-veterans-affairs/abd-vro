@@ -53,13 +53,13 @@ $2
 splitSecretData(){
   ENV_VARS=$(echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"') #|@sh
   echo "$ENV_VARS" | while read K V; do
-    >&2 echo -e "  - key: $K\n"
+    >&2 echo "  - key: $K"
     echo "  $K: $(echo -n "$V" )" #| base64 -w0
   done
 }
 addCmdAsSecretData(){
   EXPORT_CMDS=$(echo "$2" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' || exit 3)
-  >&2 echo $(echo "$2" | jq -r 'to_entries | .[] | "  - key: \(.key)"')
+  >&2 echo "keys: $(echo "$2" | jq -r 'to_entries | .[] | " \(.key)"')"
   # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
   echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
 }
