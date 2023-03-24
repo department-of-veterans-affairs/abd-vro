@@ -10,7 +10,7 @@ server:
 # Health
 management:
   server:
-    port: 9002
+    port: 8080
     ssl.enabled: false
   endpoint:
     health:

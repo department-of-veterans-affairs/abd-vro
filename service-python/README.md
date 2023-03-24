@@ -14,6 +14,9 @@ Claims for Hypertension (7101) or Asthma (6602) are sent to their corresponding 
 
 Hypertension claims that have two data sources, MAS and Lighthouse, are evaluated for RFD.
 
+## Request message validation
+The schema validation for messages sent to `assessclaim` processors is kept in the `data_model.py` file. The message includes
+an `evidence` body similar to the ABDEvidence Java object. 
 
 ## VRO prototype
 The folders not used in version 1.0 or 2.0 are outlines for logic to evaluate new conditions or update existing

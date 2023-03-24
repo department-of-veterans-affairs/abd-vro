@@ -1,0 +1,37 @@
+# This file is referenced from local.java.docker.container-conventions.gradle.
+# It acts as the default Dockerfile for Java-based containers, i.e., those created by build.gradle
+# that use the local.java.docker.container-conventions plugin (directly or indirectly).
+# To override this file, create a src/docker/Dockerfile file in your Gradle module.
+FROM eclipse-temurin:17-jre-alpine
+
+# curl is needed for HEALTHCHECK
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 curl && rm -rf /var/cache/apk/*
+
+RUN adduser --no-create-home --disabled-password docker
+
+# 8080 is the default port that spring-actuator uses
+ARG HEALTHCHECK_PORT_ARG=8080
+ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
+HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
+
+WORKDIR /project
+ARG ENTRYPOINT_FILE
+# Workaround to copy ENTRYPOINT_FILE that may not exist
+# https://stackoverflow.com/a/46801962
+# Copy script that runs entrypoint.sh if it exists, otherwise run jar file
+COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+
+# === Image layers above this line are general and will be reused as cache when building the image.
+# Put commands that produce project-specific image layers below this line.
+
+ARG JAR_FILE
+ENV JAR_FILENAME=${JAR_FILE}
+COPY ${JAR_FILE} fat.jar
+
+RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
+USER docker
+# https://spring.io/guides/topicals/spring-boot-docker/ states:
+# The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
+# The advantage is that the java process responds to KILL signals sent to the container.
+ENTRYPOINT ["/project/entrypoint-default.sh"]

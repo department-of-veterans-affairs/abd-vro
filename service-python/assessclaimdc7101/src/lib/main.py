@@ -2,6 +2,8 @@ import logging
 from datetime import date
 from typing import Dict
 
+import data_model
+
 from . import bp_calculator, conditions, medications, utils
 
 
@@ -15,7 +17,7 @@ def assess_hypertension(event: Dict):
     :rtype: dict
     """
 
-    validation_results = utils.validate_request_body(event)
+    validation_results = data_model.validate_request_body(event)
     response_body = {}
 
     if "claimSubmissionDateTime" not in event:
@@ -59,7 +61,7 @@ def assess_sufficiency(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = utils.validate_request_body(event)
+    validation_results = data_model.validate_request_body(event)
     event = validation_results["request_body"]
     response_body = {}
 
@@ -89,10 +91,6 @@ def assess_sufficiency(event: Dict):
                     sufficient = False
             if bp_calculation["twoYearsElevatedBpCount"] >= 1 and bp_calculation["twoYearsBpCount"] >= 3:
                 sufficient = True
-
-        # TODO: remove the following conditional. This should be handled in the camel routes. (HealthEvidenceProcessor)
-        if sufficient is None:
-            response_body["errorMessage"] = "insufficientHealthDataToOrderExam"
 
         response_body.update(
             {
