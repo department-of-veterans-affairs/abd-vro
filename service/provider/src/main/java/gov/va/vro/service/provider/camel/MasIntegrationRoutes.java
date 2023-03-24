@@ -238,10 +238,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(payloadToClaimProcessor())
         .to(lighthouseRetryRoute)
         // Handle the errors to permit processing to continue
-        .onException(
-            ExchangeTimedOutException.class,
-            ExternalCallException
-                .class) // But do handle the errors to permit processing to continue
+        .onException(ExchangeTimedOutException.class, ExternalCallException.class)
         .handled(true)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
