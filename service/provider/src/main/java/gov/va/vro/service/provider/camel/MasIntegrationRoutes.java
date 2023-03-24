@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditPropertyProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
@@ -75,6 +76,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_OFFRAMP = "seda:offramp";
 
+  public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
+
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
 
   public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
@@ -107,6 +110,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
+    configureNotify();
     configureOffRamp();
     configureAutomatedClaim();
     configureMasProcessing();
@@ -216,6 +220,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
+    String lighthouseRoute = "mas-automated-claim-lighthouse";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -232,13 +237,18 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
-        .routeId("mas-automated-claim-lighthouse")
+        .routeId(lighthouseRoute)
         .process(payloadToClaimProcessor())
         .to(lighthouseRetryRoute)
         // Handle the errors to permit processing to continue
-        .onException(ExchangeTimedOutException.class)
+        .onException(
+            ExchangeTimedOutException
+                .class, ExternalCallException.class) // But do handle the errors to permit processing to continue
         .handled(true)
-        .process(lighthouseContinueProcessor());
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) //Send error notification to slack
+        .onPrepare(auditPropertyProcessor(lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
+        .process(lighthouseContinueProcessor()) //But keep processing
+        .end(); //End of onException
 
     from(lighthouseRetryRoute)
         .doTry()
@@ -249,8 +259,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        // If an error comes back in the healthAssessmentObject that is okay, we just let it flow
-        // through this time.
+        .process(healthAssessmentErrCheckProcessor)
         .endDoCatch();
   }
 
@@ -320,6 +329,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_SLACK_EVENT)
         .to(ENDPOINT_AUDIT_EVENT);
   }
+
+  private void configureNotify(){
+    // This exists exclusively to not change the route id from the offramp one. which may change in the future or is misnamed but already externally exposed.
+    // Not all Slack notifications that also need audit logging *are* offramping, and having that routeId exposed (sent to slack and audit) is only going to create confusion.
+    from(ENDPOINT_NOTIFY_AUDIT)
+            .routeId("vro-error-notify")
+            .multicast()
+            .to(ENDPOINT_SLACK_EVENT)
+            .to(ENDPOINT_AUDIT_EVENT);
+}
 
   /** Configure auditing. */
   public void configureAuditing() {

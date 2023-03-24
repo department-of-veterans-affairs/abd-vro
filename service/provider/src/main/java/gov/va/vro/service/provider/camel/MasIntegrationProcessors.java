@@ -152,6 +152,16 @@ public class MasIntegrationProcessors {
     };
   }
 
+
+  // Used for inline grabbing of errors that need to go to audit and slack, but the MasProcessingObject was stored
+  // not in the body at that point in the code.
+  public static Processor auditPropertyProcessor(String routeId, String message, String exchangeProperty){
+    return exchange -> {
+      var auditable = exchange.getProperty(exchangeProperty, Auditable.class);
+      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
+  }
+
   /**
    * This sets up a skeleton lighthouse HealthDataAsessment object in the event of a timeout from
    * lighthouse. We know the fields we MUST have for evidence merge from the properties we saved on
