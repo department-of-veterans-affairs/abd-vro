@@ -13,7 +13,6 @@ import gov.va.vro.model.mas.MasAnnotType;
 import gov.va.vro.model.mas.MasAnnotation;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
-import gov.va.vro.service.provider.mas.MasException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -51,8 +50,7 @@ public class MasCollectionAnnotsResults {
    * @param masCollectionAnnotation annotation
    * @return abd evidence
    */
-  public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation)
-    {
+  public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation) {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
@@ -138,7 +136,8 @@ public class MasCollectionAnnotsResults {
     Pattern pattern = Pattern.compile(MAS_BP_READING_VERIFICATION);
     Matcher matcher = pattern.matcher(masAnnotation.getAnnotVal());
     if (!matcher.matches()) {
-      log.error("Invalid blood pressure data in the MAS annotation. {}", masAnnotation.getAnnotVal());
+      log.error(
+          "Invalid blood pressure data in the MAS annotation. {}", masAnnotation.getAnnotVal());
     }
     pattern = Pattern.compile(MAS_BP_READING);
     matcher = pattern.matcher(masAnnotation.getAnnotVal());
