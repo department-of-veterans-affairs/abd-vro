@@ -98,11 +98,6 @@ spec:
                   name: vro-secrets
                   key: VRO_SECRETS_SLACK
 
-            - name: VRO_SECRETS_LH
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_LH
             - name: LH_API_AUTH_URL
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
