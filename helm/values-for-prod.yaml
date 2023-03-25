@@ -6,7 +6,22 @@ global:
 
   imagePrefix: ""
 
+  bip:
+    bipClaimUrl: claims-prod.prod8.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence.prod8.bip.va.gov/api/v1/rest
+
+  mas:
+    masApiAuthTokenUri: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test/token
+    masApiBaseUrl: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test
+
   pgdata:
     storageSize: 5Gi
   tracking:
     storageSize: 2Gi
+
+vro-app-chart:
+  # TODO: Is NO desired?
+  validateToken: "NO"
+  # TODO: Is prod-test desired?
+  vroAudUrl: https://api.va.gov/services/abd-vro-prod-test
+  lhApiAuthUrl: https://api.va.gov/oauth2/health/system/v1/token

@@ -24,16 +24,20 @@ spec:
         - name: abd-vro-ghcr
       containers:
         - name: github-runner
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-ghrunner:latest
+          image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:0.1.24
           imagePullPolicy: Always
+          # For debugging: spin & wait forever without running entrypoint script
+          # command: [ "/bin/sh", "-c", "--" ]
+          # args: [ "while true; do sleep 30; done;" ]
           env:
+            # ORGANIZATION, REPOSITORY_NAME, RUNNER_LABEL, ACCESS_TOKEN are used to register
+            # this runner with a repo.
             - name: ORGANIZATION
               value: "department-of-veterans-affairs"
             - name: REPOSITORY_NAME
               value: "abd-vro-internal"
             - name: RUNNER_LABEL
               # comma separated list of labels to associate with the runner; useful for specifying which runners to use
-              # see deploy-secrets.yml GitHub workflow
               value: "vro-runner"
             - name: ACCESS_TOKEN
               valueFrom:
@@ -45,5 +49,5 @@ spec:
               cpu: 10m
               memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 100m
+              memory: 256Mi
