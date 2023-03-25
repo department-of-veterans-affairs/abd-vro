@@ -138,7 +138,7 @@ spec:
             - name: BIP_EVIDENCE_URL
               value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_STATION_ID
-              value: 281
+              value: "281"
             - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:

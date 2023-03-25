@@ -130,7 +130,7 @@ spec:
 #                  name: { { .Values.bip.keyName }}
 #                  key: { { .Values.bip.bipEvidenceUserId }}
             - name: BIP_STATION_ID
-              value: 281
+              value: "281"
 
             - name: VRO_SECRETS_BIP
               valueFrom:
