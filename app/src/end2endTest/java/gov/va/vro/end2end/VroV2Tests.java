@@ -19,6 +19,7 @@ import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
 import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
@@ -53,6 +54,7 @@ public class VroV2Tests {
   private static final String EXAM_ORDERING_STATUS_URL = BASE_URL + "/examOrderingStatus";
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
   private static final String CLAIM_INFO_URL = BASE_URL + "/claim-info/";
+  private static final String EXAM_ORDER_INFO_URL = BASE_URL + "/exam-order-info";
   private static final String UPDATES_URL = "http://localhost:8099/updates/";
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
@@ -66,6 +68,8 @@ public class VroV2Tests {
           + "vYXV0aC92Mi92YWxpZGF0aW9uIiwiYXVkIjoibWFzX2RldiIsInN1YiI6IjhjNDkyY2NmLTk0OGYtNDQ1Zi05N"
           + "mY4LTMxZTdmODU5MDlkMiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1hc19kZXYiLCJzY29wZSI6Im9wZW5pZCB"
           + "2cm9fbWFzIiwiY2xpZW50SWQiOiJtYXNfZGV2In0.Qb41CR1JIGGRlryi-XVtqyeNW73cU1YeBVqs9Bps3TA";
+
+  private static final String MAS_ORDER_NOTIFY_STATUS = "VRONOTIFED";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -124,7 +128,7 @@ public class VroV2Tests {
    * for any security-related HTTP tests.
    */
   @Test
-  void testExamOrderingStatus_disallowedCharacters() {
+  void testExamOrderingStatusDisallowedCharacters() {
     var request = getOrderingStatusDisallowedCharacters();
     var requestEntity = getBearerAuthEntity(request);
     try {
@@ -136,7 +140,7 @@ public class VroV2Tests {
   }
 
   @Test
-  void testExamOrderingStatus_invalidRequest() {
+  void testExamOrderingStatusInvalidRequest() {
     var request = getOrderingStatusInvalidRequest();
     var requestEntity = getBearerAuthEntity(request);
     try {
@@ -153,15 +157,15 @@ public class VroV2Tests {
     }
   }
 
-  @Test
-  void testExamOrderingStatus() {
-    var request = getOrderingStatusValidRequest();
+  private void testExamOrderingStatus(String collectionId) {
+    var request = getOrderingStatusValidRequest(collectionId);
     var requestEntity = getBearerAuthEntity(request);
     var response =
         restTemplate.postForEntity(EXAM_ORDERING_STATUS_URL, requestEntity, MasResponse.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var masResponse = response.getBody();
-    assertEquals("Received Exam Order Status for collection Id 123.", masResponse.getMessage());
+    String expectedMessage = "Received Exam Order Status for collection Id " + collectionId + ".";
+    assertEquals(expectedMessage, masResponse.getMessage());
   }
 
   @SneakyThrows
@@ -476,6 +480,31 @@ public class VroV2Tests {
     testAutomatedClaimOffRamp(spec);
   }
 
+  private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
+      ExamOrderInfoResponse[] infoArray, String collectionId) {
+    for (ExamOrderInfoResponse info : infoArray) {
+      if (collectionId.equals(info.getCollectionId())) {
+        return info;
+      }
+    }
+    return null;
+  }
+
+  private void checkExamOrderInfo(String collectionId, String status, boolean isOrderedAtNull) {
+    log.info("Getting exam order info from ");
+    HttpEntity<Void> requestEntity = getTokenAuthHeaders();
+
+    ResponseEntity<ExamOrderInfoResponse[]> response =
+        restTemplate.exchange(
+            EXAM_ORDER_INFO_URL, HttpMethod.GET, requestEntity, ExamOrderInfoResponse[].class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    ExamOrderInfoResponse[] infoArray = response.getBody();
+    ExamOrderInfoResponse info = findExamOrderInfoForCollectionId(infoArray, collectionId);
+    assertNotNull(info, "Cannot find database entry for collection " + collectionId);
+    assertEquals(status, info.getStatus());
+    assertEquals(isOrderedAtNull, info.getOrderedAt() == null);
+  }
+
   private void testAutomatedClaimOrderExam(String collectionId) {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
@@ -483,6 +512,9 @@ public class VroV2Tests {
     testPdfUpload(request);
     String claimId = request.getClaimDetail().getBenefitClaimId();
     testSpecialIssueRdr1Removed(claimId);
+    checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
+    testExamOrderingStatus(collectionId);
+    checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
   }
 
   /**
@@ -535,13 +567,13 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private String getOrderingStatusValidRequest() {
+  private String getOrderingStatusValidRequest(String collectionId) {
     var payload =
         Map.of(
             "collectionId",
-            "123",
+            collectionId,
             "collectionStatus",
-            "DRAFT",
+            MAS_ORDER_NOTIFY_STATUS,
             "examOrderDateTime",
             "2022-12-08T17:45:59Z",
             "eventId",
