@@ -67,7 +67,7 @@ toExportCmds(){
       >&2 echo "  - key: $K"
       echo "export $K='$V'"
     elif echo "$K" | grep '_BASE64$' > /dev/null; then
-      DECODED="$(echo "$V" | base64 -d)"
+      DECODED="$(echo -n "$V" | base64 -d)"
       >&2 echo "  - key: $NEW_VARNAME decoded from $K"
       echo "export $NEW_VARNAME='$DECODED'"
     else
@@ -80,8 +80,8 @@ collectSecretExportCmds(){
   for VRO_SECRETS in "$@"; do
     >&2 echo -e "\n## Setting secret 'vro-secrets': '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
-    # Encode export commands b/c it's usually multiline, then encode it again for the yaml file
-    EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 | base64 -w0)
+    # Encode exportCommands b/c it's usually multiline, plus it must be encoded for the secrets*.yaml file
+    EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 )
     echo "  $VRO_SECRETS: $EXPORT_CMDS_BASE64"
   done
 }
