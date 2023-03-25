@@ -53,7 +53,8 @@ $2
 splitSecretData(){
   echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
     >&2 echo "  - key: $K"
-    echo "  $K: $(echo -n "$V" )" #| base64 -w0
+    # encode the value for the yaml file
+    echo "  $K: $(echo -n "$V" | base64 -w0)"
   done
 }
 addCmdAsSecretData(){
