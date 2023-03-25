@@ -74,6 +74,19 @@ spec:
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
+            {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+
+            - name: JAVA_OPTS
+              value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.global.tracking.mountPath }}
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: /{{ .Values.global.serviceUriPrefix }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.global.serviceUriPrefix }}
+
             - name: VRO_SECRETS_API
               valueFrom:
                 secretKeyRef:
@@ -98,19 +111,6 @@ spec:
               # Must quote, otherwise YAML interprets 'NO' as a boolean false
               value: {{ .Values.validateToken | quote }}
 
-            - name: JAVA_OPTS
-              value: -Xmx512m
-            - name: PERSIST_TRACKING_FOLDER
-              value: {{ .Values.global.tracking.mountPath }}
-            - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.global.serviceUriPrefix }}
-            - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.serviceUriPrefix }}
-
-            {{- include "vro.dbClient.envVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            {{- include "vro.redisClient.envVars" . | nindent 12 }}
-
             - name: VRO_SECRETS_MAS
               valueFrom:
                 secretKeyRef:
@@ -121,8 +121,11 @@ spec:
             - name: MAS_API_BASE_URL
               value: {{ .Values.global.mas.masApiBaseUrl }}
 
-#            - name: BIP_APPLICATION_ID
-#              value: VRO
+            - name: VRO_SECRETS_BIP
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_BIP
             - name: BIP_APPLICATION_ISS
               value: virtual_regional_office
             - name: BIP_CLAIM_URL
@@ -131,11 +134,6 @@ spec:
               value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_STATION_ID
               value: "281"
-            - name: VRO_SECRETS_BIP
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_BIP
           resources:
             requests:
               cpu: 150m
