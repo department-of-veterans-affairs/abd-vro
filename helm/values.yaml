@@ -86,6 +86,7 @@ global:
 vro-app-chart:
   validateToken: NO
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
+  lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation
 
 #  rabbitmq:
 #    secretKeyRef:

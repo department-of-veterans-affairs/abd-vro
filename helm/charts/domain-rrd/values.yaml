@@ -25,10 +25,10 @@ replicaCount: 1
 #  apiKey02: apiKey02
 #  vroNonProdKey: vroNonProd
 
-mas:
-  keyName: mas
-  masApiAuthClientId: masApiAuthClientId
-  masApiAuthClientSecret: masApiAuthClientSecret
+#mas:
+#  keyName: mas
+#  masApiAuthClientId: masApiAuthClientId
+#  masApiAuthClientSecret: masApiAuthClientSecret
 #  masApiAuthScope: masApiAuthScope
 #  masApiAuthTokenUri: masApiAuthTokenUri
 #  masApiBaseUrl: masApiBaseUrl
@@ -36,8 +36,8 @@ mas:
 #  masCollectionStatusPath: masCollectionStatusPath
 #  masCreateExamOrderPath: masCreateExampOrderPath
 
-bip:
-  keyName: bip
+#bip:
+#  keyName: bip
 #  bipApplicationId: bipApplicationId
 #  bipApplicationIss: bipApplicationIss
 #  bipClaimSecret: bipClaimSecret
@@ -53,14 +53,13 @@ bip:
   # TODO: This doesn't seem to be used -- ask Amida
 #  bipAlias: bipAlias
 
-dataservice:
-  # TODO: change the secretKeyRefName's value to be more specific; must also update in all LHDI envs
-  secretKeyRefName: abd-vro
-  lhTokenUrl: lhTokenUrl
-  lhFhirUrl: lhFhirUrl
-  lhPrivateKey: lhPrivateKey
-  lhAssertionUrl: lhAssertionUrl
-  lhAccessClientId: lhAccessClientId
+#dataservice:
+#  secretKeyRefName: abd-vro
+#  lhTokenUrl: lhTokenUrl
+#  lhFhirUrl: lhFhirUrl
+#  lhPrivateKey: lhPrivateKey
+#  lhAssertionUrl: lhAssertionUrl
+#  lhAccessClientId: lhAccessClientId
 #  lhApiAuthUrl: lhApiAuthUrl
 #  vroAudUrl: vroAudUrl
 #  lhVroApiKey: lhVroApiKey

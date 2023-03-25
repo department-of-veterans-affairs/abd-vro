@@ -47,10 +47,10 @@ readinessProbe:
 #  apiKey02: apiKey02
 #  vroNonProdKey: vroNonProd
 
-mas:
-  keyName: mas
-  masApiAuthClientId: masApiAuthClientId
-  masApiAuthClientSecret: masApiAuthClientSecret
+#mas:
+#  keyName: mas
+#  masApiAuthClientId: masApiAuthClientId
+#  masApiAuthClientSecret: masApiAuthClientSecret
 #  masApiAuthScope: masApiAuthScope
 #  masApiAuthTokenUri: masApiAuthTokenUri
 #  masApiBaseUrl: masApiBaseUrl
@@ -58,8 +58,8 @@ mas:
 #  masCollectionStatusPath: masCollectionStatusPath
 #  masCreateExamOrderPath: masCreateExampOrderPath
 
-bip:
-  keyName: bip
+#bip:
+#  keyName: bip
 #  bipApplicationId: bipApplicationId
 #  bipApplicationIss: bipApplicationIss
 #  bipClaimSecret: bipClaimSecret
@@ -72,22 +72,21 @@ bip:
 #  bipKeyStore: bipKeystore
 #  bipTrustStore: bipTruststore
 #  bipPassword: bipPassword
-  bipAlias: bipAlias
+#  bipAlias: bipAlias
 
-dataservice:
-  # TODO: change the secretKeyRefName's value to be more specific; must also update in all LHDI envs
-  secretKeyRefName: abd-vro
-  lhTokenUrl: lhTokenUrl
-  lhFhirUrl: lhFhirUrl
-  lhPrivateKey: lhPrivateKey
-  lhAssertionUrl: lhAssertionUrl
-  lhAccessClientId: lhAccessClientId
-  lhApiAuthUrl: lhApiAuthUrl
-  vroAudUrl: vroAudUrl
-  lhVroApiKey: lhVroApiKey
+#dataservice:
+#  secretKeyRefName: abd-vro
+#  lhTokenUrl: lhTokenUrl
+#  lhFhirUrl: lhFhirUrl
+#  lhPrivateKey: lhPrivateKey
+#  lhAssertionUrl: lhAssertionUrl
+#  lhAccessClientId: lhAccessClientId
+#  lhApiAuthUrl: lhApiAuthUrl
+#  vroAudUrl: vroAudUrl
+#  lhVroApiKey: lhVroApiKey
 
-  slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
-  slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
+#  slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
+#  slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
 validateToken: NO
 vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
