@@ -19,13 +19,14 @@ fi
 
 # All secrets are in the Vault in mapi
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
-vault login "$VAULT_TOKEN" > /dev/null || { echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN"; exit 4; }
+vault login "$VAULT_TOKEN" &> /dev/null || { echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN"; exit 4; }
 
 # GitHub Team name, which used as the root path for Vault secrets
 # https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
 TEAM_NAME=vro-admins
 queryVault(){
   FOLDER=$1
+  >&2 echo "Querying vault at $TEAM_NAME/deploy/(default|$TARGET_ENV)/$FOLDER"
   JSON_DEFAULT=$(vault read -format=json "$TEAM_NAME/deploy/default/$FOLDER")
   if JSON_TARGET=$(vault read -format=json "$TEAM_NAME/deploy/$TARGET_ENV/$FOLDER"); then
     # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
@@ -57,33 +58,31 @@ splitSecretData(){
     echo "  $K: $(echo -n "$V" | base64 -w0)"
   done
 }
-addCmdAsSecretData(){
-  EXPORT_CMDS=$(toExportCmds "$2" || exit 3)
-  # Encode EXPORT_CMDS b/c it's multiline, then encode it again for the yaml file
-  echo "  $1: $(echo "$EXPORT_CMDS" | base64 -w0 | base64 -w0)"
-}
 toExportCmds(){
   echo "$1" | jq -r -c 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
     # If variable name ends with '_BASE64', decode it before exporting
     NEW_VARNAME=${K//_BASE64/}
     if [ "$NEW_VARNAME" = "$K" ]; then
-      >&2 echo "  - key: $K Leaving the value as is"
+      # Variable name does not contain '_BASE64', so no decoding needed
+      >&2 echo "  - key: $K"
       echo "export $K='$V'"
-    elif echo $K | grep '_BASE64$' > /dev/null; then
+    elif echo "$K" | grep '_BASE64$' > /dev/null; then
       DECODED="$(echo "$V" | base64 -d)"
-      >&2 echo "  - key: $K Decoding as $NEW_VARNAME"
+      >&2 echo "  - key: $NEW_VARNAME decoded from $K"
       echo "export $NEW_VARNAME='$DECODED'"
     else
-      >&2 echo "  - key: $K Unexpected; leaving the value as is"
+      >&2 echo "  - key: $K Unexpected; did you mean to use '_BASE64' suffix? Leaving the value as is"
       echo "export $K='$V'"
     fi
   done
 }
-collectSecretData(){
+collectSecretExportCmds(){
   for VRO_SECRETS in "$@"; do
-    >&2 echo -e "\n## Setting secret '$VRO_SECRETS'"
+    >&2 echo -e "\n## Setting secret 'vro-secrets': '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
-    echo "$(addCmdAsSecretData "$VRO_SECRETS" "$JSON")"
+    # Encode export commands b/c it's usually multiline, then encode it again for the yaml file
+    EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 | base64 -w0)
+    echo "  $VRO_SECRETS: $EXPORT_CMDS_BASE64"
   done
 }
 
@@ -108,8 +107,7 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_MAS VRO_SECRETS
 # and evaluated by set-env-secrets.src in each VRO container.
 # Advantage: New environment variables can be added to these secrets without modifying
 # Helm configurations -- simply add them to Vault.
-SECRET_DATA=$(collectSecretData $VRO_SECRETS_NAMES)
-dumpYaml vro-secrets "$SECRET_DATA"
+SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
 dumpYaml vro-secrets "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
 
