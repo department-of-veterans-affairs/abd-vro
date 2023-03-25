@@ -15,6 +15,6 @@ global:
     masApiBaseUrl: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test
 
 vro-app-chart:
-  validateToken: NO
+  validateToken: "NO"
   vroAudUrl: https://api.va.gov/services/abd-vro
   lhApiAuthUrl: https://api.va.gov/internal/auth/v2/validation

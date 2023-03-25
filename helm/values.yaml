@@ -84,7 +84,8 @@ global:
     masApiBaseUrl: https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
 
 vro-app-chart:
-  validateToken: NO
+  # Must quote, otherwise YAML interprets 'NO' as a boolean false
+  validateToken: "NO"
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
   lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation
 
