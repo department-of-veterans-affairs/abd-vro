@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
-
-  public static final String ENDPOINT_SUBMIT_CLAIM = "direct:claim-submit";
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
@@ -38,24 +36,11 @@ public class PrimaryRoutes extends RouteBuilder {
   private final SlipClaimSubmitRouter slipClaimSubmitRouter;
 
   @Override
-  public void configure() {
-    configureRouteClaimSubmit();
+  public void configure() throws Exception {
     configureRouteClaimSubmitForFull();
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     configureRouteimmediatePdf();
-  }
-
-  private void configureRouteClaimSubmit() {
-    // send JSON-string payload to RabbitMQ
-    from(ENDPOINT_SUBMIT_CLAIM)
-        .routeId("claim-submit")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
-        .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
-        // Use Properties not Headers
-        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
-        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .routingSlip(method(SlipClaimSubmitRouter.class, "routeClaimSubmit"));
   }
 
   private void configureRouteClaimSubmitForFull() {

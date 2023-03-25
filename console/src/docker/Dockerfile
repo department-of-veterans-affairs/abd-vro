@@ -1,8 +1,7 @@
 FROM eclipse-temurin:17-jre-alpine
-LABEL org.opencontainers.image.source=https://github.com/department-of-veterans-affairs/abd-vro
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 sudo
+RUN apk update && apk --no-cache add expat=2.5.0-r0 sudo && rm -rf /var/cache/apk/*
 
 # The following is needed to run the emerg.sh script as root for access to /persist
 COPY emerg.sh /

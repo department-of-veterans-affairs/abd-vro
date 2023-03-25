@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
+import gov.va.vro.model.HealthAssessmentSource;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
@@ -142,12 +143,58 @@ public class MasIntegrationProcessors {
     return exchange -> {
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
-      String msg = message;
-      if (masProcessingObject != null) {
-        msg += " collection ID: " + masProcessingObject.getCollectionId();
-      }
-      var auditable = exchange.getMessage().getBody(Auditable.class);
-      exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, msg));
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
+  // Used for inline grabbing of errors that need to go to audit and slack, but the
+  // MasProcessingObject was stored
+  // not in the body at that point in the code.
+  public static Processor slackEventPropertyProcessor(
+      String routeId, String message, String exchangeProperty) {
+    return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getProperty(exchangeProperty, MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
+  public static String getSlackMessage(MasProcessingObject mpo, String originalMessage) {
+    String msg = originalMessage;
+    if (mpo != null) {
+      msg += " collection ID: " + mpo.getCollectionId();
+    }
+    return msg;
+  }
+
+  /**
+   * This sets up a skeleton lighthouse HealthDataAsessment object in the event of a timeout from
+   * lighthouse. We know the fields we MUST have for evidence merge from the properties we saved on
+   * the exchange.
+   *
+   * <p>We do this because of the request here
+   * https://github.com/department-of-veterans-affairs/abd-vro/issues/1314 That asks us to continue
+   * processing as if nothing has gone wrong in this case other than notifying slack.
+   *
+   * @return
+   */
+  public static Processor lighthouseContinueProcessor() {
+    return exchange -> {
+      MasProcessingObject mpo = exchange.getProperty("payload", MasProcessingObject.class);
+      HealthDataAssessment hda = new HealthDataAssessment();
+      hda.setSource(HealthAssessmentSource.LIGHTHOUSE);
+      hda.setDiagnosticCode(mpo.getDiagnosticCode());
+      hda.setClaimSubmissionId(Integer.toString(mpo.getCollectionId()));
+      hda.setVeteranIcn(mpo.getVeteranIcn());
+      exchange.getMessage().setBody(hda);
     };
   }
 }
