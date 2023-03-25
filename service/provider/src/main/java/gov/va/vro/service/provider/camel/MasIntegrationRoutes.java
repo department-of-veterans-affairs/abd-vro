@@ -23,6 +23,7 @@ import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -266,22 +267,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wrapper route to allow camel to be happy about exception catching. Only needed in some upload
     // PDF scenarios.
     from(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
-        .process(
-            exchange -> {
-              log.error("HMD inside the safe upload PDF");
-            })
+        .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        .onException(Throwable.class)
-        .handled(true)
-        .process(
-            exchange -> {
-              log.error("HMD inside the safe upload PDF exception handling");
-            })
+        .endDoTry()
+        .doCatch(BipException.class)
+        // Mas Complete Processing code expects this to be the body of the message
+        .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
-            slackEventPropertyProcessor(
-                afterExamOrderRoute, "PDF upload failed after exam order requested.", "payload"))
-        .end();
+            slackEventProcessor(
+                afterExamOrderRoute, "PDF upload failed after exam order requested."))
+        .endDoCatch();
 
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
