@@ -13,6 +13,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -88,12 +89,13 @@ public class BipClaimService {
   }
 
   /**
-   * Remove special issue contention.
+   * Updates claim and contentions at the end of MAS automated claim processing.
    *
    * @param payload the claim payload
+   * @param status the completion status for mas automation
    * @return the claim payload
    */
-  public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
+  public MasProcessingObject updateClaim(MasProcessingObject payload, MasCompletionStatus status) {
     var claimId = Long.parseLong(payload.getBenefitClaimId());
     String specialIssue1 = claimPorps.getSpecialIssue1();
     log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);

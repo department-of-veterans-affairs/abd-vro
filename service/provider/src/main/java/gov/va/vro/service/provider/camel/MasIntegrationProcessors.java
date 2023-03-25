@@ -10,6 +10,9 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasCamelStage;
+import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -29,11 +32,7 @@ public class MasIntegrationProcessors {
   public static Processor convertToMasProcessingObject() {
     return FunctionProcessor.fromFunction(
         (Function<MasAutomatedClaimPayload, MasProcessingObject>)
-            masAutomatedClaimPayload -> {
-              var mpo = new MasProcessingObject();
-              mpo.setClaimPayload(masAutomatedClaimPayload);
-              return mpo;
-            });
+            payload -> new MasProcessingObject(payload, MasCamelStage.DURING_PROCESSING));
   }
 
   public static Processor combineExchangesProcessor() {
@@ -136,6 +135,24 @@ public class MasIntegrationProcessors {
       var auditable = exchange.getMessage().getBody(Auditable.class);
       String message = messageExtractor.apply(auditable);
       exchange.getIn().setBody(AuditEvent.fromAuditable(auditable, routeId, message));
+    };
+  }
+
+  /**
+   * At the conclusion of automated claim processing this processor updates claims and contentions
+   * using BIP Claims API.
+   *
+   * @param bipClaimService
+   * @return Processor completion camel processor
+   */
+  public static Processor completionProcessor(BipClaimService bipClaimService) {
+    return exchange -> {
+      MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
+      MasCamelStage origin = payload.getOrigin();
+      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
+      MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient);
+      MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
+      exchange.getMessage().setBody(updatedPayload);
     };
   }
 
