@@ -79,6 +79,10 @@ global:
     bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
+  mas:
+    masApiAuthTokenUri: https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
+    masApiBaseUrl: https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
+
 vro-app-chart:
   validateToken: NO
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro

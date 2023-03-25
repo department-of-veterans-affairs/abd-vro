@@ -51,12 +51,12 @@ mas:
   keyName: mas
   masApiAuthClientId: masApiAuthClientId
   masApiAuthClientSecret: masApiAuthClientSecret
-  masApiAuthScope: masApiAuthScope
-  masApiAuthTokenUri: masApiAuthTokenUri
-  masApiBaseUrl: masApiBaseUrl
-  masCollectionAnnotsPath: masCollectionAnnotsPath
-  masCollectionStatusPath: masCollectionStatusPath
-  masCreateExamOrderPath: masCreateExampOrderPath
+#  masApiAuthScope: masApiAuthScope
+#  masApiAuthTokenUri: masApiAuthTokenUri
+#  masApiBaseUrl: masApiBaseUrl
+#  masCollectionAnnotsPath: masCollectionAnnotsPath
+#  masCollectionStatusPath: masCollectionStatusPath
+#  masCreateExamOrderPath: masCreateExampOrderPath
 
 bip:
   keyName: bip
