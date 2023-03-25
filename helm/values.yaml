@@ -76,7 +76,12 @@ global:
       targetPort: 6379
 
   bip:
+    bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
+
+vro-app-chart:
+  validateToken: NO
+  vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
 
 #  rabbitmq:
 #    secretKeyRef:

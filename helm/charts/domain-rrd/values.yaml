@@ -38,19 +38,20 @@ mas:
 
 bip:
   keyName: bip
-  bipApplicationId: bipApplicationId
-  bipApplicationIss: bipApplicationIss
-  bipClaimSecret: bipClaimSecret
-  bipClaimUrl: bipClaimUrl
-  bipClaimUserId: bipClaimUserId
-  bipEvidenceSecret: bipEvidenceSecret
+#  bipApplicationId: bipApplicationId
+#  bipApplicationIss: bipApplicationIss
+#  bipClaimSecret: bipClaimSecret
+#  bipClaimUrl: bipClaimUrl
+#  bipClaimUserId: bipClaimUserId
+#  bipEvidenceSecret: bipEvidenceSecret
 #  bipEvidenceUrl: bipEvidenceUrl
-  bipEvidenceUserId: bipEvidenceUserId
-  bipStationId: bipStationId
+#  bipEvidenceUserId: bipEvidenceUserId
+#  bipStationId: bipStationId
 #  bipKeyStore: bipKeystore
 #  bipTrustStore: bipTruststore
-  bipPassword: bipPassword
-  bipAlias: bipAlias
+#  bipPassword: bipPassword
+  # TODO: This doesn't seem to be used -- ask Amida
+#  bipAlias: bipAlias
 
 dataservice:
   # TODO: change the secretKeyRefName's value to be more specific; must also update in all LHDI envs

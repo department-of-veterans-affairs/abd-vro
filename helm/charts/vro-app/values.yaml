@@ -60,18 +60,18 @@ mas:
 
 bip:
   keyName: bip
-  bipApplicationId: bipApplicationId
-  bipApplicationIss: bipApplicationIss
-  bipClaimSecret: bipClaimSecret
-  bipClaimUrl: bipClaimUrl
-  bipClaimUserId: bipClaimUserId
-  bipEvidenceSecret: bipEvidenceSecret
+#  bipApplicationId: bipApplicationId
+#  bipApplicationIss: bipApplicationIss
+#  bipClaimSecret: bipClaimSecret
+#  bipClaimUrl: bipClaimUrl
+#  bipClaimUserId: bipClaimUserId
+#  bipEvidenceSecret: bipEvidenceSecret
 #  bipEvidenceUrl: bipEvidenceUrl
-  bipEvidenceUserId: bipEvidenceUserId
-  bipStationId: bipStationId
+#  bipEvidenceUserId: bipEvidenceUserId
+#  bipStationId: bipStationId
 #  bipKeyStore: bipKeystore
 #  bipTrustStore: bipTruststore
-  bipPassword: bipPassword
+#  bipPassword: bipPassword
   bipAlias: bipAlias
 
 dataservice:
@@ -89,6 +89,5 @@ dataservice:
   slackExceptionChannel: SLACK_EXCEPTION_CHANNEL
   slackExceptionWebhook: SLACK_EXCEPTION_WEBHOOK
 
-# Must use quotes; otherwise, helm interprets as a boolean false
 validateToken: NO
 vroAudUrl: https://sandbox-api.va.gov/services/abd-vro

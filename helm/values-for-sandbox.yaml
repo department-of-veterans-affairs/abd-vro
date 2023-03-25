@@ -7,6 +7,7 @@ global:
   imagePrefix: ""
 
   bip:
+    bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
 vro-app-chart:

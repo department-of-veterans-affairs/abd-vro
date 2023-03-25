@@ -79,39 +79,17 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_API
-#            - name: apiAuthKey01
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.api.apiKeySecret}}
-#                  key: { { .Values.api.apiKey01 }}
-#            - name: apiAuthKey02
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.api.apiKeySecret}}
-#                  key: { { .Values.api.apiKey02 }}
+            - name: VRO_SECRETS_SLACK
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_SLACK
 
             - name: LH_API_AUTH_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.dataservice.secretKeyRefName }}
                   key: {{ .Values.dataservice.lhApiAuthUrl }}
-
-            - name: VRO_SECRETS_SLACK
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_SLACK
-#            - name: SLACK_EXCEPTION_CHANNEL
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.dataservice.secretKeyRefName }}
-#                  key: { { .Values.dataservice.slackExceptionChannel }}
-#            - name: SLACK_EXCEPTION_WEBHOOK
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.dataservice.secretKeyRefName }}
-#                  key: { { .Values.dataservice.slackExceptionWebhook }}
-
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
             - name: LH_VRO_API_KEY
@@ -177,68 +155,20 @@ spec:
                   key: {{ .Values.mas.masCreateExamOrderPath }}
 
             - name: BIP_APPLICATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationId }}
+              value: VRO
             - name: BIP_APPLICATION_ISS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationIss }}
-            - name: BIP_CLAIM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimSecret }}
+              value: virtual_regional_office
             - name: BIP_CLAIM_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUrl }}
-            - name: BIP_CLAIM_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUserId }}
-            - name: BIP_EVIDENCE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceSecret }}
+              value: {{ .Values.global.bip.bipClaimUrl }}
             - name: BIP_EVIDENCE_URL
               value: {{ .Values.global.bip.bipEvidenceUrl }}
-            - name: BIP_EVIDENCE_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUserId }}
             - name: BIP_STATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipStationId }}
-
+              value: 281
             - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-#            - name: BIP_KEYSTORE
-#              valueFrom:
-#                secretKeyRef:
-#                  name: {{ .Values.bip.keyName }}
-#                  key: {{ .Values.bip.bipKeyStore }}
-#            - name: BIP_TRUSTSTORE
-#              valueFrom:
-#                secretKeyRef:
-#                  name: {{ .Values.bip.keyName }}
-#                  key: {{ .Values.bip.bipTrustStore }}
-            - name: BIP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipPassword }}
           resources:
             requests:
               cpu: 150m

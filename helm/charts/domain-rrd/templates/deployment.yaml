@@ -118,47 +118,35 @@ spec:
                   key: {{ .Values.mas.masCreateExamOrderPath }}
 
             - name: BIP_APPLICATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationId }}
+              value: VRO
             - name: BIP_APPLICATION_ISS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationIss }}
-            - name: BIP_CLAIM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimSecret }}
+              value: virtual_regional_office
+#            - name: BIP_CLAIM_SECRET
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.bip.keyName }}
+#                  key: { { .Values.bip.bipClaimSecret }}
             - name: BIP_CLAIM_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUrl }}
-            - name: BIP_CLAIM_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUserId }}
-            - name: BIP_EVIDENCE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceSecret }}
+              value: {{ .Values.global.bip.bipClaimUrl }}
+#            - name: BIP_CLAIM_USERID
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.bip.keyName }}
+#                  key: { { .Values.bip.bipClaimUserId }}
+#            - name: BIP_EVIDENCE_SECRET
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.bip.keyName }}
+#                  key: { { .Values.bip.bipEvidenceSecret }}
             - name: BIP_EVIDENCE_URL
               value: {{ .Values.global.bip.bipEvidenceUrl }}
-            - name: BIP_EVIDENCE_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUserId }}
+#            - name: BIP_EVIDENCE_USERID
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.bip.keyName }}
+#                  key: { { .Values.bip.bipEvidenceUserId }}
             - name: BIP_STATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipStationId }}
+              value: 281
 
             - name: VRO_SECRETS_BIP
               valueFrom:
@@ -175,10 +163,10 @@ spec:
 #                secretKeyRef:
 #                  name: {{ .Values.bip.keyName }}
 #                  key: {{ .Values.bip.bipTrustStore }}
-            - name: BIP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipPassword }}
+#            - name: BIP_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.bip.keyName }}
+#                  key: { { .Values.bip.bipPassword }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
