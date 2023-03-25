@@ -88,31 +88,6 @@ vro-app-chart:
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
   lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation
 
-#  rabbitmq:
-#    secretKeyRef:
-#      name: rabbitmq
-#      usernameKey: User
-#      passwordKey: Pass
-
-#  redis:
-#    secretKeyRef:
-#      name: redis
-#      passwordKey: redisPassword
-
-#  postgres:
-#    secretKeyRef:
-      # For normal DB clients to connect
-#      name: postgres
-#      usernameKey: username
-#      passwordKey: password
-      #urlKey: url
-      #dbnameKey: dbName
-      #schemaKey: schema
-#    dbName: vro
-#    initDbName: vro
-#    initUsernameKey: initUsername
-#    initPasswordKey: initPassword
-
 #  dbinit:
 #    secretKeyRef:
 #      name: dbinit
@@ -123,5 +98,3 @@ vro-app-chart:
 #      # used as POSTGRES_FLYWAY_USER (in pg-isready container) and FLYWAY_USER (in the postgres and dbinit containers)
 #      usernameKey: username
 #      passwordKey: password
-    # urlKey: url
-    # superDbnameKey: superDbname

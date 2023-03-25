@@ -51,16 +51,6 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_LH
-#            - name: LH_PRIVATE_KEY
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.dataservice.secretKeyRefName }}
-#                  key: { { .Values.dataservice.lhPrivateKey }}
-#            - name: LH_ACCESS_CLIENT_ID
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.dataservice.secretKeyRefName }}
-#                  key: { { .Values.dataservice.lhAccessClientId }}
 
 # TODO: Not referenced
 #            - name: LH_ASSERTION_URL
@@ -88,47 +78,19 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_MAS
-#            - name: MAS_API_AUTH_SCOPE
-#              value: openid
             - name: MAS_API_AUTH_TOKEN_URI
               value: {{ .Values.global.mas.masApiAuthTokenUri }}
             - name: MAS_API_BASE_URL
               value: {{ .Values.global.mas.masApiBaseUrl }}
-#            - name: MAS_COLLECTION_ANNOTS_PATH
-#              value: /pcQueryCollectionAnnots
-#            - name: MAS_COLLECTION_STATUS_PATH
-#              value: /pcCheckCollectionStatus
-#            - name: MAS_CREATE_EXAM_ORDER_PATH
-#              value: /pcOrderExam
 
-            - name: BIP_APPLICATION_ID
-              value: VRO
+#            - name: BIP_APPLICATION_ID
+#              value: VRO
             - name: BIP_APPLICATION_ISS
               value: virtual_regional_office
-#            - name: BIP_CLAIM_SECRET
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipClaimSecret }}
             - name: BIP_CLAIM_URL
               value: {{ .Values.global.bip.bipClaimUrl }}
-#            - name: BIP_CLAIM_USERID
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipClaimUserId }}
-#            - name: BIP_EVIDENCE_SECRET
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipEvidenceSecret }}
             - name: BIP_EVIDENCE_URL
               value: {{ .Values.global.bip.bipEvidenceUrl }}
-#            - name: BIP_EVIDENCE_USERID
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipEvidenceUserId }}
             - name: BIP_STATION_ID
               value: "281"
 
@@ -137,20 +99,5 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-#            - name: BIP_KEYSTORE
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipKeyStore }}
-#            - name: BIP_TRUSTSTORE
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipTrustStore }}
-#            - name: BIP_PASSWORD
-#              valueFrom:
-#                secretKeyRef:
-#                  name: { { .Values.bip.keyName }}
-#                  key: { { .Values.bip.bipPassword }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

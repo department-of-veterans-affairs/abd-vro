@@ -116,21 +116,13 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_MAS
-#            - name: MAS_API_AUTH_SCOPE
-#              value: openid
             - name: MAS_API_AUTH_TOKEN_URI
               value: {{ .Values.global.mas.masApiAuthTokenUri }}
             - name: MAS_API_BASE_URL
               value: {{ .Values.global.mas.masApiBaseUrl }}
-#            - name: MAS_COLLECTION_ANNOTS_PATH
-#              value: /pcQueryCollectionAnnots
-#            - name: MAS_COLLECTION_STATUS_PATH
-#              value: /pcCheckCollectionStatus
-#            - name: MAS_CREATE_EXAM_ORDER_PATH
-#              value: /pcOrderExam
 
-            - name: BIP_APPLICATION_ID
-              value: VRO
+#            - name: BIP_APPLICATION_ID
+#              value: VRO
             - name: BIP_APPLICATION_ISS
               value: virtual_regional_office
             - name: BIP_CLAIM_URL
