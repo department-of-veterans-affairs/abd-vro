@@ -38,7 +38,7 @@ public class FieldExtractor {
   private static final String SYSTOLIC_DES = "Systolic blood pressure";
   private static final String DIASTOLIC_DES = "Diastolic blood pressure";
 
-  private enum BP_MEASURE {
+  public enum BP_MEASURE {
     SYSTOLIC(SYSTOLOC_BP_CODE, SYSTOLIC_DES, BP_UNIT),
     DIASTOLIC(DIASTOLOC_BP_CODE, DIASTOLIC_DES, BP_UNIT);
 
@@ -347,18 +347,10 @@ public class FieldExtractor {
           });
     }
 
-    // Set default systolic and diastolic blood pressure value if not exist to keep consistence with
-    // MAS BP reading.
-    if (result.getDiastolic() == null) {
-      result.setDiastolic(getDefaultBpMeasurement(BP_MEASURE.DIASTOLIC));
-    }
-    if (result.getSystolic() == null) {
-      result.setSystolic(getDefaultBpMeasurement(BP_MEASURE.SYSTOLIC));
-    }
     return result;
   }
 
-  private static AbdBpMeasurement getDefaultBpMeasurement(BP_MEASURE measurement) {
+  public static AbdBpMeasurement getDefaultBpMeasurement(BP_MEASURE measurement) {
     AbdBpMeasurement result = new AbdBpMeasurement();
     result.setCode(measurement.code);
     result.setUnit(measurement.getUnit());
