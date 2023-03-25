@@ -44,6 +44,7 @@ dumpYaml(){
 apiVersion: v1
 kind: Secret
 type: Opaque
+immutable: true
 metadata:
   name: $1
 data:
