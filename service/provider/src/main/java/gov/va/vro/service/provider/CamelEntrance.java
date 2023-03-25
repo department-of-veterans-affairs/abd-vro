@@ -100,6 +100,6 @@ public class CamelEntrance {
    * @param auditEvent the event to broadcast
    */
   public void offrampClaim(AuditEvent auditEvent) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_OFFRAMP, auditEvent);
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT, auditEvent);
   }
 }

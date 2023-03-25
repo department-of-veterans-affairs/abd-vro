@@ -8,6 +8,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generat
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -73,7 +74,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
-  public static final String ENDPOINT_OFFRAMP = "seda:offramp";
+  public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
 
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
 
@@ -107,7 +108,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   @Override
   public void configure() {
     configureAuditing();
-    configureOffRamp();
+    configureNotify();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
@@ -209,13 +210,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(assessorErrorRouteId)
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .wireTap(ENDPOINT_OFFRAMP)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
         .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
+    String lighthouseRoute = "mas-automated-claim-lighthouse";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -232,13 +234,18 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
-        .routeId("mas-automated-claim-lighthouse")
+        .routeId(lighthouseRoute)
         .process(payloadToClaimProcessor())
         .to(lighthouseRetryRoute)
         // Handle the errors to permit processing to continue
-        .onException(ExchangeTimedOutException.class)
+        .onException(ExchangeTimedOutException.class, ExternalCallException.class)
         .handled(true)
-        .process(lighthouseContinueProcessor());
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            slackEventPropertyProcessor(
+                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
+        .process(lighthouseContinueProcessor()) // But keep processing
+        .end(); // End of onException
 
     from(lighthouseRetryRoute)
         .doTry()
@@ -249,8 +256,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        // If an error comes back in the healthAssessmentObject that is okay, we just let it flow
-        // through this time.
+        .process(healthAssessmentErrCheckProcessor)
         .endDoCatch();
   }
 
@@ -313,9 +319,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
                 }));
   }
 
-  private void configureOffRamp() {
-    from(ENDPOINT_OFFRAMP)
-        .routeId("mas-offramp")
+  private void configureNotify() {
+    from(ENDPOINT_NOTIFY_AUDIT)
+        .routeId("vro-notify")
         .multicast()
         .to(ENDPOINT_SLACK_EVENT)
         .to(ENDPOINT_AUDIT_EVENT);
