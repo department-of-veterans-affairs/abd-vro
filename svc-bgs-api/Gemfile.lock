@@ -1,0 +1,83 @@
+GIT
+  remote: https://github.com/department-of-veterans-affairs/bgs-ext.git
+  revision: dc1b6938a385f6ef2cf55b030ae94f06e08ccc9a
+  specs:
+    bgs_ext (0.21.3)
+      httpclient
+      nokogiri (>= 1.13.6)
+      savon (= 2.12)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (6.1.7.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
+    akami (1.3.1)
+      gyoku (>= 0.4.0)
+      nokogiri
+    amq-protocol (2.3.2)
+    builder (3.2.4)
+    bunny (2.20.3)
+      amq-protocol (~> 2.3, >= 2.3.1)
+      sorted_set (~> 1, >= 1.0.2)
+    concurrent-ruby (1.2.2)
+    gyoku (1.4.0)
+      builder (>= 2.1.2)
+      rexml (~> 3.0)
+    httpclient (2.8.3)
+    httpi (2.5.0)
+      rack
+      socksify
+    i18n (1.12.0)
+      concurrent-ruby (~> 1.0)
+    mini_portile2 (2.8.1)
+    minitest (5.18.0)
+    nokogiri (1.14.2)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    nori (2.6.0)
+    public_suffix (5.0.1)
+    racc (1.6.2)
+    rack (3.0.7)
+    rbtree (0.4.6)
+    rexml (3.2.5)
+    savon (2.12.0)
+      akami (~> 1.2)
+      builder (>= 2.1.2)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
+    set (1.0.3)
+    socksify (1.7.1)
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    wasabi (3.7.0)
+      addressable
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.2)
+    zeitwerk (2.6.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport (~> 6.0)
+  bgs_ext!
+  bunny (>= 2.13.0)
+
+RUBY VERSION
+   ruby 2.7.6p219
+
+BUNDLED WITH
+   2.1.4

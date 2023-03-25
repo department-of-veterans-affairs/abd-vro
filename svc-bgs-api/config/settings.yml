@@ -1,0 +1,11 @@
+# Settings (like the RabbitMQ connection options or API keys)
+# Loaded by setup.rb and put into a global variable.
+
+development:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    env: beplinktest
+    log: true
+    ssl_verify_mode: none
