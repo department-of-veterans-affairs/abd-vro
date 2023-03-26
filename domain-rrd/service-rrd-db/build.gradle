@@ -8,9 +8,8 @@ ext {
 }
 
 dependencies {
-  implementation project(':domain-rrd:model-rrd')
+  implementation project(':domain-rrd:shared-rrd')
   implementation project(':persistence:model')
-  implementation project(':domain-rrd:spi')
 
   // Needed?
   // implementation "gov.va.starter:exceptions"
