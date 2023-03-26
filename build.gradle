@@ -136,7 +136,7 @@ ext {
   codeModules = [
     ':app',
     ':domain-rrd:api',
-    ':controller',
+    ':domain-rrd:controller',
     ':persistence:model',
     ':shared:lib-camel-connector',
     ':service:provider',
