@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
@@ -147,6 +148,21 @@ public class BipClaimService {
     return null;
   }
 
+  private void updateClaimProper(long claimId, MasCompletionStatus status) {
+    BipClaim claim = bipApiService.getClaimDetails(claimId);
+    ClaimStatus claimStatus = status.getClaimStatus();
+    String necessaryLifecycleStatus = claimStatus.getDescription();
+    if (!necessaryLifecycleStatus.equals(claim.getClaimLifecycleStatus())) {
+      log.info("Updating lifecycle status to {} for claim {}", necessaryLifecycleStatus, claimId);
+      bipApiService.updateClaimStatus(claimId, claimStatus);
+      if (claimStatus == ClaimStatus.RFD) {
+        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
+      }
+    } else {
+      log.info("Lifecycle status is already {} for claim {}", necessaryLifecycleStatus, claimId);
+    }
+  }
+
   /**
    * Updates claim and contentions at the end of MAS automated claim processing.
    *
@@ -157,6 +173,8 @@ public class BipClaimService {
   public MasProcessingObject updateClaim(MasProcessingObject payload, MasCompletionStatus status) {
     long claimId = Long.parseLong(payload.getBenefitClaimId());
     log.info("Attempting necessary updates for claim id = {}", claimId);
+
+    updateClaimProper(claimId, status);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
@@ -185,36 +203,6 @@ public class BipClaimService {
         UpdateContentionReq.builder().updateContentions(updateContentions).build();
     log.info("Calling BIP AP Service for contention updates for claim id = {}", claimId);
     bipApiService.updateClaimContention(claimId, request);
-    return payload;
-  }
-
-  /**
-   * Update claim status.
-   *
-   * @param payload the claim payload
-   * @return the claim payload
-   */
-  public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    long claimId = payload.getBenefitClaimIdAsLong();
-    int collectionId = payload.getCollectionId();
-
-    // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(claimId);
-    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
-      log.info(
-          "Claim {} with collection Id = {} is in state {}. Not updating status",
-          claimId,
-          collectionId,
-          claim.getTempStationOfJurisdiction());
-    } else {
-      log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
-      try {
-        bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
-        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
-      } catch (Exception e) {
-        throw new BipException("BIP update claim status resulted in an exception", e);
-      }
-    }
     return payload;
   }
 

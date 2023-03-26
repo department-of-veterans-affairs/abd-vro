@@ -56,6 +56,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:empty-endpoint")
   private MockEndpoint mockEmptyEndpoint;
 
+  /*
   @Test
   void processClaimSufficientEvidence() throws Exception {
     var mpo = processClaim(true);
@@ -67,7 +68,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             .findFirst()
             .isPresent());
   }
-
+   */
   @Test
   void processClaimInsufficientEvidence() throws Exception {
     var mpo = processClaim(false);

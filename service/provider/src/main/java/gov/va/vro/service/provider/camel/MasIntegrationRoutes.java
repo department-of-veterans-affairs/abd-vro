@@ -296,16 +296,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_COMPLETE)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Removing Special Issue"))
+        .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(MasIntegrationProcessors.completionProcessor(bipClaimService))
-        .choice()
-        // Mark the claim as "RFD" only if the Sufficient For Fast Tracking is "true"
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
-        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
-        .endChoice()
-        .end()
         .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(
