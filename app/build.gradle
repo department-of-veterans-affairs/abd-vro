@@ -31,7 +31,7 @@ dependencies {
   implementation project(':domain-rrd:rrd-api-controller')
 
   // TODO: probably shouldn't be directly dependent on these
-  implementation project(':domain-rrd:services-rrd')
+  implementation project(':domain-rrd:rrd-workflows')
   implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
