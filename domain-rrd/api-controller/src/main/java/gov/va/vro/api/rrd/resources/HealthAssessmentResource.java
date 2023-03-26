@@ -1,8 +1,8 @@
 package gov.va.vro.api.rrd.resources;
 
+import gov.va.vro.api.rrd.model.ClaimProcessingException;
 import gov.va.vro.api.rrd.requests.HealthDataAssessmentRequest;
 import gov.va.vro.api.rrd.responses.FullHealthDataAssessmentResponse;
-import gov.va.vro.api.rrd.model.ClaimProcessingException;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
