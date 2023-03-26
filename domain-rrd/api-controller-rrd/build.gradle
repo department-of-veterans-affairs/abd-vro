@@ -7,7 +7,7 @@ dependencies {
   implementation project(':domain-rrd:shared-rrd')
 
   // TODO: api-controller should not be dependent directly on services
-  implementation project(':domain-rrd:services')
+  implementation project(':domain-rrd:services-rrd')
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'

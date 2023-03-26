@@ -28,11 +28,10 @@ dependencies {
   implementation project(':domain-xample:api-controller-xample')
 
   implementation project(':domain-rrd:shared-rrd')
-  implementation project(':domain-rrd:api-controller')
-  implementation project(':persistence:model')
+  implementation project(':domain-rrd:api-controller-rrd')
 
   // TODO: probably shouldn't be directly dependent on these
-  implementation project(':domain-rrd:services')
+  implementation project(':domain-rrd:services-rrd')
   implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
