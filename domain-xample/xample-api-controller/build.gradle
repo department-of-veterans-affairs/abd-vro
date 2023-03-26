@@ -18,11 +18,7 @@ dependencies {
   // compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 
   // Used by Controller classes
-<<<<<<<< HEAD:domain-xample/xample-api-controller/build.gradle
   implementation project(':domain-xample:xample-shared')
-========
-  implementation project(':domain-xample:shared-xample')
->>>>>>>> 59242b81 (Use unique Gradle subproject names):domain-xample/api-controller-xample/build.gradle
   // api project(':shared:lib-camel-connector')
   implementation project(':shared:lib-camel-connector')
 
