@@ -5,7 +5,7 @@ plugins {
 dependencies {
   implementation project(':domain-rrd:claim-model')
   implementation project(':persistence:model')
-  implementation project(':service:spi')
+  implementation project(':domain-rrd:spi')
   api project(':shared:lib-camel-connector')
 
   // Needed?

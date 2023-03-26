@@ -10,7 +10,7 @@ ext {
 dependencies {
   implementation project(':domain-rrd:claim-model')
   implementation project(':persistence:model')
-  implementation project(':service:spi')
+  implementation project(':domain-rrd:spi')
 
   // Needed?
   // implementation "gov.va.starter:exceptions"
