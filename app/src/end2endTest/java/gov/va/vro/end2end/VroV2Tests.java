@@ -1,8 +1,8 @@
 package gov.va.vro.end2end;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -24,7 +24,6 @@ import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -59,7 +58,6 @@ public class VroV2Tests {
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
   private static final String SLACK_URL = "http://localhost:9008/slack-messages/";
-  private static final String CONTENTIONS_URL = "http://localhost:8099/claims/%s/contentions";
 
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUx"
@@ -364,7 +362,7 @@ public class VroV2Tests {
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     testPdfUpload(request);
-    testSpecialIssueRdr1Removed(claimId);
+    testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
     testLifecycleStatus(claimId, ClaimStatus.RFD);
   }
 
@@ -389,8 +387,7 @@ public class VroV2Tests {
     var content = resourceToString(path);
     var requestEntity = getBearerAuthEntity(content);
     try {
-      var response =
-          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
       fail("Collection 801 should have received 400.");
     } catch (HttpStatusCodeException exception) {
       assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -414,7 +411,24 @@ public class VroV2Tests {
     return false;
   }
 
-  private void testSpecialIssueRdr1Removed(String claimId) {
+  private void testSpecialIssuesRemoved(String claimId, ClaimContention contention, boolean rrdShouldBeRemoved) {
+    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+    assertNotNull(specialIssueCodes);
+
+    String[] remainingRrdOrRdr1 = specialIssueCodes.stream()
+        .filter(code -> code.equals("RDR1") || code.equals("RRD"))
+        .toArray(String[]::new);
+
+    if (rrdShouldBeRemoved) {
+      String[] emptyArray = {};
+      assertArrayEquals(emptyArray, remainingRrdOrRdr1, "RRD or RDR1 should have been removed");
+    } else {
+      String[] onlyRrd = { "RRD"};
+      assertArrayEquals(onlyRrd, remainingRrdOrRdr1, "only RRD should have remained");
+    }
+  }
+
+  private void testUpdatedContentions(String claimId, boolean rrdShouldBeRemoved, boolean automationIndicator, ClaimStatus claimStatus) {
     List<ClaimContention> contentions = getUpdatedContentions(claimId);
     assertNotNull(contentions, "Contentions are not updated to remove special issue(s).");
     log.info("Claim {} contentions have been updated.", claimId);
@@ -422,12 +436,9 @@ public class VroV2Tests {
     // Only have single issue claims for now
     assertEquals(1, contentions.size());
     ClaimContention contention = contentions.get(0);
-    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
-    assertNotNull(specialIssueCodes);
-    for (String specialIssueCode : specialIssueCodes) {
-      assertNotEquals("RDR1", specialIssueCode, "RDR1 should have been removed");
-    }
-    log.info("rdr1 is removed for {}", claimId);
+
+    testSpecialIssuesRemoved(claimId, contention, rrdShouldBeRemoved);
+    assertEquals(automationIndicator, contention.isAutomationIndicator());
   }
 
   private void testLifecycleStatus(String claimId, ClaimStatus expectedStatus) {
@@ -444,7 +455,7 @@ public class VroV2Tests {
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testSpecialIssueRdr1Removed(claimId);
+    testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
     testLifecycleStatus(claimId, ClaimStatus.OPEN);
   }
 
@@ -511,7 +522,7 @@ public class VroV2Tests {
     testExamOrdered(collectionId);
     testPdfUpload(request);
     String claimId = request.getClaimDetail().getBenefitClaimId();
-    testSpecialIssueRdr1Removed(claimId);
+    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
     testLifecycleStatus(claimId, ClaimStatus.OPEN);
     checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
     testExamOrderingStatus(collectionId);
@@ -630,13 +641,6 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
     testAutomatedClaimFullPositive("380");
-  }
-
-  private int claimInfoResponseToContentionCount(ClaimInfoResponse claimInfoResponse) {
-    if (claimInfoResponse == null) {
-      return 0;
-    }
-    return claimInfoResponse.getContentions().size();
   }
 
   /**
