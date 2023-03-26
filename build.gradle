@@ -135,7 +135,7 @@ ext {
   // Modules that use Java code
   codeModules = [
     ':app',
-    ':api',
+    ':domain-rrd:api',
     ':controller',
     ':persistence:model',
     ':shared:lib-camel-connector',

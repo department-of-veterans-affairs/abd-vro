@@ -71,7 +71,7 @@ dependencyResolutionManagement {
 
 
 rootProject.name = 'abd_vro'
-include ':api'
+include ':domain-rrd:api'
 include ':app'
 include ':console'
 include ':controller'
