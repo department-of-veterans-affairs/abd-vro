@@ -191,8 +191,8 @@ services:
       - internal
       - external
 
-  workflows-xample:
-    image: va/abd_vro-workflows-xample:latest
+  xample-workflows:
+    image: va/abd_vro-xample-workflows:latest
     <<: *common-security-opt
     <<: *common-sde-security
     profiles: ["all","xample"]
