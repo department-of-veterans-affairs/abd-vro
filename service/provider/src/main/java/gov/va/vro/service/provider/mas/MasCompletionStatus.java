@@ -12,7 +12,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public enum MasCompletionStatus {
   OFF_RAMP("off-ramp", false, true, ClaimStatus.OPEN),
-  EXAM_ORDER("exam order", false, false, ClaimStatus.OPEN),
+  EXAM_ORDER("exam order", true, false, ClaimStatus.OPEN),
   READY_FOR_DECISION("ready for decision", true, false, ClaimStatus.RFD);
 
   private final String description;
