@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':domain-rrd:shared-rrd')
+  implementation project(':domain-rrd:rrd-shared')
   implementation project(':persistence:model')
   api project(':shared:lib-camel-connector')
 

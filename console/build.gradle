@@ -13,7 +13,7 @@ dependencies {
   implementation project(':persistence:model')
 
   // Needed to deserialize objects passed in MQ messages
-  implementation project(':domain-rrd:shared-rrd')
+  implementation project(':domain-rrd:rrd-shared')
 
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')

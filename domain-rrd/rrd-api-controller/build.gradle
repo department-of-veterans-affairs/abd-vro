@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':domain-rrd:shared-rrd')
+  implementation project(':domain-rrd:rrd-shared')
 
   // TODO: api-controller should not be dependent directly on services
   implementation project(':domain-rrd:services-rrd')
