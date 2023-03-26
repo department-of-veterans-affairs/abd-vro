@@ -1,6 +1,6 @@
 package gov.va.vro.api.rrd.responses;
 
-import gov.va.vro.model.bip.BipClaim;
+import gov.va.vro.model.rrd.bip.BipClaim;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;

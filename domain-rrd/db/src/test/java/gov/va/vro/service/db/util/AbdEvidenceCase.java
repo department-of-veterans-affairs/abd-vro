@@ -3,12 +3,12 @@ package gov.va.vro.service.db.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
 import lombok.Getter;
 
 import java.util.Collections;

@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasOrderExamConditions;
-import gov.va.vro.model.mas.request.MasOrderExamRequest;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasOrderExamConditions;
+import gov.va.vro.model.rrd.mas.request.MasOrderExamRequest;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;

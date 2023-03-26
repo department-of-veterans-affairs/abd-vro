@@ -1,6 +1,6 @@
 package gov.va.vro.service.db.mapper;
 
-import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.rrd.event.AuditEvent;
 import gov.va.vro.persistence.model.AuditEventEntity;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.mapstruct.Mapper;

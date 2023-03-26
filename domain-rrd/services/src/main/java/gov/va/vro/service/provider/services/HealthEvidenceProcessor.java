@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider.services;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.ServiceLocation;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.ServiceLocation;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.extern.slf4j.Slf4j;

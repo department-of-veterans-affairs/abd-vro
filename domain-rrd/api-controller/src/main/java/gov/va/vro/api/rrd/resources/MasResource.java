@@ -1,8 +1,8 @@
 package gov.va.vro.api.rrd.resources;
 
 import gov.va.vro.api.rrd.responses.MasResponse;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.model.rrd.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

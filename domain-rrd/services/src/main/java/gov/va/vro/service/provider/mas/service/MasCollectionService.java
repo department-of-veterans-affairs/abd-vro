@@ -1,11 +1,11 @@
 package gov.va.vro.service.provider.mas.service;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.HealthAssessmentSource;
-import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasCollectionStatus;
-import gov.va.vro.model.mas.MasStatus;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.HealthAssessmentSource;
+import gov.va.vro.model.rrd.HealthDataAssessment;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionStatus;
+import gov.va.vro.model.rrd.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;

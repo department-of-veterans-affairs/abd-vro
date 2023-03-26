@@ -1,6 +1,6 @@
 package gov.va.vro.service.db.mapper;
 
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.persistence.model.ExamOrderEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

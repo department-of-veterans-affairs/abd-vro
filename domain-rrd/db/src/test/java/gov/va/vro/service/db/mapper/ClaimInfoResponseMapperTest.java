@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ContentionInfo;
-import gov.va.vro.model.claimmetrics.DocumentInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.DocumentInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;

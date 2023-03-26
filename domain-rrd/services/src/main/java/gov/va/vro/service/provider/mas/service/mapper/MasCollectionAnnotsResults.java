@@ -2,17 +2,17 @@ package gov.va.vro.service.provider.mas.service.mapper;
 
 import static java.util.Objects.isNull;
 
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdBpMeasurement;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
-import gov.va.vro.model.ServiceLocation;
-import gov.va.vro.model.mas.MasAnnotType;
-import gov.va.vro.model.mas.MasAnnotation;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasDocument;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdBpMeasurement;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
+import gov.va.vro.model.rrd.ServiceLocation;
+import gov.va.vro.model.rrd.mas.MasAnnotType;
+import gov.va.vro.model.rrd.mas.MasAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

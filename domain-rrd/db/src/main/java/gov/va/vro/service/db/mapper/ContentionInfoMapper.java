@@ -1,6 +1,6 @@
 package gov.va.vro.service.db.mapper;
 
-import gov.va.vro.model.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
 import gov.va.vro.persistence.model.ContentionEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

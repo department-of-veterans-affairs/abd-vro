@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.ServiceLocation;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.HealthDataAssessment;
+import gov.va.vro.model.rrd.ServiceLocation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

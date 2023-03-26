@@ -4,10 +4,10 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHAN
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 
 import gov.va.vro.camel.CamelEntry;
-import gov.va.vro.model.event.AuditEvent;
-import gov.va.vro.model.event.EventReason;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.rrd.event.AuditEvent;
+import gov.va.vro.model.rrd.event.EventReason;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;

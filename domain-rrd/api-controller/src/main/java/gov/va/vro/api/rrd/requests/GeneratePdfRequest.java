@@ -1,8 +1,8 @@
 package gov.va.vro.api.rrd.requests;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.model.mas.ClaimCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.VeteranInfo;
+import gov.va.vro.model.rrd.mas.ClaimCondition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

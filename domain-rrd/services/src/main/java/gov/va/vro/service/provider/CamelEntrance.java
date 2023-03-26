@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.event.AuditEvent;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.rrd.event.AuditEvent;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.camel.PrimaryRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;

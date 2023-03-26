@@ -1,7 +1,7 @@
 package gov.va.vro.service.spi.db;
 
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.ExamOrder;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;

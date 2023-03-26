@@ -1,6 +1,6 @@
 package gov.va.vro.service.db.mapper;
 
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

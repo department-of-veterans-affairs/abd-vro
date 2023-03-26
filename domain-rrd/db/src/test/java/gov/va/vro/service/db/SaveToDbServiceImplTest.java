@@ -3,8 +3,8 @@ package gov.va.vro.service.db;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.*;
 import gov.va.vro.persistence.repository.*;
 import gov.va.vro.service.spi.model.Claim;

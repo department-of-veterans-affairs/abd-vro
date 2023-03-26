@@ -1,12 +1,12 @@
 package gov.va.vro;
 
-import gov.va.vro.model.mas.ClaimCondition;
-import gov.va.vro.model.mas.ClaimDetail;
-import gov.va.vro.model.mas.MasAnnotation;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasDocument;
-import gov.va.vro.model.mas.VeteranIdentifiers;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.model.rrd.mas.ClaimCondition;
+import gov.va.vro.model.rrd.mas.ClaimDetail;
+import gov.va.vro.model.rrd.mas.MasAnnotation;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasDocument;
+import gov.va.vro.model.rrd.mas.VeteranIdentifiers;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 
 import java.util.Collections;
 import java.util.UUID;

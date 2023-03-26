@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasDocument;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasDocument;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;

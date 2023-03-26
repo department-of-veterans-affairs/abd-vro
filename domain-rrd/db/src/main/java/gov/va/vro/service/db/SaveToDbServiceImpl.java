@@ -1,8 +1,8 @@
 package gov.va.vro.service.db;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;

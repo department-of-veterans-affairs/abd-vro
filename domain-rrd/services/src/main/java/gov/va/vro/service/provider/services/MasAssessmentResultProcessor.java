@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.services;
 
-import gov.va.vro.model.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package gov.va.vro.service.db.mapper;
 
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import org.mapstruct.InjectionStrategy;

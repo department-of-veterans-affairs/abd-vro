@@ -1,8 +1,8 @@
 package gov.va.vro.service.provider.bip.service;
 
-import gov.va.vro.model.bip.FileIdType;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.BipFileUploadResp;
+import gov.va.vro.model.rrd.bip.FileIdType;
+import gov.va.vro.model.rrd.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.rrd.bipevidence.BipFileUploadResp;
 import gov.va.vro.service.provider.bip.BipException;
 
 /** BIP Claims Evidence API service. */

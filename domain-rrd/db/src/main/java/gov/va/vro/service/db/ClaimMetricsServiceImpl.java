@@ -1,12 +1,12 @@
 package gov.va.vro.service.db;
 
-import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimsInfo;
-import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrdersInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ExamOrderEntity;

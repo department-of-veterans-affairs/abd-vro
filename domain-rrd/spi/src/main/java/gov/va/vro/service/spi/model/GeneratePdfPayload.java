@@ -2,10 +2,10 @@ package gov.va.vro.service.spi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.ServiceLocation;
-import gov.va.vro.model.VeteranInfo;
-import gov.va.vro.model.mas.ClaimCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.ServiceLocation;
+import gov.va.vro.model.rrd.VeteranInfo;
+import gov.va.vro.model.rrd.mas.ClaimCondition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

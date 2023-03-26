@@ -1,9 +1,9 @@
 package gov.va.vro.api.rrd.resources;
 
 import gov.va.vro.api.rrd.model.ClaimProcessingException;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -81,7 +81,7 @@ public interface ClaimMetricsResource {
   @Timed(value = "claim-info-claim-id")
   @Tag(name = "Claim Metrics")
   @ResponseBody
-  ResponseEntity<gov.va.vro.model.claimmetrics.response.ClaimInfoResponse> claimInfoForClaimId(
+  ResponseEntity<ClaimInfoResponse> claimInfoForClaimId(
       @PathVariable String claimSubmissionId, @RequestParam(required = false) String claimVersion)
       throws ClaimProcessingException;
 

@@ -2,9 +2,9 @@ package gov.va.vro.controller.rrd;
 
 import gov.va.vro.api.rrd.resources.MasResource;
 import gov.va.vro.api.rrd.responses.MasResponse;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import lombok.RequiredArgsConstructor;

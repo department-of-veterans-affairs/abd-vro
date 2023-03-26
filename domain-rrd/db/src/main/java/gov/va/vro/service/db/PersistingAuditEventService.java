@@ -1,6 +1,6 @@
 package gov.va.vro.service.db;
 
-import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.rrd.event.AuditEvent;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.db.mapper.AuditEventMapper;
 import gov.va.vro.service.spi.audit.AuditEventService;

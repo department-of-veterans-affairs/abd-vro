@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.services;
 
-import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.model.rrd.HealthDataAssessment;
 import gov.va.vro.service.provider.ExternalCallException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

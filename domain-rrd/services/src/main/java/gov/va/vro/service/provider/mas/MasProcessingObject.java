@@ -1,9 +1,9 @@
 package gov.va.vro.service.provider.mas;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.event.Auditable;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.HealthDataAssessment;
+import gov.va.vro.model.rrd.event.Auditable;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

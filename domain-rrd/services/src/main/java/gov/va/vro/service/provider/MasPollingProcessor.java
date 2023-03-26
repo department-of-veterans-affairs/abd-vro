@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;

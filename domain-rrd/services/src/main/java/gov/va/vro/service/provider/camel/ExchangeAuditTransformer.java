@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.model.event.AuditEvent;
-import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.rrd.event.AuditEvent;
+import gov.va.vro.model.rrd.event.Auditable;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;

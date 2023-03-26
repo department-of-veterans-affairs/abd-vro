@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':domain-rrd:claim-model')
+  implementation project(':domain-rrd:model-rrd')
   implementation project(':domain-rrd:spi')
 
   // TODO: api-controller should not be dependent directly on services
