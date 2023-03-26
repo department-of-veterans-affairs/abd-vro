@@ -16,7 +16,7 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       imagePullSecrets:
-        - name: abd-vro-ghcr
+        - name: devops-ghcr
       containers:
         - name: svc-bgs-api
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/svc-bgs-api-temp:latest
