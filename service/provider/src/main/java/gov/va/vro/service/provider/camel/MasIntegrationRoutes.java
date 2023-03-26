@@ -75,7 +75,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
-
+  public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
 
   public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
@@ -174,35 +174,39 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
-        // Order Exam only if the Sufficient For Fast Tracking is "false"
         .to(ENDPOINT_ORDER_EXAM)
-        // Upload PDF only if SufficientForFastTracking is either true or false
-        .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE)
         .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
-        // Upload PDF only if SufficientForFastTracking is either true or false
-        .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE)
+        .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
         .to(ENDPOINT_ACCESS_ERR)
         .end();
+
+    String rfdRouteId = "mas-rfd";
+    from(END_POINT_RFD)
+        // input: MasAutomatedClaimPayload
+        .routeId(rfdRouteId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(rfdRouteId, "Sufficient evidence for ready for decision."))
+        // Upload PDF
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update claim
+        .to(ENDPOINT_MAS_COMPLETE);
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
         .routeId(orderExamRouteId)
-        .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
-        .process(masOrderExamProcessor)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
+        .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
-        .end();
+        // Upload PDF only if SufficientForFastTracking is either true or false
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
+        .to(ENDPOINT_MAS_COMPLETE);
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
