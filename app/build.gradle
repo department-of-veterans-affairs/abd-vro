@@ -23,7 +23,7 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:claim-model')
   implementation project(':api')
   implementation project(':controller')
   implementation project(':persistence:model')

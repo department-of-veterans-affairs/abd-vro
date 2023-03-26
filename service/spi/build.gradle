@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:claim-model')
 
   // implementation "gov.va.starter:exceptions"
 }

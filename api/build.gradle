@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:claim-model')
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'

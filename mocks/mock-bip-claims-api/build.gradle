@@ -17,7 +17,7 @@ configurations.all {
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:claim-model')
   implementation project(':mocks:mock-shared')
 
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"

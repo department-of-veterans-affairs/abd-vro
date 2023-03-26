@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:claim-model')
   implementation project(':api')
   implementation project(':service:provider')
   implementation project(':service:spi')
