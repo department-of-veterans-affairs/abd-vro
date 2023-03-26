@@ -23,12 +23,18 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 dependencies {
+  implementation project(':persistence:model')
+
+  implementation project(':domain-xample:api-controller-xample')
+
   implementation project(':domain-rrd:model-rrd')
   implementation project(':domain-rrd:api-controller')
   implementation project(':persistence:model')
-  implementation project(':domain-rrd:services')
+
+  // TODO: probably shouldn't be directly dependent on these
   implementation project(':domain-rrd:spi')
-  implementation project(':domain-rrd:db')
+  implementation project(':domain-rrd:services')
+  implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
 
