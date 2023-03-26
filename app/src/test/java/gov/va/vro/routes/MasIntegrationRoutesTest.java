@@ -50,7 +50,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:sufficiency-assess")
   private MockEndpoint mockSufficiencyAssess;
 
-  @EndpointInject("mock:claim-submit")
+  @EndpointInject("mock:claim-submit-full")
   private MockEndpoint mockClaimSubmit;
 
   @EndpointInject("mock:empty-endpoint")
@@ -94,14 +94,14 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
   private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
 
-    // Mock a return value when claim-submit (lighthouse) is invoked
+    // Mock a return value when claim-submit-full (lighthouse) is invoked
     replaceEndpoint(
-        "claim-submit",
+        "claim-submit-full",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
             + "requestTimeout="
             + DEFAULT_REQUEST_TIMEOUT
             + "&routingKey=code.hypertension",
-        "mock:claim-submit");
+        "mock:claim-submit-full");
 
     mockClaimSubmit.whenAnyExchangeReceived(
         exchange -> {

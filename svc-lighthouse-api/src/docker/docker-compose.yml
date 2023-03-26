@@ -22,8 +22,6 @@ services:
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
-    build:
-      dockerfile: ./Dockerfile
     depends_on:
       - vro-api-rabbit-mq-service
     networks:

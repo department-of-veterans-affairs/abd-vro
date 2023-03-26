@@ -1,7 +1,9 @@
 import logging
 from typing import Dict
 
-from . import conditions, medication, procedure, utils
+import data_model
+
+from . import conditions, medication, procedure
 
 
 def assess_rhinitis(event: Dict):
@@ -13,7 +15,7 @@ def assess_rhinitis(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = utils.validate_request_body(event)
+    validation_results = data_model.validate_request_body(event)
     response_body = {}
 
     if validation_results["is_valid"]:

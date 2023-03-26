@@ -24,7 +24,6 @@ docker {
     tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
     tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
     noCache false // Use image caches; only recreate if different
-    dockerfile file('src/docker/Dockerfile')
 }
 
 dockerRun {
@@ -100,4 +99,36 @@ tasks.named("dockerComposeUp").configure {
 
 tasks.named("dockerRun").configure {
     dependsOn tasks.named("docker")
+}
+
+def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Use linter (default hadolint) to perform static analysis on Dockerfile"
+    ext.binary = "hadolint"
+    ext.targets = [ "src/docker/Dockerfile" ]
+    ext.taskTimeout = 10000L
+    def result = 0
+    def sout = new StringBuilder()
+    def serr = new StringBuilder()
+    doLast {
+        ext.targets.each { f ->
+            if (file(f).exists()) {
+                def cmdLine = "${ext.binary} ${f}"
+                def proc = cmdLine.execute(null, project.projectDir)
+                proc.consumeProcessOutput(sout, serr)
+                proc.waitForOrKill(ext.taskTimeout)
+                result |= proc.exitValue()
+            }
+        }
+        if (result != 0 && serr) {
+            ant.fail(serr) }
+        else if (result != 0) {
+            ant.fail(sout)
+        }
+        return result
+    }
+}
+
+tasks.named("check").configure {
+    dependsOn lintDockerfile
 }
