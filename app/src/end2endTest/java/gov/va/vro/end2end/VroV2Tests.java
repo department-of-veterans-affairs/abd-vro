@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.api.rrd.responses.MasResponse;
 import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
 import gov.va.vro.end2end.util.ContentionUpdatesResponse;
 import gov.va.vro.end2end.util.LifecycleUpdatesResponse;

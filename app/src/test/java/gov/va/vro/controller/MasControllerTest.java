@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BipServiceTestConfiguration;
 import gov.va.vro.MasTestData;
-import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.api.rrd.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;

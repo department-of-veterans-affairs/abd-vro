@@ -71,10 +71,9 @@ dependencyResolutionManagement {
 
 
 rootProject.name = 'abd_vro'
-include ':domain-rrd:api'
 include ':app'
 include ':console'
-include ':domain-rrd:controller'
+include ':domain-rrd:api-controller'
 include ':docs'
 include ':db-init'
 include ':postgres'

@@ -1,0 +1,24 @@
+
+plugins {
+  id 'starter.std.java.library-spring-conventions'
+}
+
+dependencies {
+  implementation project(':domain-rrd:claim-model')
+  implementation project(':service:provider')
+  implementation project(':service:spi')
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation 'io.micrometer:micrometer-core'
+  implementation "gov.va.starter:exceptions"
+
+  // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+  compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+  // Needed?
+  // implementation 'gov.va.starter:test-data'
+  // implementation "gov.va.starter:entity-lifecycle-notifier"
+  // implementation 'org.springframework.boot:spring-boot-starter-web'
+  // implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  // implementation "io.opentracing.contrib:opentracing-spring-web-starter"
+}
