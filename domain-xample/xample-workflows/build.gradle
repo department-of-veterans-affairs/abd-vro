@@ -9,7 +9,7 @@ ext {
 }
 
 dependencies {
-  implementation project(':domain-xample:shared')
+  implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
   implementation project(':persistence:model')
 

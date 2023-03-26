@@ -1,4 +1,4 @@
-name: "1. Continuous Delivery (to DEV daily)"
+name: "1. (Internal) Continuous Delivery (to DEV daily)"
 
 on:
   schedule:
@@ -12,7 +12,7 @@ on:
 jobs:
   deploy-dev-images:
     # only run in one of the repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     name: "Deploy to ${{ inputs.target_env }}"
     uses: ./.github/workflows/update-deployment.yml
     with:

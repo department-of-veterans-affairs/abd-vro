@@ -17,7 +17,7 @@ ARG ENTRYPOINT_FILE
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists, otherwise run jar file
-COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
 
 # Used to specify the service folder you want to build if running locally
 # No longer write *.pyc files to disk

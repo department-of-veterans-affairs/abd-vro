@@ -79,7 +79,8 @@ runs:
         echo "images<<EOF" >> $GITHUB_OUTPUT
         for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
           IMG_NAME=${{ inputs.image_prefix }}$(getVarValue "${VAR_PREFIX}" _IMG)
-          echo "ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
-          echo "* ghcr.io/${{ github.repository }}/${IMG_NAME}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+          echo "${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          echo "* ${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
         done
         echo "EOF" >> $GITHUB_OUTPUT
