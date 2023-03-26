@@ -37,12 +37,14 @@ public class UpdatesController implements UpdatesApi {
   @Override
   public ResponseEntity<LifecycleUpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
-    boolean found = (item != null && store.isLifecycleStatusUpdated(claimId));
-    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
-    if (found) {
-      String status = item.getClaimDetail().getClaimLifecycleStatus();
-      body.setStatus(status);
+    if (item == null) {
+      String reason = "No claim found for id: " + claimId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
     }
+    boolean found = store.isLifecycleStatusUpdated(claimId);
+    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
+    String status = item.getClaimDetail().getClaimLifecycleStatus();
+    body.setStatus(status);
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 

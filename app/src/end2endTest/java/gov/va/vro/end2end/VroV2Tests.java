@@ -168,28 +168,33 @@ public class VroV2Tests {
     assertEquals(expectedMessage, masResponse.getMessage());
   }
 
+  /**
+   * This returns the lifecycle status. Lifecycle status is updated before the contention update
+   * so this method can directly returns without polling.
+   *
+   * @param claimId claim identifier
+   * @return the lifestyle status found
+   */
   @SneakyThrows
   private String getUpdatedLifecycleStatus(String claimId) {
-    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
-      Thread.sleep(10);
-      String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
-      var testResponse = restTemplate.getForEntity(url, LifecycleUpdatesResponse.class);
-      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-      LifecycleUpdatesResponse body = testResponse.getBody();
-      if (body.isFound()) {
-        log.info("Claim {} lifecycle status is updated.", claimId);
-        return body.getStatus();
-      } else {
-        log.info("Claim {} lifecycle status is not updated. Retrying...", claimId);
-      }
-    }
-    return null;
+    String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
+    var testResponse = restTemplate.getForEntity(url, LifecycleUpdatesResponse.class);
+    assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+    LifecycleUpdatesResponse body = testResponse.getBody();
+    // Do not check isFound for now. We now do not update when necessary
+    return body.getStatus();
   }
 
+  /**
+   * Contentions will always be updated since we check existence of RDR1 (anchor) before processing
+   * begins and at least RDR1 will need to be removed.
+   *
+   * @param claimId claim identifier
+   * @return all the contentions
+   */
   @SneakyThrows
   private List<ClaimContention> getUpdatedContentions(String claimId) {
-    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
-      Thread.sleep(10);
+    for (int pollNumber = 0; pollNumber < 20; ++pollNumber) {
       String url = UPDATES_URL + claimId + "/" + "contentions";
       var testResponse = restTemplate.getForEntity(url, ContentionUpdatesResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
@@ -200,6 +205,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
+      Thread.sleep(5);
     }
     return null;
   }
@@ -305,50 +311,43 @@ public class VroV2Tests {
     assertTrue(successOrdering, "Exam is not ordered");
   }
 
+  private ClaimInfoResponse getClaimInfoForCollection(String collectionId) {
+    try {
+      String url = CLAIM_INFO_URL + collectionId;
+      HttpEntity<Void> requestEntity = getTokenAuthHeaders();
+      ResponseEntity<ClaimInfoResponse> response =
+          restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      ClaimInfoResponse body = response.getBody();
+      assertNotNull(body, "Claim Info Response was null, cannot continue");
+      return body;
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+      return null;
+    }
+  }
+
   @SneakyThrows
   private void testClaimSufficientStatus(String collectionId, Boolean expectedSufficientValue) {
-
-    String url = CLAIM_INFO_URL + collectionId;
     AssessmentInfo foundAssessment = null;
-    HttpEntity<Void> requestEntity = getTokenAuthHeaders();
 
     log.info("Waiting for claim processing to finish and assessment database results");
-    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-      Thread.sleep(20000);
-      try {
-        ResponseEntity<ClaimInfoResponse> testResponse =
-            restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
-        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-        ClaimInfoResponse cir = testResponse.getBody();
-        assertNotNull(cir, "Claim Info Response was null, cannot continue");
-        List<ContentionInfo> contentionList = cir.getContentions();
-        if (contentionList.size() == 1) {
-          List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
-          // If assessment list size is zero, we may not be finished processing, and should try
-          // again.
-          if (assessmentList.size() == 1) {
-            foundAssessment = assessmentList.get(0);
-            break;
-          } else if (assessmentList.size() > 1) {
-            Assertions.fail(
-                "CollectionId "
-                    + collectionId
-                    + " came back with more than one assessment result. "
-                    + "Cannot determine which one to check");
-          }
-        } else if (contentionList.size() > 1) {
-          Assertions.fail(
-              "CollectionId "
-                  + collectionId
-                  + " came back with more than one contention. "
-                  + "Cannot determine which one to check");
-        }
-      } catch (HttpStatusCodeException exception) {
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
+      ClaimInfoResponse cir = getClaimInfoForCollection(collectionId);
+      if (cir == null) {
         log.info(
-            "Did not find asessment result for collection id {} with message .. retrying",
+            "Did not find assessment result for collection id {} with message .. retrying",
             collectionId);
+        Thread.sleep(5000);
+        continue;
       }
+      List<ContentionInfo> contentionList = cir.getContentions();
+      // Just take the 0'th of now. If you run multiple times all should be same
+      assertTrue(contentionList.size() > 0);
+      List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+      assertTrue(assessmentList.size() > 0);
+      foundAssessment = assessmentList.get(0);
+      break;
     }
     assertNotNull(foundAssessment);
     assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
@@ -366,7 +365,7 @@ public class VroV2Tests {
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     testPdfUpload(request);
     testSpecialIssueRdr1Removed(claimId);
-    testLifecycleStatusUpdated(claimId);
+    testLifecycleStatus(claimId, ClaimStatus.RFD);
   }
 
   /*
@@ -417,7 +416,7 @@ public class VroV2Tests {
 
   private void testSpecialIssueRdr1Removed(String claimId) {
     List<ClaimContention> contentions = getUpdatedContentions(claimId);
-    assertNotNull(contentions, "Contentions are not updated to remove special issue.");
+    assertNotNull(contentions, "Contentions are not updated to remove special issue(s).");
     log.info("Claim {} contentions have been updated.", claimId);
 
     // Only have single issue claims for now
@@ -431,11 +430,11 @@ public class VroV2Tests {
     log.info("rdr1 is removed for {}", claimId);
   }
 
-  private void testLifecycleStatusUpdated(String claimId) {
+  private void testLifecycleStatus(String claimId, ClaimStatus expectedStatus) {
     String status = getUpdatedLifecycleStatus(claimId);
     assertNotNull(status, "Lifecycle status has not been updated.");
-    log.info("Claim {} lifecycle status has been updated.", claimId);
-    assertEquals(ClaimStatus.RFD.getDescription(), status);
+    log.info("Claim {} lifecycle status is: {}", claimId, status);
+    assertEquals(expectedStatus.getDescription(), status);
   }
 
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
@@ -446,6 +445,7 @@ public class VroV2Tests {
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     testSpecialIssueRdr1Removed(claimId);
+    testLifecycleStatus(claimId, ClaimStatus.OPEN);
   }
 
   /**
@@ -512,6 +512,7 @@ public class VroV2Tests {
     testPdfUpload(request);
     String claimId = request.getClaimDetail().getBenefitClaimId();
     testSpecialIssueRdr1Removed(claimId);
+    testLifecycleStatus(claimId, ClaimStatus.OPEN);
     checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
     testExamOrderingStatus(collectionId);
     checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
@@ -631,15 +632,23 @@ public class VroV2Tests {
     testAutomatedClaimFullPositive("380");
   }
 
+  private int claimInfoResponseToContentionCount(ClaimInfoResponse claimInfoResponse) {
+    if (claimInfoResponse == null) {
+      return 0;
+    }
+    return claimInfoResponse.getContentions().size();
+  }
+
   /**
    * This is an off-ramp test case with missing blood pressure data for presumptive. Rest message,
    * Slack message, removal of rdr1, and database update are verified.
    */
   @Test
   void testAutomatedClaimSufficiencyIsNull() {
-    AutomatedClaimTestSpec spec = specFor200("500");
+    String collectionId = "500";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
     spec.setCheckSlack(true);
     testAutomatedClaimOffRamp(spec);
-    testClaimSufficientStatus("500", null);
+    testClaimSufficientStatus(collectionId, null);
   }
 }
