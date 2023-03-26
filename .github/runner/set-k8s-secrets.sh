@@ -8,7 +8,7 @@ echo "TARGET_ENV=$TARGET_ENV"
 if [ "$KUBE_CONFIG" ]; then
   # Enable setting secrets in either cluster
   mkdir -p ~/.kube
-  echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
+  echo -n "${KUBE_CONFIG}" > ~/.kube/config
   chmod go-rwx ~/.kube/config
 else
   echo "Missing KUBE_CONFIG. Using kubectl namespace of container."
