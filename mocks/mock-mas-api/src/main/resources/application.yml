@@ -38,7 +38,7 @@ mock-mas:
     scope: "${MAS_API_AUTH_SCOPE:openid}"
     grant-type: client_credentials
   mas-api:
-    base-url: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+    base-url: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
     collection-annots-path: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
     collection-status-path: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
     create-exam-order-path: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"

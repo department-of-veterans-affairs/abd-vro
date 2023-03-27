@@ -22,8 +22,8 @@ spec:
             - name: REDIS_PLACEHOLDERS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.redis.secretKeyRef.name }}
-                  key: {{ .Values.global.redis.secretKeyRef.passwordKey }}
+                  name: vro-redis
+                  key: REDIS_CLIENTUSER_PASS
           ports:
             - containerPort: {{ .Values.global.service.redis.sourcePort }}
               protocol: TCP

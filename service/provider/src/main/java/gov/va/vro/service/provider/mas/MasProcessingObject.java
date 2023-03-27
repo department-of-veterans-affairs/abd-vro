@@ -5,13 +5,15 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
 @Data
+@RequiredArgsConstructor
 public class MasProcessingObject implements Auditable {
-
-  private MasAutomatedClaimPayload claimPayload;
+  private final MasAutomatedClaimPayload claimPayload;
+  private final MasCamelStage origin;
   private AbdEvidence evidence;
   private HealthDataAssessment healthDataAssessment;
   private boolean isTSOJ = false;
