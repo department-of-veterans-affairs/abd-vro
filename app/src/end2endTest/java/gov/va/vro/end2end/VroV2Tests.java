@@ -167,8 +167,8 @@ public class VroV2Tests {
   }
 
   /**
-   * This returns the lifecycle status. Lifecycle status is updated before the contention update
-   * so this method can directly returns without polling.
+   * This returns the lifecycle status. Lifecycle status is updated before the contention update so
+   * this method can directly returns without polling.
    *
    * @param claimId claim identifier
    * @return the lifestyle status found
@@ -411,24 +411,30 @@ public class VroV2Tests {
     return false;
   }
 
-  private void testSpecialIssuesRemoved(String claimId, ClaimContention contention, boolean rrdShouldBeRemoved) {
+  private void testSpecialIssuesRemoved(
+      String claimId, ClaimContention contention, boolean rrdShouldBeRemoved) {
     List<String> specialIssueCodes = contention.getSpecialIssueCodes();
     assertNotNull(specialIssueCodes);
 
-    String[] remainingRrdOrRdr1 = specialIssueCodes.stream()
-        .filter(code -> code.equals("RDR1") || code.equals("RRD"))
-        .toArray(String[]::new);
+    String[] remainingRrdOrRdr1 =
+        specialIssueCodes.stream()
+            .filter(code -> code.equals("RDR1") || code.equals("RRD"))
+            .toArray(String[]::new);
 
     if (rrdShouldBeRemoved) {
       String[] emptyArray = {};
       assertArrayEquals(emptyArray, remainingRrdOrRdr1, "RRD or RDR1 should have been removed");
     } else {
-      String[] onlyRrd = { "RRD"};
+      String[] onlyRrd = {"RRD"};
       assertArrayEquals(onlyRrd, remainingRrdOrRdr1, "only RRD should have remained");
     }
   }
 
-  private void testUpdatedContentions(String claimId, boolean rrdShouldBeRemoved, boolean automationIndicator, ClaimStatus claimStatus) {
+  private void testUpdatedContentions(
+      String claimId,
+      boolean rrdShouldBeRemoved,
+      boolean automationIndicator,
+      ClaimStatus claimStatus) {
     List<ClaimContention> contentions = getUpdatedContentions(claimId);
     assertNotNull(contentions, "Contentions are not updated to remove special issue(s).");
     log.info("Claim {} contentions have been updated.", claimId);
