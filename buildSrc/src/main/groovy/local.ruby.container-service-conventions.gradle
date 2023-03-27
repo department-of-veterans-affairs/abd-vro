@@ -11,7 +11,8 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-python')
+        // TODO: create buildSrc/docker/Dockerfile-ruby once stable
+        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-ruby')
 
     files "src/docker/entrypoint.sh",
         new File(project.rootDir, 'buildSrc/docker/entrypoint-default.sh'),
