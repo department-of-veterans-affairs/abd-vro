@@ -20,21 +20,11 @@ gradle_image_name() {
   esac
 }
 
-helm_image_key() {
-  case "$1" in
-    postgres) echo "db";;
-    db-init) echo "dbInit";;
-    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
-    pdfgenerator) echo "pdfGenerator";;                  # TODO: rename to svcPdfGenerator
-    featuretoggle) echo "svcFeatureToggle";;
-    assessclaimdc7101) echo "serviceAssessClaimDC7101";; # TODO: rename to svcAssessorDc7101
-    assessclaimdc6602) echo "serviceAssessClaimDC6602";; # TODO: rename to svcAssessorDc6602
-    app|*) echo "$1";;
-  esac
-}
-
 bash_var_prefix() {
-  helm_image_key "$@"
+  case "$1" in
+    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
+    *) echo "${1//-/}";;
+  esac
 }
 
 nonprod_image_name() {
