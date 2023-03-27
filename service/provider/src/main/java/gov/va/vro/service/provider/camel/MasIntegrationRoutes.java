@@ -205,16 +205,15 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // Upload PDF but catch errors since exam was ordered and continue
         .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        .endDoTry()
+        .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(BipException.class)
         // Mas Complete Processing code expects this to be the body of the message
         .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventProcessor(orderExamRouteId, "PDF upload failed after exam order requested."))
-        .endDoCatch()
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE);
+        .to(ENDPOINT_MAS_COMPLETE)
+        .endDoCatch();
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
