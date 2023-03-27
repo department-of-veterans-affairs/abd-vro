@@ -146,6 +146,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF_AFTER_EXAM,
         "mock:empty-endpoint");
 
+    replaceEndpoint("mas-rfd", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
+
+    replaceEndpoint(
+        "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
+
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     // set up a Mas Request and invoke processClaim

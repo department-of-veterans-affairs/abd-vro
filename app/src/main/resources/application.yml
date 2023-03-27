@@ -150,10 +150,10 @@ spring:
             grant-type: client_credentials
 
 masAPIProvider:
-  baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+  baseURL: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
-  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"
 
 lhAPIProvider:
   tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"

@@ -11,6 +11,7 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -128,8 +129,7 @@ public class MasProcessingService {
   private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
     var auditEvent = buildAuditEvent(payload, message);
     camelEntrance.offrampClaim(auditEvent);
-    var mpo = new MasProcessingObject();
-    mpo.setClaimPayload(payload);
+    var mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
     camelEntrance.completeProcessing(mpo);
   }
 
@@ -168,9 +168,9 @@ public class MasProcessingService {
         // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
         Matcher customDateMatcher = customDatePattern.matcher(input);
         if (customDateMatcher.matches()) {
-          Integer year = Integer.parseInt(customDateMatcher.group(1));
-          Integer month = Integer.parseInt(customDateMatcher.group(2));
-          Integer day = Integer.parseInt(customDateMatcher.group(3));
+          int year = Integer.parseInt(customDateMatcher.group(1));
+          int month = Integer.parseInt(customDateMatcher.group(2));
+          int day = Integer.parseInt(customDateMatcher.group(3));
           LocalDate customDate = LocalDate.of(year, month, day);
           customDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
         } else {

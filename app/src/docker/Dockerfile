@@ -9,7 +9,7 @@ HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 
 WORKDIR /project
 ARG ENTRYPOINT_FILE
-COPY entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
