@@ -72,29 +72,29 @@ spec:
 #                secretKeyRef:
 #                  name: { { .Values.dataservice.secretKeyRefName }}
 #                  key: { { .Values.dataservice.lhFhirUrl }}
-
-            - name: VRO_SECRETS_MAS
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_MAS
-            - name: MAS_API_AUTH_TOKEN_URI
-              value: {{ .Values.global.mas.masApiAuthTokenUri }}
-            - name: MAS_API_BASE_URL
-              value: {{ .Values.global.mas.masApiBaseUrl }}
-
-            - name: VRO_SECRETS_BIP
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_BIP
-            - name: BIP_APPLICATION_ISS
-              value: virtual_regional_office
-            - name: BIP_CLAIM_URL
-              value: {{ .Values.global.bip.bipClaimUrl }}
-            - name: BIP_EVIDENCE_URL
-              value: {{ .Values.global.bip.bipEvidenceUrl }}
-            - name: BIP_STATION_ID
-              value: "281"
+# TODO: Irrelevant for container
+#            - name: VRO_SECRETS_MAS
+#              valueFrom:
+#                secretKeyRef:
+#                  name: vro-secrets
+#                  key: VRO_SECRETS_MAS
+#            - name: MAS_API_AUTH_TOKEN_URI
+#              value: { { .Values.global.mas.masApiAuthTokenUri }}
+#            - name: MAS_API_BASE_URL
+#              value: { { .Values.global.mas.masApiBaseUrl }}
+#
+#            - name: VRO_SECRETS_BIP
+#              valueFrom:
+#                secretKeyRef:
+#                  name: vro-secrets
+#                  key: VRO_SECRETS_BIP
+#            - name: BIP_APPLICATION_ISS
+#              value: virtual_regional_office
+#            - name: BIP_CLAIM_URL
+#              value: { { .Values.global.bip.bipClaimUrl }}
+#            - name: BIP_EVIDENCE_URL
+#              value: { { .Values.global.bip.bipEvidenceUrl }}
+#            - name: BIP_STATION_ID
+#              value: "281"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

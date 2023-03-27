@@ -21,7 +21,7 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       imagePullSecrets:
-        - name: abd-vro-ghcr
+        - name: devops-ghcr
       containers:
         - name: github-runner
           image: ghcr.io/department-of-veterans-affairs/lighthouse-di-github-runner-base-image/runner-base-image:0.1.24

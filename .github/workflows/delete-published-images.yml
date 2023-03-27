@@ -1,4 +1,4 @@
-name: "9. Delete old published DEV images"
+name: "9. (Internal) Delete old published DEV images"
 on:
   schedule:
     # Run at 00:00 twice a month.
