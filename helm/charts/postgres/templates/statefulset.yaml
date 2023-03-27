@@ -31,13 +31,13 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.superUsernameKey }}
+                  name: vro-db
+                  key: DB_SUPERUSER_NAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.superPasswordKey }}
+                  name: vro-db
+                  key: DB_SUPERUSER_PASS
             - name: PGDATA
               # https://hub.docker.com/_/postgres recommends using a subdirectory under the mounted directory
               value: {{ .Values.global.pgdata.mountPath }}/pgdata
@@ -45,18 +45,19 @@ spec:
             - name: FLYWAY_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+                  name: vro-db
+                  key: DB_FLYWAYUSER_NAME
             - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.passwordKey }}
+                  name: vro-db
+                  key: DB_FLYWAYUSER_PASS
             - name: FLYWAY_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+              value: {{ .Values.global.service.db.databaseName }}
+#              valueFrom:
+#                secretKeyRef:
+#                  name: { { .Values.global.postgres.secretKeyRef.name }}
+#                  key: { { .Values.global.postgres.secretKeyRef.dbnameKey }}
           ports:
             - containerPort: {{ .Values.global.service.db.sourcePort }}
               protocol: TCP

@@ -1,8 +1,8 @@
 package gov.va.vro.end2end;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -24,7 +24,6 @@ import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -59,7 +58,6 @@ public class VroV2Tests {
   private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
   private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
   private static final String SLACK_URL = "http://localhost:9008/slack-messages/";
-  private static final String CONTENTIONS_URL = "http://localhost:8099/claims/%s/contentions";
 
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUx"
@@ -168,28 +166,33 @@ public class VroV2Tests {
     assertEquals(expectedMessage, masResponse.getMessage());
   }
 
+  /**
+   * This returns the lifecycle status. Lifecycle status is updated before the contention update so
+   * this method can directly returns without polling.
+   *
+   * @param claimId claim identifier
+   * @return the lifestyle status found
+   */
   @SneakyThrows
   private String getUpdatedLifecycleStatus(String claimId) {
-    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
-      Thread.sleep(10);
-      String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
-      var testResponse = restTemplate.getForEntity(url, LifecycleUpdatesResponse.class);
-      assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-      LifecycleUpdatesResponse body = testResponse.getBody();
-      if (body.isFound()) {
-        log.info("Claim {} lifecycle status is updated.", claimId);
-        return body.getStatus();
-      } else {
-        log.info("Claim {} lifecycle status is not updated. Retrying...", claimId);
-      }
-    }
-    return null;
+    String url = UPDATES_URL + claimId + "/" + "lifecycle_status";
+    var testResponse = restTemplate.getForEntity(url, LifecycleUpdatesResponse.class);
+    assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+    LifecycleUpdatesResponse body = testResponse.getBody();
+    // Do not check isFound for now. We now do not update when necessary
+    return body.getStatus();
   }
 
+  /**
+   * Contentions will always be updated since we check existence of RDR1 (anchor) before processing
+   * begins and at least RDR1 will need to be removed.
+   *
+   * @param claimId claim identifier
+   * @return all the contentions
+   */
   @SneakyThrows
   private List<ClaimContention> getUpdatedContentions(String claimId) {
-    for (int pollNumber = 0; pollNumber < 10; ++pollNumber) {
-      Thread.sleep(10);
+    for (int pollNumber = 0; pollNumber < 20; ++pollNumber) {
       String url = UPDATES_URL + claimId + "/" + "contentions";
       var testResponse = restTemplate.getForEntity(url, ContentionUpdatesResponse.class);
       assertEquals(HttpStatus.OK, testResponse.getStatusCode());
@@ -200,6 +203,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
+      Thread.sleep(5);
     }
     return null;
   }
@@ -305,50 +309,43 @@ public class VroV2Tests {
     assertTrue(successOrdering, "Exam is not ordered");
   }
 
+  private ClaimInfoResponse getClaimInfoForCollection(String collectionId) {
+    try {
+      String url = CLAIM_INFO_URL + collectionId;
+      HttpEntity<Void> requestEntity = getTokenAuthHeaders();
+      ResponseEntity<ClaimInfoResponse> response =
+          restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      ClaimInfoResponse body = response.getBody();
+      assertNotNull(body, "Claim Info Response was null, cannot continue");
+      return body;
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+      return null;
+    }
+  }
+
   @SneakyThrows
   private void testClaimSufficientStatus(String collectionId, Boolean expectedSufficientValue) {
-
-    String url = CLAIM_INFO_URL + collectionId;
     AssessmentInfo foundAssessment = null;
-    HttpEntity<Void> requestEntity = getTokenAuthHeaders();
 
     log.info("Waiting for claim processing to finish and assessment database results");
-    for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
-      Thread.sleep(20000);
-      try {
-        ResponseEntity<ClaimInfoResponse> testResponse =
-            restTemplate.exchange(url, HttpMethod.GET, requestEntity, ClaimInfoResponse.class);
-        assertEquals(HttpStatus.OK, testResponse.getStatusCode());
-        ClaimInfoResponse cir = testResponse.getBody();
-        assertNotNull(cir, "Claim Info Response was null, cannot continue");
-        List<ContentionInfo> contentionList = cir.getContentions();
-        if (contentionList.size() == 1) {
-          List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
-          // If assessment list size is zero, we may not be finished processing, and should try
-          // again.
-          if (assessmentList.size() == 1) {
-            foundAssessment = assessmentList.get(0);
-            break;
-          } else if (assessmentList.size() > 1) {
-            Assertions.fail(
-                "CollectionId "
-                    + collectionId
-                    + " came back with more than one assessment result. "
-                    + "Cannot determine which one to check");
-          }
-        } else if (contentionList.size() > 1) {
-          Assertions.fail(
-              "CollectionId "
-                  + collectionId
-                  + " came back with more than one contention. "
-                  + "Cannot determine which one to check");
-        }
-      } catch (HttpStatusCodeException exception) {
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
+      ClaimInfoResponse cir = getClaimInfoForCollection(collectionId);
+      if (cir == null) {
         log.info(
-            "Did not find asessment result for collection id {} with message .. retrying",
+            "Did not find assessment result for collection id {} with message .. retrying",
             collectionId);
+        Thread.sleep(5000);
+        continue;
       }
+      List<ContentionInfo> contentionList = cir.getContentions();
+      // Just take the 0'th of now. If you run multiple times all should be same
+      assertTrue(contentionList.size() > 0);
+      List<AssessmentInfo> assessmentList = contentionList.get(0).getAssessments();
+      assertTrue(assessmentList.size() > 0);
+      foundAssessment = assessmentList.get(0);
+      break;
     }
     assertNotNull(foundAssessment);
     assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
@@ -365,8 +362,8 @@ public class VroV2Tests {
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     testPdfUpload(request);
-    testSpecialIssueRdr1Removed(claimId);
-    testLifecycleStatusUpdated(claimId);
+    testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
+    testLifecycleStatus(claimId, ClaimStatus.RFD);
   }
 
   /*
@@ -390,8 +387,7 @@ public class VroV2Tests {
     var content = resourceToString(path);
     var requestEntity = getBearerAuthEntity(content);
     try {
-      var response =
-          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
       fail("Collection 801 should have received 400.");
     } catch (HttpStatusCodeException exception) {
       assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -415,27 +411,47 @@ public class VroV2Tests {
     return false;
   }
 
-  private void testSpecialIssueRdr1Removed(String claimId) {
+  private void testSpecialIssuesRemoved(
+      String claimId, ClaimContention contention, boolean rrdShouldBeRemoved) {
+    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+    assertNotNull(specialIssueCodes);
+
+    String[] remainingRrdOrRdr1 =
+        specialIssueCodes.stream()
+            .filter(code -> code.equals("RDR1") || code.equals("RRD"))
+            .toArray(String[]::new);
+
+    if (rrdShouldBeRemoved) {
+      String[] emptyArray = {};
+      assertArrayEquals(emptyArray, remainingRrdOrRdr1, "RRD or RDR1 should have been removed");
+    } else {
+      String[] onlyRrd = {"RRD"};
+      assertArrayEquals(onlyRrd, remainingRrdOrRdr1, "only RRD should have remained");
+    }
+  }
+
+  private void testUpdatedContentions(
+      String claimId,
+      boolean rrdShouldBeRemoved,
+      boolean automationIndicator,
+      ClaimStatus claimStatus) {
     List<ClaimContention> contentions = getUpdatedContentions(claimId);
-    assertNotNull(contentions, "Contentions are not updated to remove special issue.");
+    assertNotNull(contentions, "Contentions are not updated to remove special issue(s).");
     log.info("Claim {} contentions have been updated.", claimId);
 
     // Only have single issue claims for now
     assertEquals(1, contentions.size());
     ClaimContention contention = contentions.get(0);
-    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
-    assertNotNull(specialIssueCodes);
-    for (String specialIssueCode : specialIssueCodes) {
-      assertNotEquals("RDR1", specialIssueCode, "RDR1 should have been removed");
-    }
-    log.info("rdr1 is removed for {}", claimId);
+
+    testSpecialIssuesRemoved(claimId, contention, rrdShouldBeRemoved);
+    assertEquals(automationIndicator, contention.isAutomationIndicator());
   }
 
-  private void testLifecycleStatusUpdated(String claimId) {
+  private void testLifecycleStatus(String claimId, ClaimStatus expectedStatus) {
     String status = getUpdatedLifecycleStatus(claimId);
     assertNotNull(status, "Lifecycle status has not been updated.");
-    log.info("Claim {} lifecycle status has been updated.", claimId);
-    assertEquals(ClaimStatus.RFD.getDescription(), status);
+    log.info("Claim {} lifecycle status is: {}", claimId, status);
+    assertEquals(expectedStatus.getDescription(), status);
   }
 
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
@@ -445,7 +461,8 @@ public class VroV2Tests {
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testSpecialIssueRdr1Removed(claimId);
+    testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+    testLifecycleStatus(claimId, ClaimStatus.OPEN);
   }
 
   /**
@@ -511,7 +528,8 @@ public class VroV2Tests {
     testExamOrdered(collectionId);
     testPdfUpload(request);
     String claimId = request.getClaimDetail().getBenefitClaimId();
-    testSpecialIssueRdr1Removed(claimId);
+    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+    testLifecycleStatus(claimId, ClaimStatus.OPEN);
     checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
     testExamOrderingStatus(collectionId);
     checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
@@ -637,9 +655,10 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimSufficiencyIsNull() {
-    AutomatedClaimTestSpec spec = specFor200("500");
+    String collectionId = "500";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
     spec.setCheckSlack(true);
     testAutomatedClaimOffRamp(spec);
-    testClaimSufficientStatus("500", null);
+    testClaimSufficientStatus(collectionId, null);
   }
 }
