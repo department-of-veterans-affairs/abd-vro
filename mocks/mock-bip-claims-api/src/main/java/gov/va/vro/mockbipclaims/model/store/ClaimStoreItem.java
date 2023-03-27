@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ClaimStoreItem {
-  String description;
+  String[] description;
   ClaimDetail claimDetail;
   List<ContentionSummary> contentions;
 
