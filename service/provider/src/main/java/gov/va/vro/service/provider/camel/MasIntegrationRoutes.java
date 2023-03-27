@@ -71,9 +71,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
   public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
-
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
-  public static final String ENDPOINT_UPLOAD_PDF_AFTER_EXAM = "direct:upload-pdf-after-exam";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
@@ -205,7 +203,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
         // Upload PDF but catch errors since exam was ordered and continue
-        .to(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
+        .doTry()
+        .to(ENDPOINT_UPLOAD_PDF)
+        .endDoTry()
+        .doCatch(BipException.class)
+        // Mas Complete Processing code expects this to be the body of the message
+        .setBody(simple("${exchangeProperty.payload}"))
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            slackEventProcessor(orderExamRouteId, "PDF upload failed after exam order requested."))
+        .endDoCatch()
         // Check and update statuses
         .to(ENDPOINT_MAS_COMPLETE);
 
@@ -266,23 +273,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   }
 
   private void configureUploadPdf() {
-    String afterExamOrderRoute = "mas-upload-pdf-after-exam-order";
-
-    // Wrapper route to allow camel to be happy about exception catching. Only needed in some upload
-    // PDF scenarios.
-    from(ENDPOINT_UPLOAD_PDF_AFTER_EXAM)
-        .doTry()
-        .to(ENDPOINT_UPLOAD_PDF)
-        .endDoTry()
-        .doCatch(BipException.class)
-        // Mas Complete Processing code expects this to be the body of the message
-        .setBody(simple("${exchangeProperty.payload}"))
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-            slackEventProcessor(
-                afterExamOrderRoute, "PDF upload failed after exam order requested."))
-        .endDoCatch();
-
     var routeId = "mas-upload-pdf";
     from(ENDPOINT_UPLOAD_PDF)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)

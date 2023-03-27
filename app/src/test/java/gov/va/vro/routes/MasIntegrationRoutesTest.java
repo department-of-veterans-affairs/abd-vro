@@ -138,13 +138,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
         "mock:empty-endpoint");
 
-    // Replace both potential upload PDF routes
     replaceEndpoint(
         "mas-processing", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
-    replaceEndpoint(
-        "mas-processing",
-        MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF_AFTER_EXAM,
-        "mock:empty-endpoint");
 
     replaceEndpoint("mas-rfd", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
