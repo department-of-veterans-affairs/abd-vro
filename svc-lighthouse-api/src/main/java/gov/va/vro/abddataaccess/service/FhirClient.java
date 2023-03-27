@@ -226,11 +226,11 @@ public class FhirClient {
       // Set default systolic / diastolic blood pressure value if one of them not exist.
       if (bpReading.getDiastolic() == null) {
         bpReading.setDiastolic(
-            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BP_MEASURE.DIASTOLIC));
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.DIASTOLIC));
       }
-      if ((bpReading.getSystolic() == null) && (bpReading.getDiastolic() != null)) {
+      if (bpReading.getSystolic() == null) {
         bpReading.setSystolic(
-            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BP_MEASURE.SYSTOLIC));
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.SYSTOLIC));
       }
       result.add(bpReading);
     }

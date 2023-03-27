@@ -32,21 +32,21 @@ public class FieldExtractor {
 
   private static final String SNOMED = "http://snomed.info";
   private static final String MISSING = "*Missing*";
-  public static final String SYSTOLOC_BP_CODE = "8480-6";
-  public static final String DIASTOLOC_BP_CODE = "8462-4";
+  public static final String SYSTOLIC_BP_CODE = "8480-6";
+  public static final String DIASTOLIC_BP_CODE = "8462-4";
   private static final String BP_UNIT = "mm[Hg]";
   private static final String SYSTOLIC_DES = "Systolic blood pressure";
   private static final String DIASTOLIC_DES = "Diastolic blood pressure";
 
-  public enum BP_MEASURE {
-    SYSTOLIC(SYSTOLOC_BP_CODE, SYSTOLIC_DES, BP_UNIT),
-    DIASTOLIC(DIASTOLOC_BP_CODE, DIASTOLIC_DES, BP_UNIT);
+  public enum BpMeasure {
+    SYSTOLIC(SYSTOLIC_BP_CODE, SYSTOLIC_DES, BP_UNIT),
+    DIASTOLIC(DIASTOLIC_BP_CODE, DIASTOLIC_DES, BP_UNIT);
 
     private String code;
     private String unit;
     private String display;
 
-    BP_MEASURE(String code, String display, String unit) {
+    BpMeasure(String code, String display, String unit) {
       this.code = code;
       this.display = display;
       this.unit = unit;
@@ -318,11 +318,11 @@ public class FieldExtractor {
             Coding codingInner = codeableConcept.getCodingFirstRep();
             if (codingInner.hasCode()) {
               String bpType = codingInner.getCode();
-              if (SYSTOLOC_BP_CODE.equals(bpType)) {
+              if (SYSTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setSystolic(m);
               }
-              if (DIASTOLOC_BP_CODE.equals(bpType)) {
+              if (DIASTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setDiastolic(m);
               }
@@ -350,7 +350,7 @@ public class FieldExtractor {
     return result;
   }
 
-  public static AbdBpMeasurement getDefaultBpMeasurement(BP_MEASURE measurement) {
+  public static AbdBpMeasurement getDefaultBpMeasurement(BpMeasure measurement) {
     AbdBpMeasurement result = new AbdBpMeasurement();
     result.setCode(measurement.code);
     result.setUnit(measurement.getUnit());
