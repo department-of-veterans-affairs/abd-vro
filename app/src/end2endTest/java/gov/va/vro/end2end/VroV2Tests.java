@@ -570,7 +570,6 @@ public class VroV2Tests {
     testAutomatedClaimOrderExam(spec);
   }
 
-
   /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */
   @Test
   void testLHDataOnlyClaimOrderExamIncreaseClaim() {
