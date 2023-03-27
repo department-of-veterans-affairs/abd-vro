@@ -5,7 +5,8 @@ plugins {
 }
 
 python {
-  installVirtualenv = true
+  python.scope = USER
+  installVirtualenv = false
 }
 
 def requirements = tasks.register("requirements", PythonTask) {
