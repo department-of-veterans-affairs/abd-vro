@@ -1,4 +1,4 @@
-name: "5. Publish 3rd-party image"
+name: "5. (Internal) Publish 3rd-party image"
 
 # SecRel will not sign images outside the scope of the repository that's calling SecRel,
 # so the image must exist in abd-vro-internal for SecRel to sign the images (required for sandbox and prod environments).
@@ -31,7 +31,7 @@ env:
 
 jobs:
   publish-image:
-    # only run for the internal repo since they don't need to be in the public repo
+    # only run for the internal repo since the images don't need to be in the public repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     outputs:
       published-images: ${{ steps.docker-push.outputs.images_list }}

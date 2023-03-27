@@ -2,7 +2,9 @@ import logging
 from datetime import date
 from typing import Dict
 
-from . import condition, medication, procedure, utils
+import data_model
+
+from . import condition, medication, procedure
 
 
 def assess_sinusitis(event: Dict):
@@ -14,7 +16,7 @@ def assess_sinusitis(event: Dict):
     :return: response body
     :rtype: dict
     """
-    validation_results = utils.validate_request_body(event)
+    validation_results = data_model.validate_request_body(event)
 
     response_body = {}
     if "dateOfClaim" not in event:

@@ -1,4 +1,4 @@
-name: "1. Update Deployment"
+name: "1. (Internal) Update Deployment"
 
 on:
   workflow_dispatch:
@@ -114,7 +114,8 @@ env:
 
 jobs:
   update-deployment:
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    # Required secrets are set in the specific repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     runs-on: ubuntu-latest
     steps:
       - name: "Slack: workflow triggered"
@@ -124,7 +125,8 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
+            Updating deployment (#${{ github.run_number }})> \
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
             (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
 

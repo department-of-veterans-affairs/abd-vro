@@ -5,8 +5,10 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combine
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -16,6 +18,7 @@ import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.ExternalCallException;
 import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
@@ -24,12 +27,14 @@ import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
+import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -64,11 +69,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
+
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
-  public static final String ENDPOINT_OFFRAMP = "seda:offramp";
-
+  public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
+  public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
 
   public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
@@ -96,10 +103,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
+  private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
+
   @Override
   public void configure() {
     configureAuditing();
-    configureOffRamp();
+    configureNotify();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
@@ -165,35 +174,39 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
         .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
-        // Order Exam only if the Sufficient For Fast Tracking is "false"
         .to(ENDPOINT_ORDER_EXAM)
-        // Upload PDF only if SufficientForFastTracking is either true or false
-        .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE)
         .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
-        // Upload PDF only if SufficientForFastTracking is either true or false
-        .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE)
+        .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
         .to(ENDPOINT_ACCESS_ERR)
         .end();
+
+    String rfdRouteId = "mas-rfd";
+    from(END_POINT_RFD)
+        // input: MasAutomatedClaimPayload
+        .routeId(rfdRouteId)
+        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        .onPrepare(auditProcessor(rfdRouteId, "Sufficient evidence for ready for decision."))
+        // Upload PDF
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update claim
+        .to(ENDPOINT_MAS_COMPLETE);
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
         .routeId(orderExamRouteId)
-        .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
-        .process(masOrderExamProcessor)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
+        .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
-        .end();
+        // Upload PDF only if SufficientForFastTracking is either true or false
+        .to(ENDPOINT_UPLOAD_PDF)
+        // Check and update statuses
+        .to(ENDPOINT_MAS_COMPLETE);
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
@@ -201,13 +214,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(assessorErrorRouteId)
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .wireTap(ENDPOINT_OFFRAMP)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
         .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
         .to(ENDPOINT_MAS_COMPLETE);
   }
 
   private void configureCollectEvidence() {
-    String lighthouseEndpoint = "direct:lighthouse-claim-submit";
+    String lighthouseRetryRoute = "direct:lighthouse-retry";
+    String lighthouseRoute = "mas-automated-claim-lighthouse";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -218,16 +232,36 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(lighthouseEndpoint) // call Lighthouse
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
-    from(lighthouseEndpoint)
-        .routeId("mas-automated-claim-lighthouse")
+    from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
+        .routeId(lighthouseRoute)
         .process(payloadToClaimProcessor())
+        .to(lighthouseRetryRoute)
+        // Handle the errors to permit processing to continue
+        .onException(ExchangeTimedOutException.class, ExternalCallException.class)
+        .handled(true)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            slackEventPropertyProcessor(
+                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
+        .process(lighthouseContinueProcessor()) // But keep processing
+        .end(); // End of onException
+
+    from(lighthouseRetryRoute)
+        .doTry()
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .unmarshal(new JacksonDataFormat(HealthDataAssessment.class));
+        .convertBodyTo(HealthDataAssessment.class)
+        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .endDoTry()
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
+        .convertBodyTo(HealthDataAssessment.class)
+        .process(healthAssessmentErrCheckProcessor)
+        .endDoCatch();
   }
 
   private void configureUploadPdf() {
@@ -266,16 +300,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_MAS_COMPLETE)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Removing Special Issue"))
-        .bean(FunctionProcessor.fromFunction(bipClaimService::removeSpecialIssue))
-        .choice()
-        // Mark the claim as "RFD" only if the Sufficient For Fast Tracking is "true"
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(auditProcessor(routeId, "Sufficient evidence for fast tracking. Marking as RFD"))
-        .bean(FunctionProcessor.fromFunction(bipClaimService::markAsRfd))
-        .endChoice()
-        .end()
+        .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
+        .process(MasIntegrationProcessors.completionProcessor(bipClaimService))
         .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(
@@ -289,9 +315,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
                 }));
   }
 
-  private void configureOffRamp() {
-    from(ENDPOINT_OFFRAMP)
-        .routeId("mas-offramp")
+  private void configureNotify() {
+    from(ENDPOINT_NOTIFY_AUDIT)
+        .routeId("vro-notify")
         .multicast()
         .to(ENDPOINT_SLACK_EVENT)
         .to(ENDPOINT_AUDIT_EVENT);
