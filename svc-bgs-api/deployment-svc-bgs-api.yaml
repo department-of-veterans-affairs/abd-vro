@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc-bgs-api-temp
+  labels:
+    app: svc-bgs-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc-bgs-api
+  template:
+    metadata:
+      labels:
+        app: svc-bgs-api
+        sidecar.istio.io/inject: "false"
+    spec:
+      imagePullSecrets:
+        - name: devops-ghcr
+      containers:
+        - name: svc-bgs-api
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/svc-bgs-api-temp:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

@@ -1,6 +1,6 @@
 /**
  * Provides docker container settings
- * Mimics local.java.container-conventions.gradle except for Python projects
+ * Mimics local.java.container-conventions.gradle except for Ruby projects
  */
 
 plugins {
@@ -21,12 +21,4 @@ docker {
     copySpec.into(".").from("src"){
         exclude('docker')
     }
-    copySpec.into(".").from("../"){
-        include("*.py")
-    }
 }
-
-//dockerRun {
-//    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
-//        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
-//}
