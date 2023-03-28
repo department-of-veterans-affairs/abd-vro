@@ -9,6 +9,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lightho
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOffRampProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -79,6 +80,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
+  public static final String ENDPOINT_OFFRAMP_ERROR = "direct:offramp-error";
 
   public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
 
@@ -186,19 +188,29 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end();
 
     String rfdRouteId = "mas-rfd";
+    String pdfFailError = "docUploadFailed";
     from(END_POINT_RFD)
         // input: MasAutomatedClaimPayload
         .routeId(rfdRouteId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(rfdRouteId, "Sufficient evidence for ready for decision."))
         // Upload PDF
+        .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update claim
+        .doCatch(BipException.class)
+        // Completion code needs the MasProcessingObject as the body.
+        .setBody(simple("${exchangeProperty.payload}"))
+        .setProperty("offRampReason", constant(pdfFailError))
+        .setProperty("sourceRoute", constant(rfdRouteId))
+        .to(ENDPOINT_OFFRAMP_ERROR)
+        .stop()
+        .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    var orderFailMessage = "examOrderFailed";
+    final String orderFailMessage = "examOrderFailed";
+    final String pdfFailMessage = "PDF upload failed after exam order requested.";
 
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
@@ -209,29 +221,32 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doTry()
         .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
-        .endDoTry()
-        .doCatch(MasException.class)
-            //Body is still the Mas Processing object.
-            .setProperty("offRampReason", constant(orderFailMessage))
-            .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-            .onPrepare(
-                    slackEventProcessor(orderExamRouteId, orderFailMessage))
-            .to(ENDPOINT_MAS_COMPLETE)
-            .stop() //Do not continue to upload the PDF.
-        .endDoCatch()
         // Upload PDF but catch errors since exam was ordered and continue
-        .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        .endDoTry()
+        .doCatch(MasException.class)
+        // Body is still the Mas Processing object.
+        .log("HMD inside the do catch for mas exception")
+        .setProperty("sourceRoute", constant(orderExamRouteId))
+        .setProperty("offRampReason", constant(orderFailMessage))
+        .to(ENDPOINT_OFFRAMP_ERROR)
+        .stop()
         .doCatch(BipException.class)
+        .log("HMD inside the do catch for bip")
         // Mas Complete Processing code expects this to be the body of the message
         .setBody(simple("${exchangeProperty.payload}"))
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-            slackEventProcessor(orderExamRouteId, "PDF upload failed after exam order requested."))
-        .endDoCatch()
-        // Check and update statuses
+        .setProperty("sourceRoute", constant(orderExamRouteId))
+        .setProperty("offRampReason", constant(pdfFailMessage))
+        .to(ENDPOINT_OFFRAMP_ERROR)
+        .stop()
+        .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
+
+    from(ENDPOINT_OFFRAMP_ERROR)
+        .log("HMD in the endpoint offramp error processor")
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(slackOffRampProcessor())
+        .to(ENDPOINT_MAS_COMPLETE)
+        .end();
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
@@ -326,7 +341,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
-        .process(MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
+        .process(
+            MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
         .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(

@@ -194,7 +194,7 @@ public class MasProcessingService {
         .build();
   }
 
-  public void offRampClaimForError(MasProcessingObject mpo, String offRampReason){
+  public void offRampClaimForError(MasProcessingObject mpo, String offRampReason) {
     MasAutomatedClaimPayload claimPayload = mpo.getClaimPayload();
     Claim claim = toClaim(claimPayload);
     claim.setOffRampReason(offRampReason);

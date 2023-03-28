@@ -146,17 +146,19 @@ public class MasIntegrationProcessors {
    * @param bipClaimService
    * @return Processor completion camel processor
    */
-  public static Processor completionProcessor(BipClaimService bipClaimService, MasProcessingService masProcessingService) {
+  public static Processor completionProcessor(
+      BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
       String offRampError = exchange.getProperty("offRampError", String.class);
       // Update our database with offramp reason.
-      if(offRampError != null){
-         masProcessingService.offRampClaimForError(payload, offRampError);
+      if (offRampError != null) {
+        masProcessingService.offRampClaimForError(payload, offRampError);
       }
-      MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient, offRampError);
+      MasCompletionStatus completionStatus =
+          MasCompletionStatus.of(origin, sufficient, offRampError);
       MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
       exchange.getMessage().setBody(updatedPayload);
     };
@@ -166,6 +168,20 @@ public class MasIntegrationProcessors {
     return exchange -> {
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
+  public static Processor slackOffRampProcessor() {
+    return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getMessage().getBody(MasProcessingObject.class);
+      String routeId = exchange.getProperty("sourceRoute", String.class);
+      String message = exchange.getProperty("offRampReason", String.class);
       exchange
           .getIn()
           .setBody(
