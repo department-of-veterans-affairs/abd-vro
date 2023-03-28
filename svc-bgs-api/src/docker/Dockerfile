@@ -20,7 +20,7 @@ ARG ENTRYPOINT_FILE
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists
-COPY set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
@@ -32,4 +32,4 @@ COPY . .
 RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
 
 USER docker
-ENTRYPOINT ["/project/entrypoint-default.sh"]
+ENTRYPOINT ["/project/entrypoint-wrapper.sh"]

@@ -12,11 +12,11 @@ RUN chmod a+x /emerg.sh && \
 
 WORKDIR /project
 ARG ENTRYPOINT_FILE
-COPY groovysh.rc set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY groovysh.rc set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE
 COPY ${JAR_FILE} fat.jar
 
 USER docker
 RUN mkdir "$HOME/.groovy" && ln -s /project/groovysh.rc "$HOME/.groovy/"
-ENTRYPOINT ["/project/entrypoint-default.sh"]
+ENTRYPOINT ["/project/entrypoint-wrapper.sh"]
