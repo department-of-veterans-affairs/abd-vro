@@ -25,8 +25,10 @@ import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
@@ -85,6 +87,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
 
   private final BipClaimService bipClaimService;
+
+  private final MasProcessingService masProcessingService;
 
   private final AuditEventService auditEventService;
 
@@ -194,26 +198,40 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
+    var orderFailMessage = "examOrderFailed";
+
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
         .routeId(orderExamRouteId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
+        .doTry()
         .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
+        .endDoTry()
+        .doCatch(MasException.class)
+            //Body is still the Mas Processing object.
+            .setProperty("offRampReason", constant(orderFailMessage))
+            .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+            .onPrepare(
+                    slackEventProcessor(orderExamRouteId, orderFailMessage))
+            .to(ENDPOINT_MAS_COMPLETE)
+            .stop() //Do not continue to upload the PDF.
+        .endDoCatch()
         // Upload PDF but catch errors since exam was ordered and continue
         .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        .to(ENDPOINT_MAS_COMPLETE)
+        .endDoTry()
         .doCatch(BipException.class)
         // Mas Complete Processing code expects this to be the body of the message
         .setBody(simple("${exchangeProperty.payload}"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventProcessor(orderExamRouteId, "PDF upload failed after exam order requested."))
-        .to(ENDPOINT_MAS_COMPLETE)
-        .endDoCatch();
+        .endDoCatch()
+        // Check and update statuses
+        .to(ENDPOINT_MAS_COMPLETE);
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
@@ -308,7 +326,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
-        .process(MasIntegrationProcessors.completionProcessor(bipClaimService))
+        .process(MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
         .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(

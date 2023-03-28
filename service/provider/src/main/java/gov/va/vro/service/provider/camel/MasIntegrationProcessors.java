@@ -16,6 +16,7 @@ import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
@@ -145,12 +146,17 @@ public class MasIntegrationProcessors {
    * @param bipClaimService
    * @return Processor completion camel processor
    */
-  public static Processor completionProcessor(BipClaimService bipClaimService) {
+  public static Processor completionProcessor(BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
-      MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient);
+      String offRampError = exchange.getProperty("offRampError", String.class);
+      // Update our database with offramp reason.
+      if(offRampError != null){
+         masProcessingService.offRampClaimForError(payload, offRampError);
+      }
+      MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient, offRampError);
       MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
       exchange.getMessage().setBody(updatedPayload);
     };
