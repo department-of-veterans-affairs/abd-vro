@@ -7,6 +7,6 @@ COPY flyway.conf /flyway/conf
 
 HEALTHCHECK NONE
 
-RUN adduser --no-create-home --disabled-password docker
-USER docker
+RUN adduser --no-create-home --disabled-password tron
+USER tron
 CMD [ "migrate", "-X" ]

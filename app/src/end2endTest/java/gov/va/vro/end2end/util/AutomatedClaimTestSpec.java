@@ -11,7 +11,7 @@ public class AutomatedClaimTestSpec {
   private String collectionId;
   private String expectedMessage;
   private String payloadPath;
-  private boolean checkSlack;
+  private boolean bipError = false;
 
   public AutomatedClaimTestSpec(String collectionId) {
     this.collectionId = collectionId;

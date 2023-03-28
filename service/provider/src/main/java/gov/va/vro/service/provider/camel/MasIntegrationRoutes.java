@@ -23,6 +23,7 @@ import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
 import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -70,7 +71,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
   public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
-
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
@@ -168,8 +168,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
-        // TODO remove unmarshal calls if possible: unmarshalling should be automatic
-        .unmarshal(new JacksonDataFormat(AbdEvidenceWithSummary.class))
+        .convertBodyTo(AbdEvidenceWithSummary.class)
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
@@ -203,10 +202,18 @@ public class MasIntegrationRoutes extends RouteBuilder {
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .process(masOrderExamProcessor)
         .log("MAS Order Exam response: ${body}")
-        // Upload PDF only if SufficientForFastTracking is either true or false
+        // Upload PDF but catch errors since exam was ordered and continue
+        .doTry()
         .to(ENDPOINT_UPLOAD_PDF)
-        // Check and update statuses
-        .to(ENDPOINT_MAS_COMPLETE);
+        .to(ENDPOINT_MAS_COMPLETE)
+        .doCatch(BipException.class)
+        // Mas Complete Processing code expects this to be the body of the message
+        .setBody(simple("${exchangeProperty.payload}"))
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(
+            slackEventProcessor(orderExamRouteId, "PDF upload failed after exam order requested."))
+        .to(ENDPOINT_MAS_COMPLETE)
+        .endDoCatch();
 
     // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
     var assessorErrorRouteId = "assessorError";
