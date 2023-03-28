@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,18 @@ public class BipUpdateClaimResult {
 
   private String message;
   private Throwable throwable;
+
+  public boolean hasSlackEvent() {
+    return message != null || throwable != null;
+  }
+
+  public AuditEvent toAuditEvent(String routeId, MasProcessingObject masProcessingObject) {
+    if (throwable != null) {
+      return AuditEvent.fromException(masProcessingObject, routeId, throwable);
+    } else {
+      return AuditEvent.fromAuditable(masProcessingObject, routeId, message);
+    }
+  }
 
   public static BipUpdateClaimResult ofError(String message) {
     log.error(message);

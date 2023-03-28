@@ -210,7 +210,7 @@ public class BipClaimService {
     }
 
     String station = claim.getTempStationOfJurisdiction();
-    if (!TSOJ.equals(station)) {
+    if (!TSOJ.equals(station) && status != MasCompletionStatus.IMMEDIATE_OFF_RAMP) {
       int collectionId = payload.getCollectionId();
       String message =
           String.format(
