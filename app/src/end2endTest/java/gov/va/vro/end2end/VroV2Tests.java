@@ -665,9 +665,11 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
     MasAutomatedClaimRequest request = startAutomatedClaim("380");
     String pdfText = testPdfUpload(request);
-    assert pdfText.contains("143/-");
-    assert pdfText.contains("-/92");
-
+    // Check for evidence from mock MAS evidence API
+    assertTrue(pdfText.contains("143/-"));
+    assertTrue(pdfText.contains("-/92"));
+    // Check for evidence from mock LH API
+    assertTrue(pdfText.contains("190/-"));
   }
 
   /**
