@@ -14,7 +14,7 @@ docker {
         new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
         new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
 
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
 }
 
 // VRO runs via docker-compose, so we don't use this

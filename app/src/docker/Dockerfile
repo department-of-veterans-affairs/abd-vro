@@ -8,7 +8,7 @@ RUN adduser --no-create-home --disabled-password tron
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 
 WORKDIR /app
-ARG ENTRYPOINT_FILE
+ARG ENTRYPOINT_FILE=entrypoint.sh
 COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE

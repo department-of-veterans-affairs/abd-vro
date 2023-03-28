@@ -13,7 +13,7 @@ RUN adduser --no-create-home --disabled-password tron
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=5 CMD [ "CMD-SHELL", "pgrep python || exit 1" ]
 
 WORKDIR /app
-ARG ENTRYPOINT_FILE
+ARG ENTRYPOINT_FILE=entrypoint.sh
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists
