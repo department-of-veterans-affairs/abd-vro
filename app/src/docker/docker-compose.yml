@@ -348,6 +348,20 @@ services:
     networks:
       - internal
 
+  svc-bgs-api:
+    profiles: ["all","svc","bgs"]
+    image: va/abd_vro-svc-bgs-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    environment:
+      <<: *common-vars
+      <<: *rabbitmq-placeholder-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   svc-feature-toggle:
     profiles: ["all","svc","feature-toggle"]
     image: va/abd_vro-featuretoggle:latest
