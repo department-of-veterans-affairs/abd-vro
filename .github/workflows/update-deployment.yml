@@ -21,6 +21,7 @@ on:
         default: 'latest'
         type: string
 
+      # The following input names must match helm chart names (without the `-chart` suffix) and helm chart folder names
       vro-app:
         description: 'Enable & update VRO Application API'
         required: true
@@ -31,27 +32,36 @@ on:
         required: true
         type: boolean
         default: true
-      rabbitmq:
-        description: 'Enable MQ'
-        required: true
-        type: boolean
-        default: true
       postgres:
         description: 'Enable DB'
         required: true
         type: boolean
         default: true
-      redis:
-        description: 'Enable Redis'
+      rabbitmq:
+        description: 'RabbitMQ image tag'
         required: true
-        type: boolean
-        default: true
+        default: 3
+        type: choice
+        options:
+        - latest
+        - 3
+        - (disable)
+      redis:
+        description: 'Redis image tag'
+        required: true
+        default: 7
+        type: choice
+        options:
+        - latest
+        - 7
+        - (disable)
       console:
         description: 'Enable VRO Console'
         required: true
         type: boolean
         default: false
 
+      # Other deployment options
       rollback:
         description: 'If deploy fails, rollback to previous? (Always true for prod)'
         required: true
@@ -81,18 +91,18 @@ on:
         required: false
         type: boolean
         default: true
-      rabbitmq:
-        required: false
-        type: boolean
-        default: true
       postgres:
         required: false
         type: boolean
         default: true
+      rabbitmq:
+        required: false
+        type: string
+        default: "latest"
       redis:
         required: false
-        type: boolean
-        default: true
+        type: string
+        default: "latest"
       console:
         required: false
         type: boolean
@@ -187,7 +197,8 @@ jobs:
           #     Forbidden: updates to statefulset spec for fields other than ...
           # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
 
-          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan --wait
+          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} \
+            --cascade=orphan --wait --ignore-not-found=true
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
@@ -218,8 +229,19 @@ jobs:
             HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
+          helmArgsFor(){
+            if [ "$2" == "(disable)" ]; then
+              echo "--set $1.enabled=false"
+            else
+              echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
+            fi
+          }
+          HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "${{ inputs.rabbitmq }}")"
+          HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "${{ inputs.redis }}")"
+
           echo "HELM_ARGS: $HELM_ARGS"
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
+          set -x
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
@@ -228,9 +250,7 @@ jobs:
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
-            --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
             --set postgres.enabled=${{ inputs.postgres }} \
-            --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
           echo "::endgroup::"
 
