@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -211,6 +212,7 @@ public class SaveToDbServiceImpl implements SaveToDbService {
       if (esd.isPresent()) {
         EvidenceSummaryDocumentEntity esdEntity = esd.get();
         esdEntity.setFolderId(eFolderId);
+        esdEntity.setUploadedAt(OffsetDateTime.now());
         evidenceSummaryDocumentRepository.save(esdEntity);
       } else {
         log.error(
