@@ -154,6 +154,10 @@ public class XampleRoutes extends EndpointRouteBuilder {
   void configureRouteToServiceJ() {
     // Always use this utility method to send to RabbitMQ
     RabbitMqCamelUtils.addToRabbitmqRoute(this, SERVICE_J_ENDPOINT, "xample", "serviceJ")
+        // assign the returned `.to(rabbitmq:...)` an id so tests can replace it
+        .id("to-rabbitmq-serviceJ")
+        // assign this route a name for tests
+        .routeId("to-rabbitmq-route")
         .convertBodyTo(SomeDtoModel.class);
   }
 
