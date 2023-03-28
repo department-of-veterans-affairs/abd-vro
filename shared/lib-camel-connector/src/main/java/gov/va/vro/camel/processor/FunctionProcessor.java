@@ -54,6 +54,10 @@ public class FunctionProcessor<I, O> implements Processor {
   // The operation to apply to the input message body
   private final Function<I, O> function;
 
+  public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function) {
+    return new FunctionProcessor<>(function);
+  }
+
   @Override
   public void process(Exchange exchange) {
     I input = getInputBody(exchange);
