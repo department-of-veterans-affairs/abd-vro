@@ -526,7 +526,7 @@ public class VroV2Tests {
       boolean slackResult = testSlackMessage(spec.getCollectionId());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       String claimId = request.getClaimDetail().getBenefitClaimId();
-      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+      testUpdatedContentions(claimId, true, true, ClaimStatus.OPEN);
     } else {
       testExamOrdered(collectionId);
       if (spec.isBipError()) {

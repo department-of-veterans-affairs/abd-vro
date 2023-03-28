@@ -226,7 +226,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
-        .log("HMD inside the do catch for mas exception")
         .setProperty("sourceRoute", constant(orderExamRouteId))
         .setProperty("offRampError", constant(orderFailMessage))
         .to(ENDPOINT_OFFRAMP_ERROR)
@@ -243,7 +242,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wiretap does NOT let camel work as expected when placed directly inside doCatch()
     // Thus it is broken out here, in the interest of letting normal flow/control happen.
     from(ENDPOINT_OFFRAMP_ERROR)
-        .log("HMD in the endpoint offramp error processor")
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(slackOffRampProcessor())
         .to(ENDPOINT_MAS_COMPLETE)
