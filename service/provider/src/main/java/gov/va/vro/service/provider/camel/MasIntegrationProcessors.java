@@ -151,8 +151,7 @@ public class MasIntegrationProcessors {
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
       MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient);
-      MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
-      exchange.getMessage().setBody(updatedPayload);
+      bipClaimService.updateClaim(payload, completionStatus);
     };
   }
 

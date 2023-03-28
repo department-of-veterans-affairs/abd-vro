@@ -148,7 +148,7 @@ public class BipClaimService {
     return null;
   }
 
-  private void updateClaimProper(long claimId, MasCompletionStatus status) {
+  private BipClaim updateClaimProper(long claimId, MasCompletionStatus status) {
     BipClaim claim = bipApiService.getClaimDetails(claimId);
     ClaimStatus claimStatus = status.getClaimStatus();
     String necessaryLifecycleStatus = claimStatus.getDescription();
@@ -161,6 +161,7 @@ public class BipClaimService {
     } else {
       log.info("Lifecycle status is already {} for claim {}", necessaryLifecycleStatus, claimId);
     }
+    return claim;
   }
 
   /**
@@ -170,16 +171,20 @@ public class BipClaimService {
    * @param status the completion status for mas automation
    * @return the claim payload
    */
-  public MasProcessingObject updateClaim(MasProcessingObject payload, MasCompletionStatus status) {
+  public BipUpdateClaimResult updateClaim(MasProcessingObject payload, MasCompletionStatus status) {
     long claimId = Long.parseLong(payload.getBenefitClaimId());
     log.info("Attempting necessary updates for claim id = {}", claimId);
 
-    updateClaimProper(claimId, status);
+    final BipClaim claim = updateClaimProper(claimId, status);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
-      log.warn("Claim id = {} has no contentions.", claimId); // ToDo: Error out
-      return payload;
+      String message = String.format("Claim id = %s has no contentions.", claimId);
+      return BipUpdateClaimResult.ofError(message);
+    }
+    if (contentions.size() > 1) {
+      String message = String.format("Claim id = %s has multiple contentions.", claimId);
+      return BipUpdateClaimResult.ofError(message);
     }
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
@@ -191,19 +196,29 @@ public class BipClaimService {
     }
     if (updatedContentions.isEmpty()) {
       log.info("Nothing to update for claim {}.", claimId);
-      return payload; // nothing to update
+    } else {
+      log.info("Preparing requests for contention updates for claim id = {}", claimId);
+      String action = "UPDATED_CONTENTION";
+      List<UpdateContention> updateContentions =
+          updatedContentions.stream()
+              .map(c -> c.toUpdateContention(action))
+              .collect(Collectors.toList());
+      UpdateContentionReq request =
+          UpdateContentionReq.builder().updateContentions(updateContentions).build();
+      log.info("Calling BIP AP Service for contention updates for claim id = {}", claimId);
+      bipApiService.updateClaimContention(claimId, request);
     }
-    log.info("Preparing requests for contention updates for claim id = {}", claimId);
-    String action = "UPDATED_CONTENTION";
-    List<UpdateContention> updateContentions =
-        updatedContentions.stream()
-            .map(c -> c.toUpdateContention(action))
-            .collect(Collectors.toList());
-    UpdateContentionReq request =
-        UpdateContentionReq.builder().updateContentions(updateContentions).build();
-    log.info("Calling BIP AP Service for contention updates for claim id = {}", claimId);
-    bipApiService.updateClaimContention(claimId, request);
-    return payload;
+
+    String station = claim.getTempStationOfJurisdiction();
+    if (!TSOJ.equals(station)) {
+      int collectionId = payload.getCollectionId();
+      String message =
+          String.format(
+              "Claim {} with collection Id = {} is in station {}.", claimId, collectionId, station);
+      return BipUpdateClaimResult.ofWarning(message);
+    }
+
+    return new BipUpdateClaimResult(true);
   }
 
   /** Check if claim is still eligible for fast tracking, and if so, update status. */
