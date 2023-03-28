@@ -50,7 +50,8 @@ public class FilesApiController implements FilesApi {
           HttpStatus.BAD_REQUEST, "Only veteran file numbers supported");
     }
 
-    if ("9999390".equals(folderInfo[2]) || "9999392".equals(folderInfo[2])) { // This patient is used for BIP exception testing
+    if ("9999390".equals(folderInfo[2])
+        || "9999392".equals(folderInfo[2])) { // This patient is used for BIP exception testing
       throw new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR, "Returning 500 for testing");
     }
