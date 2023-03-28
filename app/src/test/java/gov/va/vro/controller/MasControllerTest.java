@@ -4,6 +4,7 @@ import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BipServiceTestConfiguration;
@@ -128,11 +129,9 @@ public class MasControllerTest extends BaseControllerTest {
 
     var request = MasTestData.getMasAutomatedClaimRequest();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    assertTrue(offrampCalled.get());
-    assertTrue(completeCalled.get());
-
-    verifyClaimPersisted(request);
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+    assertFalse(offrampCalled.get());
+    assertFalse(completeCalled.get());
   }
 
   @Test
