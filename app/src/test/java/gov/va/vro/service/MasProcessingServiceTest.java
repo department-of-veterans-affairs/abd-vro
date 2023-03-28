@@ -28,7 +28,10 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var diagnosticCode1 = "71";
     var request1 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
-    masProcessingService.processIncomingClaim(request1);
+//    masProcessingService.processIncomingClaim(request1);
+    masProcessingService.processIncomingClaimSaveToDB(request1);
+//    masProcessingService.processIncomingClaimPresumptiveOffRampClaimCheck(payload);
+//    String message = masProcessingService.processIncomingClaimGetOffRampReason(payload);
 
     var claimEntity1 = verifyClaimPersisted(request1);
     var contentions = claimEntity1.getContentions();
@@ -39,7 +42,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var diagnosticCode2 = "17";
     var request2 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode2, claimId1);
-    masProcessingService.processIncomingClaim(request2);
+    masProcessingService.processIncomingClaimSaveToDB(request2);
     var claimEntity2 = verifyClaimPersisted(request2);
     contentions = claimEntity2.getContentions();
     ClaimEntity claim = claimRepository.findByVbmsId(claimId1).orElseThrow();
@@ -49,7 +52,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var claimId2 = "321";
     var request3 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId2);
-    masProcessingService.processIncomingClaim(request3);
+    masProcessingService.processIncomingClaimSaveToDB(request3);
     verifyClaimPersisted(request3);
   }
 
@@ -60,7 +63,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var diagnosticCode1 = "71";
     var request1 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
-    var response1 = masProcessingService.processIncomingClaim(request1);
+    var response1 = masProcessingService.processIncomingClaimGetOffRampReason(request1);
     // wrong diagnostic code
     assertEquals(
         "Claim with [collection id = 123], [diagnostic code = 71], and"
@@ -69,7 +72,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
 
     var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
     request2.getClaimDetail().getConditions().setDisabilityActionType("OTHER");
-    var response2 = masProcessingService.processIncomingClaim(request2);
+    var response2 = masProcessingService.processIncomingClaimGetOffRampReason(request2);
     // wrong disability action
     assertEquals(
         "Claim with [collection id = 123], [diagnostic code = 7101], and"
@@ -85,11 +88,11 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var request1 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
     request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
-    var response = masProcessingService.processIncomingClaim(request1);
+    var response = masProcessingService.getOffRampReasonPresumptiveCheck(request1);
     assertEquals(
         "Claim with [collection id = 123], [diagnostic code = 7101],"
             + " [disability action type = NEW] and [flashIds = null] is not presumptive.",
-        response);
+        response.get());
   }
 
   @Test
@@ -100,7 +103,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var request = MasTestData.getMasAutomatedClaimPayload(collectionId, diagnosticCode, claimId);
     request.getClaimDetail().getConditions().setDisabilityActionType("NEW");
     request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
-    var response = masProcessingService.processIncomingClaim(request);
+    var response = masProcessingService.processIncomingClaimGetOffRampReason(request);
     assertEquals(
         "Claim with [collection id = 123] does not qualify for "
             + "automated processing because it is missing anchors.",

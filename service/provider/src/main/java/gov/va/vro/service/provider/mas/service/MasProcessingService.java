@@ -80,7 +80,7 @@ public class MasProcessingService {
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
-  public void processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
+  public String processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
     var offRampReasonOptional = getOffRampReasonPresumptiveCheck(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
@@ -89,10 +89,12 @@ public class MasProcessingService {
       claim.setOffRampReason(offRampReason);
       saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
+      return offRampReason;
     }
+    return "";
   }
 
-  private Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
+  public Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
       var message =
           String.format(
