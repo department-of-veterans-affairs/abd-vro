@@ -164,12 +164,24 @@ public class MasIntegrationProcessors {
     };
   }
 
+  public static Processor slackEventProcessor(String routeId, String message) {
+    return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getMessage().getBody(MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
   public static Processor slackOffRampProcessor() {
     return exchange -> {
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
       String routeId = exchange.getProperty("sourceRoute", String.class);
-      String message = exchange.getProperty("offRampReason", String.class);
+      String message = exchange.getProperty("offRampError", String.class);
       exchange
           .getIn()
           .setBody(

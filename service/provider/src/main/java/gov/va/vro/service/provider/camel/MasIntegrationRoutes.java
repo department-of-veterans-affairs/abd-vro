@@ -7,6 +7,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOffRampProcessor;
 
@@ -179,7 +180,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .setProperty("offRampReason", constant("Sufficiency cannot be determined."))
+        .setProperty("offRampError", constant("Sufficiency cannot be determined."))
         .setProperty("sourceRoute", constant("assessorError"))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
@@ -199,7 +200,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("offRampReason", constant(pdfFailError))
+        .setProperty("offRampError", constant(pdfFailError))
         .setProperty("sourceRoute", constant(rfdRouteId))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
@@ -222,25 +223,25 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("MAS Order Exam response: ${body}")
         // Upload PDF but catch errors since exam was ordered and continue
         .to(ENDPOINT_UPLOAD_PDF)
+        .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
         .log("HMD inside the do catch for mas exception")
         .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampReason", constant(orderFailMessage))
+        .setProperty("offRampError", constant(orderFailMessage))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
         .log("HMD inside the do catch for bip")
         // Mas Complete Processing code expects this to be the body of the message
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampReason", constant(pdfFailMessage))
-        .to(ENDPOINT_OFFRAMP_ERROR)
-        .stop()
-        .end() // End try
-        .to(ENDPOINT_MAS_COMPLETE);
+        // Wiretap will cause no code to execute after the end of the try. Intentional here.
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        .onPrepare(slackEventProcessor(orderExamRouteId, pdfFailMessage))
+        .to(ENDPOINT_MAS_COMPLETE)
+        .end();
 
-    // Wiretap does NOT let camel work as expected when placed directly inside of a doCatch()
+    // Wiretap does NOT let camel work as expected when placed directly inside doCatch()
     // Thus it is broken out here, in the interest of letting normal flow/control happen.
     from(ENDPOINT_OFFRAMP_ERROR)
         .log("HMD in the endpoint offramp error processor")
