@@ -232,7 +232,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
-        .log("HMD inside the do catch for bip")
         // Mas Complete Processing code expects this to be the body of the message
         .setBody(simple("${exchangeProperty.payload}"))
         // Wiretap will cause no code to execute after the end of the try. Intentional here.

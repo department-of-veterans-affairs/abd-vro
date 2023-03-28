@@ -215,6 +215,32 @@
   },
   {
     "description": [
+      "for happy path, used with collection id 391 for exam ordering testing with mas exam order error",
+      "claim and contention fields are as expected"
+    ],
+    "claimDetail": {
+      "claimId": 1391,
+      "claimLifecycleStatus": "Open",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2390",
+        "lastModified": "2024-02-23T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "for testing with no MAS annotations, only LH data. Exam Order path"
     ],
     "claimDetail": {

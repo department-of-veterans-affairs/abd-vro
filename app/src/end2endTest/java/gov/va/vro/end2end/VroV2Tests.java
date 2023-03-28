@@ -522,19 +522,26 @@ public class VroV2Tests {
     String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
-    testExamOrdered(collectionId);
-    if (spec.isBipError()) {
+    if (spec.isMasError()){
       boolean slackResult = testSlackMessage(spec.getCollectionId());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
     } else {
-      testPdfUpload(request);
+      testExamOrdered(collectionId);
+      if (spec.isBipError()) {
+        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      } else {
+        testPdfUpload(request);
+      }
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+      checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
+      testExamOrderingStatus(collectionId);
+      checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
     }
-    String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
-    checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
-    testExamOrderingStatus(collectionId);
-    checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
   }
 
   /**
@@ -567,6 +574,17 @@ public class VroV2Tests {
   void testAutomatedClaimOrderExamBipError() {
     AutomatedClaimTestSpec spec = specFor200("390");
     spec.setBipError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures mas order exam errors are handled properly.
+   * Copied from 378; this sends an error message instead of ordering the exam or uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamMasError() {
+    AutomatedClaimTestSpec spec = specFor200("391");
+    spec.setMasError(true);
     testAutomatedClaimOrderExam(spec);
   }
 

@@ -12,6 +12,7 @@ public class AutomatedClaimTestSpec {
   private String expectedMessage;
   private String payloadPath;
   private boolean bipError = false;
+  private boolean masError = false;
 
   public AutomatedClaimTestSpec(String collectionId) {
     this.collectionId = collectionId;
