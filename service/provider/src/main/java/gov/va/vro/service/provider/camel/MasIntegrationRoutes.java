@@ -7,7 +7,6 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOffRampProcessor;
 
@@ -155,8 +154,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var processClaimRouteId = "mas-claim-processing";
     RabbitMqCamelUtils.fromRabbitmq(this, MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY)
         .routeId(processClaimRouteId)
-        // TODO Q: Why is unmarshal needed? Isn't the msg body already a MasAutomatedClaimPayload?
-        .unmarshal(new JacksonDataFormat(MasAutomatedClaimPayload.class))
+        .convertBodyTo(MasAutomatedClaimPayload.class)
         .process(masPollingProcessor)
         .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
@@ -184,7 +182,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .to(ENDPOINT_ACCESS_ERR)
+        .setProperty("offRampReason", constant("Sufficiency cannot be determined."))
+        .setProperty("sourceRoute", constant("assessorError"))
+        .log("Assessor Error. Off-ramping claim")
+        .process(masAccessErrProcessor)
+        .to(ENDPOINT_OFFRAMP_ERROR)
         .end();
 
     String rfdRouteId = "mas-rfd";
@@ -247,16 +249,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(slackOffRampProcessor())
         .to(ENDPOINT_MAS_COMPLETE)
         .end();
-
-    // Off Ramp if the Sufficiency can't be determined .i.e. sufficientForFastTracking is 'null'
-    var assessorErrorRouteId = "assessorError";
-    from(ENDPOINT_ACCESS_ERR)
-        .routeId(assessorErrorRouteId)
-        .log("Assessor Error. Off-ramping claim")
-        .process(masAccessErrProcessor)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT)
-        .onPrepare(slackEventProcessor(assessorErrorRouteId, "Sufficiency cannot be determined."))
-        .to(ENDPOINT_MAS_COMPLETE);
   }
 
   private void configureCollectEvidence() {
