@@ -8,14 +8,14 @@
 
 FROM ruby:2.7.6
 
-RUN adduser --home /project --disabled-password --gecos "" docker
+RUN adduser --home /app --disabled-password --gecos "" docker
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
 # TODO: add healthcheck for Ruby microservice
 # HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
 
-WORKDIR /project
+WORKDIR /app
 ARG ENTRYPOINT_FILE
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
@@ -29,7 +29,7 @@ RUN bundle install
 # Put commands that produce project-specific image layers below this line.
 
 COPY . .
-RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
+RUN chmod +x entrypoint*.sh && chown -R docker:docker /app
 
 USER docker
-ENTRYPOINT ["/project/entrypoint-wrapper.sh"]
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

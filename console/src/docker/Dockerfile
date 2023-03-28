@@ -10,7 +10,7 @@ COPY emerg.sh /
 RUN chmod a+x /emerg.sh && \
   echo 'docker ALL=(ALL) NOPASSWD: /emerg.sh' > /etc/sudoers.d/docker
 
-WORKDIR /project
+WORKDIR /app
 ARG ENTRYPOINT_FILE
 COPY groovysh.rc set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
@@ -18,5 +18,5 @@ ARG JAR_FILE
 COPY ${JAR_FILE} fat.jar
 
 USER docker
-RUN mkdir "$HOME/.groovy" && ln -s /project/groovysh.rc "$HOME/.groovy/"
-ENTRYPOINT ["/project/entrypoint-wrapper.sh"]
+RUN mkdir "$HOME/.groovy" && ln -s /app/groovysh.rc "$HOME/.groovy/"
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

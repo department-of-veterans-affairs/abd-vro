@@ -7,7 +7,7 @@ RUN adduser --no-create-home --disabled-password docker
 
 HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
 
-WORKDIR /project
+WORKDIR /app
 ARG ENTRYPOINT_FILE
 COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
@@ -19,6 +19,6 @@ COPY ${JAR_FILE} fat.jar
 # This folder should correspond with $PERSIST_TRACKING_FOLDER
 RUN mkdir -p /persist/tracking && chown -R docker:docker /persist/tracking
 
-RUN mkdir -p /project/build/tomcat && chmod +x entrypoint.sh  && chown -R docker:docker /project
+RUN mkdir -p /app/build/tomcat && chmod +x entrypoint.sh  && chown -R docker:docker /app
 USER docker
-ENTRYPOINT ["/project/entrypoint-wrapper.sh"]
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
