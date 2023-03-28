@@ -3,4 +3,4 @@
 
 # Uncomment when ready; in the meantime just run bash
 # rails server -b 0.0.0.0
-bash
+sleep 6000

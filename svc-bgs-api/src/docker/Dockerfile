@@ -22,8 +22,14 @@ ARG ENTRYPOINT_FILE
 # Copy script that runs entrypoint.sh if it exists
 COPY set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
 
-COPY . ./
-RUN chmod +x entrypoint*.sh && bundle install && chown -R docker:docker /project
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# === Image layers above this line are general and will be reused as cache when building the image.
+# Put commands that produce project-specific image layers below this line.
+
+COPY . .
+RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
 
 USER docker
 ENTRYPOINT ["/project/entrypoint-default.sh"]
