@@ -1,5 +1,6 @@
 package gov.va.vro.controller;
 
+import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.resources.MasResource;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
@@ -8,6 +9,7 @@ import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class MasController implements MasResource {
   private final MasProcessingService masProcessingService;
 
   /** Initiate MAS integration. */
+  @SneakyThrows
   @Override
   public ResponseEntity<MasResponse> automatedClaim(MasAutomatedClaimRequest request) {
     log.info(
@@ -50,9 +53,15 @@ public class MasController implements MasResource {
         payload.getBenefitClaimId(),
         payload.getVeteranIcn()); // TODO: remove after test.
     masProcessingService.processIncomingClaimSaveToDB(payload);
+    // Only condition in which we will off ramp
+    masProcessingService.processIncomingClaimPresumptiveOffRampClaimCheck(payload);
+    // Any reason here will return a 422
     String message = masProcessingService.processIncomingClaimGetOffRampReason(payload);
-    if(!message.contains("Received Claim for collection Id ")) {
-      masProcessingService.processIncomingClaimOffRampClaim(payload, message);
+    if (!message.contains("Received Claim for collection")) {
+      throw new ClaimProcessingException(
+          payload.getBenefitClaimId(),
+          HttpStatus.UNPROCESSABLE_ENTITY,
+          "The request cannot be processed.");
     }
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);

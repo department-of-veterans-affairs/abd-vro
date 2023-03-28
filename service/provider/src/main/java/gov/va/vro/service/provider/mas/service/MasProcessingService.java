@@ -55,14 +55,15 @@ public class MasProcessingService {
    */
   public void processIncomingClaimSaveToDB(MasAutomatedClaimPayload payload) {
     log.info(
-            "Process MAS collection {},  claim {} , icn: {}",
-            payload.getCollectionId(),
-            payload.getBenefitClaimId(),
-            payload.getVeteranIcn());
+        "Process MAS collection {},  claim {} , icn: {}",
+        payload.getCollectionId(),
+        payload.getBenefitClaimId(),
+        payload.getVeteranIcn());
     Claim claim = toClaim(payload);
     saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
   }
+
   public String processIncomingClaimGetOffRampReason(MasAutomatedClaimPayload payload) {
     var offRampReasonOptional = getOffRampReasonScopeAndAnchorCheck(payload);
     if (offRampReasonOptional.isPresent()) {
@@ -70,37 +71,42 @@ public class MasProcessingService {
       return offRampReason;
     }
     var headers =
-            Map.of(
-                    MasIntegrationRoutes.MAS_DELAY_PARAM,
-                    masConfig.getMasProcessingInitialDelay(),
-                    MasIntegrationRoutes.MAS_RETRY_PARAM,
-                    masConfig.getMasRetryCount());
+        Map.of(
+            MasIntegrationRoutes.MAS_DELAY_PARAM,
+            masConfig.getMasProcessingInitialDelay(),
+            MasIntegrationRoutes.MAS_RETRY_PARAM,
+            masConfig.getMasRetryCount());
     camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
-  public void processIncomingClaimOffRampClaim(MasAutomatedClaimPayload payload, String offRampReason) {
-    Claim claim = toClaim(payload);
-    payload.setOffRampReason(offRampReason);
-    claim.setOffRampReason(offRampReason);
-    saveToDbService.setOffRampReason(claim);
-    offRampClaim(payload, offRampReason);
+  public void processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
+    var offRampReasonOptional = getOffRampReasonPresumptiveCheck(payload);
+    if (offRampReasonOptional.isPresent()) {
+      var offRampReason = offRampReasonOptional.get();
+      Claim claim = toClaim(payload);
+      payload.setOffRampReason(offRampReason);
+      claim.setOffRampReason(offRampReason);
+      saveToDbService.setOffRampReason(claim);
+      offRampClaim(payload, offRampReason);
+    }
   }
 
   private Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
       var message =
-              String.format(
-                      "Claim with [collection id = %s], [diagnostic code = %s],"
-                              + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
-                      payload.getCollectionId(),
-                      payload.getDiagnosticCode(),
-                      payload.getDisabilityActionType(),
-                      payload.getVeteranFlashIds());
+          String.format(
+              "Claim with [collection id = %s], [diagnostic code = %s],"
+                  + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
+              payload.getCollectionId(),
+              payload.getDiagnosticCode(),
+              payload.getDisabilityActionType(),
+              payload.getVeteranFlashIds());
       return Optional.of(message);
     }
     return Optional.empty();
   }
+
   private Optional<String> getOffRampReasonScopeAndAnchorCheck(MasAutomatedClaimPayload payload) {
     if (!payload.isInScope()) {
       var message =
