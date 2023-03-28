@@ -49,7 +49,11 @@ public class MasController implements MasResource {
         "MAS collection related claim ID: {}, veteranId (icn): {}",
         payload.getBenefitClaimId(),
         payload.getVeteranIcn()); // TODO: remove after test.
-    String message = masProcessingService.processIncomingClaim(payload);
+    masProcessingService.processIncomingClaimSaveToDB(payload);
+    String message = masProcessingService.processIncomingClaimGetOffRampReason(payload);
+    if(!message.contains("Received Claim for collection Id ")) {
+      masProcessingService.processIncomingClaimOffRampClaim(payload, message);
+    }
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
   }
