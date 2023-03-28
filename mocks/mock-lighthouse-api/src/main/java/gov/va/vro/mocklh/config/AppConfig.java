@@ -53,6 +53,9 @@ public class AppConfig {
     MockBundles mb7 = MockBundles.of("mock-bundles/mock1012666073V986401");
     store.put("mock1012666073V986401", mb7);
 
+    MockBundles mb8 = MockBundles.of("mock-bundles/mock1012666073V986390");
+    store.put("mock1012666073V986390", mb8);
+
     return store;
   }
 }
