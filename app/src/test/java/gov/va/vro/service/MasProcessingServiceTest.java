@@ -28,10 +28,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var diagnosticCode1 = "71";
     var request1 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
-    //    masProcessingService.processIncomingClaim(request1);
     masProcessingService.processIncomingClaimSaveToDB(request1);
-    //    masProcessingService.processIncomingClaimPresumptiveOffRampClaimCheck(payload);
-    //    String message = masProcessingService.processIncomingClaimGetOffRampReason(payload);
 
     var claimEntity1 = verifyClaimPersisted(request1);
     var contentions = claimEntity1.getContentions();

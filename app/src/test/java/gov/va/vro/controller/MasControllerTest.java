@@ -130,6 +130,7 @@ public class MasControllerTest extends BaseControllerTest {
     assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
     assertFalse(offrampCalled.get());
     assertFalse(completeCalled.get());
+    verifyClaimPersisted(request);
   }
 
   @Test
