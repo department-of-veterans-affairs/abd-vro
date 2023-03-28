@@ -39,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -80,8 +79,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
   public static final String ENDPOINT_OFFRAMP_ERROR = "direct:offramp-error";
-
-  public static final String ENDPOINT_ACCESS_ERR = "direct:assessorError";
 
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
@@ -231,7 +228,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("sourceRoute", constant(orderExamRouteId))
         .setProperty("offRampReason", constant(orderFailMessage))
         .to(ENDPOINT_OFFRAMP_ERROR)
-        .stop()
+        .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
         .log("HMD inside the do catch for bip")
         // Mas Complete Processing code expects this to be the body of the message
@@ -243,6 +240,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
+    // Wiretap does NOT let camel work as expected when placed directly inside of a doCatch()
+    // Thus it is broken out here, in the interest of letting normal flow/control happen.
     from(ENDPOINT_OFFRAMP_ERROR)
         .log("HMD in the endpoint offramp error processor")
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
