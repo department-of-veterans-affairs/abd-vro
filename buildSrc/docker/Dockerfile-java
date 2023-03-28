@@ -8,7 +8,7 @@ FROM eclipse-temurin:17-jre-alpine
 # hadolint ignore=DL3018
 RUN apk update && apk --no-cache add expat=2.5.0-r0 curl && rm -rf /var/cache/apk/*
 
-RUN adduser --no-create-home --disabled-password docker
+RUN adduser --no-create-home --disabled-password tron
 
 # 8080 is the default port that spring-actuator uses
 ARG HEALTHCHECK_PORT_ARG=8080
@@ -29,8 +29,8 @@ ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
 COPY ${JAR_FILE} fat.jar
 
-RUN chmod +x entrypoint*.sh && chown -R docker:docker /app
-USER docker
+RUN chmod +x entrypoint*.sh && chown -R tron /app
+USER tron
 # https://spring.io/guides/topicals/spring-boot-docker/ states:
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.

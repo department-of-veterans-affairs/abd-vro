@@ -8,7 +8,7 @@
 
 FROM ruby:2.7.6
 
-RUN adduser --disabled-password --gecos "" docker
+RUN adduser --disabled-password --gecos "" tron
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
@@ -29,7 +29,7 @@ RUN bundle install
 # Put commands that produce project-specific image layers below this line.
 
 COPY . .
-RUN chmod +x entrypoint*.sh && chown -R docker:docker /app
+RUN chmod +x entrypoint*.sh && chown -R tron /app
 
-USER docker
+USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
