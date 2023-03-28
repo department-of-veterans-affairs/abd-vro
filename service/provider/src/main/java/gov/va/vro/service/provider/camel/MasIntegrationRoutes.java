@@ -12,6 +12,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ExchangeTimedOutException;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
@@ -83,6 +85,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
+
+  private final ProducerTemplate producerTemplate;
 
   private final BipClaimService bipClaimService;
 
@@ -308,6 +312,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
+        // before completionProcessor, add BGS notes
+        .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
+        .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
+        .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
+        // completionProcessor sets the claimLifecycleStatus to RFD
         .process(MasIntegrationProcessors.completionProcessor(bipClaimService))
         .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)

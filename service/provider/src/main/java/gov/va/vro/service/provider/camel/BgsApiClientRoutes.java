@@ -5,10 +5,13 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.ENDPOINT_NO
 
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.processor.FunctionProcessor;
+import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.bgs.BgsApiClientModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,24 +20,46 @@ import org.springframework.stereotype.Component;
 public class BgsApiClientRoutes extends RouteBuilder {
 
   public static final String ADD_BGS_NOTES = "direct:addBgsNotes";
+  private static final String BGSCLIENT_ADDNOTES = "direct:bgsClient-addNotes";
+
+  private final ProducerTemplate producerTemplate;
 
   @Override
   public void configure() throws Exception {
-    var routeId = "add-bgs-notes";
+    var routeId = "add-bgs-notes-route";
+    configureAddNotesRoute(routeId);
     configureRouteToBgsApiClientMicroservice();
 
     // configureRouteToSlackNotification();
     from("direct:BgsApiClientError")
-      .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-      // input: MasProcessingObject; output: AuditEvent
-      .onPrepare(slackEventProcessor(routeId, "Error adding claim notes in BGS."));
+        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
+        // input: MasProcessingObject; output: AuditEvent
+        .onPrepare(slackEventProcessor(routeId, "Error adding claim notes in BGS."));
 
     configureMockBgsApiMicroservice();
   }
 
+  private void configureAddNotesRoute(String routeId) {
+    from(ADD_BGS_NOTES)
+        .routeId(routeId)
+        // expecting body (MasProcessingObject.class)
+        .log("input: ${exchange.pattern}: ${headers}: ${body.class}: ${body}")
+        .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
+        .to(BGSCLIENT_ADDNOTES)
+        .log("output: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
+
+    from("direct:logJson")
+        .marshal()
+        .json(JsonLibrary.Jackson)
+        .log("JSON: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
+  }
+
   void configureRouteToBgsApiClientMicroservice() {
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, ADD_BGS_NOTES, "bgsApi", "addNote")
-        .convertBodyTo(BgsApiClientModel.class);
+    RabbitMqCamelUtils.addToRabbitmqRoute(this, BGSCLIENT_ADDNOTES, "bgs-api", "add-note")
+        .id("to-rabbitmq-bgsclient-addnote")
+        .routeId("to-rabbitmq-bgsapi-addnote-route")
+    // .convertBodyTo(BgsApiClientModel.class)
+    ;
   }
 
   // private final MasConfig masConfig;

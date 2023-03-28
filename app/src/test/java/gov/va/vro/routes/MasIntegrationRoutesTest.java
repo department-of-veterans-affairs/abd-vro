@@ -146,6 +146,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
+    replaceEndpoint(
+        "to-rabbitmq-bgsapi-addnote-route",
+        "rabbitmq://bgs-api?routingKey=add-note&skipQueueBind=true",
+        "mock:rabbitmq-bgsapi-addnote");
+
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
     // set up a Mas Request and invoke processClaim
@@ -177,6 +182,10 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     adviceWith(
         camelContext,
         routeId,
+        // TODO: Consider using `weaveById().replace()` for rabbitmq endpoints to avoid "Failed to
+        // create connection."
+        // https://tomd.xyz/mock-endpoints-are-real: "Original endpoints are still initialised, even
+        // if they have been mocked."
         route -> route.interceptSendToEndpoint(fromUri).skipSendToOriginalEndpoint().to(toUri));
   }
 }

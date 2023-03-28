@@ -67,6 +67,8 @@ public class XampleRoutesTest extends CamelTestSupport {
         false,
         rb -> {
           // replace the rabbitmq endpoint to avoid "Failed to create connection."
+          // https://tomd.xyz/mock-endpoints-are-real: "Original endpoints are still initialised,
+          // even if they have been mocked."
           rb.weaveById("to-rabbitmq-serviceJ").replace().to("mock:to-rabbitmq");
         });
 
