@@ -15,7 +15,7 @@ docker {
         dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-ruby')
 
     files "src/docker/entrypoint.sh",
-        new File(project.rootDir, 'buildSrc/docker/entrypoint-default.sh'),
+        new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
         new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
 
     // Copy files into build/docker/ folder, where the container image will be built
