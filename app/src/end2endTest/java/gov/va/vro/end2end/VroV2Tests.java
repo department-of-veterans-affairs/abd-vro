@@ -251,7 +251,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private void testPdfUpload(MasAutomatedClaimRequest request) {
+  private String testPdfUpload(MasAutomatedClaimRequest request) {
     // Wait until the evidence pdf is uploaded
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
@@ -266,7 +266,7 @@ public class VroV2Tests {
         log.info("PDF text: {}", pdfTextV2.getPdfText());
         assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
         successUploading = true;
-        break;
+        return pdfTextV2.getPdfText();
       } catch (HttpStatusCodeException exception) {
         log.info("Did not find veteran {}. Retrying...", fileNumber);
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -275,6 +275,7 @@ public class VroV2Tests {
 
     // Verify evidence pdf is uploaded
     assertTrue(successUploading);
+    return fileNumber;
   }
 
   /**
@@ -662,7 +663,11 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
-    testAutomatedClaimFullPositive("380");
+    MasAutomatedClaimRequest request = startAutomatedClaim("380");
+    String pdfText = testPdfUpload(request);
+    assert pdfText.contains("143/-");
+    assert pdfText.contains("-/92");
+
   }
 
   /**
