@@ -8,7 +8,7 @@
 
 FROM ruby:2.7.6
 
-RUN adduser --home /app --disabled-password --gecos "" docker
+RUN adduser --disabled-password --gecos "" docker
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
