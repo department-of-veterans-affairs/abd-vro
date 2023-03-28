@@ -522,7 +522,7 @@ public class VroV2Tests {
     String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
-    if (spec.isMasError()){
+    if (spec.isMasError()) {
       boolean slackResult = testSlackMessage(spec.getCollectionId());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       String claimId = request.getClaimDetail().getBenefitClaimId();
@@ -578,14 +578,25 @@ public class VroV2Tests {
   }
 
   /**
-   * Test Case that ensures mas order exam errors are handled properly.
-   * Copied from 378; this sends an error message instead of ordering the exam or uploading the pdf.
+   * Test Case that ensures mas order exam errors are handled properly. Copied from 378; this sends
+   * an error message instead of ordering the exam or uploading the pdf.
    */
   @Test
   void testAutomatedClaimOrderExamMasError() {
     AutomatedClaimTestSpec spec = specFor200("391");
     spec.setMasError(true);
     testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test for an automated claim that does NOT order exam, and then fails PDF upload (Bip Errors on
+   * this fileID) Ensures that we handle the pdf failure correctly.
+   */
+  @Test
+  void testAutomatedClaimNoExamPDFError() {
+    String collectionId = "392";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimOffRamp(spec);
   }
 
   /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */
