@@ -472,8 +472,8 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and "
-            + "[disability action type = DECREASE] is not in scope.");
+        "Claim with collection id: 10, diagnostic code: 7101, and "
+            + "disability action type: DECREASE is not in scope.");
 
     testAutomatedClaimOffRamp(spec);
   }
@@ -487,7 +487,7 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for "
+        "Claim with collection id: 20 does not qualify for "
             + "automated processing because it is missing anchors.");
 
     testAutomatedClaimOffRamp(spec);
