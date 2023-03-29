@@ -189,6 +189,60 @@
   },
   {
     "description": [
+      "for increase happy path, used with collection id 385",
+      "used for changing temporary station of jurisdiction during processing"
+    ],
+    "claimDetail": {
+      "claimId": 1085,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2085",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for increase happy path, used with collection id 386",
+      "used for bip api going down during processing"
+    ],
+    "claimDetail": {
+      "claimId": 1086,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2086",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "for happy path, used with collection id 390 for exam ordering testing with bip ce error",
       "claim and contention fields are as expected"
     ],
@@ -206,6 +260,58 @@
         "diagnosticTypeCode": "7101",
         "lifecycleStatus": "Open",
         "automationIndicator": false,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path, used with collection id 391 for exam ordering testing with mas exam order error",
+      "claim and contention fields are as expected"
+    ],
+    "claimDetail": {
+      "claimId": 1391,
+      "claimLifecycleStatus": "Open",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2391",
+        "lastModified": "2024-02-23T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Would go through increase happy path",
+      "But used to test BIP PDF Failures"
+    ],
+    "claimDetail": {
+      "claimId": 1392,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2392",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": true,
         "specialIssueCodes": [
           "RDR1",
           "RRD"
