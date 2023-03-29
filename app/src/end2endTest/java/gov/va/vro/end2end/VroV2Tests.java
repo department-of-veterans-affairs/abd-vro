@@ -268,6 +268,7 @@ public class VroV2Tests {
         log.info("PDF text: {}", evidencePdfText);
         assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
         successUploading = true;
+        break;
       } catch (HttpStatusCodeException exception) {
         log.info("Did not find veteran {}. Retrying...", fileNumber);
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
