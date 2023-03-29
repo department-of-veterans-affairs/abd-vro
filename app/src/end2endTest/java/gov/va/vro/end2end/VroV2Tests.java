@@ -526,7 +526,6 @@ public class VroV2Tests {
     spec.setExpectedMessage(
         "Claim with [collection id = 11] does not qualify for "
             + "automated processing because it is missing anchors.");
-    spec.setCheckSlack(true);
 
     testAutomatedClaimOffRamp(spec);
   }
