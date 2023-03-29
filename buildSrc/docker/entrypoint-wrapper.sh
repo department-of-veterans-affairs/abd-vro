@@ -5,11 +5,11 @@
 # To run your own script, create src/docker/entrypoint.sh in your Gradle module.
 
 # Sets environment variable secrets
-[ -e set-env-secrets.src ] && source set-env-secrets.src
+[ -e set-env-secrets.src ] && . ./set-env-secrets.src
 
 # Run entrypoint.sh if it exists, otherwise run jar file
-if [ -e /project/entrypoint.sh ]; then
-  exec /project/entrypoint.sh "$@"
+if [ -e /app/entrypoint.sh ]; then
+  exec /app/entrypoint.sh "$@"
 elif [ -e "fat.jar" ]; then
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}"
   exec java -jar fat.jar "$@"

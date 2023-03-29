@@ -241,7 +241,7 @@ public class ApplicationTest {
             .build();
 
     JsonNode bundle = getBundle(spec);
-    verifyBundle(bundle, 8);
+    verifyBundle(bundle, 9);
   }
 
   @SneakyThrows
