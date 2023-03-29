@@ -7,6 +7,8 @@ import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.bgs.BgsApiClientModel;
+import gov.va.vro.service.provider.mas.MasCompletionStatus;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -42,9 +44,45 @@ public class BgsApiClientRoutes extends RouteBuilder {
   private void configureAddNotesRoute(String routeId) {
     from(ADD_BGS_NOTES)
         .routeId(routeId)
-        // expecting body (MasProcessingObject.class)
-        .log("input: ${exchange.pattern}: ${headers}: ${body.class}: ${body}")
+        // expecting body MasProcessingObject.class
+        .log(
+            "input: ${exchange.pattern}: h=${headers}: p=${exchange.properties}: ${body.class}: ${body}")
+        // print the body as json
         .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
+        // detect scenarios
+        .process(
+            x -> {
+              var mpo = x.getMessage().getBody(MasProcessingObject.class);
+              MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
+              // if a claim is RFD or an exam was ordered
+              if (completionStatus == MasCompletionStatus.READY_FOR_DECISION)
+                System.out.println("++++++++ RFD +++++++");
+              if (completionStatus == MasCompletionStatus.EXAM_ORDER) {
+                System.out.println("++++++++ EXAM_ORDER +++++++");
+                mpo.getEvidence();
+                // contentionEntity.getEvidenceSummaryDocuments()
+              }
+              // if a claim was offramped due to newClaimMissingFlash266 vs
+              // insufficientHealthDataToOrderExam vs docUploadFailed
+              if (completionStatus == MasCompletionStatus.OFF_RAMP) {
+                var payload = mpo.getClaimPayload();
+                // TODO: These reasons are not enumerated --
+                //   see MasProcessingService.processIncomingClaim
+                //   see MasProcessingService.getOffRampReason
+                if (payload.isPresumptive() != null && !payload.isPresumptive()) {
+                  System.out.println("newClaimMissingFlash266 ??");
+                }
+                // ARSD upload failure
+                String offRampReason = mpo.getClaimPayload().getOffRampReason();
+                System.out.println("++++++++ offRampReason=" + offRampReason);
+                String detailsOffRampReason = mpo.getDetails().get("offRampReason");
+                System.out.println("++++++++ detailsOffRampReason=" + offRampReason);
+                if (offRampReason.equals("newClaimMissingFlash266")
+                    || offRampReason.equals("insufficientHealthDataToOrderExam"))
+                  System.out.println(
+                      "++++++++ offRampReason=" + offRampReason + " Claim-level note:...");
+              }
+            })
         .to(BGSCLIENT_ADDNOTES)
         .log("output: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
 
