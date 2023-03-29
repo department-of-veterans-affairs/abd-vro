@@ -11,8 +11,10 @@ import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.mock.request.TempJurisdictionStationRequest;
 import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
 import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.SuccessResponse;
 import gov.va.vro.mockshared.jwt.JwtGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -189,5 +191,27 @@ public class TestHelper {
   public void resetUpdated(TestSpec spec) {
     String url = spec.getUrl("/updates/" + spec.getClaimId());
     restTemplate.delete(url);
+  }
+
+  /**
+   * Gets the response entity for the claim specified by the spec.
+   *
+   * @param spec Test Specification
+   * @return Response Entity
+   */
+  @SneakyThrows
+  public ResponseEntity<SuccessResponse> postClaimTempJurisdictionStation(
+      TestSpec spec, String value) {
+    final long claimId = spec.getClaimId();
+
+    String url = spec.getUrl("/updates/" + claimId + "/" + "temp_jurisdiction_station");
+
+    TempJurisdictionStationRequest tjsr = new TempJurisdictionStationRequest();
+    tjsr.setTempJurisdictionStation(value);
+
+    HttpHeaders headers = getHeaders(spec);
+    HttpEntity<TempJurisdictionStationRequest> request = new HttpEntity<>(tjsr, headers);
+
+    return restTemplate.postForEntity(url, request, SuccessResponse.class);
   }
 }
