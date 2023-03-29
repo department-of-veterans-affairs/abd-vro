@@ -1,0 +1,26 @@
+
+plugins {
+  id 'starter.std.java.library-spring-conventions'
+}
+
+ext {
+  jacocoExclude = [
+    '**/api/**/*(Request|Response).*',
+    '**/api/**/*Exception.*'
+  ]
+}
+
+dependencies {
+  // Used by API classes
+  implementation 'io.micrometer:micrometer-core'
+  implementation "gov.va.starter:exceptions"
+  // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+  // compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+  // Used by Controller classes
+  implementation project(':domain-xample:xample-shared')
+  // api project(':shared:lib-camel-connector')
+  implementation project(':shared:lib-camel-connector')
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+}

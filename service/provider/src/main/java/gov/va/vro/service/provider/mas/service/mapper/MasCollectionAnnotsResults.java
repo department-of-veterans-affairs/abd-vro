@@ -2,7 +2,13 @@ package gov.va.vro.service.provider.mas.service.mapper;
 
 import static java.util.Objects.isNull;
 
-import gov.va.vro.model.*;
+import gov.va.vro.model.AbdBloodPressure;
+import gov.va.vro.model.AbdBpMeasurement;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.ServiceLocation;
 import gov.va.vro.model.mas.MasAnnotType;
 import gov.va.vro.model.mas.MasAnnotation;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
@@ -15,6 +21,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +39,8 @@ public class MasCollectionAnnotsResults {
   private static final String BP_DIASTOLIC_CODE = "8462-4";
   private static final String BP_DIASTOLIC_DISPLAY = "Diastolic blood pressure";
   private static final String BP_UNIT = "mm[Hg]";
+  private static final String BP_READING_REGEX = "(-|\\d+)"; // "^\\d{1,3}\\s*\\/\\s*\\d{1,3}\\s*$";
+  private static final int BP_VALUE_LENGTH = 3;
 
   /**
    * Maps annotations to evidence.
@@ -39,7 +49,6 @@ public class MasCollectionAnnotsResults {
    * @return abd evidence
    */
   public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation) {
-
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
@@ -87,12 +96,14 @@ public class MasCollectionAnnotsResults {
               abdCondition.setOrganization(source);
               conditions.add(abdCondition);
             }
-            case LABRESULT, BLOOD_PRESSURE -> {
+            case BLOOD_PRESSURE -> {
               AbdBloodPressure abdBloodPressure = createBloodPressure(masAnnotation);
-              abdBloodPressure.setDocument(documentId);
-              abdBloodPressure.setReceiptDate(receiptDate);
-              abdBloodPressure.setOrganization(source);
-              bpReadings.add(abdBloodPressure);
+              if (abdBloodPressure != null) {
+                abdBloodPressure.setDocument(documentId);
+                abdBloodPressure.setReceiptDate(receiptDate);
+                abdBloodPressure.setOrganization(source);
+                bpReadings.add(abdBloodPressure);
+              }
             }
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
@@ -119,27 +130,69 @@ public class MasCollectionAnnotsResults {
     return abdEvidence;
   }
 
+  private static BigDecimal getBpReadingValue(String valueString) {
+    if (valueString.length() > BP_VALUE_LENGTH) {
+      log.error("Invalid blood pressure reading value: {}.", valueString);
+      return null;
+    }
+    if (valueString.equals("-")) { // return default value.
+      return BigDecimal.valueOf(0);
+    } else {
+      try {
+        return new BigDecimal(valueString).setScale(1, RoundingMode.HALF_UP);
+      } catch (Exception e) {
+        log.error("Invalid blood pressure reading value: {}", valueString);
+        return null;
+      }
+    }
+  }
+
   private static AbdBloodPressure createBloodPressure(MasAnnotation masAnnotation) {
-    String[] bpValues = masAnnotation.getAnnotVal().split("/");
+    log.info("MasAnnotation: {}", masAnnotation.getAnnotVal());
+    Pattern pattern = Pattern.compile(BP_READING_REGEX);
+    Matcher matcher = pattern.matcher(masAnnotation.getAnnotVal());
+
+    BigDecimal systolicVal;
+    BigDecimal diastolicVal;
+    if (matcher.find()) {
+      systolicVal = getBpReadingValue(matcher.group());
+      if (systolicVal == null) {
+        return null;
+      }
+
+      if (matcher.find()) {
+        String valueString = matcher.group();
+        if (valueString.equals("-") && BigDecimal.ZERO.equals(systolicVal)) {
+          return null; // skip empty blood pressure reading.
+        }
+        diastolicVal = getBpReadingValue(matcher.group());
+        if (diastolicVal == null) {
+          return null;
+        }
+      } else {
+        log.info(
+            "Missing blood pressure diastolic reading: {}. Default to 0.",
+            masAnnotation.getAnnotVal());
+        diastolicVal = BigDecimal.valueOf(0);
+      }
+    } else {
+      log.error(
+          "Missing blood pressure reading in the MAS annotation: {}.", masAnnotation.getAnnotVal());
+      return null;
+    }
+    if (systolicVal.equals("-") && diastolicVal.equals("-")) { // skip missing BP reading values.
+      return null;
+    }
 
     AbdBpMeasurement systolicReading = new AbdBpMeasurement();
     systolicReading.setCode(BP_SYSTOLIC_CODE);
     systolicReading.setDisplay(BP_SYSTOLIC_DISPLAY);
-    if (bpValues[0].equals("-")) {
-      systolicReading.setValue(BigDecimal.valueOf(0));
-    } else {
-      systolicReading.setValue(new BigDecimal(bpValues[0]).setScale(1, RoundingMode.HALF_UP));
-    }
+    systolicReading.setValue(systolicVal);
     systolicReading.setUnit(BP_UNIT);
-
     AbdBpMeasurement diastolicReading = new AbdBpMeasurement();
     diastolicReading.setCode(BP_DIASTOLIC_CODE);
     diastolicReading.setDisplay(BP_DIASTOLIC_DISPLAY);
-    if (bpValues[1].equals("-")) {
-      diastolicReading.setValue(BigDecimal.valueOf(0));
-    } else {
-      diastolicReading.setValue(new BigDecimal(bpValues[1]).setScale(1, RoundingMode.HALF_UP));
-    }
+    diastolicReading.setValue(diastolicVal);
     diastolicReading.setUnit(BP_UNIT);
 
     AbdBloodPressure abdBloodPressure = new AbdBloodPressure();

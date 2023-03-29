@@ -1,7 +1,6 @@
 /**
  * Provides docker container settings
  * Mimics local.java.container-conventions.gradle except for Python projects
- * Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.container-conventions.gradle
  */
 
 plugins {
@@ -12,9 +11,11 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        dockerfile new File(project.rootDir, 'buildSrc/docker-python/Dockerfile')
+        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-python')
 
-    files "src/docker/entrypoint.sh", new File(project.rootDir, 'buildSrc/docker-python/entrypoint-default.sh')
+    files "src/docker/entrypoint.sh",
+        new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
+        new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
@@ -25,7 +26,7 @@ docker {
     }
 }
 
-dockerRun {
-    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
-        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
-}
+//dockerRun {
+//    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
+//        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
+//}

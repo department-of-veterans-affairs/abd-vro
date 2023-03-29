@@ -56,8 +56,11 @@ class VroControllerTest extends BaseControllerTest {
 
   @Autowired protected CamelContext camelContext;
 
-  @EndpointInject("mock:claim-submit-full")
-  private MockEndpoint mockFullHealthEndpoint;
+  @EndpointInject("mock:rabbit-claim-submit")
+  private MockEndpoint mockRabbitClaimSubmitEndpoint;
+
+  @EndpointInject("mock:rabbit-health-assess")
+  private MockEndpoint mockHealthAssessEndpoint;
 
   @EndpointInject("mock:generate-pdf")
   private MockEndpoint mockGeneratePdfEndpoint;
@@ -71,35 +74,27 @@ class VroControllerTest extends BaseControllerTest {
   @Test
   @DirtiesContext
   void postFullHealthAssessment() throws Exception {
-
-    // intercept the original endpoint, skip it and replace it with the mock
-    // endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.hypertension&requestTimeout="
-                        + TIME_OUT)
-                .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
+    // Mock the first rabbit mq endpoint
     adviceWith(
         camelContext,
         "claim-submit-full",
         route ->
             route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.hypertension&requestTimeout="
-                        + TIME_OUT)
+                .interceptSendToEndpoint("rabbitmq:claim-submit-exchange*")
                 .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
-    // The mock endpoint returns a valid response
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
+                .to("mock:rabbit-claim-submit"));
+
+    // Mock the second rabbit mq endpoint
+    adviceWith(
+        camelContext,
+        "claim-submit-full",
+        route ->
+            route
+                .interceptSendToEndpoint("rabbitmq:health-assess-exchange*")
+                .skipSendToOriginalEndpoint()
+                .to("mock:rabbit-health-assess"));
+
+    mockHealthAssessEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<Claim, String>fromFunction(
             claim -> util.claimToResponse(claim, true, null)));
 
@@ -137,9 +132,10 @@ class VroControllerTest extends BaseControllerTest {
   @Test
   @DirtiesContext
   void fullHealthAssessmentMissingEvidence() throws Exception {
+    // Mock the first rabbit endpoint
     adviceWith(
         camelContext,
-        "claim-submit",
+        "claim-submit-full",
         route ->
             route
                 .interceptSendToEndpoint(
@@ -148,8 +144,8 @@ class VroControllerTest extends BaseControllerTest {
                         + "&routingKey=code.hypertension&requestTimeout="
                         + TIME_OUT)
                 .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit"));
-    // Mock secondary process endpoint
+                .to("mock:rabbit-claim-submit"));
+    // Mock the second rabbit endpoint
     adviceWith(
         camelContext,
         "claim-submit-full",
@@ -160,9 +156,9 @@ class VroControllerTest extends BaseControllerTest {
                         + "?routingKey=health-assess.hypertension&requestTimeout="
                         + TIME_OUT)
                 .skipSendToOriginalEndpoint()
-                .to("mock:claim-submit-full"));
+                .to("mock:rabbit-health-assess"));
 
-    mockFullHealthEndpoint.whenAnyExchangeReceived(
+    mockHealthAssessEndpoint.whenAnyExchangeReceived(
         FunctionProcessor.<Claim, String>fromFunction(
             claim ->
                 util.claimToResponse(claim, false, "Internal error while processing claim data.")));
