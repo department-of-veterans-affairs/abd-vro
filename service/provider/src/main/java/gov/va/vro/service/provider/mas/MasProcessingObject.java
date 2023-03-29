@@ -73,5 +73,7 @@ public class MasProcessingObject implements Auditable {
     return claimPayload.getClaimDetail().getClaimSubmissionDateTime();
   }
 
-  public String getOffRampReason() { return claimPayload.getOffRampReason(); }
+  public String getOffRampReason() {
+    return claimPayload.getOffRampReason();
+  }
 }

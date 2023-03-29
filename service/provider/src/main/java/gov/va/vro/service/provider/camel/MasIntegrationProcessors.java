@@ -164,7 +164,7 @@ public class MasIntegrationProcessors {
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(origin, sufficient, offRampError);
 
-      if(offRampErrorPayload != null){
+      if (offRampErrorPayload != null) {
         exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
       try {
