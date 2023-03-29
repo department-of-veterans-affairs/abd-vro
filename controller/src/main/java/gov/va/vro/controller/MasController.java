@@ -53,16 +53,14 @@ public class MasController implements MasResource {
         payload.getBenefitClaimId(),
         payload.getVeteranIcn()); // TODO: remove after test.
     masProcessingService.processIncomingClaimSaveToDB(payload);
-    // Only condition in which we will off ramp
-    masProcessingService.processIncomingClaimPresumptiveOffRampClaimCheck(payload);
     // Any reason here will return a 422
-    String message = masProcessingService.processIncomingClaimGetOffRampReason(payload);
-    if (!message.contains("Received Claim for collection")) {
+    String message = masProcessingService.processIncomingClaimGetUnprocessableReason(payload);
+    if (message != null) {
       throw new ClaimProcessingException(
-          payload.getBenefitClaimId(),
-          HttpStatus.UNPROCESSABLE_ENTITY,
-          "The request cannot be processed.");
+          payload.getBenefitClaimId(), HttpStatus.UNPROCESSABLE_ENTITY, message);
     }
+    // Only condition in which we will off ramp message or return a valid message
+    message = masProcessingService.processIncomingClaimPresumptiveOffRampClaimCheck(payload);
     MasResponse response = MasResponse.builder().id(correlationId).message(message).build();
     return ResponseEntity.ok(response);
   }

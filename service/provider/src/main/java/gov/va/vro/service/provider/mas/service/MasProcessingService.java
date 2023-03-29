@@ -64,20 +64,12 @@ public class MasProcessingService {
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
   }
 
-  public String processIncomingClaimGetOffRampReason(MasAutomatedClaimPayload payload) {
-    var offRampReasonOptional = getOffRampReasonScopeAndAnchorCheck(payload);
-    if (offRampReasonOptional.isPresent()) {
-      var offRampReason = offRampReasonOptional.get();
-      return offRampReason;
+  public String processIncomingClaimGetUnprocessableReason(MasAutomatedClaimPayload payload) {
+    var unprocessableReasonOptional = getOffRampReasonScopeAndAnchorCheck(payload);
+    if (unprocessableReasonOptional.isPresent()) {
+      return unprocessableReasonOptional.get();
     }
-    var headers =
-        Map.of(
-            MasIntegrationRoutes.MAS_DELAY_PARAM,
-            masConfig.getMasProcessingInitialDelay(),
-            MasIntegrationRoutes.MAS_RETRY_PARAM,
-            masConfig.getMasRetryCount());
-    camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
-    return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
+    return null;
   }
 
   public String processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
@@ -91,7 +83,14 @@ public class MasProcessingService {
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
-    return "";
+    var headers =
+        Map.of(
+            MasIntegrationRoutes.MAS_DELAY_PARAM,
+            masConfig.getMasProcessingInitialDelay(),
+            MasIntegrationRoutes.MAS_RETRY_PARAM,
+            masConfig.getMasRetryCount());
+    camelEntry.inOnly(IMVP_EXCHANGE, NOTIFY_AUTOMATED_CLAIM_QUEUE, payload, headers);
+    return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
   public Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
