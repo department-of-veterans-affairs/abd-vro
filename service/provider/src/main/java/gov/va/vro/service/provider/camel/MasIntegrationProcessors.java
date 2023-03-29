@@ -155,12 +155,18 @@ public class MasIntegrationProcessors {
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
       String offRampError = exchange.getProperty("offRampError", String.class);
+      String offRampErrorPayload = payload.getOffRampReason();
+
       // Update our database with offramp reason.
-      if (offRampError != null) {
+      if (offRampError != null || offRampErrorPayload != null) {
         masProcessingService.offRampClaimForError(payload, offRampError);
       }
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(origin, sufficient, offRampError);
+
+      if(offRampErrorPayload != null){
+        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
+      }
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
