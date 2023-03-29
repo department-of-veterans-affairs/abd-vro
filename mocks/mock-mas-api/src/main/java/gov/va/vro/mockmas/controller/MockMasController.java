@@ -92,6 +92,12 @@ public class MockMasController {
           @RequestBody
           MasOrderExamRequest request) {
     log.info("Ordering exam for {}.", request.getCollectionsId());
+
+    // Test cases that require a mas ERROR on ordering exam
+    if (request.getCollectionsId() == 391) {
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Returning 500 for testing");
+    }
     ConditionInfo conditionInfo = new ConditionInfo("HYPERTENSION", "HYPERTENSION");
 
     OrderExamSuccess success = new OrderExamSuccess();
