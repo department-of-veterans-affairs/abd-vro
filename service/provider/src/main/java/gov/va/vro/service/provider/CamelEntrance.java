@@ -1,6 +1,5 @@
 package gov.va.vro.service.provider;
 
-import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
@@ -85,21 +84,4 @@ public class CamelEntrance {
         MasProcessingObject.class);
   }
 
-  /**
-   * Last processing step for a MAS claim whether it has been accepted or off-ramped
-   *
-   * @param masProcessingObject the complete processing object
-   */
-  public void completeProcessing(MasProcessingObject masProcessingObject) {
-    producerTemplate.requestBody(MasIntegrationRoutes.ENDPOINT_MAS_COMPLETE, masProcessingObject);
-  }
-
-  /**
-   * Send appropriate notifications when a claim is off-ramped
-   *
-   * @param auditEvent the event to broadcast
-   */
-  public void offrampClaim(AuditEvent auditEvent) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT, auditEvent);
-  }
 }

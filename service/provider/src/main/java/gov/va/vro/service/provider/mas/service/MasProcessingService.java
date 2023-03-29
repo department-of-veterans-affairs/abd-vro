@@ -4,14 +4,11 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHAN
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 
 import gov.va.vro.camel.CamelEntry;
-import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
-import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
-import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -25,7 +22,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,8 +36,6 @@ public class MasProcessingService {
   private final CamelEntrance camelEntrance;
 
   private final MasConfig masConfig;
-
-  private final BipClaimService bipClaimService;
 
   private final SaveToDbService saveToDbService;
 
@@ -62,15 +56,6 @@ public class MasProcessingService {
     Claim claim = toClaim(payload);
     saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
-    var offRampReasonOptional = getOffRampReason(payload);
-    if (offRampReasonOptional.isPresent()) {
-      var offRampReason = offRampReasonOptional.get();
-      payload.setOffRampReason(offRampReason);
-      claim.setOffRampReason(offRampReason);
-      saveToDbService.setOffRampReason(claim);
-      offRampClaim(payload, offRampReason);
-      return offRampReason;
-    }
 
     var headers =
         Map.of(
@@ -82,64 +67,9 @@ public class MasProcessingService {
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
-  private Optional<String> getOffRampReason(MasAutomatedClaimPayload payload) {
-    if (!payload.isInScope()) {
-      var message =
-          String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " and [disability action type = %s] is not in scope.",
-              payload.getCollectionId(),
-              payload.getDiagnosticCode(),
-              payload.getDisabilityActionType());
-      return Optional.of(message);
-    }
-
-    if (payload.isPresumptive() != null && !payload.isPresumptive()) {
-      var message =
-          String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
-              payload.getCollectionId(),
-              payload.getDiagnosticCode(),
-              payload.getDisabilityActionType(),
-              payload.getVeteranFlashIds());
-      return Optional.of(message);
-    }
-
-    long claimId = Long.parseLong(payload.getClaimDetail().getBenefitClaimId());
-    log.info("Check hasAnchors for claim ID, {}", claimId); // TODO: remove it after test.
-    if (!bipClaimService.hasAnchors(claimId)) {
-      var message =
-          String.format(
-              "Claim with [collection id = %s] does not qualify for"
-                  + " automated processing because it is missing anchors.",
-              payload.getCollectionId());
-      log.info(message);
-      offRampClaim(payload, message);
-      return Optional.of(message);
-    }
-    return Optional.empty();
-  }
-
   public void examOrderingStatus(MasExamOrderStatusPayload payload, String claimIdType) {
     saveToDbService.insertOrUpdateExamOrderingStatus(buildExamOrder(payload, claimIdType));
     camelEntrance.examOrderingStatus(payload);
-  }
-
-  private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
-    var auditEvent = buildAuditEvent(payload, message);
-    camelEntrance.offrampClaim(auditEvent);
-    var mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
-    camelEntrance.completeProcessing(mpo);
-  }
-
-  private static AuditEvent buildAuditEvent(MasAutomatedClaimPayload payload, String message) {
-    return AuditEvent.builder()
-        .eventId(Integer.toString(payload.getCollectionId()))
-        .payloadType(payload.getDisplayName())
-        .routeId("/automatedClaim")
-        .message(message)
-        .build();
   }
 
   private Claim toClaim(MasAutomatedClaimPayload payload) {

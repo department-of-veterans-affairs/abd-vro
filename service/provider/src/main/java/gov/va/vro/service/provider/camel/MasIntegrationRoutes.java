@@ -30,6 +30,7 @@ import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
+import gov.va.vro.service.provider.services.CheckEarlyOffRampProcessor;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
@@ -93,6 +94,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final MasConfig masConfig;
 
+  private final CheckEarlyOffRampProcessor checkEarlyOffRampProcessor;
   private final MasPollingProcessor masPollingProcessor;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
@@ -107,6 +109,16 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
+
+  // OffRamp Error Reason Constants
+  // Note - Offramping with an error does NOT imply that we return an error code at the start of processing
+  public static final String SUFFICIENCY_UNDETERMINED = "Sufficiency cannot be determined.";
+  public static final String PDF_UPLOAD_ERROR_RFD_CLAIM = "docUploadFailed";
+  public static final String EXAM_ORDER_FAIL = "examOrderFailed";
+  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
+  public static final String OUT_OF_SCOPE = "outOfScope";
+  public static final String MISSING_ANCHOR = "missingAnchor";
+
 
   @Override
   public void configure() {
@@ -165,6 +177,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Started claim processing."))
         .process(convertToMasProcessingObject())
+        .process(checkEarlyOffRampProcessor)
+        .choice()
+        .when(simple("${exchangeProperty.offRampError:null}").isNotNull())
+        .to(ENDPOINT_OFFRAMP_ERROR)
+        .stop() // Do not continue after endChoice.
+        .endChoice()
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("idType", simple("${body.idType}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
@@ -180,7 +198,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .setProperty("offRampError", constant("Sufficiency cannot be determined."))
+        .setProperty("offRampError", constant(SUFFICIENCY_UNDETERMINED))
         .setProperty("sourceRoute", constant("assessorError"))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
@@ -188,7 +206,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end();
 
     String rfdRouteId = "mas-rfd";
-    String pdfFailError = "docUploadFailed";
     from(END_POINT_RFD)
         // input: MasAutomatedClaimPayload
         .routeId(rfdRouteId)
@@ -200,7 +217,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("offRampError", constant(pdfFailError))
+        .setProperty("offRampError", constant(PDF_UPLOAD_ERROR_RFD_CLAIM))
         .setProperty("sourceRoute", constant(rfdRouteId))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
@@ -209,7 +226,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    final String orderFailMessage = "examOrderFailed";
     final String pdfFailMessage = "PDF upload failed after exam order requested.";
 
     from(ENDPOINT_ORDER_EXAM)
@@ -227,7 +243,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
         .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampError", constant(orderFailMessage))
+        .setProperty("offRampError", constant(EXAM_ORDER_FAIL))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
