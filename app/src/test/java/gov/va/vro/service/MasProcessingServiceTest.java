@@ -1,5 +1,6 @@
 package gov.va.vro.service;
 
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -86,10 +87,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
     request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
     var response = masProcessingService.getOffRampReasonPresumptiveCheck(request1);
-    assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 7101],"
-            + " [disability action type = NEW] and [flashIds = null] is not presumptive.",
-        response.get());
+    assertEquals(NEW_NOT_PRESUMPTIVE, response.get());
   }
 
   @Test
