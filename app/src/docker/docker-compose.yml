@@ -19,11 +19,11 @@ x-mas-vars: &mas-vars
   MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
   MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
   MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
-  MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
-  MAS_API_BAS_URL: ${MAS_API_BAS_URL}
-  MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
-  MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
-  MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+#  MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
+  MAS_API_BASE_URL: ${MAS_API_BASE_URL}
+#  MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
+#  MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
+#  MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
   SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
@@ -191,8 +191,8 @@ services:
       - internal
       - external
 
-  workflows-xample:
-    image: va/abd_vro-workflows-xample:latest
+  xample-workflows:
+    image: va/abd_vro-xample-workflows:latest
     <<: *common-security-opt
     <<: *common-sde-security
     profiles: ["all","xample"]
@@ -217,8 +217,6 @@ services:
       <<: *rabbitmq-placeholder-vars
       <<: *rabbitmq-client-vars
     depends_on:
-      postgres-service:
-        condition: service_healthy
       rabbitmq-service:
         condition: service_healthy
     networks:
@@ -350,6 +348,20 @@ services:
     networks:
       - internal
 
+  svc-bgs-api:
+    profiles: ["all","svc","bgs"]
+    image: va/abd_vro-svc-bgs-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    environment:
+      <<: *common-vars
+      <<: *rabbitmq-placeholder-vars
+    depends_on:
+      rabbitmq-service:
+        condition: service_healthy
+    networks:
+      - internal
+
   svc-feature-toggle:
     profiles: ["all","svc","feature-toggle"]
     image: va/abd_vro-featuretoggle:latest
@@ -402,14 +414,14 @@ services:
     hostname: mock-bip-ce-api
     ports:
       - "8094:8094"
-      - "8095:8095"
+# health check is on 8080 and doesn't need to be exposed - "8095:8095"
       - "8096:8096"
     environment:
       <<: *common-vars
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
       BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
       BIP_EVIDENCE_ISS: ${BIP_EVIDENCE_ISS}
-      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
+#      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
@@ -423,14 +435,14 @@ services:
     hostname: mock-bip-claims-api
     ports:
       - "8097:8097"
-      - "8098:8098"
+# health check is on 8080 and doesn't need to be exposed - "8098:8098"
       - "8099:8099"
     environment:
       <<: *common-vars
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_CLAIM_ISS: ${BIP_CLAIM_ISS}
-      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
+#      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
@@ -444,17 +456,17 @@ services:
     hostname: mock-mas-api
     ports:
       - "9001:9001"
-      - "9002:9002"
+# health check is on 8080 and doesn't need to be exposed - "9002:9002"
     environment:
       <<: *common-vars
       MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
       MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
       MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
-      MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
-      MAS_API_BAS_URL: ${MAS_API_BAS_URL}
-      MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
-      MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
-      MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+#      MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
+      MAS_API_BASE_URL: ${MAS_API_BASE_URL}
+#      MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
+#      MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
+#      MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
     networks:
       - internal
 
@@ -480,7 +492,7 @@ services:
     hostname: mock-slack
     ports:
       - "9008:9008"
-      - "9009:9009"
+# health check is on 8080 and doesn't need to be exposed - "9009:9009"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars

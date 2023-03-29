@@ -2,7 +2,6 @@ package gov.va.vro.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.MasTestData;
@@ -15,7 +14,10 @@ import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
 import gov.va.vro.service.provider.bip.service.IBipCeApiService;
+import gov.va.vro.service.provider.mas.MasCamelStage;
+import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.spi.db.SaveToDbService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -77,7 +79,7 @@ class BipClaimServiceTest {
                 createContention(List.of(claimProps.getSpecialIssue1(), "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(claimProps, bipApiService, null, null);
-    assertTrue(claimService.hasAnchors(bipClaimId));
+    assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
   @Test
@@ -85,17 +87,23 @@ class BipClaimServiceTest {
     long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
 
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId))
+        .thenReturn(createClaim(claimId, "Short Line"));
+
     Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of("RRD", "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(claimProps, bipApiService, null, null);
+    SaveToDbService saveToDbService = Mockito.mock(SaveToDbService.class);
+    Mockito.doNothing().when(saveToDbService).updateRfdFlag(claimId, true);
+
+    BipClaimService claimService =
+        new BipClaimService(claimProps, bipApiService, null, saveToDbService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    var mpo = new MasProcessingObject();
-    mpo.setClaimPayload(payload);
-    claimService.removeSpecialIssue(mpo);
+    var mpo = new MasProcessingObject(payload, MasCamelStage.DURING_PROCESSING);
+    claimService.updateClaim(mpo, MasCompletionStatus.READY_FOR_DECISION);
   }
 
   @Test
@@ -103,17 +111,23 @@ class BipClaimServiceTest {
     long bipClaimId = Long.parseLong(claimId);
     IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
 
+    Mockito.when(bipApiService.getClaimDetails(bipClaimId))
+        .thenReturn(createClaim(claimId, "Short Line"));
+
     Mockito.when(bipApiService.getClaimContentions(bipClaimId))
         .thenReturn(
             List.of(
                 createContention(List.of("TEST", "RRD")),
                 createContention(List.of(claimProps.getSpecialIssue1().toLowerCase(), "OTHER"))));
 
-    BipClaimService claimService = new BipClaimService(claimProps, bipApiService, null, null);
+    SaveToDbService saveToDbService = Mockito.mock(SaveToDbService.class);
+    Mockito.doNothing().when(saveToDbService).updateRfdFlag(claimId, true);
+
+    BipClaimService claimService =
+        new BipClaimService(claimProps, bipApiService, null, saveToDbService);
     var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    var mpo = new MasProcessingObject();
-    mpo.setClaimPayload(payload);
-    claimService.removeSpecialIssue(mpo);
+    var mpo = new MasProcessingObject(payload, MasCamelStage.DURING_PROCESSING);
+    claimService.updateClaim(mpo, MasCompletionStatus.READY_FOR_DECISION);
   }
 
   @Test
@@ -186,8 +200,6 @@ class BipClaimServiceTest {
   }
 
   private MasProcessingObject getMpo(MasAutomatedClaimPayload payload) {
-    var mpo = new MasProcessingObject();
-    mpo.setClaimPayload(payload);
-    return mpo;
+    return new MasProcessingObject(payload, MasCamelStage.DURING_PROCESSING);
   }
 }

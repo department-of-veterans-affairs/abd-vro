@@ -12,7 +12,7 @@ description = 'Automated Benefit Delivery Data Access Service'
 
 configurations.all {
   resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
+    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
   }
 }
 
@@ -32,8 +32,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework:spring-web:5.3.23'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.4.2'
-  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.2') {
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.4.3'
+  implementation('ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.3') {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -90,6 +90,10 @@ task integrationTest(type: Test) {
 }
 
 docker {
+  // buildArgs is immutable so we have to set it this way
+  // HEALTHCHECK_PORT_ARG should be the same as the `management.server.port` setting
+  buildArgs(["HEALTHCHECK_PORT_ARG" : "8092"] << buildArgs)
+
   // TODO: remove this line after renaming the image
   name "${dockerRegistry}/${rootProject.name}-service-data-access"
 }

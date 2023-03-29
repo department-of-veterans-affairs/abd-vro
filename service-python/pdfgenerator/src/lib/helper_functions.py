@@ -33,7 +33,7 @@ def pdf_helper_all(data: dict) -> dict:
     # Find out if the PDF is being generated locally(VENV, script, etc.) or through Docker. Depending on which, set the appropriate base path for fonts, images, etc.
     run_mode = os.environ.get("DOCKER", "local")
     if run_mode == "docker":
-        data["base_path"] = "/home/docker/public"
+        data["base_path"] = "/app/public"
     else:
         current_dir = os.path.abspath(os.path.dirname(__file__))
         data["base_path"] = os.path.join(current_dir, "..", "public")

@@ -11,6 +11,7 @@ import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -52,7 +53,7 @@ public class MasProcessingService {
    * @param payload mas payload.
    * @return String
    */
-  public String processIncomingClaim(MasAutomatedClaimPayload payload) {
+  public void processIncomingClaimSaveToDB(MasAutomatedClaimPayload payload) {
     log.info(
         "Process MAS collection {},  claim {} , icn: {}",
         payload.getCollectionId(),
@@ -61,16 +62,27 @@ public class MasProcessingService {
     Claim claim = toClaim(payload);
     saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
-    var offRampReasonOptional = getOffRampReason(payload);
+  }
+
+  public String processIncomingClaimGetUnprocessableReason(MasAutomatedClaimPayload payload) {
+    var unprocessableReasonOptional = getOffRampReasonScopeAndAnchorCheck(payload);
+    if (unprocessableReasonOptional.isPresent()) {
+      return unprocessableReasonOptional.get();
+    }
+    return null;
+  }
+
+  public String processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
+    var offRampReasonOptional = getOffRampReasonPresumptiveCheck(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
+      Claim claim = toClaim(payload);
       payload.setOffRampReason(offRampReason);
       claim.setOffRampReason(offRampReason);
       saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
-
     var headers =
         Map.of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,
@@ -81,18 +93,7 @@ public class MasProcessingService {
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
-  private Optional<String> getOffRampReason(MasAutomatedClaimPayload payload) {
-    if (!payload.isInScope()) {
-      var message =
-          String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " and [disability action type = %s] is not in scope.",
-              payload.getCollectionId(),
-              payload.getDiagnosticCode(),
-              payload.getDisabilityActionType());
-      return Optional.of(message);
-    }
-
+  public Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
       var message =
           String.format(
@@ -102,6 +103,20 @@ public class MasProcessingService {
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType(),
               payload.getVeteranFlashIds());
+      return Optional.of(message);
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> getOffRampReasonScopeAndAnchorCheck(MasAutomatedClaimPayload payload) {
+    if (!payload.isInScope()) {
+      var message =
+          String.format(
+              "Claim with [collection id = %s], [diagnostic code = %s],"
+                  + " and [disability action type = %s] is not in scope.",
+              payload.getCollectionId(),
+              payload.getDiagnosticCode(),
+              payload.getDisabilityActionType());
       return Optional.of(message);
     }
 
@@ -128,8 +143,7 @@ public class MasProcessingService {
   private void offRampClaim(MasAutomatedClaimPayload payload, String message) {
     var auditEvent = buildAuditEvent(payload, message);
     camelEntrance.offrampClaim(auditEvent);
-    var mpo = new MasProcessingObject();
-    mpo.setClaimPayload(payload);
+    var mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
     camelEntrance.completeProcessing(mpo);
   }
 
@@ -168,9 +182,9 @@ public class MasProcessingService {
         // Attempt to parse non-standard ISO date we may be sent of YYYY-MM-DDZ
         Matcher customDateMatcher = customDatePattern.matcher(input);
         if (customDateMatcher.matches()) {
-          Integer year = Integer.parseInt(customDateMatcher.group(1));
-          Integer month = Integer.parseInt(customDateMatcher.group(2));
-          Integer day = Integer.parseInt(customDateMatcher.group(3));
+          int year = Integer.parseInt(customDateMatcher.group(1));
+          int month = Integer.parseInt(customDateMatcher.group(2));
+          int day = Integer.parseInt(customDateMatcher.group(3));
           LocalDate customDate = LocalDate.of(year, month, day);
           customDateTime = OffsetDateTime.of(customDate, LocalTime.MIN, ZoneOffset.UTC);
         } else {
@@ -192,5 +206,12 @@ public class MasProcessingService {
         .status(payload.getCollectionStatus())
         .examOrderDateTime(examDateTime)
         .build();
+  }
+
+  public void offRampClaimForError(MasProcessingObject mpo, String offRampReason) {
+    MasAutomatedClaimPayload claimPayload = mpo.getClaimPayload();
+    Claim claim = toClaim(claimPayload);
+    claim.setOffRampReason(offRampReason);
+    saveToDbService.setOffRampReason(claim);
   }
 }
