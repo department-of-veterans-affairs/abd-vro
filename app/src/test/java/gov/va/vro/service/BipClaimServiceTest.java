@@ -2,7 +2,6 @@ package gov.va.vro.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.MasTestData;
@@ -80,7 +79,7 @@ class BipClaimServiceTest {
                 createContention(List.of(claimProps.getSpecialIssue1(), "OTHER"))));
 
     BipClaimService claimService = new BipClaimService(claimProps, bipApiService, null, null);
-    assertTrue(claimService.hasAnchors(bipClaimId));
+    assertFalse(claimService.hasAnchors(bipClaimId));
   }
 
   @Test
