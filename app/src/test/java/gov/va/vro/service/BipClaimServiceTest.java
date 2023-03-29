@@ -28,6 +28,7 @@ import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,6 +40,9 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 class BipClaimServiceTest {
 
@@ -47,12 +51,109 @@ class BipClaimServiceTest {
   private static final String CLAIM_ID2 = "39208503";
 
   private static final long CONTENTION_ID = 1000L;
+  private static final long CONTENTION_ID2 = 1001L;
   private static final List<String> SPECIAL_ISSUES = Arrays.asList("RRD", "RRD1");
   private static final ClaimStatus CONTENTION_STATUS = ClaimStatus.OPEN;
   private static final boolean AUTU_IND = false;
 
   private ClaimProps claimProps;
 
+  private Map<Long, BipClaim> bipClaims = new ConcurrentHashMap<>();
+  private Map<Long, List<ClaimContention>> bipContentions = new ConcurrentHashMap<>();
+
+  class BipApiTestService implements IBipApiService {
+
+    @Override
+    public BipClaim getClaimDetails(long claimId) throws BipException {
+      return bipClaims.get(claimId);
+    }
+
+    @Override
+    public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
+      return updateClaimStatus(claimId, ClaimStatus.RFD);
+    }
+
+    @Override
+    public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status) throws BipException {
+      BipClaim claim = getBipClaim(claimId);
+      try {
+        claim.setClaimLifecycleStatus(status.getDescription());
+        return new BipUpdateClaimResp(HttpStatus.OK, "successful");
+      } catch (Exception e) {
+        throw new BipException("failed to update claim status");
+      }
+    }
+
+    @Override
+    public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
+//      BipClaim claim = getBipClaim(claimId);
+      List<ClaimContention> contentions = bipContentions.get(claimId);
+      if (contentions == null) {
+        return new ArrayList<>();
+      }
+      return contentions;
+    }
+
+    @NotNull
+    private BipClaim getBipClaim(long claimId) {
+      BipClaim claim = bipClaims.get(claimId);
+      if (claim == null) {
+        throw new BipException("claim not found.");
+      }
+      return claim;
+    }
+
+    @Override
+    public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention) throws BipException {
+      List<ClaimContention> contentions = bipContentions.get(claimId);
+      if (contentions == null) {
+        throw new BipException("Contention to update is not found.");
+      }
+      Map<Long, UpdateContention> updtContentions =
+              contention.getUpdateContentions().stream()
+                      .collect(Collectors.toMap(c -> c.getContentionId(), c -> c));
+      contentions.forEach(c -> {
+        UpdateContention updt = updtContentions.get(c.getContentionId());
+        if (updt != null) {
+          c.setLifecycleStatus(updt.getLifecycleStatus());
+          c.setAutomationIndicator(updt.isAutomationIndicator());
+          c.setSpecialIssueCodes(updt.getSpecialIssueCodes());
+        }
+      });
+      return new BipUpdateClaimResp(HttpStatus.OK, "updated");
+    }
+
+    @Override
+    public boolean verifySpecialIssueTypes() {
+      return true;
+    }
+  }
+
+  private void initializeBipClaims() {
+    BipClaim claim = new BipClaim();
+    claim.setClaimId(CLAIM_ID1);
+    claim.setClaimLifecycleStatus(ClaimStatus.OPEN.getDescription());
+    bipClaims.put(Long.parseLong(CLAIM_ID1), claim);
+
+    claim = new BipClaim();
+    claim.setClaimId(CLAIM_ID2);
+    claim.setClaimLifecycleStatus(ClaimStatus.RFD.getDescription());
+    bipClaims.put(Long.parseLong(CLAIM_ID2), claim);
+
+    ClaimContention contention = new ClaimContention();
+    contention.setContentionId(CONTENTION_ID);
+    contention.setSpecialIssueCodes(SPECIAL_ISSUES);
+    contention.setLifecycleStatus(ClaimStatus.OPEN.getDescription());
+    contention.setAutomationIndicator(false);
+    bipContentions.put(Long.parseLong(CLAIM_ID1), Collections.singletonList(contention));
+
+    contention = new ClaimContention();
+    contention.setContentionId(CONTENTION_ID2);
+    contention.setSpecialIssueCodes(SPECIAL_ISSUES);
+    contention.setLifecycleStatus(ClaimStatus.RFD.getDescription());
+    contention.setAutomationIndicator(true);
+    bipContentions.put(Long.parseLong(CLAIM_ID2), Collections.singletonList(contention));
+  }
   @BeforeEach
   public void setup() {
     claimProps = new ClaimProps();
@@ -210,6 +311,8 @@ class BipClaimServiceTest {
 
   @Test
   void testUpdateClaim() {
+    initializeBipClaims();
+    BipApiTestService bipApiService = new BipApiTestService();
     ClaimDetail claimDetail = new ClaimDetail();
     claimDetail.setBenefitClaimId(CLAIM_ID1);
     MasAutomatedClaimPayload claimPayload =
@@ -243,15 +346,15 @@ class BipClaimServiceTest {
     bipUpdateClaimResp.setMessage("done");
     bipUpdateClaimResp.setStatus(HttpStatus.OK);
 
-    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(claimID1)).thenReturn(claim1);
-    Mockito.when(bipApiService.getClaimDetails(claimID2)).thenReturn(claim2);
-    Mockito.when(bipApiService.getClaimContentions(claimID1))
-        .thenReturn(Collections.singletonList(contention));
-    Mockito.when(bipApiService.getClaimContentions(claimID2)).thenReturn(new ArrayList<>());
-
-    Mockito.when(bipApiService.updateClaimContention(anyLong(), any()))
-        .thenReturn(bipUpdateClaimResp);
+//    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
+//    Mockito.when(bipApiService.getClaimDetails(claimID1)).thenReturn(claim1);
+//    Mockito.when(bipApiService.getClaimDetails(claimID2)).thenReturn(claim2);
+//    Mockito.when(bipApiService.getClaimContentions(claimID1))
+//        .thenReturn(Collections.singletonList(contention));
+//    Mockito.when(bipApiService.getClaimContentions(claimID2)).thenReturn(new ArrayList<>());
+//
+//    Mockito.when(bipApiService.updateClaimContention(anyLong(), any()))
+//        .thenReturn(bipUpdateClaimResp);
 
     ClaimProps claimProp = new ClaimProps();
     claimProp.setSpecialIssue1(SPECIAL_ISSUES.get(0));
