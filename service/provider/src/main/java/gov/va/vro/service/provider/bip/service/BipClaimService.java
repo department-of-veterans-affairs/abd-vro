@@ -219,26 +219,6 @@ public class BipClaimService {
     return new BipUpdateClaimResult(true);
   }
 
-  /** Check if claim is still eligible for fast tracking, and if so, update status. */
-  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
-    int collectionId = payload.getCollectionId();
-    long claimId = payload.getBenefitClaimIdAsLong();
-
-    // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(claimId);
-    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
-      log.info(
-          "Claim {} with collection Id = {} is in state {}. Status not updated",
-          claimId,
-          collectionId,
-          claim.getTempStationOfJurisdiction());
-      payload.setTSOJ(false);
-      return payload;
-    }
-    payload.setTSOJ(true);
-    return payload;
-  }
-
   /**
    * Uploads a pdf.
    *

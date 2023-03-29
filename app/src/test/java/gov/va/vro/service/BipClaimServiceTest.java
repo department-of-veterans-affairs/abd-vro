@@ -131,18 +131,6 @@ class BipClaimServiceTest {
     claimService.updateClaim(mpo, MasCompletionStatus.READY_FOR_DECISION);
   }
 
-  @Test
-  void completeProcessingNotRightStation() throws BipException {
-    long bipClaimId = Long.parseLong(claimId);
-    IBipApiService bipApiService = Mockito.mock(IBipApiService.class);
-    Mockito.when(bipApiService.getClaimDetails(bipClaimId))
-        .thenReturn(createClaim(claimId, "Short Line"));
-
-    BipClaimService claimService = new BipClaimService(null, bipApiService, null, null);
-    var payload = MasTestData.getMasAutomatedClaimPayload(collectionId, "1701", claimId);
-    assertFalse(claimService.completeProcessing(getMpo(payload)).isTSOJ());
-  }
-
   // TODO -> Fix this test <---
   /*
   @Test
