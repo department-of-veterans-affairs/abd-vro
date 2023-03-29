@@ -45,13 +45,7 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/svc-lighthouse-api/src/docker"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/service-python"
+    directory: "/buildSrc/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"

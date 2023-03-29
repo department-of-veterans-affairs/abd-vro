@@ -1,0 +1,29 @@
+{
+  "dob": "1963-05-13",
+  "firstName": "Noah",
+  "lastName": "Cannotuploadpdfforexam",
+  "gender": "male",
+  "collectionId": 390,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986390",
+    "ssn": "111-11-1390",
+    "veteranFileId": "9999390",
+    "edipn": "1010234-390",
+    "participantId": "88888390"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1390",
+    "claimSubmissionDateTime": "2023-03-12Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hypertension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375"
+  ]
+}
