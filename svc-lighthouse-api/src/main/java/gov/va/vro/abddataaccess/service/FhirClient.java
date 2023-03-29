@@ -219,8 +219,20 @@ public class FhirClient {
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
-      AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      result.add(summary);
+      AbdBloodPressure bpReading = FieldExtractor.extractBloodPressure(resource);
+      if ((bpReading.getDiastolic() == null) && (bpReading.getSystolic() == null)) {
+        continue; // skip it if both systolic and diastolic values are missing.
+      }
+      // Set default systolic / diastolic blood pressure value if one of them not exist.
+      if (bpReading.getDiastolic() == null) {
+        bpReading.setDiastolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.DIASTOLIC));
+      }
+      if (bpReading.getSystolic() == null) {
+        bpReading.setSystolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.SYSTOLIC));
+      }
+      result.add(bpReading);
     }
     result.sort(null);
     return result;
