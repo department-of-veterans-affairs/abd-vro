@@ -82,6 +82,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
                   log.warn("++++++++ offRampReason=" + offRampReason + " Claim-level note:...");
               }
             })
+        // if notesToAdd
         .to(BGSCLIENT_ADDNOTES)
         .log("output: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
 
@@ -92,10 +93,12 @@ public class BgsApiClientRoutes extends RouteBuilder {
   }
 
   void configureRouteToBgsApiClientMicroservice() {
+    // TODO: add error handling and retry
     RabbitMqCamelUtils.addToRabbitmqRoute(this, BGSCLIENT_ADDNOTES, "bgs-api", "add-note")
         .id("to-rabbitmq-bgsclient-addnote")
         .routeId("to-rabbitmq-bgsapi-addnote-route")
     // .convertBodyTo(BgsApiClientModel.class)
+        // TODO: if retries failed, notify slack
     ;
   }
 
