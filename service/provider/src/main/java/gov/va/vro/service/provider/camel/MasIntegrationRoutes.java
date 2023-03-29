@@ -336,18 +336,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
-            MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
-        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
+            MasIntegrationProcessors.completionProcessor(
+                routeId, bipClaimService, masProcessingService))
+        .choice()
+        .when(simple("${exchangeProperty.completionSlackMessage} != null"))
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
+        .onPrepare(slackEventPropertyProcessor(routeId, "completionSlackMessage"))
+        .endChoice()
+        .otherwise()
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(
-            auditProcessor(
-                routeId,
-                auditable -> {
-                  MasProcessingObject mpo = (MasProcessingObject) auditable;
-                  return mpo.isTSOJ()
-                      ? "Claim satisfies TSOJ condition. Updated status."
-                      : "Claim does not satisfy TSOJ condition. Status not updated.";
-                }));
+        .onPrepare(auditProcessor(routeId, "Successful processing"))
+        .end();
   }
 
   private void configureNotify() {

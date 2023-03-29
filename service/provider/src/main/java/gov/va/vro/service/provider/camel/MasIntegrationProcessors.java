@@ -10,7 +10,9 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
 import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasException;
@@ -147,7 +149,7 @@ public class MasIntegrationProcessors {
    * @return Processor completion camel processor
    */
   public static Processor completionProcessor(
-      BipClaimService bipClaimService, MasProcessingService masProcessingService) {
+      String routeId, BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
       MasCamelStage origin = payload.getOrigin();
@@ -159,13 +161,34 @@ public class MasIntegrationProcessors {
       }
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(origin, sufficient, offRampError);
-      MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
-      exchange.getMessage().setBody(updatedPayload);
+      try {
+        BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
+        if (result.hasMessage()) {
+          exchange.setProperty("completionSlackMessage", result.getMessage());
+        }
+      } catch (BipException exception) {
+        log.error("Error using BIP Claims API", exception);
+        String message = "BIP Claims API exception: " + exception.getMessage();
+        exchange.setProperty("completionSlackMessage", message);
+      }
     };
   }
 
   public static Processor slackEventProcessor(String routeId, String message) {
     return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getMessage().getBody(MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
+  public static Processor slackEventPropertyProcessor(String routeId, String exchangeProperty) {
+    return exchange -> {
+      String message = exchange.getProperty(exchangeProperty, "Unidentified message", String.class);
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
       exchange
