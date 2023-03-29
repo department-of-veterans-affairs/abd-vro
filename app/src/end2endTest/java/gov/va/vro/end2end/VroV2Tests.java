@@ -225,15 +225,13 @@ public class VroV2Tests {
     restTemplate.delete(UPDATES_URL + claimId);
     restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
-    if (spec.isCheckSlack()) {
-      restTemplate.delete(SLACK_URL + collectionId);
-    }
+    restTemplate.delete(SLACK_URL + collectionId);
 
     // Start automated claim
     var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
     return request;
@@ -395,7 +393,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean testOffRampSlackMessage(String collectionId) {
+  private boolean testSlackMessage(String collectionId) {
     for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
       Thread.sleep(5000);
       String url = SLACK_URL + collectionId;
@@ -457,7 +455,7 @@ public class VroV2Tests {
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
 
-    boolean slackResult = testOffRampSlackMessage(spec.getCollectionId());
+    boolean slackResult = testSlackMessage(spec.getCollectionId());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
@@ -470,15 +468,14 @@ public class VroV2Tests {
    * and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimOutOfScope() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 10], [diagnostic code = 7101], and "
             + "[disability action type = DECREASE] is not in scope.");
-    spec.setCheckSlack(true);
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   /**
@@ -486,15 +483,14 @@ public class VroV2Tests {
    * message, Slack message and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimMissingAnchor() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 20] does not qualify for "
             + "automated processing because it is missing anchors.");
-    spec.setCheckSlack(true);
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -522,17 +518,30 @@ public class VroV2Tests {
     assertEquals(isOrderedAtNull, info.getOrderedAt() == null);
   }
 
-  private void testAutomatedClaimOrderExam(String collectionId) {
+  private void testAutomatedClaimOrderExam(AutomatedClaimTestSpec spec) {
+    String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
-    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
-    testExamOrdered(collectionId);
-    testPdfUpload(request);
-    String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
-    checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
-    testExamOrderingStatus(collectionId);
-    checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
+    MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+    if (spec.isMasError()) {
+      boolean slackResult = testSlackMessage(spec.getCollectionId());
+      assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+    } else {
+      testExamOrdered(collectionId);
+      if (spec.isBipError()) {
+        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      } else {
+        testPdfUpload(request);
+      }
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+      checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
+      testExamOrderingStatus(collectionId);
+      checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
+    }
   }
 
   /**
@@ -542,7 +551,8 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimOrderExamNewClaim() {
-    testAutomatedClaimOrderExam("377");
+    AutomatedClaimTestSpec spec = specFor200("377");
+    testAutomatedClaimOrderExam(spec);
   }
 
   /**
@@ -552,13 +562,48 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimOrderExamIncreaseClaim() {
-    testAutomatedClaimOrderExam("378");
+    AutomatedClaimTestSpec spec = specFor200("378");
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures bip claim evidence api upload evidence errors are handled properly.
+   * Copied from 378; this sends an error message instead of uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamBipError() {
+    AutomatedClaimTestSpec spec = specFor200("390");
+    spec.setBipError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures mas order exam errors are handled properly. Copied from 378; this sends
+   * an error message instead of ordering the exam or uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamMasError() {
+    AutomatedClaimTestSpec spec = specFor200("391");
+    spec.setMasError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test for an automated claim that does NOT order exam, and then fails PDF upload (Bip Errors on
+   * this fileID) Ensures that we handle the pdf failure correctly.
+   */
+  @Test
+  void testAutomatedClaimNoExamPDFError() {
+    String collectionId = "392";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimOffRamp(spec);
   }
 
   /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */
   @Test
   void testLHDataOnlyClaimOrderExamIncreaseClaim() {
-    testAutomatedClaimOrderExam("401");
+    AutomatedClaimTestSpec spec = specFor200("401");
+    testAutomatedClaimOrderExam(spec);
   }
 
   @SneakyThrows
@@ -657,7 +702,6 @@ public class VroV2Tests {
   void testAutomatedClaimSufficiencyIsNull() {
     String collectionId = "500";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
-    spec.setCheckSlack(true);
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
   }
