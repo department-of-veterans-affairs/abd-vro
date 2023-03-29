@@ -12,6 +12,7 @@ public class AutomatedClaimTestSpec {
   private String expectedMessage;
   private String payloadPath;
   private boolean bipError = false;
+  private boolean bipUpdateClaimError = false;
   private String tempJurisdictionStationOverride;
 
   public AutomatedClaimTestSpec(String collectionId) {

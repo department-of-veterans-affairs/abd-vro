@@ -370,9 +370,11 @@ public class VroV2Tests {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
     testPdfUpload(request);
-    testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
-    testLifecycleStatus(claimId, ClaimStatus.RFD);
-    if (tempJurisdictionStationOverride != null) {
+    if (!spec.isBipUpdateClaimError()) {
+      testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
+      testLifecycleStatus(claimId, ClaimStatus.RFD);
+    }
+    if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
       testSlackMessage(collectionId);
     }
   }
@@ -684,12 +686,24 @@ public class VroV2Tests {
 
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
-   * the Slack message when temporary station of jurisdiction changes during\ VRO processing.
+   * the Slack message when temporary station of jurisdiction changes during VRO processing.
    */
   @Test
   void testAutomatedClaimFullPositiveChangedStation() {
     AutomatedClaimTestSpec spec = specFor200("385");
     spec.setTempJurisdictionStationOverride("456");
+
+    testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
+   * the Slack message when bip claims api goes down during VRO processing.
+   */
+  @Test
+  void testAutomatedClaimFullPositiveBipGoesDown() {
+    AutomatedClaimTestSpec spec = specFor200("386");
+    spec.setBipUpdateClaimError(true);
 
     testAutomatedClaimFullPositive(spec);
   }

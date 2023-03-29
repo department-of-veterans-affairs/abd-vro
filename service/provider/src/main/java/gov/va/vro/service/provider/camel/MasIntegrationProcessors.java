@@ -10,6 +10,7 @@ import gov.va.vro.model.event.Auditable;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
 import gov.va.vro.service.provider.mas.MasCamelStage;
@@ -152,10 +153,15 @@ public class MasIntegrationProcessors {
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
       MasCompletionStatus completionStatus = MasCompletionStatus.of(origin, sufficient);
-      BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
-      if (result.hasSlackEvent()) {
-        AuditEvent auditEvent = result.toAuditEvent(routeId, payload);
-        exchange.setProperty("completionSlackMessage", result.getMessage());
+      try {
+        BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
+        if (result.hasMessage()) {
+          exchange.setProperty("completionSlackMessage", result.getMessage());
+        }
+      } catch (BipException exception) {
+        log.error("Error using BIP Claims API", exception);
+        String message = "BIP Claims API exception: " + exception.getMessage();
+        exchange.setProperty("completionSlackMessage", message);
       }
     };
   }
