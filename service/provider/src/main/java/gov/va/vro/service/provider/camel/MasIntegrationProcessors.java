@@ -155,14 +155,26 @@ public class MasIntegrationProcessors {
       BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
       if (result.hasSlackEvent()) {
         AuditEvent auditEvent = result.toAuditEvent(routeId, payload);
-        exchange.setProperty("MasCompleteSlack", true);
-        exchange.getIn().setBody(auditEvent);
+        exchange.setProperty("completionSlackMessage", result.getMessage());
       }
     };
   }
 
   public static Processor slackEventProcessor(String routeId, String message) {
     return exchange -> {
+      MasProcessingObject masProcessingObject =
+          exchange.getMessage().getBody(MasProcessingObject.class);
+      exchange
+          .getIn()
+          .setBody(
+              AuditEvent.fromAuditable(
+                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+    };
+  }
+
+  public static Processor slackEventPropertyProcessor(String routeId, String exchangeProperty) {
+    return exchange -> {
+      String message = exchange.getProperty(exchangeProperty, "Unidentified message", String.class);
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
       exchange
