@@ -29,7 +29,7 @@ public class StoreTest {
 
     JsonNode json = mapper.readTree(observation);
     JsonNode total = json.get("total");
-    assertEquals(8, total.asInt());
+    assertEquals(9, total.asInt());
   }
 
   @Test

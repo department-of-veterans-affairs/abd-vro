@@ -20,21 +20,11 @@ gradle_image_name() {
   esac
 }
 
-helm_image_key() {
-  case "$1" in
-    postgres) echo "db";;
-    db-init) echo "dbInit";;
-    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
-    pdfgenerator) echo "pdfGenerator";;                  # TODO: rename to svcPdfGenerator
-    featuretoggle) echo "svcFeatureToggle";;
-    assessclaimdc7101) echo "serviceAssessClaimDC7101";; # TODO: rename to svcAssessorDc7101
-    assessclaimdc6602) echo "serviceAssessClaimDC6602";; # TODO: rename to svcAssessorDc6602
-    app|*) echo "$1";;
-  esac
-}
-
 bash_var_prefix() {
-  helm_image_key "$@"
+  case "$1" in
+    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
+    *) echo "${1//-/}";;
+  esac
 }
 
 nonprod_image_name() {
@@ -51,7 +41,7 @@ prod_image_name() {
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-lighthouse-api featuretoggle pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
+IMAGES=( app postgres db-init console svc-bgs-api svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -119,38 +109,8 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     PREFIX=$(bash_var_prefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
-
-    echo "export ${PREFIX}_HELM_KEY=\"$(helm_image_key "$IMG")\""
     echo
   done
   echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
-
-images_for_helm-app_values_yaml(){
-  local _ENV=$1
-  echo '# BEGIN image-names.sh replacement block (do not modify this block)
-# The following image list is updated by image-names.sh'
-for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-  echo "  $(getVarValue "${PREFIX}" _HELM_KEY):
-    imageName: ${_ENV}_$(getVarValue "${PREFIX}" _IMG)
-    tag: tagPlaceholder"
-done
-echo '# END image-names.sh replacement block (do not modify this block)'
-}
-
-# shellcheck source=image_vars.src
-source "$SRC_FILE"
-VALUES_YML_IMAGES=$(images_for_helm-app_values_yaml dev)
-
-if which sed > /dev/null; then
-  echo "=== Writing images to helm-app/values-updated.yaml"
-  sed -e '/^# BEGIN image-names.sh/,/^# END image-names.sh/{ r /dev/stdin' -e ';d;}' \
-    helmc-app/values.yaml <<< "$VALUES_YML_IMAGES" > helm-app/values-updated.yaml
-  echo "Differences:"
-  diff helm-app/values.yaml helm-app/values-updated.yaml
-else
-  echo
-  echo "=== Paste the following into helm-app/values.yaml"
-  echo "$VALUES_YML_IMAGES"
-fi

@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -30,4 +31,6 @@ public class EvidenceSummaryDocumentEntity extends BaseEntity {
   private String documentName;
 
   private UUID folderId;
+
+  private OffsetDateTime uploadedAt;
 }

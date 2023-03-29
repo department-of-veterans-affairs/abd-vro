@@ -26,7 +26,7 @@ public class XampleRoutesTest extends CamelTestSupport {
   @Mock DbHelper dbHelper;
 
   @Override
-  protected RoutesBuilder createRouteBuilder() throws Exception {
+  protected RoutesBuilder createRouteBuilder() {
     return new XampleRoutes(dbHelper);
   }
 
@@ -61,6 +61,14 @@ public class XampleRoutesTest extends CamelTestSupport {
           rb.mockEndpoints("direct:saveToDb");
           rb.weaveAddLast().to(logOutput);
         });
+    AdviceWith.adviceWith(
+        context,
+        "to-rabbitmq-route",
+        false,
+        rb -> {
+          // replace the rabbitmq endpoint to avoid "Failed to create connection."
+          rb.weaveById("to-rabbitmq-serviceJ").replace().to("mock:to-rabbitmq");
+        });
 
     if (isUseAdviceWith()) context.start();
   }
@@ -74,8 +82,8 @@ public class XampleRoutesTest extends CamelTestSupport {
 
     // send a message in the original route
     var response = template.requestBody(STARTING_URI, someDtoModel, SomeDtoModel.class);
-    assertEquals(response.getResourceId(), someDtoModel.getResourceId());
-    assertEquals(response.getStatus(), StatusValue.PROCESSING.name());
+    assertEquals(someDtoModel.getResourceId(), response.getResourceId());
+    assertEquals(StatusValue.PROCESSING.name(), response.getStatus());
 
     assertMockEndpointsSatisfied();
   }
@@ -88,8 +96,8 @@ public class XampleRoutesTest extends CamelTestSupport {
 
     // send a message in the original route
     var response = template.requestBody(STARTING_URI, someDtoModel, SomeDtoModel.class);
-    assertEquals(response.getResourceId(), someDtoModel.getResourceId());
-    assertEquals(response.getStatus(), StatusValue.PROCESSING.name());
+    assertEquals(someDtoModel.getResourceId(), response.getResourceId());
+    assertEquals(StatusValue.PROCESSING.name(), response.getStatus());
 
     assertMockEndpointsSatisfied();
   }
@@ -147,8 +155,8 @@ public class XampleRoutesTest extends CamelTestSupport {
 
     // send a message in the original route
     var response = template.requestBody(STARTING_URI, someDtoModel, SomeDtoModel.class);
-    assertEquals(response.getResourceId(), someDtoModel.getResourceId());
-    assertEquals(response.getStatus(), StatusValue.ERROR.name());
+    assertEquals(someDtoModel.getResourceId(), response.getResourceId());
+    assertEquals(StatusValue.ERROR.name(), response.getStatus());
     assertTrue(response.getStatusMessage().contains(errorMsg));
 
     assertMockEndpointsSatisfied();
