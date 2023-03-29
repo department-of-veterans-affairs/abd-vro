@@ -18,6 +18,8 @@ public class MasProcessingObject implements Auditable {
   private HealthDataAssessment healthDataAssessment;
   private boolean isTSOJ = false;
 
+  private Boolean sufficientForFastTracking;
+
   public int getCollectionId() {
     return claimPayload.getCollectionId();
   }
