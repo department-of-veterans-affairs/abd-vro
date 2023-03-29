@@ -167,6 +167,7 @@ public class MasIntegrationProcessors {
       // Update our database with offramp reason.
       if (offRampErrorPayload != null) {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
+        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
