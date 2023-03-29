@@ -60,7 +60,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var diagnosticCode1 = "71";
     var request1 =
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
-    var response1 = masProcessingService.processIncomingClaimGetOffRampReason(request1);
+    var response1 = masProcessingService.processIncomingClaimGetUnprocessableReason(request1);
     // wrong diagnostic code
     assertEquals(
         "Claim with [collection id = 123], [diagnostic code = 71], and"
@@ -69,7 +69,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
 
     var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
     request2.getClaimDetail().getConditions().setDisabilityActionType("OTHER");
-    var response2 = masProcessingService.processIncomingClaimGetOffRampReason(request2);
+    var response2 = masProcessingService.processIncomingClaimGetUnprocessableReason(request2);
     // wrong disability action
     assertEquals(
         "Claim with [collection id = 123], [diagnostic code = 7101], and"
@@ -100,7 +100,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var request = MasTestData.getMasAutomatedClaimPayload(collectionId, diagnosticCode, claimId);
     request.getClaimDetail().getConditions().setDisabilityActionType("NEW");
     request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
-    var response = masProcessingService.processIncomingClaimGetOffRampReason(request);
+    var response = masProcessingService.processIncomingClaimGetUnprocessableReason(request);
     assertEquals(
         "Claim with [collection id = 123] does not qualify for "
             + "automated processing because it is missing anchors.",
