@@ -30,13 +30,19 @@ public enum MasCompletionStatus {
     return result;
   }
 
-  public static MasCompletionStatus of(MasProcessingObject mpo) {
-    return of(mpo.getOrigin(), mpo.getSufficientForFastTracking());
+  public static MasCompletionStatus of(MasProcessingObject mpo, String offRampError) {
+    return of(mpo.getOrigin(), mpo.getSufficientForFastTracking(), offRampError );
   }
 
-  public static MasCompletionStatus of(MasCamelStage origin, Boolean sufficientForFastTracking) {
-    if (sufficientForFastTracking == null) return OFF_RAMP;
-    if (origin == MasCamelStage.START_COMPLETE) return OFF_RAMP_MISSING_FLASH;
+  public static MasCompletionStatus of(
+      MasCamelStage origin, Boolean sufficientForFastTracking, String offRampError) {
+    if (origin == MasCamelStage.START_COMPLETE
+        || sufficientForFastTracking == null
+        || offRampError != null) {
+      if (sufficientForFastTracking == null) return OFF_RAMP;
+      if (origin == MasCamelStage.START_COMPLETE) return OFF_RAMP_MISSING_FLASH;
+      return OFF_RAMP;
+    }
     return sufficientForFastTracking ? READY_FOR_DECISION : EXAM_ORDER;
   }
 }
