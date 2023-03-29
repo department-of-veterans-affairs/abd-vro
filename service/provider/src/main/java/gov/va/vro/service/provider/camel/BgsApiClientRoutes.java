@@ -98,7 +98,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .id("to-rabbitmq-bgsclient-addnote")
         .routeId("to-rabbitmq-bgsapi-addnote-route")
     // .convertBodyTo(BgsApiClientModel.class)
-        // TODO: if retries failed, notify slack
+    // TODO: if retries failed, notify slack
     ;
   }
 
