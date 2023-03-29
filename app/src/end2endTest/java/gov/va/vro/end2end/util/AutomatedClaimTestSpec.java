@@ -15,6 +15,7 @@ public class AutomatedClaimTestSpec {
   private HttpStatus expectedStatusCode = HttpStatus.OK;
   private String payloadPath;
   private boolean bipError = false;
+  private boolean masError = false;
 
   public AutomatedClaimTestSpec(String collectionId) {
     this.collectionId = collectionId;

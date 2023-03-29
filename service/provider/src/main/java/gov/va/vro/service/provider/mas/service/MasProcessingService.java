@@ -207,4 +207,11 @@ public class MasProcessingService {
         .examOrderDateTime(examDateTime)
         .build();
   }
+
+  public void offRampClaimForError(MasProcessingObject mpo, String offRampReason) {
+    MasAutomatedClaimPayload claimPayload = mpo.getClaimPayload();
+    Claim claim = toClaim(claimPayload);
+    claim.setOffRampReason(offRampReason);
+    saveToDbService.setOffRampReason(claim);
+  }
 }
