@@ -1,6 +1,6 @@
 /**
  * Provides docker container settings
- * Mimics local.java.container-conventions.gradle except for Python projects
+ * Mimics local.java.container-conventions.gradle except for Ruby projects
  */
 
 plugins {
@@ -11,7 +11,8 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-python')
+        // TODO: create buildSrc/docker/Dockerfile-ruby once stable
+        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-ruby')
 
     files "src/docker/entrypoint.sh",
         new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
@@ -21,12 +22,4 @@ docker {
     copySpec.into(".").from("src"){
         exclude('docker')
     }
-    copySpec.into(".").from("../"){
-        include("*.py")
-    }
 }
-
-//dockerRun {
-//    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
-//        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
-//}
