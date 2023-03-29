@@ -53,7 +53,7 @@ public class MasProcessingService {
    * @param payload mas payload.
    * @return String
    */
-  public String processIncomingClaim(MasAutomatedClaimPayload payload) {
+  public void processIncomingClaimSaveToDB(MasAutomatedClaimPayload payload) {
     log.info(
         "Process MAS collection {},  claim {} , icn: {}",
         payload.getCollectionId(),
@@ -62,16 +62,27 @@ public class MasProcessingService {
     Claim claim = toClaim(payload);
     saveToDbService.insertClaim(claim);
     saveToDbService.insertFlashIds(payload.getVeteranFlashIds(), payload.getVeteranIcn());
-    var offRampReasonOptional = getOffRampReason(payload);
+  }
+
+  public String processIncomingClaimGetUnprocessableReason(MasAutomatedClaimPayload payload) {
+    var unprocessableReasonOptional = getOffRampReasonScopeAndAnchorCheck(payload);
+    if (unprocessableReasonOptional.isPresent()) {
+      return unprocessableReasonOptional.get();
+    }
+    return null;
+  }
+
+  public String processIncomingClaimPresumptiveOffRampClaimCheck(MasAutomatedClaimPayload payload) {
+    var offRampReasonOptional = getOffRampReasonPresumptiveCheck(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
+      Claim claim = toClaim(payload);
       payload.setOffRampReason(offRampReason);
       claim.setOffRampReason(offRampReason);
       saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
     }
-
     var headers =
         Map.of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,
@@ -82,18 +93,7 @@ public class MasProcessingService {
     return String.format("Received Claim for collection Id %d.", payload.getCollectionId());
   }
 
-  private Optional<String> getOffRampReason(MasAutomatedClaimPayload payload) {
-    if (!payload.isInScope()) {
-      var message =
-          String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " and [disability action type = %s] is not in scope.",
-              payload.getCollectionId(),
-              payload.getDiagnosticCode(),
-              payload.getDisabilityActionType());
-      return Optional.of(message);
-    }
-
+  public Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
       var message =
           String.format(
@@ -103,6 +103,20 @@ public class MasProcessingService {
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType(),
               payload.getVeteranFlashIds());
+      return Optional.of(message);
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> getOffRampReasonScopeAndAnchorCheck(MasAutomatedClaimPayload payload) {
+    if (!payload.isInScope()) {
+      var message =
+          String.format(
+              "Claim with [collection id = %s], [diagnostic code = %s],"
+                  + " and [disability action type = %s] is not in scope.",
+              payload.getCollectionId(),
+              payload.getDiagnosticCode(),
+              payload.getDisabilityActionType());
       return Optional.of(message);
     }
 
