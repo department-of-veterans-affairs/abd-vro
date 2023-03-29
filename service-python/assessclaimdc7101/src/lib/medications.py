@@ -5,6 +5,22 @@ from dateutil.relativedelta import relativedelta
 from .utils import extract_date, format_date
 
 
+def sort_med(medication_list):
+    """
+
+    :param medication_list:
+    :return:
+    """
+
+    medication_list = sorted(
+        medication_list,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
+
+    return medication_list
+
+
 def medication_required(request_body):
     """
     Determine if there is the veteran requires medication for hypertension
@@ -33,7 +49,6 @@ def medication_required(request_body):
 
 def filter_mas_medication(request_body):
     """Filter MAS medication data"""
-    response = {}
     medication_with_date = []
     medication_without_date = []
     medication_two_years = []
@@ -54,25 +69,11 @@ def filter_mas_medication(request_body):
                 medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
             except (ValueError, KeyError):
                 medication["receiptDate"] = ""
-    medication_with_date = sorted(
-        medication_with_date,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
 
-    medication_two_years = sorted(
-        medication_two_years,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
-
-    medication_with_date.extend(medication_without_date)
-    medication_display = medication_with_date
-
-    if request_body["disabilityActionType"] == "INCREASE":
-        medication_display = medication_two_years
-
-    response["medications"] = medication_display
-    response["medicationsCount"] = len(medication_display)
+    response = {"twoYearsMedications": sort_med(medication_two_years),
+                "allMedications": sort_med(medication_with_date) + medication_without_date,
+                "allMedicationsCount": len(request_body["evidence"]["medications"]),
+                "twoYearsMedicationsCount": len(medication_two_years)
+                }
 
     return response
