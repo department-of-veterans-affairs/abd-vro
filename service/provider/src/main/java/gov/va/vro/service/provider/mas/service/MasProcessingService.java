@@ -1,6 +1,7 @@
 package gov.va.vro.service.provider.mas.service;
 
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHANGE;
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 
 import gov.va.vro.camel.CamelEntry;
@@ -95,7 +96,7 @@ public class MasProcessingService {
 
   public Optional<String> getOffRampReasonPresumptiveCheck(MasAutomatedClaimPayload payload) {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
-      var message =
+      var logMessageOnly =
           String.format(
               "Claim with [collection id = %s], [diagnostic code = %s],"
                   + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
@@ -103,7 +104,8 @@ public class MasProcessingService {
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType(),
               payload.getVeteranFlashIds());
-      return Optional.of(message);
+      log.info(logMessageOnly);
+      return Optional.of(NEW_NOT_PRESUMPTIVE);
     }
     return Optional.empty();
   }

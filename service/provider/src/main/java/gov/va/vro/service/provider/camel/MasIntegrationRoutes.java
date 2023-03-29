@@ -112,6 +112,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
+  // Possible OffRamp Reasons
+  public static final String SUFFICIENCY_UNDETERMINED = "Sufficiency cannot be determined.";
+  public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
+  public static final String EXAM_ORDER_FAILED = "examOrderFailed";
+  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
+
   @Override
   public void configure() {
     configureAuditing();
@@ -184,7 +190,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .setProperty("offRampError", constant("Sufficiency cannot be determined."))
+        .setProperty("offRampError", constant(SUFFICIENCY_UNDETERMINED))
         .setProperty("sourceRoute", constant("assessorError"))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
@@ -192,7 +198,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .end();
 
     String rfdRouteId = "mas-rfd";
-    String pdfFailError = "docUploadFailed";
+
     from(END_POINT_RFD)
         // input: MasAutomatedClaimPayload
         .routeId(rfdRouteId)
@@ -204,7 +210,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("offRampError", constant(pdfFailError))
+        .setProperty("offRampError", constant(PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM))
         .setProperty("sourceRoute", constant(rfdRouteId))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
@@ -213,7 +219,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    final String orderFailMessage = "examOrderFailed";
     final String pdfFailMessage = "PDF upload failed after exam order requested.";
 
     from(ENDPOINT_ORDER_EXAM)
@@ -231,7 +236,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
         .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampError", constant(orderFailMessage))
+        .setProperty("offRampError", constant(EXAM_ORDER_FAILED))
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
@@ -340,18 +345,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
         // completionProcessor sets the claimLifecycleStatus to RFD
         .process(
-            MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
-        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
+            MasIntegrationProcessors.completionProcessor(
+                routeId, bipClaimService, masProcessingService))
+        .choice()
+        .when(simple("${exchangeProperty.completionSlackMessage} != null"))
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
+        .onPrepare(slackEventPropertyProcessor(routeId, "completionSlackMessage"))
+        .endChoice()
+        .otherwise()
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(
-            auditProcessor(
-                routeId,
-                auditable -> {
-                  MasProcessingObject mpo = (MasProcessingObject) auditable;
-                  return mpo.isTSOJ()
-                      ? "Claim satisfies TSOJ condition. Updated status."
-                      : "Claim does not satisfy TSOJ condition. Status not updated.";
-                }));
+        .onPrepare(auditProcessor(routeId, "Successful processing"))
+        .end();
   }
 
   private void configureNotify() {
