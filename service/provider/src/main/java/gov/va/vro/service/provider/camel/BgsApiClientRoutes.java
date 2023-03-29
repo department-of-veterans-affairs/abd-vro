@@ -56,9 +56,9 @@ public class BgsApiClientRoutes extends RouteBuilder {
               MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
               // if a claim is RFD or an exam was ordered
               if (completionStatus == MasCompletionStatus.READY_FOR_DECISION)
-                System.out.println("++++++++ RFD +++++++");
+                log.warn("++++++++ RFD +++++++");
               if (completionStatus == MasCompletionStatus.EXAM_ORDER) {
-                System.out.println("++++++++ EXAM_ORDER +++++++");
+                log.warn("++++++++ EXAM_ORDER +++++++");
                 mpo.getEvidence();
                 // contentionEntity.getEvidenceSummaryDocuments()
               }
@@ -70,17 +70,16 @@ public class BgsApiClientRoutes extends RouteBuilder {
                 //   see MasProcessingService.processIncomingClaim
                 //   see MasProcessingService.getOffRampReason
                 if (payload.isPresumptive() != null && !payload.isPresumptive()) {
-                  System.out.println("newClaimMissingFlash266 ??");
+                  log.warn("newClaimMissingFlash266 ??");
                 }
                 // ARSD upload failure
                 String offRampReason = mpo.getClaimPayload().getOffRampReason();
-                System.out.println("++++++++ offRampReason=" + offRampReason);
+                log.warn("++++++++ offRampReason=" + offRampReason);
                 String detailsOffRampReason = mpo.getDetails().get("offRampReason");
-                System.out.println("++++++++ detailsOffRampReason=" + offRampReason);
+                log.warn("++++++++ detailsOffRampReason=" + offRampReason);
                 if (offRampReason.equals("newClaimMissingFlash266")
                     || offRampReason.equals("insufficientHealthDataToOrderExam"))
-                  System.out.println(
-                      "++++++++ offRampReason=" + offRampReason + " Claim-level note:...");
+                  log.warn("++++++++ offRampReason=" + offRampReason + " Claim-level note:...");
               }
             })
         .to(BGSCLIENT_ADDNOTES)
