@@ -1,0 +1,25 @@
+/**
+ * Provides docker container settings
+ * Mimics local.java.container-conventions.gradle except for Ruby projects
+ */
+
+plugins {
+    id 'local.docker.container-conventions'
+}
+
+docker {
+    if (file('src/docker/Dockerfile').exists())
+        dockerfile file('src/docker/Dockerfile')
+    else
+        // TODO: create buildSrc/docker/Dockerfile-ruby once stable
+        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-ruby')
+
+    files "src/docker/entrypoint.sh",
+        new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
+        new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
+
+    // Copy files into build/docker/ folder, where the container image will be built
+    copySpec.into(".").from("src"){
+        exclude('docker')
+    }
+}

@@ -14,6 +14,8 @@ import gov.va.vro.end2end.util.ContentionUpdatesResponse;
 import gov.va.vro.end2end.util.LifecycleUpdatesResponse;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
+import gov.va.vro.end2end.util.SuccessResponse;
+import gov.va.vro.end2end.util.TempJurisdictionStationRequest;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
@@ -225,23 +227,16 @@ public class VroV2Tests {
     restTemplate.delete(UPDATES_URL + claimId);
     restTemplate.delete(RECEIVED_FILES_URL + fileNumber);
     restTemplate.delete(ORDER_EXAM_URL + collectionId);
-    if (spec.isCheckSlack()) {
-      restTemplate.delete(SLACK_URL + collectionId);
-    }
+    restTemplate.delete(SLACK_URL + collectionId);
 
     // Start automated claim
     var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
     return request;
-  }
-
-  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    return startAutomatedClaim(spec);
   }
 
   private AutomatedClaimTestSpec specFor200(String collectionId) {
@@ -351,6 +346,14 @@ public class VroV2Tests {
     assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
   }
 
+  private void overrideTempJurisdictionStation(String claimId, String station) {
+    String url = UPDATES_URL + claimId + "/" + "temp_jurisdiction_station";
+    TempJurisdictionStationRequest payload = new TempJurisdictionStationRequest(station);
+    HttpEntity<TempJurisdictionStationRequest> request = new HttpEntity<>(payload);
+    var response = restTemplate.postForEntity(url, request, SuccessResponse.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
   /**
    * Runs a full end-to-end test for the collection id using mock services. Collection id used here
    * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
@@ -358,12 +361,22 @@ public class VroV2Tests {
    * and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId) {
-    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
+  private void testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
+    String collectionId = spec.getCollectionId();
+    MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
+    String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
+    if (tempJurisdictionStationOverride != null) {
+      overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
+    }
     testPdfUpload(request);
-    testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
-    testLifecycleStatus(claimId, ClaimStatus.RFD);
+    if (!spec.isBipUpdateClaimError()) {
+      testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
+      testLifecycleStatus(claimId, ClaimStatus.RFD);
+    }
+    if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
+      testSlackMessage(collectionId);
+    }
   }
 
   /*
@@ -395,7 +408,7 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean testOffRampSlackMessage(String collectionId) {
+  private boolean testSlackMessage(String collectionId) {
     for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
       Thread.sleep(5000);
       String url = SLACK_URL + collectionId;
@@ -457,7 +470,7 @@ public class VroV2Tests {
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
 
-    boolean slackResult = testOffRampSlackMessage(spec.getCollectionId());
+    boolean slackResult = testSlackMessage(spec.getCollectionId());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
     final String claimId = request.getClaimDetail().getBenefitClaimId();
@@ -470,15 +483,14 @@ public class VroV2Tests {
    * and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimOutOfScope() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 10], [diagnostic code = 7101], and "
             + "[disability action type = DECREASE] is not in scope.");
-    spec.setCheckSlack(true);
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   /**
@@ -486,15 +498,14 @@ public class VroV2Tests {
    * message, Slack message and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimMissingAnchor() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 20] does not qualify for "
             + "automated processing because it is missing anchors.");
-    spec.setCheckSlack(true);
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -522,17 +533,30 @@ public class VroV2Tests {
     assertEquals(isOrderedAtNull, info.getOrderedAt() == null);
   }
 
-  private void testAutomatedClaimOrderExam(String collectionId) {
+  private void testAutomatedClaimOrderExam(AutomatedClaimTestSpec spec) {
+    String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
-    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
-    testExamOrdered(collectionId);
-    testPdfUpload(request);
-    String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
-    checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
-    testExamOrderingStatus(collectionId);
-    checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
+    MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+    if (spec.isMasError()) {
+      boolean slackResult = testSlackMessage(spec.getCollectionId());
+      assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+    } else {
+      testExamOrdered(collectionId);
+      if (spec.isBipError()) {
+        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      } else {
+        testPdfUpload(request);
+      }
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+      checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
+      testExamOrderingStatus(collectionId);
+      checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
+    }
   }
 
   /**
@@ -542,7 +566,8 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimOrderExamNewClaim() {
-    testAutomatedClaimOrderExam("377");
+    AutomatedClaimTestSpec spec = specFor200("377");
+    testAutomatedClaimOrderExam(spec);
   }
 
   /**
@@ -552,13 +577,48 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimOrderExamIncreaseClaim() {
-    testAutomatedClaimOrderExam("378");
+    AutomatedClaimTestSpec spec = specFor200("378");
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures bip claim evidence api upload evidence errors are handled properly.
+   * Copied from 378; this sends an error message instead of uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamBipError() {
+    AutomatedClaimTestSpec spec = specFor200("390");
+    spec.setBipError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures mas order exam errors are handled properly. Copied from 378; this sends
+   * an error message instead of ordering the exam or uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamMasError() {
+    AutomatedClaimTestSpec spec = specFor200("391");
+    spec.setMasError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test for an automated claim that does NOT order exam, and then fails PDF upload (Bip Errors on
+   * this fileID) Ensures that we handle the pdf failure correctly.
+   */
+  @Test
+  void testAutomatedClaimNoExamPDFError() {
+    String collectionId = "392";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimOffRamp(spec);
   }
 
   /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */
   @Test
   void testLHDataOnlyClaimOrderExamIncreaseClaim() {
-    testAutomatedClaimOrderExam("401");
+    AutomatedClaimTestSpec spec = specFor200("401");
+    testAutomatedClaimOrderExam(spec);
   }
 
   @SneakyThrows
@@ -615,28 +675,31 @@ public class VroV2Tests {
 
   /**
    * This is a full positive end-to-end test for an increase case. See
-   * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
+   * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999375
    */
   @Test
   void testAutomatedClaimFullPositiveIncrease() {
-    testAutomatedClaimFullPositive("375");
+    AutomatedClaimTestSpec spec = specFor200("375");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /** This is a full positive end-to-end test for an increase case with LightHouse data only. */
   @Test
   void testLHDataOnlyClaimFullPositiveIncrease() {
-    testAutomatedClaimFullPositive("400");
+    AutomatedClaimTestSpec spec = specFor200("400");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
    * This is a full positive end-to-end test for an presumptive case. See
-   * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
+   * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999376
    */
   @Test
   void testAutomatedClaimFullPositivePresumptive() {
-    testAutomatedClaimFullPositive("376");
+    AutomatedClaimTestSpec spec = specFor200("376");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
@@ -646,7 +709,32 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
-    testAutomatedClaimFullPositive("380");
+    AutomatedClaimTestSpec spec = specFor200("380");
+    testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
+   * the Slack message when temporary station of jurisdiction changes during VRO processing.
+   */
+  @Test
+  void testAutomatedClaimFullPositiveChangedStation() {
+    AutomatedClaimTestSpec spec = specFor200("385");
+    spec.setTempJurisdictionStationOverride("456");
+
+    testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
+   * the Slack message when bip claims api goes down during VRO processing.
+   */
+  @Test
+  void testAutomatedClaimFullPositiveBipGoesDown() {
+    AutomatedClaimTestSpec spec = specFor200("386");
+    spec.setBipUpdateClaimError(true);
+
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
@@ -657,7 +745,6 @@ public class VroV2Tests {
   void testAutomatedClaimSufficiencyIsNull() {
     String collectionId = "500";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
-    spec.setCheckSlack(true);
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
   }
