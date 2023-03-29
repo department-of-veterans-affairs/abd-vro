@@ -214,7 +214,7 @@ public class BipClaimService {
     }
 
     String station = claim.getTempStationOfJurisdiction();
-    if (!TSOJ.equals(station) && status != MasCompletionStatus.IMMEDIATE_OFF_RAMP) {
+    if (!TSOJ.equals(station)) {
       String message =
           String.format("Claim %s is in station %s not in %s.", claimId, station, TSOJ);
       return BipUpdateClaimResult.ofWarning(message);

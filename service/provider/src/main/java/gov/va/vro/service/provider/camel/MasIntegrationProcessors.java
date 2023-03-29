@@ -11,9 +11,7 @@ import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
-import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
-import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
 import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
 import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
@@ -150,8 +148,8 @@ public class MasIntegrationProcessors {
    * @param bipClaimService
    * @return Processor completion camel processor
    */
-  public static Processor completionProcessor(String routeId,
-      BipClaimService bipClaimService, MasProcessingService masProcessingService) {
+  public static Processor completionProcessor(
+      String routeId, BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
       MasCamelStage origin = payload.getOrigin();

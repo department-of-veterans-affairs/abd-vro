@@ -331,7 +331,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
-            MasIntegrationProcessors.completionProcessor(routeId, bipClaimService, masProcessingService))
+            MasIntegrationProcessors.completionProcessor(
+                routeId, bipClaimService, masProcessingService))
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
