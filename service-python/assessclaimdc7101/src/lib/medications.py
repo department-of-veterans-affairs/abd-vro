@@ -7,9 +7,10 @@ from .utils import extract_date, format_date
 
 def sort_med(medication_list):
     """
+    Sort medications by 'authoredOn' date.
 
-    :param medication_list:
-    :return:
+    :param medication_list: List of medication
+    :return: Sorted list
     """
 
     medication_list = sorted(
@@ -37,12 +38,7 @@ def medication_required(request_body):
         if medication["status"].lower() == "active":
             relevant_medications.append(medication)
 
-    relevant_medications = sorted(
-        relevant_medications,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
-    response["medications"] = relevant_medications
+    response["medications"] = sort_med(relevant_medications)
     response["medicationsCount"] = len(relevant_medications)
     return response
 
