@@ -12,6 +12,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -313,7 +314,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         // before completionProcessor, add BGS notes
         .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
-        // .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
+        .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
         .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
         // completionProcessor sets the claimLifecycleStatus to RFD
         .process(MasIntegrationProcessors.completionProcessor(bipClaimService))
