@@ -233,7 +233,7 @@ public class VroV2Tests {
     var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
     return request;
@@ -483,14 +483,14 @@ public class VroV2Tests {
    * and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimOutOfScope() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 10], [diagnostic code = 7101], and "
             + "[disability action type = DECREASE] is not in scope.");
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   /**
@@ -498,14 +498,14 @@ public class VroV2Tests {
    * message, Slack message and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimMissingAnchor() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 20] does not qualify for "
             + "automated processing because it is missing anchors.");
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -537,19 +537,26 @@ public class VroV2Tests {
     String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
-    testExamOrdered(collectionId);
-    if (spec.isBipError()) {
+    if (spec.isMasError()) {
       boolean slackResult = testSlackMessage(spec.getCollectionId());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
     } else {
-      testPdfUpload(request);
+      testExamOrdered(collectionId);
+      if (spec.isBipError()) {
+        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+      } else {
+        testPdfUpload(request);
+      }
+      String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+      checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
+      testExamOrderingStatus(collectionId);
+      checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
     }
-    String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, false, true, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
-    checkExamOrderInfo(collectionId, "ORDER_SUBMITTED", true);
-    testExamOrderingStatus(collectionId);
-    checkExamOrderInfo(collectionId, MAS_ORDER_NOTIFY_STATUS, false);
   }
 
   /**
@@ -583,6 +590,28 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200("390");
     spec.setBipError(true);
     testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test Case that ensures mas order exam errors are handled properly. Copied from 378; this sends
+   * an error message instead of ordering the exam or uploading the pdf.
+   */
+  @Test
+  void testAutomatedClaimOrderExamMasError() {
+    AutomatedClaimTestSpec spec = specFor200("391");
+    spec.setMasError(true);
+    testAutomatedClaimOrderExam(spec);
+  }
+
+  /**
+   * Test for an automated claim that does NOT order exam, and then fails PDF upload (Bip Errors on
+   * this fileID) Ensures that we handle the pdf failure correctly.
+   */
+  @Test
+  void testAutomatedClaimNoExamPDFError() {
+    String collectionId = "392";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimOffRamp(spec);
   }
 
   /** Test Case that ensures that exam order *is* called based on LH data with no MAS annotations */

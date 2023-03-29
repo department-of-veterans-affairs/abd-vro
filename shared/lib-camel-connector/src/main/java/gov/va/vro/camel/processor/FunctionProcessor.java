@@ -62,6 +62,7 @@ public class FunctionProcessor<I, O> implements Processor {
     conditionallySetOutputBody(exchange, result);
   }
 
+  @SuppressWarnings("unchecked")
   private I getInputBody(Exchange exchange) {
     if (inputBodyClass == null) return (I) exchange.getIn().getBody();
 

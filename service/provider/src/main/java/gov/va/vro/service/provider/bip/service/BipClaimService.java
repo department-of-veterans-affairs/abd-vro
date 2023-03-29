@@ -70,7 +70,11 @@ public class BipClaimService {
     if (contentions == null) {
       log.info("Claim with claim Id {} does not have contentions.", claimId);
       return false;
+    } else if (contentions.size() != 1) {
+      log.info("Claim with claim Id {} does not have contentions.", claimId);
+      return false;
     }
+
     log.info(
         "SPECIAL_ISSUE_1: {}, SPECIAL_ISSUE_2: {}",
         claimPorps.getSpecialIssue1(),
