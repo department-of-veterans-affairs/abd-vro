@@ -33,15 +33,15 @@ public class HealthAssessmentController implements HealthAssessmentResource {
         "Getting full health assessment for claim {} and veteran icn {}",
         claim.getClaimSubmissionId(),
         claim.getVeteranIcn());
+    String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode());
+    if (diagnosis == null) {
+      throw new ClaimProcessingException(
+          claim.getClaimSubmissionId(),
+          HttpStatus.BAD_REQUEST,
+          String.format(
+              "Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
+    }
     try {
-      String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode());
-      if (diagnosis == null) {
-        throw new ClaimProcessingException(
-            claim.getClaimSubmissionId(),
-            HttpStatus.BAD_REQUEST,
-            String.format(
-                "Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
-      }
       Claim model = postClaimRequestMapper.toModel(claim);
       // PostClaimMapper is used in both v1 (VroController) and v2. To differentiate the path we are
       // on, set the type here. which is v2 for this file.

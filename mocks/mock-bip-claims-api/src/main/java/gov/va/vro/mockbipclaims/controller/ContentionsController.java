@@ -62,6 +62,12 @@ public class ContentionsController implements ContentionsApi {
   public ResponseEntity<UpdateContentionsResponse> updateContentions(
       Long claimId, UpdateContentionsRequest updateContentionsRequest) {
     log.info("Updating contentions claim (id: {})", claimId);
+
+    if (claimId.longValue() == 1086L) {
+      String reason = "Intentional exception for testing: " + claimId;
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
+    }
+
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
