@@ -256,6 +256,7 @@ public class VroV2Tests {
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
     boolean successUploading = false;
+    String evidencePdfText = null;
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
       Thread.sleep(20000);
       String url = RECEIVED_FILES_URL + fileNumber;
@@ -263,10 +264,10 @@ public class VroV2Tests {
         ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
         PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        evidencePdfText = pdfTextV2.getPdfText();
+        log.info("PDF text: {}", evidencePdfText);
         assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
         successUploading = true;
-        return pdfTextV2.getPdfText();
       } catch (HttpStatusCodeException exception) {
         log.info("Did not find veteran {}. Retrying...", fileNumber);
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -275,7 +276,7 @@ public class VroV2Tests {
 
     // Verify evidence pdf is uploaded
     assertTrue(successUploading);
-    return fileNumber;
+    return evidencePdfText;
   }
 
   /**
@@ -357,12 +358,13 @@ public class VroV2Tests {
    * and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId) {
+  private String testAutomatedClaimFullPositive(String collectionId) {
     MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testPdfUpload(request);
+    String pdfText = testPdfUpload(request);
     testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
     testLifecycleStatus(claimId, ClaimStatus.RFD);
+    return pdfText;
   }
 
   /*
@@ -663,13 +665,16 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
-    MasAutomatedClaimRequest request = startAutomatedClaim("380");
-    String pdfText = testPdfUpload(request);
-    // Check for evidence from mock MAS evidence API
+    String pdfText = testAutomatedClaimFullPositive("380");
+    // Check for evidence from mock MAS evidence API.
     assertTrue(pdfText.contains("143/-"));
     assertTrue(pdfText.contains("-/92"));
-    // Check for evidence from mock LH API
+    // Check for evidence from mock LH API.
     assertTrue(pdfText.contains("190/-"));
+    assertTrue(pdfText.contains("-/93"));
+
+    // Check that BP with missing systolic and diastolic is not included as evidence.
+    assertFalse(pdfText.contains("-/-"));
   }
 
   /**

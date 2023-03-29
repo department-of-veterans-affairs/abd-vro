@@ -606,11 +606,15 @@
               ],
               "text": "Systolic blood pressure"
             },
-            "valueQuantity": {
-              "value": 167.0,
-              "unit": "mm[Hg]",
-              "system": "http://unitsofmeasure.org",
-              "code": "mm[Hg]"
+            "dataAbsentReason": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/data-absent-reason",
+                  "code": "unknown",
+                  "display": "Unknown"
+                }
+              ],
+              "text": "Unknown"
             }
           },
           {
