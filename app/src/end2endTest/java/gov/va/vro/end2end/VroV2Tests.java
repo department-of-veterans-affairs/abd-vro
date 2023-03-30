@@ -703,6 +703,16 @@ public class VroV2Tests {
   }
 
   /**
+   * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
+   * message, removal of rdr1, and database update are verified.
+   */
+  @Test
+  void testAutomatedClaimNewNotPresumptive() {
+    AutomatedClaimTestSpec spec = specFor200("379");
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
    * This is a full positive end-to-end test for a case with incomplete blood pressures. See
    * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999380
