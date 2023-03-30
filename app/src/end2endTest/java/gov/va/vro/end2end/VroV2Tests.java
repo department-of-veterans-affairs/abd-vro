@@ -24,6 +24,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -248,11 +249,12 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private void testPdfUpload(MasAutomatedClaimRequest request) {
+  private String testPdfUpload(MasAutomatedClaimRequest request) {
     // Wait until the evidence pdf is uploaded
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
     boolean successUploading = false;
+    String evidencePdfText = null;
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
       Thread.sleep(20000);
       String url = RECEIVED_FILES_URL + fileNumber;
@@ -260,7 +262,8 @@ public class VroV2Tests {
         ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
         PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        evidencePdfText = pdfTextV2.getPdfText();
+        log.info("PDF text: {}", evidencePdfText);
         assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
         successUploading = true;
         break;
@@ -272,6 +275,7 @@ public class VroV2Tests {
 
     // Verify evidence pdf is uploaded
     assertTrue(successUploading);
+    return evidencePdfText;
   }
 
   /**
@@ -361,7 +365,7 @@ public class VroV2Tests {
    * and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
+  private String testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
@@ -369,7 +373,7 @@ public class VroV2Tests {
     if (tempJurisdictionStationOverride != null) {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
-    testPdfUpload(request);
+    String pdfText = testPdfUpload(request);
     if (!spec.isBipUpdateClaimError()) {
       testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
       testLifecycleStatus(claimId, ClaimStatus.RFD);
@@ -377,6 +381,7 @@ public class VroV2Tests {
     if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
       testSlackMessage(collectionId);
     }
+    return pdfText;
   }
 
   /*
@@ -703,6 +708,17 @@ public class VroV2Tests {
   }
 
   /**
+   * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
+   * message, removal of rdr1, and database update are verified.
+   */
+  @Test
+  void testAutomatedClaimNewNotPresumptive() {
+    AutomatedClaimTestSpec spec = specFor200("379");
+    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
    * This is a full positive end-to-end test for a case with incomplete blood pressures. See
    * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999380
@@ -710,7 +726,16 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
     AutomatedClaimTestSpec spec = specFor200("380");
-    testAutomatedClaimFullPositive(spec);
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("143/-"));
+    assertTrue(pdfText.contains("-/92"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("190/-"));
+    assertTrue(pdfText.contains("-/93"));
+
+    // Check that BP with missing systolic and diastolic is not included as evidence.
+    assertFalse(pdfText.contains("-/-"));
   }
 
   /**
