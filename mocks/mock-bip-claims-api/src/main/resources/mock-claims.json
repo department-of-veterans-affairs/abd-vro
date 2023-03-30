@@ -243,6 +243,31 @@
   },
   {
     "description": [
+      "for non presumptive offramp test - collection ID 379"
+    ],
+    "claimDetail": {
+      "claimId": 1379,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Ready for Decision"
+    },
+    "contentions": [
+      {
+        "contentionId": "2379",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Ready for Decision",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "for happy path, used with collection id 390 for exam ordering testing with bip ce error",
       "claim and contention fields are as expected"
     ],
