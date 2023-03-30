@@ -248,12 +248,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
+        .onException(
+            MasException
+                .class) // Do not go to the main error processor. Mas complete route handles.
+        .handled(true)
+        .end() // End Exception
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Collecting evidence"))
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
-        .stopOnException()
+        .stopOnException() // Stop does not handle the exception.
         .doTry()
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
