@@ -8,13 +8,12 @@ import java.util.Map;
 
 public class BgsClaimNotes {
 
-  static final String RFD_NOTE =
-     "Claim status updated to RFD via automation";
+  static final String RFD_NOTE = "Claim status updated to RFD via automation";
 
   static final String ARSD_COMPLETED_NOTE =
-      "Please note, the automated review summary document (ARSD) has been completed in full. " +
-          "One or more contentions were determined to be RFD by current rating criteria. " +
-          "Necessary exams were requested or drafted.";
+      "Please note, the automated review summary document (ARSD) has been completed in full. "
+          + "One or more contentions were determined to be RFD by current rating criteria. "
+          + "Necessary exams were requested or drafted.";
 
   static final String EXAM_REQUESTED_NOTE =
       "Please note, the automated review summary document has been completed in full with the "
@@ -37,5 +36,4 @@ public class BgsClaimNotes {
           SUFFICIENCY_UNDETERMINED, CANT_CONFIRM_PRESUMPTIVE_NOTE,
           // aka docUploadFailed
           PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM, ARSD_NOT_UPLOADED_NOTE);
-
 }

@@ -31,7 +31,10 @@ public enum MasCompletionStatus {
   }
 
   public static MasCompletionStatus of(MasProcessingObject mpo) {
-    return of(mpo.getOrigin(), mpo.getSufficientForFastTracking(), mpo.getClaimPayload().getOffRampError());
+    return of(
+        mpo.getOrigin(),
+        mpo.getSufficientForFastTracking(),
+        mpo.getClaimPayload().getOffRampError());
   }
 
   public static MasCompletionStatus of(

@@ -24,12 +24,12 @@ import java.util.UUID;
 public class BgsApiClient {
   private final EvidenceSummaryDocumentRepository esDocRepository;
 
-  public BgsApiClientDto buildRequest(MasProcessingObject mpo){
+  public BgsApiClientDto buildRequest(MasProcessingObject mpo) {
     String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
     BgsApiClientDto dto = new BgsApiClientDto(mpo.getBenefitClaimId(), veteranId);
 
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
-    switch (completionStatus){
+    switch (completionStatus) {
       case READY_FOR_DECISION:
         log.warn("++++++++ RFD +++++++");
         dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
@@ -49,7 +49,7 @@ public class BgsApiClient {
         String detailsOffRampReason = mpo.getDetails().get("offRampError");
         log.warn("++++++++ detailsOffRampReason=" + detailsOffRampReason);
         log.warn("++++++++ claimNote: " + claimNote);
-        if (claimNote!=null) dto.claimNotes.add(claimNote);
+        if (claimNote != null) dto.claimNotes.add(claimNote);
 
         break;
     }
@@ -57,8 +57,9 @@ public class BgsApiClient {
   }
 
   private OffsetDateTime getDocUploadedAt(MasProcessingObject mpo) {
-    var doc = getEvidenceSummaryDocumentEntity(mpo.getClaimPayload().getEvidenceSummaryDocumentId());
-    OffsetDateTime docUploadedAt=doc.getUploadedAt();
+    var doc =
+        getEvidenceSummaryDocumentEntity(mpo.getClaimPayload().getEvidenceSummaryDocumentId());
+    OffsetDateTime docUploadedAt = doc.getUploadedAt();
     return docUploadedAt;
   }
 
