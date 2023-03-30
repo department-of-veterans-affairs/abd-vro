@@ -72,10 +72,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   public static final String ENDPOINT_MAS_COMPLETE = "direct:mas-complete";
 
+  public static final String ENDPOINT_MAS_ANNOTATIONS = "direct:mas-annotations";
   public static final String ENDPOINT_LIGHTHOUSE_EVIDENCE = "direct:lighthouse-claim-submit";
   public static final String ENDPOINT_UPLOAD_PDF = "direct:upload-pdf";
   public static final String ENDPOINT_AUDIT_WIRETAP = "direct:wire";
   private static final String ENDPOINT_COLLECT_EVIDENCE = "direct:collect-evidence";
+  public static final String ENDPOINT_ASSESS_EVIDENCE = "direct:assess-evidence";
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
@@ -113,6 +115,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
   public static final String EXAM_ORDER_FAILED = "examOrderFailed";
   public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
+
+  public static final String MAS_CALL_FAILED = "masCallFailed";
 
   @Override
   public void configure() {
@@ -174,6 +178,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("idType", simple("${body.idType}"))
         .to(ENDPOINT_COLLECT_EVIDENCE) // collect evidence from lighthouse and MAS
+        .choice()
+        .when(simple("${exchangeProperty.offRampError} == null"))
+        .to(ENDPOINT_ASSESS_EVIDENCE) // assess evidence
+        .end();
+
+    String assessRouteId = "mas-assessment";
+    from(ENDPOINT_ASSESS_EVIDENCE)
+        .routeId(assessRouteId)
         // determine if evidence is sufficient
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .convertBodyTo(AbdEvidenceWithSummary.class)
@@ -256,6 +268,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
     String lighthouseRoute = "mas-automated-claim-lighthouse";
+    String masAnnotationsRouteId = "mas-collect-annotations";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -264,12 +277,24 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Collecting evidence"))
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
-        .process(
-            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .to(ENDPOINT_MAS_ANNOTATIONS) // call MAS
         .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
         .end() // end multicast
-        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment unless off-ramp
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
+
+    from(ENDPOINT_MAS_ANNOTATIONS)
+        .routeId(masAnnotationsRouteId)
+        .doTry()
+        .process(
+            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .doCatch(MasException.class)
+        // Body is still the Mas Processing object.
+        .setProperty("sourceRoute", constant(masAnnotationsRouteId))
+        .setProperty("offRampError", constant(MAS_CALL_FAILED))
+        .setBody(simple("${exchangeProperty.payload}"))
+        .to(ENDPOINT_OFFRAMP_ERROR)
+        .end();
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId(lighthouseRoute)

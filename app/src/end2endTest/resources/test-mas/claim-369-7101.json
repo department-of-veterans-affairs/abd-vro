@@ -1,0 +1,29 @@
+{
+  "dob": "1970-02-19",
+  "firstName": "Michael",
+  "lastName": "Masexception",
+  "gender": "male",
+  "collectionId": 369,
+  "veteranIdentifiers": {
+    "icn": "1012666073V986369",
+    "ssn": "111-11-1369",
+    "veteranFileId": "9999369",
+    "edipn": "1010234-369",
+    "participantId": "88888369"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1369",
+    "claimSubmissionDateTime": "2023-01-05Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375"
+  ]
+}

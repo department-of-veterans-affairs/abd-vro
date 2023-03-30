@@ -18,12 +18,15 @@ import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
+import lombok.SneakyThrows;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -53,8 +56,16 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:claim-submit-full")
   private MockEndpoint mockClaimSubmit;
 
+  @EndpointInject("mock:assess-evidence")
+  private MockEndpoint mockAssessEvidence;
+
   @EndpointInject("mock:empty-endpoint")
   private MockEndpoint mockEmptyEndpoint;
+
+  @BeforeEach
+  void init() {
+    mockAssessEvidence.reset();
+  }
 
   @Test
   void processClaimSufficientEvidence() throws Exception {
@@ -92,8 +103,37 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             .isPresent());
   }
 
-  private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
+  // @Test
+  @SneakyThrows
+  void processClaimMasThrows() {
+    prepare(true);
+    replaceEndpoint(
+        "mas-processing", MasIntegrationRoutes.ENDPOINT_ASSESS_EVIDENCE, "mock:assess-evidence");
 
+    final String message = "Testing Mas Throws";
+    mockAssessEvidence.whenAnyExchangeReceived(
+        exchange -> {
+          throw new MasException(message);
+        });
+
+    // set up a Mas Request and invoke processClaim
+    int collectionId = 127;
+    var collectionAnnotation = new MasCollectionAnnotation();
+    MasDocument document = MasTestData.createHypertensionDocument();
+    collectionAnnotation.setCollectionsId(collectionId);
+    collectionAnnotation.setDocuments(Collections.singletonList(document));
+    Mockito.when(masApiService.getCollectionAnnotations(collectionId))
+        .thenThrow(new MasException("Testing exception throw"));
+    var payload = MasTestData.getMasAutomatedClaimPayload();
+
+    Mockito.reset();
+
+    camelEntrance.processClaim(payload);
+    Mockito.when(masApiService.getCollectionAnnotations(collectionId)).thenCallRealMethod();
+  }
+
+  @SneakyThrows
+  private void prepare(Boolean sufficientEvidence) {
     // Mock a return value when claim-submit-full (lighthouse) is invoked
     replaceEndpoint(
         "claim-submit-full",
@@ -112,7 +152,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     // Mock a return value when health assess is invoked
 
     replaceEndpoint(
-        "mas-processing",
+        "mas-assessment",
         "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.hypertension&"
             + "requestTimeout="
             + DEFAULT_REQUEST_TIMEOUT,
@@ -138,15 +178,16 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "rabbitmq://pdf-generator?queue=generate-pdf&routingKey=generate-pdf",
         "mock:empty-endpoint");
 
-    replaceEndpoint(
-        "mas-processing", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
-
     replaceEndpoint("mas-rfd", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
     replaceEndpoint(
         "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
+  }
+
+  private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
+    prepare(sufficientEvidence);
 
     // set up a Mas Request and invoke processClaim
     int collectionId = 123;

@@ -13,19 +13,16 @@ import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
+import gov.va.vro.service.provider.camel.processor.CombineExchangesProcessor;
 import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
-import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
-import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
-import java.util.List;
 import java.util.function.Function;
 
 /** Helper processors for Mas Integration. */
@@ -39,23 +36,7 @@ public class MasIntegrationProcessors {
   }
 
   public static Processor combineExchangesProcessor() {
-    return FunctionProcessor.fromFunction(combineExchangesFunction());
-  }
-
-  private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
-    return exchanges -> {
-      for (Exchange exchange : exchanges) {
-        if (exchange.isFailed()) {
-          throw new MasException(
-              "Failed to collect evidence", exchange.getException(Throwable.class));
-        }
-      }
-      Exchange exchange1 = exchanges.get(0);
-      Exchange exchange2 = exchanges.get(1);
-      var evidence1 = exchange1.getMessage().getBody(HealthDataAssessment.class);
-      var evidence2 = exchange2.getMessage().getBody(HealthDataAssessment.class);
-      return MasCollectionService.combineEvidence(evidence1, evidence2);
-    };
+    return new CombineExchangesProcessor();
   }
 
   /**

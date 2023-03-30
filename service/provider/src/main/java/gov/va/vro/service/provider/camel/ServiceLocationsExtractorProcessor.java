@@ -18,6 +18,9 @@ public class ServiceLocationsExtractorProcessor implements Processor {
   public void process(Exchange exchange) {
     try { // Late change, be defensive
       HealthDataAssessment assessment = exchange.getMessage().getBody(HealthDataAssessment.class);
+      if (assessment == null) { // off-ramp case
+        return;
+      }
       AbdEvidence evidence = assessment.getEvidence();
       if (evidence != null) {
         List<ServiceLocation> serviceLocations = evidence.getServiceLocations();
@@ -28,7 +31,7 @@ public class ServiceLocationsExtractorProcessor implements Processor {
       }
     } catch (Exception e) {
       // If this happens service locations in the pdf will be empty
-      log.info("unable to set the service location", e);
+      log.error("unable to set the service location", e);
     }
   }
 }
