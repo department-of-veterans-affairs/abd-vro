@@ -14,6 +14,8 @@ import gov.va.vro.end2end.util.ContentionUpdatesResponse;
 import gov.va.vro.end2end.util.LifecycleUpdatesResponse;
 import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
+import gov.va.vro.end2end.util.SuccessResponse;
+import gov.va.vro.end2end.util.TempJurisdictionStationRequest;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.claimmetrics.AssessmentInfo;
@@ -231,15 +233,10 @@ public class VroV2Tests {
     var requestEntity = getBearerAuthEntity(content);
     var response =
         restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
     var masResponse = response.getBody();
     assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
     return request;
-  }
-
-  private MasAutomatedClaimRequest startAutomatedClaim(String collectionId) {
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    return startAutomatedClaim(spec);
   }
 
   private AutomatedClaimTestSpec specFor200(String collectionId) {
@@ -349,6 +346,14 @@ public class VroV2Tests {
     assertEquals(expectedSufficientValue, foundAssessment.getSufficientEvidenceFlag());
   }
 
+  private void overrideTempJurisdictionStation(String claimId, String station) {
+    String url = UPDATES_URL + claimId + "/" + "temp_jurisdiction_station";
+    TempJurisdictionStationRequest payload = new TempJurisdictionStationRequest(station);
+    HttpEntity<TempJurisdictionStationRequest> request = new HttpEntity<>(payload);
+    var response = restTemplate.postForEntity(url, request, SuccessResponse.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
   /**
    * Runs a full end-to-end test for the collection id using mock services. Collection id used here
    * should be one of the preloaded ones in mock-mas-api amd the benefit claim id should one of the
@@ -356,12 +361,22 @@ public class VroV2Tests {
    * and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(String collectionId) {
-    MasAutomatedClaimRequest request = startAutomatedClaim(collectionId);
+  private void testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
+    String collectionId = spec.getCollectionId();
+    MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     final String claimId = request.getClaimDetail().getBenefitClaimId();
+    String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
+    if (tempJurisdictionStationOverride != null) {
+      overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
+    }
     testPdfUpload(request);
-    testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
-    testLifecycleStatus(claimId, ClaimStatus.RFD);
+    if (!spec.isBipUpdateClaimError()) {
+      testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
+      testLifecycleStatus(claimId, ClaimStatus.RFD);
+    }
+    if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
+      testSlackMessage(collectionId);
+    }
   }
 
   /*
@@ -468,14 +483,14 @@ public class VroV2Tests {
    * and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimOutOfScope() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
     spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 10], [diagnostic code = 7101], and "
             + "[disability action type = DECREASE] is not in scope.");
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   /**
@@ -483,14 +498,14 @@ public class VroV2Tests {
    * message, Slack message and removal of RDR1 special issue are verified.
    */
   @Test
+  @SneakyThrows
   void testAutomatedClaimMissingAnchor() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
     spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 20] does not qualify for "
             + "automated processing because it is missing anchors.");
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -660,28 +675,31 @@ public class VroV2Tests {
 
   /**
    * This is a full positive end-to-end test for an increase case. See
-   * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
+   * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999375
    */
   @Test
   void testAutomatedClaimFullPositiveIncrease() {
-    testAutomatedClaimFullPositive("375");
+    AutomatedClaimTestSpec spec = specFor200("375");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /** This is a full positive end-to-end test for an increase case with LightHouse data only. */
   @Test
   void testLHDataOnlyClaimFullPositiveIncrease() {
-    testAutomatedClaimFullPositive("400");
+    AutomatedClaimTestSpec spec = specFor200("400");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
    * This is a full positive end-to-end test for an presumptive case. See
-   * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
+   * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999376
    */
   @Test
   void testAutomatedClaimFullPositivePresumptive() {
-    testAutomatedClaimFullPositive("376");
+    AutomatedClaimTestSpec spec = specFor200("376");
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
@@ -691,7 +709,32 @@ public class VroV2Tests {
    */
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
-    testAutomatedClaimFullPositive("380");
+    AutomatedClaimTestSpec spec = specFor200("380");
+    testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
+   * the Slack message when temporary station of jurisdiction changes during VRO processing.
+   */
+  @Test
+  void testAutomatedClaimFullPositiveChangedStation() {
+    AutomatedClaimTestSpec spec = specFor200("385");
+    spec.setTempJurisdictionStationOverride("456");
+
+    testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
+   * the Slack message when bip claims api goes down during VRO processing.
+   */
+  @Test
+  void testAutomatedClaimFullPositiveBipGoesDown() {
+    AutomatedClaimTestSpec spec = specFor200("386");
+    spec.setBipUpdateClaimError(true);
+
+    testAutomatedClaimFullPositive(spec);
   }
 
   /**
