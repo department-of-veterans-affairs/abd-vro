@@ -112,6 +112,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
   public static final String EXAM_ORDER_FAILED = "examOrderFailed";
   public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
+  public static final String ANNOTATIONS_FAILED = "annotationDataRequestFailed";
 
   @Override
   public void configure() {
@@ -247,14 +248,28 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
+        .onException(
+            MasException
+                .class) // Do not go to the main error processor. Mas complete route handles.
+        .handled(true)
+        .end() // End Exception
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Collecting evidence"))
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
+        .stopOnException() // Stop does not handle the exception.
+        .doTry()
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
+        .doCatch(MasException.class) // offramp claim if we get no MAS annotations
+        .setBody(simple("${exchangeProperty.payload}"))
+        .process(setOffRampReasonProcessor(ANNOTATIONS_FAILED))
+        .to(ENDPOINT_MAS_COMPLETE)
+        .throwException(
+            new MasException("annotationDataRequestFailed")) // this will stop the multicast above.
+        .end() // End Try
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
