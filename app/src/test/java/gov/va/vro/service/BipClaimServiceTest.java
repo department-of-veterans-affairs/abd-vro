@@ -319,7 +319,7 @@ class BipClaimServiceTest {
         new BipClaimService(claimProp, bipApiService, null, saveToDbService);
 
     for (long claimId : bipClaims.keySet()) {
-      for (MasCamelStage stage : MasCamelStage.values()) { // TODO: Is stage matters here?
+      for (MasCamelStage stage : MasCamelStage.values()) { // TODO: Does stage matter here?
         MasProcessingObject payload = getMasPayload(claimId, stage);
         for (MasCompletionStatus status : MasCompletionStatus.values()) {
           BipUpdateClaimResult result = claimService.updateClaim(payload, status);
