@@ -245,10 +245,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
     String lighthouseRoute = "mas-automated-claim-lighthouse";
-    String checkMasAnnotationsRoute = "direct:mas-check-annotations";
 
     String routeId = "mas-collect-evidence";
-    String checkAnnotationsRouteId = "check-mas-annotations";
     from(ENDPOINT_COLLECT_EVIDENCE)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
@@ -256,23 +254,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
         .stopOnException()
-        .to(checkMasAnnotationsRoute) // get MAS annotations, if it fails we offramp
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
-        .end() // end multicast
-        .process(combineExchangesProcessor()) // returns HealthDataAssessment
-        .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
-
-    from(checkMasAnnotationsRoute)
-        .routeId(checkAnnotationsRouteId)
         .doTry()
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .doCatch(MasException.class) // offramp claim if we get no MAS annotations
-        .process(setOffRampReasonProcessor(SUFFICIENCY_UNDETERMINED))
+        .setBody(simple("${exchangeProperty.payload}"))
+        .process(setOffRampReasonProcessor(ANNOTATIONS_FAILED))
         .to(ENDPOINT_MAS_COMPLETE)
         .throwException(
-            new MasException("annotationDataRequestFailed")) // this will stop the mulitcast above.
-        .end();
+            new MasException("annotationDataRequestFailed")) // this will stop the multicast above.
+        .end() // End Try
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
+        .end() // end multicast
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId(lighthouseRoute)

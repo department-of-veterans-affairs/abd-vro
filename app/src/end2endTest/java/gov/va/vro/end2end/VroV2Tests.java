@@ -778,7 +778,7 @@ public class VroV2Tests {
    * This is a end-to-end test for an increase case based on 375. It is used to test mas exceptions.
    */
   @Test
-  void testAutomatedClaimMasExceptikon() {
+  void testAutomatedClaimMasException() {
     AutomatedClaimTestSpec spec = specFor200("369");
     testAutomatedClaimOffRamp(spec);
   }

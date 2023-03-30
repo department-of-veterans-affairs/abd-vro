@@ -44,7 +44,6 @@ public class MasIntegrationProcessors {
 
   private static Function<List<Exchange>, HealthDataAssessment> combineExchangesFunction() {
     return exchanges -> {
-      log.error("I hit this code, no bueno.");
       for (Exchange exchange : exchanges) {
         if (exchange.isFailed()) {
           throw new MasException(
