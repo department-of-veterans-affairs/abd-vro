@@ -24,6 +24,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -704,6 +705,17 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositivePresumptive() {
     AutomatedClaimTestSpec spec = specFor200("376");
     testAutomatedClaimFullPositive(spec);
+  }
+
+  /**
+   * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
+   * message, removal of rdr1, and database update are verified.
+   */
+  @Test
+  void testAutomatedClaimNewNotPresumptive() {
+    AutomatedClaimTestSpec spec = specFor200("379");
+    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    testAutomatedClaimOffRamp(spec);
   }
 
   /**

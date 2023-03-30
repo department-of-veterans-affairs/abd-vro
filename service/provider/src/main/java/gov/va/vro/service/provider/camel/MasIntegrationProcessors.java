@@ -141,6 +141,14 @@ public class MasIntegrationProcessors {
     };
   }
 
+  public static Processor setOffRampReasonProcessor(String offRampReason) {
+    return exchange -> {
+      MasProcessingObject mpoOfframp = exchange.getMessage().getBody(MasProcessingObject.class);
+      mpoOfframp.getClaimPayload().setOffRampReason(offRampReason);
+      exchange.getMessage().setBody(mpoOfframp);
+    };
+  }
+
   /**
    * At the conclusion of automated claim processing this processor updates claims and contentions
    * using BIP Claims API.
@@ -149,15 +157,29 @@ public class MasIntegrationProcessors {
    * @return Processor completion camel processor
    */
   public static Processor completionProcessor(
-      String routeId, BipClaimService bipClaimService, MasProcessingService masProcessingService) {
+      BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
+<<<<<<< HEAD
       String offRampError = payload.getClaimPayload().getOffRampError();
+=======
+      MasCamelStage origin = payload.getOrigin();
+      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
+      String offRampErrorPayload = payload.getOffRampReason();
+
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
       // Update our database with offramp reason.
-      if (offRampError != null) {
-        masProcessingService.offRampClaimForError(payload, offRampError);
+      if (offRampErrorPayload != null) {
+        masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
+        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
+<<<<<<< HEAD
       MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
+=======
+      MasCompletionStatus completionStatus =
+          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
+
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
@@ -196,6 +218,7 @@ public class MasIntegrationProcessors {
     };
   }
 
+<<<<<<< HEAD
   public static Processor slackOffRampProcessor() {
     return exchange -> {
       MasProcessingObject masProcessingObject =
@@ -210,6 +233,8 @@ public class MasIntegrationProcessors {
     };
   }
 
+=======
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
   // Used for inline grabbing of errors that need to go to audit and slack, but the
   // MasProcessingObject was stored
   // not in the body at that point in the code.

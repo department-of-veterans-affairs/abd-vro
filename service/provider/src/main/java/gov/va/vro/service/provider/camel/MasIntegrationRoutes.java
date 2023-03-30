@@ -7,9 +7,9 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.setOffRampReasonProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOffRampProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -82,7 +82,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
-  public static final String ENDPOINT_OFFRAMP_ERROR = "direct:offramp-error";
 
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
@@ -187,6 +186,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .when(simple("${body.sufficientForFastTracking} == true"))
         .to(END_POINT_RFD)
         .otherwise()
+<<<<<<< HEAD
         // Offramp if the Sufficient For Fast Tracking is null
         .setProperty("sourceRoute", constant("assessorError"))
         .process(
@@ -195,9 +195,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
               model.getClaimPayload().setOffRampError(SUFFICIENCY_UNDETERMINED);
               exchange.getMessage().setBody(model);
             })
+=======
+        // Off ramp if the Sufficient For Fast Tracking is null
+        .process(setOffRampReasonProcessor(SUFFICIENCY_UNDETERMINED))
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .to(ENDPOINT_OFFRAMP_ERROR)
+        .to(ENDPOINT_MAS_COMPLETE)
         .end();
 
     String rfdRouteId = "mas-rfd";
@@ -213,6 +217,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
+<<<<<<< HEAD
         .setProperty("sourceRoute", constant(rfdRouteId))
         .process(
             exchange -> {
@@ -222,6 +227,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
             })
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
+=======
+        .process(
+            setOffRampReasonProcessor(
+                PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM)) // Continue to completion processor
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
@@ -243,6 +253,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
+<<<<<<< HEAD
         .setProperty("sourceRoute", constant(orderExamRouteId))
         .process(
             exchange -> {
@@ -251,6 +262,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
               exchange.getMessage().setBody(model);
             })
         .to(ENDPOINT_OFFRAMP_ERROR)
+=======
+        .process(setOffRampReasonProcessor(EXAM_ORDER_FAILED))
+        .to(ENDPOINT_MAS_COMPLETE)
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
         // Mas Complete Processing code expects this to be the body of the message
@@ -258,14 +273,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // Wiretap will cause no code to execute after the end of the try. Intentional here.
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(slackEventProcessor(orderExamRouteId, pdfFailMessage))
-        .to(ENDPOINT_MAS_COMPLETE)
-        .end();
-
-    // Wiretap does NOT let camel work as expected when placed directly inside doCatch()
-    // Thus it is broken out here, in the interest of letting normal flow/control happen.
-    from(ENDPOINT_OFFRAMP_ERROR)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(slackOffRampProcessor())
         .to(ENDPOINT_MAS_COMPLETE)
         .end();
   }
@@ -353,6 +360,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
+<<<<<<< HEAD
             MasIntegrationProcessors.completionProcessor(
                 routeId, bipClaimService, masProcessingService))
         .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
@@ -361,6 +369,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
                 .uri(BgsApiClientRoutes.ADD_BGS_NOTES)
                 .build())
         .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
+=======
+            MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
+>>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
