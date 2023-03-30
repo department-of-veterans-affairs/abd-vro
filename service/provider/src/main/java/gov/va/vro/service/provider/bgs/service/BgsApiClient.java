@@ -39,13 +39,15 @@ public class BgsApiClient {
         dto.claimNotes.add(BgsClaimNotes.ARSD_COMPLETED_NOTE);
         break;
       case EXAM_ORDER:
-        // VroV2Tests.testAutomatedClaimOrderExamNewClaim
+        // Tested with VroV2Tests.testAutomatedClaimOrderExamNewClaim
         log.warn("++++++++ EXAM_ORDER +++++++");
         dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
         dto.claimNotes.add(BgsClaimNotes.EXAM_REQUESTED_NOTE);
         break;
       case OFF_RAMP:
-        // VroV2Tests.testAutomatedClaimSufficiencyIsNull
+        // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
+        // which only covers SUFFICIENCY_UNDETERMINED
+        // Need to test the other 2 offrampError scenarios
         MasAutomatedClaimPayload payload = mpo.getClaimPayload();
         var offRampError = payload.getOffRampError();
         log.warn("++++++++ offRampError=" + offRampError);
