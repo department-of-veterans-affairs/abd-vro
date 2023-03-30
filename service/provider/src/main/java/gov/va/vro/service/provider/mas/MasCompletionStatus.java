@@ -12,7 +12,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public enum MasCompletionStatus {
   OFF_RAMP("off-ramp", false, true, ClaimStatus.OPEN),
-  OFF_RAMP_MISSING_FLASH("off-ramp", false, true, ClaimStatus.OPEN),
   EXAM_ORDER("exam order", true, false, ClaimStatus.OPEN),
   READY_FOR_DECISION("ready for decision", true, false, ClaimStatus.RFD);
 
@@ -44,7 +43,7 @@ public enum MasCompletionStatus {
         || offRampError != null) {
       // if (sufficientForFastTracking == null) return OFF_RAMP;
       // if (origin == MasCamelStage.START_COMPLETE) return OFF_RAMP_MISSING_FLASH;
-      // return OFF_RAMP;
+      return OFF_RAMP;
     }
     return sufficientForFastTracking ? READY_FOR_DECISION : EXAM_ORDER;
   }

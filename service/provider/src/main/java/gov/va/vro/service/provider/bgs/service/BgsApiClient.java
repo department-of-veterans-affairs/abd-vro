@@ -26,22 +26,26 @@ public class BgsApiClient {
 
   public BgsApiClientDto buildRequest(MasProcessingObject mpo) {
     String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
-    BgsApiClientDto dto = new BgsApiClientDto(mpo.getBenefitClaimId(), veteranId);
+    BgsApiClientDto dto =
+        new BgsApiClientDto(mpo.getCollectionId(), mpo.getBenefitClaimId(), veteranId);
 
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
     switch (completionStatus) {
       case READY_FOR_DECISION:
+        // Tested with VroV2Tests.testAutomatedClaimFullPositiveIncrease
         log.warn("++++++++ RFD +++++++");
         dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
         dto.claimNotes.add(BgsClaimNotes.RFD_NOTE);
         dto.claimNotes.add(BgsClaimNotes.ARSD_COMPLETED_NOTE);
         break;
       case EXAM_ORDER:
+        // VroV2Tests.testAutomatedClaimOrderExamNewClaim
         log.warn("++++++++ EXAM_ORDER +++++++");
         dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
         dto.claimNotes.add(BgsClaimNotes.EXAM_REQUESTED_NOTE);
         break;
       case OFF_RAMP:
+        // VroV2Tests.testAutomatedClaimSufficiencyIsNull
         MasAutomatedClaimPayload payload = mpo.getClaimPayload();
         var offRampError = payload.getOffRampError();
         log.warn("++++++++ offRampError=" + offRampError);
@@ -50,7 +54,6 @@ public class BgsApiClient {
         log.warn("++++++++ detailsOffRampReason=" + detailsOffRampReason);
         log.warn("++++++++ claimNote: " + claimNote);
         if (claimNote != null) dto.claimNotes.add(claimNote);
-
         break;
     }
     return dto;

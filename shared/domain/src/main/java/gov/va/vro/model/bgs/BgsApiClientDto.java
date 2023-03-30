@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class BgsApiClientDto {
+  final int collectionId;
 
   final String vbmsClaimId;
   final String veteranParticipantId;
