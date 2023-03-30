@@ -6,9 +6,8 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.ENDPOINT_NO
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
-import gov.va.vro.model.bgs.BgsApiClientModel;
-import gov.va.vro.service.provider.mas.MasCompletionStatus;
-import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.model.bgs.BgsApiClientDto;
+import gov.va.vro.service.provider.bgs.service.BgsApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
@@ -25,6 +24,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
   private static final String BGSCLIENT_ADDNOTES = "direct:bgsClient-addNotes";
 
   private final ProducerTemplate producerTemplate;
+
+  private final BgsApiClient bgsApiClient;
 
   @Override
   public void configure() throws Exception {
@@ -50,38 +51,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         // print the body as json
         .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
         // detect scenarios
-        .process(
-            x -> {
-              var mpo = x.getMessage().getBody(MasProcessingObject.class);
-              MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
-              // if a claim is RFD or an exam was ordered
-              if (completionStatus == MasCompletionStatus.READY_FOR_DECISION)
-                log.warn("++++++++ RFD +++++++");
-              if (completionStatus == MasCompletionStatus.EXAM_ORDER) {
-                log.warn("++++++++ EXAM_ORDER +++++++");
-                mpo.getEvidence();
-                // contentionEntity.getEvidenceSummaryDocuments()
-              }
-              // if a claim was offramped due to newClaimMissingFlash266 vs
-              // insufficientHealthDataToOrderExam vs docUploadFailed
-              if (completionStatus == MasCompletionStatus.OFF_RAMP) {
-                var payload = mpo.getClaimPayload();
-                // TODO: These reasons are not enumerated --
-                //   see MasProcessingService.processIncomingClaim
-                //   see MasProcessingService.getOffRampReason
-                if (payload.isPresumptive() != null && !payload.isPresumptive()) {
-                  log.warn("newClaimMissingFlash266 ??");
-                }
-                // ARSD upload failure
-                String offRampReason = mpo.getClaimPayload().getOffRampReason();
-                log.warn("++++++++ offRampReason=" + offRampReason);
-                String detailsOffRampReason = mpo.getDetails().get("offRampReason");
-                log.warn("++++++++ detailsOffRampReason=" + offRampReason);
-                if (offRampReason.equals("newClaimMissingFlash266")
-                    || offRampReason.equals("insufficientHealthDataToOrderExam"))
-                  log.warn("++++++++ offRampReason=" + offRampReason + " Claim-level note:...");
-              }
-            })
+        .bean(bgsApiClient, "buildRequest")
         // if notesToAdd
         .to(BGSCLIENT_ADDNOTES)
         .log("output: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
@@ -119,8 +89,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
   // TODO: remove once BgsApiClientMicroservice is ready for testing
   void configureMockBgsApiMicroservice() {
     var returnError =
-        new FunctionProcessor<BgsApiClientModel, BgsApiClientModel>(
-            BgsApiClientModel.class,
+        new FunctionProcessor<BgsApiClientDto, BgsApiClientDto>(
+            BgsApiClientDto.class,
             model -> {
               model.setStatusCode(400);
               return model;

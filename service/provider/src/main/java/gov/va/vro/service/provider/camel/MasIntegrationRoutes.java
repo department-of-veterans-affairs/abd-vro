@@ -189,9 +189,14 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .when(simple("${body.sufficientForFastTracking} == true"))
         .to(END_POINT_RFD)
         .otherwise()
-        // Off ramp if the Sufficient For Fast Tracking is null
-        .setProperty("offRampError", constant(SUFFICIENCY_UNDETERMINED))
+        // Offramp if the Sufficient For Fast Tracking is null
         .setProperty("sourceRoute", constant("assessorError"))
+        .process(
+            exchange -> {
+              var model = exchange.getMessage().getBody(MasProcessingObject.class);
+              model.getClaimPayload().setOffRampError(SUFFICIENCY_UNDETERMINED);
+              exchange.getMessage().setBody(model);
+            })
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .to(ENDPOINT_OFFRAMP_ERROR)
@@ -210,8 +215,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("offRampError", constant(PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM))
         .setProperty("sourceRoute", constant(rfdRouteId))
+        .process(
+            exchange -> {
+              var model = exchange.getMessage().getBody(MasProcessingObject.class);
+              model.getClaimPayload().setOffRampError(PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM);
+              exchange.getMessage().setBody(model);
+            })
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
         .end() // End try
@@ -236,7 +246,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
         .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampError", constant(EXAM_ORDER_FAILED))
+        .process(
+            exchange -> {
+              var model = exchange.getMessage().getBody(MasProcessingObject.class);
+              model.getClaimPayload().setOffRampError(EXAM_ORDER_FAILED);
+              exchange.getMessage().setBody(model);
+            })
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
@@ -339,14 +354,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
-        // before completionProcessor, add BGS notes
-        .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
-        .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
-        .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
-        // completionProcessor sets the claimLifecycleStatus to RFD
         .process(
             MasIntegrationProcessors.completionProcessor(
                 routeId, bipClaimService, masProcessingService))
+        .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
+        .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
+        .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)

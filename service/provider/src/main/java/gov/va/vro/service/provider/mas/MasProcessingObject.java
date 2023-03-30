@@ -19,8 +19,6 @@ public class MasProcessingObject implements Auditable {
   private boolean isTSOJ = false;
 
   private Boolean sufficientForFastTracking;
-  private String offRampError;
-  private String sourceRoute;
 
   public int getCollectionId() {
     return claimPayload.getCollectionId();

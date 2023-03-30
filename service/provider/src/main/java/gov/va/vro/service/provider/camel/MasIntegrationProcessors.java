@@ -152,18 +152,17 @@ public class MasIntegrationProcessors {
       String routeId, BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
-      String offRampError = exchange.getProperty("offRampError", String.class);
+      String offRampError = payload.getClaimPayload().getOffRampError();
       // Update our database with offramp reason.
       if (offRampError != null) {
         masProcessingService.offRampClaimForError(payload, offRampError);
       }
-      MasCompletionStatus completionStatus = MasCompletionStatus.of(payload, offRampError);
+      MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
           exchange.setProperty("completionSlackMessage", result.getMessage());
         }
-        // intentionally removed?: exchange.getMessage().setBody(updatedPayload);
       } catch (BipException exception) {
         log.error("Error using BIP Claims API", exception);
         String message = "BIP Claims API exception: " + exception.getMessage();
@@ -202,7 +201,7 @@ public class MasIntegrationProcessors {
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
       String routeId = exchange.getProperty("sourceRoute", String.class);
-      String message = exchange.getProperty("offRampError", String.class);
+      String message = masProcessingObject.getClaimPayload().getOffRampError();
       exchange
           .getIn()
           .setBody(
