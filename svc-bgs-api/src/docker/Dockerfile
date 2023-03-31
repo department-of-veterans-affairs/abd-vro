@@ -6,7 +6,6 @@ FROM ruby:2.7.7-alpine3.16
 
 RUN apk update && apk --no-cache add expat=2.5.0-r0 git=2.36.5-r0 ruby-dev=3.1.3-r0 curl-dev=7.83.1-r6 build-base=0.5-r3 && rm -rf /var/cache/apk/*
 
-
 RUN adduser --disabled-password --gecos "" tron
 
 ARG HEALTHCHECK_PORT_ARG=8080

@@ -77,12 +77,10 @@ public class MasProcessingService {
     var offRampReasonOptional = getOffRampReasonPresumptiveCheck(payload);
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
-      Claim claim = toClaim(payload);
       payload.setOffRampReason(offRampReason);
-      claim.setOffRampReason(offRampReason);
-      saveToDbService.setOffRampReason(claim);
-      offRampClaim(payload, offRampReason);
-      return offRampReason;
+      MasProcessingObject mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
+      camelEntrance.completeProcessing(mpo);
+      return offRampReason; // Let the HTTP response continue
     }
     var headers =
         Map.of(
