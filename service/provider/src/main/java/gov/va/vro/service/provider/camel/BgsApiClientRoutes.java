@@ -27,8 +27,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BgsApiClientRoutes extends RouteBuilder {
 
-  public static final String ADD_BGS_NOTES = "direct:addBgsNotes";
-  private static final String BGSCLIENT_ADDNOTES = "direct:bgsClient-addNotes";
+  public static final String ADD_BGS_NOTES = "direct:addBgsNotes-start";
+  private static final String BGSCLIENT_ADDNOTES = "direct:toRabbit-bgsClient-addNotes";
+
+  public static final String ADD_NOTES_RETRIES = "direct:addBgsNotesWithRetries";
 
   private final ProducerTemplate producerTemplate;
 
@@ -40,6 +42,9 @@ public class BgsApiClientRoutes extends RouteBuilder {
   }
 
   private final BgsApiClient bgsApiClient;
+
+  private final int RETRY_LIMIT = 3;
+  private final int RETRY_DELAY_MILLIS = 3000;
 
   @Override
   public void configure() throws Exception {
@@ -57,22 +62,6 @@ public class BgsApiClientRoutes extends RouteBuilder {
   }
 
   private void configureAddNotesRoute(String routeId) {
-    var requestBgsToAddNotes =
-        RequestAndMerge.<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>factory(
-                producerTemplate)
-            .requestUri(BGSCLIENT_ADDNOTES)
-            .prepareRequest(body -> body.request)
-            // set responseClass so that Camel auto-converts JSON into object
-            .responseClass(BgsApiClientResponse.class)
-            .mergeResponse(
-                (body, response) -> {
-                  body.setResponse(response);
-                  if (response.getStatusCode() >= 300)
-                    producerTemplate.requestBody(ENDPOINT_SLACK_BGS_FAILED, body);
-                  return body;
-                })
-            .build();
-
     from(ADD_BGS_NOTES)
         .routeId(routeId)
         .setExchangePattern(ExchangePattern.InOut)
@@ -88,8 +77,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .simple("${body.request.veteranNotes.size} > 0 || ${body.request.claimNotes.size} > 0")
         .process(getInOnlyLogJson())
         .log("microservice request: ${exchange.pattern}: ${body}")
-        .process(requestBgsToAddNotes)
-        .id("requestBgsToAddNotes")
+        .to(ADD_NOTES_RETRIES)
         .otherwise()
         .log("No notes to add")
         .end()
@@ -99,23 +87,53 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .marshal()
         .json(JsonLibrary.Jackson)
         .log("JSON: ${exchange.pattern}: ${headers}: ${body}");
+
+    var requestBgsToAddNotes =
+        RequestAndMerge.<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>factory(
+                producerTemplate)
+            .requestUri(BGSCLIENT_ADDNOTES)
+            .prepareRequest(body -> body.request)
+            // set responseClass so that Camel auto-converts JSON into object
+            .responseClass(BgsApiClientResponse.class)
+            .mergeResponse(
+                (body, response) -> {
+                  body.setResponse(response);
+                  if (response.getStatusCode() >= 300) {
+                    if (body.tryCount.get() >= RETRY_LIMIT)
+                      producerTemplate.requestBody(ENDPOINT_SLACK_BGS_FAILED, body);
+                    else
+                      throw new BgsApiClientException(
+                          "Failed to add note. collection id: " + body.mpo.getCollectionId());
+                  }
+                  return body;
+                })
+            .build();
+
+    from(ADD_NOTES_RETRIES)
+        .doTry()
+        .process(requestBgsToAddNotes)
+        .id("requestBgsToAddNotes")
+        .doCatch(BgsApiClientException.class)
+        .log(
+            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in "
+                + RETRY_DELAY_MILLIS)
+        .setBody(simple("${body.incrementTryCount()}"))
+        .delay(RETRY_DELAY_MILLIS)
+        .to(ADD_NOTES_RETRIES)
+        .end(); // try-catch block
   }
 
   void configureRouteToBgsApiClientMicroservice() {
-    // TODO: add retry logic
     RabbitMqCamelUtils.addToRabbitmqRoute(this, BGSCLIENT_ADDNOTES, "bgs-api", "add-note")
         .id("to-rabbitmq-bgsclient-addnote")
         .routeId("to-rabbitmq-bgsapi-addnote-route")
         .log("BGS client response: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
-    // TODO: if retries failed, notify slack
-    ;
   }
 
   private final MasConfig masConfig;
   public static final String ENDPOINT_SLACK_BGS_FAILED = "seda:slack-bgs-api-failure";
 
   void configureRouteToSlackNotification() {
-
     var buildErrorMessage =
         FunctionProcessor.<BgsNotesCamelBody, String>fromFunction(
             model ->
@@ -134,7 +152,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_BGS_FAILED)
         .routeId("slack-bgs-failed-route")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .log("output: ${exchange.pattern}: ${body.class}: ${body}")
+        .log("output: ${exchange.pattern}:  ${headers}: ${body.class}: ${body}")
         .process(buildErrorMessage)
         .to(slackRoute)
         .process(getInOnlyLogJson());
