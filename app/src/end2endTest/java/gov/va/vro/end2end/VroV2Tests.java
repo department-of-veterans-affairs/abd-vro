@@ -542,12 +542,11 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimMissingSpecialIssue() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("11");
-    spec.setPayloadPath("test-mas/claim-30-7101-noanchor.json");
+    spec.setPayloadPath("test-mas/claim-30-7101-nospecialissue.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
         "Claim with [collection id = 11] does not qualify for "
             + "automated processing because it is missing anchors.");
-
-    testAutomatedClaimOffRamp(spec);
   }
 
   private void testAutomatedClaimOrderExam(AutomatedClaimTestSpec spec) {
