@@ -344,9 +344,8 @@ class BipClaimServiceTest {
     // Check claim status
     assertEquals(expectedStatus.getDescription(), claim.getClaimLifecycleStatus());
 
-    // Check contention
+    // Check contention. It is assumed the claim should have only one contention.
     List<ClaimContention> contentions = bipContentions.get(claimId);
-    // TODO: There might be a problem for handling multiple contentions in BipClaimService.
     for (ClaimContention contention : contentions) {
       // Check automation indicator.
       if (status.isAutomationIndicator()) {
@@ -361,7 +360,6 @@ class BipClaimServiceTest {
       }
 
       // Check contention life cycle status
-      // TODO: Should life cycle status be changed only for the contention with special codes?
       assertEquals(status.getClaimStatus().getDescription(), contention.getLifecycleStatus());
     }
   }
