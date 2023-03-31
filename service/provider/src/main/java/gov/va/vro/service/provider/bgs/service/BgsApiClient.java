@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.bgs.service;
 import static gov.va.vro.service.provider.bgs.service.BgsClaimNotes.OFFRAMP_ERROR_2_CLAIM_NOTE;
 import static gov.va.vro.service.provider.bgs.service.BgsVeteranNote.getArsdUploadedNote;
 
-import gov.va.vro.model.bgs.BgsApiClientDto;
+import gov.va.vro.model.bgs.BgsApiClientRequest;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
@@ -24,25 +24,26 @@ import java.util.UUID;
 public class BgsApiClient {
   private final EvidenceSummaryDocumentRepository esDocRepository;
 
-  public BgsApiClientDto prepareRequest(MasProcessingObject mpo) {
-    String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
-    BgsApiClientDto dto =
-        new BgsApiClientDto(mpo.getCollectionId(), mpo.getBenefitClaimId(), veteranId);
+  public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo);
 
+    String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
+    var request = new BgsApiClientRequest(mpo.getBenefitClaimId(), veteranId);
+    body.request = request;
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
     switch (completionStatus) {
       case READY_FOR_DECISION:
         // Tested with VroV2Tests.testAutomatedClaimFullPositiveIncrease
         log.warn("++++++++ RFD +++++++");
-        dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
-        dto.claimNotes.add(BgsClaimNotes.RFD_NOTE);
-        dto.claimNotes.add(BgsClaimNotes.ARSD_COMPLETED_NOTE);
+        request.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
+        request.claimNotes.add(BgsClaimNotes.RFD_NOTE);
+        request.claimNotes.add(BgsClaimNotes.ARSD_COMPLETED_NOTE);
         break;
       case EXAM_ORDER:
         // Tested with VroV2Tests.testAutomatedClaimOrderExamNewClaim
         log.warn("++++++++ EXAM_ORDER +++++++");
-        dto.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
-        dto.claimNotes.add(BgsClaimNotes.EXAM_REQUESTED_NOTE);
+        request.veteranNotes.add(getArsdUploadedNote(getDocUploadedAt(mpo)));
+        request.claimNotes.add(BgsClaimNotes.EXAM_REQUESTED_NOTE);
         break;
       case OFF_RAMP:
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
@@ -55,14 +56,10 @@ public class BgsApiClient {
         String detailsOffRampReason = mpo.getDetails().get("offRampError");
         log.warn("++++++++ detailsOffRampReason=" + detailsOffRampReason);
         log.warn("++++++++ claimNote: " + claimNote);
-        if (claimNote != null) dto.claimNotes.add(claimNote);
+        if (claimNote != null) request.claimNotes.add(claimNote);
         break;
     }
-    return dto;
-  }
-
-  public MasProcessingObject mergeResponse(MasProcessingObject mpo, BgsApiClientDto response){
-    return mpo;
+    return body;
   }
 
   private OffsetDateTime getDocUploadedAt(MasProcessingObject mpo) {

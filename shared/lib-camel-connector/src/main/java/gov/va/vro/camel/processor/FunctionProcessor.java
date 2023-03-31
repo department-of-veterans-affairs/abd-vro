@@ -61,6 +61,7 @@ public class FunctionProcessor<I, O> implements Processor {
   @Override
   public void process(Exchange exchange) {
     I input = ProcessorUtils.getInputBody(exchange, inputBodyClass);
+    // In case of ClassCastException here, did you set inputBodyClass?
     O result = function.apply(input);
 
     ProcessorUtils.conditionallySetOutputBody(exchange, result);
