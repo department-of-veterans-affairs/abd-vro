@@ -56,6 +56,10 @@ public class MockMasController {
       return new ResponseEntity<>(collection, HttpStatus.OK);
     }
 
+    if (collectionId == 369) { // Used to test mas exceptions
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mas exception testing");
+    }
+
     List<MasCollectionAnnotation> collection = store.get(collectionId);
     if (collection == null) {
       String reason = "No claim found for id: " + collectionId;
