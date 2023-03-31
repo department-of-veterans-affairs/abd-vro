@@ -113,7 +113,7 @@ public class MasProcessingService {
       var message =
           String.format(
               "Claim with collection id: %s, diagnostic code: %s,"
-                  + " disability action type: %s and flashIds: %s is not presumptive.",
+                  + " and disability action type: %s is not in scope.",
               payload.getCollectionId(),
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType());
