@@ -4,5 +4,5 @@ plugins {
 
 docker {
   // buildArgs is immutable so we have to set additional args this way
-  buildArgs(["BASE_IMAGE" : "surnet/alpine-python-wkhtmltopdf:3.10.6-0.12.6-small"] << buildArgs)
+  buildArgs(["BASE_IMAGE" : "surnet/alpine-python-wkhtmltopdf:3.11.1-0.12.6-small"] << buildArgs)
 }
