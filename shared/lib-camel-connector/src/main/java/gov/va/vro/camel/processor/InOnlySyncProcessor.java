@@ -1,6 +1,6 @@
 package gov.va.vro.camel.processor;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
@@ -16,11 +16,15 @@ import org.apache.camel.ProducerTemplate;
  * <p>This InOnlySyncProcessor works by not setting the outMessage of the original exchange and
  * creates a new exchange for the specified uri.
  */
-@RequiredArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class InOnlySyncProcessor implements Processor {
-  final ProducerTemplate producer;
+  ProducerTemplate producer;
 
-  final String uri;
+  public static InOnlySyncProcessorBuilder<?, ?> factory(ProducerTemplate producer) {
+    return InOnlySyncProcessor.builder().producer(producer);
+  }
+
+  String uri;
 
   public void process(Exchange exchange) {
     producer.sendBodyAndHeaders(
