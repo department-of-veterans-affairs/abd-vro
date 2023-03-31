@@ -457,17 +457,21 @@
     ]
   },
   {
-    "description": "missing special issue",
+    "description": ["missing special issue"],
     "claimDetail": {
-      "claimId": 2010,
-      "tempStationOfJurisdiction": "391"
+      "claimId": 1370,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
         "contentionId": "4011",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
+        "lifecycleStatus": "Open",
         "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
         "specialIssueCodes": [
           "RRD"
         ]
