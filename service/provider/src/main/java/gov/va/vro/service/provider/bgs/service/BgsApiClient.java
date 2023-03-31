@@ -24,7 +24,7 @@ import java.util.UUID;
 public class BgsApiClient {
   private final EvidenceSummaryDocumentRepository esDocRepository;
 
-  public BgsApiClientDto buildRequest(MasProcessingObject mpo) {
+  public BgsApiClientDto prepareRequest(MasProcessingObject mpo) {
     String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
     BgsApiClientDto dto =
         new BgsApiClientDto(mpo.getCollectionId(), mpo.getBenefitClaimId(), veteranId);
@@ -59,6 +59,10 @@ public class BgsApiClient {
         break;
     }
     return dto;
+  }
+
+  public MasProcessingObject mergeResponse(MasProcessingObject mpo, BgsApiClientDto response){
+    return mpo;
   }
 
   private OffsetDateTime getDocUploadedAt(MasProcessingObject mpo) {

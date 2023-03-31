@@ -358,7 +358,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
             MasIntegrationProcessors.completionProcessor(
                 routeId, bipClaimService, masProcessingService))
         .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
-        .process(new InOnlySyncProcessor(producerTemplate, BgsApiClientRoutes.ADD_BGS_NOTES))
+        .process(
+            InOnlySyncProcessor.factory(producerTemplate)
+                .uri(BgsApiClientRoutes.ADD_BGS_NOTES)
+                .build())
         .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))

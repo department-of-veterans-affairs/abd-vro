@@ -6,9 +6,11 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.ENDPOINT_NO
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
+import gov.va.vro.camel.processor.RequestAndMerge;
 import gov.va.vro.model.bgs.BgsApiClientDto;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bgs.service.BgsApiClient;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
@@ -46,13 +48,23 @@ public class BgsApiClientRoutes extends RouteBuilder {
   }
 
   private void configureAddNotesRoute(String routeId) {
+    var requestBgsToAddNotes =
+        RequestAndMerge.<MasProcessingObject, BgsApiClientDto, BgsApiClientDto>factory(
+                producerTemplate)
+            .requestUri(BGSCLIENT_ADDNOTES)
+            .prepareRequest(bgsApiClient::prepareRequest)
+            .mergeResponse(bgsApiClient::mergeResponse)
+            .build();
+
+    var inOnlyLogJson = InOnlySyncProcessor.factory(producerTemplate).uri("direct:logJson").build();
+
     from(ADD_BGS_NOTES)
         .routeId(routeId)
         // expecting body MasProcessingObject.class
         .log(
             "input: ${exchange.pattern}: h=${headers}: p=${exchange.properties}: ${body.class}: ${body}")
         // print the body as json
-        .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
+        .process(inOnlyLogJson)
         // want output of buildRequest to go to BGSCLIENT_ADDNOTES
         .setExchangePattern(ExchangePattern.InOut)
         .bean(bgsApiClient, "buildRequest")
@@ -61,8 +73,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .choice()
         .when()
         .simple("${body.veteranNotes.size} > 0 || ${body.claimNotes.size} > 0")
-        .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
-        .to(BGSCLIENT_ADDNOTES)
+        .process(inOnlyLogJson)
+        .process(requestBgsToAddNotes)
         .otherwise()
         .log("No notes to add")
         .end()
@@ -70,7 +82,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .when()
         .simple("${body.statusCode} >= 300")
         .to(ENDPOINT_SLACK_BGS_FAILED)
-        .process(new InOnlySyncProcessor(producerTemplate, "direct:logJson"))
+        .process(inOnlyLogJson)
         .end()
         .log("output: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
 
@@ -97,8 +109,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
   void configureRouteToSlackNotification() {
 
     var buildErrorMessage =
-        new FunctionProcessor<>(
-            BgsApiClientDto.class,
+        FunctionProcessor.<BgsApiClientDto, String>fromFunction(
             model ->
                 // The mock Slack service expects `collection id: ` to be in the message
                 String.format(
@@ -122,8 +133,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
   // TODO: remove once BgsApiClientMicroservice is ready for testing
   void configureMockBgsApiMicroservice() {
     var returnError =
-        new FunctionProcessor<>(
-            BgsApiClientDto.class,
+        FunctionProcessor.<BgsApiClientDto, BgsApiClientDto>fromFunction(
             model -> {
               log.warn("++++ USING MOCK BgsApiClientMicroservice");
               model.setStatusCode(400);
