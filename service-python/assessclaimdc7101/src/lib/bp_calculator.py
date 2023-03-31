@@ -7,9 +7,10 @@ from .utils import extract_date, format_date
 
 def sort_bp(bp_readings):
     """
-    Sort bp readings by date
+    Sort bp readings by date.
+
     :param bp_readings: List of bp readings
-    :return:
+    :return: Sorted list
     """
 
     bp_readings = sorted(
@@ -50,8 +51,8 @@ def bp_reader(request_body):
             reading["dateFormatted"] = format_date(bp_reading_date)
             sortable_bp.append(reading)
         except ValueError:
-            not_sortable_bp.append(reading)
             reading["dateFormatted"] = ''
+            not_sortable_bp.append(reading)
             continue  # If there is no date associated
 
         if reading["systolic"]["value"] == 0 or reading["diastolic"]["value"] == 0:
