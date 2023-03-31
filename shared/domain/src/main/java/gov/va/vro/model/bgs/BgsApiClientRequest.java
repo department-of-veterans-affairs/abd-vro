@@ -8,15 +8,11 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class BgsApiClientDto {
-  final int collectionId;
+public class BgsApiClientRequest {
 
   final String vbmsClaimId;
   final String veteranParticipantId;
 
   public List<String> veteranNotes = new ArrayList<>();
   public List<String> claimNotes = new ArrayList<>();
-
-  int statusCode;
-  String statusMessage;
 }
