@@ -24,6 +24,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -707,6 +708,17 @@ public class VroV2Tests {
   }
 
   /**
+   * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
+   * message, removal of rdr1, and database update are verified.
+   */
+  @Test
+  void testAutomatedClaimNewNotPresumptive() {
+    AutomatedClaimTestSpec spec = specFor200("379");
+    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
    * This is a full positive end-to-end test for a case with incomplete blood pressures. See
    * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999380
@@ -760,5 +772,14 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
+  }
+
+  /**
+   * This is a end-to-end test for an increase case based on 375. It is used to test mas exceptions.
+   */
+  @Test
+  void testAutomatedClaimMasException() {
+    AutomatedClaimTestSpec spec = specFor200("369");
+    testAutomatedClaimOffRamp(spec);
   }
 }

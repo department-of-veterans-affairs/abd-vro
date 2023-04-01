@@ -141,6 +141,14 @@ public class MasIntegrationProcessors {
     };
   }
 
+  public static Processor setOffRampReasonProcessor(String offRampReason) {
+    return exchange -> {
+      MasProcessingObject mpoOfframp = exchange.getMessage().getBody(MasProcessingObject.class);
+      mpoOfframp.getClaimPayload().setOffRampReason(offRampReason);
+      exchange.getMessage().setBody(mpoOfframp);
+    };
+  }
+
   /**
    * At the conclusion of automated claim processing this processor updates claims and contentions
    * using BIP Claims API.
@@ -149,15 +157,23 @@ public class MasIntegrationProcessors {
    * @return Processor completion camel processor
    */
   public static Processor completionProcessor(
-      String routeId, BipClaimService bipClaimService, MasProcessingService masProcessingService) {
+      BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
-      String offRampError = payload.getClaimPayload().getOffRampError();
+
+      //String offRampError = payload.getClaimPayload().getOffRampError();
+      MasCamelStage origin = payload.getOrigin();
+      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
+      String offRampErrorPayload = payload.getOffRampReason();
+
       // Update our database with offramp reason.
-      if (offRampError != null) {
-        masProcessingService.offRampClaimForError(payload, offRampError);
+      if (offRampErrorPayload != null) {
+        masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
+        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
-      MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
+      //MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
+      MasCompletionStatus completionStatus =
+          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
@@ -188,20 +204,6 @@ public class MasIntegrationProcessors {
       String message = exchange.getProperty(exchangeProperty, "Unidentified message", String.class);
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
-      exchange
-          .getIn()
-          .setBody(
-              AuditEvent.fromAuditable(
-                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
-    };
-  }
-
-  public static Processor slackOffRampProcessor() {
-    return exchange -> {
-      MasProcessingObject masProcessingObject =
-          exchange.getMessage().getBody(MasProcessingObject.class);
-      String routeId = exchange.getProperty("sourceRoute", String.class);
-      String message = masProcessingObject.getClaimPayload().getOffRampError();
       exchange
           .getIn()
           .setBody(

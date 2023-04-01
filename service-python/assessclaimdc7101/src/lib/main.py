@@ -74,6 +74,7 @@ def assess_sufficiency(event: Dict):
         relevant_medications = medications.filter_mas_medication(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["twoYearsConditions"]
+        medication_display = relevant_medications["twoYearsMedications"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -84,6 +85,7 @@ def assess_sufficiency(event: Dict):
         if event["disabilityActionType"] == "NEW":
             bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
+            medication_display = relevant_medications["allMedications"]
             if relevant_conditions["relevantConditionsLighthouseCount"] >= 1:
                 if bp_calculation["twoYearsBpCount"] >= 3:
                     sufficient = True
@@ -97,7 +99,7 @@ def assess_sufficiency(event: Dict):
                 "evidence": {
                     "bp_readings": bp_display,
                     "conditions": conditions_display,
-                    "medications": relevant_medications["medications"],
+                    "medications": medication_display,
                     "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
@@ -107,7 +109,8 @@ def assess_sufficiency(event: Dict):
                     "twoYearsElevatedBpCount": bp_calculation["twoYearsElevatedBpCount"],
                     "relevantConditionsLighthouseCount": relevant_conditions["relevantConditionsLighthouseCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"],
-                    "medicationsCount": relevant_medications["medicationsCount"]
+                    "allMedicationsCount": relevant_medications["allMedicationsCount"],
+                    "twoYearsMedicationsCount": relevant_medications["twoYearsMedicationsCount"],
                 },
                 "sufficientForFastTracking": sufficient,
                 "claimSubmissionDateTime": event["claimSubmissionDateTime"],
