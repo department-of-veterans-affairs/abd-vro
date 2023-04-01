@@ -60,7 +60,8 @@ public class CamelEntry {
    *
    * @param headers
    */
-  public void inOnly(String exchangeName, String entryName, Object body, Map<String,Object> headers) {
+  public void inOnly(
+      String exchangeName, String entryName, Object body, Map<String, Object> headers) {
     producerTemplate.sendBodyAndHeaders(toMqProducerUri(exchangeName, entryName), body, headers);
   }
 
