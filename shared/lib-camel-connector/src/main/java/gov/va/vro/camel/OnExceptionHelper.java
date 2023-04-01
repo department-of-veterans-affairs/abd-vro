@@ -82,6 +82,7 @@ public class OnExceptionHelper {
     return onExceptionDef;
   }
 
+  @SuppressWarnings("unchecked")
   public static <T extends Throwable> T getException(Exchange exchange) {
     // Since exchange.getException() returns null, get it from the properties, as shown at
     // https://camel.apache.org/manual/exception-clause.html#_using_a_processor_as_a_failure_handler
