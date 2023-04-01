@@ -41,8 +41,11 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt:0.2'
   //testImplementation 'io.jsonwebtoken:jjwt:0.2'
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
 =======
 >>>>>>> 0e37e878 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
+=======
+>>>>>>> cf541bf9 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
 }
