@@ -1,0 +1,19 @@
+# This file is used when ENV="localhost", which is useful for local testing and development
+# with IntelliJ.
+# Run `./gradlew :app:dockerComposeUp`, which will expose VRO services on localhost ports,
+# which is why localhost is specified below. Now, close only the `vro-app` container, and
+# run `./gradlew :app:bootRun` on the commandline or in IntelliJ.
+#
+# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
+
+spring.config.import: application-local.yml
+
+spring.security.oauth2.client.provider.mas.uri: "http://localhost:9001/token"
+
+masAPIProvider.baseURL: "http://localhost:9001"
+masAPIProvider.createExamOrderPath: "/pcOrderExam"
+
+slack:
+  exception:
+    webhook: "http://localhost:9008/slack-messages"
+    channel: benefits-vro-end2end
