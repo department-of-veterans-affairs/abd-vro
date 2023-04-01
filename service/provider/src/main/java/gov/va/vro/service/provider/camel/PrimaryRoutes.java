@@ -79,7 +79,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private String pdfRoute(String queueName) {
     String uri = "direct:rabbitmq-" + queueName;
-    new ToRabbitMqRouteHelper(this, uri).toMq(PDF_EXCHANGE, queueName);
+    new ToRabbitMqRouteHelper(this, uri).toMq(PDF_EXCHANGE, queueName).createRoute();
     return uri;
   }
 }
