@@ -60,7 +60,7 @@ public class CamelEntry {
    *
    * @param headers
    */
-  public void inOnly(String exchangeName, String entryName, Object body, Map headers) {
+  public void inOnly(String exchangeName, String entryName, Object body, Map<String,Object> headers) {
     producerTemplate.sendBodyAndHeaders(toMqProducerUri(exchangeName, entryName), body, headers);
   }
 
@@ -70,6 +70,6 @@ public class CamelEntry {
   }
 
   public static String toMqProducerUri(String exchangeName, String routingKey) {
-    return RabbitMqCamelUtils.rabbitmqProducerEndpoint(exchangeName, routingKey);
+    return ToRabbitMqRouteHelper.rabbitmqProducerEndpoint(exchangeName, routingKey);
   }
 }

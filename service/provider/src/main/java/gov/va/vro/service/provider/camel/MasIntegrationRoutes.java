@@ -13,6 +13,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOf
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
@@ -141,12 +142,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
     final String DIRECT_TO_MQ_MAS = "direct:toMq-mas-notification";
     final String MAS_NOTIFICATION_EXCHANGE = "mas-notification-exchange";
     final String MAS_NOTIFICATION_ROUTING_KEY = "mas-notification";
-    RabbitMqCamelUtils.addToRabbitmqRoute(
-        this,
-        DIRECT_TO_MQ_MAS,
-        MAS_NOTIFICATION_EXCHANGE,
-        MAS_NOTIFICATION_ROUTING_KEY,
-        "&requestTimeout=0");
+    new ToRabbitMqRouteHelper(this, DIRECT_TO_MQ_MAS)
+        .toMq(MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY, "&requestTimeout=0")
+        .createRoute();
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)

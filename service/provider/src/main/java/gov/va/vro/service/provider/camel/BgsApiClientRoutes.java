@@ -4,6 +4,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT;
 
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.camel.processor.RequestAndMerge;
@@ -124,9 +125,10 @@ public class BgsApiClientRoutes extends RouteBuilder {
   }
 
   void configureRouteToBgsApiClientMicroservice() {
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, BGSCLIENT_ADDNOTES, "bgs-api", "add-note")
-        .id("to-rabbitmq-bgsclient-addnote")
-        .routeId("to-rabbitmq-bgsapi-addnote-route")
+    new ToRabbitMqRouteHelper(this, BGSCLIENT_ADDNOTES)
+        .toMq("bgs-api", "add-note")
+        .rabbitMqEndpointId("to-rabbitmq-bgsclient-addnote")
+        .createRoute()
         .log("BGS client response: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
   }
 
