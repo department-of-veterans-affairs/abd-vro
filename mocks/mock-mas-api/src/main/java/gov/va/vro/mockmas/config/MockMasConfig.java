@@ -57,6 +57,9 @@ public class MockMasConfig {
   @Value("classpath:annotations/collection-386.json")
   private Resource collection386Resource;
 
+  @Value("classpath:annotations/collection-365.json")
+  private Resource collection365Resource;
+
   /** Creates and provides the common instance of RestTemplate as a bean for the application. */
   @Bean
   public RestTemplate restTemplate() {
@@ -117,6 +120,9 @@ public class MockMasConfig {
 
     List<MasCollectionAnnotation> collection386 = readFromResource(collection386Resource);
     store.put(386, collection386);
+
+    List<MasCollectionAnnotation> collection365 = readFromResource(collection365Resource);
+    store.put(365, collection365);
 
     return store;
   }

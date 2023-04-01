@@ -775,11 +775,26 @@ public class VroV2Tests {
   }
 
   /**
-   * This is a end-to-end test for an increase case based on 375. It is used to test mas exceptions.
+   * This is an end-to-end test for an increase case based on 375. It is used to test mas
+   * exceptions.
    */
   @Test
   void testAutomatedClaimMasException() {
     AutomatedClaimTestSpec spec = specFor200("369");
     testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 365. It is used to test lh 500
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLh500Exception() {
+    String collectionId = "365";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    // enable when sack messaging is fixed
+    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }

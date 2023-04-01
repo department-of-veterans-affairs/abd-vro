@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
@@ -72,6 +73,13 @@ public class MockLhController implements MockLhApi {
   public ResponseEntity<String> getObservation(
       String bearerToken, MultiValueMap<String, String> queryParams) {
     String icn = queryParams.getFirst("patient");
+
+    if (icn.equals("mock1012666073V986365")) { // icn for 500 errors
+      log.info("Raising error for Observation: {}", icn);
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Expected exception for testing");
+    }
+
     String bundle = store.getMockObservationBundle(icn);
     if (bundle != null) {
       log.info("Sending back the mock Observation: {}", icn);
