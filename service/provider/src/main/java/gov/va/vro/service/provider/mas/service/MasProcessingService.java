@@ -83,7 +83,7 @@ public class MasProcessingService {
       return offRampReason; // Let the HTTP response continue
     }
     var headers =
-        Map.of(
+        Map.<String,Object>of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,
             masConfig.getMasProcessingInitialDelay(),
             MasIntegrationRoutes.MAS_RETRY_PARAM,

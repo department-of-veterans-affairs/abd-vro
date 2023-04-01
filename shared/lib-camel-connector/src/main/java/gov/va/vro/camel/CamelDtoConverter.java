@@ -41,14 +41,14 @@ public class CamelDtoConverter extends TypeConverterSupport {
   public final Collection<Class> dtoClasses;
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T convertTo(Class<T> targetClass, Exchange exchange, Object value)
       throws TypeConversionException {
     try {
       if (dtoClasses.contains(value.getClass())) {
         if (targetClass == byte[].class) {
           return (T) toByteArray(value);
-        }
-        if (targetClass == InputStream.class) {
+        } else if (targetClass == InputStream.class) {
           return (T) toInputStream(value);
         }
       } else if (value.getClass() == byte[].class) {
