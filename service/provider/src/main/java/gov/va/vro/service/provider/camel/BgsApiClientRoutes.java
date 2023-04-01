@@ -44,8 +44,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   private final BgsApiClient bgsApiClient;
 
-  private final int RETRY_LIMIT = 3;
-  private final int RETRY_DELAY_MILLIS = 3000;
+  private final int RETRY_LIMIT = 5;
 
   @Override
   public void configure() throws Exception {
@@ -115,11 +114,10 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .process(requestBgsToAddNotes)
         .id("requestBgsToAddNotes")
         .doCatch(BgsApiClientException.class)
-        .log(
-            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in "
-                + RETRY_DELAY_MILLIS)
         .setBody(simple("${body.incrementTryCount()}"))
-        .delay(RETRY_DELAY_MILLIS)
+        .log(
+            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in ${body.delayMillis}")
+        .delay(simple("${body.delayMillis}"))
         .to(ADD_NOTES_RETRIES)
         .end(); // try-catch block
   }
