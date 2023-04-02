@@ -1,0 +1,29 @@
+{
+  "dob": "1974-02-19",
+  "firstName": "Michael",
+  "lastName": "Lhfivehundred",
+  "gender": "male",
+  "collectionId": 365,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986365",
+    "ssn": "111-11-1365",
+    "veteranFileId": "9999365",
+    "edipn": "1010234-365",
+    "participantId": "88888365"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1365",
+    "claimSubmissionDateTime": "2023-01-05Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375"
+  ]
+}
