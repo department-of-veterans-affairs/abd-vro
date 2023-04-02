@@ -206,7 +206,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
-      Thread.sleep(5);
+      Thread.sleep(5000);
     }
     return null;
   }
@@ -368,11 +368,18 @@ public class VroV2Tests {
   private String testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+
+    long extraSleep = spec.getExtraSleep();
+    if (extraSleep > 0) { // sleep before checks start
+      Thread.sleep(extraSleep);
+    }
+
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
     if (tempJurisdictionStationOverride != null) {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
+
     String pdfText = testPdfUpload(request);
     if (!spec.isBipUpdateClaimError()) {
       testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
@@ -536,6 +543,17 @@ public class VroV2Tests {
     assertNotNull(info, "Cannot find database entry for collection " + collectionId);
     assertEquals(status, info.getStatus());
     assertEquals(isOrderedAtNull, info.getOrderedAt() == null);
+  }
+
+  /** Missing RDR1 test case, verify we are not updating the claim record. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssue() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("11");
+    spec.setPayloadPath("test-mas/claim-30-7101-nospecialissue.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 11] does not qualify for "
+            + "automated processing because it is missing anchors.");
   }
 
   private void testAutomatedClaimOrderExam(AutomatedClaimTestSpec spec) {
@@ -775,11 +793,42 @@ public class VroV2Tests {
   }
 
   /**
-   * This is a end-to-end test for an increase case based on 375. It is used to test mas exceptions.
+   * This is an end-to-end test for an increase case based on 375. It is used to test mas
+   * exceptions.
    */
   @Test
   void testAutomatedClaimMasException() {
     AutomatedClaimTestSpec spec = specFor200("369");
     testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 500
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLh500Exception() {
+    String collectionId = "365";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    // enable when sack messaging is fixed
+    // boolean slackResult = testSlackMessage(collectionId);
+    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh timeout
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLhTimeoutException() {
+    String collectionId = "366";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExtraSleep(125000); // expected sleep time
+
+    // enable the rest of the lines to activate the test.
+    // testAutomatedClaimFullPositive(spec);
+    // boolean slackResult = testSlackMessage(collectionId);
+    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }
