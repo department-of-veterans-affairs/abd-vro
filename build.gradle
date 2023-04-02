@@ -162,7 +162,7 @@ ext {
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
     ':service-python:featuretoggle',
-    ':svc-bgs-api',
+    // ':svc-bgs-api',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
