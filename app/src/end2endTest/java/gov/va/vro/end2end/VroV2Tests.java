@@ -206,7 +206,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
-      Thread.sleep(5);
+      Thread.sleep(5000);
     }
     return null;
   }
@@ -368,11 +368,18 @@ public class VroV2Tests {
   private String testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+
+    long extraSleep = spec.getExtraSleep();
+    if (extraSleep > 0) { // sleep before checks start
+      Thread.sleep(extraSleep);
+    }
+
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
     if (tempJurisdictionStationOverride != null) {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
+
     String pdfText = testPdfUpload(request);
     if (!spec.isBipUpdateClaimError()) {
       testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
@@ -785,7 +792,7 @@ public class VroV2Tests {
   }
 
   /**
-   * This is an end-to-end test for an increase case based on 365. It is used to test lh 500
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 500
    * exceptions.
    */
   @Test
@@ -793,8 +800,24 @@ public class VroV2Tests {
     String collectionId = "365";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    boolean slackResult = testSlackMessage(collectionId);
     // enable when sack messaging is fixed
+    // boolean slackResult = testSlackMessage(collectionId);
+    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh timeout
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLhTimeoutException() {
+    String collectionId = "366";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExtraSleep(125000); // expected sleep time
+
+    // enable the rest of the lines to activate the test.
+    // testAutomatedClaimFullPositive(spec);
+    // boolean slackResult = testSlackMessage(collectionId);
     // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }

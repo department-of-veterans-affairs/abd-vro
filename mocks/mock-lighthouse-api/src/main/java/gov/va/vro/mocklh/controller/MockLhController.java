@@ -4,6 +4,7 @@ import gov.va.vro.mocklh.api.MockLhApi;
 import gov.va.vro.mocklh.config.LhApiProperties;
 import gov.va.vro.mocklh.model.MockBundleStore;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -70,14 +71,20 @@ public class MockLhController implements MockLhApi {
   }
 
   @Override
+  @SneakyThrows
   public ResponseEntity<String> getObservation(
       String bearerToken, MultiValueMap<String, String> queryParams) {
     String icn = queryParams.getFirst("patient");
 
-    if (icn.equals("mock1012666073V986365")) { // icn for 500 errors
+    if (icn.equals("mock1012666073V986365")) { // icn for 500 exception test
       log.info("Raising error for Observation: {}", icn);
       throw new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR, "Expected exception for testing");
+    }
+
+    if (icn.equals("mock1012666073V986366")) { // icn for timeout exception test
+      log.info("Waiting to cause timeout: {}", icn);
+      Thread.sleep(125000); // With a bit more than 2 minutes for timeout
     }
 
     String bundle = store.getMockObservationBundle(icn);
