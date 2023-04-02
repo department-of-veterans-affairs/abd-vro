@@ -827,8 +827,8 @@ public class VroV2Tests {
     spec.setExtraSleep(250000); // expected sleep time
 
     // enable the rest of the lines to activate the test.
-   // testAutomatedClaimFullPositive(spec);
-   // boolean slackResult = testSlackMessage(collectionId);
-   // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }
