@@ -545,6 +545,17 @@ public class VroV2Tests {
     assertEquals(isOrderedAtNull, info.getOrderedAt() == null);
   }
 
+  /** Missing RDR1 test case, verify we are not updating the claim record. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssue() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("11");
+    spec.setPayloadPath("test-mas/claim-30-7101-nospecialissue.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 11] does not qualify for "
+            + "automated processing because it is missing anchors.");
+  }
+
   private void testAutomatedClaimOrderExam(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     log.info("testing ordering exam for collection {}", collectionId);
