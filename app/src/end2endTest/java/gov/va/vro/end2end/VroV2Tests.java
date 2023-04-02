@@ -812,8 +812,8 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
     // enable when sack messaging is fixed
-    // boolean slackResult = testSlackMessage(collectionId);
-    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
   /**
@@ -824,11 +824,11 @@ public class VroV2Tests {
   void testAutomatedClaimLhTimeoutException() {
     String collectionId = "366";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
-    spec.setExtraSleep(125000); // expected sleep time
+    spec.setExtraSleep(250000); // expected sleep time
 
     // enable the rest of the lines to activate the test.
-    // testAutomatedClaimFullPositive(spec);
-    // boolean slackResult = testSlackMessage(collectionId);
-    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+   // testAutomatedClaimFullPositive(spec);
+   // boolean slackResult = testSlackMessage(collectionId);
+   // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }
