@@ -147,7 +147,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
         "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
     replaceEndpoint(
-        "to-rabbitmq-bgsapi-addnote-route",
+        "to-rabbitmq-bgs-api-add-note-route",
         "rabbitmq://bgs-api?routingKey=add-note&skipQueueBind=true",
         "mock:rabbitmq-bgsapi-addnote");
 
