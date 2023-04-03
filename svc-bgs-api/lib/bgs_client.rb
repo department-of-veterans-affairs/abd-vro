@@ -4,20 +4,19 @@ require 'bgs'
 
 # patch bgs_ext with a createNote implementation that follows our spec better
 BGS::DevelopmentNotesService.class_eval do
-  def create_note(claim_id:, participant_id:, txt:, user_id:)
-    response = request(
-      :create_note, {
-        'note' => {
-          'bnftClmNoteTc' => "CLMDVLNOTE",
-          'clmId' => claim_id,
-          'createDt' => Time.current.iso8601,
-          'noteOutTn' => "Claim Development Note",
-          'ptcpntId' => participant_id,
-          'txt' => txt,
-          'userId' => user_id
-        }
-      }
+  def create_note(claim_id: nil, participant_id: nil, txt:, user_id:)
+    note = if claim_id.nil?
+             { 'ptcpntNoteTc' => "CLMNTCONTACT", 'noteOutTn' => "Contact with Claimant" }
+           else
+             { 'clmId' => claim_id, 'bnftClmNoteTc' => "CLMDVLNOTE", 'noteOutTn' => "Claim Development Note" }
+           end
+    note['ptcpntId'] = participant_id unless participant_id.nil?
+    note.merge!(
+      'createDt' => Time.now.iso8601,
+      'txt' => txt,
+      'userId' => user_id
     )
+    response = request(:create_note, 'note' => note)
     response.body[:create_note_response]
   end
 

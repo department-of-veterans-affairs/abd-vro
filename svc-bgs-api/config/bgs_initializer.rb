@@ -14,5 +14,8 @@ BGS.configure do |config|
   config.env = settings["env"]
   config.log = settings["log"]
   config.logger = config.log ? Logger.new(STDOUT) : nil
-  config.ssl_verify_mode = settings["ssl_verify_mode"].to_sym
+  config.ssl_cert_file = settings["ssl_cert_file"]
+  config.ssl_cert_key_file = settings["ssl_cert_key_file"]
+  config.ssl_ca_cert = settings["ssl_ca_cert_file"]
+  config.ssl_verify_mode = (settings["ssl_verify_mode"] || :none).to_sym
 end
