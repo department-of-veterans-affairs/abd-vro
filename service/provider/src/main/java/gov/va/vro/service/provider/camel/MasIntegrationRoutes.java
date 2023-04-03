@@ -287,6 +287,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
     String lighthouseRoute = "mas-automated-claim-lighthouse";
+    String wiretapLighthouse = "direct:wiretap-lighthouse";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
@@ -318,25 +319,33 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId(lighthouseRoute)
+        .setProperty("payload", simple("${body}"))
         .process(payloadToClaimProcessor())
+        .doTry()
         .to(lighthouseRetryRoute)
-        // Handle the errors to permit processing to continue
-        .onException(ExchangeTimedOutException.class, ExternalCallException.class)
-        .handled(true)
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .to(wiretapLighthouse)
+        .process(lighthouseContinueProcessor()) // But keep processing
+        .end();
+
+    // Wiretap breaks onCatch behavior, onException wont work here. This is the workaround.
+    from(wiretapLighthouse)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventPropertyProcessor(
-                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
-        .process(lighthouseContinueProcessor()) // But keep processing
-        .end(); // End of onException
+                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
+        .setProperty("retryBody", simple("${body}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .log("Retrying lighthouse due to error")
+        .setBody(simple("${exchangeProperty.retryBody}"))
+        .removeProperty("retryBody")
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor)
