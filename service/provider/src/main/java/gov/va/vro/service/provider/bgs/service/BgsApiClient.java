@@ -4,7 +4,6 @@ import static gov.va.vro.service.provider.bgs.service.BgsClaimNotes.OFFRAMP_ERRO
 import static gov.va.vro.service.provider.bgs.service.BgsVeteranNote.getArsdUploadedNote;
 
 import gov.va.vro.model.bgs.BgsApiClientRequest;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
@@ -24,8 +23,11 @@ import java.util.UUID;
 public class BgsApiClient {
   private final EvidenceSummaryDocumentRepository esDocRepository;
 
+  private int retryDelayBaseMills = 130_000;
+
   public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
-    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo);
+    retryDelayBaseMills = 13_000; // for testing
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, retryDelayBaseMills);
 
     String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
     var request = new BgsApiClientRequest(mpo.getBenefitClaimId(), veteranId);
@@ -49,8 +51,7 @@ public class BgsApiClient {
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
         // which only covers SUFFICIENCY_UNDETERMINED
         // Need to test the other 2 offrampError scenarios
-        MasAutomatedClaimPayload payload = mpo.getClaimPayload();
-        var offRampError = payload.getOffRampError();
+        var offRampError = mpo.getOffRampReason();
         log.warn("++++++++ offRampError=" + offRampError);
         String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampError, null);
         String detailsOffRampReason = mpo.getDetails().get("offRampError");

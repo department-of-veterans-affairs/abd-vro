@@ -51,7 +51,7 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Builder.Default @NotNull private String idType = CLAIM_V2_ID_TYPE;
 
   @Setter private String offRampReason;
-  @Setter private String offRampError;
+  // @Setter private String offRampError;
 
   @Setter private UUID evidenceSummaryDocumentId;
 
