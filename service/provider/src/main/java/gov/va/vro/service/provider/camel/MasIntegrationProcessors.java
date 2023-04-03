@@ -161,7 +161,7 @@ public class MasIntegrationProcessors {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
 
-      //String offRampError = payload.getClaimPayload().getOffRampError();
+      // String offRampError = payload.getClaimPayload().getOffRampError();
       MasCamelStage origin = payload.getOrigin();
       Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
       String offRampErrorPayload = payload.getOffRampReason();
@@ -171,7 +171,7 @@ public class MasIntegrationProcessors {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
         exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
-      //MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
+      // MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
       try {
