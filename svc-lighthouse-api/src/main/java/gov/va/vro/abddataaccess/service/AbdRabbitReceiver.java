@@ -24,9 +24,10 @@ public class AbdRabbitReceiver {
       AbdResponse response = new AbdResponse(claim, evidence);
       return response;
     } catch (Exception e) {
+      // Message can be null despite exception existing.
       log.error(e.getMessage());
       AbdResponse response = new AbdResponse(claim);
-      response.setErrorMessage(e.getMessage());
+      response.setErrorMessage("Lighthouse Error: " + e.getMessage());
       return response;
     }
   }
