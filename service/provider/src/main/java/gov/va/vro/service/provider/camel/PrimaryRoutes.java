@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -78,7 +79,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private String pdfRoute(String queueName) {
     String uri = "direct:rabbitmq-" + queueName;
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, uri, PDF_EXCHANGE, queueName);
+    new ToRabbitMqRouteHelper(this, uri).toMq(PDF_EXCHANGE, queueName).createRoute();
     return uri;
   }
 }

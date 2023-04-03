@@ -21,6 +21,9 @@ springdoc:
   swagger-ui:
     enabled: true
 
+lhAPIProvider:
+  validateToken: NO
+
 logging:
   level:
     root: DEBUG
