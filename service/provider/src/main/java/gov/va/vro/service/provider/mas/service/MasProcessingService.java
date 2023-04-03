@@ -83,7 +83,7 @@ public class MasProcessingService {
       return offRampReason; // Let the HTTP response continue
     }
     var headers =
-        Map.of(
+        Map.<String, Object>of(
             MasIntegrationRoutes.MAS_DELAY_PARAM,
             masConfig.getMasProcessingInitialDelay(),
             MasIntegrationRoutes.MAS_RETRY_PARAM,
@@ -121,7 +121,7 @@ public class MasProcessingService {
     }
 
     long claimId = Long.parseLong(payload.getClaimDetail().getBenefitClaimId());
-    log.info("Check hasAnchors for claim ID, {}", claimId); // TODO: remove it after test.
+    log.info("Check hasAnchors for claim ID, {}", claimId);
     if (!bipClaimService.hasAnchors(claimId)) {
       var message =
           String.format(
@@ -129,7 +129,6 @@ public class MasProcessingService {
                   + " automated processing because it is missing anchors.",
               payload.getCollectionId());
       log.info(message);
-      offRampClaim(payload, message);
       return Optional.of(message);
     }
     return Optional.empty();
