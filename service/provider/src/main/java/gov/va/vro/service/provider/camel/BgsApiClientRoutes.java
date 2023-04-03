@@ -116,7 +116,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .doCatch(BgsApiClientException.class)
         .setBody(simple("${body.incrementTryCount()}"))
         .log(
-            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in ${body.delayMillis}")
+            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in ${body.delayMillis} ms")
         .delay(simple("${body.delayMillis}"))
         .to(ADD_NOTES_RETRIES)
         .end(); // try-catch block
