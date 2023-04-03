@@ -32,7 +32,7 @@ public interface ClaimInfoResponseMapper {
   // equal to claimSubmissionId to external systems.
   default String claimSubmissionsEntitySetToClaimSubmissionId(
       Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
-    return claimSubmissionEntities.iterator().next().getReferenceId();
+    return claimSubmissionEntities.iterator().next().getClaim().getVbmsId();
   }
 
   default String claimSubmissionsEntitySetToIdType(

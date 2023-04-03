@@ -69,10 +69,16 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     if (claimSubmission != null) {
       claim = claimSubmission.getClaim();
     }
-
     if (claim == null) {
-      log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
-      return null;
+      log.warn("Could not find claim with the claimSubmissionId: {}, retrying.", claimSubmissionId);
+      ClaimEntity claimEntity = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+      if (claimEntity == null) {
+        log.warn(
+            "Could not find claim with claimSubmissionId: {}, return null.", claimSubmissionId);
+        return null;
+      } else {
+        return claimInfoResponseMapper.toClaimInfoResponse(claimEntity);
+      }
     }
     return claimInfoResponseMapper.toClaimInfoResponse(claim);
   }
