@@ -1,18 +1,18 @@
 {
   "dob": "2000-02-19",
   "firstName": "Rick",
-  "lastName": "NoRDRD1",
+  "lastName": "Norrdorrrdone",
   "gender": "male",
-  "collectionId": 11,
+  "collectionId": 32,
   "veteranIdentifiers": {
-    "icn": "icn-not-needed-30",
-    "ssn": "010-11-1111",
-    "veteranFileId": "file-id-not-needed-030",
-    "edipn": "edipn-30",
-    "participantId": "participant-id-030"
+    "icn": "icn-not-needed-32",
+    "ssn": "032-11-1111",
+    "veteranFileId": "file-id-not-needed-032",
+    "edipn": "edipn-32",
+    "participantId": "participant-id-032"
   },
   "claimDetail": {
-    "benefitClaimId": "1370",
+    "benefitClaimId": "3032",
     "claimSubmissionDateTime": "2017-10-06T18:45:59Z",
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
