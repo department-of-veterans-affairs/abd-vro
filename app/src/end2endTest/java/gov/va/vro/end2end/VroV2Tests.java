@@ -503,8 +503,8 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-10-7101-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and "
-            + "[disability action type = DECREASE] is not in scope.");
+        "Claim with collection id: 10, diagnostic code: 7101, and "
+            + "disability action type: DECREASE is not in scope.");
     startAutomatedClaim(spec);
   }
 
@@ -516,8 +516,8 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-15-6602-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 15], [diagnostic code = 6602], and "
-            + "[disability action type = INCREASE] is not in scope.");
+        "Claim with collection id: 15, diagnostic code: 6602, and "
+            + "disability action type: INCREASE is not in scope.");
     startAutomatedClaim(spec);
   }
 
@@ -532,7 +532,7 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-20-7101-no-anchor-jurisdiction.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for "
+        "Claim with collection id: 20 does not qualify for "
             + "automated processing because it is missing anchors.");
     startAutomatedClaim(spec);
   }
