@@ -105,8 +105,8 @@ public class MasProcessingService {
     if (payload.isPresumptive() != null && !payload.isPresumptive()) {
       var logMessageOnly =
           String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " [disability action type = %s] and [flashIds = %s] is not presumptive.",
+              "Claim with collection id: %s, diagnostic code: %s,"
+                  + " and disability action type: %s is not in scope.",
               payload.getCollectionId(),
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType(),
@@ -121,8 +121,8 @@ public class MasProcessingService {
     if (!payload.isInScope()) {
       var message =
           String.format(
-              "Claim with [collection id = %s], [diagnostic code = %s],"
-                  + " and [disability action type = %s] is not in scope.",
+              "Claim with collection id: %s, diagnostic code: %s,"
+                  + " and disability action type: %s is not in scope.",
               payload.getCollectionId(),
               payload.getDiagnosticCode(),
               payload.getDisabilityActionType());
@@ -134,7 +134,7 @@ public class MasProcessingService {
     if (!bipClaimService.hasAnchors(claimId)) {
       var message =
           String.format(
-              "Claim with [collection id = %s] does not qualify for"
+              "Claim with collection id: %s does not qualify for"
                   + " automated processing because it is missing anchors.",
               payload.getCollectionId());
       log.info(message);

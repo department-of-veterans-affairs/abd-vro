@@ -64,8 +64,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response1 = masProcessingService.processIncomingClaimGetUnprocessableReason(request1);
     // wrong diagnostic code
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 71], and"
-            + " [disability action type = INCREASE] is not in scope.",
+        "Claim with collection id: 123, diagnostic code: 71, and"
+            + " disability action type: INCREASE is not in scope.",
         response1);
 
     var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
@@ -73,8 +73,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response2 = masProcessingService.processIncomingClaimGetUnprocessableReason(request2);
     // wrong disability action
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 7101], and"
-            + " [disability action type = OTHER] is not in scope.",
+        "Claim with collection id: 123, diagnostic code: 7101, and"
+            + " disability action type: OTHER is not in scope.",
         response2);
   }
 
@@ -100,7 +100,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
     var response = masProcessingService.processIncomingClaimGetUnprocessableReason(request);
     assertEquals(
-        "Claim with [collection id = 123] does not qualify for "
+        "Claim with collection id: 123 does not qualify for "
             + "automated processing because it is missing anchors.",
         response);
   }
