@@ -28,8 +28,7 @@ public class BgsNotesCamelBody {
 
   public BgsNotesCamelBody incrementTryCount() {
     // Use exponential backoff for retries. The random term helps to avoid cases where many clients
-    // are synchronized by some situation
-    // and all retry at once
+    // are synchronized by some situation and all retry at once.
     delayMillis =
         delayBaseMillis * ((int) Math.pow(2, tryCount.get() - 1)) + new Random().nextInt(2000);
     tryCount.incrementAndGet();

@@ -167,19 +167,19 @@ public class MasIntegrationProcessors {
 =======
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       // String offRampError = payload.getClaimPayload().getOffRampError();
 >>>>>>> 9c61c2ad (delint)
 =======
       // String offRampError = payload.getClaimPayload().getOffRampError(); // Is this set? Nope.
       // OffRampReason is set in setOffRampReasonProcessor
 >>>>>>> 063ffff8 (resolve merge conflicts)
+=======
+>>>>>>> ecbfd0d9 (cleanup)
       MasCamelStage origin = payload.getOrigin();
-      Boolean sufficient =
-          exchange.getProperty(
-              "sufficientForFastTracking",
-              Boolean.class); // TODO: use mpo.sufficientForFastTracking
-      String offRampErrorPayload =
-          payload.getOffRampReason(); // what values? see .setOffRampReasonProcessor
+      // TODO: use mpo.sufficientForFastTracking
+      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
+      String offRampErrorPayload = payload.getOffRampReason();
 
 >>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
       // Update our database with offramp reason.
@@ -187,6 +187,7 @@ public class MasIntegrationProcessors {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
         exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -207,6 +208,10 @@ public class MasIntegrationProcessors {
               sufficient,
               offRampErrorPayload); // mismatch offRampErrorPayload = getOffRampReason
 >>>>>>> 063ffff8 (resolve merge conflicts)
+=======
+      MasCompletionStatus completionStatus =
+          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
+>>>>>>> ecbfd0d9 (cleanup)
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {

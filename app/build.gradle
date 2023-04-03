@@ -22,10 +22,6 @@ tasks.withType(Test).named("end2endTest") {
   }
 }
 
-tasks.withType(JavaCompile) {
-  options.compilerArgs += ['-Xlint:unchecked']
-}
-
 dependencies {
   implementation project(':shared:domain')
   implementation project(':api')
