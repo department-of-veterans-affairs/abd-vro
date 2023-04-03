@@ -161,27 +161,18 @@ public class MasIntegrationProcessors {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
 
-      // String offRampError = payload.getClaimPayload().getOffRampError(); // Is this set? Nope.
-      // OffRampReason is set in setOffRampReasonProcessor
       MasCamelStage origin = payload.getOrigin();
-      Boolean sufficient =
-          exchange.getProperty(
-              "sufficientForFastTracking",
-              Boolean.class); // TODO: use mpo.sufficientForFastTracking
-      String offRampErrorPayload =
-          payload.getOffRampReason(); // what values? see .setOffRampReasonProcessor
+      // TODO: use mpo.sufficientForFastTracking
+      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
+      String offRampErrorPayload = payload.getOffRampReason();
 
       // Update our database with offramp reason.
       if (offRampErrorPayload != null) {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
         exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
-      // MasCompletionStatus completionStatus = MasCompletionStatus.of(payload); ?
       MasCompletionStatus completionStatus =
-          MasCompletionStatus.of(
-              origin,
-              sufficient,
-              offRampErrorPayload); // mismatch offRampErrorPayload = getOffRampReason
+          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
