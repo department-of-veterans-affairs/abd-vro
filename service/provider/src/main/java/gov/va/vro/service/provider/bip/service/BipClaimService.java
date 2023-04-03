@@ -67,11 +67,12 @@ public class BipClaimService {
     }
 
     var contentions = bipApiService.getClaimContentions(claimId);
-    if (contentions == null) {
+    if (contentions == null || contentions.size() == 0) {
       log.info("Claim with claim Id {} does not have contentions.", claimId);
       return false;
-    } else if (contentions.size() != 1) {
-      log.info("Claim with claim Id {} does not have contentions.", claimId);
+    }
+    if (contentions.size() > 1) {
+      log.info("Claim with claim Id {} have multiple contentions.", claimId);
       return false;
     }
 
@@ -90,6 +91,7 @@ public class BipClaimService {
     boolean hasSpecialIssues =
         specialIssues.contains(claimPorps.getSpecialIssue1().toLowerCase())
             && specialIssues.contains(claimPorps.getSpecialIssue2().toLowerCase());
+    log.info("Claim {} contention special issues: {}", claimId, String.join(", ", specialIssues));
     log.info("Has special issues: {}", hasSpecialIssues);
     return hasSpecialIssues;
   }
