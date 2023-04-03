@@ -177,6 +177,10 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     adviceWith(
         camelContext,
         routeId,
+        // TODO: Consider using `weaveById().replace()` for rabbitmq endpoints to avoid "Failed to
+        // create connection."
+        // https://tomd.xyz/mock-endpoints-are-real: "Original endpoints are still initialised, even
+        // if they have been mocked."
         route -> route.interceptSendToEndpoint(fromUri).skipSendToOriginalEndpoint().to(toUri));
   }
 }
