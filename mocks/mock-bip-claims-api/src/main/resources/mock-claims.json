@@ -566,7 +566,8 @@
   },
   {
     "description": [
-      "for mas 5xx exception handling test"
+      "for mas 5xx exception handling test",
+      "500 on observation retrieval"
     ],
     "claimDetail": {
       "claimId": 1365,
@@ -603,6 +604,33 @@
     "contentions": [
       {
         "contentionId": "2366",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas 5xx exception handling test, second",
+      "504 on condition retrieval"
+    ],
+    "claimDetail": {
+      "claimId": 1367,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2367",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
