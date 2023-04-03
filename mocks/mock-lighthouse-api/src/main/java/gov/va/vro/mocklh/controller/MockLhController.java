@@ -99,6 +99,13 @@ public class MockLhController implements MockLhApi {
   public ResponseEntity<String> getCondition(
       String bearerToken, MultiValueMap<String, String> queryParams) {
     String icn = queryParams.getFirst("patient");
+
+    if (icn.equals("mock1012666073V986367")) { // icn for 504 exception test
+      log.info("Raising error for Condition: {}", icn);
+      throw new ResponseStatusException(
+          HttpStatus.GATEWAY_TIMEOUT, "Expected exception for testing");
+    }
+
     String bundle = store.getMockConditionBundle(icn);
     if (bundle != null) {
       log.info("Sending back the mock Condition: {}", icn);
