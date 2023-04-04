@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -50,6 +51,8 @@ public class MasAutomatedClaimPayload implements Auditable {
   @Builder.Default @NotNull private String idType = CLAIM_V2_ID_TYPE;
 
   @Setter private String offRampReason;
+
+  @Setter private UUID evidenceSummaryDocumentId;
 
   private List<String> veteranFlashIds;
 
