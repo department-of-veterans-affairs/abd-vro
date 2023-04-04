@@ -162,6 +162,7 @@ public class MasIntegrationProcessors {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       String offRampError = payload.getClaimPayload().getOffRampError();
 =======
 =======
@@ -176,6 +177,9 @@ public class MasIntegrationProcessors {
 >>>>>>> 063ffff8 (resolve merge conflicts)
 =======
 >>>>>>> ecbfd0d9 (cleanup)
+=======
+
+>>>>>>> c936b102 (Use MasProcessingObject.sufficientForFastTracking instead of Camel property (#1413))
       MasCamelStage origin = payload.getOrigin();
       String offRampErrorPayload = payload.getOffRampReason();
 
@@ -196,6 +200,7 @@ public class MasIntegrationProcessors {
 >>>>>>> 9c61c2ad (delint)
       MasCompletionStatus completionStatus =
 <<<<<<< HEAD
+<<<<<<< HEAD
           MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
 
 >>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
@@ -215,6 +220,10 @@ public class MasIntegrationProcessors {
           MasCompletionStatus.of(
               origin, payload.getSufficientForFastTracking(), offRampErrorPayload);
 >>>>>>> 902c2712 (use mpo.sufficientForFastTracking)
+=======
+          MasCompletionStatus.of(
+              origin, payload.getSufficientForFastTracking(), offRampErrorPayload);
+>>>>>>> c936b102 (Use MasProcessingObject.sufficientForFastTracking instead of Camel property (#1413))
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
