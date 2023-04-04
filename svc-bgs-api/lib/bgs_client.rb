@@ -45,16 +45,18 @@ class BgsClient
   def handle_request(req)
     claim_id = req[:vbmsClaimId]
     if req.has_key?(:claimNotes)
-      raise ArgumentError.new("vbmsClaimId is required") unless claim_id
+      raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
 
-      create_notes(claim_id, req[:claimNotes])
+      create_claim_notes(claim_id: claim_id, notes: req[:claimNotes])
     elsif req.has_key?(:veteranNote)
       participant_id = req[:veteranParticipantId]
       note = req[:veteranNote]
       raise ArgumentError.new("at least one of vbmsClaimId and veteranParticipantId is required") unless claim_id || participant_id
       raise ArgumentError.new("invalid veteranNote value") unless note.is_a?(String) && note.length > 0
 
-      create_note(claim_id: claim_id, participant_id: participant_id, note: note)
+      create_veteran_note(claim_id: claim_id, participant_id: participant_id, note: note)
+    else
+      raise ArgumentError.new("missing claimNotes or veteranNote")
     end
   end
 
