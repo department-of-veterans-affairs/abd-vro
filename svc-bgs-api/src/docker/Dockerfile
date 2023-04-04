@@ -1,5 +1,5 @@
 FROM ruby:2.7.7-alpine3.16
- 
+
  # hadolint ignore=DL3018
  # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
@@ -22,7 +22,7 @@ COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 # TODO once application is stable, update Gemfile.lock with contents from image
 # and change next line to: COPY Gemfile Gemfile.lock ./
-COPY Gemfile  ./
+COPY Gemfile Gemfile.lock ./
 
 # After install, delete packages only needed during bundler install & clean APK cache
 RUN gem install bundler:2.4.10 --no-document && bundle install && apk del git ruby-dev curl-dev build-base && rm -rf /var/cache/apk/*
