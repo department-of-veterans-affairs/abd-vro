@@ -29,6 +29,10 @@ public enum MasCompletionStatus {
     return result;
   }
 
+  public static MasCompletionStatus of(MasProcessingObject mpo) {
+    return of(mpo.getOrigin(), mpo.getSufficientForFastTracking(), mpo.getOffRampReason());
+  }
+
   public static MasCompletionStatus of(
       MasCamelStage origin, Boolean sufficientForFastTracking, String offRampError) {
     if (origin == MasCamelStage.START_COMPLETE

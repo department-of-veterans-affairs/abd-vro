@@ -14,6 +14,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.ToRabbitMqRouteHelper;
+import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -40,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ExchangeTimedOutException;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.commons.lang3.StringUtils;
@@ -84,6 +86,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
+
+  private final ProducerTemplate producerTemplate;
 
   private final BipClaimService bipClaimService;
 
@@ -178,9 +182,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
+        .when(simple("${body.sufficientForFastTracking} == false"))
         .to(ENDPOINT_ORDER_EXAM)
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
+        .when(simple("${body.sufficientForFastTracking} == true"))
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
