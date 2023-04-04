@@ -17,6 +17,7 @@ import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.camel.BgsApiClientRoutes;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
@@ -146,10 +147,8 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     replaceEndpoint(
         "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
-    replaceEndpoint(
-        "to-rabbitmq-bgs-api-add-note-route",
-        "rabbitmq://bgs-api?routingKey=add-note&skipQueueBind=true",
-        "mock:rabbitmq-bgsapi-addnote");
+    // This route is tested in its own unit test and isn't required for the MAS workflow
+    replaceEndpoint("add-bgs-notes-route", BgsApiClientRoutes.ADD_BGS_NOTES, "mock:empty-endpoint");
 
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
