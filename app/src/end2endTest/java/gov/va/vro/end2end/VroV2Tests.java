@@ -503,8 +503,8 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-10-7101-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and "
-            + "[disability action type = DECREASE] is not in scope.");
+        "Claim with collection id: 10, diagnostic code: 7101, and "
+            + "disability action type: DECREASE is not in scope.");
     startAutomatedClaim(spec);
   }
 
@@ -516,8 +516,8 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-15-6602-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 15], [diagnostic code = 6602], and "
-            + "[disability action type = INCREASE] is not in scope.");
+        "Claim with collection id: 15, diagnostic code: 6602, and "
+            + "disability action type: INCREASE is not in scope.");
     startAutomatedClaim(spec);
   }
 
@@ -532,7 +532,7 @@ public class VroV2Tests {
     spec.setPayloadPath("test-mas/claim-20-7101-no-anchor-jurisdiction.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for "
+        "Claim with collection id: 20 does not qualify for "
             + "automated processing because it is missing anchors.");
     startAutomatedClaim(spec);
   }
@@ -889,9 +889,8 @@ public class VroV2Tests {
     String collectionId = "365";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    // enable when sack messaging is fixed
-    // boolean slackResult = testSlackMessage(collectionId);
-    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
   /**
@@ -904,10 +903,9 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     spec.setExtraSleep(250000); // expected sleep time
 
-    // enable the rest of the lines to activate the test.
-    // testAutomatedClaimFullPositive(spec);
-    // boolean slackResult = testSlackMessage(collectionId);
-    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
   /**
@@ -919,8 +917,7 @@ public class VroV2Tests {
     String collectionId = "367";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    // enable when sack messaging is fixed
-    // boolean slackResult = testSlackMessage(collectionId);
-    // assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }

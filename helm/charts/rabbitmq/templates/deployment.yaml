@@ -16,7 +16,7 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: rabbitmq--{{ .Values.imageTag }}
+        - name: rabbitmq{{ include "vro.containerSuffix" . }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-rabbitmq:{{ .Values.imageTag }}
           env:
             - name: RABBITMQ_DEFAULT_USER
