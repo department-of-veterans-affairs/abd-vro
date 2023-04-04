@@ -8,14 +8,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = ContentionInfoMapper.class,
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ClaimInfoResponseMapper {
+
+  // Mapper for v1 claims.
   @Mapping(target = "veteranIcn", source = "veteran.icn")
   @Mapping(
       target = "claimSubmissionId",
@@ -24,15 +24,41 @@ public interface ClaimInfoResponseMapper {
   @Mapping(
       target = "idType",
       expression = "java(claimSubmissionsEntitySetToIdType(claimEntity.getClaimSubmissions()))")
-  ClaimInfoResponse toClaimInfoResponse(ClaimEntity claimEntity);
+  ClaimInfoResponse toClaimInfoResponseV1(ClaimEntity claimEntity);
 
-  List<ClaimInfoResponse> toClaimInfoResponses(Iterable<ClaimEntity> claimEntities);
+  // Mapper for v2 claims.
+  @Mapping(target = "veteranIcn", source = "veteran.icn")
+  @Mapping(
+      target = "claimSubmissionId",
+      expression =
+          "java(claimSubmissionsEntitySetToBenefitClaimId(claimEntity.getClaimSubmissions()))")
+  @Mapping(
+      target = "idType",
+      expression = "java(claimSubmissionsEntitySetToIdType(claimEntity.getClaimSubmissions()))")
+  @Mapping(
+      target = "collectionId",
+      expression =
+          "java(claimSubmissionsEntitySetToCollectionId(claimEntity.getClaimSubmissions()))")
+  ClaimInfoResponse toClaimInfoResponseV2(ClaimEntity claimEntity);
+
+  //  List<ClaimInfoResponse> toClaimInfoResponses(Iterable<ClaimEntity> claimEntities);
 
   // Custom mapper to handle new claim_submission table. The reference_id in claim submission is
   // equal to claimSubmissionId to external systems.
   default String claimSubmissionsEntitySetToClaimSubmissionId(
       Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
+    return claimSubmissionEntities.iterator().next().getReferenceId();
+  }
+
+  // Sets the claimInfoResponses claimSubmissionId to VBMS ID(aka benefit claim ID) for v2 claims.
+  default String claimSubmissionsEntitySetToBenefitClaimId(
+      Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
     return claimSubmissionEntities.iterator().next().getClaim().getVbmsId();
+  }
+
+  default String claimSubmissionsEntitySetToCollectionId(
+      Iterable<ClaimSubmissionEntity> claimSubmissionEntities) {
+    return claimSubmissionEntities.iterator().next().getReferenceId();
   }
 
   default String claimSubmissionsEntitySetToIdType(
