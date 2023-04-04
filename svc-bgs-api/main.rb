@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'active_support/time'
 require 'logger'
 
 require_relative 'config/setup'
@@ -18,14 +17,21 @@ bunny_args = {
   password: ENV['RABBITMQ_PLACEHOLDERS_USERPASSWORD'] || "guest"
 }
 
-def initialize_subscriber
+def initialize_subscriber(bgs_client)
   subscriber = RabbitSubscriber.new(bunny_args)
-  subscriber.setup_queue(exchange_name: 'svc-bgs-api', queue_name: 'development_notes')
-  subscriber.subscribe_to('svc-bgs-api', 'development_notes') do |json|
+  subscriber.setup_queue(exchange_name: 'bgs-api', queue_name: 'add-note')
+  subscriber.subscribe_to('bgs-api', 'add-note') do |json|
     puts "Subscriber received request #{json}"
-    {
-      statusCode: 200
-    }
+    begin
+      bgs_client.handle_request(json)
+    rescue => e
+      {
+        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
+        statusMessage: "#{e.class}: #{e.message}"
+      }
+    else
+      { statusCode: 200 }
+    end
   end
   subscriber
 end
@@ -42,4 +48,5 @@ def run(subscriber)
   end
 end
 
-run(nil)
+subscriber = initialize_subscriber(BgsClient.new)
+run(subscriber)
