@@ -38,8 +38,6 @@ public enum MasCompletionStatus {
     if (origin == MasCamelStage.START_COMPLETE
         || sufficientForFastTracking == null
         || offRampError != null) {
-      // if (sufficientForFastTracking == null) return OFF_RAMP;
-      // if (origin == MasCamelStage.START_COMPLETE) return OFF_RAMP_MISSING_FLASH;
       return OFF_RAMP;
     }
     return sufficientForFastTracking ? READY_FOR_DECISION : EXAM_ORDER;
