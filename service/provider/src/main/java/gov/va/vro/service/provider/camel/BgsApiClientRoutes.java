@@ -140,7 +140,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
                     model.mpo.getCollectionId(),
                     model.response.getStatusCode(),
                     model.response.getStatusMessage(),
-                    model.request.veteranNote, model.request.claimNotes));
+                    model.request.veteranNote,
+                    model.request.claimNotes));
 
     String webhook = masConfig.getSlackExceptionWebhook();
     String channel = masConfig.getSlackExceptionChannel();
