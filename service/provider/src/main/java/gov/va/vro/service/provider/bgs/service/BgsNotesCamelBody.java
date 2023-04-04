@@ -6,6 +6,8 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,7 +37,22 @@ public class BgsNotesCamelBody {
     return this;
   }
 
-  // TODO: might be multiple requests, in which case we need to distinguish completed requests
+  // Since there are potentially several notes, we have to split up requests
+  public List<BgsApiClientRequest> pendingRequests = new ArrayList<>();
+
+  public BgsApiClientRequest currentRequest() {
+    request = pendingRequests.get(0);
+    response = null;
+    return request;
+  }
+
+  // Called after successful request or done retrying
+  public void removeRequest(BgsApiClientRequest request) {
+    pendingRequests.remove(request);
+    tryCount.set(1);
+  }
+
+  // current request and response objects
   public BgsApiClientRequest request;
   public BgsApiClientResponse response;
 }

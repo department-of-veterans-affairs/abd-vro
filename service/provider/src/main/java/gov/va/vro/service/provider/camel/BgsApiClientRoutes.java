@@ -1,8 +1,5 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT;
-
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.FunctionProcessor;
@@ -22,6 +19,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -44,7 +43,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   private final BgsApiClient bgsApiClient;
 
-  private final int RETRY_LIMIT = 5;
+  private int RETRY_LIMIT = 5;
 
   @Override
   public void configure() throws Exception {
@@ -52,11 +51,6 @@ public class BgsApiClientRoutes extends RouteBuilder {
     configureAddNotesRoute(routeId);
     configureRouteToBgsApiClientMicroservice();
     configureRouteToSlackNotification();
-
-    from("direct:BgsApiClientError")
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        // input: MasProcessingObject; output: AuditEvent
-        .onPrepare(slackEventProcessor(routeId, "Error adding claim notes in BGS."));
 
     configureMockBgsApiMicroservice();
   }
@@ -70,19 +64,15 @@ public class BgsApiClientRoutes extends RouteBuilder {
         // print the body as json
         .process(getInOnlyLogJson())
         .bean(bgsApiClient, "buildRequest")
-        .log("total notes: ${body.request.veteranNotes.size} + ${body.request.claimNotes.size}")
-        // if there are notes to add, use BGS client
-        .choice()
-        .when()
-        .simple("${body.request.veteranNotes.size} > 0 || ${body.request.claimNotes.size} > 0")
+        .loopDoWhile(simple("${body.pendingRequests.size} > 0"))
+        .log("loop: ${body.pendingRequests.size} pendingRequests")
         .process(getInOnlyLogJson())
         .log("microservice request: ${exchange.pattern}: ${body}")
         .to(ADD_NOTES_RETRIES)
-        .otherwise()
-        .log("No notes to add")
-        .end()
+        .end() // of loopDoWhile
         .log("output: ${exchange.pattern}: ${body}");
 
+    // Only for debugging
     from("direct:logJson")
         .marshal()
         .json(JsonLibrary.Jackson)
@@ -92,18 +82,23 @@ public class BgsApiClientRoutes extends RouteBuilder {
         RequestAndMerge.<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>factory(
                 producerTemplate)
             .requestUri(BGSCLIENT_ADDNOTES)
-            .prepareRequest(body -> body.request)
+            .prepareRequest(body -> body.currentRequest())
             // set responseClass so that Camel auto-converts JSON into object
             .responseClass(BgsApiClientResponse.class)
             .mergeResponse(
                 (body, response) -> {
                   body.setResponse(response);
-                  if (response.getStatusCode() >= 300) {
-                    if (body.tryCount.get() >= RETRY_LIMIT)
+                  if (response.getStatusCode() < 300) {
+                    body.removeRequest(body.request);
+                  } else {
+                    if (body.tryCount.get() >= RETRY_LIMIT) {
+                      body.removeRequest(body.request);
                       producerTemplate.requestBody(ENDPOINT_SLACK_BGS_FAILED, body);
-                    else
+                    } else {
+                      // cause a retry
                       throw new BgsApiClientException(
                           "Failed to add note. collection id: " + body.mpo.getCollectionId());
+                    }
                   }
                   return body;
                 })
@@ -116,7 +111,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .doCatch(BgsApiClientException.class)
         .setBody(simple("${body.incrementTryCount()}"))
         .log(
-            "caught: ${exception.message}: tryCount=${body.tryCount}. Will retry in ${body.delayMillis} ms")
+            "caught: ${exception.message}: tryCount=${body.tryCount} will retry in ${body.delayMillis} ms")
         .delay(simple("${body.delayMillis}"))
         .to(ADD_NOTES_RETRIES)
         .end(); // try-catch block
@@ -126,8 +121,9 @@ public class BgsApiClientRoutes extends RouteBuilder {
     new ToRabbitMqRouteHelper(this, BGSCLIENT_ADDNOTES)
         .toMq("bgs-api", "add-note")
         .rabbitMqEndpointId("to-rabbitmq-bgsclient-addnote")
+        .responseClass(BgsApiClientResponse.class)
         .createRoute()
-        .log("BGS client response: ${exchange.pattern}: ${headers}: ${body.class}: ${body}");
+        .log("BGS client response: ${body.class}: ${body}");
   }
 
   private final MasConfig masConfig;
@@ -139,11 +135,12 @@ public class BgsApiClientRoutes extends RouteBuilder {
             model ->
                 // The mock Slack service expects `collection id: ` to be in the message
                 String.format(
-                    "Failed to add VBMS notes for claim %s, collection id: %s; status code %s: %s",
+                    "Failed to add VBMS notes for claim %s, collection id: %s; status code %s: %s. Note: %s %s",
                     model.request.getVbmsClaimId(),
                     model.mpo.getCollectionId(),
                     model.response.getStatusCode(),
-                    model.response.getStatusMessage()));
+                    model.response.getStatusMessage(),
+                    model.request.veteranNote, model.request.claimNotes));
 
     String webhook = masConfig.getSlackExceptionWebhook();
     String channel = masConfig.getSlackExceptionChannel();
@@ -152,7 +149,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_BGS_FAILED)
         .routeId("slack-bgs-failed-route")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .log("output: ${exchange.pattern}:  ${headers}: ${body.class}: ${body}")
+        .log("slack: ${exchange.pattern}:  ${headers}: ${body.class}: ${body}")
         .process(buildErrorMessage)
         .to(slackRoute)
         .process(getInOnlyLogJson());
@@ -160,15 +157,22 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   // TODO: remove once BgsApiClientMicroservice is ready for testing
   void configureMockBgsApiMicroservice() {
+    final AtomicInteger requestCounter = new AtomicInteger(0);
     var mockService =
         FunctionProcessor.<BgsApiClientRequest, BgsApiClientResponse>builder()
             .inputBodyClass(BgsApiClientRequest.class)
             .function(
                 request -> {
-                  log.warn("++++ MOCK BgsApiClientMicroservice");
+                  log.warn("++ MOCK BgsApiClientMicroservice: " + request.toString());
                   var response = new BgsApiClientResponse();
-                  response.setStatusCode(400);
-                  response.setStatusMessage("Mock error to cause Slack notification");
+                  if (requestCounter.incrementAndGet() % 7 == 0) {
+                    log.warn("++++ Mock success");
+                    response.setStatusCode(200);
+                  } else {
+                    log.warn("++++ Mock error");
+                    response.setStatusMessage("Mocked error");
+                    response.setStatusCode(400);
+                  }
                   return response;
                 })
             .build();
