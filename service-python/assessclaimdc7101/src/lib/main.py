@@ -111,6 +111,7 @@ def assess_sufficiency(event: Dict):
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"],
                     "allMedicationsCount": relevant_medications["allMedicationsCount"],
                     "twoYearsMedicationsCount": relevant_medications["twoYearsMedicationsCount"],
+                    "lighthouseDuplicateBpCount": bp_calculation["lighthouseDuplicateBpCount"]
                 },
                 "sufficientForFastTracking": sufficient,
                 "claimSubmissionDateTime": event["claimSubmissionDateTime"],
