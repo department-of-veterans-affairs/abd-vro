@@ -21,7 +21,6 @@ public class AbdCondition implements Comparable<AbdCondition> {
   @EqualsAndHashCode.Include private String onsetDate;
   private String recordedDate;
   private Boolean relevant;
-  private String category;
 
   @Schema(description = "Formatted date", example = "12/31/1999")
   private String dateFormatted;
