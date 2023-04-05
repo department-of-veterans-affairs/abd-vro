@@ -1,0 +1,441 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 4,
+  "link": [
+    {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=23&_count=100&page=1"
+    },
+    {
+      "relation": "self",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=23&_count=100&page=1"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation?code=85354-9&patient=23&_count=100&page=1"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-VM5E2PSLE4DFE65BUPVL5UKZFU000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-VM5E2PSLE4DFE65BUPVL5UKZFU000000",
+        "meta": {
+          "lastUpdated": "2022-07-28T19:40:22Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood Pressure"
+            }
+          ],
+          "text": "Blood Pressure"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/23",
+          "display": "Dexter530 Leo278 Bechtelar572"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/I2-I66GSQUVBWKWZ576CBAK3RGPSI000000"
+        },
+        "effectiveDateTime": "2022-06-28T19:40:22Z",
+        "issued": "2022-06-28T19:40:22.826Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-4URG7MC5PVUYVWB34JZB4K2WQU000000",
+            "display": "Dr. Fabiola106 Upton904 MD"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-TVHFO7BMPDIONXX3YNIHSLEYQU000000",
+            "display": "TEST VAMC"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "A",
+                "display": "Abnormal"
+              }
+            ],
+            "text": "A"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic Blood Pressure"
+                }
+              ],
+              "text": "Diastolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 83,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic Blood Pressure"
+                }
+              ],
+              "text": "Systolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 121,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-Y4RGWIF6CN54U4YGJZCWUCTO7E000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-Y4RGWIF6CN54U4YGJZCWUCTO7E000000",
+        "meta": {
+          "lastUpdated": "2022-09-01T19:40:22Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood Pressure"
+            }
+          ],
+          "text": "Blood Pressure"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/23",
+          "display": "Dexter530 Leo278 Bechtelar572"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/I2-E66JCJUY3DP76GBAMMIFSVW6OQ000000"
+        },
+        "effectiveDateTime": "2022-08-02T19:40:22Z",
+        "issued": "2022-08-02T19:40:22.826Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-4URG7MC5PVUYVWB34JZB4K2WQU000000",
+            "display": "Dr. Fabiola106 Upton904 MD"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-TVHFO7BMPDIONXX3YNIHSLEYQU000000",
+            "display": "TEST VAMC"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "A",
+                "display": "Abnormal"
+              }
+            ],
+            "text": "A"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic Blood Pressure"
+                }
+              ],
+              "text": "Diastolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 79,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic Blood Pressure"
+                }
+              ],
+              "text": "Systolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 110,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-QDB7W2BXM4FEQTIVSVOCIUE5EU000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-QDB7W2BXM4FEQTIVSVOCIUE5EU000000",
+        "meta": {
+          "lastUpdated": "2022-11-03T19:40:22Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood Pressure"
+            }
+          ],
+          "text": "Blood Pressure"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/23",
+          "display": "Dexter530 Leo278 Bechtelar572"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/I2-VIBA3BIVJOHQ3MXGNFIFZGLH3M000000"
+        },
+        "effectiveDateTime": "2022-10-04T19:40:22Z",
+        "issued": "2022-10-04T19:40:22.826Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-4URG7MC5PVUYVWB34JZB4K2WQU000000",
+            "display": "Dr. Fabiola106 Upton904 MD"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-TVHFO7BMPDIONXX3YNIHSLEYQU000000",
+            "display": "TEST VAMC"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "A",
+                "display": "Abnormal"
+              }
+            ],
+            "text": "A"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic Blood Pressure"
+                }
+              ],
+              "text": "Diastolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 75,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic Blood Pressure"
+                }
+              ],
+              "text": "Systolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 114,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/Observation/I2-YQOJTW3CEV6ST4PGJRXIO5VIKY000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "I2-YQOJTW3CEV6ST4PGJRXIO5VIKY000000",
+        "meta": {
+          "lastUpdated": "2023-01-05T19:40:22Z"
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ],
+            "text": "Vital Signs"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood Pressure"
+            }
+          ],
+          "text": "Blood Pressure"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/23",
+          "display": "Dexter530 Leo278 Bechtelar572"
+        },
+        "encounter": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/I2-AG4SZX2FSOJ3FPLBF6T3AL3JGE000000"
+        },
+        "effectiveDateTime": "2022-12-06T19:40:22Z",
+        "issued": "2022-12-06T19:40:22.826Z",
+        "performer": [
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-4URG7MC5PVUYVWB34JZB4K2WQU000000",
+            "display": "Dr. Fabiola106 Upton904 MD"
+          },
+          {
+            "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-TVHFO7BMPDIONXX3YNIHSLEYQU000000",
+            "display": "TEST VAMC"
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "A",
+                "display": "Abnormal"
+              }
+            ],
+            "text": "A"
+          }
+        ],
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic Blood Pressure"
+                }
+              ],
+              "text": "Diastolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 80,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic Blood Pressure"
+                }
+              ],
+              "text": "Systolic Blood Pressure"
+            },
+            "valueQuantity": {
+              "value": 113,
+              "unit": "mm Hg",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}
