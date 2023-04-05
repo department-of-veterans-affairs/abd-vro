@@ -149,4 +149,37 @@ public interface ClaimMetricsResource {
       @RequestParam(name = "size", required = false, defaultValue = "10")
           @Min(value = 1, message = "invalid size")
           Integer size);
+
+
+    @Operation(
+            summary = "Retrieves all exam order records",
+            description = "This endpoint does the same as exam-order-info, but it also slacks the list of exam orders.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Successful"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = @Content(schema = @Schema(hidden = true))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema(hidden = true))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal service error",
+                            content = @Content(schema = @Schema(hidden = true)))
+            })
+    @ResponseStatus(HttpStatus.OK)
+    @Timed(value = "exam-order-slack")
+    @Tag(name = "Claim Metrics")
+    @RequestMapping(value = "/exam-order-slack", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(
+            @RequestParam(name = "page", required = false, defaultValue = "0")
+            @Min(value = 0, message = "invalid page number")
+            Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "10")
+            @Min(value = 1, message = "invalid size")
+            Integer size);
 }

@@ -32,6 +32,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
+import gov.va.vro.service.provider.services.ExamOrderSlackProcessor;
 import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
@@ -82,6 +83,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
 
+  public static final String ENDPOINT_EXAM_ORDER_SLACK = "direct: exam-order-slack";
+
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
@@ -128,6 +131,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureUploadPdf();
     configureCompleteProcessing();
     configureOrderExamStatus();
+    configureExamOrderSlack();
   }
 
   private void configureAutomatedClaim() {
@@ -410,5 +414,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .filter(exchange -> StringUtils.isNotBlank(webhook))
         .process(FunctionProcessor.fromFunction(AuditEvent::toString))
         .to(slackRoute);
+  }
+
+  private void configureExamOrderSlack() {
+    var routeId = "exam-order-slack";
+    from(ENDPOINT_EXAM_ORDER_SLACK)
+        .routeId(routeId)
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
+        .onPrepare(new ExamOrderSlackProcessor());
   }
 }

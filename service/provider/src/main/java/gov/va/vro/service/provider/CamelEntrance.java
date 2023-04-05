@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -101,5 +102,9 @@ public class CamelEntrance {
    */
   public void offrampClaim(AuditEvent auditEvent) {
     producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT, auditEvent);
+  }
+
+  public void examOrderSlack(ExamOrdersInfo examOrders) {
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_SLACK, examOrders);
   }
 }

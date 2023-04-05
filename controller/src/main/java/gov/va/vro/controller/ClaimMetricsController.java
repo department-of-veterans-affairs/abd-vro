@@ -10,6 +10,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.provider.services.ClaimMetricsCamelService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimMetricsController implements ClaimMetricsResource {
   private final ClaimMetricsService claimMetricsService;
+
+  private final ClaimMetricsCamelService claimMetricsCamelService;
 
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
@@ -72,6 +75,15 @@ public class ClaimMetricsController implements ClaimMetricsResource {
     ExamOrderInfoQueryParams params =
         ExamOrderInfoQueryParams.builder().page(page).size(size).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findAllExamOrderInfo(params);
+    return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+  }
+
+  @Override
+  public ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(Integer page, Integer size) {
+    ExamOrderInfoQueryParams params =
+        ExamOrderInfoQueryParams.builder().page(page).size(size).build();
+    ExamOrdersInfo examOrdersInfo = claimMetricsService.findAllExamOrderInfo(params);
+    claimMetricsCamelService.examOrderSlack(examOrdersInfo);
     return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
   }
 }
