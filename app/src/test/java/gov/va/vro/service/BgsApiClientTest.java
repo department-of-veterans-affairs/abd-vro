@@ -1,79 +1,152 @@
 package gov.va.vro.service;
 
-import gov.va.vro.end2end.VroV2Tests;
-import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
-import gov.va.vro.model.bgs.BgsApiClientDto;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
-import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import gov.va.vro.model.bgs.BgsApiClientRequest;
 import gov.va.vro.service.provider.bgs.service.BgsApiClient;
+import gov.va.vro.service.provider.bgs.service.BgsNotesCamelBody;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
-import gov.va.vro.service.spi.model.Claim;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.lang.reflect.Field;
+
+import java.util.UUID;
 
 import org.apache.camel.test.junit5.params.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Test
 @Slf4j
-public class BgsApiClientTest extends VroV2Tests{
+public class BgsApiClientTest {
 
-//   @Mock
-//   private EvidenceSummaryDocumentRepository esDocRepository;
+    private BgsApiClient bgsApiClient;
 
-
-    @Autowired
-    private MasProcessingObject masProcessingObject;
-
-
-  @Test
-  public void testBuildRequestForReadyForDecision() {
-
-    String collectionId = "375";
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    testAutomatedClaimFullPositive(spec);
-
-  }
-
-  @Test
-  public void testBuildRequestForExamOrder() {
-
-    String collectionId = "377";
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    testAutomatedClaimOrderExam(spec);
-
-  }
-
-  @Test
-  public void testBuildRequestForOffRampSufficiencyUndermined() {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
-    String collectionId = "500";
-    AutomatedClaimTestSpec spec = specFor200(collectionId);
-    testAutomatedClaimOffRamp(spec);
-    testClaimSufficientStatus(collectionId, null);
+    @Test
+    public void testBuildRequest_ReadyForDecision() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        MasProcessingObject mpo = mock(MasProcessingObject.class, "ready for decision");
 
-  }
+        Field benefitClaimIdField = mpo.getClass().getDeclaredField("benefitClaimId");
+        benefitClaimIdField.setAccessible(true);
+        benefitClaimIdField.set(mpo, "3010");
+        mpo.getClaimPayload().getVeteranIdentifiers().setParticipantId("3010");
+        mpo.getClaimPayload().setEvidenceSummaryDocumentId(UUID.randomUUID());
 
-  @Test
-  public void testBuildRequestForOffRampNewNotPresumptive() {
-    
-    MasAutomatedClaimPayload payload = masProcessingObject.getClaimPayload();
-    assertTrue(payload.getOffRampError().equals("newNotPresumptive"));
+        BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 100);
 
-  }
+        body = bgsApiClient.buildRequest(mpo);
 
-  @Test
-  public void testBuildRequestForOffRampPdfUploadFailed() {
+        // Verify that the veteran note request is included in the body.
+        assertEquals(1, body.pendingRequests.size());
+        BgsApiClientRequest veteranNoteRequest = body.pendingRequests.get(0);
+        assertEquals("3010", veteranNoteRequest.getVbmsClaimId());
+        assertEquals("ARSD_COMPLETED_NOTE", veteranNoteRequest.veteranNote);
 
-    MasAutomatedClaimPayload payload = masProcessingObject.getClaimPayload();
-    assertTrue(payload.getOffRampError().equals("docUploadFailed"));
+        // Verify that the claim note request is included in the body.
+        assertEquals(1, body.pendingRequests.size());
+        BgsApiClientRequest claimNoteRequest = body.pendingRequests.get(0);
+        assertEquals("3010", claimNoteRequest.getVbmsClaimId());
+        assertEquals("RFD_NOTE", claimNoteRequest.claimNotes.get(0));
+    }
 
-  }
-       
+@Test
+public void testBuildRequest_ExamOrder() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    MasProcessingObject mpo = mock(MasProcessingObject.class, "exam order");
+
+    Field benefitClaimIdField = mpo.getClass().getDeclaredField("benefitClaimId");
+    benefitClaimIdField.setAccessible(true);
+    benefitClaimIdField.set(mpo, "3010");
+    mpo.getClaimPayload().getVeteranIdentifiers().setParticipantId("3010");
+    mpo.getClaimPayload().setEvidenceSummaryDocumentId(UUID.randomUUID());
+
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 100);
+
+    body = bgsApiClient.buildRequest(mpo);
+
+  // Verify that the veteran note request is included in the body.
+  assertEquals(1, body.pendingRequests.size());
+  BgsApiClientRequest veteranNoteRequest = body.pendingRequests.get(0);
+  assertEquals("123456789", veteranNoteRequest.getVbmsClaimId());
+  assertEquals("ARSD_COMPLETED_NOTE", veteranNoteRequest.veteranNote);
+
+  // Verify that the claim note request is included in the body.
+  assertEquals(1, body.pendingRequests.size());
+  BgsApiClientRequest claimNoteRequest = body.pendingRequests.get(0);
+  assertEquals("123456789", claimNoteRequest.getVbmsClaimId());
+  assertEquals("EXAM_REQUESTED_NOTE", claimNoteRequest.claimNotes.get(0));
 }
+
+@Test
+public void testBuildRequest_OffRamp_flash266() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    MasProcessingObject mpo = mock(MasProcessingObject.class, "off-ramp");
+
+    Field benefitClaimIdField = mpo.getClass().getDeclaredField("benefitClaimId");
+    benefitClaimIdField.setAccessible(true);
+    benefitClaimIdField.set(mpo, "3010");
+    mpo.getClaimPayload().getVeteranIdentifiers().setParticipantId("3010");
+    mpo.getClaimPayload().setEvidenceSummaryDocumentId(UUID.randomUUID());
+
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 100);
+
+    body = bgsApiClient.buildRequest(mpo);
+
+  // Verify that the claim note request is included in the body.
+  assertEquals(1, body.pendingRequests.size());
+  BgsApiClientRequest claimNoteRequest = body.pendingRequests.get(0);
+  assertEquals("123456789", claimNoteRequest.getVbmsClaimId());
+  assertEquals("newClaimMissingFlash266", claimNoteRequest.claimNotes.get(0));
+}
+
+@Test
+public void testBuildRequest_OffRamp_sufficiencyIssue() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    MasProcessingObject mpo = mock(MasProcessingObject.class, "off-ramp");
+
+    Field benefitClaimIdField = mpo.getClass().getDeclaredField("benefitClaimId");
+    benefitClaimIdField.setAccessible(true);
+    benefitClaimIdField.set(mpo, "3010");
+    mpo.getClaimPayload().getVeteranIdentifiers().setParticipantId("3010");
+    mpo.getClaimPayload().setEvidenceSummaryDocumentId(UUID.randomUUID());
+
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 100);
+
+    body = bgsApiClient.buildRequest(mpo);
+
+  // Verify that the claim note request is included in the body.
+  assertEquals(1, body.pendingRequests.size());
+  BgsApiClientRequest claimNoteRequest = body.pendingRequests.get(0);
+  assertEquals("123456789", claimNoteRequest.getVbmsClaimId());
+  assertEquals("Sufficiency cannot be determined.", claimNoteRequest.claimNotes.get(0));
+}
+
+@Test
+public void testBuildRequest_OffRamp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    MasProcessingObject mpo = mock(MasProcessingObject.class, "off-ramp");
+
+    Field benefitClaimIdField = mpo.getClass().getDeclaredField("benefitClaimId");
+    benefitClaimIdField.setAccessible(true);
+    benefitClaimIdField.set(mpo, "3010");
+    mpo.getClaimPayload().getVeteranIdentifiers().setParticipantId("3010");
+    mpo.getClaimPayload().setEvidenceSummaryDocumentId(UUID.randomUUID());
+
+    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 100);
+
+    body = bgsApiClient.buildRequest(mpo);
+
+  // Verify that the claim note request is included in the body.
+  assertEquals(1, body.pendingRequests.size());
+  BgsApiClientRequest claimNoteRequest = body.pendingRequests.get(0);
+  assertEquals("123456789", claimNoteRequest.getVbmsClaimId());
+  assertEquals("newClaimMissingFlash266", claimNoteRequest.claimNotes.get(0));
+}
+
+public static org.slf4j.Logger getLog() {
+    return log;
+}
+
+
+public ObjectMapper getObjectMapper() {
+    return objectMapper;
+}
+}    
