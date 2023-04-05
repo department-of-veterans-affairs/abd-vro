@@ -31,13 +31,15 @@ def deduplicate(bp_readings):
     deduplicated_readings = []
     for reading in bp_readings:
         duplicate = False
-        for bp_comp in bp_readings:
-            if reading["dataSource"] == "LH" and reading["diastolic"]["value"] == bp_comp["diastolic"]["value"] \
-                and reading["systolic"]["value"] == bp_comp["systolic"]["value"] \
-                    and reading["date"] == bp_comp["date"] \
-                    and bp_comp["organization"] == "VAMC Other Output Reports":
-                duplicate = True
-                break
+        if reading["dataSource"] == "LH":
+            for bp_comp in bp_readings:
+                if reading["diastolic"]["value"] == bp_comp["diastolic"]["value"] \
+                    and reading["systolic"]["value"] == bp_comp["systolic"]["value"] \
+                        and reading["date"] == bp_comp["date"] \
+                        and bp_comp["organization"] == "VAMC Other Output Reports":
+                    duplicate = True
+                    bp_readings.remove(reading)
+                    break
         if not duplicate:
             deduplicated_readings.append(reading)
     return deduplicated_readings
