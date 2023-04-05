@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support'
+
 require 'bgs'
 require_relative 'setup'
 
@@ -12,6 +14,7 @@ BGS.configure do |config|
   config.client_station_id = settings["client_station_id"]
   config.client_username = settings["client_username"]
   config.env = settings["env"]
+  config.jumpbox_url = ENV["BGS_BASE_URL"].presence
   config.log = settings["log"]
   config.logger = config.log ? Logger.new(STDOUT) : nil
   config.ssl_cert_file = settings["ssl_cert_file"]
