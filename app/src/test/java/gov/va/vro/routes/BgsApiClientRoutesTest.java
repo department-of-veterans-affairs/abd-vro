@@ -50,4 +50,32 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
         mockEndpoint.assertIsSatisfied();
     }
 
+    public static org.slf4j.Logger getLog() {
+        return log;
+    }
+
+    public MockEndpoint getMockEndpoint() {
+        return mockEndpoint;
+    }
+
+    public void setMockEndpoint(MockEndpoint mockEndpoint) {
+        this.mockEndpoint = mockEndpoint;
+    }
+
+    public MasConfig getMasConfig() {
+        return masConfig;
+    }
+
+    public void setMasConfig(MasConfig masConfig) {
+        this.masConfig = masConfig;
+    }
+
+    public BgsApiClient getBgsApiClient() {
+        return bgsApiClient;
+    }
+
+    public void setBgsApiClient(BgsApiClient bgsApiClient) {
+        this.bgsApiClient = bgsApiClient;
+    }
+
 }

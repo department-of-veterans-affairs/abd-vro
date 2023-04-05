@@ -142,7 +142,7 @@ public void testBuildRequest_OffRamp() throws NoSuchFieldException, SecurityExce
 }
 
 public static org.slf4j.Logger getLog() {
-    return log;
+    return log; 
 }
 
 
