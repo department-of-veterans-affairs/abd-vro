@@ -38,7 +38,6 @@ def deduplicate(bp_readings):
                         and reading["date"] == bp_comp["date"] \
                         and bp_comp["organization"] == "VAMC Other Output Reports":
                     duplicate = True
-                    bp_readings.remove(reading)
                     break
         if not duplicate:
             deduplicated_readings.append(reading)
@@ -98,6 +97,7 @@ def bp_reader(request_body):
               "twoYearsBpCount": len(bp_readings_in_past_two_years),
               "oneYearBpCount": len(bp_reading_in_past_year),
               "twoYearsElevatedBpCount": len(elevated_bp_in_past_two_years),
-              "totalBpCount": len(deduplicated_bp_readings)}
+              "totalBpCount": len(deduplicated_bp_readings),
+              "lighthouseDuplicateBpCount": len(bp_readings) - len(deduplicated_bp_readings)}
 
     return result
