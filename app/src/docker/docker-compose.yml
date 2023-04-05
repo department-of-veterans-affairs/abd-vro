@@ -492,7 +492,23 @@ services:
     hostname: mock-slack
     ports:
       - "9008:9008"
-# health check is on 8080 and doesn't need to be exposed - "9009:9009"
+    # health check is on 8080 and doesn't need to be exposed - "9009:9009"
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: *common-vars
+    networks:
+      - internal
+
+
+  mock-bgs-api:
+    profiles: ["all","mock","lh","v2-mocks"]
+    image: va/abd_vro-mock-bgs-api:latest
+    <<: *common-security-opt
+    <<: *common-sde-security
+    hostname: mock-bgs-api
+    ports:
+      - "9090:8080"
+    # health check is on 8080 and doesn't need to be exposed - "9009:9009"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars

@@ -170,6 +170,7 @@ ext {
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
+    ':mock:mock-bgs-api',
     ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j'
   ]
