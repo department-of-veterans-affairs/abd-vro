@@ -104,6 +104,29 @@
   },
   {
     "description": [
+      "for happy path duplicate bps, used with collection id 381"
+    ],
+    "claimDetail": {
+      "claimId": 1056,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1019",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "off ramp no data",
       "contention automation indicator is true so should change to false",
       "claim/contention lifecycle status Ready For Decision so should change to Open",

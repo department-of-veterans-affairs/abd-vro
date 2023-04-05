@@ -834,6 +834,21 @@ public class VroV2Tests {
     assertFalse(pdfText.contains("-/-"));
   }
 
+  /** This is a full positive end-to-end test for a case with duplicate blood pressures. */
+  @Test
+  void testAutomatedClaimFullPositiveDuplicateBloodPressures() {
+    AutomatedClaimTestSpec spec = specFor200("381");
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("143/-"));
+    assertTrue(pdfText.contains("-/92"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("190/-"));
+    assertTrue(pdfText.contains("-/93"));
+
+    // Check that BP with missing systolic and diastolic is not included as evidence.
+    assertFalse(pdfText.contains("-/-"));
+  }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
    * the Slack message when temporary station of jurisdiction changes during VRO processing.
