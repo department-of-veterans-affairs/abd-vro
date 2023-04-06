@@ -10,4 +10,4 @@ global:
 
 domain-rrd-chart:
   bgs:
-    baseUrl: https://bepprep.vba.va.gov
+    baseUrl: http://beplinktest.vba.va.gov

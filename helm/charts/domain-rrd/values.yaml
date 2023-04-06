@@ -22,4 +22,4 @@ replicaCount: 1
 #  bipAlias: bipAlias
 
 bgs:
-  baseUrl: https://bepprep.vba.va.gov
+  baseUrl: http://beplinktest.vba.va.gov

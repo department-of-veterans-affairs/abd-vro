@@ -28,4 +28,4 @@ vro-app-chart:
 
 domain-rrd-chart:
   bgs:
-    baseUrl: https://bepprep.vba.va.gov
+    baseUrl: https://vbmsprod.vba.va.gov
