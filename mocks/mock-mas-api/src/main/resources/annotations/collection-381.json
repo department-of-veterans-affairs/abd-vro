@@ -6,13 +6,6 @@
     "icn": "mock1012666073V986381",
     "documents": [
       {
-        "docTypeDescription": "STR - Dental",
-        "eFolderVersionRefId": "{XXXXXX643-YTE8-763G-ABT5-DGDGDTYEGDD76}",
-        "recDate": "2022-04-23Z",
-        "condition": "Hypertension",
-        "annotations": []
-      },
-      {
         "docTypeDescription": "VAMC Other Output Reports",
         "eFolderVersionRefId": "{2853EB8D-D2BB-4AA1-B8DF-55EB0E7DE1F5}",
         "recDate": "2022-09-25Z",
@@ -99,7 +92,7 @@
             "annot_val": "153/115",
             "page_num": "18, 41",
             "dates": "",
-            "observation_date": "2021-06-20Z",
+            "observation_date": "2022-06-20Z",
             "end": 750,
             "acd_pref_name": "SystolicDiastolicBP",
             "spellcheck_val": "",
@@ -137,33 +130,33 @@
             "partial_date": "",
             "sorted_date": "2022-09-25Z",
             "dbq_type": ""
-          },
-          {
-            "docTypeDescription": "Medical Treatment Record - Government Facility",
-            "eFolderVersionRefId": "{2853EB8D-D2BB-4AA1-B8DF-55EB0E7DE1F6}",
-            "recDate": "2022-09-25Z",
-            "condition": "Hypertension",
-            "annotations": [
-              {
-                "annot_type": "blood_pressure",
-                "annot_name": "BP",
-                "annot_val": "167/93",
-                "page_num": "18, 41",
-                "dates": "",
-                "observation_date": "2021-05-11Z",
-                "end": 750,
-                "acd_pref_name": "SystolicDiastolicBP",
-                "spellcheck_val": "",
-                "relevant": true,
-                "partial_date": "",
-                "sorted_date": "2022-09-25Z",
-                "dbq_type": ""
-              }
-              ]
-            }
+          }
         ]
-      }
-    ],
+      },
+      {
+        "docTypeDescription": "Medical Treatment Record - Government Facility",
+        "eFolderVersionRefId": "{2853EB8D-D2BB-4AA1-B8DF-55EB0E7DE1F6}",
+        "recDate": "2022-09-25Z",
+        "condition": "Hypertension",
+        "annotations": [
+          {
+            "annot_type": "blood_pressure",
+            "annot_name": "BP",
+            "annot_val": "167/93",
+            "page_num": "18, 41",
+            "dates": "",
+            "observation_date": "2022-05-11Z",
+            "end": 750,
+            "acd_pref_name": "SystolicDiastolicBP",
+            "spellcheck_val": "",
+            "relevant": true,
+            "partial_date": "",
+            "sorted_date": "2022-09-25Z",
+            "dbq_type": ""
+          }
+          ]
+        }
+        ],
     "documentsWithoutAnnotationsChecked": []
   }
 ]

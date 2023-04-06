@@ -840,14 +840,14 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200("381");
     String pdfText = testAutomatedClaimFullPositive(spec);
     // Check for evidence from mock MAS evidence API.
-    assertTrue(pdfText.contains("143/-"));
-    assertTrue(pdfText.contains("-/92"));
+    assertTrue(pdfText.contains("139/77 8/11/2022 VAMC Other Output Reports"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 Medical Treatment Record - Government"));
     // Check for evidence from mock LH API.
-    assertTrue(pdfText.contains("190/-"));
-    assertTrue(pdfText.contains("-/93"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 VAMC record - LYONS VA MEDICAL CENTER"));
+    assertTrue(pdfText.contains("153/115 6/21/2022 VAMC record - WASHINGTON VA MEDICAL"));
 
-    // Check that BP with missing systolic and diastolic is not included as evidence.
-    assertFalse(pdfText.contains("-/-"));
+    // Check that duplicate BP from LH is not included as evidence.
+    assertFalse(pdfText.contains("153/115 6/20/2021 VAMC record -WASHINGTON VA MEDICAL"));
   }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests

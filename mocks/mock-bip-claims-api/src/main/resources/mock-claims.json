@@ -109,6 +109,7 @@
     "claimDetail": {
       "claimId": 1056,
       "tempStationOfJurisdiction": "398",
+      "claimLifecycleStatus": "Ready for Decision",
       "phase": "Gathering of Evidence"
     },
     "contentions": [
@@ -118,6 +119,7 @@
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "automationIndicator": true,
+        "lifecycleStatus": "Ready for Decision",
         "specialIssueCodes": [
           "RDR1",
           "RRD"

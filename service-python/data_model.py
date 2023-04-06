@@ -92,7 +92,7 @@ def validate_request_body(request_body):
                             },
                             "date": {"type": "string", "default": ""},
                             "practitioner": {"type": "string", "nullable": True},
-                            "organization": {"type": "string", "nullable": True, "default": ""},
+                            "organization": {"type": "string", "default": ""},
                             "document": {
                                 "type": "string",
                                 "default": "",
