@@ -7,4 +7,7 @@ development:
     client_station_id: 281
     client_username: VROSYSACCT
     env: beplinktest
+    ssl_cert_file: /app/certs/tls_bip.crt
+    ssl_cert_key_file: /app/certs/tls.key
+    ssl_ca_cert_file: /app/certs/va_all.crt
     log: true
