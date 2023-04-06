@@ -37,8 +37,7 @@ require 'yaml'
 # some settings (like the RabbitMQ connection options or some API keys for the services we use)
 # that depend on the environment, so load a YAML file and put into a global variable.
 settings_file = File.expand_path '../settings.yml', __FILE__
-yaml_settings = YAML.load_file(settings_file)
-SETTINGS = yaml_settings[ENVIRONMENT] if yaml_settings
+SETTINGS = YAML.load_file(settings_file)
 
 if %w(development test).include? ENVIRONMENT
   # Worried about the speed of byebug (it does take a moment)? comment out and only include when explicitly needed
