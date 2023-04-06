@@ -69,6 +69,7 @@ def assess_sufficiency(event: Dict):
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
+        event["evidence"]["bp_readings"] = bp_calculator.deduplicate(event["evidence"]["bp_readings"])
         bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
         relevant_medications = medications.filter_mas_medication(event)
