@@ -17,6 +17,7 @@ import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.persistence.repository.ExamOrderRepository;
 import gov.va.vro.service.db.mapper.ClaimInfoResponseMapper;
 import gov.va.vro.service.db.mapper.ExamOrderInfoResponseMapper;
+import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,12 +71,23 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     if (claimSubmission != null) {
       claim = claimSubmission.getClaim();
     }
-
     if (claim == null) {
-      log.warn("Could not find claim with the claimSubmissionId: {}", claimSubmissionId);
-      return null;
+      // search claims by benefit claim ID if we cannot find by collection ID
+      log.warn("Could not find claim with the claimSubmissionId: {}, retrying.", claimSubmissionId);
+      ClaimEntity claimEntity = claimRepository.findByVbmsId(claimSubmissionId).orElse(null);
+      if (claimEntity == null) {
+        log.warn(
+            "Could not find claim with claimSubmissionId: {}, return null.", claimSubmissionId);
+        return null;
+      } else {
+        return claimInfoResponseMapper.toClaimInfoResponseV2(claimEntity);
+      }
     }
-    return claimInfoResponseMapper.toClaimInfoResponse(claim);
+    if (idType.equals(Claim.V1_ID_TYPE)) {
+      return claimInfoResponseMapper.toClaimInfoResponseV1(claim);
+    } else {
+      return claimInfoResponseMapper.toClaimInfoResponseV2(claim);
+    }
   }
 
   private Page<ClaimEntity> findAllClaimInfoPage(ClaimInfoQueryParams params) {
@@ -92,8 +105,17 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   @Override
   public ClaimsInfo findAllClaimInfo(ClaimInfoQueryParams params) {
     Page<ClaimEntity> claims = findAllClaimInfoPage(params);
-    List<ClaimInfoResponse> claimsInfo = claimInfoResponseMapper.toClaimInfoResponses(claims);
-    return new ClaimsInfo(claimsInfo, claims.getTotalElements());
+    List<ClaimInfoResponse> resp = new ArrayList<>();
+    for (ClaimEntity claim : claims) {
+      ClaimInfoResponse info;
+      if (claim.getVbmsId() != null) {
+        info = claimInfoResponseMapper.toClaimInfoResponseV2(claim);
+      } else {
+        info = claimInfoResponseMapper.toClaimInfoResponseV1(claim);
+      }
+      resp.add(info);
+    }
+    return new ClaimsInfo(resp, claims.getTotalElements());
   }
 
   private Page<ExamOrderEntity> findAllExamOrderInfoPage(ExamOrderInfoQueryParams params) {
