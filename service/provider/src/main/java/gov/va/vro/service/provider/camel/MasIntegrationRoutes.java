@@ -14,13 +14,7 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.ToRabbitMqRouteHelper;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import gov.va.vro.camel.processor.InOnlySyncProcessor;
-=======
->>>>>>> 0e37e878 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
-=======
->>>>>>> cf541bf9 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -193,7 +187,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .when(simple("${body.sufficientForFastTracking} == true"))
         .to(END_POINT_RFD)
         .otherwise()
-<<<<<<< HEAD
         // Offramp if the Sufficient For Fast Tracking is null
         .setProperty("sourceRoute", constant("assessorError"))
         .process(
@@ -202,10 +195,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
               model.getClaimPayload().setOffRampError(SUFFICIENCY_UNDETERMINED);
               exchange.getMessage().setBody(model);
             })
-=======
-        // Off ramp if the Sufficient For Fast Tracking is null
-        .process(setOffRampReasonProcessor(SUFFICIENCY_UNDETERMINED))
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .to(ENDPOINT_MAS_COMPLETE)
@@ -224,7 +213,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-<<<<<<< HEAD
         .setProperty("sourceRoute", constant(rfdRouteId))
         .process(
             exchange -> {
@@ -234,11 +222,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
             })
         .to(ENDPOINT_OFFRAMP_ERROR)
         .stop()
-=======
         .process(
             setOffRampReasonProcessor(
                 PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM)) // Continue to completion processor
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
@@ -260,7 +246,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
-<<<<<<< HEAD
         .setProperty("sourceRoute", constant(orderExamRouteId))
         .process(
             exchange -> {
@@ -268,11 +253,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
               model.getClaimPayload().setOffRampError(EXAM_ORDER_FAILED);
               exchange.getMessage().setBody(model);
             })
-        .to(ENDPOINT_OFFRAMP_ERROR)
-=======
         .process(setOffRampReasonProcessor(EXAM_ORDER_FAILED))
         .to(ENDPOINT_MAS_COMPLETE)
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
         // Mas Complete Processing code expects this to be the body of the message
@@ -385,12 +367,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureCompleteProcessing() {
     var routeId = "mas-complete-claim";
+    var inOnlySyncProcessorBuilder = InOnlySyncProcessor.factory(producerTemplate);
     from(ENDPOINT_MAS_COMPLETE)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
-<<<<<<< HEAD
             MasIntegrationProcessors.completionProcessor(
                 routeId, bipClaimService, masProcessingService))
         .log("Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
@@ -399,9 +381,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
                 .uri(BgsApiClientRoutes.ADD_BGS_NOTES)
                 .build())
         .log("After ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
-=======
+
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
+        .log("TEMP: Before ADD_BGS_NOTES, ${exchange.pattern}: body ${body.getClass()}: ${body}")
+        .process(inOnlySyncProcessorBuilder.uri(BgsApiClientRoutes.ADD_BGS_NOTES).build())
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)

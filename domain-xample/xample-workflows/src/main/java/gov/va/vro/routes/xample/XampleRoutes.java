@@ -155,23 +155,10 @@ public class XampleRoutes extends EndpointRouteBuilder {
   void configureRouteToServiceJ() {
     // Always use ToRabbitMqRouteHelper create a route to send to RabbitMQ
     new ToRabbitMqRouteHelper(this, SERVICE_J_ENDPOINT)
-<<<<<<< HEAD
-<<<<<<< HEAD
         .toMq("xample", "serviceJ")
         .responseClass(SomeDtoModel.class)
         .createRoute()
         .routeId("to-rabbitmq-route");
-=======
-=======
->>>>>>> cf541bf9 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
-        .routeId("to-rabbitmq-route")
-        .toMq("xample", "serviceJ")
-        .responseClass(SomeDtoModel.class)
-        .createRoute();
-<<<<<<< HEAD
->>>>>>> 0e37e878 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
-=======
->>>>>>> cf541bf9 (Add Camel helpers: ToRabbitMqRouteHelper, InOnlySyncProcessor, and RequestAndMerge (#1389))
   }
 
   void configureFetchResourceRoute() {

@@ -162,11 +162,7 @@ ext {
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
     ':service-python:featuretoggle',
-<<<<<<< HEAD
     //    ':svc-bgs-api',
-=======
-    // ':svc-bgs-api',
->>>>>>> f9d25a98 (Temporarily remove :svc-bgs-api from gradle builds)
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',

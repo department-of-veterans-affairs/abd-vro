@@ -78,18 +78,17 @@ public class MasProcessingService {
     if (offRampReasonOptional.isPresent()) {
       var offRampReason = offRampReasonOptional.get();
       payload.setOffRampReason(offRampReason);
-<<<<<<< HEAD
+
       // In this case, offRampReason=offRampError=NEW_NOT_PRESUMPTIVE
       payload.setOffRampError(offRampReason);
       claim.setOffRampReason(offRampReason);
       saveToDbService.setOffRampReason(claim);
       offRampClaim(payload, offRampReason);
       return offRampReason;
-=======
+
       MasProcessingObject mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
       camelEntrance.completeProcessing(mpo);
       return offRampReason; // Let the HTTP response continue
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
     }
     var headers =
         Map.<String, Object>of(

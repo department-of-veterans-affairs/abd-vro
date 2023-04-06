@@ -160,70 +160,28 @@ public class MasIntegrationProcessors {
       BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      String offRampError = payload.getClaimPayload().getOffRampError();
-=======
-=======
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+      String offRampError = payload.getClaimPayload().getOffRampError();
+
       // String offRampError = payload.getClaimPayload().getOffRampError();
->>>>>>> 9c61c2ad (delint)
-=======
+
       // String offRampError = payload.getClaimPayload().getOffRampError(); // Is this set? Nope.
       // OffRampReason is set in setOffRampReasonProcessor
->>>>>>> 063ffff8 (resolve merge conflicts)
-=======
->>>>>>> ecbfd0d9 (cleanup)
-=======
 
->>>>>>> c936b102 (Use MasProcessingObject.sufficientForFastTracking instead of Camel property (#1413))
       MasCamelStage origin = payload.getOrigin();
       String offRampErrorPayload = payload.getOffRampReason();
 
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
+      MasCamelStage origin = payload.getOrigin();
+      String offRampErrorPayload = payload.getOffRampReason();
+
       // Update our database with offramp reason.
       if (offRampErrorPayload != null) {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
         exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
-=======
-=======
-      // MasCompletionStatus completionStatus = MasCompletionStatus.of(payload);
->>>>>>> 9c61c2ad (delint)
       MasCompletionStatus completionStatus =
-<<<<<<< HEAD
-<<<<<<< HEAD
-          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
-
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
-=======
-      // MasCompletionStatus completionStatus = MasCompletionStatus.of(payload); ?
-      MasCompletionStatus completionStatus =
-          MasCompletionStatus.of(
-              origin,
-              sufficient,
-              offRampErrorPayload); // mismatch offRampErrorPayload = getOffRampReason
->>>>>>> 063ffff8 (resolve merge conflicts)
-=======
-      MasCompletionStatus completionStatus =
-          MasCompletionStatus.of(origin, sufficient, offRampErrorPayload);
->>>>>>> ecbfd0d9 (cleanup)
-=======
           MasCompletionStatus.of(
               origin, payload.getSufficientForFastTracking(), offRampErrorPayload);
->>>>>>> 902c2712 (use mpo.sufficientForFastTracking)
-=======
-          MasCompletionStatus.of(
-              origin, payload.getSufficientForFastTracking(), offRampErrorPayload);
->>>>>>> c936b102 (Use MasProcessingObject.sufficientForFastTracking instead of Camel property (#1413))
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
@@ -261,8 +219,6 @@ public class MasIntegrationProcessors {
                   masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
     };
   }
-
-<<<<<<< HEAD
   public static Processor slackOffRampProcessor() {
     return exchange -> {
       MasProcessingObject masProcessingObject =
@@ -276,9 +232,6 @@ public class MasIntegrationProcessors {
                   masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
     };
   }
-
-=======
->>>>>>> 8343046f (Mcp 2579 not presumptive (#1371))
   // Used for inline grabbing of errors that need to go to audit and slack, but the
   // MasProcessingObject was stored
   // not in the body at that point in the code.
