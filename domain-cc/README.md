@@ -1,3 +1,6 @@
+# Contention Classification
+Mapping contention text to actual classifications per `/disabilties` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
+
 ## Getting started
 Install Python3.10
 If you're on a mac, you can use pyenv to handle multiple python versions
