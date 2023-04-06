@@ -84,7 +84,7 @@ from assessclaimdc6510.src.lib import main
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "sufficientForFastTracking": False,
+                    "sufficientForFastTracking": None,
                     "claimSubmissionId": "1234"
                 },
         ),
