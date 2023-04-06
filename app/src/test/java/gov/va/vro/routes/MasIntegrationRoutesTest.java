@@ -12,6 +12,7 @@ import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
@@ -87,7 +88,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
-            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .filter(
+                audit ->
+                    audit.getMessage().startsWith(EventReason.SUFFICIENCY_UNDETERMINED.getCode()))
             .findFirst()
             .isPresent());
   }

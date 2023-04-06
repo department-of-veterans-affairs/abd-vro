@@ -112,12 +112,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
   // Possible OffRamp Reasons
-  public static final String SUFFICIENCY_UNDETERMINED =
-      "Sufficiency cannot be determined. Reason: assessorError.";
+  public static final String SUFFICIENCY_UNDETERMINED = "assessorError";
   public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
   public static final String EXAM_ORDER_FAILED = "examOrderFailed";
-  public static final String NEW_NOT_PRESUMPTIVE =
-      "New claim cannot be determined to be presumptive. Reason: newClaimMissingFlash266.";
+  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
   public static final String ANNOTATIONS_FAILED = "annotationDataRequestFailed";
 
   @Override
@@ -410,7 +408,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_EVENT)
         .routeId("mas-slack-event")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .process(FunctionProcessor.fromFunction(AuditEvent::toString))
+        .process(FunctionProcessor.fromFunction(AuditEvent::toSlackMessage))
         .to(slackRoute);
   }
 }
