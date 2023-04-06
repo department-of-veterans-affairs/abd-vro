@@ -20,3 +20,6 @@ replicaCount: 1
 #bip:
   # TODO: This doesn't seem to be used -- ask Amida
 #  bipAlias: bipAlias
+
+bgs:
+  baseUrl: https://bepprep.vba.va.gov

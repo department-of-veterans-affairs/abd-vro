@@ -7,3 +7,7 @@ global:
   bip:
     bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
     bipEvidenceUrl: vefs-claimevidence-dev.dev8.bip.va.gov/api/v1/rest/
+
+domain-rrd-chart:
+  bgs:
+    baseUrl: https://bepprep.vba.va.gov

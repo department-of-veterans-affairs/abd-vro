@@ -13,3 +13,7 @@ global:
 vro-app-chart:
   validateToken: "YES"
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
+
+domain-rrd-chart:
+  bgs:
+    baseUrl: https://bepprep.vba.va.gov

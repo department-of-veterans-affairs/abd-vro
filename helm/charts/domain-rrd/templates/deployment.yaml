@@ -51,6 +51,8 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
+            - name: BGS_BASE_URL
+              value: {{ .Values.bgs.baseUrl }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: service-data-access{{ include "vro.containerSuffix" . }}
