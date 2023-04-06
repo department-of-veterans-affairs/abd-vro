@@ -158,6 +158,13 @@ public class SaveToDbServiceImpl implements SaveToDbService {
     Optional<ClaimSubmissionEntity> claimSubmission =
         claimSubmissionRepository.findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
             claimWithOffRamp.getCollectionId(), claimWithOffRamp.getIdType());
+    if (claimSubmission.isEmpty()) {
+      log.info(
+          "Could not find claimsubmission for claim {} for offramp reason {}.",
+          claimWithOffRamp.getBenefitClaimId(),
+          claimWithOffRamp.getOffRampReason());
+      return;
+    }
     ClaimSubmissionEntity claimSubmissionEntity = claimSubmission.get();
     claimSubmissionEntity.setOffRampReason(claimWithOffRamp.getOffRampReason());
     claimSubmissionRepository.save(claimSubmissionEntity);
@@ -214,6 +221,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         esdEntity.setFolderId(eFolderId);
         esdEntity.setUploadedAt(OffsetDateTime.now());
         evidenceSummaryDocumentRepository.save(esdEntity);
+
+        payload.setEvidenceSummaryDocumentId(esdEntity.getId());
       } else {
         log.error(
             "Could not find evidence summary document by contentionId: "
