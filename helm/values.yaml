@@ -1,19 +1,14 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 # Normal state:
-rabbitmq:
-  enabled: true
-postgres:
-  enabled: true
-redis:
-  enabled: true
-vro-app:
-  enabled: true
-domain-rrd:
-  enabled: true
+rabbitmq.enabled: true
+postgres.enabled: true
+redis.enabled: true
+vro-app.enabled: true
+vro-svcs.enabled: true
+domain-rrd.enabled: true
 # Enable as needed:
-console:
-  enabled: false
+console.enabled: false
 
 rabbitmq-chart:
   imageTag: "3"
