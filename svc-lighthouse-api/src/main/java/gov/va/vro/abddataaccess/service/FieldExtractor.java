@@ -32,6 +32,38 @@ public class FieldExtractor {
 
   private static final String SNOMED = "http://snomed.info";
   private static final String MISSING = "*Missing*";
+  public static final String SYSTOLIC_BP_CODE = "8480-6";
+  public static final String DIASTOLIC_BP_CODE = "8462-4";
+  private static final String BP_UNIT = "mm[Hg]";
+  private static final String SYSTOLIC_DES = "Systolic blood pressure";
+  private static final String DIASTOLIC_DES = "Diastolic blood pressure";
+
+  public enum BpMeasure {
+    SYSTOLIC(SYSTOLIC_BP_CODE, SYSTOLIC_DES, BP_UNIT),
+    DIASTOLIC(DIASTOLIC_BP_CODE, DIASTOLIC_DES, BP_UNIT);
+
+    private String code;
+    private String unit;
+    private String display;
+
+    BpMeasure(String code, String display, String unit) {
+      this.code = code;
+      this.display = display;
+      this.unit = unit;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public String getUnit() {
+      return unit;
+    }
+
+    public String getDisplay() {
+      return display;
+    }
+  }
 
   private static String toDate(DateTimeType dateTimeType) {
     String value = dateTimeType.asStringValue();
@@ -120,19 +152,6 @@ public class FieldExtractor {
           result.setStatus(code);
         }
       }
-    }
-
-    if (condition.hasCategory()) {
-      List<CodeableConcept> conditionCategory = condition.getCategory();
-      if (conditionCategory.size() == 1) {
-        CodeableConcept category = condition.getCategory().get(0);
-        if (category.hasText()) {
-          String text = category.getText();
-          result.setCategory(text);
-        }
-      }
-    } else {
-      result.setCategory("");
     }
 
     return result;
@@ -286,11 +305,11 @@ public class FieldExtractor {
             Coding codingInner = codeableConcept.getCodingFirstRep();
             if (codingInner.hasCode()) {
               String bpType = codingInner.getCode();
-              if ("8480-6".equals(bpType)) {
+              if (SYSTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setSystolic(m);
               }
-              if ("8462-4".equals(bpType)) {
+              if (DIASTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
                 result.setDiastolic(m);
               }
@@ -315,6 +334,15 @@ public class FieldExtractor {
           });
     }
 
+    return result;
+  }
+
+  public static AbdBpMeasurement getDefaultBpMeasurement(BpMeasure measurement) {
+    AbdBpMeasurement result = new AbdBpMeasurement();
+    result.setCode(measurement.code);
+    result.setUnit(measurement.getUnit());
+    result.setDisplay(measurement.getDisplay());
+    result.setValue(BigDecimal.valueOf(0));
     return result;
   }
 }

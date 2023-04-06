@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.bip.service;
 
+import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.FileIdType;
@@ -13,6 +14,7 @@ import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ClaimProps;
 import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -64,10 +67,15 @@ public class BipClaimService {
     }
 
     var contentions = bipApiService.getClaimContentions(claimId);
-    if (contentions == null) {
+    if (contentions == null || contentions.size() == 0) {
       log.info("Claim with claim Id {} does not have contentions.", claimId);
       return false;
     }
+    if (contentions.size() > 1) {
+      log.info("Claim with claim Id {} have multiple contentions.", claimId);
+      return false;
+    }
+
     log.info(
         "SPECIAL_ISSUE_1: {}, SPECIAL_ISSUE_2: {}",
         claimPorps.getSpecialIssue1(),
@@ -83,111 +91,138 @@ public class BipClaimService {
     boolean hasSpecialIssues =
         specialIssues.contains(claimPorps.getSpecialIssue1().toLowerCase())
             && specialIssues.contains(claimPorps.getSpecialIssue2().toLowerCase());
+    log.info("Claim {} contention special issues: {}", claimId, String.join(", ", specialIssues));
     log.info("Has special issues: {}", hasSpecialIssues);
     return hasSpecialIssues;
   }
 
   /**
-   * Remove special issue contention.
+   * Updates the contention based on the completion status of automated benefit delivery processing.
+   *
+   * @param contention contention to be updated
+   * @param status completion status of automated benefit delivery processing
+   * @return
+   */
+  private ClaimContention getUpdatedContention(
+      long claimId, ClaimContention contention, MasCompletionStatus status) {
+    long contentionId = contention.getContentionId();
+    String messageId = String.format("for contention %s of claim %s", contentionId, claimId);
+    log.info("Finding necessary {} updates {}", status.getDescription(), messageId);
+
+    boolean updated = false;
+    ClaimContention result = contention.toBuilder().build();
+
+    boolean necessaryAutomationIndicator = status.isAutomationIndicator();
+    if (contention.isAutomationIndicator() != necessaryAutomationIndicator) {
+      log.info("Setting automation indicator to {} {}", necessaryAutomationIndicator, messageId);
+      result.setAutomationIndicator(necessaryAutomationIndicator);
+      updated = true;
+    } else {
+      log.info("Automation indicator is already {} {}", necessaryAutomationIndicator, messageId);
+    }
+
+    Set<String> issuesToRemove = status.getSpecialIssuesToRemove(claimPorps);
+    List<String> specialIssueCodes = contention.getSpecialIssueCodes();
+    List<String> updatedIssueCodes =
+        specialIssueCodes.stream()
+            .filter(code -> !issuesToRemove.contains(code.toUpperCase()))
+            .collect(Collectors.toList());
+    int removedCount = specialIssueCodes.size() - updatedIssueCodes.size();
+    if (removedCount > 0) {
+      log.info("Removing {} special issues {}", removedCount, messageId);
+      log.info("Special issue codes were: {}", String.join(",", specialIssueCodes));
+      log.info("Special issue code will be {}", String.join(",", updatedIssueCodes));
+      result.setSpecialIssueCodes(updatedIssueCodes);
+      updated = true;
+    } else {
+      log.error("No special issues to remove {}", messageId);
+      log.info("Special issue codes were: {}", String.join(",", specialIssueCodes));
+    }
+
+    String necessaryLifecycleStatus = status.getClaimStatus().getDescription();
+    if (!necessaryLifecycleStatus.equals(contention.getLifecycleStatus())) {
+      log.info("Setting lifecycle status to {} {}", necessaryLifecycleStatus, messageId);
+      result.setLifecycleStatus(necessaryLifecycleStatus);
+      updated = true;
+    } else {
+      log.info("Lifecycle status is already {} {}", necessaryLifecycleStatus, messageId);
+    }
+
+    if (updated) {
+      return result;
+    }
+    return null;
+  }
+
+  private BipClaim updateClaimProper(long claimId, MasCompletionStatus status) {
+    BipClaim claim = bipApiService.getClaimDetails(claimId);
+    ClaimStatus claimStatus = status.getClaimStatus();
+    String necessaryLifecycleStatus = claimStatus.getDescription();
+    if (!necessaryLifecycleStatus.equals(claim.getClaimLifecycleStatus())) {
+      log.info("Updating lifecycle status to {} for claim {}", necessaryLifecycleStatus, claimId);
+      bipApiService.updateClaimStatus(claimId, claimStatus);
+      if (claimStatus == ClaimStatus.RFD) {
+        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
+      }
+    } else {
+      log.info("Lifecycle status is already {} for claim {}", necessaryLifecycleStatus, claimId);
+    }
+    return claim;
+  }
+
+  /**
+   * Updates claim and contentions at the end of MAS automated claim processing.
    *
    * @param payload the claim payload
+   * @param status the completion status for mas automation
    * @return the claim payload
    */
-  public MasProcessingObject removeSpecialIssue(MasProcessingObject payload) {
-    var claimId = Long.parseLong(payload.getBenefitClaimId());
-    String specialIssue1 = claimPorps.getSpecialIssue1();
-    log.info("Attempting to remove special issue {} for claim id = {}", specialIssue1, claimId);
+  public BipUpdateClaimResult updateClaim(MasProcessingObject payload, MasCompletionStatus status) {
+    long claimId = Long.parseLong(payload.getBenefitClaimId());
+    log.info("Attempting necessary updates for claim id = {}", claimId);
+
+    final BipClaim claim = updateClaimProper(claimId, status);
 
     var contentions = bipApiService.getClaimContentions(claimId);
     if (ObjectUtils.isEmpty(contentions)) {
-      log.warn("Claim id = {} has no contentions.", claimId);
-      return payload;
+      String message = String.format("Claim id = %s has no contentions.", claimId);
+      return BipUpdateClaimResult.ofError(message);
+    }
+    if (contentions.size() > 1) {
+      String message = String.format("Claim id = %s has multiple contentions.", claimId);
+      return BipUpdateClaimResult.ofError(message);
     }
 
     List<ClaimContention> updatedContentions = new ArrayList<>();
     for (ClaimContention contention : contentions) {
-      List<String> specialIssueCodes = contention.getSpecialIssueCodes();
-      if (specialIssueCodes == null) {
-        log.info("Contention {} has no special issues.", contention.getContentionId());
-        continue;
-      }
-      log.info("Special issue codes: {}", String.join(",", specialIssueCodes));
-      var codes = specialIssueCodes.stream().map(String::toLowerCase).collect(Collectors.toSet());
-      if (codes.contains(specialIssue1.toLowerCase())) {
-        log.info("Found {} in contention {}", specialIssue1, contention.getContentionId());
-        // remove string from contention
-        List<String> updatedCodes =
-            contention.getSpecialIssueCodes().stream()
-                .filter(code -> !claimPorps.getSpecialIssue1().equalsIgnoreCase(code))
-                .collect(Collectors.toList());
-        var update = contention.toBuilder().specialIssueCodes(updatedCodes).build();
+      ClaimContention update = getUpdatedContention(claimId, contention, status);
+      if (update != null) {
         updatedContentions.add(update);
       }
     }
     if (updatedContentions.isEmpty()) {
-      log.info("Special issue for claim id = {} not found. Nothing to update.", claimId);
-      return payload; // nothing to update
-    }
-    log.info("Removing special issue for claim id = {}", claimId);
-    String action = "UPDATED_CONTENTION";
-    List<UpdateContention> updateContentions =
-        updatedContentions.stream()
-            .map(c -> c.toUpdateContention(action))
-            .collect(Collectors.toList());
-    UpdateContentionReq request =
-        UpdateContentionReq.builder().updateContentions(updateContentions).build();
-    bipApiService.updateClaimContention(claimId, request);
-    return payload;
-  }
-
-  /**
-   * Update claim status.
-   *
-   * @param payload the claim payload
-   * @return the claim payload
-   */
-  public MasProcessingObject markAsRfd(MasProcessingObject payload) {
-    long claimId = payload.getBenefitClaimIdAsLong();
-    int collectionId = payload.getCollectionId();
-
-    // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(claimId);
-    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
-      log.info(
-          "Claim {} with collection Id = {} is in state {}. Not updating status",
-          claimId,
-          collectionId,
-          claim.getTempStationOfJurisdiction());
+      log.info("Nothing to update for claim {}.", claimId);
     } else {
-      log.info("Marking claim with claimId = {} as Ready For Decision", claimId);
-      try {
-        bipApiService.updateClaimStatus(claimId, ClaimStatus.RFD);
-        saveToDbService.updateRfdFlag(String.valueOf(claimId), true);
-      } catch (Exception e) {
-        throw new BipException("BIP update claim status resulted in an exception", e);
-      }
+      log.info("Preparing requests for contention updates for claim id = {}", claimId);
+      String action = "UPDATED_CONTENTION";
+      List<UpdateContention> updateContentions =
+          updatedContentions.stream()
+              .map(c -> c.toUpdateContention(action))
+              .collect(Collectors.toList());
+      UpdateContentionReq request =
+          UpdateContentionReq.builder().updateContentions(updateContentions).build();
+      log.info("Calling BIP AP Service for contention updates for claim id = {}", claimId);
+      bipApiService.updateClaimContention(claimId, request);
     }
-    return payload;
-  }
 
-  /** Check if claim is still eligible for fast tracking, and if so, update status. */
-  public MasProcessingObject completeProcessing(MasProcessingObject payload) {
-    int collectionId = payload.getCollectionId();
-    long claimId = payload.getBenefitClaimIdAsLong();
-
-    // check again if TSOJ. If not, abandon route
-    var claim = bipApiService.getClaimDetails(claimId);
-    if (!TSOJ.equals(claim.getTempStationOfJurisdiction())) {
-      log.info(
-          "Claim {} with collection Id = {} is in state {}. Status not updated",
-          claimId,
-          collectionId,
-          claim.getTempStationOfJurisdiction());
-      payload.setTSOJ(false);
-      return payload;
+    String station = claim.getTempStationOfJurisdiction();
+    if (!TSOJ.equals(station)) {
+      String message =
+          String.format("Claim %s is in station %s not in %s.", claimId, station, TSOJ);
+      return BipUpdateClaimResult.ofWarning(message);
     }
-    payload.setTSOJ(true);
-    return payload;
+
+    return new BipUpdateClaimResult(true);
   }
 
   /**

@@ -115,14 +115,15 @@ public class BipApiService implements IBipApiService {
   @Override
   public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
+    final String description = status.getDescription();
     try {
       String url =
           HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
-      log.info("call {} to update claim status to {}.", url, status);
+      log.info("call {} to update claim status to {}.", url, description);
 
       HttpHeaders headers = getBipHeader();
       Map<String, String> requestBody = new HashMap<>();
-      requestBody.put("claimLifecycleStatus", status.getDescription());
+      requestBody.put("claimLifecycleStatus", description);
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
@@ -132,7 +133,7 @@ public class BipApiService implements IBipApiService {
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
     } catch (RestClientException e) {
-      log.error("failed to update status to {} for claim {}.", status.name(), claimId, e);
+      log.error("failed to update status to {} for claim {}.", description, claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }

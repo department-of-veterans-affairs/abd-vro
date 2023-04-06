@@ -2,8 +2,8 @@ package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BipServiceTestConfiguration;
@@ -11,7 +11,6 @@ import gov.va.vro.MasTestData;
 import gov.va.vro.api.responses.MasResponse;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasEventDetails;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
@@ -104,8 +103,8 @@ public class MasControllerTest extends BaseControllerTest {
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Claim with [collection id = 123], [diagnostic code = 1233], and"
-                  + " [disability action type = INCREASE] is not in scope.",
+              "Claim with collection id: 123, diagnostic code: 1233, and"
+                  + " disability action type: INCREASE is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
@@ -128,10 +127,9 @@ public class MasControllerTest extends BaseControllerTest {
 
     var request = MasTestData.getMasAutomatedClaimRequest();
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    assertTrue(offrampCalled.get());
-    assertTrue(completeCalled.get());
-
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+    assertFalse(offrampCalled.get());
+    assertFalse(completeCalled.get());
     verifyClaimPersisted(request);
   }
 
@@ -152,22 +150,10 @@ public class MasControllerTest extends BaseControllerTest {
 
     var request = MasTestData.getMasAutomatedClaimRequest(567, "7101", "999");
     var responseEntity = post("/v2/automatedClaim", request, MasResponse.class);
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
     mockMasOfframpEndpoint.expectedMessageCount(1);
 
     verifyClaimPersisted(request);
-
-    var response = responseEntity.getBody();
-    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(response.getId());
-    assertTrue(audits.size() > 0);
-    var audit = audits.get(0);
-    var details = objectMapper.convertValue(audit.getDetails(), MasEventDetails.class);
-    assertEquals("999", details.getBenefitClaimId());
-    assertEquals("567", details.getCollectionId());
-    assertEquals("7101", details.getDiagnosticCode());
-    assertEquals("X", details.getVeteranIcn());
-    assertEquals("VA.GOV", details.getSubmissionSource());
-    assertTrue(details.isInScope());
   }
 
   @Test

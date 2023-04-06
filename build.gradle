@@ -149,9 +149,9 @@ ext {
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
-    ':domain-xample:api-controller',
-    ':domain-xample:shared',
-    ':domain-xample:workflows-xample',
+    ':domain-xample:xample-api-controller',
+    ':domain-xample:xample-shared',
+    ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j'
   ]
   // Modules that create Docker images
@@ -162,6 +162,7 @@ ext {
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
     ':service-python:featuretoggle',
+    // ':svc-bgs-api',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
@@ -169,7 +170,7 @@ ext {
     ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
-    ':domain-xample:workflows-xample',
+    ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j'
   ]
   if (project.hasProperty("enablePrototype")) {

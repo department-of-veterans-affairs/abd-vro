@@ -1,9 +1,12 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.UpdatesApi;
+import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
+import gov.va.vro.mockbipclaims.model.mock.request.TempJurisdictionStationRequest;
 import gov.va.vro.mockbipclaims.model.mock.response.ContentionUpdatesResponse;
 import gov.va.vro.mockbipclaims.model.mock.response.LifecycleUpdatesResponse;
+import gov.va.vro.mockbipclaims.model.mock.response.SuccessResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
@@ -23,7 +26,7 @@ public class UpdatesController implements UpdatesApi {
   private final UpdatesStore store;
 
   @Override
-  public ResponseEntity<Void> deletedUpdates(Long claimId) {
+  public ResponseEntity<Void> deleteUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;
@@ -37,12 +40,14 @@ public class UpdatesController implements UpdatesApi {
   @Override
   public ResponseEntity<LifecycleUpdatesResponse> getLifecycleStatusUpdates(Long claimId) {
     ClaimStoreItem item = claimStore.get(claimId);
-    boolean found = (item != null && store.isLifecycleStatusUpdated(claimId));
-    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
-    if (found) {
-      String status = item.getClaimDetail().getClaimLifecycleStatus();
-      body.setStatus(status);
+    if (item == null) {
+      String reason = "No claim found for id: " + claimId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
     }
+    boolean found = store.isLifecycleStatusUpdated(claimId);
+    LifecycleUpdatesResponse body = new LifecycleUpdatesResponse(found);
+    String status = item.getClaimDetail().getClaimLifecycleStatus();
+    body.setStatus(status);
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 
@@ -56,5 +61,19 @@ public class UpdatesController implements UpdatesApi {
       body.setContentions(contentions);
     }
     return new ResponseEntity<>(body, HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<SuccessResponse> postTempJurisdictionStation(
+      Long claimId, TempJurisdictionStationRequest request) {
+    ClaimStoreItem item = claimStore.get(claimId);
+    if (item == null) {
+      String reason = "No claim found for id: " + claimId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+    }
+    ClaimDetail claim = item.getClaimDetail();
+    claim.setTempStationOfJurisdiction(request.getTempJurisdictionStation());
+    SuccessResponse response = new SuccessResponse(true);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }
