@@ -53,7 +53,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                             'diastolic': {'value': 110},
                             'receiptDate': '11/1/2022',
                             'systolic': {'value': 200}}],
-                 'lighthouseDuplicateBpCount': 0,
                  'oneYearBp': [{'dataSource': 'MAS',
                                 'date': '2021-11-01',
                                 "organization": "",
@@ -178,7 +177,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                  'receiptDate': '',
                                  'systolic': {'value': 210}}],
                  'twoYearsBpCount': 1,
-                 'lighthouseDuplicateBpCount': 0,
                  'twoYearsElevatedBpCount': 1}
         ),
         (
@@ -373,7 +371,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "dataSource": "",
                                 'diastolic': {'value': 113},
                                 'systolic': {'value': 131}}],
-                 'lighthouseDuplicateBpCount': 0,
                  'oneYearBpCount': 7,
                  'twoYearsElevatedBpCount': 4,
                  'totalBpCount': 7,
@@ -589,7 +586,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 'systolic': {'value': 120}},
                                ],
                  'oneYearBpCount': 5,
-                 'lighthouseDuplicateBpCount': 0,
                  'twoYearsElevatedBpCount': 3,
                  'totalBpCount': 6,
                  'twoYearsBp': [{'date': '2021-10-14',
@@ -815,7 +811,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "dataSource": "",
                                 'diastolic': {'value': 113},
                                 'systolic': {'value': 131}}],
-                 'lighthouseDuplicateBpCount': 0,
                  'oneYearBpCount': 6,
                  'twoYearsElevatedBpCount': 3,
                  'totalBpCount': 7,
@@ -1005,10 +1000,9 @@ from assessclaimdc7101.src.lib import bp_calculator
                                               'display': 'Systolic blood pressure',
                                               'unit': 'mm[Hg]',
                                               'value': 200}}],
-                 'lighthouseDuplicateBpCount': 0,
                  'twoYearsBpCount': 2}
         ),
-        (  # remove LH duplicate but keep MAS data intact
+        (
                 {
                     "evidence": {
 
@@ -1037,25 +1031,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
                                     "unit": "mm[Hg]",
-                                    "value": 110
-                                },
-                                "systolic": {
-                                    "code": "8480-6",
-                                    "display": "Systolic blood pressure",
-                                    "unit": "mm[Hg]",
-                                    "value": 200
-                                },
-                                "dataSource": "LH",
-                                "date": "2021-10-10",
-                                "receiptDate": "",
-                                "practitioner": "DR. JANE460 DOE922 MD",
-                                "organization": "LYONS VA MEDICAL CENTER"
-                            },
-                            {  # Same date different diastolic reading
-                                "diastolic": {
-                                    "code": "8462-4",
-                                    "display": "Diastolic blood pressure",
-                                    "unit": "mm[Hg]",
                                     "value": 100
                                 },
                                 "systolic": {
@@ -1070,7 +1045,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             },
-                            {  # Same date different systolic reading
+                            {
                                 "diastolic": {
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
@@ -1089,7 +1064,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             },
-                            {  # Same diastolic and systolic values different date
+                            {
                                 "diastolic": {
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
@@ -1405,7 +1380,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                               'display': 'Systolic blood pressure',
                                               'unit': 'mm[Hg]',
                                               'value': 180}}],
-                 'lighthouseDuplicateBpCount': 1,
                  'twoYearsBpCount': 6,
                  'twoYearsElevatedBpCount': 6}
         ),
@@ -1467,7 +1441,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                                              'display': 'Systolic blood pressure',
                                              'unit': 'mm[Hg]',
                                              'value': 180}}],
-                 'lighthouseDuplicateBpCount': 0,
                  'oneYearBpCount': 1,
                  'twoYearsElevatedBpCount': 1,
                  'totalBpCount': 1,
@@ -1499,7 +1472,6 @@ from assessclaimdc7101.src.lib import bp_calculator
                  'oneYearBp': [],
                  'oneYearBpCount': 0,
                  'twoYearsElevatedBpCount': 0,
-                 'lighthouseDuplicateBpCount': 0,
                  'totalBpCount': 0,
                  'twoYearsBp': [],
                  'twoYearsBpCount': 0}
