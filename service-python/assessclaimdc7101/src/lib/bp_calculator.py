@@ -64,8 +64,7 @@ def bp_reader(request_body):
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
     bp_readings = request_body["evidence"]["bp_readings"]
 
-    deduplicated_bp_readings = deduplicate(bp_readings)
-    for reading in deduplicated_bp_readings:
+    for reading in bp_readings:
         try:
             reading["receiptDate"] = format_date(datetime.strptime(reading["receiptDate"], "%Y-%m-%d").date())
         except (ValueError, KeyError):
