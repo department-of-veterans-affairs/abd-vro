@@ -32,11 +32,6 @@ on:
         required: true
         type: boolean
         default: true
-      domain-rrd:
-        description: "Enable & update RRD domain services"
-        required: true
-        type: boolean
-        default: true
       postgres:
         description: 'Enable DB'
         required: true
@@ -93,10 +88,6 @@ on:
         type: boolean
         default: true
       vro-svcs:
-        required: false
-        type: boolean
-        default: true
-      domain-rrd:
         required: false
         type: boolean
         default: true
@@ -219,7 +210,6 @@ jobs:
           slack-text: ":panda_angel: Deploying:\n\
             - vro-app: *${{ inputs.vro-app }}*\n\
             - vro-svcs: *${{ inputs.vro-svcs }}*\n\
-            - domain-rrd: *${{ inputs.domain-rrd }}*\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
             - redis: *${{ inputs.redis }}*\n\
@@ -260,7 +250,6 @@ jobs:
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
-            --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
             --set postgres.enabled=${{ inputs.postgres }} \
             --set console.enabled=${{ inputs.console }}
           echo "::endgroup::"
