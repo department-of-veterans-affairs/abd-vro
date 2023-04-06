@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
+import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
@@ -17,7 +18,6 @@ import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
-import gov.va.vro.service.provider.camel.VroCamelUtils;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
@@ -32,9 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
-import java.util.UUID;
 
 public class MasIntegrationRoutesTest extends BaseIntegrationTest {
+
+  private static final long DEFAULT_REQUEST_TIMEOUT = 120000;
 
   @Autowired CamelEntrance camelEntrance;
 
@@ -49,7 +50,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   @EndpointInject("mock:sufficiency-assess")
   private MockEndpoint mockSufficiencyAssess;
 
-  @EndpointInject("mock:claim-submit")
+  @EndpointInject("mock:claim-submit-full")
   private MockEndpoint mockClaimSubmit;
 
   @EndpointInject("mock:empty-endpoint")
@@ -79,14 +80,28 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
             .isPresent());
   }
 
-  private MasProcessingObject processClaim(boolean sufficientEvidence) throws Exception {
+  @Test
+  void processClaimInsufficientEvidenceAccessError() throws Exception {
+    var mpo = processClaim(null);
+    Thread.sleep(200);
+    var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
+    assertTrue(
+        audits.stream()
+            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .findFirst()
+            .isPresent());
+  }
 
-    // Mock a return value when claim-submit (lighthouse) is invoked
+  private MasProcessingObject processClaim(Boolean sufficientEvidence) throws Exception {
+
+    // Mock a return value when claim-submit-full (lighthouse) is invoked
     replaceEndpoint(
-        "claim-submit",
+        "claim-submit-full",
         "rabbitmq://claim-submit-exchange?queue=claim-submit&"
-            + "requestTimeout=60000&routingKey=code.1233",
-        "mock:claim-submit");
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT
+            + "&routingKey=code.hypertension",
+        "mock:claim-submit-full");
 
     mockClaimSubmit.whenAnyExchangeReceived(
         exchange -> {
@@ -98,8 +113,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "mas-processing",
-        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.1233&"
-            + "requestTimeout=60000",
+        "rabbitmq:health-assess-exchange?routingKey=health-sufficiency-assess.hypertension&"
+            + "requestTimeout="
+            + DEFAULT_REQUEST_TIMEOUT,
         "mock:sufficiency-assess");
 
     mockSufficiencyAssess.whenAnyExchangeReceived(
@@ -114,7 +130,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "generate-pdf",
-        VroCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
+        RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
         "mock:empty-endpoint");
 
     replaceEndpoint(
@@ -124,6 +140,11 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "mas-processing", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
+
+    replaceEndpoint("mas-rfd", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
+
+    replaceEndpoint(
+        "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
 
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 
@@ -136,13 +157,14 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     Mockito.when(masApiService.getCollectionAnnotations(collectionId))
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
-    payload.setCorrelationId(UUID.randomUUID().toString());
     var response = camelEntrance.processClaim(payload);
 
     // verify if order exam was called based on the sufficient evidence flag
-    if (sufficientEvidence) {
+    if (sufficientEvidence == null) {
       Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
-    } else {
+    } else if (sufficientEvidence != null && sufficientEvidence == true) {
+      Mockito.verify(masApiService, Mockito.never()).orderExam(Mockito.any());
+    } else if (sufficientEvidence != null && sufficientEvidence == false) {
       var argumentCaptor = ArgumentCaptor.forClass(MasOrderExamRequest.class);
       Mockito.verify(masApiService, Mockito.times(1)).orderExam(argumentCaptor.capture());
       MasOrderExamRequest orderExamRequest = argumentCaptor.getValue();
@@ -155,6 +177,10 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
     adviceWith(
         camelContext,
         routeId,
+        // TODO: Consider using `weaveById().replace()` for rabbitmq endpoints to avoid "Failed to
+        // create connection."
+        // https://tomd.xyz/mock-endpoints-are-real: "Original endpoints are still initialised, even
+        // if they have been mocked."
         route -> route.interceptSendToEndpoint(fromUri).skipSendToOriginalEndpoint().to(toUri));
   }
 }

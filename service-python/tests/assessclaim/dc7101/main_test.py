@@ -54,11 +54,12 @@ from assessclaimdc7101.src.lib import main
                         }
                     ],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "claimSubmissionId": "1234"
             },
             {'evidence': {'bp_readings': [{'date': '2021-11-01',
-                                           'dateFormatted': '11/01/2021',
+                                           'receiptDate': '',
+                                           'dateFormatted': '11/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
                                                                     'pressure',
@@ -72,7 +73,8 @@ from assessclaimdc7101.src.lib import main
                                                         'unit': 'mm[Hg]',
                                                         'value': 180}},
                                           {'date': '2021-09-01',
-                                           'dateFormatted': '09/01/2021',
+                                           'receiptDate': '',
+                                           'dateFormatted': '9/1/2021',
                                            'diastolic': {'code': '8462-4',
                                                          'display': 'Diastolic blood '
                                                                     'pressure',
@@ -89,8 +91,8 @@ from assessclaimdc7101.src.lib import main
                                            'description': 'Capoten',
                                            'status': 'active'}]},
              'evidenceSummary': {'medicationsCount': 1,
-                                 'recentBpReadings': 2,
-                                 'totalBpReadings': 2},
+                                 'recentBpCount': 2,
+                                 'totalBpCount': 2},
                 "claimSubmissionId": "1234"
             },
         ),
@@ -135,7 +137,7 @@ from assessclaimdc7101.src.lib import main
                     ],
                     "medications": [],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "diagnosticCode": "7101",
                 "claimSubmissionId": "1234"
             },
@@ -144,8 +146,8 @@ from assessclaimdc7101.src.lib import main
                 "evidence": {"bp_readings": [], "medications": []},
                 "evidenceSummary": {
                     "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 2,
+                    "recentBpCount": 0,
+                    "totalBpCount": 2,
                 },
                 "claimSubmissionId": "1234"
             },
@@ -157,7 +159,7 @@ from assessclaimdc7101.src.lib import main
                     "bp_readings": [],
                     "medications": [],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "diagnosticCode": "7101",
                 "claimSubmissionId": "1234"
             },
@@ -165,54 +167,34 @@ from assessclaimdc7101.src.lib import main
                 "evidence": {"bp_readings": [], "medications": []},
                 "evidenceSummary": {
                     "medicationsCount": 0,
-                    "recentBpReadings": 0,
-                    "totalBpReadings": 0,
+                    "recentBpCount": 0,
+                    "totalBpCount": 0,
                 },
                 "claimSubmissionId": "1234"
             },
         ),
-        # Bad data: "systolic" key is missing in second reading
+        # Un-readable date
         (
-            {
-                "evidence": {
-                    "bp_readings": [
-                        {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 115,
-                            },
-                            "systolic": {
-                                "code": "8480-6",
-                                "display": "Systolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 180,
-                            },
-                            "date": "2021-11-01",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER",
-                        },
-                        {
-                            "diastolic": {
-                                "code": "8462-4",
-                                "display": "Diastolic blood pressure",
-                                "unit": "mm[Hg]",
-                                "value": 110,
-                            },
-                            "date": "2021-09-01",
-                            "practitioner": "DR. JANE460 DOE922 MD",
-                            "organization": "LYONS VA MEDICAL CENTER",
-                        },
-                    ]
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "medications": [],
+                    },
+                    "claimSubmissionDateTime": "2021-11-09T04",
+                    "diagnosticCode": "7101",
+                    "claimSubmissionId": "1234"
                 },
-                "claimSubmissionId": "1234"
-            },
-            {
-                "errorMessage": "error validating request message data",
-                "claimSubmissionId": "1234"
-            },
-        ),
+                {
+                    "evidence": {"bp_readings": [], "medications": []},
+                    "evidenceSummary": {
+                        "medicationsCount": 0,
+                        "recentBpCount": 0,
+                        "totalBpCount": 0,
+                    },
+                    "claimSubmissionId": "1234"
+                }
+        )
+        ,
         # Bad data:
         # - "diastolic" value is string instead of int
         # - Medication is an array with a single element *that is an int* rather than string
@@ -235,6 +217,7 @@ from assessclaimdc7101.src.lib import main
                                 "value": 180,
                             },
                             "date": "2021-11-01",
+                            'receiptDate': '',
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER",
                         },
@@ -252,13 +235,14 @@ from assessclaimdc7101.src.lib import main
                                 "value": 200,
                             },
                             "date": "2021-09-01",
+                            'receiptDate': '',
                             "practitioner": "DR. JANE460 DOE922 MD",
                             "organization": "LYONS VA MEDICAL CENTER",
                         },
                     ],
                     "medications": [{"description": 11}],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 "claimSubmissionId": "1234"
             },
             {

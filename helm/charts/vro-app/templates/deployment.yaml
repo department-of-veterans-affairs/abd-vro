@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Also used as the pod's prefix
+  name: vro-app
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+  annotations:
+    app.kubernetes.io/owner: {{ .Values.owner }}
+    app.kubernetes.io/name: {{ .Values.name }}
+    app.kubernetes.io/version: {{ .Values.global.version | quote }}
+    app.kubernetes.io/env: {{ .Values.global.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+        {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
+        app.kubernetes.io/podowner: {{ .Values.owner }}
+        app.kubernetes.io/podname: {{ .Values.name }}
+        app.kubernetes.io/podversion: {{ .Values.global.version | quote }}
+        app.kubernetes.io/podenv: {{ .Values.global.environment }}
+    spec:
+      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        - name: pg-isready{{ include "vro.containerSuffix" . }}
+          # TODO: This simple container does not need to use the big `db` image
+          image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
+          env:
+            - name: POSTGRES_FLYWAY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: vro-db
+                  key: DB_FLYWAYUSER_NAME
+            - name: POSTGRES_DB
+              value: {{ .Values.global.service.db.databaseName }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /bin/sh -c "
+                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
+                  echo 'Waiting for Postgres DB to be available'
+                  sleep 5
+                done
+              "
+          resources:
+            # TODO: reduce resources since this container requires very little
+            limits:
+              cpu: 10m
+              memory: 256Mi
+        - name: dbinit{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
+          env:
+            {{- include "vro.flyway.envVars" . | nindent 12 }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+      containers:
+        - name: app{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-app:{{ include "vro.imageTag" . }}
+          ports: {{- toYaml .Values.ports | nindent 12 }}
+            - containerPort: {{ .Values.global.service.app.sourcePort }}
+              protocol: TCP
+              name: http
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
+          env:
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
+            {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+
+            - name: JAVA_OPTS
+              value: -Xmx512m
+            - name: PERSIST_TRACKING_FOLDER
+              value: {{ .Values.global.tracking.mountPath }}
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: /{{ .Values.global.serviceUriPrefix }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.global.serviceUriPrefix }}
+
+            - name: VRO_SECRETS_API
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_API
+            - name: VRO_SECRETS_SLACK
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_SLACK
+
+            - name: LH_API_AUTH_URL
+              value: {{ .Values.lhApiAuthUrl }}
+            - name: VRO_AUD_URL
+              value: {{ .Values.vroAudUrl }}
+            - name: VALIDATE_TOKEN
+              # Must quote, otherwise YAML interprets 'NO' as a boolean false
+              value: {{ .Values.validateToken | quote }}
+
+            - name: VRO_SECRETS_MAS
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_MAS
+            - name: MAS_API_AUTH_TOKEN_URI
+              value: {{ .Values.global.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BASE_URL
+              value: {{ .Values.global.mas.masApiBaseUrl }}
+
+            - name: VRO_SECRETS_BIP
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_BIP
+            - name: BIP_APPLICATION_ISS
+              value: virtual_regional_office
+            - name: BIP_CLAIM_URL
+              value: {{ .Values.global.bip.bipClaimUrl }}
+            - name: BIP_EVIDENCE_URL
+              value: {{ .Values.global.bip.bipEvidenceUrl }}
+            - name: BIP_STATION_ID
+              value: "281"
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          volumeMounts:
+            {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
+      volumes:
+        {{- include "vro.volumes.tracking" . | nindent 8 }}

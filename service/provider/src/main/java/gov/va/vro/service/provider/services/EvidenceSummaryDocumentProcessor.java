@@ -8,41 +8,34 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
-import java.util.Date;
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class EvidenceSummaryDocumentProcessor implements Processor {
   private final SaveToDbService saveToDbService;
-  private static final Map<String, String> diagnosisMap =
-      Map.ofEntries(
-          new AbstractMap.SimpleEntry<>("7101", "Hypertension"),
-          new AbstractMap.SimpleEntry<>("6602", "Asthma"));
 
   @Override
   public void process(Exchange exchange) {
-    GeneratePdfPayload response = exchange.getIn().getBody(GeneratePdfPayload.class);
-    if (response == null) {
-      log.warn("Response from camel was null, returning.");
+    // String body = exchange.getIn().getBody(String.class);
+    // log.info(">>>>> exchange > body: " + body);
+    GeneratePdfPayload payload = exchange.getIn().getBody(GeneratePdfPayload.class);
+    // log.info(">>>>> exchange > payload~1: " + payload);
+    if (payload == null) {
+      log.warn("Payload is empty, returning...");
       return;
     }
-    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
-    String diagnosis = matchDiagnosticCode(response.getDiagnosticCode());
+    // log.info(">>>>> exchange > payload~2: " + Objects.toString(payload));
+    String diagnosis = matchDiagnosticCode(payload.getDiagnosticCode());
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
       return;
     }
-    String documentName =
-        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
-
-    saveToDbService.insertEvidenceSummaryDocument(response, documentName);
+    saveToDbService.insertEvidenceSummaryDocument(
+        payload, GeneratePdfPayload.createPdfFilename(diagnosis));
   }
 
   private String matchDiagnosticCode(String diagnosticCode) {
-    String diagnosis = diagnosisMap.get(diagnosticCode);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode);
     if (diagnosis == null) {
       log.warn("Could not match diagnostic code with a diagnosis, exiting.");
       return null;

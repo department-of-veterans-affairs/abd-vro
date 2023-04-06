@@ -1,4 +1,6 @@
 name: VRO's Snyk scan
+# TODO: delete this once we're using SecRel Modularized Snyk: snyk.yml@v4.0.0
+# https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.0.0/#modularized-snyk-feedback-loop
 
 on:
 # May no longer be useful for PRs since we're now using Synk webhook via the VA account
@@ -10,12 +12,6 @@ on:
   # When changes are pushed to special branches
   push:
     branches: [main, develop]
-
-  # Allow manual triggering
-  workflow_dispatch:
-
-env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
   security:
@@ -42,7 +38,7 @@ jobs:
 #          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: "Build Docker images"
-        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
 # These image scans don't count towards Snyk's limit
       - name: "Snyk scan images"

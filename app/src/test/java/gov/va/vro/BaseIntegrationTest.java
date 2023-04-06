@@ -2,6 +2,7 @@ package gov.va.vro;
 
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,8 @@ public abstract class BaseIntegrationTest {
 
   @Autowired protected ClaimRepository claimRepository;
 
+  @Autowired protected ClaimSubmissionRepository claimSubmissionRepository;
+
   @Autowired protected VeteranRepository veteranRepository;
 
   @Autowired protected AuditEventRepository auditEventRepository;
@@ -24,6 +27,7 @@ public abstract class BaseIntegrationTest {
   @AfterEach
   public void delete() {
     claimRepository.deleteAll();
+    // Claim repository will cascade delete from claimSubmission
     veteranRepository.deleteAll();
     auditEventRepository.deleteAll();
   }

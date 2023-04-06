@@ -1,0 +1,9 @@
+
+global:
+  environment: qa
+  endpoint: qa.lighthouse.va.gov
+  lhdiCluster: nonprod
+
+  bip:
+    bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-dev.dev8.bip.va.gov/api/v1/rest/

@@ -1,4 +1,6 @@
 name: Trivy scan
+# TODO: delete this once we're using SecRel's Modularized Aqua: aqua.yml@v4.0.0
+# https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.0.0/#modularized-aqua-feedback-loop
 
 on:
   pull_request:
@@ -7,12 +9,6 @@ on:
   # When changes are pushed to special branches
   push:
     branches: [main, qa, develop]
-
-  # Allow manual triggering
-  workflow_dispatch:
-
-env:
-  GITHUB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 jobs:
   trivy-scan:
@@ -38,7 +34,7 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
       - name: "Build jars and Docker images"
-        run: ./gradlew assemble -PGITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+        run: ./gradlew assemble -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
 
       - name: "Scan rootfs"
         uses: aquasecurity/trivy-action@master

@@ -20,6 +20,7 @@ valid_queue = {
     "exchange_name": "",
     "generate_queue_name": "",
     "fetch_queue_name": "",
+    "generate_fetch_queue_name": "",
 }
 
 

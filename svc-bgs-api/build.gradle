@@ -1,0 +1,5 @@
+plugins {
+  id 'local.ruby.container-service-conventions'
+}
+
+// TODO: add tasks to `bundle install`, run linters, run tests

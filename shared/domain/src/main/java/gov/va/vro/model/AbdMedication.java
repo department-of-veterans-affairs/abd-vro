@@ -20,6 +20,11 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Status of medication", example = "Active")
   private String status;
 
+  @Schema(
+      description = "Location where the measurement taken",
+      example = "WASHINGTON VA MEDICAL CENTER")
+  private String organization;
+
   @Schema(description = "Notes of the medication order")
   private List<String> notes;
 
@@ -38,7 +43,7 @@ public class AbdMedication implements Comparable<AbdMedication> {
   private Boolean conditionRelated;
   private String suggestedCategory;
 
-  @Schema(description = "Formatted date", example = "01/01/2023")
+  @Schema(description = "Formatted date", example = "12/31/1999")
   private String dateFormatted;
 
   @EqualsAndHashCode.Include
@@ -61,19 +66,17 @@ public class AbdMedication implements Comparable<AbdMedication> {
   @Schema(description = "Source of this data", example = "LH")
   private String dataSource = "LH";
 
-  @Schema(
-      description = "Document Type Description",
-      example = "Medical Treatment Record - Government Facility")
+  @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
   private String document;
 
-  @Schema(description = "VBMS Receipt Date", example = "04/05/2021")
+  @Schema(description = "VBMS Receipt Date", example = "1999-12-31")
   private String receiptDate;
 
   @Schema(description = "Document Page Number", example = "55")
   private String page;
 
-  @Schema(description = "Document Identifier", example = "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}")
-  private String documentId;
+  @Schema(description = "Partial date from OCR", example = "**/**/1988")
+  private String partialDate;
 
   @Override
   public int compareTo(AbdMedication otherMedication) {

@@ -1,76 +1,69 @@
 package gov.va.vro.model.mas;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.model.event.Auditable;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
-@Schema(name = "MASClaimDetailsRequest", description = "Initiate a MAS request")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MasAutomatedClaimPayload implements Auditable {
 
   public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
-
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
+  public static final String AGENT_ORANGE_FLASH_ID = "266";
+  public static final String CLAIM_V2_ID_TYPE = "mas-Form526Submission";
 
-  @Schema(hidden = true)
-  @Setter
-  @Getter
   private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
-  @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
-  @JsonProperty("dob")
   private String dateOfBirth;
 
   @NotBlank(message = "First Name cannot be empty")
-  @Schema(description = "Veteran First  Name", example = "Rick")
   private String firstName;
 
   @NotBlank(message = "Last Name cannot be empty")
-  @Schema(description = "Veteran Last  Name", example = "Smith")
   private String lastName;
 
-  @Schema(description = "Veteran Gender")
   private String gender;
 
   @NotNull(message = "Collection ID cannot be empty")
-  @Schema(description = "Collection ID", example = "350")
   private Integer collectionId;
 
-  @NotNull
-  @Valid
-  @Schema(description = "Veteran Identifiers")
-  private VeteranIdentifiers veteranIdentifiers;
+  @NotNull @Valid private VeteranIdentifiers veteranIdentifiers;
 
-  @NotNull
-  @Valid
-  @Schema(description = "Details of the Claim")
-  private ClaimDetail claimDetail;
+  @NotNull @Valid private ClaimDetail claimDetail;
 
-  @Schema(description = "Veteran Flash Ids")
+  @Builder.Default @NotNull private String idType = CLAIM_V2_ID_TYPE;
+
+  @Setter private String offRampReason;
+
+  @Setter private UUID evidenceSummaryDocumentId;
+
   private List<String> veteranFlashIds;
 
-  /**
-   * Get diagnostic code.
-   *
-   * @return code.
-   */
+  @JsonIgnore
+  public String getConditionName() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getName();
+  }
+
   @JsonIgnore
   public String getDiagnosticCode() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -79,11 +72,14 @@ public class MasAutomatedClaimPayload implements Auditable {
     return claimDetail.getConditions().getDiagnosticCode();
   }
 
-  /**
-   * Get disability action type.
-   *
-   * @return type.
-   */
+  @JsonIgnore
+  public String getDisabilityClassificationCode() {
+    if (claimDetail == null || claimDetail.getConditions() == null) {
+      return null;
+    }
+    return claimDetail.getConditions().getDisabilityClassificationCode();
+  }
+
   @JsonIgnore
   public String getDisabilityActionType() {
     if (claimDetail == null || claimDetail.getConditions() == null) {
@@ -105,8 +101,19 @@ public class MasAutomatedClaimPayload implements Auditable {
   }
 
   @JsonIgnore
-  public Integer getClaimId() {
-    return claimDetail == null ? null : Integer.parseInt(claimDetail.getBenefitClaimId());
+  public Boolean isPresumptive() {
+    if (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)) {
+      return (veteranFlashIds != null
+          && !Collections.disjoint(
+              veteranFlashIds,
+              Arrays.asList(MasVeteranFlashProps.getInstance().getAgentOrangeFlashIds())));
+    }
+    return null;
+  }
+
+  @JsonIgnore
+  public String getBenefitClaimId() {
+    return claimDetail == null ? null : claimDetail.getBenefitClaimId();
   }
 
   @JsonIgnore
@@ -114,20 +121,43 @@ public class MasAutomatedClaimPayload implements Auditable {
     return veteranIdentifiers == null ? null : veteranIdentifiers.getIcn();
   }
 
-  @Override
   @JsonIgnore
+  public String getVeteranParticipantId() {
+    return veteranIdentifiers == null ? null : veteranIdentifiers.getParticipantId();
+  }
+
+  @JsonIgnore
+  @Override
   public String getEventId() {
     return correlationId;
   }
 
-  @JsonIgnore
   @Override
-  public String getDetails() {
-    return String.format(
-        "collectionId = %d, claimId = %d, veteranIcn = %s, diagnosticCode = %s",
-        collectionId, getClaimId(), getVeteranIcn(), getDiagnosticCode());
+  @SneakyThrows
+  @JsonIgnore
+  public Map<String, String> getDetails() {
+    Map<String, String> detailsMap = new HashMap<>();
+    detailsMap.put("benefitClaimId", getBenefitClaimId());
+    detailsMap.put("collectionId", Objects.toString(getCollectionId()));
+    detailsMap.put("conditionName", getConditionName());
+    detailsMap.put("diagnosticCode", getDiagnosticCode());
+    detailsMap.put("veteranIcn", getVeteranIcn());
+    detailsMap.put("disabilityActionType", getDisabilityActionType());
+    detailsMap.put("disabilityClassificationCode", getDisabilityClassificationCode());
+    detailsMap.put(
+        "flashIds", getVeteranFlashIds() == null ? null : Objects.toString(getVeteranFlashIds()));
+    detailsMap.put("inScope", Objects.toString(isInScope()));
+    detailsMap.put("presumptive", Objects.toString(isPresumptive()));
+    detailsMap.put(
+        "submissionSource", claimDetail == null ? null : claimDetail.getClaimSubmissionSource());
+    detailsMap.put(
+        "submissionDate",
+        claimDetail == null ? null : Objects.toString(claimDetail.getClaimSubmissionDateTime()));
+    detailsMap.put("offRampReason", getOffRampReason());
+    return detailsMap;
   }
 
+  @JsonIgnore
   @Override
   public String getDisplayName() {
     return "Automated Claim";

@@ -2,6 +2,7 @@ package gov.va.vro.controller.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.service.provider.bip.BipException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -72,36 +73,37 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles exception.
-   *
-   * @param exception the exception
-   * @return returns new exception
-   */
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
-    log.error("Unexpected error", exception);
-    ClaimProcessingError cpe =
-        new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-    return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  /**
    * Handles claim processing exception.
    *
-   * @param exception exception.
-   * @return returns claim processing error
+   * @param exception the exception
+   * @return returns exception
    */
   @ExceptionHandler(ClaimProcessingException.class)
   public ResponseEntity<ClaimProcessingError> handleClaimProcessingException(
       ClaimProcessingException exception) {
+    log.info("Claim processing error", exception);
     return new ResponseEntity<>(new ClaimProcessingError(exception), exception.getHttpStatus());
   }
 
   /**
-   * handles json parsing.
+   * Detects unallowed character sequences in JSON Request Body input data.
    *
    * @param exception the exception
-   * @return returns claim processing error
+   * @return returns exception
+   */
+  @ExceptionHandler(DisallowedPatternException.class)
+  public ResponseEntity<ClaimProcessingError> handleUnallowedPatternException(
+      DisallowedPatternException exception) {
+    log.error("Unallowed patterns were found in the Request Body.", exception);
+    ClaimProcessingError cpe = new ClaimProcessingError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    return new ResponseEntity<>(cpe, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handles JSON parsing.
+   *
+   * @param exception the exception
+   * @return returns exception
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ClaimProcessingError> handleJsonParseException(
@@ -112,9 +114,9 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles unsupported Http Methods.
+   * Handles unsupported HTTP Methods.
    *
-   * @param exception exception
+   * @param exception the exception
    * @return new exception
    */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -124,5 +126,32 @@ public class GlobalExceptionHandler {
     ClaimProcessingError cpe =
         new ClaimProcessingError(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
     return new ResponseEntity<ClaimProcessingError>(cpe, HttpStatus.METHOD_NOT_ALLOWED);
+  }
+
+  /**
+   * Handles general, unspecified exceptions (catch-all).
+   *
+   * @param exception the exception
+   * @return returns exception
+   */
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ClaimProcessingError> handleException(Exception exception) {
+    log.error("Unexpected error", exception);
+    ClaimProcessingError cpe =
+        new ClaimProcessingError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+    return new ResponseEntity<>(cpe, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   * Handles BIP Exceptions.
+   *
+   * @param exception the exception
+   * @return returns response
+   */
+  @ExceptionHandler(BipException.class)
+  public ResponseEntity<ClaimProcessingError> handleBipClaimException(BipException exception) {
+    log.error("BIP exception: {}", exception.getMessage(), exception);
+    ClaimProcessingError cpe = new ClaimProcessingError(exception.getMessage());
+    return new ResponseEntity<>(cpe, exception.getStatus());
   }
 }

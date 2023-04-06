@@ -106,11 +106,47 @@ public interface VroResource {
       throws MethodArgumentNotValidException, ClaimProcessingException;
 
   @Operation(
+      summary = "Immediate PDF",
+      description =
+          "This endpoint generates the Evidence PDF for a specific patient and a diagnostic "
+              + "code. The endpoint will return the PDF but is also available from the "
+              + "'GET evidence-pdf' endpoint using claim submission id.")
+  @PostMapping("/immediate-pdf")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful Request"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "PDF Generator Server Error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @Timed(value = "evidence-pdf")
+  @Tag(name = "Pdf Generation")
+  ResponseEntity<Object> immediatePdf(
+      @Parameter(
+              description = "metadata for immediatePdf",
+              required = true,
+              schema = @Schema(implementation = GeneratePdfRequest.class))
+          @Valid
+          @RequestBody
+          GeneratePdfRequest request)
+      throws MethodArgumentNotValidException, ClaimProcessingException;
+
+  @Operation(
       summary = "Provides health data assessment",
       description =
           "This endpoint provides health data assessment for a Veteran claim "
               + "in the form of patient medical data relevant to the specific diagnostic code. "
-              + "Claim id is only used for tracking purposes.")
+              + "This endpoint only provides a health assessment for v1 claims. To see a health"
+              + " assessment for v2 claims, please try the v2/health-data-assessment endpoint.")
   @PostMapping("/full-health-data-assessment")
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(

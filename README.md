@@ -1,7 +1,7 @@
-- `develop` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+- `develop` branch: [![CI](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml)
 [![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
-[![Deploy dev images](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/deploy-dev.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/deploy-dev.yml)
-- `main` branch: [![CodeQL](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/codeql.yml)
+[![CD](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-delivery.yml/badge.svg?branch=develop)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-delivery.yml)
+- `main` branch: [![CI](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml)
 [![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 
 # ABD VRO
@@ -19,5 +19,6 @@ The overall goal for this project is to build automation to enrich Veteran claim
 # VRO Software
 
 Check out the documentation on [the wiki](https://github.com/department-of-veterans-affairs/abd-vro/wiki).
+Instructions for running the code can be found [here](https://github.com/department-of-veterans-affairs/abd-vro/wiki/LHDI%27s-Boilerplate-Instructions#getting-started).
 
 VRO software is deployed on the [Lighthouse Delivery Infrastructure (LHDI) platform](https://animated-carnival-57b3e7f5.pages.github.io/).

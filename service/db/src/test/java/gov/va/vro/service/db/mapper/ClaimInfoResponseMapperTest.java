@@ -10,10 +10,12 @@ import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.AssessmentResultEntity;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.model.VeteranEntity;
 import gov.va.vro.service.db.TestConfig;
+import gov.va.vro.service.spi.model.Claim;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,9 +43,11 @@ public class ClaimInfoResponseMapperTest {
     ContentionEntity contentionEntity = new ContentionEntity();
     contentionEntity.setDiagnosticCode(diagnosticCode);
 
+    final Boolean sufficientEvidence = true;
     AssessmentResultEntity assessmentResultEntity = new AssessmentResultEntity();
     Map<String, String> areEvidenceInfo = ImmutableMap.of("k1", "v1", "k2", "v2");
     assessmentResultEntity.setEvidenceCountSummary(areEvidenceInfo);
+    assessmentResultEntity.setSufficientEvidenceFlag(sufficientEvidence);
     contentionEntity.addAssessmentResult(assessmentResultEntity);
 
     EvidenceSummaryDocumentEntity esdEntity = new EvidenceSummaryDocumentEntity();
@@ -54,12 +58,16 @@ public class ClaimInfoResponseMapperTest {
     contentionEntity.addEvidenceSummaryDocument(esdEntity);
 
     final String claimSubmissionId = "cs_id_test";
+    ClaimSubmissionEntity claimSubmissionEntity = new ClaimSubmissionEntity();
+    claimSubmissionEntity.setReferenceId(claimSubmissionId);
+    claimSubmissionEntity.setIdType(Claim.V1_ID_TYPE);
+
     ClaimEntity claimEntity = new ClaimEntity();
-    claimEntity.setClaimSubmissionId(claimSubmissionId);
     claimEntity.setVeteran(veteranEntity);
     claimEntity.addContention(contentionEntity);
+    claimEntity.addClaimSubmission(claimSubmissionEntity);
 
-    ClaimInfoResponse response = mapper.toClaimInfoResponse(claimEntity);
+    ClaimInfoResponse response = mapper.toClaimInfoResponseV1(claimEntity);
 
     assertEquals(claimSubmissionId, response.getClaimSubmissionId());
     assertEquals(icn, response.getVeteranIcn());
@@ -75,6 +83,7 @@ public class ClaimInfoResponseMapperTest {
     assertEquals(1, assessments.size());
     AssessmentInfo assessmentInfo = assessments.get(0);
     assertEquals(areEvidenceInfo, assessmentInfo.getEvidenceInfo());
+    assertEquals(sufficientEvidence, assessmentInfo.getSufficientEvidenceFlag());
 
     List<DocumentInfo> documents = contentionInfo.getDocuments();
     assertNotNull(documents);

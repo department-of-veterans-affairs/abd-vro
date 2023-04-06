@@ -29,4 +29,7 @@ public class AbdEvidence {
 
   @Schema(description = "Veteran service locations for the pdf")
   private List<ServiceLocation> serviceLocations;
+
+  @JsonProperty("documentsWithoutAnnotationsChecked")
+  private List<String> documentsWithoutAnnotationsChecked;
 }

@@ -1,0 +1,9 @@
+# https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
+
+# To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+# https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+camel.dataformat.json-jackson.auto-discover-object-mapper: true
+
+# Ensure the Spring-Boot application keeps running until being stopped or the JVM terminated
+# https://camel.apache.org/components/2.x/others/spring-boot.html
+camel.springboot.main-run-controller: true

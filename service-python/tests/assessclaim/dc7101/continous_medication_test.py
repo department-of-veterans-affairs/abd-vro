@@ -1,10 +1,10 @@
 import pytest
 
-from assessclaimdc7101.src.lib import continuous_medication
+from assessclaimdc7101.src.lib import medications
 
 
 @pytest.mark.parametrize(
-    "request_body, continuous_medication_required_calculation",
+    "request_body, medication_required_calculation",
     [
         (
             {
@@ -17,7 +17,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -42,7 +42,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "2020-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -67,7 +67,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -97,7 +97,7 @@ from assessclaimdc7101.src.lib import continuous_medication
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
                     ],
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                 }
             },
             {
@@ -128,20 +128,20 @@ from assessclaimdc7101.src.lib import continuous_medication
         ),
     ],
 )
-def test_continuous_medication_required(
-    request_body, continuous_medication_required_calculation
+def test_medication_required(
+    request_body, medication_required_calculation
 ):
     """
-    Test the history of continuous medication required algorithm
+    Test the medication algorithm
 
-    :param request_body: request body with blood pressure readings and other data
+    :param request_body: request body with medications
     :type request_body: dict
-    :param continuous_medication_required_calculation: correct return value from algorithm
-    :type continuous_medication_required_calculation: dict
+    :param medication_required_calculation: correct return value from algorithm
+    :type medication_required_calculation: dict
     """
     assert (
-        continuous_medication.continuous_medication_required(request_body)
-        == continuous_medication_required_calculation
+        medications.medication_required(request_body)
+        == medication_required_calculation
     )
 
 
@@ -158,23 +158,28 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    "medications": [
-                        {
-                            "authoredOn": "2020-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/2020',
-                            "description": "Benazepril",
-                            "status": "active",
-                        }
-                    ],
-                    "medicationsCount": 1,
-                },
+                {'allMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/2020',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                          'dataSource': 'MAS',
+                                          'dateFormatted': '4/6/2020',
+                                          'description': 'Benazepril',
+                                          'receiptDate': '',
+                                          'status': 'active'}],
+                 'twoYearsMedicationsCount': 1},
         ),
         # Medication used to treat hypertension
         (
@@ -186,23 +191,28 @@ def test_continuous_medication_required(
                                 "description": "Benazepril",
                                 "status": "active",
                                 "authoredOn": "2020-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    "medications": [
-                        {
-                            "authoredOn": "2020-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/2020',
-                            "description": "Benazepril",
-                            "status": "active",
-                        }
-                    ],
-                    "medicationsCount": 1,
-                },
+                {'allMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/2020',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                          'dataSource': 'MAS',
+                                          'dateFormatted': '4/6/2020',
+                                          'description': 'Benazepril',
+                                          'receiptDate': '',
+                                          'status': 'active'}],
+                 'twoYearsMedicationsCount': 1}
         ),
         # Medication not used to treat hypertension
         (
@@ -214,16 +224,24 @@ def test_continuous_medication_required(
                                 "description": "Advil",
                                 "status": "active",
                                 "authoredOn": "1950-04-06T04:00:00Z",
+                                "dataSource": "MAS",
+                                "receiptDate": "",
+
                             }
                         ]
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    'medications': [],
-                    'medicationsCount': 0
-                },
+                {'allMedications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/1950',
+                                     'description': 'Advil',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
         (
                 {
@@ -233,35 +251,46 @@ def test_continuous_medication_required(
                             {
                                 "description": "Benazepril",
                                 "status": "active",
-                                "authoredOn": "2020-04-06T04:00:00Z",
+                                "authoredOn": "",
+                                "receiptDate": "",
+                                "dataSource": "MAS"
                             },
                             {
                                 "description": "Advil",
                                 "status": "active",
+                                "receiptDate": "",
                                 "authoredOn": "2021-04-06T04:00:00Z",
+                                "dataSource": "LH"
+                            },
+                            {
+                                "description": "some medication",
+                                "status": "active",
+                                "authoredOn": "",
+                                "receiptDate": "",
+                                "partialDate": "**/**/1988",
+                                "dataSource": "MAS"
                             },
                         ],
                     },
-                    "dateOfClaim": "2021-11-09",
-                    "disabilityActionType": "INCREASE"
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
+                    "disabilityActionType": "NEW"
                 },
-                {
-                    "medications": [
-                        {
-                            "description": "Advil",
-                            "status": "active",
-                            'dateFormatted': '04/06/2021',
-                            "authoredOn": "2021-04-06T04:00:00Z",
-                        },
-                        {
-                            "authoredOn": "2020-04-06T04:00:00Z",
-                            'dateFormatted': '04/06/2020',
-                            "description": "Benazepril",
-                            "status": "active",
-                        }
-                    ],
-                    "medicationsCount": 2,
-                },
+                {'allMedications': [{'authoredOn': '',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'},
+                                    {'authoredOn': '',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '',
+                                     'description': 'some medication',
+                                     'partialDate': '**/**/1988',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 3,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
         (
                 {
@@ -269,16 +298,19 @@ def test_continuous_medication_required(
                         "bp_readings": [],
                         "medications": [],
                     },
-                    "dateOfClaim": "2021-11-09",
+                    "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {"medications": [], "medicationsCount": 0},
+                {'allMedications': [],
+                 'allMedicationsCount': 0,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
     ],
 )
 def test_filter_mas_medication(request_body, mas_medication_calculation):
 
     assert (
-            continuous_medication.filter_mas_medication(request_body)
+            medications.filter_mas_medication(request_body)
             == mas_medication_calculation
     )

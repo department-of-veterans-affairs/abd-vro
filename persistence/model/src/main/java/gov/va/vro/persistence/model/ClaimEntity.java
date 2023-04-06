@@ -2,16 +2,19 @@ package gov.va.vro.persistence.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -19,25 +22,44 @@ import javax.validation.constraints.NotNull;
 @Table(name = "claim")
 public class ClaimEntity extends BaseEntity {
 
-  // claim identifier used by client
-  @NotNull private String claimSubmissionId;
+  private String vbmsId;
 
-  // domain of the id, e.g. "va.gov-Form526Submission"
-  @NotNull private String idType;
+  private boolean presumptiveFlag;
 
-  private String incomingStatus = "submission";
+  private boolean rfdFlag;
+
+  private String disabilityActionType;
 
   @ManyToOne private VeteranEntity veteran;
+
+  // Multiple collections need to be eagerly fetched without causing a cartesian join product with
+  // FETCH.JOIN , or hibernates n+1 query issue by using FETCH.SELECT.
+  // FETCH.SUBSELECT keeps the number of queries down (3 total), does not cause a cartesian join,
+  // and permits eager fetching to still occur.
 
   @OneToMany(
       mappedBy = "claim",
       fetch = FetchType.EAGER,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
+  @Fetch(FetchMode.SUBSELECT)
   private List<ContentionEntity> contentions = new ArrayList<>();
+
+  @OneToMany(
+      mappedBy = "claim",
+      fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  @Fetch(FetchMode.SUBSELECT)
+  private Set<ClaimSubmissionEntity> claimSubmissions = new HashSet<>();
 
   public void addContention(ContentionEntity contention) {
     contention.setClaim(this);
     contentions.add(contention);
+  }
+
+  public void addClaimSubmission(ClaimSubmissionEntity claimSubmission) {
+    claimSubmission.setClaim(this);
+    claimSubmissions.add(claimSubmission);
   }
 }

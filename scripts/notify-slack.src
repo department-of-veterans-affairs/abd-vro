@@ -1,0 +1,36 @@
+#!/bin/bash
+# Usage: source scripts/notify-slack.src <Slack message text>
+# This script is sourced so that env variables (e.g., SLACK_THREAD_TS and SLACK_BOT_USER_OAUTH_ACCESS_TOKEN)
+# are accessible for subsequent calls to this script.
+
+# Default: C04CA47HV96 is #benefits-vro-devops
+: ${SLACK_CHANNEL:=C04CA47HV96}
+
+# Needed if posting in a Slack thread
+# If a new Slack post is desired, set SLACK_THREAD_TS to empty string
+: ${SLACK_THREAD_TS:=""}
+
+if [ -z "$SLACK_BOT_USER_OAUTH_ACCESS_TOKEN" ] && [ -z "$SLACK_BOT_ACCESS_TOKEN_DEVOPS" ]; then
+  # Retrieve 'devops' secrets from Kubernetes and set environment vars
+  >&2 echo "Retrieving 'devops' secrets from Kubernetes"
+  SECRETS_JSON=$(kubectl -n va-abd-rrd-dev get secret devops -o jsonpath='{.data}')
+  SEC_VARS=$(echo $SECRETS_JSON | jq -r 'to_entries[] | "\(.key)=$(echo \(.value) | base64 --decode)"')
+  eval $SEC_VARS
+fi
+
+# Use SLACK_BOT_ACCESS_TOKEN_DEVOPS by default, but a different one could be used
+: ${SLACK_BOT_USER_OAUTH_ACCESS_TOKEN:=$SLACK_BOT_ACCESS_TOKEN_DEVOPS}
+[ "$SLACK_BOT_USER_OAUTH_ACCESS_TOKEN" ] || { echo "SLACK_BOT_USER_OAUTH_ACCESS_TOKEN missing!"; exit 2; }
+# Export this variable so that token is accessible in calls to other scripts and it is retrieved only once from Kubernetes
+export SLACK_BOT_USER_OAUTH_ACCESS_TOKEN
+
+# https://api.slack.com/tutorials/tracks/posting-messages-with-curl
+# https://api.slack.com/methods/chat.postMessage
+# >&2 echo "Posting to Slack"
+CURL_RESP=$(curl -s -d "text=$1" -d "channel=$SLACK_CHANNEL" -d "thread_ts=$SLACK_THREAD_TS" \
+  -H "Authorization: Bearer $SLACK_BOT_USER_OAUTH_ACCESS_TOKEN" -X POST https://slack.com/api/chat.postMessage)
+
+if [ -z "$SLACK_THREAD_TS" ]; then
+  # Export this variable so that subsequent Slack notifications are threaded
+  export SLACK_THREAD_TS=$(echo $CURL_RESP | jq '.ts')
+fi

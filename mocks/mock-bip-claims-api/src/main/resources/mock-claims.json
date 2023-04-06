@@ -1,0 +1,673 @@
+[
+  {
+    "description": [
+      "off ramp, to be used with only ibm provided collection id 350"
+    ],
+    "claimDetail": {
+      "claimId": 1010,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for increase happy path, used with collection id 375",
+      "contention automation indicator is false so should change to true",
+      "claim/contention lifecycle status Open so should change to Ready For Decision",
+      "has an additional special issue code that should stay together with RRD"
+    ],
+    "claimDetail": {
+      "claimId": 1015,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for presumptive happy path, used with collection id 376",
+      "contention automation indicator is true and should remain true",
+      "claim/contention lifecycle status Ready For Decision so should stay as is",
+      "has no additional special issue code so only RRD should remain"
+    ],
+    "claimDetail": {
+      "claimId": 1020,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Ready for Decision"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Ready for Decision",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path incomplete bps, used with collection id 380",
+      "automation indicator and lifecycle statuses are all null",
+      "has no additional special issue code so only RRD should remain"
+    ],
+    "claimDetail": {
+      "claimId": 1055,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "off ramp no data",
+      "contention automation indicator is true so should change to false",
+      "claim/contention lifecycle status Ready For Decision so should change to Open",
+      "has no additional special issue code that no special issue should remain"
+    ],
+    "claimDetail": {
+      "claimId": 1030,
+      "tempStationOfJurisdiction": "398",
+      "claimLifecycleStatus": "Ready for Decision",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1031",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Ready for Decision",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path, used with collection id 377 for insufficientEvidenceFlag = false testing",
+      "contention automation indicator is false so should change to true",
+      "claim/contention lifecycle status Open so should stay that way",
+      "has an additional special issue code that should stay together with RRD"
+    ],
+    "claimDetail": {
+      "claimId": 1040,
+      "claimLifecycleStatus": "Open",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1140",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path, used with collection id 378 for insufficientEvidenceFlag = false testing",
+      "contention automation indicator is true so should stay true",
+      "claim/contention lifecycle status Ready for Decision so should change to Open",
+      "has no additional special issue code that so only RRD should remain"
+    ],
+    "claimDetail": {
+      "claimId": 1041,
+      "claimLifecycleStatus": "Ready for Decision",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1141",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Ready for Decision",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for increase happy path, used with collection id 385",
+      "used for changing temporary station of jurisdiction during processing"
+    ],
+    "claimDetail": {
+      "claimId": 1085,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2085",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for increase happy path, used with collection id 386",
+      "used for bip api going down during processing"
+    ],
+    "claimDetail": {
+      "claimId": 1086,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2086",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for non presumptive offramp test - collection ID 379"
+    ],
+    "claimDetail": {
+      "claimId": 1379,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Ready for Decision"
+    },
+    "contentions": [
+      {
+        "contentionId": "2379",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Ready for Decision",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path, used with collection id 390 for exam ordering testing with bip ce error",
+      "claim and contention fields are as expected"
+    ],
+    "claimDetail": {
+      "claimId": 1390,
+      "claimLifecycleStatus": "Open",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2390",
+        "lastModified": "2024-02-23T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for happy path, used with collection id 391 for exam ordering testing with mas exam order error",
+      "claim and contention fields are as expected"
+    ],
+    "claimDetail": {
+      "claimId": 1391,
+      "claimLifecycleStatus": "Open",
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2391",
+        "lastModified": "2024-02-23T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Would go through increase happy path",
+      "But used to test BIP PDF Failures"
+    ],
+    "claimDetail": {
+      "claimId": 1392,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2392",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for testing with no MAS annotations, only LH data. Exam Order path"
+    ],
+    "claimDetail": {
+      "claimId": 2010,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for testing with no MAS annotations, only LH data. Full happy path"
+    ],
+    "claimDetail": {
+      "claimId": 2020,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "2021",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "identical to happy path except used for out of scope (disability action type)"
+    ],
+    "claimDetail": {
+      "claimId": 3010,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "3011",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "identical to happy path except used for out of scope (diagnostic code)"
+    ],
+    "claimDetail": {
+      "claimId": 3015,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "4015",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6602",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "wrong temp station of jurisdiction"
+    ],
+    "claimDetail": {
+      "claimId": 3020,
+      "tempStationOfJurisdiction": "391"
+    },
+    "contentions": [
+      {
+        "contentionId": "4021",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issue RDR1"],
+    "claimDetail": {
+      "claimId": 3030,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4030",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issue RRD"],
+    "claimDetail": {
+      "claimId": 3031,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4031",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issues RDR1 and RRD"],
+    "claimDetail": {
+      "claimId": 3032,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4032",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true
+      }
+    ]
+  },
+  {
+    "description": [
+      "no contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3035,
+      "tempStationOfJurisdiction": "398"
+    }
+  },
+  {
+    "description": [
+      "empty contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3037,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": []
+  },
+  {
+    "description": [
+      "multiple contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3040,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "4040",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      },
+      {
+        "contentionId": "4041",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6602",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas 5xx exception handling test",
+      "500 on observation retrieval"
+    ],
+    "claimDetail": {
+      "claimId": 1365,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2365",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas timeout exception handling tests"
+    ],
+    "claimDetail": {
+      "claimId": 1366,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2366",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas 5xx exception handling test, second",
+      "504 on condition retrieval"
+    ],
+    "claimDetail": {
+      "claimId": 1367,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2367",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas exception handling tests"
+    ],
+    "claimDetail": {
+      "claimId": 1369,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2369",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  }
+]

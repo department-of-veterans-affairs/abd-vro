@@ -11,6 +11,7 @@ import gov.va.vro.controller.BaseControllerTest;
 import gov.va.vro.persistence.model.ContentionEntity;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +32,24 @@ import java.util.Date;
 @CamelSpringBootTest
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
-  @Value("classpath:test-data/pdf-generator-mas.json")
+  @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
   @Autowired protected ClaimRepository claimRepository;
+
+  Date icnTimestamp = new Date();
 
   @Test
   @DirtiesContext
   void positiveEvidenceSummaryDocumentProcessor() throws Exception {
     // Create veteran, claim, and contention and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    Date icnTimestamp = new Date();
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
     ContentionEntity contention = new ContentionEntity("7101");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    // ReferenceId, is also claimSubmissionId in v1. When we create the claim and submission, that
+    // referenceId must match in the PDF requests sent later.
+    var claim = TestDataSupplier.createClaim(null, veteran, "1234");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 
@@ -63,10 +69,8 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
         claim2.getContentions().get(0).getEvidenceSummaryDocuments().get(0);
     assertEquals(evidenceSummaryDocument.getEvidenceCount().get("medicationsCount"), "2");
     assertEquals(evidenceSummaryDocument.getEvidenceCount().get("totalBpReadings"), "3");
-    String timestamp = String.format("%1$tY%1$tm%1$td", new Date());
     String diagnosis = "Hypertension";
-    String documentName =
-        String.format("VAMC_%s_Rapid_Decision_Evidence--%s.pdf", diagnosis, timestamp);
+    String documentName = GeneratePdfPayload.createPdfFilename(diagnosis);
     assertEquals(evidenceSummaryDocument.getDocumentName(), documentName);
     assertEquals(evidenceSummaryDocument.getContention().getId(), contention.getId());
   }
@@ -75,12 +79,12 @@ public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
   @DirtiesContext
   void negativeEvidenceSummaryDocumentProcessorWrongDiagnosticCode() throws Exception {
     // Create veteran and save.
-    var veteran = TestDataSupplier.createVeteran("X", "Y");
+    var veteran = TestDataSupplier.createVeteran("X", "Y", icnTimestamp);
     veteranRepository.save(veteran);
 
     // Create a contention and set an invalid diagnostic code, then create claim and add.
     ContentionEntity contention = new ContentionEntity("1111");
-    var claim = TestDataSupplier.createClaim("1234", "type", veteran);
+    var claim = TestDataSupplier.createClaim(null, veteran, "refId");
     claim.addContention(contention);
     claim = claimRepository.save(claim);
 

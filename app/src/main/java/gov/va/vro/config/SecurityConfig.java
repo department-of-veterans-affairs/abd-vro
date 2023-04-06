@@ -3,7 +3,6 @@ package gov.va.vro.config;
 import gov.va.vro.security.ApiAuthKeyFilter;
 import gov.va.vro.security.ApiAuthKeyManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
-@Slf4j
 @Configuration
 @EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -26,14 +24,32 @@ public class SecurityConfig {
   @Value("${apiauth.hdr-key-name-v1}")
   private String apiKeyAuthHeaderName;
 
-  @Value("${apiauth.url-context-v1}")
-  private String urlContextV1;
+  @Value("${apiauth.immediate-pdf}")
+  private String immediatePdf;
+
+  @Value("${apiauth.evidence-pdf}")
+  private String evidencePdf;
+
+  @Value("${apiauth.full-health-assessment}")
+  private String fullHealth;
+
+  @Value("${apiauth.health-assessment}")
+  private String healthAssessment;
+
+  @Value("${apiauth.automated-claim}")
+  private String automatedClaim;
+
+  @Value("${apiauth.exam-order}")
+  private String examOrder;
+
+  @Value("${apiauth.claim-metrics}")
+  private String claimMetrics;
+
+  @Value("${apiauth.claim-info}")
+  private String claimInfo;
 
   @Value("${apiauth.hdr-key-name-v2}")
   private String jwtAuthHeaderName;
-
-  @Value("${apiauth.url-context-v2}")
-  private String urlContextV2;
 
   private final ApiAuthKeyManager apiAuthKeyManager;
 
@@ -55,7 +71,10 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .antMatcher(urlContextV1)
+        .requestMatchers()
+        .antMatchers(
+            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
+        .and()
         .csrf()
         .disable()
         .sessionManagement()
@@ -84,10 +103,11 @@ public class SecurityConfig {
     httpSecurity
         .exceptionHandling()
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-
     // Secure end point
     httpSecurity
-        .antMatcher(urlContextV2)
+        .requestMatchers()
+        .antMatchers(automatedClaim, examOrder)
+        .and()
         .csrf()
         .disable()
         .sessionManagement()

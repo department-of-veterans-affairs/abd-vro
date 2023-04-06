@@ -11,14 +11,16 @@ import gov.va.vro.model.claimmetrics.ContentionInfo;
 import gov.va.vro.model.claimmetrics.DocumentInfo;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.persistence.model.ClaimEntity;
+import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
-import gov.va.vro.persistence.repository.ClaimRepository;
+import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,14 +60,28 @@ public class ClaimMetricsTestCase {
    * This populates the database based on the simulation of generating medical assessment and
    * evidence summary pdf.
    */
-  public void populate(SaveToDbService service, ClaimRepository repo) {
+  public void populate(SaveToDbService service, ClaimSubmissionRepository csRepo) {
     Claim claim = new Claim();
-    claim.setClaimSubmissionId(claimSubmissionId);
+    claim.setCollectionId(claimSubmissionId);
     claim.setVeteranIcn(icn);
     claim.setDiagnosticCode("7101");
     service.insertClaim(claim);
 
-    ClaimEntity claimEntity = repo.findByClaimSubmissionId(claimSubmissionId).orElseThrow();
+    ClaimEntity claimEntity;
+
+    // v1 endpoints provide claimSubmissionId, which maps to reference_id on the
+    // claim_submission table (which is used as collectionId)
+    ClaimSubmissionEntity csEntity =
+        csRepo
+            .findFirstByReferenceIdAndIdTypeOrderByCreatedAtDesc(
+                claimSubmissionId, claim.getIdType())
+            .orElseThrow();
+    claimEntity = csEntity.getClaim();
+
+    Set<ClaimSubmissionEntity> submissions = claimEntity.getClaimSubmissions();
+    assertEquals(1, submissions.size());
+    ClaimSubmissionEntity submissionEntity = submissions.iterator().next();
+    assertEquals(claimSubmissionId, submissionEntity.getReferenceId());
     List<ContentionEntity> contentions = claimEntity.getContentions();
     assertEquals(1, contentions.size());
 
@@ -74,6 +90,7 @@ public class ClaimMetricsTestCase {
     service.insertAssessmentResult(claimEntityId, evidence, "7101");
 
     GeneratePdfPayload gpp = getPdfPayload(evidence.getEvidence());
+    gpp.setIdType(claim.getIdType());
     service.insertEvidenceSummaryDocument(gpp, documentName);
   }
 

@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
+import gov.va.vro.service.provider.services.DiagnosisLookup;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Component
 public class SlipClaimSubmitRouter {
 
-  private static final long DEFAULT_REQUEST_TIMEOUT = 60000;
+  private static final long DEFAULT_REQUEST_TIMEOUT = 120000;
   public static final String NO_DIAGNOSTIC_CODE_ERROR = "No diagnostic code in properties.";
 
   /**
@@ -26,13 +27,17 @@ public class SlipClaimSubmitRouter {
    * @return endpoints to go, or <tt>null</tt> to indicate the end
    */
   public String routeClaimSubmit(Claim claim) {
-    String diagnosticCode = claim.getDiagnosticCode();
+    String diagnosis = DiagnosisLookup.getDiagnosis(claim.getDiagnosticCode()).toLowerCase();
     String route =
         String.format(
             "rabbitmq:claim-submit-exchange?queue=claim-submit&"
                 + "routingKey=code.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
-    log.info("Routing to {}.", route);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
+    log.info(
+        "Routing to {} for claim {} in collection {}",
+        route,
+        claim.getBenefitClaimId(),
+        claim.getCollectionId());
     return route;
   }
 
@@ -46,10 +51,11 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthAssess(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }
@@ -64,11 +70,12 @@ public class SlipClaimSubmitRouter {
   @SneakyThrows
   public String routeHealthSufficiency(Object body, @ExchangeProperties Map<String, Object> props) {
     String diagnosticCode = getDiagnosticCode(props);
+    String diagnosis = DiagnosisLookup.getDiagnosis(diagnosticCode).toLowerCase();
     String route =
         String.format(
             "rabbitmq:health-assess-exchange?routingKey=health"
                 + "-sufficiency-assess.%s&requestTimeout=%d",
-            diagnosticCode, DEFAULT_REQUEST_TIMEOUT);
+            diagnosis, DEFAULT_REQUEST_TIMEOUT);
     log.info("Routing to {}.", route);
     return route;
   }

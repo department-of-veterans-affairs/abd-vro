@@ -31,6 +31,8 @@ dependencies {
   implementation project(':service:spi')
   implementation project(':service:db')
 
+  implementation project(':domain-xample:xample-api-controller')
+
   implementation 'gov.va.starter:open-api'
   // Provides http://localhost:8081/health endpoint used in app's Dockerfile
   implementation 'gov.va.starter:health'
@@ -62,6 +64,7 @@ dependencies {
   // https://mvnrepository.com/artifact/com.google.code.gson/gson
   implementation "com.google.code.gson:gson:${gson_version}"
 
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 
   // Needed?
   // implementation "org.postgresql:postgresql:${postgresql_version}"
@@ -70,6 +73,7 @@ dependencies {
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 
   testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+  testImplementation "io.jsonwebtoken:jjwt:0.2"
 
   // end to end dependencies
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"

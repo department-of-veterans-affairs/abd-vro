@@ -1,5 +1,6 @@
 package gov.va.vro.consolegroovy.commands
 
+import gov.va.vro.camel.RabbitMqCamelUtils
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import org.apache.camel.CamelContext
@@ -37,7 +38,7 @@ class WireTap extends CommandSupport {
   }
 
   Closure<String> wireTapSubscriptionEndpoint = { String tapName ->
-    "rabbitmq:tap-${tapName}?exchangeType=topic&queue=console-${tapName}".toString()
+    RabbitMqCamelUtils.rabbitmqTopicConsumerEndpoint("tap-${tapName}", "console-${tapName}")
   }
 
   String subscribeToTopic(String wireTapName) {
@@ -54,10 +55,14 @@ class WireTap extends CommandSupport {
 
     @Override
     void configure() throws Exception {
-      from(tapEndpoint)
-          .routeId("console-${tapName}")
+      RabbitMqCamelUtils.fromRabbitmq(this, tapEndpoint)
+          .routeId(routeId(tapName))
           .process(prettyPrinter)
           .to("log:${tapName}?plain=true")
+    }
+
+    static String routeId(tapName){
+      return "console-${tapName}"
     }
 
     Processor prettyPrinter = { Exchange exchange ->

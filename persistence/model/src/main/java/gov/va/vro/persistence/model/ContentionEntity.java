@@ -8,7 +8,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,6 +38,10 @@ public class ContentionEntity extends BaseEntity {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
+  private String conditionName;
+
+  private String classificationCode;
+
   /***
    * <p>Summary.</p>
    *
@@ -53,44 +56,25 @@ public class ContentionEntity extends BaseEntity {
   /**
    * Adds assessment result to a claim.
    *
-   * @param ar assessment result entity
+   * @param assessmentResultEntity assessment result entity
    * @return returns the assessment result
    */
-  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity ar) {
-    AssessmentResultEntity assessmentResult = new AssessmentResultEntity();
-    assessmentResult.setContention(this);
-    assessmentResult.setEvidenceCountSummary(ar.getEvidenceCountSummary());
-    assessmentResults.add(assessmentResult);
-    return assessmentResult;
+  public AssessmentResultEntity addAssessmentResult(AssessmentResultEntity assessmentResultEntity) {
+    assessmentResultEntity.setContention(this);
+    assessmentResults.add(assessmentResultEntity);
+    return assessmentResultEntity;
   }
 
   /**
    * Adds evidence summary document to contention entity.
    *
-   * @param request evidence summary document entity.
+   * @param document evidence summary document entity.
    * @return returns the evidence summary document.
    */
   public EvidenceSummaryDocumentEntity addEvidenceSummaryDocument(
-      EvidenceSummaryDocumentEntity request) {
-    EvidenceSummaryDocumentEntity document = new EvidenceSummaryDocumentEntity();
-    document.setDocumentName(request.getDocumentName());
-    document.setEvidenceCount(request.getEvidenceCount());
+      EvidenceSummaryDocumentEntity document) {
     document.setContention(this);
     evidenceSummaryDocuments.add(document);
     return document;
-  }
-
-  /**
-   * Add evidence summary document to contention entity.
-   *
-   * @param evidenceCount evidence counts
-   * @param documentName document name
-   */
-  public void addEvidenceSummaryDocument(Map<String, String> evidenceCount, String documentName) {
-    EvidenceSummaryDocumentEntity esd = new EvidenceSummaryDocumentEntity();
-    esd.setEvidenceCount(evidenceCount);
-    esd.setDocumentName(documentName);
-    esd.setContention(this);
-    evidenceSummaryDocuments.add(esd);
   }
 }

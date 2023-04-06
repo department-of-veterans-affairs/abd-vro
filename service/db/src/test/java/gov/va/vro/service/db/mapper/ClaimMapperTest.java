@@ -17,7 +17,7 @@ class ClaimMapperTest {
     VeteranEntity veteranEntity = new VeteranEntity();
     veteranEntity.setIcn("icn2");
     ClaimEntity claimEntity = new ClaimEntity();
-    claimEntity.setClaimSubmissionId("123");
+    claimEntity.setVbmsId("123");
     claimEntity.setVeteran(veteranEntity);
     ContentionEntity contentionEntity1 = new ContentionEntity();
     contentionEntity1.setDiagnosticCode("7101");
@@ -28,7 +28,7 @@ class ClaimMapperTest {
 
     ClaimMapper claimMapper = Mappers.getMapper(ClaimMapper.class);
     Claim claim = claimMapper.toClaim(claimEntity);
-    assertEquals(claimEntity.getClaimSubmissionId(), claim.getClaimSubmissionId());
+    assertEquals(claimEntity.getVbmsId(), claim.getBenefitClaimId());
     assertEquals(claimEntity.getVeteran().getIcn(), claim.getVeteranIcn());
     assertEquals(2, claim.getContentions().size());
     assertTrue(claim.getContentions().contains("7101"));

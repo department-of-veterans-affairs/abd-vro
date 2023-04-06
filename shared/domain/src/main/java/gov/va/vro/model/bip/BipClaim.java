@@ -1,15 +1,17 @@
 package gov.va.vro.model.bip;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 /**
  * BIP claim.
  *
  * @author warren @Date 11/8/22
  */
-@RequiredArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BipClaim {
   private String summaryDateTime;
   private String lastModified;

@@ -1,22 +1,16 @@
 package gov.va.vro.service.provider.bip.service;
 
 import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipFileUploadPayload;
-import gov.va.vro.model.bip.BipFileUploadResp;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.CreateContentionReq;
-import gov.va.vro.model.bip.FileIdType;
 import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /**
- * BIP Claims and Evidence API services.
+ * BIP Claims API service.
  *
  * @author warren @Date 11/8/22
  */
@@ -71,41 +65,9 @@ public interface IBipApiService {
       throws BipException;
 
   /**
-   * Adds a contention for a claim.
+   * Verifies a call to the BIP Claims API can be made by getting document types.
    *
-   * @param claimId claim
-   * @param contention contention to be added.
-   * @return an update status information object.
-   * @throws BipException error occurs.
+   * @return boolean verification status
    */
-  BipUpdateClaimResp addClaimContention(long claimId, CreateContentionReq contention)
-      throws BipException;
-
-  /**
-   * Uploads a file for the claim.
-   *
-   * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
-   * @param fileId id
-   * @param uploadEvidenceReq upload payload data.
-   * @param file file to be uploaded.
-   * @return an object for the upload status.
-   * @throws BipException exception
-   */
-  BipFileUploadResp uploadEvidence(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, File file)
-      throws BipException;
-
-  /**
-   * Uploads an evidence file for the claim.
-   *
-   * @param idtype ID type. It should be FILENUMBER, SSN, ARTICIPANT_ID, or EDIPI
-   * @param fileId id
-   * @param uploadEvidenceReq upload payload data.
-   * @param file the file to be uploaded.
-   * @return an object for the upload status.
-   * @throws BipException exception
-   */
-  BipFileUploadResp uploadEvidenceFile(
-      FileIdType idtype, String fileId, BipFileUploadPayload uploadEvidenceReq, MultipartFile file)
-      throws BipException;
+  boolean verifySpecialIssueTypes();
 }

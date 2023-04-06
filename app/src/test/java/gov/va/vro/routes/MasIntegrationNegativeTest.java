@@ -50,6 +50,7 @@ public class MasIntegrationNegativeTest extends BaseIntegrationTest {
     Mockito.when(masApiService.getCollectionAnnotations(collectionId))
         .thenReturn(Collections.singletonList(collectionAnnotation));
     var payload = MasTestData.getMasAutomatedClaimPayload();
+    payload.getClaimDetail().getConditions().setDiagnosticCode("1233");
     try {
       camelEntrance.processClaim(payload);
       fail();

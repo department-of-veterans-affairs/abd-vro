@@ -41,6 +41,11 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_FETCH_PDF, claimSubmissionId, String.class);
   }
 
+  public String immediatePdf(GeneratePdfPayload resource) {
+    return producerTemplate.requestBody(
+        PrimaryRoutes.ENDPOINT_GENERATE_FETCH_PDF, resource, String.class);
+  }
+
   /**
    * Notify automated claim.
    *
@@ -49,6 +54,11 @@ public class CamelEntrance {
    * @param retryCount amount of retries
    */
   public void notifyAutomatedClaim(MasAutomatedClaimPayload payload, long delay, int retryCount) {
+    log.info(
+        "Notify automated claim for claim ID: {}, collection ID: {}, icn: {}",
+        payload.getBenefitClaimId(),
+        payload.getCollectionId(),
+        payload.getVeteranIcn());
     producerTemplate.sendBodyAndHeaders(
         MasIntegrationRoutes.ENDPOINT_AUTOMATED_CLAIM,
         payload,
@@ -90,6 +100,6 @@ public class CamelEntrance {
    * @param auditEvent the event to broadcast
    */
   public void offrampClaim(AuditEvent auditEvent) {
-    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_OFFRAMP, auditEvent);
+    producerTemplate.sendBody(MasIntegrationRoutes.ENDPOINT_NOTIFY_AUDIT, auditEvent);
   }
 }

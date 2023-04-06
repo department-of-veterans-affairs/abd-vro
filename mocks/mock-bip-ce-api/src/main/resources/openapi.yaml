@@ -1,0 +1,503 @@
+openapi: 3.0.0
+info:
+  description: |-
+    The Claim Evidence Application Programming Interface (API) is file service for handling the storage and management of files supporting VA benefit claims. It serves as a modernized point of entry to files previously only accessible through VBMS eFolder. It is designed for easier implementation by consuming systems, but also with the ability to eventually replace the eFolder logic within VBMS.
+    Information on how to generate the JWT token needed for integrating with this service can be found [here](https://github.com/department-of-veterans-affairs/bip-vefs-claimevidence/wiki/JWT-Authorization)
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  termsOfService: https://developer.va.gov/terms-of-service
+  title: Claim Evidence API.
+  version: 0.0.1-SNAPSHOT
+servers:
+- url: /api/v1/rest
+tags:
+- description: BIP
+  name: PRODUCT_SCOPE
+- description: C&P
+  name: PRODUCT_LINE_SCOPE
+- description: BAM
+  name: PORTFOLIO_SCOPE
+paths:
+  /files:
+    post:
+      description: |-
+        ### Upload a file.
+         This endpoint when given a file and associated data returns a UUID which can be used to retrieve back the latest data provided. Information on how to properly creae a payload object for this endpoint is available in the schema section.
+      operationId: upload
+      parameters:
+      - description: "The Folder Identifier that the file will be associated to. The\
+          \ example provided is for identifying a veteran.<br><br>**Header Format**:\
+          \ folder-type:identifier-type:ID<br><br>**Valid Folder Types**:<br><br>*\
+          \ VETERAN<br><br>**Valid Identifier Types**:<br><br>* FILENUMBER<br>* SSN<br>*\
+          \ PARTICIPANT_ID<br>* EDIPI"
+        example: VETERAN:FILENUMBER:987267855
+        explode: false
+        in: header
+        name: X-Folder-URI
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              file:
+                contentType: "image/png, image/jpeg"
+                style: form
+            schema:
+              $ref: '#/components/schemas/uploadRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uploadResponse'
+          description: "Response containing the file UUID, the owner, and the calculated\
+            \ MD5 Hash. As well as conversion information if the document has been\
+            \ converted."
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: Server was unable to understand the request. This may come
+            back as an empty response if the json is malformed or not understood by
+            the server.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: JWT contains claims which indicate the consumer is not authorized
+            to access the resource.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: JWT contains claims which indicate the consumer is not authorized
+            to access the resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: Resource Not Found
+        "405":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: Method Not Allowed
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: Unsupported Media Type. This is common when uploading an unacceptable
+            file type.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: "There was an error encountered processing the Request.  Response\
+            \ will contain a  \"messages\" element that will provide further information\
+            \ on the error.  Please retry.  If problem persists, please contact support\
+            \ with a copy of the Response."
+        "501":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vefsErrorResponse'
+          description: This request is not yet implemented.
+      security:
+      - bearer-key: []
+      summary: Upload a file with associated provider data
+      tags:
+      - File
+      x-content-type: multipart/form-data
+      x-accepts: application/json
+      x-tags:
+      - tag: File
+components:
+  schemas:
+    vefsErrorResponse:
+      additionalProperties: false
+      description: The root schema comprises generic File Store Errors.
+      properties:
+        uuid:
+          description: UUID used to trace the error response
+          format: uuid
+          title: Error UUID
+          type: string
+        code:
+          description: Enumerated Error Code indicating the error classification.
+          title: Error Code
+          type: string
+        message:
+          description: The message describing the error.
+          title: The message schema
+          type: string
+      title: Vefs Error Response
+      type: object
+    alternativeDocumentType:
+      description: Alternative document type information for UI consumption.
+      example:
+        name: name
+        description: description
+        modifiedDateTime: modifiedDateTime
+        id: 0
+        createDateTime: createDateTime
+      properties:
+        id:
+          format: int64
+          type: integer
+        createDateTime:
+          type: string
+        modifiedDateTime:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      title: Alternative Document Type
+      type: object
+    uploadResponse:
+      example:
+        owner: VETERAN:FILENUMBER:987267855
+        currentVersionUuid: c30626c9-954d-4dd1-9f70-1e38756d9d98
+        conversionInformation:
+          preprocessed:
+            versionUuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            uploadedDateTime: uploadedDateTime
+            mimeType: mimeType
+            md5: md5
+          converted:
+            versionUuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            uploadedDateTime: uploadedDateTime
+            mimeType: mimeType
+            md5: md5
+        uuid: c30626c9-954d-4dd1-9f70-1e38756d9d97
+        md5: 32c31506acefa9f125c2a790ed1e675f
+      properties:
+        owner:
+          description: String representation of the document's owner
+          example: VETERAN:FILENUMBER:987267855
+          type: string
+        uuid:
+          description: UUID representing the file as a whole. This is used for all
+            primary VEFS-Operations.
+          example: c30626c9-954d-4dd1-9f70-1e38756d9d97
+          format: uuid
+          type: string
+        currentVersionUuid:
+          description: UUID representing the single point-in-time version of the document.
+          example: c30626c9-954d-4dd1-9f70-1e38756d9d98
+          format: uuid
+          type: string
+        md5:
+          description: MD5 Hash of the File field on upload.
+          example: 32c31506acefa9f125c2a790ed1e675f
+          type: string
+        conversionInformation:
+          $ref: '#/components/schemas/conversionInfo'
+      type: object
+    conversionInfo:
+      description: "Information only present if the document has been converted. Details\
+        \ the previous version mime type, md5, and time of file conversion."
+      example:
+        versionUuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        uploadedDateTime: uploadedDateTime
+        mimeType: mimeType
+        md5: md5
+      properties:
+        versionUuid:
+          description: UUID identifying the particular version.
+          format: uuid
+          title: Version Uuid
+          type: string
+        mimeType:
+          description: Mime Type of the indicated versionUuid.
+          title: Mime Type
+          type: string
+        md5:
+          description: MD5 hash code of the particular version.
+          title: MDD5 Hash
+          type: string
+        uploadedDateTime:
+          description: Date and time the document was uploaded.
+          title: Uploaded Date Time
+          type: string
+      title: Conversion Information
+      type: object
+    payload:
+      description: Payload containing content name and the provider specific data.
+      properties:
+        contentName:
+          description: The content name of the document being uploaded. This must
+            be unique for the folder being uploaded to. For instance the document
+            "pdf.pdf" cannot be uploaded twice for fileNumber 987654321.
+          maxLength: 256
+          minLength: 4
+          pattern: "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$"
+          title: Content Name
+          type: string
+        providerData:
+          $ref: '#/components/schemas/uploadProviderDataRequest'
+      title: Upload Payload
+      type: object
+    uploadRequest:
+      properties:
+        payload:
+          $ref: '#/components/schemas/payload'
+        file:
+          format: binary
+          type: string
+      title: Upload Request
+      type: object
+    documentCategory:
+      description: Document type category information for UI consumption.
+      example:
+        subDescription: subDescription
+        description: description
+        modifiedDateTime: modifiedDateTime
+        id: 2
+        createDateTime: createDateTime
+      properties:
+        id:
+          format: int64
+          type: integer
+        createDateTime:
+          type: string
+        modifiedDateTime:
+          type: string
+        description:
+          type: string
+        subDescription:
+          type: string
+      title: Document Type Category
+      type: object
+    conversionInformation:
+      description: "Details about a file's conversion. This is optional, and will\
+        \ only be present on responses where the file has been converted."
+      example:
+        preprocessed:
+          versionUuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          uploadedDateTime: uploadedDateTime
+          mimeType: mimeType
+          md5: md5
+        converted:
+          versionUuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          uploadedDateTime: uploadedDateTime
+          mimeType: mimeType
+          md5: md5
+      properties:
+        preprocessed:
+          $ref: '#/components/schemas/conversionInfo'
+        converted:
+          $ref: '#/components/schemas/conversionInfo'
+    associatedClaimId:
+      description: Filter based on the claims associated to the documents.
+      properties:
+        evaluationType:
+          enum:
+          - EQUALS
+          type: string
+        value:
+          example: "[137]"
+          type: string
+      title: Associated Claim ID
+      type: object
+    contentSource:
+      description: Content sources for UI consumption.
+      example:
+        name: name
+        id: 0
+        createDateTime: createDateTime
+      properties:
+        id:
+          format: int64
+          type: integer
+        createDateTime:
+          type: string
+        name:
+          type: string
+      title: Content Source
+      type: object
+    providerData:
+      description: Provider Data associated to file.
+      example:
+        veteranMiddleName: veteranMiddleName
+        veteranSuffix: veteranSuffix
+        documentType:
+          name: name
+          description: description
+          documentCategory:
+            subDescription: subDescription
+            description: description
+            modifiedDateTime: modifiedDateTime
+            id: 2
+            createDateTime: createDateTime
+          modifiedDateTime: modifiedDateTime
+          id: 5
+          isUserUploadable: true
+          createDateTime: createDateTime
+        subject: subject
+        veteranLastName: veteranLastName
+        dateVaReceivedDocument: dateVaReceivedDocument
+        documentTypeId: 5
+        endProductCode: endProductCode
+        veteranFirstName: veteranFirstName
+        systemSource: systemSource
+        actionable: true
+        modifiedDateTime: modifiedDateTime
+        certified: true
+      properties:
+        modifiedDateTime:
+          type: string
+        dateVaReceivedDocument:
+          type: string
+        actionable:
+          type: boolean
+        certified:
+          type: boolean
+        documentTypeId:
+          format: int64
+          type: integer
+        documentType:
+          $ref: '#/components/schemas/documentType'
+        endProductCode:
+          type: string
+        subject:
+          type: string
+        systemSource:
+          type: string
+        veteranFirstName:
+          type: string
+        veteranLastName:
+          type: string
+        veteranMiddleName:
+          type: string
+        veteranSuffix:
+          type: string
+      title: Provider Data
+      type: object
+    documentType:
+      description: Document types for UI consumption.
+      example:
+        name: name
+        description: description
+        documentCategory:
+          subDescription: subDescription
+          description: description
+          modifiedDateTime: modifiedDateTime
+          id: 2
+          createDateTime: createDateTime
+        modifiedDateTime: modifiedDateTime
+        id: 5
+        isUserUploadable: true
+        createDateTime: createDateTime
+      properties:
+        id:
+          format: int64
+          type: integer
+        createDateTime:
+          type: string
+        modifiedDateTime:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        isUserUploadable:
+          type: boolean
+        documentCategory:
+          $ref: '#/components/schemas/documentCategory'
+      title: Document Type
+      type: object
+    uploadProviderDataRequest:
+      additionalProperties: false
+      description: Claim Evidence API Provider Data.
+      properties:
+        contentSource:
+          description: String field designating the originating source of the content
+            being uploaded.
+          maximum: 500
+          minimum: 1
+          pattern: "^[a-zA-Z0-9\\'\\,\\s.\\-\\_\\|\\/@\\(\\)]*$"
+          title: Document content source
+          type: string
+        documentTypeId:
+          description: Number field correlating to a Claim Evidence document type
+            ID. Document types primary use is loosely categorizing their contents.
+          minimum: 1
+          title: Document Type ID
+          type: integer
+        dateVaReceivedDocument:
+          description: Date field indicating the date the VA received the document.
+            This can be any date in format of YYYY-MM-DD from 1900 until today
+          format: string
+          maxLength: 10
+          minLength: 10
+          pattern: "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))"
+          title: Date VA Received Document
+          type: string
+        subject:
+          description: Free text describing the document. This is primarily notes
+            used to assist claim developers.
+          maxLength: 256
+          pattern: "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\\
+            Q/\\E]*$"
+          title: Subject
+          type: string
+        contention:
+          description: Contention name associated to the document. The document type
+            must be a 526 type ID.
+          maxLength: 128
+          minLength: 1
+          pattern: "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\\
+            Q/\\E]*$"
+          title: Contention
+          type: string
+        alternativeDocumentTypeId:
+          description: Integer which relates to a document type Id.
+          minimum: 0
+          title: Alternative Document Type Id
+          type: integer
+        actionable:
+          default: false
+          description: Boolean true/false for if the document is considered 'actionable'
+            or whether claim action can be taken based on the content.
+          title: Actionable
+          type: boolean
+        associatedClaimId:
+          description: Id of associated claim.
+          maxLength: 128
+          minLength: 1
+          pattern: "^[a-zA-Z0-9\\s.\\-_|\\Q\\\\E@#~=%,;?!'\"`():$+*^\\[\\]&<>{}\\\
+            Q/\\E]*$"
+          title: Associated claim Id
+          type: string
+      required:
+      - contentSource
+      - dateVaReceivedDocument
+      - documentTypeId
+      title: Upload Provider Data
+      type: object
+    contentName:
+      description: The content name of the document being uploaded. This must be unique
+        for the folder being uploaded to. For instance the document "pdf.pdf" cannot
+        be uploaded twice for fileNumber 987654321.
+      maxLength: 256
+      minLength: 4
+      pattern: "^[a-zA-Z0-9 Q`'~=+#^@$&-_.(){};[]E]+.[a-zA-Z]{3,4}$"
+      title: Content Name
+      type: string
+  securitySchemes:
+    bearer-key:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

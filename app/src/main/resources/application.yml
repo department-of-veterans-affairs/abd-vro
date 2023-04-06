@@ -9,9 +9,15 @@ info:
 # API Auth
 apiauth:
   hdr-key-name-v1: X-API-Key
-  url-context-v1: /v1/**
+  claim-metrics: /v2/claim-metrics
+  claim-info: /v2/claim-info/**
+  full-health-assessment: /v1/full-health-data-assessment
+  health-assessment: /v2/health-data-assessment
   hdr-key-name-v2: Authorization
-  url-context-v2: /v2/**
+  automated-claim: /v2/automatedClaim
+  exam-order: /v2/examOrderingStatus
+  evidence-pdf: /v1/evidence-pdf/**
+  immediate-pdf: /v1/immediate-pdf
 
 management:
   # TODO: Figure out the proper security for these, and perhaps don't expose everything
@@ -76,7 +82,7 @@ server:
     timeout: 60000
   servlet:
     session:
-      timeout: 60000
+      timeout: 120000
 
 log4j2:
   formatMsgNoLookups: true
@@ -91,7 +97,6 @@ spring:
     group:
       # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
       local: nonprod
-      end2end-test: nonprod
       # Remaining profiles are for deployment to LHDI's EKS environments
       # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
       # along with application-$ENV.yml
@@ -108,7 +113,7 @@ spring:
       maxRequestSize: 25MB
       enabled: true
     session:
-      timeout: 60000
+      timeout: 120000
   resources:
     add-mappings: false
   mvc:
@@ -145,16 +150,19 @@ spring:
             grant-type: client_credentials
 
 masAPIProvider:
-  baseURL: "${MAS_API_BAS_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+  baseURL: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
   collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
   collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
-  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcCreateExamOrdering}"
+  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"
 
 lhAPIProvider:
   tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "${VALIDATE_TOKEN:NO}"
+
+masVeteranFlashIds:
+  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
 
 springdoc:
   writer-with-default-pretty-printer: true
@@ -173,7 +181,7 @@ vro:
     tracking:
       enabled: true
       # Dependent on the mountPath configured in Kubernetes
-      base_folder: ${PERSIST_TRACKING_FOLDER}
+      base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
     info:
@@ -207,15 +215,22 @@ spring.redis:
 bip:
   claimClientId: "${BIP_CLAIM_USERID}"
   claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL:2ae22533-627f-45ba-92e9-55bc55d4aae9.mock.pstmn.io}"
-  claimIssuer: "${BIP_CLAIM_ISS}"
+  claimBaseURL: "${BIP_CLAIM_URL}"
+  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
   evidenceClientId: "${BIP_EVIDENCE_USERID}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL:4b043eb6-1b96-45f6-9b47-7941cdf33a44.mock.pstmn.io/api/v1/rest}"
-  evidenceIssuer: "${BIP_EVIDENCE_ISS}"
-  applicationName: "${BIP_APPLICATION_ISS}"
-  applicationId: "${BIP_APPLICATION_ID}"
-  stationId: "${BIP_STATION_ID}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
+  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
+  applicationName: "${BIP_APPLICATION_ISS:VRO}"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:281}"
+truststore: "${BIP_TRUSTSTORE}"
+truststore_password: "${BIP_PASSWORD}"
+keystore: "${BIP_KEYSTORE}"
+
+claim:
+  special_issue_1: "RDR1"
+  special_issue_2: "RRD"
 
 spring.config.import: >
   conf-camel.yml,

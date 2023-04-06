@@ -16,6 +16,7 @@ buildscript {
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
   id("org.ajoberstar.grgit") version "${grgit_version}" apply false
+  id("io.freefair.lombok") version "6.6.3" apply false
   id("org.springframework.boot") version "${spring_boot_version}" apply false
   id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
   id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
@@ -32,7 +33,7 @@ plugins {
 
   // Apply these
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '17.8.0'
+  id('nebula.lint') version '18.0.3'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
   // VA's starter plugins
   // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
@@ -103,12 +104,35 @@ subprojects {
       // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
       checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
     }
+
+    // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442
+    // add a collection to track failedTests
+    ext.failedTests = []
+    // add a listener to all tasks of type Test
+    tasks.withType(Test) {
+      afterTest { TestDescriptor descriptor, TestResult result ->
+        if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+          failedTests << "${descriptor.className}::${descriptor.name}"
+        }
+      }
+    }
+    // print out tracked failed tests when the build has finished
+    gradle.buildFinished {
+      if(!failedTests.empty){
+        println "Failed tests:"
+        failedTests.each { failedTest ->
+          println "- " + failedTest
+        }
+        println ""
+      }
+    }
   }
 }
 
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
+  // Modules that use Java code
   codeModules = [
     ':app',
     ':api',
@@ -118,8 +142,19 @@ ext {
     ':service:provider',
     ':service:spi',
     ':svc-lighthouse-api',
-    ':console'
+    ':console',
+    ':mocks:mock-bip-ce-api',
+    ':mocks:mock-bip-claims-api',
+    ':mocks:mock-shared',
+    ':mocks:mock-mas-api',
+    ':mocks:mock-lighthouse-api',
+    ':mocks:mock-slack',
+    ':domain-xample:xample-api-controller',
+    ':domain-xample:xample-shared',
+    ':domain-xample:xample-workflows',
+    ':domain-xample:svc-xample-j'
   ]
+  // Modules that create Docker images
   dockerModules = [
     ':app',
     ':db-init',
@@ -127,8 +162,16 @@ ext {
     ':service-python:assessclaimdc6602',
     ':service-python:pdfgenerator',
     ':service-python:featuretoggle',
+    // ':svc-bgs-api',
     ':svc-lighthouse-api',
-    ':console'
+    ':console',
+    ':mocks:mock-bip-ce-api',
+    ':mocks:mock-bip-claims-api',
+    ':mocks:mock-mas-api',
+    ':mocks:mock-lighthouse-api',
+    ':mocks:mock-slack',
+    ':domain-xample:xample-workflows',
+    ':domain-xample:svc-xample-j'
   ]
   if (project.hasProperty("enablePrototype")) {
     dockerModules.add(':service-python:assessclaimdc6602v2')
@@ -149,6 +192,7 @@ scmVersion {
     pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
+    // Here is where the appVersion is updated with each release
     pre("fileUpdate", [file       : "helm-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])

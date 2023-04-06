@@ -82,7 +82,8 @@
     "bp_readings": [
       {
         "date": "2022-07-20",
-        "dateFormatted": "07/20/2022",
+        "receiptDate": "",
+        "dateFormatted": "7/20/2022",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
@@ -101,7 +102,8 @@
       },
       {
         "date": "2022-06-20",
-        "dateFormatted": "06/20/2022",
+        "dateFormatted": "6/20/2022",
+        "receiptDate": "",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
@@ -120,7 +122,8 @@
       },
       {
         "date": "2022-05-20",
-        "dateFormatted": "05/20/2022",
+        "receiptDate": "",
+        "dateFormatted": "5/20/2022",
         "diastolic": {
           "code": "8462-4",
           "display": "Diastolic blood pressure",
@@ -140,10 +143,9 @@
     ]
   },
   "evidenceSummary": {
-    "totalBpReadings": 8,
-    "recentBpReadings": 3,
+    "totalBpCount": 8,
+    "recentBpCount": 3,
     "medicationsCount": 7
   },
-  "claimSubmissionId": "7001",
-  "sufficientForFastTracking": false
+  "claimSubmissionId": "7001"
 }

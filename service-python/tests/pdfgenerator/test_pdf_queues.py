@@ -6,7 +6,7 @@ from pdfgenerator.src.lib import queues
 
 
 @pytest.mark.parametrize(
-    "service_queue_name", ["fetch-pdf"]
+    "service_queue_name", ["generate-fetch-pdf"]
 )
 def test_queue_setup(service_queue_name):
     """Test if the proper queue gets generated."""

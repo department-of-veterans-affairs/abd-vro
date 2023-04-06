@@ -1,84 +1,12 @@
 ---
-# Configuration for Snyk
-# * This is only required for Maven builds
-# Snyk calls it's own internal build from the package manager, similar to a mvn install.
-# If your application is built in Java, specify the java-version for Snyk to successfully build the application.
-# You will have to change the arguments to match your settings.xml and the Github secret associated with the argument
-# snyk:
-#   java-version: 16
-#   additional-args:
-#   - -Dexample-build-arg=some-value
-#   - -Dexample.maven=${{ secrets.example_secret }}
-
-
-# Setup script to run before images are built
-setup:
-  script: ./scripts/build-images.sh
-  env:
-  - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-
-snyk:
-  java-version: 17
-  additional-args:
-  - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-
-images:
-# BEGIN image-names.sh replacement block (do not modify this block)
-# The following image list is updated by image-names.sh
-- name: vro-app
-  context: "./app/build/docker"
-  path: "./app/src/docker/Dockerfile"
-  args:
-    - JAR_FILE=app-*.jar
-    - ENTRYPOINT_FILE=entrypoint.sh
-- name: vro-postgres
-  context: "./postgres/build/docker"
-  path: "./postgres/src/docker/Dockerfile"
-- name: vro-db-init
-  context: "./db-init/build/docker"
-  path: "./db-init/src/docker/Dockerfile"
-- name: vro-console
-  context: "./console/build/docker"
-  path: "./console/src/docker/Dockerfile"
-  args:
-    - JAR_FILE=console-*.jar
-    - ENTRYPOINT_FILE=entrypoint.sh
-- name: vro-service-data-access
-  context: "./svc-lighthouse-api/build/docker"
-  path: "./svc-lighthouse-api/src/docker/Dockerfile"
-  args:
-    - JAR_FILE=svc-lighthouse-api-*.jar
-    - ENTRYPOINT_FILE=entrypoint.sh
-- name: vro-service-pdfgenerator
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-    - SERVICE_SRC_FOLDER=pdfgenerator/build/docker
-- name: vro-service-assessclaimdc7101
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-    - SERVICE_SRC_FOLDER=assessclaimdc7101/build/docker
-- name: vro-service-assessclaimdc6602
-  context: "./service-python"
-  path: "./service-python/Dockerfile"
-  args:
-    - SERVICE_SRC_FOLDER=assessclaimdc6602/build/docker
-# END image-names.sh replacement block (do not modify this block)
-
-# Remove source block if you're not building sources
-#source:
-#  java-version: 16
-#  args:
-#    - -Dexample-build-arg=some-value
-#    - -Dexample.maven=${{ secrets.example_secret }}
 
 languages:
   java:
     version: 17.0
     build-source: false
     build-args:
-      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+      # Snyk does its own build to run SCA, so it needs the token to pull private artifacts
+      - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
   python:
     version: 3.9
     requirements:
