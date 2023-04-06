@@ -75,19 +75,16 @@ from assessclaimdc6510.src.lib import main
                                 "status": "active",
                             }
                         ],
-                        "conditions": [{"text": "Chronic maxillary sinusitis",
-                                        "code": "35923002",
-                                        "status": "active",
-                                        "onsetDate": "2020-11-01"}],
+                        "conditions": [],
                         "procedures": []
                     },
-                    "evidenceSummary": {"relevantConditionsCount": 1,
+                    "evidenceSummary": {"relevantConditionsCount": 0,
                                         "relevantMedCount": 1,
                                         "totalConditionsCount": 1,
                                         "totalMedCount": 1,
                                         "relevantProceduresCount": 0,
                                         "totalProceduresCount": 0},
-                    "sufficientForFastTracking": True,
+                    "sufficientForFastTracking": False,
                     "claimSubmissionId": "1234"
                 },
         ),
@@ -130,10 +127,7 @@ from assessclaimdc6510.src.lib import main
                                 "status": "active",
                             }
                         ],
-                        "conditions": [{"text": "Chronic maxillary sinusitis",
-                                        "code": "35923002",
-                                        "status": "active",
-                                        "onsetDate": "2021-11-01"},
+                        "conditions": [
                                        {"text": "Chronic maxillary sinusitis",
                                         "code": "J32.0",
                                         "status": "active",
@@ -146,7 +140,7 @@ from assessclaimdc6510.src.lib import main
                                         "performedDate": "2010-2-22"},
                                        ]
                     },
-                    "evidenceSummary": {"relevantConditionsCount": 2,
+                    "evidenceSummary": {"relevantConditionsCount": 1,
                                         "relevantMedCount": 0,
                                         "totalConditionsCount": 2,
                                         "totalMedCount": 1,
