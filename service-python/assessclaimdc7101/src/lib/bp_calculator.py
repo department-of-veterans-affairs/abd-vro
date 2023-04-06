@@ -96,7 +96,7 @@ def bp_reader(request_body):
               "twoYearsBpCount": len(bp_readings_in_past_two_years),
               "oneYearBpCount": len(bp_reading_in_past_year),
               "twoYearsElevatedBpCount": len(elevated_bp_in_past_two_years),
-              "totalBpCount": len(deduplicated_bp_readings),
-              "lighthouseDuplicateBpCount": len(bp_readings) - len(deduplicated_bp_readings)}
+              "totalBpCount": len(bp_readings)
+              }
 
     return result
