@@ -21,8 +21,8 @@ from assessclaimdc7101.src.lib import queues as q7101
 @pytest.mark.parametrize(
     "queue, service_queue_name, exchange", [
         (q6602v2, "health-assess.6602v2", "health-assess-exchange"),
-        (q6602, "health-assess.6602", "health-assess-exchange"),
-        (q7101, "health-assess.7101", "health-assess-exchange"),
+        (q6602, "health-assess.asthma", "health-assess-exchange"),
+        (q7101, "health-assess.hypertension", "health-assess-exchange"),
         (q6522, "health-assess.6522", "health-assess-exchange"),
         (q_cancer, "health-assess.cancer", "health-assess-exchange"),
         (q_respiratory, "health-assess.respiratory", "health-assess-exchange"),

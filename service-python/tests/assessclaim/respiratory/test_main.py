@@ -33,6 +33,7 @@ from assessclaimrespiratory.src.lib import main
                 "claimSubmissionId": "1234"
             },
             {
+                'claimSubmissionId': '1234',
                 "evidence": {
                     "procedures": [
                         {
@@ -79,6 +80,7 @@ from assessclaimrespiratory.src.lib import main
                 "claimSubmissionId": "1234"
             },
             {
+                'claimSubmissionId': '1234',
                 "evidence": {
                     "procedures": [
 
