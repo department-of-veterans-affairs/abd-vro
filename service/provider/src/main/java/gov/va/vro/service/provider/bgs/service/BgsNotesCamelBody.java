@@ -47,7 +47,7 @@ public class BgsNotesCamelBody {
   }
 
   // Called after successful request or done retrying
-  public void removeRequest(BgsApiClientRequest request) {
+  public void removePendingRequest(BgsApiClientRequest request) {
     pendingRequests.remove(request);
     tryCount.set(1);
   }

@@ -27,7 +27,6 @@ public class BgsApiClient {
   private int retryDelayBaseMills = 130_000;
 
   public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
-    retryDelayBaseMills = 1_000; // for testing
     BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, retryDelayBaseMills);
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
     switch (completionStatus) {
@@ -47,11 +46,8 @@ public class BgsApiClient {
       case OFF_RAMP:
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
         // which only covers SUFFICIENCY_UNDETERMINED
-        // Need to test the other 2 offrampError scenarios
         var offRampError = mpo.getOffRampReason();
         log.warn("++++++++ offRampError=" + offRampError);
-        String detailsOffRampReason = mpo.getDetails().get("offRampError");
-        log.warn("++++++++ detailsOffRampReason=" + detailsOffRampReason);
         String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampError, null);
         log.warn("++++++++ claimNote: " + claimNote);
         if (claimNote != null) body.pendingRequests.add(buildClaimNotesRequest(mpo, claimNote));
@@ -88,7 +84,6 @@ public class BgsApiClient {
       log.error("Could not find EvidenceSummaryDocumentEntity with uuid {}.", uuid);
       throw new EntityNotFoundException("EvidenceSummaryDocumentEntity", uuid);
     }
-    EvidenceSummaryDocumentEntity entity = foundDoc.get();
-    return entity;
+    return foundDoc.get();
   }
 }
