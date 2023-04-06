@@ -69,6 +69,7 @@ def assess_sufficiency(event: Dict):
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
+        all_bp_length = len(event["evidence"]["bp_readings"])
         event["evidence"]["bp_readings"] = bp_calculator.deduplicate(event["evidence"]["bp_readings"])
         bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
@@ -112,7 +113,7 @@ def assess_sufficiency(event: Dict):
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"],
                     "allMedicationsCount": relevant_medications["allMedicationsCount"],
                     "twoYearsMedicationsCount": relevant_medications["twoYearsMedicationsCount"],
-                    "lighthouseDuplicateBpCount": bp_calculation["lighthouseDuplicateBpCount"]
+                    "lighthouseDuplicateBpCount": all_bp_length - bp_calculation["totalBpCount"]
                 },
                 "sufficientForFastTracking": sufficient,
                 "claimSubmissionDateTime": event["claimSubmissionDateTime"],
