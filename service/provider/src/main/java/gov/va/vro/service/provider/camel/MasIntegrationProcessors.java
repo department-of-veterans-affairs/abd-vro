@@ -235,7 +235,9 @@ public class MasIntegrationProcessors {
           String.format("reason code: %s,  narrative:%s", reason.getCode(), reason.getNarrative());
     }
     if (mpo != null) {
-      msg += " collection ID: " + mpo.getCollectionId();
+      msg +=
+          String.format(
+              " claim ID: %s, collection ID: %s", mpo.getBenefitClaimId(), mpo.getCollectionId());
     }
     return msg;
   }
