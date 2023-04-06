@@ -44,9 +44,8 @@ def conditions_calculation(request_body):
         condition_code = condition["code"]
         #  Only LH data has ICD codes, so no MAS data will pass the following condition
         if condition_code in hypertension_conditions.conditions:
-            if condition["category"] == "Encounter Diagnosis":
-                condition["relevant"] = True
-                lh_relevant_condition_count += 1
+            condition["relevant"] = True
+            lh_relevant_condition_count += 1
         else:
             condition["relevant"] = False
 
