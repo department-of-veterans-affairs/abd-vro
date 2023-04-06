@@ -5,6 +5,7 @@ import static gov.va.vro.model.xample.CamelConstants.V3_EXCHANGE;
 
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
@@ -152,9 +153,12 @@ public class XampleRoutes extends EndpointRouteBuilder {
   }
 
   void configureRouteToServiceJ() {
-    // Always use this utility method to send to RabbitMQ
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, SERVICE_J_ENDPOINT, "xample", "serviceJ")
-        .convertBodyTo(SomeDtoModel.class);
+    // Always use ToRabbitMqRouteHelper create a route to send to RabbitMQ
+    new ToRabbitMqRouteHelper(this, SERVICE_J_ENDPOINT)
+        .routeId("to-rabbitmq-route")
+        .toMq("xample", "serviceJ")
+        .responseClass(SomeDtoModel.class)
+        .createRoute();
   }
 
   void configureFetchResourceRoute() {

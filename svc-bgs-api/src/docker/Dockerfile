@@ -1,35 +1,37 @@
+FROM ruby:2.7.7-alpine3.16
+ 
+ # hadolint ignore=DL3018
+ # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
+ # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
-# TODO: get it working with bitnami/ruby image
-# `bundle install` failed with bitnami/ruby:2.7.6
+RUN apk update && apk --no-cache add expat=2.5.0-r0 git=2.36.5-r0 ruby-dev=3.1.3-r0 curl-dev=7.83.1-r6 build-base=0.5-r3 && rm -rf /var/cache/apk/*
 
-# Or get alpine image working
-# FROM ruby:2.7.6-alpine
-# RUN apk update && apk --no-cache add expat=2.5.0-r0 git && rm -rf /var/cache/apk/*
-
-FROM ruby:2.7.6
-
-RUN adduser --home /project --disabled-password --gecos "" docker
+RUN adduser --disabled-password --gecos "" tron
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
 # TODO: add healthcheck for Ruby microservice
 # HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
 
-WORKDIR /project
-ARG ENTRYPOINT_FILE
+WORKDIR /app
+ARG ENTRYPOINT_FILE=entrypoint.sh
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs entrypoint.sh if it exists
-COPY set-env-secrets.src entrypoint-default.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle install
+# TODO once application is stable, update Gemfile.lock with contents from image
+# and change next line to: COPY Gemfile Gemfile.lock ./
+COPY Gemfile  ./
+
+# After install, delete packages only needed during bundler install & clean APK cache
+RUN gem install bundler:2.4.10 --no-document && bundle install && apk del git ruby-dev curl-dev build-base && rm -rf /var/cache/apk/*
 
 # === Image layers above this line are general and will be reused as cache when building the image.
 # Put commands that produce project-specific image layers below this line.
 
 COPY . .
-RUN chmod +x entrypoint*.sh && chown -R docker:docker /project
+RUN chmod +x entrypoint*.sh && chown -R tron /app
 
-USER docker
-ENTRYPOINT ["/project/entrypoint-default.sh"]
+USER tron
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

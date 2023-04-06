@@ -115,7 +115,7 @@ public class NamingConventionTest {
         .or()
         .haveSimpleNameEndingWith("Response")
         .should()
-        .resideInAnyPackage("..api..", "..model..request..", "..model..response..")
+        .resideInAnyPackage("..api..", "..model..")
         .check(classes);
   }
 

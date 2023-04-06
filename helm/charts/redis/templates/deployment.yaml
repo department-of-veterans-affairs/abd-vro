@@ -16,7 +16,7 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: redis--{{ .Values.imageTag }}
+        - name: redis{{ include "vro.containerSuffix" . }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:{{ .Values.imageTag }}
           env:
             - name: REDIS_PLACEHOLDERS_PASSWORD

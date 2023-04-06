@@ -4,6 +4,7 @@ import gov.va.vro.mocklh.api.MockLhApi;
 import gov.va.vro.mocklh.config.LhApiProperties;
 import gov.va.vro.mocklh.model.MockBundleStore;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
@@ -69,9 +71,22 @@ public class MockLhController implements MockLhApi {
   }
 
   @Override
+  @SneakyThrows
   public ResponseEntity<String> getObservation(
       String bearerToken, MultiValueMap<String, String> queryParams) {
     String icn = queryParams.getFirst("patient");
+
+    if (icn.equals("mock1012666073V986365")) { // icn for 500 exception test
+      log.info("Raising error for Observation: {}", icn);
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Expected exception for testing");
+    }
+
+    if (icn.equals("mock1012666073V986366")) { // icn for timeout exception test
+      log.info("Waiting to cause timeout: {}", icn);
+      Thread.sleep(125000); // With a bit more than 2 minutes for timeout
+    }
+
     String bundle = store.getMockObservationBundle(icn);
     if (bundle != null) {
       log.info("Sending back the mock Observation: {}", icn);
@@ -84,6 +99,13 @@ public class MockLhController implements MockLhApi {
   public ResponseEntity<String> getCondition(
       String bearerToken, MultiValueMap<String, String> queryParams) {
     String icn = queryParams.getFirst("patient");
+
+    if (icn.equals("mock1012666073V986367")) { // icn for 504 exception test
+      log.info("Raising error for Condition: {}", icn);
+      throw new ResponseStatusException(
+          HttpStatus.GATEWAY_TIMEOUT, "Expected exception for testing");
+    }
+
     String bundle = store.getMockConditionBundle(icn);
     if (bundle != null) {
       log.info("Sending back the mock Condition: {}", icn);
