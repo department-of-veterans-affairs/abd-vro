@@ -26,6 +26,6 @@ vro-app-chart:
   vroAudUrl: https://api.va.gov/services/abd-vro-prod-test
   lhApiAuthUrl: https://api.va.gov/oauth2/health/system/v1/token
 
-domain-rrd-chart:
+vro-svcs-chart:
   bgs:
     baseUrl: https://vbmsprod.vba.va.gov

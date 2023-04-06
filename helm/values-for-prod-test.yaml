@@ -19,6 +19,6 @@ vro-app-chart:
   vroAudUrl: https://api.va.gov/services/abd-vro
   lhApiAuthUrl: https://api.va.gov/internal/auth/v2/validation
 
-domain-rrd-chart:
+vro-svcs-chart:
   bgs:
     baseUrl: https://bepprep.vba.va.gov
