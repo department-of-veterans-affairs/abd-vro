@@ -27,6 +27,11 @@ on:
         required: true
         type: boolean
         default: true
+      vro-svcs:
+        description: 'Enable & update VRO domain-independent microservices'
+        required: true
+        type: boolean
+        default: true
       domain-rrd:
         description: "Enable & update RRD domain services"
         required: true
@@ -84,6 +89,10 @@ on:
         type: string
 
       vro-app:
+        required: false
+        type: boolean
+        default: true
+      vro-svcs:
         required: false
         type: boolean
         default: true
@@ -209,6 +218,7 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying:\n\
             - vro-app: *${{ inputs.vro-app }}*\n\
+            - vro-svcs: *${{ inputs.vro-svcs }}*\n\
             - domain-rrd: *${{ inputs.domain-rrd }}*\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
@@ -249,6 +259,7 @@ jobs:
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
+            --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
             --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
             --set postgres.enabled=${{ inputs.postgres }} \
             --set console.enabled=${{ inputs.console }}

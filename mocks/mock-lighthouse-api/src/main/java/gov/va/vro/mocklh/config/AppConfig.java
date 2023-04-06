@@ -56,6 +56,30 @@ public class AppConfig {
     MockBundles mb8 = MockBundles.of("mock-bundles/mock1012666073V986390");
     store.put("mock1012666073V986390", mb8);
 
+    MockBundles mb9 = MockBundles.of("mock-bundles/mock1012666073V986391");
+    store.put("mock1012666073V986391", mb9);
+
+    MockBundles mb10 = MockBundles.of("mock-bundles/mock1012666073V986392");
+    store.put("mock1012666073V986392", mb10);
+
+    MockBundles mb11 = MockBundles.of("mock-bundles/mock1012666073V986385");
+    store.put("mock1012666073V986385", mb11);
+
+    MockBundles mb12 = MockBundles.of("mock-bundles/mock1012666073V986386");
+    store.put("mock1012666073V986386", mb12);
+
+    MockBundles mb13 = MockBundles.of("mock-bundles/mock1012666073V986369");
+    store.put("mock1012666073V986369", mb13);
+
+    MockBundles mb14 = MockBundles.of("mock-bundles/mock1012666073V986365");
+    store.put("mock1012666073V986365", mb14);
+
+    MockBundles mb15 = MockBundles.of("mock-bundles/mock1012666073V986366");
+    store.put("mock1012666073V986366", mb15);
+
+    MockBundles mb16 = MockBundles.of("mock-bundles/mock1012666073V986367");
+    store.put("mock1012666073V986367", mb16);
+
     return store;
   }
 }

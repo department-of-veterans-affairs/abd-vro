@@ -67,7 +67,7 @@ public class ClaimInfoResponseMapperTest {
     claimEntity.addContention(contentionEntity);
     claimEntity.addClaimSubmission(claimSubmissionEntity);
 
-    ClaimInfoResponse response = mapper.toClaimInfoResponse(claimEntity);
+    ClaimInfoResponse response = mapper.toClaimInfoResponseV1(claimEntity);
 
     assertEquals(claimSubmissionId, response.getClaimSubmissionId());
     assertEquals(icn, response.getVeteranIcn());

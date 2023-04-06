@@ -56,6 +56,10 @@ public class MockMasController {
       return new ResponseEntity<>(collection, HttpStatus.OK);
     }
 
+    if (collectionId == 369) { // Used to test mas exceptions
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mas exception testing");
+    }
+
     List<MasCollectionAnnotation> collection = store.get(collectionId);
     if (collection == null) {
       String reason = "No claim found for id: " + collectionId;
@@ -92,6 +96,12 @@ public class MockMasController {
           @RequestBody
           MasOrderExamRequest request) {
     log.info("Ordering exam for {}.", request.getCollectionsId());
+
+    // Test cases that require a mas ERROR on ordering exam
+    if (request.getCollectionsId() == 391) {
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Returning 500 for testing");
+    }
     ConditionInfo conditionInfo = new ConditionInfo("HYPERTENSION", "HYPERTENSION");
 
     OrderExamSuccess success = new OrderExamSuccess();
