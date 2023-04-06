@@ -7,6 +7,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
@@ -228,6 +229,11 @@ public class MasIntegrationProcessors {
 
   public static String getSlackMessage(MasProcessingObject mpo, String originalMessage) {
     String msg = originalMessage;
+    EventReason reason = EventReason.getEventReason(originalMessage.trim());
+    if (reason != null) {
+      msg =
+          String.format("reason code: %s,  narrative:%s", reason.getCode(), reason.getNarrative());
+    }
     if (mpo != null) {
       msg += " collection ID: " + mpo.getCollectionId();
     }

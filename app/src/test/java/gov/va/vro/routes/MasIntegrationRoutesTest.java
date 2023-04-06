@@ -85,12 +85,12 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   void processClaimInsufficientEvidenceAccessError() throws Exception {
     var mpo = processClaim(null);
     Thread.sleep(200);
+    String expectedMessageStart =
+        String.format("reason code: %s", EventReason.SUFFICIENCY_UNDETERMINED.getCode());
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
-            .filter(
-                audit ->
-                    audit.getMessage().startsWith(EventReason.SUFFICIENCY_UNDETERMINED.getCode()))
+            .filter(audit -> audit.getMessage().startsWith(expectedMessageStart))
             .findFirst()
             .isPresent());
   }

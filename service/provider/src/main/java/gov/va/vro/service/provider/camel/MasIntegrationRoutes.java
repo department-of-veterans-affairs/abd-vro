@@ -408,7 +408,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_EVENT)
         .routeId("mas-slack-event")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .process(FunctionProcessor.fromFunction(AuditEvent::toSlackMessage))
+        .process(FunctionProcessor.fromFunction(AuditEvent::toString))
         .to(slackRoute);
   }
 }

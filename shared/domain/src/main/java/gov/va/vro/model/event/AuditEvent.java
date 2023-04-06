@@ -98,30 +98,4 @@ public class AuditEvent {
         + '\''
         + '}';
   }
-
-  public String toSlackMessage() {
-    if (isException()) {
-      return String.format(
-          "Exception occurred on route %s for %s(id = %s): %s.\n"
-              + "Please check the audit store for more information.",
-          routeId, payloadType, eventId, message);
-    } else {
-      EventReason reason = EventReason.getEventReason(message);
-      if (reason != null) {
-        return "AuditEvent{"
-            + "routeId='"
-            + routeId
-            + '\''
-            + ", payloadType="
-            + payloadType
-            + ", reason code="
-            + reason.getCode()
-            + ", message='"
-            + reason.getNarrative()
-            + '\''
-            + '}';
-      }
-      return toSimpleString();
-    }
-  }
 }
