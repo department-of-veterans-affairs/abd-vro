@@ -53,17 +53,13 @@ public class MockMasConfig {
 
     log.info("Loading mock annotations from resources");
     ClassLoader classLoader = this.getClass().getClassLoader();
-    log.info("Got classloader");
     PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver(classLoader);
-    log.info("Got pattern resolver");
     Resource[] resources = r.getResources(DATA_PATTERN);
-    log.info("Gor resources list with length {}", resources.length);
 
     for (Resource mockCollection : resources) {
       log.info("Found mock collection with filename " + mockCollection.getFilename());
       String collectionId = Objects.requireNonNull(mockCollection.getFilename()).split("[-.]")[1];
       Integer collectionInt = Integer.parseInt(collectionId);
-      log.info("Has collection integer" + collectionInt);
       List<MasCollectionAnnotation> collectionList = readFromResource(mockCollection);
       store.put(collectionInt, collectionList);
     }
