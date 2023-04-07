@@ -14,7 +14,8 @@ vro-svcs:
 domain-rrd:
   enabled: true
 # Enable as needed:
-console.enabled: false
+console:
+  enabled: false
 
 rabbitmq-chart:
   imageTag: "3"
