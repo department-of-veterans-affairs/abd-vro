@@ -22,6 +22,8 @@ import java.util.Objects;
 @Configuration
 public class MockMasConfig {
 
+  private static final String DATA_PATTERN = "classpath:annotations/*.json";
+
   /** Creates and provides the common instance of RestTemplate as a bean for the application. */
   @Bean
   public RestTemplate restTemplate() {
@@ -49,14 +51,16 @@ public class MockMasConfig {
   public CollectionStore collectionStore() throws IOException {
     CollectionStore store = new CollectionStore();
 
-    String baseFolder = "annotations";
     log.info("Loading mock annotations from resources");
-
-    PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
-    Resource[] resources = r.getResources(baseFolder + "/*.json");
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    log.info("Got classloader");
+    PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver(classLoader);
+    log.info("Got pattern resolver");
+    Resource[] resources = r.getResources(DATA_PATTERN);
+    log.info("Gor resources list with length {}", resources.length);
 
     for (Resource mockCollection : resources) {
-      log.info("Found mock collection with filename " + mockCollection.getFile());
+      log.info("Found mock collection with filename " + mockCollection.getFilename());
       String collectionId = Objects.requireNonNull(mockCollection.getFilename()).split("[-.]")[1];
       Integer collectionInt = Integer.parseInt(collectionId);
       log.info("Has collection integer" + collectionInt);
