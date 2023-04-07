@@ -10,7 +10,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 
 @Slf4j
@@ -18,7 +17,7 @@ import java.io.IOException;
 public class AppConfig {
 
   private static final String BASE_FOLDER = "mock-bundles";
-  private static final String FOLDER_PATTERN = "classpath:" + BASE_FOLDER + "/*";
+  private static final String FOLDER_PATTERN = "classpath:" + BASE_FOLDER + "/*/Condition.json";
 
   @Bean
   public RestTemplate restTemplate() {
@@ -38,29 +37,22 @@ public class AppConfig {
    */
   @Bean
   public MockBundleStore mockBundleStore() throws IOException {
-    log.info("Loading mock bundles from resources");
     MockBundleStore store = new MockBundleStore();
+    log.info("Loading mock bundles from classpath resources");
 
     ClassLoader classLoader = this.getClass().getClassLoader();
     PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver(classLoader);
     Resource[] resources = r.getResources(FOLDER_PATTERN);
     for (Resource mockBundle : resources) {
-      log.info("loading a particular mock bundle");
-      File mockBundleDir = mockBundle.getFile();
-      log.info(
-          "File found with name "
-              + mockBundleDir.getName()
-              + " isDir "
-              + mockBundleDir.isDirectory());
-      if (mockBundleDir.isDirectory()) {
-        String bundlePath = BASE_FOLDER + "/" + mockBundleDir.getName();
-        log.info("Directory found with path " + bundlePath);
-        MockBundles mb = MockBundles.of(bundlePath);
-        store.put(mockBundleDir.getName(), mb);
-      }
+      String[] pathParts = mockBundle.getURI().toString().split("/");
+      String folderName = pathParts[pathParts.length - 2];
+      log.info("Found mock bundle folder " + folderName);
+      String bundlePath = BASE_FOLDER + "/" + folderName;
+      MockBundles mb = MockBundles.of(bundlePath);
+      store.put(folderName, mb);
     }
 
-    log.info("returning loaded resources");
+    log.info("Returning loaded resources");
 
     return store;
   }
