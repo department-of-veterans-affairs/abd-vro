@@ -1,7 +1,7 @@
-package gov.va.vro.api.xample.v3;
+package gov.va.vro.api.cc.v3;
 
-import gov.va.vro.api.xample.ResourceException;
-import gov.va.vro.model.xample.SomeDtoModel;
+import gov.va.vro.api.cc.ResourceException;
+//import gov.va.vro.model.xample.SomeDtoModel;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v3", produces = "application/json")
-@Timed("cc") // See https://www.baeldung.com/micrometer
+@Timed
 @Tag(name = "Contention Classification")
 public interface ContentionClassificationResource {
-  @PostMapping("/domain-cc/{ccEndpoint}")
+  @PostMapping(value = "/domain-cc/{ccEndpoint}")
   @Timed(value = "resource.post")
   @Operation(
       summary = "Hit python endpoint",
@@ -35,48 +35,25 @@ public interface ContentionClassificationResource {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
         @ApiResponse(
             responseCode = "400",
-            description = "Xample Resource: Bad Request",
+            description = "CC: Bad Request",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "401",
-            description = "Xample Resource: Unauthorized",
+            description = "CC: Unauthorized",
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
-            description = "Xample Resource: Server Error",
+            description = "CC: Server Error",
             content = @Content(schema = @Schema(hidden = true)))
       })
-  ResponseEntity<ResourceResponse> postResource(
-      @Parameter(
+  ResponseEntity<Object> postResource(
+          @PathVariable String ccEndpoint
+          @Parameter(
               description = "payload for resource",
               required = true,
-              schema = @Schema(implementation = ResourceRequest.class))
+              schema = @Schema(implementation = CCRequest.class))
           @Valid
           @RequestBody
-          ResourceRequest request)
+          CCRequest request)
       throws MethodArgumentNotValidException, ResourceException;
-
-//  @GetMapping(value = "/xample-resource/{resourceId}")
-//  @Timed(value = "resource.get")
-//  @Operation(
-//      summary = "Retrieve a Xample Resource",
-//      description = "Retrieves a Xample Resource with the specified ID.")
-//  @ApiResponses(
-//      value = {
-//        @ApiResponse(responseCode = "200", description = "Successful Request"),
-//        @ApiResponse(
-//            responseCode = "400",
-//            description = "Xample Resource: Bad Request",
-//            content = @Content(schema = @Schema(hidden = true))),
-//        @ApiResponse(
-//            responseCode = "401",
-//            description = "Xample Resource: Unauthorized",
-//            content = @Content(schema = @Schema(hidden = true))),
-//        @ApiResponse(
-//            responseCode = "500",
-//            description = "Xample Resource: Server Error",
-//            content = @Content(schema = @Schema(hidden = true))),
-//      })
-//  ResponseEntity<SomeDtoModel> getResource(@PathVariable String resourceId)
-//      throws MethodArgumentNotValidException, ResourceException;
 }
