@@ -7,13 +7,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -41,20 +39,15 @@ public class AppConfig {
     MockBundleStore store = new MockBundleStore();
     String rootName = "mock-bundles";
 
-    var resource = this.getClass().getClassLoader().getResource(rootName);
-    List<String> directoryNames =
-        Files.walk(Paths.get(resource.toURI()), 1)
-            .filter(Files::isDirectory)
-            .map(p -> p.getFileName().toString())
-            .filter(r -> r.startsWith("mock") && !r.equals(rootName))
-            .collect(Collectors.toList());
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-    for (String icn : directoryNames) {
+    Resource[] resources = resolver.getResources("mock-bundles/mock*");
+    for (Resource resource : resources) {
+      String icn = resource.getFilename();
       log.info("Loading icn: ", icn);
       MockBundles mb = MockBundles.of("mock-bundles/" + icn);
       store.put(icn, mb);
     }
-
     return store;
   }
 }

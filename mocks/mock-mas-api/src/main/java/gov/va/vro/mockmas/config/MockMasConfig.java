@@ -7,20 +7,14 @@ import gov.va.vro.mockmas.model.ExamOrderStore;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -37,8 +31,8 @@ public class MockMasConfig {
   }
 
   @SneakyThrows
-  private List<MasCollectionAnnotation> readFromResource(String path) {
-    InputStream stream = this.getClass().getClassLoader().getResourceAsStream(path);
+  private List<MasCollectionAnnotation> readFromResource(Resource resource) {
+    InputStream stream = resource.getInputStream();
     ObjectMapper mapper = objectMapper();
     return mapper.readValue(stream, new TypeReference<>() {});
   }
@@ -53,22 +47,15 @@ public class MockMasConfig {
   public CollectionStore collectionStore() {
     CollectionStore store = new CollectionStore();
 
-    String rootName = "annotations";
-    var resource = this.getClass().getClassLoader().getResource(rootName);
-    List<String> filenames =
-        Files.walk(Paths.get(resource.toURI()), 1)
-            .filter(Files::isRegularFile)
-            .map(p -> p.getFileName().toString())
-            .filter(r -> r.startsWith("collection") && r.endsWith(".json"))
-            .map(r -> rootName + "/" + r)
-            .collect(Collectors.toList());
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-    for (String filename: filenames) {
-      log.info("Loading file: ", filename);
-      String filepath = rootName + "/" + filename;
-      String idAsString = filename.substring(10, 13);
+    Resource[] resources = resolver.getResources("annotations/collection-*.json");
+    int start = "collection-".length();
+    for (Resource resource : resources) {
+      String filename = resource.getFilename();
+      String idAsString = filename.substring(start, start + 3);
       Integer id = Integer.valueOf(idAsString);
-      List<MasCollectionAnnotation> collection = readFromResource(filepath);
+      List<MasCollectionAnnotation> collection = readFromResource(resource);
       store.put(id, collection);
     }
     return store;
