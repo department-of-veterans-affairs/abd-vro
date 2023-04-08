@@ -102,6 +102,7 @@ include ':domain-xample:xample-api-controller'
 include ':domain-xample:xample-shared'
 include ':domain-xample:xample-workflows'
 include ':domain-xample:svc-xample-j'
+include ':domain-cc:cc-api-controller'
 if (startParameter.projectProperties.containsKey("enablePrototype")) {
   include ':service-python:assessclaimdc6602v2'
   include ':service-python:assessclaimdc6510'
