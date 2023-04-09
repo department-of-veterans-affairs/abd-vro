@@ -36,3 +36,23 @@ dependencies {
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }
+
+ext.mockInfoFile = file("$buildDir/resources/main/mock-info-file.json")
+
+task generateInfoFile() {
+  outputs.file(mockInfoFile)
+  doLast{
+    def icnList = []
+    fileTree("src/main/resources/mock-bundles").visit { FileVisitDetails details ->
+      if (details.file.isDirectory()) {
+        String name = details.file.name
+        if (name.startsWith("mock")) {
+          icnList << "\"" + name + "\""
+        }
+      }
+    }
+    mockInfoFile.text = "[" + String.join(",", icnList) + "]"
+  }
+}
+tasks.named("generateInfoFile") { dependsOn("build") }
+tasks.named("build") { finalizedBy("generateInfoFile") }
