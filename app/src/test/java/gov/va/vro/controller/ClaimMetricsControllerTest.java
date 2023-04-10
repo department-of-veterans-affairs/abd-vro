@@ -306,7 +306,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   void testExamOrderInfoAll() throws JsonProcessingException {
     int size = 5;
 
-    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size);
+    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size, Boolean.FALSE);
     ExamOrdersInfo serviceOutput = generateExamOrdersInfo(size);
 
     // Return an expected exception if argument does not match.
@@ -351,19 +351,19 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   @Test
   void testExamInfoAllQueryParamDefaults() {
     String uri0 = "/v2/exam-order-info";
-    ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10);
+    ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10, Boolean.FALSE);
     testExamInfoAllQueryParamDefaults(uri0, params0);
 
     String uri1 = "/v2/exam-order-info?size=15";
-    ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15);
+    ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15, Boolean.FALSE);
     testExamInfoAllQueryParamDefaults(uri1, params1);
 
     String uri2 = "/v2/exam-order-info?page=1";
-    ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10);
+    ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10, Boolean.FALSE);
     testExamInfoAllQueryParamDefaults(uri2, params2);
 
     String uri3 = "/v2/exam-order-info?page=1&size=15";
-    ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15);
+    ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15, Boolean.FALSE);
     testExamInfoAllQueryParamDefaults(uri3, params3);
   }
 

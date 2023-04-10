@@ -23,3 +23,4 @@ public class ExamOrderInfoResponse {
   private LocalDateTime updatedAt;
   private boolean hasAssociatedClaimSubmission;
 }
+
