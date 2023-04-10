@@ -834,6 +834,21 @@ public class VroV2Tests {
     assertFalse(pdfText.contains("-/-"));
   }
 
+  /** This is a full positive end-to-end test for a case with duplicate blood pressures. */
+  @Test
+  void testAutomatedClaimFullPositiveDuplicateBloodPressures() {
+    AutomatedClaimTestSpec spec = specFor200("381");
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("139/77 8/11/2022 VAMC Other Output Reports"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 Medical Treatment Record - Government"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("167/93 5/11/2022 VAMC record - LYONS VA MEDICAL CENTER"));
+    assertTrue(pdfText.contains("153/115 6/21/2022 VAMC record - WASHINGTON VA MEDICAL"));
+
+    // Check that duplicate BP from LH is not included as evidence.
+    assertFalse(pdfText.contains("153/115 6/20/2021 VAMC record -WASHINGTON VA MEDICAL"));
+  }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
    * the Slack message when temporary station of jurisdiction changes during VRO processing.
