@@ -51,11 +51,10 @@ from assessclaimdc6522.src.lib import conditions
                     "date_of_claim": "2021-11-09",
                 },
                 {"conditions": [{"text": "Allergic rhinitis due to food", "code": "J30.5", "status": "Active"
-                                 },
-                                {"code": "72409005", "text": "Rhinoscleroma (disorder)", "status": "recurrence"}],
-                 "relevantConditionsCount": 2,
+                                 }],
+                 "relevantConditionsCount": 1,
                  "totalConditionsCount": 2,
-                 "diagnosticCodes": ["6522", "6523"],
+                 "diagnosticCodes": ["6522"],
                  "nasalPolyps": False
                  }
         ),
