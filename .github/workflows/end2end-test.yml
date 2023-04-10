@@ -69,13 +69,14 @@ jobs:
       - name: "Check for tracking files"
         run: |
           TRACKING_FOLDER="/persist/tracking/mas-claim-submitted/$(date '+%Y-%m-%d')"
-          echo "Examining $TRACKING_FOLDER"
-          TRACKING_FILES=$(docker exec -it vro_app_1 ls "$TRACKING_FOLDER")
+          echo "::group::Examining app's tracking files in $TRACKING_FOLDER"
+          TRACKING_FILES=$(docker exec vro_app_1 ls "$TRACKING_FOLDER")
           echo "$TRACKING_FILES"
           for COLLECTION_ID in 365 375 376 377 381 386 400; do
             echo "Checking for $COLLECTION_ID.json"
             echo "$TRACKING_FILES" | grep "$COLLECTION_ID.json"
           done
+          echo "::endgroup::"
 
       - name: "Clean docker container and images"
         run: ./gradlew dockerclean
