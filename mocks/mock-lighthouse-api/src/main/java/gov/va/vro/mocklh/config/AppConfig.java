@@ -54,6 +54,9 @@ public class AppConfig {
 
     log.info("Returning loaded resources");
 
+    MockBundles mb17 = MockBundles.of("mock-bundles/mock1012666073V986381");
+    store.put("mock1012666073V986381", mb17);
+
     return store;
   }
 }
