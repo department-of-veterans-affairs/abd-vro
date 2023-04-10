@@ -6,6 +6,7 @@ import static gov.va.vro.service.provider.bgs.service.BgsVeteranNote.getArsdUplo
 import gov.va.vro.model.bgs.BgsApiClientRequest;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import gov.va.vro.service.provider.EntityNotFoundException;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +33,14 @@ public class BgsApiClient {
     switch (completionStatus) {
       case READY_FOR_DECISION:
         // Tested with VroV2Tests.testAutomatedClaimFullPositiveIncrease
-        log.warn("++++++++ RFD +++++++");
+        log.info("Create BGS notes for RFD");
         body.pendingRequests.add(buildVeteranNoteRequest(mpo));
         body.pendingRequests.add(
             buildClaimNotesRequest(mpo, BgsClaimNotes.RFD_NOTE, BgsClaimNotes.ARSD_COMPLETED_NOTE));
         break;
       case EXAM_ORDER:
         // Tested with VroV2Tests.testAutomatedClaimOrderExamNewClaim
-        log.warn("++++++++ EXAM_ORDER +++++++");
+        log.info("Create BGS notes for EXAM_ORDER");
         body.pendingRequests.add(buildVeteranNoteRequest(mpo));
         body.pendingRequests.add(buildClaimNotesRequest(mpo, BgsClaimNotes.EXAM_REQUESTED_NOTE));
         break;
@@ -47,9 +48,8 @@ public class BgsApiClient {
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
         // which only covers SUFFICIENCY_UNDETERMINED
         var offRampError = mpo.getOffRampReason();
-        log.warn("++++++++ offRampError=" + offRampError);
+        log.info("Create BGS notes for offRampError=" + offRampError);
         String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampError, null);
-        log.warn("++++++++ claimNote: " + claimNote);
         if (claimNote != null) body.pendingRequests.add(buildClaimNotesRequest(mpo, claimNote));
         break;
     }

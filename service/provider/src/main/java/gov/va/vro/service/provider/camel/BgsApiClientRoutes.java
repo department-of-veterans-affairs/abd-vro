@@ -49,16 +49,16 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .routeId(routeId)
         .setExchangePattern(ExchangePattern.InOut)
         // expecting body MasProcessingObject.class
-        .log("input: ${exchange.pattern}: h=${headers}: p=${exchange.properties}: ${body.class}")
+        .log("addBgsNotes: ${body}")
         .bean(bgsApiClient, "buildRequest")
         .loopDoWhile(simple("${body.pendingRequests.size} > 0"))
-        .log("loop: ${body.pendingRequests.size} pendingRequests")
+        .log("addBgsNotes loop: ${body.pendingRequests.size} pendingRequests")
         .to(ADD_NOTES_RETRIES)
         .end(); // of loopDoWhile
 
     from(ADD_NOTES_RETRIES)
         .doTry()
-        .log("microservice request: ${body}")
+        .log("addBgsNotes: microservice request: ${body}")
         .process(requestBgsToAddNotesProcessor())
         .id("requestBgsToAddNotes")
         .doCatch(BgsApiClientException.class)
@@ -104,7 +104,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .rabbitMqEndpointId("to-rabbitmq-bgsclient-addnote")
         .responseClass(BgsApiClientResponse.class)
         .createRoute()
-        .log("BGS client response: ${body.class}: ${body}");
+        .log("addBgsNotes: response: ${body}");
   }
 
   private final MasConfig masConfig;
@@ -130,12 +130,12 @@ public class BgsApiClientRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_BGS_FAILED)
         .routeId("slack-bgs-failed-route")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .log("slack: ${exchange.pattern}:  ${headers}: ${body.class}: ${body}")
+        .log("slack: ${body}")
         .process(buildErrorMessage)
         .to(String.format("slack:#%s?webhookUrl=%s", channel, webhook));
   }
 
-  // TODO: remove once BgsApiClientMicroservice is ready for testing
+  // TODO: remove once BgsApiClientMicroservice is ready for testing and unit tests created
   void configureMockBgsApiMicroservice() {
     final AtomicInteger requestCounter = new AtomicInteger(0);
     var mockService =

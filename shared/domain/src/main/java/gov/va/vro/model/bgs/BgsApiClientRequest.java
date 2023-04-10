@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BgsApiClientRequest {
 
+  // aka benefitClaimId
   final String vbmsClaimId;
   final String veteranParticipantId;
 

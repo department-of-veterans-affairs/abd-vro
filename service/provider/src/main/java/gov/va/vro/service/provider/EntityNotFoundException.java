@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.bgs.service;
+package gov.va.vro.service.provider;
 
 public class EntityNotFoundException extends RuntimeException {
   public EntityNotFoundException(String entityType, Object id) {
