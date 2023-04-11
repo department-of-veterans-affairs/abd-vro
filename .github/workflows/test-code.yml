@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  java-lint-and-test:
+  test-java:
     runs-on: ubuntu-latest
 
     steps:
@@ -84,7 +84,7 @@ jobs:
           update-comment: true
           title: "JaCoCo Test Coverage"
 
-  ruby-test:
+  test-ruby:
     runs-on: ubuntu-latest
 
     steps:
@@ -95,6 +95,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+          # Used to resolve .ruby-version, .tool-versions and Gemfile.lock
+          working-directory: svc-bgs-api/src
 
       - name: "Run rspec tests"
-        run: bundle exec rspec
+        run: |
+          cd svc-bgs-api/src
+          bundle exec rspec
