@@ -17,7 +17,6 @@ public class ExamOrdersInfo {
   private long total;
 
   static void filterConfirmation() {
-    if
     System.out.println("Hello World!");
   }
 }

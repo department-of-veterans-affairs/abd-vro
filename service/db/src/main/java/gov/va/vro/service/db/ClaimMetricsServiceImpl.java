@@ -121,7 +121,12 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private Page<ExamOrderEntity> findAllExamOrderInfoPage(ExamOrderInfoQueryParams params) {
     int size = params.getSize();
     int page = params.getPage();
-    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    if (params.getConfirmation() == Boolean.TRUE) {
+      PageRequest pageRequest = PageRequest.of(page, size, Sort.order(Sort.Direction.DESC, "updatedAt").);
+    }
+    else{
+      PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    }
     return examOrderRepository.findAll(pageRequest);
   }
 
