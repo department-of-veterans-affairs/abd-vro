@@ -133,7 +133,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     List<ExamOrderInfoResponse> unconfirmedExamOrdersInfo =
         examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     List<ExamOrderInfoResponse> response;
-    if (params.getConfirmation() == Boolean.TRUE) {
+    if (params.getNotOrdered() == Boolean.TRUE) {
       for (ExamOrderInfoResponse info : allExamOrdersInfo) {
         if (info.getOrderedAt() == null) {
           unconfirmedExamOrdersInfo.add(info);

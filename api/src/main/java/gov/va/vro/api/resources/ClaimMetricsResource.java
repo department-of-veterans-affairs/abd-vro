@@ -149,6 +149,6 @@ public interface ClaimMetricsResource {
       @RequestParam(name = "size", required = false, defaultValue = "10")
           @Min(value = 1, message = "invalid size")
           Integer size,
-      @RequestParam(name = "confirmation", required = false, defaultValue = "False")
-          Boolean confirmation);
+      @RequestParam(name = "notOrdered", required = false, defaultValue = "False")
+          Boolean notOrdered);
 }

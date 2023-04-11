@@ -345,7 +345,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     assertEquals(expectedParams.getPage(), actualParams.getPage());
     assertEquals(expectedParams.getSize(), actualParams.getSize());
-    assertEquals(expectedParams.getConfirmation(), actualParams.getConfirmation());
+    assertEquals(expectedParams.getNotOrdered(), actualParams.getNotOrdered());
   }
 
   // Verifies default query parameters results in the expected argument to the service call.
