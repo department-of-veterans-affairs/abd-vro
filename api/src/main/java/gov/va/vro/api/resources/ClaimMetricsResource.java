@@ -1,6 +1,8 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
+import gov.va.vro.api.requests.HealthDataAssessmentRequest;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
@@ -149,4 +151,31 @@ public interface ClaimMetricsResource {
       @RequestParam(name = "size", required = false, defaultValue = "10")
           @Min(value = 1, message = "invalid size")
           Integer size);
+
+  @Operation(
+      summary = "Retrieves health evidence for a specific claimSubmissionId.",
+      description = "Gets the health evidence for a specific claimSubmissionId(collectionId)")
+  @GetMapping(value = "/health-evidence")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not found",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal service error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "health-evidence")
+  @Tag(name = "Claim Metrics")
+  @ResponseBody
+  ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
+      HealthDataAssessmentRequest request) throws ClaimProcessingException;
 }
