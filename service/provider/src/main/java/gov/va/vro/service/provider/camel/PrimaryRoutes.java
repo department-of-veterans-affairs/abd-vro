@@ -65,7 +65,6 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_GET_HEALTH_EVIDENCE)
         .routeId("get-health-evidence")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
