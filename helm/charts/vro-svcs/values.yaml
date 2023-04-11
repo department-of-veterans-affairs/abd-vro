@@ -16,3 +16,6 @@ replicaCount: 1
 #   minReplicas: 1
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
+
+bgs:
+  baseUrl: http://beplinktest.vba.va.gov
