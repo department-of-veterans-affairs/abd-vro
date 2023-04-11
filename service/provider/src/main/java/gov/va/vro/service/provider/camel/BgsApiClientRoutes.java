@@ -15,8 +15,10 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -24,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class BgsApiClientRoutes extends RouteBuilder {
 
-  public static final String ADD_BGS_NOTES = "direct:addBgsNotes-start";
+  public static final String ADD_BGS_NOTES = "direct:addBgsNotes-entry";
   static final String BGSCLIENT_ADDNOTES = "direct:toRabbit-bgsClient-addNotes";
   static final String ADD_NOTES_RETRIES = "direct:addBgsNotesWithRetries";
 
@@ -34,6 +36,11 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   int RETRY_LIMIT = 5;
 
+  @Value("${ENV}")
+  private String env;
+
+  private String[] relevantEnvs = {"dev", "qa", "sandbox", "prod-test", "prod"};
+
   @Override
   public void configure() throws Exception {
     var routeId = "add-bgs-notes-route";
@@ -41,7 +48,9 @@ public class BgsApiClientRoutes extends RouteBuilder {
     configureRouteToBgsApiClientMicroservice();
     configureRouteToSlackNotification();
 
-    configureMockBgsApiMicroservice();
+    log.info("ENV=" + env);
+    // TODO: workaround until a BGS Mock is implemented
+    if (!Arrays.asList(relevantEnvs).contains(env)) configureMockBgsApiMicroservice();
   }
 
   private void configureAddNotesRoute(String routeId) {
@@ -57,6 +66,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .end(); // of loopDoWhile
 
     from(ADD_NOTES_RETRIES)
+        .routeId("add-bgs-notes-retry-route")
         .doTry()
         .log("addBgsNotes: microservice request: ${body}")
         .process(requestBgsToAddNotesProcessor())
