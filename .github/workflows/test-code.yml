@@ -84,7 +84,7 @@ jobs:
           update-comment: true
           title: "JaCoCo Test Coverage"
 
-  test-ruby:
+  test-ruby-svc-bgs-api:
     runs-on: ubuntu-latest
 
     steps:
