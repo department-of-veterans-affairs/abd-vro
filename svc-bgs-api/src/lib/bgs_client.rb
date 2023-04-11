@@ -44,7 +44,7 @@ class BgsClient
 
   def handle_request(req)
     claim_id = req["vbmsClaimId"]
-    if req.has_key?("claimNotes")
+    if req.has_key?("claimNotes") && req["claimNotes"].any?
       raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
 
       create_claim_notes(claim_id: claim_id, notes: req["claimNotes"])

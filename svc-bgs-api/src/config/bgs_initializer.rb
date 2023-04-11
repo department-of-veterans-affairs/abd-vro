@@ -25,6 +25,6 @@ BGS.configure do |config|
     config.ssl_cert_file = settings["ssl_cert_file"]
     config.ssl_cert_key_file = settings["ssl_cert_key_file"]
     config.ssl_ca_cert = settings["ssl_ca_cert_file"]
-    config.ssl_verify_mode = settings["ssl_verify_mode"]
+    config.ssl_verify_mode = settings["ssl_verify_mode"].presence || "none"
   end
 end
