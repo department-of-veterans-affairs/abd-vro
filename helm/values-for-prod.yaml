@@ -25,3 +25,7 @@ vro-app-chart:
   # TODO: Is prod-test desired?
   vroAudUrl: https://api.va.gov/services/abd-vro-prod-test
   lhApiAuthUrl: https://api.va.gov/oauth2/health/system/v1/token
+
+vro-svcs-chart:
+  bgs:
+    baseUrl: https://vbmsprod.vba.va.gov
