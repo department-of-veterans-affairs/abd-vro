@@ -99,6 +99,9 @@ jobs:
           working-directory: svc-bgs-api/src
 
       - name: "Run rspec tests"
+        env:
+          # https://github.com/rails/spring
+          DISABLE_SPRING: true
         run: |
           cd svc-bgs-api/src
-          bundle exec rspec
+          bundle exec rspec --format documentation
