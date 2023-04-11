@@ -15,8 +15,4 @@ import java.util.List;
 public class ExamOrdersInfo {
   private List<ExamOrderInfoResponse> examOrderInfoList;
   private long total;
-
-  static void filterConfirmation() {
-    System.out.println("Hello World!");
-  }
 }

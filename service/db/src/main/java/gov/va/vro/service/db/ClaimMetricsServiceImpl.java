@@ -121,20 +121,30 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   private Page<ExamOrderEntity> findAllExamOrderInfoPage(ExamOrderInfoQueryParams params) {
     int size = params.getSize();
     int page = params.getPage();
-    if (params.getConfirmation() == Boolean.TRUE) {
-      PageRequest pageRequest = PageRequest.of(page, size, Sort.order(Sort.Direction.DESC, "updatedAt").);
-    }
-    else{
-      PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
-    }
+    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
     return examOrderRepository.findAll(pageRequest);
   }
 
   @Override
   public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params) {
     Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
-    List<ExamOrderInfoResponse> examOrdersInfo =
+    List<ExamOrderInfoResponse> allExamOrdersInfo =
         examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
-    return new ExamOrdersInfo(examOrdersInfo, examOrders.getTotalElements());
+    List<ExamOrderInfoResponse> unconfirmedExamOrdersInfo =
+            examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    List<ExamOrderInfoResponse> response;
+    if (params.getConfirmation() == Boolean.TRUE) {
+      for (ExamOrderInfoResponse info :  allExamOrdersInfo) {
+        if (info.getOrderedAt() == null) {
+          unconfirmedExamOrdersInfo.add(info);
+        }
+      }
+      response = unconfirmedExamOrdersInfo;
+    }
+    else {
+      response = allExamOrdersInfo;
+    }
+
+    return new ExamOrdersInfo(response, examOrders.getTotalElements());
   }
 }
