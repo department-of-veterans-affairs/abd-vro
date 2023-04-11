@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-test:
+  java-lint-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -83,3 +83,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           update-comment: true
           title: "JaCoCo Test Coverage"
+
+  ruby-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Set up Ruby"
+        uses: ruby/setup-ruby@v1
+        bundler-cache: true
+
+      - name: "Run rspec tests"
+        run: bundle exec rspec
