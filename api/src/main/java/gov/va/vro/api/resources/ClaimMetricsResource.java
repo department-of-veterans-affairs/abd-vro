@@ -150,6 +150,5 @@ public interface ClaimMetricsResource {
           @Min(value = 1, message = "invalid size")
           Integer size,
       @RequestParam(name = "confirmation", required = false, defaultValue = "False")
-          Boolean confirmation
-  );
+          Boolean confirmation);
 }

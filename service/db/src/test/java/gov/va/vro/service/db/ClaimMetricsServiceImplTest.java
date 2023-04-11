@@ -147,7 +147,7 @@ public class ClaimMetricsServiceImplTest {
     saveToDbService.insertOrUpdateExamOrderingStatus(examOrderNoTimeStamp);
 
     ExamOrderInfoQueryParams params = ExamOrderInfoQueryParams.builder().build();
-    ExamOrdersInfo eoir = claimMetricsService.findAllExamOrderInfo(params);
+    ExamOrdersInfo eoir = claimMetricsService.findExamOrderInfo(params);
     List<ExamOrderInfoResponse> examOrderResponses = eoir.getExamOrderInfoList();
 
     assertEquals(2, examOrderResponses.size());

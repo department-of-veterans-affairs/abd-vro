@@ -303,16 +303,16 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   // Verifies happy path where service returns an expected object.
   @Test
-  void testExamOrderInfoAll() throws JsonProcessingException {
+  void testExamOrderInfo() throws JsonProcessingException {
     int size = 5;
 
     ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size, Boolean.FALSE);
     ExamOrdersInfo serviceOutput = generateExamOrdersInfo(size);
 
     // Return an expected exception if argument does not match.
-    Mockito.when(service.findAllExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findAllExamOrderInfo(ArgumentMatchers.eq(params)))
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.eq(params)))
         .thenReturn(serviceOutput);
 
     ResponseEntity<String> responseEntity = callRestWithAuthorization("/v2/exam-order-info?size=5");
@@ -331,7 +331,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   }
 
   // Checks if a specific uri results in the expected argument to the service call.
-  private void testExamInfoAllQueryParamDefaults(
+  private void testExamInfoQueryParamDefaults(
       String uri, ExamOrderInfoQueryParams expectedParams) {
     Mockito.reset(service);
 
@@ -340,11 +340,12 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     callRestWithAuthorization(uri);
 
-    Mockito.verify(service).findAllExamOrderInfo(captor.capture());
+    Mockito.verify(service).findExamOrderInfo(captor.capture());
     ExamOrderInfoQueryParams actualParams = captor.getValue();
 
     assertEquals(expectedParams.getPage(), actualParams.getPage());
     assertEquals(expectedParams.getSize(), actualParams.getSize());
+    assertEquals(expectedParams.getConfirmation(), actualParams.getConfirmation());
   }
 
   // Verifies default query parameters results in the expected argument to the service call.
@@ -352,19 +353,19 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   void testExamInfoAllQueryParamDefaults() {
     String uri0 = "/v2/exam-order-info";
     ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10, Boolean.FALSE);
-    testExamInfoAllQueryParamDefaults(uri0, params0);
+    testExamInfoQueryParamDefaults(uri0, params0);
 
     String uri1 = "/v2/exam-order-info?size=15";
     ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15, Boolean.FALSE);
-    testExamInfoAllQueryParamDefaults(uri1, params1);
+    testExamInfoQueryParamDefaults(uri1, params1);
 
     String uri2 = "/v2/exam-order-info?page=1";
     ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10, Boolean.FALSE);
-    testExamInfoAllQueryParamDefaults(uri2, params2);
+    testExamInfoQueryParamDefaults(uri2, params2);
 
     String uri3 = "/v2/exam-order-info?page=1&size=15";
     ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15, Boolean.FALSE);
-    testExamInfoAllQueryParamDefaults(uri3, params3);
+    testExamInfoQueryParamDefaults(uri3, params3);
   }
 
   @Test
