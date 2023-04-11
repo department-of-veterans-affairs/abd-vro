@@ -139,7 +139,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, MAS_CLAIM_WIRETAP))
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     final String DIRECT_TO_MQ_MAS = "direct:toMq-mas-notification";
@@ -340,7 +340,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
@@ -354,6 +354,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
+        .to(ExchangePattern.InOnly, BgsApiClientRoutes.ADD_BGS_NOTES)
+        .log("completionSlackMessage: ${exchangeProperty.completionSlackMessage}")
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)

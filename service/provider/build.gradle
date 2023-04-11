@@ -40,4 +40,6 @@ dependencies {
 
   implementation 'io.jsonwebtoken:jjwt:0.2'
   //testImplementation 'io.jsonwebtoken:jjwt:0.2'
+
+  testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
 }
