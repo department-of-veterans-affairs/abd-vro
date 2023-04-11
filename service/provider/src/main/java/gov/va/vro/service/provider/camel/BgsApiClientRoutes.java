@@ -137,8 +137,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
     from(ENDPOINT_SLACK_BGS_FAILED)
         .routeId("slack-bgs-failed-route")
         .filter(exchange -> StringUtils.isNotBlank(webhook))
-        .log("slack: ${body}")
         .process(buildErrorMessage)
+        .log("slack: ${body}")
         .to(String.format("slack:#%s?webhookUrl=%s", channel, webhook));
   }
 
