@@ -350,7 +350,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
-        .to(BgsApiClientRoutes.ADD_BGS_NOTES)
+        .to(ExchangePattern.InOnly, BgsApiClientRoutes.ADD_BGS_NOTES)
+        .log("completionSlackMessage: ${exchangeProperty.completionSlackMessage}")
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
