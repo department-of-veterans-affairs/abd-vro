@@ -14,7 +14,6 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEv
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.camel.ToRabbitMqRouteHelper;
-import gov.va.vro.camel.processor.InOnlySyncProcessor;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
@@ -345,14 +344,13 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureCompleteProcessing() {
     var routeId = "mas-complete-claim";
-    var inOnlySyncProcessorBuilder = InOnlySyncProcessor.factory(producerTemplate);
     from(ENDPOINT_MAS_COMPLETE)
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
-        .process(inOnlySyncProcessorBuilder.uri(BgsApiClientRoutes.ADD_BGS_NOTES).build())
+        .to(BgsApiClientRoutes.ADD_BGS_NOTES)
         .choice()
         .when(simple("${exchangeProperty.completionSlackMessage} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
