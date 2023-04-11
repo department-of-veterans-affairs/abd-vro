@@ -93,7 +93,8 @@ jobs:
 
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1
-        bundler-cache: true
+        with:
+          bundler-cache: true
 
       - name: "Run rspec tests"
         run: bundle exec rspec
