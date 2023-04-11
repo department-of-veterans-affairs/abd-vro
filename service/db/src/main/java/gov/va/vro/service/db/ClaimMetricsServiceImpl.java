@@ -130,16 +130,16 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
     List<ExamOrderInfoResponse> allExamOrdersInfo =
         examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
-    List<ExamOrderInfoResponse> unconfirmedExamOrdersInfo =
+    List<ExamOrderInfoResponse> notOrderedExamOrdersInfo =
         examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     List<ExamOrderInfoResponse> response;
     if (params.getNotOrdered() == Boolean.TRUE) {
       for (ExamOrderInfoResponse info : allExamOrdersInfo) {
         if (info.getOrderedAt() == null) {
-          unconfirmedExamOrdersInfo.add(info);
+          notOrderedExamOrdersInfo.add(info);
         }
       }
-      response = unconfirmedExamOrdersInfo;
+      response = notOrderedExamOrdersInfo;
     } else {
       response = allExamOrdersInfo;
     }
