@@ -62,11 +62,8 @@ public class PrimaryRoutes extends RouteBuilder {
   }
 
   private void configureGetHealthEvidence() {
-    // send JSON-string payload to RabbitMQ
     from(ENDPOINT_GET_HEALTH_EVIDENCE)
         .routeId("get-health-evidence")
-        // Use Properties not Headers
-        // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
         .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
         .setProperty("claim-id", simple("${body.recordId}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))

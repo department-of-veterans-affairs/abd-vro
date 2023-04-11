@@ -101,11 +101,8 @@ public class ClaimMetricsController implements ClaimMetricsResource {
               "Claim with [diagnosticCode = %s] is not in scope.", claim.getDiagnosticCode()));
     }
     try {
-      // PostClaimMapper is used in both v1 (VroController) and v2. To differentiate the path we are
-      // on, set the type here. which is v2 for this file.
       Claim model = postClaimRequestMapper.toModel(claim);
       model.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
-      log.error("Got here");
       String responseAsString = camelEntrance.getHealthEvidence(model);
       AbdEvidenceWithSummary response =
           objectMapper.readValue(responseAsString, AbdEvidenceWithSummary.class);

@@ -153,8 +153,11 @@ public interface ClaimMetricsResource {
           Integer size);
 
   @Operation(
-      summary = "Retrieves health evidence for a specific claimSubmissionId.",
-      description = "Gets the health evidence for a specific claimSubmissionId(collectionId)")
+      summary =
+          "Retrieves health evidence for a specific claimSubmissionId, veteran ICN, and daignostic code.",
+      description =
+          "This endpoint does the same thing v2/health-data-assessment used to do. "
+              + " It does not store/write anything to the database.")
   @GetMapping(value = "/health-evidence")
   @ApiResponses(
       value = {
