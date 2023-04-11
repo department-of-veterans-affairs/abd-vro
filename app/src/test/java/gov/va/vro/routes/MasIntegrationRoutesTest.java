@@ -131,7 +131,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "generate-pdf",
-        RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
+        RabbitMqCamelUtils.getTapProducerDirectEndpoint(INCOMING_CLAIM_WIRETAP),
         "mock:empty-endpoint");
 
     replaceEndpoint(
