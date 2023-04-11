@@ -32,7 +32,7 @@ class VroConsoleShellCamelTests extends CamelTestSupport {
   Groovysh shell
 
   final String tapName = 'claim-submitted'
-  final String wireTapProducerEndpoint = RabbitMqCamelUtils.wiretapProducer(tapName)
+  final String wireTapProducerEndpoint = RabbitMqCamelUtils.getTapProducerDirectEndpoint(tapName)
 
   final String wiretapId = 'origRouteWireTap'
   final String origRouteName = 'claim-submit-orig-route'

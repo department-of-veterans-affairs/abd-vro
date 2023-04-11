@@ -70,7 +70,7 @@ public class CamelEntry {
     producerTemplate.asyncSendBody(toMqProducerUri(exchangeName, entryName), body);
   }
 
-  public static String toMqProducerUri(String exchangeName, String routingKey) {
+  private static String toMqProducerUri(String exchangeName, String routingKey) {
     return ToRabbitMqRouteHelper.rabbitmqProducerEndpoint(exchangeName, routingKey);
   }
 }
