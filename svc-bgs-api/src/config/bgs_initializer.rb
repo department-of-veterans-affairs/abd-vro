@@ -20,11 +20,10 @@ BGS.configure do |config|
   # $BGS_BASE_URL also determines whether HTTPS is used.
   config.jumpbox_url = ENV["BGS_BASE_URL"]
   config.env = nil
-  config.ssl_verify_mode = "none"
   if config.jumpbox_url.downcase.start_with?("https:")
     config.ssl_cert_file = settings["ssl_cert_file"]
     config.ssl_cert_key_file = settings["ssl_cert_key_file"]
     config.ssl_ca_cert = settings["ssl_ca_cert_file"]
-    config.ssl_verify_mode = settings["ssl_verify_mode"]
+    config.ssl_verify_mode = settings["ssl_verify_mode"].presence || "none"
   end
 end
