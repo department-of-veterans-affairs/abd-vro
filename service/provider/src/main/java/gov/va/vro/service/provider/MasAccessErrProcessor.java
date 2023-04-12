@@ -17,11 +17,11 @@ public class MasAccessErrProcessor implements Processor {
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {
-
     var claimPayload = exchange.getMessage().getBody(MasProcessingObject.class);
 
     log.info("Off Ramp : Sufficiency can't be determined {}.", claimPayload.getCollectionId());
     try {
+      // TODO: Why would this throw a MasException? Why is "OffRampAccessError" needed?
       exchange.setProperty("OffRampAccessError", "OffRampSufficiencyNull");
     } catch (MasException e) {
       log.error("Error in calling MasAccessErrProcessor ", e);

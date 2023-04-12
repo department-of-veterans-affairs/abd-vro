@@ -23,21 +23,6 @@ from assessclaimdc6602v2.src.lib import condition
                 "evidence": {
                     "bp_readings": [],
                     "conditions": [
-                        {"text": "Asthma", "code": "195967001", "status": "Active"}
-                    ],
-                    "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
-                },
-                "dateOfClaim": "2021-11-09",
-            },
-            {"conditions": [{"code": "195967001", "status": "Active", "text": "Asthma"}],
-             "relevantConditionsCount": 1,
-             "totalConditionsCount": 1},
-        ),
-        (
-            {
-                "evidence": {
-                    "bp_readings": [],
-                    "conditions": [
                         {
                             "text": "Eosinophilic asthma",
                             "code": "J82.83",

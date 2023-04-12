@@ -9,5 +9,5 @@ pytest==7.2.2
 pytest-cov==4.0.0
 pytest-mock-resources==2.6.11
 python-dateutil==2.8.2
-pytz==2022.7.1
-redis==4.5.3
+pytz==2023.3
+redis==4.5.4

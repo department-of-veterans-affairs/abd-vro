@@ -18,6 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class ClaimInfoResponse {
   private String claimSubmissionId;
+  private String collectionId; // will be empty for v1 claims.
   private String idType;
   private String veteranIcn;
   private List<ContentionInfo> contentions;

@@ -24,6 +24,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.VeteranIdentifiers;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -205,7 +206,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
-      Thread.sleep(5);
+      Thread.sleep(5000);
     }
     return null;
   }
@@ -231,12 +232,17 @@ public class VroV2Tests {
 
     // Start automated claim
     var requestEntity = getBearerAuthEntity(content);
-    var response =
-        restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
-    var masResponse = response.getBody();
-    assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
-    return request;
+    try {
+      var response =
+          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
+      var masResponse = response.getBody();
+      assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
+      return request;
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(spec.getExpectedStatusCode(), exception.getStatusCode());
+      return null;
+    }
   }
 
   private AutomatedClaimTestSpec specFor200(String collectionId) {
@@ -248,11 +254,12 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private void testPdfUpload(MasAutomatedClaimRequest request) {
+  private String testPdfUpload(MasAutomatedClaimRequest request) {
     // Wait until the evidence pdf is uploaded
     final String fileNumber = request.getVeteranIdentifiers().getVeteranFileId();
     log.info("Wait until the evidence pdf is uploaded");
     boolean successUploading = false;
+    String evidencePdfText = null;
     for (int pollNumber = 0; pollNumber < 15; ++pollNumber) {
       Thread.sleep(20000);
       String url = RECEIVED_FILES_URL + fileNumber;
@@ -260,7 +267,8 @@ public class VroV2Tests {
         ResponseEntity<byte[]> testResponse = restTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
         PdfTextV2 pdfTextV2 = PdfTextV2.getInstance(testResponse.getBody());
-        log.info("PDF text: {}", pdfTextV2.getPdfText());
+        evidencePdfText = pdfTextV2.getPdfText();
+        log.info("PDF text: {}", evidencePdfText);
         assertTrue(pdfTextV2.hasVeteranName(request.getFirstName(), request.getLastName()));
         successUploading = true;
         break;
@@ -272,6 +280,7 @@ public class VroV2Tests {
 
     // Verify evidence pdf is uploaded
     assertTrue(successUploading);
+    return evidencePdfText;
   }
 
   /**
@@ -361,15 +370,22 @@ public class VroV2Tests {
    * and lifecycle status update.
    */
   @SneakyThrows
-  private void testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
+  private String testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+
+    long extraSleep = spec.getExtraSleep();
+    if (extraSleep > 0) { // sleep before checks start
+      Thread.sleep(extraSleep);
+    }
+
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
     if (tempJurisdictionStationOverride != null) {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
-    testPdfUpload(request);
+
+    String pdfText = testPdfUpload(request);
     if (!spec.isBipUpdateClaimError()) {
       testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
       testLifecycleStatus(claimId, ClaimStatus.RFD);
@@ -377,6 +393,7 @@ public class VroV2Tests {
     if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
       testSlackMessage(collectionId);
     }
+    return pdfText;
   }
 
   /*
@@ -478,34 +495,118 @@ public class VroV2Tests {
     testLifecycleStatus(claimId, ClaimStatus.OPEN);
   }
 
-  /**
-   * Out of scope test case because of disability action type. Rest response message, Slack message
-   * and removal of RDR1 special issue are verified.
-   */
+  /** Out of scope test case because of disability action type. 422 response is verified. */
   @Test
   @SneakyThrows
-  void testAutomatedClaimOutOfScope() {
+  void testAutomatedClaimOutOfScopeDisabilityAction() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
-    spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setPayloadPath("test-mas/claim-10-7101-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and "
-            + "[disability action type = DECREASE] is not in scope.");
+        "Claim with collection id: 10, diagnostic code: 7101, and "
+            + "disability action type: DECREASE is not in scope.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Out of scope test case because of diagnostic code. 422 response is verified. */
+  @Test
+  @SneakyThrows
+  void testAutomatedClaimOutOfScopeDiagnosticCode() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("15");
+    spec.setPayloadPath("test-mas/claim-15-6602-out-of-scope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with collection id: 15, diagnostic code: 6602, and "
+            + "disability action type: INCREASE is not in scope.");
+    startAutomatedClaim(spec);
   }
 
   /**
-   * Missing anchor test case because of wrong temporary jurisdiction station. Rest response
-   * message, Slack message and removal of RDR1 special issue are verified.
+   * Missing anchor test case because of wrong temporary jurisdiction station. 422 response is
+   * verified.
    */
   @Test
   @SneakyThrows
-  void testAutomatedClaimMissingAnchor() {
+  void testAutomatedClaimMissingAnchorJurisdiction() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
-    spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setPayloadPath("test-mas/claim-20-7101-no-anchor-jurisdiction.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for "
+        "Claim with collection id: 20 does not qualify for "
             + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RDR1 test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueRrd1() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("30");
+    spec.setPayloadPath("test-mas/claim-30-7101-no-anchor-rdr1-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 30] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RRD test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueRrd() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("31");
+    spec.setPayloadPath("test-mas/claim-31-7101-no-anchor-rrd-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 31] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RDR1 and RRD test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueBoth() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("32");
+    spec.setPayloadPath("test-mas/claim-32-7101-no-anchor-both-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 32] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("35");
+    spec.setPayloadPath("test-mas/claim-35-7101-no-anchor-no-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 35] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Empty contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimEmptyContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("37");
+    spec.setPayloadPath("test-mas/claim-37-7101-no-anchor-empty-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 37] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Multi contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMultiContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("40");
+    spec.setPayloadPath("test-mas/claim-40-7101-no-anchor-multi-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 40] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -703,6 +804,17 @@ public class VroV2Tests {
   }
 
   /**
+   * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
+   * message, removal of rdr1, and database update are verified.
+   */
+  @Test
+  void testAutomatedClaimNewNotPresumptive() {
+    AutomatedClaimTestSpec spec = specFor200("379");
+    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
    * This is a full positive end-to-end test for a case with incomplete blood pressures. See
    * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
    * http://localhost:8096/received-files/9999380
@@ -710,9 +822,33 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
     AutomatedClaimTestSpec spec = specFor200("380");
-    testAutomatedClaimFullPositive(spec);
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("143/-"));
+    assertTrue(pdfText.contains("-/92"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("190/-"));
+    assertTrue(pdfText.contains("-/93"));
+
+    // Check that BP with missing systolic and diastolic is not included as evidence.
+    assertFalse(pdfText.contains("-/-"));
   }
 
+  /** This is a full positive end-to-end test for a case with duplicate blood pressures. */
+  @Test
+  void testAutomatedClaimFullPositiveDuplicateBloodPressures() {
+    AutomatedClaimTestSpec spec = specFor200("381");
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("139/77 8/11/2022 VAMC Other Output Reports"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 Medical Treatment Record - Government"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("167/93 5/11/2022 VAMC record - LYONS VA MEDICAL CENTER"));
+    assertTrue(pdfText.contains("153/115 6/21/2022 VAMC record - WASHINGTON VA MEDICAL"));
+
+    // Check that duplicate BP from LH is not included as evidence.
+    assertFalse(pdfText.contains("153/115 6/20/2021 VAMC record -WASHINGTON VA MEDICAL"));
+  }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
    * the Slack message when temporary station of jurisdiction changes during VRO processing.
@@ -747,5 +883,56 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test mas
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimMasException() {
+    AutomatedClaimTestSpec spec = specFor200("369");
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 500
+   * exceptions. This is on Observation retrieval.
+   */
+  @Test
+  void testAutomatedClaimLh500Exception() {
+    String collectionId = "365";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh timeout
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLhTimeoutException() {
+    String collectionId = "366";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExtraSleep(250000); // expected sleep time
+
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 504
+   * exceptions. This is on Condition retrieval.
+   */
+  @Test
+  void testAutomatedClaimLh504Exception() {
+    String collectionId = "367";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 }

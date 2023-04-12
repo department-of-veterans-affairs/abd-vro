@@ -1,5 +1,5 @@
 # This file is used when ENV="end2end-test" (in .github/workflows/end2end-test.yml)
-# Compare this file with application-local.yml since the both run VRO via docker-compose
+# Compare this file with application-local.yml since both are used when running VRO via docker-compose
 #
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 

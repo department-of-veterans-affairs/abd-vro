@@ -4,14 +4,19 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 
 public class RabbitMqCamelUtils {
-  public static String wiretapProducer(String tapName) {
-    return rabbitmqTopicProducerEndpoint("tap-" + tapName, "tap-" + tapName + "-not-used");
+  public static String wiretapProducer(RouteBuilder builder, String tapName) {
+    var exchangeName = "tap-" + tapName;
+    var directEndpoint = getTapProducerDirectEndpoint(tapName);
+    // Always use ToRabbitMqRouteHelper to create a route to send to RabbitMQ
+    new ToRabbitMqRouteHelper(builder, directEndpoint)
+        .routeId("to-rabbitmq-" + exchangeName + "-route")
+        .toTopic(exchangeName, "tap-" + tapName + "-not-used", "")
+        .createRoute();
+    return directEndpoint;
   }
 
-  static String rabbitmqTopicProducerEndpoint(String exchangeName, String queueName) {
-    // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
-    // Create the queue but don't bind it to the exchange so that messages don't accumulate.
-    return "rabbitmq:" + exchangeName + "?skipQueueBind=true&exchangeType=topic&queue=" + queueName;
+  public static String getTapProducerDirectEndpoint(String exchangeName) {
+    return "direct:toMqTopic-tap-" + exchangeName;
   }
 
   public static String wiretapConsumer(String queuePrefix, String tapBasename) {
@@ -20,11 +25,6 @@ public class RabbitMqCamelUtils {
 
   public static String rabbitmqTopicConsumerEndpoint(String exchangeName, String queueName) {
     return "rabbitmq:" + exchangeName + "?exchangeType=topic&queue=" + queueName;
-  }
-
-  public static String rabbitmqProducerEndpoint(String exchangeName, String routingKey) {
-    // skipQueueBind=true prevents a randomly-named, unnecessary queue from being generated
-    return "rabbitmq:" + exchangeName + "?skipQueueBind=true&routingKey=" + routingKey;
   }
 
   public static String rabbitmqConsumerEndpoint(String exchangeName, String routingKey) {
@@ -43,27 +43,5 @@ public class RabbitMqCamelUtils {
     if (!rabbitMqUri.startsWith("rabbitmq:"))
       throw new IllegalArgumentException("Endpoint URI must be for RabbitMQ: " + rabbitMqUri);
     return builder.from(rabbitMqUri);
-  }
-
-  public static RouteDefinition addToRabbitmqRoute(
-      RouteBuilder builder, String fromUri, String exchangeName, String routingKey) {
-    return addToRabbitmqRoute(builder, fromUri, exchangeName, routingKey, "");
-  }
-
-  public static RouteDefinition addToRabbitmqRoute(
-      RouteBuilder builder,
-      String fromUri,
-      String exchangeName,
-      String routingKey,
-      String rabbitmqParams) {
-    return builder
-        .from(fromUri)
-        // Remove the CamelRabbitmqExchangeName and CamelRabbitmqRoutingKey so it
-        // doesn't interfere with subsequent sending to rabbitmq endpoints
-        // https://camel.apache.org/components/3.19.x/rabbitmq-component.html#_troubleshooting_headers:
-        // > if the source queue has a routing key set in the headers, it will pass down to
-        // > the destination and not be overriden with the URI query parameters.
-        .removeHeaders("CamelRabbitmq*")
-        .to(rabbitmqProducerEndpoint(exchangeName, routingKey) + rabbitmqParams);
   }
 }

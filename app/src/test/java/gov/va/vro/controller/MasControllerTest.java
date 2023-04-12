@@ -103,8 +103,8 @@ public class MasControllerTest extends BaseControllerTest {
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Claim with [collection id = 123], [diagnostic code = 1233], and"
-                  + " [disability action type = INCREASE] is not in scope.",
+              "Claim with collection id: 123, diagnostic code: 1233, and"
+                  + " disability action type: INCREASE is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
