@@ -81,6 +81,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ClaimProcessingException.class)
   public ResponseEntity<ClaimProcessingError> handleClaimProcessingException(
       ClaimProcessingException exception) {
+    log.info("Claim processing error", exception);
     return new ResponseEntity<>(new ClaimProcessingError(exception), exception.getHttpStatus());
   }
 

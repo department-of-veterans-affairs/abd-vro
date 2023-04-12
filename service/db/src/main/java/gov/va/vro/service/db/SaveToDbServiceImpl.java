@@ -221,6 +221,8 @@ public class SaveToDbServiceImpl implements SaveToDbService {
         esdEntity.setFolderId(eFolderId);
         esdEntity.setUploadedAt(OffsetDateTime.now());
         evidenceSummaryDocumentRepository.save(esdEntity);
+
+        payload.setEvidenceSummaryDocumentId(esdEntity.getId());
       } else {
         log.error(
             "Could not find evidence summary document by contentionId: "

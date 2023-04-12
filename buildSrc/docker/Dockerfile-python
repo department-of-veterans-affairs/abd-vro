@@ -6,9 +6,9 @@ ARG BASE_IMAGE="python:3.10-alpine"
 FROM ${BASE_IMAGE}
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 && rm -rf /var/cache/apk/*
+RUN apk update && apk --no-cache add expat=2.5.0-r0 libcom_err=1.46.6-r0 libcrypto1.1=1.1.1t-r2 libcrypto3=3.0.8-r3 libssl1.1=1.1.1t-r2 libssl3=3.0.8-r3 e2fsprogs=1.46.6-r0 && rm -rf /var/cache/apk/*
 
-RUN adduser --no-create-home --disabled-password tron
+RUN adduser --disabled-password tron
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=5 CMD [ "CMD-SHELL", "pgrep python || exit 1" ]
 

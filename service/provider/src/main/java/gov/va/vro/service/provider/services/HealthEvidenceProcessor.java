@@ -32,7 +32,7 @@ public class HealthEvidenceProcessor implements Processor {
       throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
     }
 
-    exchange.setProperty("sufficientForFastTracking", evidence.getSufficientForFastTracking());
+    masTransferObject.setSufficientForFastTracking(evidence.getSufficientForFastTracking());
     log.info(
         " MAS Processing >> Sufficient Evidence >>> " + evidence.getSufficientForFastTracking());
 

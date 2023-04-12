@@ -1,12 +1,10 @@
+FROM ruby:2.7.8-alpine3.16
 
-# TODO: get it working with bitnami/ruby image
-# `bundle install` failed with bitnami/ruby:2.7.6
+ # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
+ # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
-# Or get alpine image working
-# FROM ruby:2.7.6-alpine
-# RUN apk update && apk --no-cache add expat=2.5.0-r0 git && rm -rf /var/cache/apk/*
-
-FROM ruby:2.7.6
+# hadolint ignore=DL3018
+RUN apk update && apk --no-cache add expat=2.5.0-r0 git=2.36.5-r0 ruby-dev=3.1.4-r0 curl-dev=7.83.1-r6 build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
 
 RUN adduser --disabled-password --gecos "" tron
 
@@ -22,8 +20,12 @@ ARG ENTRYPOINT_FILE=entrypoint.sh
 # Copy script that runs entrypoint.sh if it exists
 COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
+# TODO once application is stable, update Gemfile.lock with contents from image
+# and change next line to: COPY Gemfile Gemfile.lock ./
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+
+# After install, delete packages only needed during bundler install & clean APK cache
+RUN gem install bundler:2.4.10 --no-document && bundle install && gem update cgi && apk del git ruby-dev curl-dev build-base && rm -rf /var/cache/apk/*
 
 # === Image layers above this line are general and will be reused as cache when building the image.
 # Put commands that produce project-specific image layers below this line.

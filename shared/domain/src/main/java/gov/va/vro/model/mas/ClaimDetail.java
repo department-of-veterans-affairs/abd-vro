@@ -16,10 +16,10 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClaimDetail {
 
-  @Schema(description = "Claim ID", example = "1234")
+  @Schema(description = "Claim ID", example = "1020")
   private String benefitClaimId;
 
-  @Schema(description = "Claim submission timestamp", example = "2018-11-04T17:45:59Z")
+  @Schema(description = "Claim submission timestamp", example = "2023-02-08T18:45:59Z")
   @NotBlank
   private String claimSubmissionDateTime;
 
