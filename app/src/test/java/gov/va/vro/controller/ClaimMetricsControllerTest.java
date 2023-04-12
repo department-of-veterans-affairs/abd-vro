@@ -312,8 +312,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     // Return an expected exception if argument does not match.
     Mockito.when(service.findExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.eq(params)))
-        .thenReturn(serviceOutput);
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.eq(params))).thenReturn(serviceOutput);
 
     ResponseEntity<String> responseEntity = callRestWithAuthorization("/v2/exam-order-info?size=5");
 
@@ -331,8 +330,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   }
 
   // Checks if a specific uri results in the expected argument to the service call.
-  private void testExamInfoQueryParamDefaults(
-      String uri, ExamOrderInfoQueryParams expectedParams) {
+  private void testExamInfoQueryParamDefaults(String uri, ExamOrderInfoQueryParams expectedParams) {
     Mockito.reset(service);
 
     ArgumentCaptor<ExamOrderInfoQueryParams> captor =
