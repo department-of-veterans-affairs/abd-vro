@@ -154,7 +154,8 @@ public interface ClaimMetricsResource {
 
   @Operation(
       summary =
-          "Retrieves health evidence for a specific claimSubmissionId, veteran ICN, and diagnostic code.",
+          "Retrieves health evidence for a specific claimSubmissionId, claim version,"
+              + " veteran ICN, and diagnostic code.",
       description =
           "This endpoint does the same thing v2/health-data-assessment used to do. "
               + " It does not store/write anything to the database.")
