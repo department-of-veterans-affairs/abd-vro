@@ -66,6 +66,18 @@ jobs:
         env:
           ENV: "end2end-test"
 
+      - name: "Check for tracking files"
+        run: |
+          TRACKING_FOLDER="/persist/tracking/mas-claim-submitted/$(date '+%Y-%m-%d')"
+          echo "::group::Examining app's tracking files in $TRACKING_FOLDER"
+          TRACKING_FILES=$(docker exec vro_app_1 ls "$TRACKING_FOLDER")
+          echo "$TRACKING_FILES"
+          for COLLECTION_ID in 365 366 367 369 375 376 377 378 380 381 385 386 390 391 392 400 401 500; do
+            echo "Checking for $COLLECTION_ID.json"
+            echo "$TRACKING_FILES" | grep "$COLLECTION_ID.json"
+          done
+          echo "::endgroup::"
+
       - name: "Clean docker container and images"
         run: ./gradlew dockerclean
 

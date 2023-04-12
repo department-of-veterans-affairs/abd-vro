@@ -48,7 +48,7 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM_FULL)
         .routeId("claim-submit-full")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
@@ -62,7 +62,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(GENERATE_PDF_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, GENERATE_PDF_WIRETAP))
         .process(evidenceSummaryDocumentProcessor)
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
