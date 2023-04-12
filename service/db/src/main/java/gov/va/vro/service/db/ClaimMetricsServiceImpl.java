@@ -27,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -130,8 +131,7 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
     Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
     List<ExamOrderInfoResponse> allExamOrdersInfo =
         examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
-    List<ExamOrderInfoResponse> notOrderedExamOrdersInfo =
-        examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    List<ExamOrderInfoResponse> notOrderedExamOrdersInfo = new ArrayList<>();
     List<ExamOrderInfoResponse> response;
     if (params.getNotOrdered() == Boolean.TRUE) {
       for (ExamOrderInfoResponse info : allExamOrdersInfo) {

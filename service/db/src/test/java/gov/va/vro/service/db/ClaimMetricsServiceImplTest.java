@@ -150,6 +150,10 @@ public class ClaimMetricsServiceImplTest {
     ExamOrdersInfo eoir = claimMetricsService.findExamOrderInfo(params);
     List<ExamOrderInfoResponse> examOrderResponses = eoir.getExamOrderInfoList();
 
+    ExamOrderInfoQueryParams notOrderedParams = new ExamOrderInfoQueryParams(0, 10, Boolean.TRUE);
+    ExamOrdersInfo examsNotOrdered = claimMetricsService.findExamOrderInfo(notOrderedParams);
+    List<ExamOrderInfoResponse> examsNotOrderedResponses = examsNotOrdered.getExamOrderInfoList();
+
     assertEquals(2, examOrderResponses.size());
     assertEquals(
         examOrderNoTimeStamp.getCollectionId(), examOrderResponses.get(0).getCollectionId());
@@ -158,5 +162,7 @@ public class ClaimMetricsServiceImplTest {
     assertEquals(testExamOrder.getCollectionId(), examOrderResponses.get(1).getCollectionId());
     assertNotNull(examOrderResponses.get(1).getOrderedAt());
     assertFalse(examOrderResponses.get(0).isHasAssociatedClaimSubmission());
+    assertEquals(1, examsNotOrderedResponses.size());
+    assertEquals(examOrderNoTimeStamp.getCollectionId(), examsNotOrderedResponses.get(0).getCollectionId());
   }
 }
