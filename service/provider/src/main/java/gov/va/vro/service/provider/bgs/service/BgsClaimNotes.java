@@ -1,12 +1,10 @@
 package gov.va.vro.service.provider.bgs.service;
 
+import gov.va.vro.model.event.EventReason;
+
 import java.util.Map;
 
 public class BgsClaimNotes {
-
-  public static final String SUFFICIENCY_UNDETERMINED = "Sufficiency cannot be determined.";
-  public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
-  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
 
   static final String RFD_NOTE = "Claim status updated to RFD via automation";
 
@@ -31,9 +29,12 @@ public class BgsClaimNotes {
   static final Map<String, String> OFFRAMP_ERROR_2_CLAIM_NOTE =
       Map.of(
           // aka newClaimMissingFlash266
-          NEW_NOT_PRESUMPTIVE, CANT_CONFIRM_PRESUMPTIVE_NOTE,
+          EventReason.NEW_NOT_PRESUMPTIVE.getCode(),
+          CANT_CONFIRM_PRESUMPTIVE_NOTE,
           // aka insufficientHealthDataToOrderExam
-          SUFFICIENCY_UNDETERMINED, CANT_CONFIRM_PRESUMPTIVE_NOTE,
+          EventReason.SUFFICIENCY_UNDETERMINED.getCode(),
+          CANT_CONFIRM_PRESUMPTIVE_NOTE,
           // aka docUploadFailed
-          PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM, ARSD_NOT_UPLOADED_NOTE);
+          EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getCode(),
+          ARSD_NOT_UPLOADED_NOTE);
 }
