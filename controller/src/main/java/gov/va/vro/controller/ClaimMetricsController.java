@@ -102,7 +102,20 @@ public class ClaimMetricsController implements ClaimMetricsResource {
     }
     try {
       Claim model = postClaimRequestMapper.toModel(claim);
-      model.setIdType(MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE);
+      String idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
+      if (claim.getClaimVersion() != null) {
+        switch (claim.getClaimVersion()) {
+          case "v1" -> idType = Claim.V1_ID_TYPE;
+          case "v2" -> idType = MasAutomatedClaimPayload.CLAIM_V2_ID_TYPE;
+          default -> {
+            log.warn("Invalid version given to claim info. Must be v1 or v2 if given");
+            String msg = HttpStatus.BAD_REQUEST.getReasonPhrase();
+            throw new ClaimProcessingException(
+                claim.getClaimSubmissionId(), HttpStatus.BAD_REQUEST, msg);
+          }
+        }
+      }
+      model.setIdType(idType);
       String responseAsString = camelEntrance.getHealthEvidence(model);
       AbdEvidenceWithSummary response =
           objectMapper.readValue(responseAsString, AbdEvidenceWithSummary.class);
