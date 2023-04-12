@@ -163,6 +163,7 @@ public class ClaimMetricsServiceImplTest {
     assertNotNull(examOrderResponses.get(1).getOrderedAt());
     assertFalse(examOrderResponses.get(0).isHasAssociatedClaimSubmission());
     assertEquals(1, examsNotOrderedResponses.size());
-    assertEquals(examOrderNoTimeStamp.getCollectionId(), examsNotOrderedResponses.get(0).getCollectionId());
+    assertEquals(
+        examOrderNoTimeStamp.getCollectionId(), examsNotOrderedResponses.get(0).getCollectionId());
   }
 }
