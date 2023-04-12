@@ -180,7 +180,12 @@ public class MasIntegrationProcessors {
         }
       } catch (BipException exception) {
         log.error("Error using BIP Claims API", exception);
-        String message = "BIP Claims API exception: " + exception.getMessage();
+        String slackMsg =
+            String.format(
+                "reason code: %s,  narrative:%s. ",
+                EventReason.BIP_UPDATE_FAILED.getCode(),
+                EventReason.BIP_UPDATE_FAILED.getNarrative());
+        String message = slackMsg + "BIP Claims API exception: " + exception.getMessage();
         exchange.setProperty("completionSlackMessage", message);
       }
     };
@@ -231,8 +236,7 @@ public class MasIntegrationProcessors {
     String msg = originalMessage;
     EventReason reason = EventReason.getEventReason(originalMessage.trim());
     if (reason != null) {
-      msg =
-          String.format("reason code: %s,  narrative:%s", reason.getCode(), reason.getNarrative());
+      msg = reason.getReasonMessage();
     }
     if (mpo != null) {
       msg +=

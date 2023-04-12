@@ -1,12 +1,12 @@
 package gov.va.vro.service.provider.bgs.service;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.SUFFICIENCY_UNDETERMINED;
-
 import java.util.Map;
 
 public class BgsClaimNotes {
+
+  public static final String SUFFICIENCY_UNDETERMINED = "Sufficiency cannot be determined.";
+  public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
+  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
 
   static final String RFD_NOTE = "Claim status updated to RFD via automation";
 
