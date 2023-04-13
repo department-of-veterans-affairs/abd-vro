@@ -20,5 +20,4 @@ vro-app-chart:
 
 vro-svcs-chart:
   bgs:
-    baseUrl: https://bepprep.vba.va.gov
-
+    baseUrl: https://bepprodtest.vba.va.gov
