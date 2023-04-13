@@ -1,5 +1,6 @@
 package gov.va.vro.service.provider;
 
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -31,9 +32,9 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM_FULL, claim, String.class);
   }
 
-  public String getHealthEvidence(Claim claim) {
+  public HealthDataAssessment getHealthEvidence(MasProcessingObject payload) {
     return producerTemplate.requestBody(
-        PrimaryRoutes.ENDPOINT_GET_HEALTH_EVIDENCE, claim, String.class);
+        MasIntegrationRoutes.ENDPOINT_GET_HEALTH_EVIDENCE, payload, HealthDataAssessment.class);
   }
 
   public String generatePdf(GeneratePdfPayload resource) {

@@ -81,6 +81,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
+  public static final String ENDPOINT_GET_HEALTH_EVIDENCE = "direct:health-evidence";
 
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
@@ -125,6 +126,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
+    configureGetHealthEvidence();
     configureUploadPdf();
     configureCompleteProcessing();
     configureOrderExamStatus();
@@ -309,6 +311,19 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor)
         .endDoCatch();
+  }
+
+  private void configureGetHealthEvidence() {
+    from(ENDPOINT_GET_HEALTH_EVIDENCE)
+        .routeId("get-health-evidence")
+        .setProperty("payload", simple("${body}"))
+        .multicast(new GroupedExchangeAggregationStrategy())
+        .process(
+            FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
+        .end() // end multicast
+        .process(combineExchangesProcessor()) // returns HealthDataAssessment
+        .convertBodyTo(HealthDataAssessment.class);
   }
 
   private void configureUploadPdf() {

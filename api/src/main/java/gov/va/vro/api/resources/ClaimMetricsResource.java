@@ -1,13 +1,14 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.api.requests.HealthDataAssessmentRequest;
-import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 @RequestMapping(value = "/v2", produces = "application/json")
@@ -159,7 +163,7 @@ public interface ClaimMetricsResource {
       description =
           "This endpoint does the same thing v2/health-data-assessment used to do. "
               + " It does not store/write anything to the database.")
-  @GetMapping(value = "/health-evidence")
+  @PostMapping(value = "/health-evidence")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
@@ -180,6 +184,12 @@ public interface ClaimMetricsResource {
   @Timed(value = "health-evidence")
   @Tag(name = "Claim Metrics")
   @ResponseBody
-  ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
-      HealthDataAssessmentRequest request) throws ClaimProcessingException;
+  ResponseEntity<HealthDataAssessment> healthEvidence(
+      @Parameter(
+              description = "Request a MAS Automated Claim",
+              required = true,
+              schema = @Schema(implementation = MasAutomatedClaimRequest.class))
+          @Valid
+          @RequestBody
+          MasAutomatedClaimRequest request);
 }

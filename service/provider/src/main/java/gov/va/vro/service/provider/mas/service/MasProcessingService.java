@@ -4,7 +4,9 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHAN
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.CamelEntry;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -13,6 +15,7 @@ import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasCamelStage;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -47,6 +50,7 @@ public class MasProcessingService {
   private final SaveToDbService saveToDbService;
 
   private final CamelEntry camelEntry;
+  private final ObjectMapper objectMapper;
 
   /**
    * Processes incoming claim.
@@ -212,5 +216,11 @@ public class MasProcessingService {
     Claim claim = toClaim(claimPayload);
     claim.setOffRampReason(offRampReason);
     saveToDbService.setOffRampReason(claim);
+  }
+
+  public HealthDataAssessment getHealthEvidence(MasAutomatedClaimPayload payload)
+      throws MasException {
+    MasProcessingObject mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
+    return camelEntrance.getHealthEvidence(mpo);
   }
 }
