@@ -6,7 +6,6 @@ import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTO
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.CamelEntry;
-import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
@@ -218,7 +217,7 @@ public class MasProcessingService {
     saveToDbService.setOffRampReason(claim);
   }
 
-  public HealthDataAssessment getHealthEvidence(MasAutomatedClaimPayload payload)
+  public MasProcessingObject getHealthEvidence(MasAutomatedClaimPayload payload)
       throws MasException {
     MasProcessingObject mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
     return camelEntrance.getHealthEvidence(mpo);

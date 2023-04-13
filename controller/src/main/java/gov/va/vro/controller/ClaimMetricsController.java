@@ -3,8 +3,8 @@ package gov.va.vro.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.model.ClaimProcessingException;
 import gov.va.vro.api.resources.ClaimMetricsResource;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.controller.mapper.PostClaimRequestMapper;
-import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
@@ -15,6 +15,7 @@ import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
@@ -87,7 +88,8 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<HealthDataAssessment> healthEvidence(MasAutomatedClaimRequest request) {
+  public ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
+      MasAutomatedClaimRequest request) {
     log.info("Received health evidence request with collection ID {}", request.getCollectionId());
     String correlationId = UUID.randomUUID().toString();
     var payload =
@@ -102,7 +104,15 @@ public class ClaimMetricsController implements ClaimMetricsResource {
             .veteranIdentifiers(request.getVeteranIdentifiers())
             .veteranFlashIds(request.getVeteranFlashIds())
             .build();
-    HealthDataAssessment assessment = masProcessingService.getHealthEvidence(payload);
-    return new ResponseEntity<>(assessment, HttpStatus.OK);
+    MasProcessingObject assessment = masProcessingService.getHealthEvidence(payload);
+
+    FullHealthDataAssessmentResponse response = new FullHealthDataAssessmentResponse();
+    response.setClaimSubmissionId(assessment.getBenefitClaimId());
+    response.setVeteranIcn(assessment.getVeteranIcn());
+    response.setDiagnosticCode(assessment.getDiagnosticCode());
+    response.setEvidence(assessment.getEvidence());
+    response.setSufficientForFastTracking(assessment.getSufficientForFastTracking());
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

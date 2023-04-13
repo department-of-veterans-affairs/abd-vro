@@ -1,7 +1,7 @@
 package gov.va.vro.api.resources;
 
 import gov.va.vro.api.model.ClaimProcessingException;
-import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.api.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
@@ -184,7 +184,7 @@ public interface ClaimMetricsResource {
   @Timed(value = "health-evidence")
   @Tag(name = "Claim Metrics")
   @ResponseBody
-  ResponseEntity<HealthDataAssessment> healthEvidence(
+  ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
       @Parameter(
               description = "Request a MAS Automated Claim",
               required = true,

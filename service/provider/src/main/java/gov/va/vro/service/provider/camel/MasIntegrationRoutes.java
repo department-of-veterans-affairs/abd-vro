@@ -316,6 +316,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
   private void configureGetHealthEvidence() {
     from(ENDPOINT_GET_HEALTH_EVIDENCE)
         .routeId("get-health-evidence")
+        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
+        .setProperty("idType", simple("${body.idType}"))
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
         .process(
@@ -323,7 +325,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
-        .convertBodyTo(HealthDataAssessment.class);
+        .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
+        .convertBodyTo(AbdEvidenceWithSummary.class)
+        .process(new HealthEvidenceProcessor()); // returns MasTransferObject
   }
 
   private void configureUploadPdf() {
