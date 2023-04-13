@@ -13,7 +13,7 @@ describe BgsClient do
     subject { client.handle_request(req) }
 
     context "when given claimNotes but no vbmsClaimId" do
-      let(:req) { { "claimNotes" => [] } }
+      let(:req) { { "claimNotes" => ["a claim note"] } }
 
       it "raises an ArgumentError" do
         expect { subject }.to raise_error(ArgumentError, /vbmsClaimId is required/)
@@ -60,6 +60,17 @@ describe BgsClient do
         expect(notes_service).to have_received(:create_note).with(
           { participant_id: "2222", txt: "another note", user_id: "12345" }
         )
+      end
+
+      context "when given empty claimNotes and non-null veteranNote" do
+        let(:req) { { "claimNotes": [], "veteranParticipantId" => "2222", "veteranNote" => "another note" } }
+
+        it "interprets the request as a veteranNote accordingly" do
+          subject
+          expect(notes_service).to have_received(:create_note).with(
+            { participant_id: "2222", txt: "another note", user_id: "12345" }
+          )
+        end
       end
     end
   end

@@ -14,6 +14,9 @@ cd "$CERTS_PATH" || exit 10
 # shellcheck disable=SC2223
 [ "$BIP_PASSWORD" ] && { : ${PWD_ARG:=-password pass:$BIP_PASSWORD}; }
 
+# Checks that openssl is installed
+openssl version
+
 [ "$BIP_KEYSTORE" ] && [ "$BIP_TRUSTSTORE" ] && {
     echo "$BIP_KEYSTORE"   | base64 -d > keystore.p12
     echo "$BIP_TRUSTSTORE" | base64 -d > truststore.p12
