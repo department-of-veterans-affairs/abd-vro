@@ -53,7 +53,7 @@ mock-bip-claims-api:
   jwt:
     userId: "${BIP_CLAIM_USERID:VRO_USER}"
     secret: "${BIP_CLAIM_SECRET:theSecret}"
-    issuer: "${BIP_CLAIM_ISS:VRO}"
+    issuer: "${BIP_CLAIM_ISS}"
     applicationId: "${BIP_APPLICATION_ID:VRO}"
     stationId: "${BIP_STATION_ID:281}"
     expirationSeconds: 900

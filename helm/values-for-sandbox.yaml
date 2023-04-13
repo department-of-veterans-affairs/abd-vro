@@ -8,6 +8,7 @@ global:
 
   bip:
     bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
+    bipClaimIss: virtual_regional_office
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
 vro-app-chart:
