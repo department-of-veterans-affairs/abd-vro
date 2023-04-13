@@ -17,6 +17,9 @@ slack:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: benefits-vro-alerts
 
+lhAPIProvider:
+  validateToken: NO
+
 springdoc:
   swagger-ui:
     enabled: false
