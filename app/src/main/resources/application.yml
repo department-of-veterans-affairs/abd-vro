@@ -221,7 +221,6 @@ bip:
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
   evidenceBaseURL: "${BIP_EVIDENCE_URL}"
   evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
-  applicationName: "${BIP_APPLICATION_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:281}"
 truststore: "${BIP_TRUSTSTORE}"

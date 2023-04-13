@@ -37,11 +37,7 @@ public class BipApiProps {
 
   private String stationId;
 
-  private String jti;
-
   private String applicationId;
-
-  private String applicationName;
 
   /**
    * Creates common Jwt claims.
@@ -53,7 +49,6 @@ public class BipApiProps {
     cal.add(Calendar.MINUTE, 30);
     Date expired = cal.getTime();
     Claims claims = Jwts.claims();
-    claims.put("jti", jti);
     claims.put("applicationID", applicationId);
     claims.put("stationID", stationId);
     claims.put("userID", claimClientId);
