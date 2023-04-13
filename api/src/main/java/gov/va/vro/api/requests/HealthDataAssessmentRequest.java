@@ -28,10 +28,6 @@ public class HealthDataAssessmentRequest {
   @Schema(description = "Claim submission id", example = "1234")
   private String claimSubmissionId;
 
-  @NotBlank(message = "Claim version cannot be empty")
-  @Schema(description = "Claim version", example = "v2")
-  private String claimVersion;
-
   @Schema(description = "MAS", example = "NEW")
   private String disabilityActionType;
 
