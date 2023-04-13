@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PrimaryRoutes extends RouteBuilder {
   public static final String ENDPOINT_SUBMIT_CLAIM_FULL = "direct:claim-submit-full";
-  public static final String ENDPOINT_GET_HEALTH_EVIDENCE = "direct:get-health-evidence";
   public static final String ENDPOINT_GENERATE_PDF = "direct:generate-pdf";
   public static final String ENDPOINT_FETCH_PDF = "direct:fetch-pdf";
   public static final String ENDPOINT_GENERATE_FETCH_PDF = "direct:generate-fetch-pdf";
@@ -40,7 +39,6 @@ public class PrimaryRoutes extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     configureRouteClaimSubmitForFull();
-    configureGetHealthEvidence();
     configureRouteGeneratePdf();
     configureRouteFetchPdf();
     configureRouteimmediatePdf();
@@ -59,15 +57,6 @@ public class PrimaryRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"))
         .process(assessmentResultProcessor);
-  }
-
-  private void configureGetHealthEvidence() {
-    from(ENDPOINT_GET_HEALTH_EVIDENCE)
-        .routeId("get-health-evidence")
-        .setProperty("diagnosticCode", simple("${body.diagnosticCode}"))
-        .setProperty("claim-id", simple("${body.recordId}"))
-        .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
-        .routingSlip(method(slipClaimSubmitRouter, "routeHealthAssess"));
   }
 
   private void configureRouteGeneratePdf() {
