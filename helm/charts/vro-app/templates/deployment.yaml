@@ -42,10 +42,14 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
-                  echo 'Waiting for Postgres DB to be available'
-                  sleep 5
-                done
+                echo WORKAROUND for failing: pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER
+                pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER || echo "failed"
+                sleep 30
+                pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER || echo "failed"
+                # until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
+                #  echo 'Waiting for Postgres DB to be available'
+                #  sleep 5
+                # done
               "
           resources:
             # TODO: reduce resources since this container requires very little
@@ -56,6 +60,8 @@ spec:
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
+          # WORKAROUND for initContainers not being able to connect to postgres
+          command: [ "/bin/sh" ]
           resources:
             requests:
               cpu: 150m
