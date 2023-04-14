@@ -43,8 +43,8 @@ spec:
             - |
               /bin/sh -c "
                 until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
-                  echo 'Waiting for Postgres DB to be available'
-                  sleep 5
+                 echo 'Waiting for Postgres DB to be available'
+                 sleep 5
                 done
               "
           resources:
@@ -102,9 +102,6 @@ spec:
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
-            - name: VALIDATE_TOKEN
-              # Must quote, otherwise YAML interprets 'NO' as a boolean false
-              value: {{ .Values.validateToken | quote }}
 
             - name: VRO_SECRETS_MAS
               valueFrom:

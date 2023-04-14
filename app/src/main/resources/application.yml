@@ -105,6 +105,7 @@ spring:
       sandbox: nonprod,k8s
       # For prod, only load application-prod.yml and application-k8s.yml
       prod: k8s
+      # For prod-test, only load application-prod-test.yml and application-k8s.yml
       prod-test: k8s
 
   servlet:
@@ -159,7 +160,7 @@ lhAPIProvider:
   tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
-  validateToken: "${VALIDATE_TOKEN:NO}"
+  validateToken: "NO"
 
 masVeteranFlashIds:
   agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
