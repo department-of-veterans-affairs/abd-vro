@@ -18,15 +18,17 @@ from assessclaimdc7101.src.lib import queues as q7101
 
 @pytest.mark.parametrize(
     "queue, service_queue_name", [
-        (q6602v2, "6602v2"),
-        (q6602, "asthma"),
-        (q7101, "hypertension"),
-        (q6522, "6522"),
-        (qcancer, "cancer")
+        # V1
+        (q7101, "health-assess.hypertension"),
+        (q6602, "health-assess.asthma"),
+        # V2
+        (q6602v2, "health-sufficiency-assess.asthma"),
+        (q6522, "health-sufficiency-assess.rhinitis"),
+        (q6510, "health-sufficiency-assess.sinusitis"),
+        (qcancer, "health-sufficiency-assess.cancer")
     ]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
-    queue_name = f"health-assess.{service_queue_name}"
     channel = Mock(autospec=True, create=True)
     with caplog.at_level(logging.INFO):
         queue.queue_setup(channel=channel)
@@ -38,15 +40,15 @@ def test_queue_setup(queue, service_queue_name, caplog):
         auto_delete=True,
     )
 
-    channel.queue_declare.assert_called_with(queue=queue_name, durable=True, auto_delete=True)
+    channel.queue_declare.assert_called_with(queue=service_queue_name, durable=True, auto_delete=True)
     channel.queue_bind.assert_called_with(
-        queue=queue_name, exchange="health-assess-exchange"
+        queue=service_queue_name, exchange="health-assess-exchange"
     )
     assert channel.basic_consume
 
     assert (
-        f" [*] Waiting for data for queue: {queue_name}. To exit press CTRL+C"
-        in caplog.text
+            f" [*] Waiting for data for queue: {service_queue_name}. To exit press CTRL+C"
+            in caplog.text
     )
 
 
@@ -60,11 +62,10 @@ def test_queue_setup(queue, service_queue_name, caplog):
         (q6510, "6510", {"evidence": "some medical data body",
                          "claimSubmissionId": "1234"}, main6510),
         (q6522, "6522", {"evidence": "some medical data body",
-                         "claimSubmissionId": "1234"}, main6522)
+                         "claimSubmissionId": "1234"}, main6522),
     ],
 )
 def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
-
     channel = Mock(autospec=True, create=True)
     method = Mock(autospec=True, create=True)
     properties = Mock(autospec=True, create=True)
@@ -76,15 +77,15 @@ def test_on_request_callback(queue, diagnosticCode, body, main, caplog):
 
     with caplog.at_level(logging.INFO):
         with patch(
-            f"assessclaimdc{diagnosticCode}.src.lib.main.{main.__name__}",
-            return_value={"claimSubmissionId": "1234"},
+                f"assessclaimdc{diagnosticCode}.src.lib.main.{main.__name__}",
+                return_value={"claimSubmissionId": "1234"},
         ):
             queue.on_request_callback(channel, method, properties, body_formatted)
 
     assert (
-        f"claimSubmissionId: 1234, health data received by {diagnosticCode}"
-        in caplog.text
+            f"claimSubmissionId: 1234, health data received by {diagnosticCode}"
+            in caplog.text
     )
     assert (
-        f"claimSubmissionId: 1234, evaluation sent by {diagnosticCode}" in caplog.text
+            f"claimSubmissionId: 1234, evaluation sent by {diagnosticCode}" in caplog.text
     )
