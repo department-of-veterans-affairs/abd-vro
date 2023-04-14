@@ -1,4 +1,4 @@
-package gov.va.vro.api.xample.v3;
+package gov.va.vro.api.cc.v3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ResourceResponse {
+public class CCResponse {
 
   @NotBlank private String resourceId;
   private String diagnosticCode;

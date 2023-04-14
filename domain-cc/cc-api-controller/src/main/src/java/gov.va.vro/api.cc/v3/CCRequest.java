@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @Schema(name = "ResourceRequest", description = "Details for ResourceRequest")
-public class ResourceRequest {
+public class CCRequest {
   @NotBlank
   @Schema(description = "resource ID", example = "1234")
   private String resourceId;
