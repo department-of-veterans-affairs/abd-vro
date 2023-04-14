@@ -39,5 +39,4 @@ readinessProbe:
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
 
-validateToken: "NO"
 vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
