@@ -1,8 +1,6 @@
 package gov.va.vro.service.provider.bgs.service;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.SUFFICIENCY_UNDETERMINED;
+import gov.va.vro.model.event.EventReason;
 
 import java.util.Map;
 
@@ -31,9 +29,12 @@ public class BgsClaimNotes {
   static final Map<String, String> OFFRAMP_ERROR_2_CLAIM_NOTE =
       Map.of(
           // aka newClaimMissingFlash266
-          NEW_NOT_PRESUMPTIVE, CANT_CONFIRM_PRESUMPTIVE_NOTE,
+          EventReason.NEW_NOT_PRESUMPTIVE.getCode(),
+          CANT_CONFIRM_PRESUMPTIVE_NOTE,
           // aka insufficientHealthDataToOrderExam
-          SUFFICIENCY_UNDETERMINED, CANT_CONFIRM_PRESUMPTIVE_NOTE,
+          EventReason.SUFFICIENCY_UNDETERMINED.getCode(),
+          CANT_CONFIRM_PRESUMPTIVE_NOTE,
           // aka docUploadFailed
-          PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM, ARSD_NOT_UPLOADED_NOTE);
+          EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getCode(),
+          ARSD_NOT_UPLOADED_NOTE);
 }

@@ -102,9 +102,6 @@ spec:
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
-            - name: VALIDATE_TOKEN
-              # Must quote, otherwise YAML interprets 'NO' as a boolean false
-              value: {{ .Values.validateToken | quote }}
 
             - name: VRO_SECRETS_MAS
               valueFrom:
