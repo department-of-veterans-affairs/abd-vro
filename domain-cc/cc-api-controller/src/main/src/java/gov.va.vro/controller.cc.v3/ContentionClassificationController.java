@@ -27,39 +27,20 @@ public class ContentionClassificationController implements ContentionClassificat
   private final ResourceMapper resourceMapper;
 
   @Override
-  public ResponseEntity<CCResponse> postResource(CCRequest request)
+  public ResponseEntity<CCResponse> postResource(String ccEndpoint)
       throws ResourceException {
     log.info(
         "Post XResource for resource: {} and diagnostic code {}",
-        request.getResourceId(),
-        request.getDiagnosticCode());
+//        request.getResourceId(),
+//        request.getDiagnosticCode());
     try {
-      log.info("ContentionClassificationController postResource!);
-      // SomeDtoModel model = resourceMapper.toModel(request);
-      // log.info("REQUEST to postXResource: {}", model);
-      // var result = camelEntry.inOut('v3', 'postResource', model, SomeDtoModel.class);
-      // log.info("RESPONSE from postXResource returned status: {}", result.getStatus());
-      // ResourceResponse response = resourceMapper.toResourceResponse(result);
-      // if (StatusValue.ERROR.name().equals(result.getStatus())) {
-      //   log.warn("RESPONSE from postXResource returned status: {}", result.getStatusMessage());
-      //   return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-      // }
+      log.info("ContentionClassificationController postResource!");
+      log.info(ccEndpoint);
+      log.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       log.error("Error in Post XResource", ex);
       throw new ResourceException(request.getResourceId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
-
-//  private ResponseEntity<SomeDtoModel> fetchProcess(String resourceId, SomeDtoModel response)
-//      throws IOException {
-//    log.info("RESPONSE from fetchProcess returned status: {}", response.getStatus());
-//    if (response.getStatus().equals("NOT_FOUND")) {
-//      return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//    } else if (response.getStatus().equals("ERROR")) {
-//      log.info("RESPONSE from fetchProcess returned status: {}", response.getStatusMessage());
-//      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//    return new ResponseEntity<>(response, HttpStatus.OK);
-//  }
 }

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import gov.va.vro.api.cc.v3.CCRequest;
+import gov.va.vro.api.cc.v3.CCResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +48,15 @@ public interface ContentionClassificationResource {
             description = "CC: Server Error",
             content = @Content(schema = @Schema(hidden = true)))
       })
-  ResponseEntity<Object> postResource(
+  ResponseEntity<CCResponse> postResource(
           @PathVariable String ccEndpoint
-          @Parameter(
-              description = "payload for resource",
-              required = true,
-              schema = @Schema(implementation = CCRequest.class))
-          @Valid
-          @RequestBody
-          CCRequest request)
+          // @Parameter(
+          //     description = "payload for resource",
+          //     required = true,
+          //     schema = @Schema(implementation = CCRequest.class))
+          // @Valid
+          // @RequestBody
+          // CCRequest request)
+          )
       throws MethodArgumentNotValidException, ResourceException;
 }
