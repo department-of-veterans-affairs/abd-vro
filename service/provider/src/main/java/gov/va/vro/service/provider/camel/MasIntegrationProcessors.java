@@ -7,6 +7,7 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
@@ -179,7 +180,12 @@ public class MasIntegrationProcessors {
         }
       } catch (BipException exception) {
         log.error("Error using BIP Claims API", exception);
-        String message = "BIP Claims API exception: " + exception.getMessage();
+        String slackMsg =
+            String.format(
+                "reason code: %s,  narrative:%s. ",
+                EventReason.BIP_UPDATE_FAILED.getCode(),
+                EventReason.BIP_UPDATE_FAILED.getNarrative());
+        String message = slackMsg + "BIP Claims API exception: " + exception.getMessage();
         exchange.setProperty("completionSlackMessage", message);
       }
     };
@@ -228,8 +234,14 @@ public class MasIntegrationProcessors {
 
   public static String getSlackMessage(MasProcessingObject mpo, String originalMessage) {
     String msg = originalMessage;
+    EventReason reason = EventReason.getEventReason(originalMessage.trim());
+    if (reason != null) {
+      msg = reason.getReasonMessage();
+    }
     if (mpo != null) {
-      msg += " collection ID: " + mpo.getCollectionId();
+      msg +=
+          String.format(
+              " claim ID: %s, collection ID: %s", mpo.getBenefitClaimId(), mpo.getCollectionId());
     }
     return msg;
   }

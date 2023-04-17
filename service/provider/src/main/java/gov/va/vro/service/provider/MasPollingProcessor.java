@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class MasPollingProcessor implements Processor {
+  private static final String MAS_RETRY_LIMIT_PASSED =
+      "MAS Processing did not complete. Maximum reties exceeded.";
   private final CamelEntrance camelEntrance;
   private final MasConfig masDelays;
   private final MasCollectionService masCollectionService;
@@ -23,11 +25,16 @@ public class MasPollingProcessor implements Processor {
   @SneakyThrows
   public void process(Exchange exchange) {
     int retryCounts = (int) exchange.getMessage().getHeader(MasIntegrationRoutes.MAS_RETRY_PARAM);
-    if (retryCounts == 0) {
-      throw new MasException("MAS Processing did not complete. Maximum reties exceeded");
-    }
-
     var claimPayload = exchange.getMessage().getBody(MasAutomatedClaimPayload.class);
+    if (retryCounts == 0) {
+      String msg =
+          String.format(
+              "%s Collection ID: %s, Claim ID: %s",
+              MAS_RETRY_LIMIT_PASSED,
+              claimPayload.getCollectionId(),
+              claimPayload.getBenefitClaimId());
+      throw new MasException(msg);
+    }
 
     boolean isCollectionReady =
         masCollectionService.checkCollectionStatus(claimPayload.getCollectionId());
