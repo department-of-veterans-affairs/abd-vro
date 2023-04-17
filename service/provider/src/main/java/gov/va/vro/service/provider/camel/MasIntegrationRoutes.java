@@ -18,6 +18,7 @@ import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ExternalCallException;
@@ -114,13 +115,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
-  // Possible OffRamp Reasons
-  public static final String SUFFICIENCY_UNDETERMINED = "Sufficiency cannot be determined.";
-  public static final String PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM = "docUploadFailed";
-  public static final String EXAM_ORDER_FAILED = "examOrderFailed";
-  public static final String NEW_NOT_PRESUMPTIVE = "newClaimMissingFlash266";
-  public static final String ANNOTATIONS_FAILED = "annotationDataRequestFailed";
-
   @Override
   public void configure() {
     configureAuditing();
@@ -191,7 +185,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .process(setOffRampReasonProcessor(SUFFICIENCY_UNDETERMINED))
+        .process(setOffRampReasonProcessor(EventReason.SUFFICIENCY_UNDETERMINED.getCode()))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
         .to(ENDPOINT_MAS_COMPLETE)
@@ -212,13 +206,18 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setBody(simple("${exchangeProperty.payload}"))
         .process(
             setOffRampReasonProcessor(
-                PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM)) // Continue to completion processor
+                EventReason.PDF_UPLOAD_FAILED_AFTER_RFD
+                    .getCode())) // Continue to completion processor
         .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    final String pdfFailMessage = "PDF upload failed after exam order requested.";
+    final String pdfFailMessage =
+        String.format(
+            "reason code: %s,  narrative:%s",
+            EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getCode(),
+            EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getNarrative());
 
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
@@ -234,7 +233,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
-        .process(setOffRampReasonProcessor(EXAM_ORDER_FAILED))
+        .process(setOffRampReasonProcessor(EventReason.EXAM_ORDER_FAILED.getCode()))
         .to(ENDPOINT_MAS_COMPLETE)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
@@ -270,7 +269,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
         .doCatch(MasException.class) // offramp claim if we get no MAS annotations
         .setBody(simple("${exchangeProperty.payload}"))
-        .process(setOffRampReasonProcessor(ANNOTATIONS_FAILED))
+        .process(setOffRampReasonProcessor(EventReason.ANNOTATIONS_FAILED.getCode()))
         .to(ENDPOINT_MAS_COMPLETE)
         .throwException(
             new MasException("annotationDataRequestFailed")) // this will stop the multicast above.
