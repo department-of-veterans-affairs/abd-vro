@@ -28,23 +28,23 @@ public class MasAutomatedClaimRequest {
   private String correlationId;
 
   @NotBlank(message = "Date of Birth cannot be empty")
-  @Schema(description = "Veteran Date of Birth", example = "2000-02-19")
+  @Schema(description = "Veteran Date of Birth", example = "1968-02-19")
   @JsonProperty("dob")
   private String dateOfBirth;
 
   @NotBlank(message = "First Name cannot be empty")
-  @Schema(description = "Veteran First  Name", example = "Rick")
+  @Schema(description = "Veteran First  Name", example = "David")
   private String firstName;
 
   @NotBlank(message = "Last Name cannot be empty")
-  @Schema(description = "Veteran Last  Name", example = "Smith")
+  @Schema(description = "Veteran Last  Name", example = "Skyscraper")
   private String lastName;
 
   @Schema(description = "Veteran Gender")
   private String gender;
 
   @NotNull(message = "Collection ID cannot be empty")
-  @Schema(description = "Collection ID", example = "350")
+  @Schema(description = "Collection ID", example = "376")
   private Integer collectionId;
 
   @NotNull
@@ -57,6 +57,6 @@ public class MasAutomatedClaimRequest {
   @Schema(description = "Details of the Claim")
   private ClaimDetail claimDetail;
 
-  @Schema(description = "Veteran Flash Ids", example = "[\"999\"]")
+  @Schema(description = "Veteran Flash Ids", example = "[\"Agent Orange Exposure Verified\"]")
   private List<String> veteranFlashIds;
 }

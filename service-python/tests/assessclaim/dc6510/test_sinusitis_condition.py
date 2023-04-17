@@ -19,16 +19,9 @@ from assessclaimdc6510.src.lib import condition
                     "dateOfClaim": "2021-11-09",
                 },
                 {
-                    "conditions": [
-                        {
-                            "text": "Chronic maxillary sinusitis",
-                            "code": "35923002",
-                            "status": "active",
-                            "onsetDate": "2021-11-01"
-                        }
-                    ],
+                    "conditions": [],
                     "constantSinusitis": False,
-                    "relevantConditionsCount": 1,
+                    "relevantConditionsCount": 0,
                     "totalConditionsCount": 1,
                     "osteomyelitis": False,
                 },
@@ -71,15 +64,10 @@ from assessclaimdc6510.src.lib import condition
                     "dateOfClaim": "2022-06-09",
                 },
                 {
-                    "conditions": [
-                        {"text": "Chronic maxillary sinusitis",
-                         "code": "35923002",
-                         "status": "active",
-                         "onsetDate": "2021-11-01"}
-                    ],
-                    "relevantConditionsCount": 1,
+                    "conditions": [],
+                    "relevantConditionsCount": 0,
                     "totalConditionsCount": 2,
-                    "constantSinusitis": True,
+                    "constantSinusitis": False,
                     "osteomyelitis": False,
                 },
         ),

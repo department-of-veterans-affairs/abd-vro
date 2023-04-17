@@ -7,16 +7,18 @@ import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convert
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.setOffRampReasonProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
 import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackOffRampProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ExternalCallException;
@@ -39,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ExchangeTimedOutException;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.commons.lang3.StringUtils;
@@ -79,11 +82,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
-  public static final String ENDPOINT_OFFRAMP_ERROR = "direct:offramp-error";
 
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
   public static final String EXAM_ORDER_STATUS_WIRETAP = "exam-order-status";
+
+  private final ProducerTemplate producerTemplate;
 
   private final BipClaimService bipClaimService;
 
@@ -125,18 +129,15 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setExchangePattern(ExchangePattern.InOnly)
         .routeId("mas-request-injection")
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(MAS_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, MAS_CLAIM_WIRETAP))
         .to(ENDPOINT_AUTOMATED_CLAIM);
 
     final String DIRECT_TO_MQ_MAS = "direct:toMq-mas-notification";
     final String MAS_NOTIFICATION_EXCHANGE = "mas-notification-exchange";
     final String MAS_NOTIFICATION_ROUTING_KEY = "mas-notification";
-    RabbitMqCamelUtils.addToRabbitmqRoute(
-        this,
-        DIRECT_TO_MQ_MAS,
-        MAS_NOTIFICATION_EXCHANGE,
-        MAS_NOTIFICATION_ROUTING_KEY,
-        "&requestTimeout=0");
+    new ToRabbitMqRouteHelper(this, DIRECT_TO_MQ_MAS)
+        .toMq(MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY, "&requestTimeout=0")
+        .createRoute();
 
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
@@ -174,21 +175,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(masAssessmentResultProcessor)
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
         .choice()
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == false"))
+        .when(simple("${body.sufficientForFastTracking} == false"))
         .to(ENDPOINT_ORDER_EXAM)
-        .when(simple("${exchangeProperty.sufficientForFastTracking} == true"))
+        .when(simple("${body.sufficientForFastTracking} == true"))
         .to(END_POINT_RFD)
         .otherwise()
         // Off ramp if the Sufficient For Fast Tracking is null
-        .setProperty("offRampError", constant("Sufficiency cannot be determined."))
-        .setProperty("sourceRoute", constant("assessorError"))
+        .process(setOffRampReasonProcessor(EventReason.SUFFICIENCY_UNDETERMINED.getCode()))
         .log("Assessor Error. Off-ramping claim")
         .process(masAccessErrProcessor)
-        .to(ENDPOINT_OFFRAMP_ERROR)
+        .to(ENDPOINT_MAS_COMPLETE)
         .end();
 
     String rfdRouteId = "mas-rfd";
-    String pdfFailError = "docUploadFailed";
+
     from(END_POINT_RFD)
         // input: MasAutomatedClaimPayload
         .routeId(rfdRouteId)
@@ -200,17 +200,20 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .doCatch(BipException.class)
         // Completion code needs the MasProcessingObject as the body.
         .setBody(simple("${exchangeProperty.payload}"))
-        .setProperty("offRampError", constant(pdfFailError))
-        .setProperty("sourceRoute", constant(rfdRouteId))
-        .to(ENDPOINT_OFFRAMP_ERROR)
-        .stop()
+        .process(
+            setOffRampReasonProcessor(
+                EventReason.PDF_UPLOAD_FAILED_AFTER_RFD
+                    .getCode())) // Continue to completion processor
         .end() // End try
         .to(ENDPOINT_MAS_COMPLETE);
 
     // Call "Order Exam" in the absence of evidence .i.e Sufficient For Fast Tracking is "false"
     var orderExamRouteId = "mas-order-exam";
-    final String orderFailMessage = "examOrderFailed";
-    final String pdfFailMessage = "PDF upload failed after exam order requested.";
+    final String pdfFailMessage =
+        String.format(
+            "reason code: %s,  narrative:%s",
+            EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getCode(),
+            EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getNarrative());
 
     from(ENDPOINT_ORDER_EXAM)
         // input: MasAutomatedClaimPayload
@@ -226,9 +229,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .to(ENDPOINT_MAS_COMPLETE)
         .doCatch(MasException.class)
         // Body is still the Mas Processing object.
-        .setProperty("sourceRoute", constant(orderExamRouteId))
-        .setProperty("offRampError", constant(orderFailMessage))
-        .to(ENDPOINT_OFFRAMP_ERROR)
+        .process(setOffRampReasonProcessor(EventReason.EXAM_ORDER_FAILED.getCode()))
+        .to(ENDPOINT_MAS_COMPLETE)
         .stop() // Offramp and don't continue processing
         .doCatch(BipException.class)
         // Mas Complete Processing code expects this to be the body of the message
@@ -238,55 +240,70 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(slackEventProcessor(orderExamRouteId, pdfFailMessage))
         .to(ENDPOINT_MAS_COMPLETE)
         .end();
-
-    // Wiretap does NOT let camel work as expected when placed directly inside doCatch()
-    // Thus it is broken out here, in the interest of letting normal flow/control happen.
-    from(ENDPOINT_OFFRAMP_ERROR)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(slackOffRampProcessor())
-        .to(ENDPOINT_MAS_COMPLETE)
-        .end();
   }
 
   private void configureCollectEvidence() {
     String lighthouseRetryRoute = "direct:lighthouse-retry";
     String lighthouseRoute = "mas-automated-claim-lighthouse";
+    String wiretapLighthouse = "direct:wiretap-lighthouse";
 
     String routeId = "mas-collect-evidence";
     from(ENDPOINT_COLLECT_EVIDENCE)
+        .onException(
+            MasException
+                .class) // Do not go to the main error processor. Mas complete route handles.
+        .handled(true)
+        .end() // End Exception
         .routeId(routeId)
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Collecting evidence"))
         .setProperty("payload", simple("${body}"))
         .multicast(new GroupedExchangeAggregationStrategy())
+        .stopOnException() // Stop does not handle the exception.
+        .doTry()
         .process(
             FunctionProcessor.fromFunction(masCollectionService::collectAnnotations)) // call MAS
-        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse
+        .doCatch(MasException.class) // offramp claim if we get no MAS annotations
+        .setBody(simple("${exchangeProperty.payload}"))
+        .process(setOffRampReasonProcessor(EventReason.ANNOTATIONS_FAILED.getCode()))
+        .to(ENDPOINT_MAS_COMPLETE)
+        .throwException(
+            new MasException("annotationDataRequestFailed")) // this will stop the multicast above.
+        .end() // End Try
+        .to(ENDPOINT_LIGHTHOUSE_EVIDENCE) // call lighthouse, if it fails we retry
         .end() // end multicast
         .process(combineExchangesProcessor()) // returns HealthDataAssessment
         .process(new ServiceLocationsExtractorProcessor()); // put service locations to property
 
     from(ENDPOINT_LIGHTHOUSE_EVIDENCE)
         .routeId(lighthouseRoute)
+        .setProperty("payload", simple("${body}"))
         .process(payloadToClaimProcessor())
+        .doTry()
         .to(lighthouseRetryRoute)
-        // Handle the errors to permit processing to continue
-        .onException(ExchangeTimedOutException.class, ExternalCallException.class)
-        .handled(true)
+        .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .to(wiretapLighthouse)
+        .process(lighthouseContinueProcessor()) // But keep processing
+        .end();
+
+    // Wiretap breaks onCatch behavior, onException wont work here. This is the workaround.
+    from(wiretapLighthouse)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventPropertyProcessor(
-                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"))
-        .process(lighthouseContinueProcessor()) // But keep processing
-        .end(); // End of onException
+                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
+        .setProperty("retryBody", simple("${body}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
+        .log("Retrying lighthouse due to error")
+        .setBody(simple("${exchangeProperty.retryBody}"))
+        .removeProperty("retryBody")
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
         .process(healthAssessmentErrCheckProcessor)
@@ -318,7 +335,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     String routeId = "mas-exam-order-status";
     from(ENDPOINT_EXAM_ORDER_STATUS)
         .routeId(routeId)
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(EXAM_ORDER_STATUS_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, EXAM_ORDER_STATUS_WIRETAP))
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
         .onPrepare(auditProcessor(routeId, "Exam Order Status Called"))
         .log("Invoked " + routeId);
@@ -332,17 +349,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .onPrepare(auditProcessor(routeId, "Updating claim and contentions"))
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
-        .process(FunctionProcessor.fromFunction(bipClaimService::completeProcessing))
+        .to(ExchangePattern.InOnly, BgsApiClientRoutes.ADD_BGS_NOTES)
+        .log("completionSlackMessage: ${exchangeProperty.completionSlackMessage}")
+        .choice()
+        .when(simple("${exchangeProperty.completionSlackMessage} != null"))
+        .wireTap(ENDPOINT_NOTIFY_AUDIT)
+        .onPrepare(slackEventPropertyProcessor(routeId, "completionSlackMessage"))
+        .endChoice()
+        .otherwise()
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        .onPrepare(
-            auditProcessor(
-                routeId,
-                auditable -> {
-                  MasProcessingObject mpo = (MasProcessingObject) auditable;
-                  return mpo.isTSOJ()
-                      ? "Claim satisfies TSOJ condition. Updated status."
-                      : "Claim does not satisfy TSOJ condition. Status not updated.";
-                }));
+        .onPrepare(auditProcessor(routeId, "Successful processing"))
+        .end();
   }
 
   private void configureNotify() {

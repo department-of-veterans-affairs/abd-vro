@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.camel;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.service.provider.services.AssessmentResultProcessor;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
@@ -47,7 +48,7 @@ public class PrimaryRoutes extends RouteBuilder {
     // send JSON-string payload to RabbitMQ
     from(ENDPOINT_SUBMIT_CLAIM_FULL)
         .routeId("claim-submit-full")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, INCOMING_CLAIM_WIRETAP))
         .process(FunctionProcessor.fromFunction(saveToDbService::insertClaim))
         // Use Properties not Headers
         // https://examples.javacodegeeks.com/apache-camel-headers-vs-properties-example/
@@ -61,7 +62,7 @@ public class PrimaryRoutes extends RouteBuilder {
   private void configureRouteGeneratePdf() {
     from(ENDPOINT_GENERATE_PDF)
         .routeId("generate-pdf")
-        .wireTap(RabbitMqCamelUtils.wiretapProducer(GENERATE_PDF_WIRETAP))
+        .wireTap(RabbitMqCamelUtils.wiretapProducer(this, GENERATE_PDF_WIRETAP))
         .process(evidenceSummaryDocumentProcessor)
         .to(pdfRoute(GENERATE_PDF_QUEUE));
   }
@@ -78,7 +79,7 @@ public class PrimaryRoutes extends RouteBuilder {
 
   private String pdfRoute(String queueName) {
     String uri = "direct:rabbitmq-" + queueName;
-    RabbitMqCamelUtils.addToRabbitmqRoute(this, uri, PDF_EXCHANGE, queueName);
+    new ToRabbitMqRouteHelper(this, uri).toMq(PDF_EXCHANGE, queueName).createRoute();
     return uri;
   }
 }

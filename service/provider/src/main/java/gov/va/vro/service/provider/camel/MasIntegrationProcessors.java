@@ -7,10 +7,13 @@ import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.model.VeteranInfo;
 import gov.va.vro.model.event.AuditEvent;
 import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.ClaimCondition;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.response.FetchPdfResponse;
+import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.bip.service.BipUpdateClaimResult;
 import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasCompletionStatus;
 import gov.va.vro.service.provider.mas.MasException;
@@ -139,6 +142,14 @@ public class MasIntegrationProcessors {
     };
   }
 
+  public static Processor setOffRampReasonProcessor(String offRampReason) {
+    return exchange -> {
+      MasProcessingObject mpoOfframp = exchange.getMessage().getBody(MasProcessingObject.class);
+      mpoOfframp.getClaimPayload().setOffRampReason(offRampReason);
+      exchange.getMessage().setBody(mpoOfframp);
+    };
+  }
+
   /**
    * At the conclusion of automated claim processing this processor updates claims and contentions
    * using BIP Claims API.
@@ -150,17 +161,33 @@ public class MasIntegrationProcessors {
       BipClaimService bipClaimService, MasProcessingService masProcessingService) {
     return exchange -> {
       MasProcessingObject payload = exchange.getIn().getBody(MasProcessingObject.class);
+
       MasCamelStage origin = payload.getOrigin();
-      Boolean sufficient = exchange.getProperty("sufficientForFastTracking", Boolean.class);
-      String offRampError = exchange.getProperty("offRampError", String.class);
+      String offRampErrorPayload = payload.getOffRampReason();
+
       // Update our database with offramp reason.
-      if (offRampError != null) {
-        masProcessingService.offRampClaimForError(payload, offRampError);
+      if (offRampErrorPayload != null) {
+        masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
+        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
       }
       MasCompletionStatus completionStatus =
-          MasCompletionStatus.of(origin, sufficient, offRampError);
-      MasProcessingObject updatedPayload = bipClaimService.updateClaim(payload, completionStatus);
-      exchange.getMessage().setBody(updatedPayload);
+          MasCompletionStatus.of(
+              origin, payload.getSufficientForFastTracking(), offRampErrorPayload);
+      try {
+        BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
+        if (result.hasMessage()) {
+          exchange.setProperty("completionSlackMessage", result.getMessage());
+        }
+      } catch (BipException exception) {
+        log.error("Error using BIP Claims API", exception);
+        String slackMsg =
+            String.format(
+                "reason code: %s,  narrative:%s. ",
+                EventReason.BIP_UPDATE_FAILED.getCode(),
+                EventReason.BIP_UPDATE_FAILED.getNarrative());
+        String message = slackMsg + "BIP Claims API exception: " + exception.getMessage();
+        exchange.setProperty("completionSlackMessage", message);
+      }
     };
   }
 
@@ -176,12 +203,11 @@ public class MasIntegrationProcessors {
     };
   }
 
-  public static Processor slackOffRampProcessor() {
+  public static Processor slackEventPropertyProcessor(String routeId, String exchangeProperty) {
     return exchange -> {
+      String message = exchange.getProperty(exchangeProperty, "Unidentified message", String.class);
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
-      String routeId = exchange.getProperty("sourceRoute", String.class);
-      String message = exchange.getProperty("offRampError", String.class);
       exchange
           .getIn()
           .setBody(
@@ -208,8 +234,14 @@ public class MasIntegrationProcessors {
 
   public static String getSlackMessage(MasProcessingObject mpo, String originalMessage) {
     String msg = originalMessage;
+    EventReason reason = EventReason.getEventReason(originalMessage.trim());
+    if (reason != null) {
+      msg = reason.getReasonMessage();
+    }
     if (mpo != null) {
-      msg += " collection ID: " + mpo.getCollectionId();
+      msg +=
+          String.format(
+              " claim ID: %s, collection ID: %s", mpo.getBenefitClaimId(), mpo.getCollectionId());
     }
     return msg;
   }

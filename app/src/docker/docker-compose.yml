@@ -28,7 +28,6 @@ x-mas-vars: &mas-vars
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
-  VALIDATE_TOKEN: ${VALIDATE_TOKEN}
 
 x-postgres-vars: &postgres-vars
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
@@ -356,6 +355,8 @@ services:
     environment:
       <<: *common-vars
       <<: *rabbitmq-placeholder-vars
+      # A mock-bgs-api needs to be created and exposes an unused port
+      BGS_BASE_URL: http://mock-bgs-api:9020
     depends_on:
       rabbitmq-service:
         condition: service_healthy
