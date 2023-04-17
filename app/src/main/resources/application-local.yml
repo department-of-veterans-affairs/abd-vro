@@ -16,7 +16,6 @@ bip:
   claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
   evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
-  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
 

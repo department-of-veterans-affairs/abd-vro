@@ -175,7 +175,6 @@ export BIP_CLAIM_SECRET=theSecret
 # Credentials for BIP Claim Evidence API
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret
-export BIP_EVIDENCE_ISS=VRO
 # BIP Common.
 #export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456
