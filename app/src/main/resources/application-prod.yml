@@ -18,8 +18,8 @@ slack:
     channel: benefits-vro-alerts
 
 lhAPIProvider:
-  validateToken: NO
+  validateToken: "YES"
 
 springdoc:
   swagger-ui:
-    enabled: false
+    enabled: true
