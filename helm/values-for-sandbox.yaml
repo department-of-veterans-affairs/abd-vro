@@ -12,7 +12,6 @@ global:
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
 vro-app-chart:
-  validateToken: "YES"
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
 
 vro-svcs-chart:
