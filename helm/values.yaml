@@ -80,7 +80,6 @@ global:
   bip:
     # TODO: Consider moving these URL settings to application-*.yml files
     bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
-    bipClaimIss: virtual_regional_office
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
   mas:

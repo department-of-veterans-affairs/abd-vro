@@ -172,7 +172,6 @@ export MAS_API_BASE_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca
 ##
 export BIP_CLAIM_USERID=VRO_USER
 export BIP_CLAIM_SECRET=theSecret
-export BIP_CLAIM_ISS=VRO
 # Credentials for BIP Claim Evidence API
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret

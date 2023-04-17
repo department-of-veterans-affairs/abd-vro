@@ -120,8 +120,6 @@ spec:
                   key: VRO_SECRETS_BIP
             - name: BIP_CLAIM_URL
               value: {{ .Values.global.bip.bipClaimUrl }}
-            - name: BIP_CLAIM_ISS
-              value: { { .Values.global.bip.bipClaimIss } }
             - name: BIP_EVIDENCE_URL
               value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_STATION_ID
