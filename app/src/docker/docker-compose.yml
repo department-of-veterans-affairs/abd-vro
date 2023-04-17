@@ -442,7 +442,6 @@ services:
       <<: *common-vars
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-      BIP_CLAIM_ISS: ${BIP_CLAIM_ISS}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
