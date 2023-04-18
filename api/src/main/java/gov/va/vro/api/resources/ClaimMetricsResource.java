@@ -153,9 +153,9 @@ public interface ClaimMetricsResource {
           Boolean notOrdered);
 
   @Operation(
-      summary = "Retrieves all exam order records",
+      summary = "Slacks all exam order records that have not been processed by MAS",
       description =
-          "This endpoint does the same as exam-order-info, but it also slacks the list of exam orders.")
+          "Slacks the list of exam orders that have not been processed.")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
