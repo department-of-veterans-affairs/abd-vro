@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.mas;
 
-import gov.va.vro.model.bip.ClaimStatus;
+import gov.va.vro.model.rrd.bip.ClaimStatus;
 import gov.va.vro.service.provider.ClaimProps;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

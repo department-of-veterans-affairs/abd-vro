@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.bgs.service;
 
-import gov.va.vro.model.event.EventReason;
+import gov.va.vro.model.rrd.event.EventReason;
 
 import java.util.Map;
 

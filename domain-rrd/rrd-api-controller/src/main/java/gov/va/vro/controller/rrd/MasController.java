@@ -1,5 +1,6 @@
 package gov.va.vro.controller.rrd;
 
+import gov.va.vro.api.rrd.model.ClaimProcessingException;
 import gov.va.vro.api.rrd.resources.MasResource;
 import gov.va.vro.api.rrd.responses.MasResponse;
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;

@@ -1,4 +1,4 @@
-package gov.va.vro.model.event;
+package gov.va.vro.model.rrd.event;
 
 import lombok.Getter;
 
