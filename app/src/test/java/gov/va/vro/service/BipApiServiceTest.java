@@ -60,8 +60,6 @@ public class BipApiServiceTest {
   private static final String CLAIM_ISSUER = "issuer";
   private static final String STATION_ID = "280";
   private static final String APP_ID = "bip";
-  private static final String APP_NAME = "vro";
-  private static final String CLAIM_JTI = "032-83583455";
 
   @InjectMocks private BipApiService service;
 
@@ -80,8 +78,6 @@ public class BipApiServiceTest {
     BipApiProps props = new BipApiProps();
     props.setApplicationId(APP_ID);
     props.setApplicationId(CLAIM_ISSUER);
-    props.setJti(CLAIM_JTI);
-    props.setApplicationName(APP_NAME);
     props.setStationId(STATION_ID);
     props.setClaimClientId(CLAIM_USERID);
 
