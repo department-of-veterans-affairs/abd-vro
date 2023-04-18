@@ -112,6 +112,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
+  public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
+
   @Override
   public void configure() {
     configureAuditing();
@@ -291,7 +293,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
         .onPrepare(
             slackEventPropertyProcessor(
-                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"));
+                lighthouseRoute, LIGHTHOUSE_ERROR_MSG, "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
