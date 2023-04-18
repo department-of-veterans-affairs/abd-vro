@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * MAS annotation class.
+ * MAS annotation class. Fields are populated by automated processing
+ * of supporting documents related to a given claim. A single @code{MasDocument} may be
+ * associated with multiple @code{MasAnnotation}s.
  *
  * @author warren @Date 10/5/22
  */
@@ -16,9 +18,11 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasAnnotation {
+  // Maps to one of the values in the enum type @code{MasAnnotType}
   @JsonProperty("annot_type")
   private String annotType;
 
+  // Refers to the location of the extracted @code{annotVal} text within the document
   @JsonProperty("page_num")
   private String pageNum;
 
@@ -37,6 +41,7 @@ public class MasAnnotation {
   @JsonProperty("annot_name")
   private String annotName;
 
+  // Raw text extracted from the document
   @JsonProperty("annot_val")
   private String annotVal;
 
@@ -46,9 +51,11 @@ public class MasAnnotation {
   @JsonProperty("observation_date")
   private String observationDate;
 
+  // Beginning location of @code{annotVal} on @code{pageNum}
   @JsonProperty("start")
   private int start;
 
+  // Ending location of @code{annotVal} on @code{pageNum}
   @JsonProperty("end")
   private int end;
 
