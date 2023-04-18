@@ -154,8 +154,7 @@ public interface ClaimMetricsResource {
 
   @Operation(
       summary = "Slacks all exam order records that have not been processed by MAS",
-      description =
-          "Slacks the list of exam orders that have not been processed.")
+      description = "Slacks the list of exam orders that have not been processed.")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
