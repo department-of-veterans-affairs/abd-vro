@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,6 +44,8 @@ public class MasCollectionAnnotsResults {
   private static final String BP_UNIT = "mm[Hg]";
   private static final String BP_READING_REGEX = "(-|\\d+)"; // "^\\d{1,3}\\s*\\/\\s*\\d{1,3}\\s*$";
   private static final int BP_VALUE_LENGTH = 3;
+  DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+  DateFormat formatter1 = new SimpleDateFormat("MM/dd/yyyy");
 
   /**
    * Maps annotations to evidence.
@@ -77,10 +82,10 @@ public class MasCollectionAnnotsResults {
 
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
-              ">>>> Annotation Type <<<<<< : {} ",
-              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
+                  ">>>> Annotation Type <<<<<< : {} ",
+                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
           MasAnnotType annotationType =
-              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
+                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
           switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
@@ -108,7 +113,14 @@ public class MasCollectionAnnotsResults {
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
               veteranService.setDocument(source);
-              veteranService.setReceiptDate(receiptDate);
+              String serviceReceiptDate;
+              try {
+                serviceReceiptDate = formatter1.format(formatter.parse(receiptDate));
+              } catch (ParseException e) {
+                serviceReceiptDate = receiptDate;
+                log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
+              }
+              veteranService.setReceiptDate(serviceReceiptDate);
               veteranService.setDocumentId(documentId);
               serviceLocations.add(veteranService);
             }
@@ -126,7 +138,7 @@ public class MasCollectionAnnotsResults {
     abdEvidence.setBloodPressures(bpReadings);
     abdEvidence.setServiceLocations(serviceLocations);
     abdEvidence.setDocumentsWithoutAnnotationsChecked(
-        masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
+            masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
     return abdEvidence;
   }
 
@@ -171,13 +183,13 @@ public class MasCollectionAnnotsResults {
         }
       } else {
         log.info(
-            "Missing blood pressure diastolic reading: {}. Default to 0.",
-            masAnnotation.getAnnotVal());
+                "Missing blood pressure diastolic reading: {}. Default to 0.",
+                masAnnotation.getAnnotVal());
         diastolicVal = BigDecimal.valueOf(0);
       }
     } else {
       log.error(
-          "Missing blood pressure reading in the MAS annotation: {}.", masAnnotation.getAnnotVal());
+              "Missing blood pressure reading in the MAS annotation: {}.", masAnnotation.getAnnotVal());
       return null;
     }
     if (systolicVal.equals("-") && diastolicVal.equals("-")) { // skip missing BP reading values.
@@ -230,7 +242,7 @@ public class MasCollectionAnnotsResults {
   }
 
   private static AbdMedication createMedication(
-      boolean isConditionAsthma, MasAnnotation masAnnotation) {
+          boolean isConditionAsthma, MasAnnotation masAnnotation) {
     AbdMedication abdMedication = new AbdMedication();
     abdMedication.setDataSource(DATA_SOURCE);
     abdMedication.setStatus(null);
