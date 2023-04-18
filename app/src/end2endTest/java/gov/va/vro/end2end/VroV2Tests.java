@@ -646,14 +646,16 @@ public class VroV2Tests {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     if (spec.isMasError()) {
-      boolean slackResult = testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
+      boolean slackResult =
+          testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       String claimId = request.getClaimDetail().getBenefitClaimId();
       testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
     } else {
       testExamOrdered(collectionId);
       if (spec.isBipError()) {
-        boolean slackResult = testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
+        boolean slackResult =
+            testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
         assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       } else {
         testPdfUpload(request);
@@ -815,8 +817,8 @@ public class VroV2Tests {
 
   /**
    * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
-   * message, removal of rdr1, and database update are verified.
-   * This case both returns a message and slacks.
+   * message, removal of rdr1, and database update are verified. This case both returns a message
+   * and slacks.
    */
   @Test
   void testAutomatedClaimNewNotPresumptive() {

@@ -291,9 +291,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wiretap breaks onCatch behavior, onException wont work here. This is the workaround.
     from(wiretapLighthouse)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-            slackEventPropertyProcessor(
-                lighthouseRoute, LIGHTHOUSE_ERROR_MSG, "payload"));
+        .onPrepare(slackEventPropertyProcessor(lighthouseRoute, LIGHTHOUSE_ERROR_MSG, "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
