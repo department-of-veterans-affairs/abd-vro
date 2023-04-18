@@ -71,7 +71,7 @@ jobs:
         run: |
           mkdir -p /tmp/vro-logs
           for CONTAINER in app svc-assessor-dc7101 svc-pdf-generator svc-lighthouse-api svc-bgs-api; do
-            docker-compose -f app/src/docker/docker-compose.yml logs $CONTAINER >& /tmp/vro-logs/$CONTAINER.log
+            docker-compose -f app/src/docker/docker-compose.yml logs --no-color $CONTAINER &> /tmp/vro-logs/$CONTAINER.log
           done
 
       - name: "Upload artifact"
