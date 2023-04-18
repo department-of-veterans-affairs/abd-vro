@@ -33,7 +33,6 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
-import gov.va.vro.service.provider.services.ExamOrderSlackProcessor;
 import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
 import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
@@ -419,9 +418,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private void configureExamOrderSlack() {
     var routeId = "exam-order-slack";
-    from(ENDPOINT_EXAM_ORDER_SLACK)
-        .routeId(routeId)
-        .wireTap(ENDPOINT_NOTIFY_AUDIT)
-        .onPrepare(new ExamOrderSlackProcessor());
+    from(ENDPOINT_EXAM_ORDER_SLACK).routeId(routeId).wireTap(ENDPOINT_NOTIFY_AUDIT);
   }
 }
