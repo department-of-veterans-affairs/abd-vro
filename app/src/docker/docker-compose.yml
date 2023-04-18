@@ -10,6 +10,7 @@ volumes:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+# Also note https://yaml.org/type/merge.html
 
 x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
