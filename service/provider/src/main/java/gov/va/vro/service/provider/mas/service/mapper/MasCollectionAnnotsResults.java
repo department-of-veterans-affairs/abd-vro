@@ -82,10 +82,10 @@ public class MasCollectionAnnotsResults {
 
         for (MasAnnotation masAnnotation : masDocument.getAnnotations()) {
           log.info(
-                  ">>>> Annotation Type <<<<<< : {} ",
-                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
+              ">>>> Annotation Type <<<<<< : {} ",
+              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase()));
           MasAnnotType annotationType =
-                  MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
+              MasAnnotType.fromString(masAnnotation.getAnnotType().toLowerCase());
           switch (annotationType) {
             case MEDICATION -> {
               AbdMedication abdMedication = createMedication(isConditionAsthma, masAnnotation);
@@ -138,7 +138,7 @@ public class MasCollectionAnnotsResults {
     abdEvidence.setBloodPressures(bpReadings);
     abdEvidence.setServiceLocations(serviceLocations);
     abdEvidence.setDocumentsWithoutAnnotationsChecked(
-            masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
+        masCollectionAnnotation.getDocumentsWithoutAnnotationsChecked());
     return abdEvidence;
   }
 
@@ -183,13 +183,13 @@ public class MasCollectionAnnotsResults {
         }
       } else {
         log.info(
-                "Missing blood pressure diastolic reading: {}. Default to 0.",
-                masAnnotation.getAnnotVal());
+            "Missing blood pressure diastolic reading: {}. Default to 0.",
+            masAnnotation.getAnnotVal());
         diastolicVal = BigDecimal.valueOf(0);
       }
     } else {
       log.error(
-              "Missing blood pressure reading in the MAS annotation: {}.", masAnnotation.getAnnotVal());
+          "Missing blood pressure reading in the MAS annotation: {}.", masAnnotation.getAnnotVal());
       return null;
     }
     if (systolicVal.equals("-") && diastolicVal.equals("-")) { // skip missing BP reading values.
@@ -242,7 +242,7 @@ public class MasCollectionAnnotsResults {
   }
 
   private static AbdMedication createMedication(
-          boolean isConditionAsthma, MasAnnotation masAnnotation) {
+      boolean isConditionAsthma, MasAnnotation masAnnotation) {
     AbdMedication abdMedication = new AbdMedication();
     abdMedication.setDataSource(DATA_SOURCE);
     abdMedication.setStatus(null);
