@@ -10,7 +10,7 @@ import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.service.provider.services.ClaimMetricsCamelService;
+import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimMetricsController implements ClaimMetricsResource {
   private final ClaimMetricsService claimMetricsService;
-
-  private final ClaimMetricsCamelService claimMetricsCamelService;
+  private final CamelEntrance camelEntrance;
 
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
@@ -80,11 +79,17 @@ public class ClaimMetricsController implements ClaimMetricsResource {
   }
 
   @Override
-  public ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(Integer page, Integer size) {
+  public ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(
+      Integer page, Integer size, Boolean notOrdered) throws ClaimProcessingException {
     ExamOrderInfoQueryParams params =
-        ExamOrderInfoQueryParams.builder().page(page).size(size).build();
-    ExamOrdersInfo examOrdersInfo = claimMetricsService.findAllExamOrderInfo(params);
-    claimMetricsCamelService.examOrderSlack(examOrdersInfo);
-    return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+        ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
+    ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
+    try {
+      camelEntrance.examOrderSlack(examOrdersInfo);
+      return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+    } catch (Exception e) {
+      throw new ClaimProcessingException(
+          "Error", HttpStatus.INTERNAL_SERVER_ERROR, "Could not slack exam Orders");
+    }
   }
 }
