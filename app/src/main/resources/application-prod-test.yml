@@ -22,7 +22,7 @@ springdoc:
     enabled: true
 
 lhAPIProvider:
-  validateToken: NO
+  validateToken: "YES"
 
 logging:
   level:
