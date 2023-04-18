@@ -126,10 +126,15 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   }
 
   @Override
-  public ExamOrdersInfo findAllExamOrderInfo(ExamOrderInfoQueryParams params) {
-    Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
-    List<ExamOrderInfoResponse> examOrdersInfo =
-        examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
-    return new ExamOrdersInfo(examOrdersInfo, examOrders.getTotalElements());
+  public ExamOrdersInfo findExamOrderInfo(ExamOrderInfoQueryParams params) {
+    List<ExamOrderInfoResponse> examOrdersInfo;
+    if (params.getNotOrdered() == Boolean.TRUE) {
+      List<ExamOrderEntity> examOrders = examOrderRepository.findByOrderedAtIsNull();
+      examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    } else {
+      Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
+      examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    }
+    return new ExamOrdersInfo(examOrdersInfo, examOrdersInfo.size());
   }
 }
