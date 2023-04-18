@@ -4,9 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pdfgenerator.src.lib import queues as pdf_queues
-from assessclaimcancer.src.lib import queues as q_cancer
-from assessclaimrespiratory.src.lib import queues as q_respiratory
+from assessclaimcancer.src.lib import queues as qcancer
+from assessclaimrespiratory.src.lib import queues as qrespiratory
 from assessclaimdc6510.src.lib import queues as q6510
 from assessclaimdc6510.src.lib.main import assess_sinusitis as main6510
 from assessclaimdc6522.src.lib import queues as q6522
@@ -27,7 +26,8 @@ from assessclaimdc7101.src.lib import queues as q7101
         (q6602v2, "health-sufficiency-assess.asthma"),
         (q6522, "health-sufficiency-assess.rhinitis"),
         (q6510, "health-sufficiency-assess.sinusitis"),
-        (qcancer, "health-sufficiency-assess.cancer")
+        (qcancer, "health-sufficiency-assess.cancer"),
+        (qrespiratory, "health-sufficiency-assess.respiratory")
     ]
 )
 def test_queue_setup(queue, service_queue_name, caplog):
