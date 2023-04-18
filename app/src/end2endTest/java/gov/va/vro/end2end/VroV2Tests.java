@@ -816,10 +816,12 @@ public class VroV2Tests {
   /**
    * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
    * message, removal of rdr1, and database update are verified.
+   * This case both returns a message and slacks.
    */
   @Test
   void testAutomatedClaimNewNotPresumptive() {
     AutomatedClaimTestSpec spec = specFor200("379");
+    spec.setExpectedMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     spec.setExpectedSlackMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
@@ -879,7 +881,7 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveBipGoesDown() {
     AutomatedClaimTestSpec spec = specFor200("386");
     spec.setBipUpdateClaimError(true);
-
+    spec.setExpectedSlackMessage(EventReason.BIP_UPDATE_FAILED.getReasonMessage());
     testAutomatedClaimFullPositive(spec);
   }
 
@@ -916,7 +918,7 @@ public class VroV2Tests {
     String collectionId = "365";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
+    boolean slackResult = testSlackMessage(collectionId, LIGHTHOUSE_ERROR_MSG);
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
