@@ -67,6 +67,7 @@ jobs:
           ENV: "end2end-test"
 
       - name: "Save container logs to files"
+        if: always()
         run: |
           mkdir -p /tmp/vro-logs
           for CONTAINER in app svc-assessor-dc7101 svc-pdf-generator svc-lighthouse-api svc-bgs-api; do
@@ -74,6 +75,7 @@ jobs:
           done
 
       - name: "Upload artifact"
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: vro-logs
@@ -93,7 +95,9 @@ jobs:
           echo "::endgroup::"
 
       - name: "Clean docker container and images"
+        if: always()
         run: ./gradlew dockerclean
 
       - name: "Clean docker volumes"
+        if: always()
         run: ./gradlew dockermaintainerclean
