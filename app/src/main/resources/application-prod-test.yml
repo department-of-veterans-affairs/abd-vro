@@ -1,4 +1,4 @@
-# This file is used when ENV=prod
+# This file is used when ENV=prod-test
 # Contrast this file against application-nonprod.yml
 #
 # File application-k8s.yml will also be loaded due to the spring.profiles.group configuration in application.yml
@@ -22,7 +22,7 @@ springdoc:
     enabled: true
 
 lhAPIProvider:
-  validateToken: NO
+  validateToken: "YES"
 
 logging:
   level:

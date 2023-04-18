@@ -105,6 +105,7 @@ spring:
       sandbox: nonprod,k8s
       # For prod, only load application-prod.yml and application-k8s.yml
       prod: k8s
+      # For prod-test, only load application-prod-test.yml and application-k8s.yml
       prod-test: k8s
 
   servlet:
@@ -159,7 +160,7 @@ lhAPIProvider:
   tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
-  validateToken: "${VALIDATE_TOKEN:NO}"
+  validateToken: "NO"
 
 masVeteranFlashIds:
   agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
@@ -216,12 +217,11 @@ bip:
   claimClientId: "${BIP_CLAIM_USERID}"
   claimSecret: "${BIP_CLAIM_SECRET}"
   claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "${BIP_CLAIM_ISS:virtual_regional_office}"
+  claimIssuer: "virtual_regional_office"
   evidenceClientId: "${BIP_EVIDENCE_USERID}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET}"
   evidenceBaseURL: "${BIP_EVIDENCE_URL}"
-  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
-  applicationName: "${BIP_APPLICATION_ISS:VRO}"
+  evidenceIssuer: "VRO"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:281}"
 truststore: "${BIP_TRUSTSTORE}"
