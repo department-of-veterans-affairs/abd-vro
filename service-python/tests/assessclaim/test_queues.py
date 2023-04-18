@@ -36,7 +36,7 @@ def test_queue_setup(queue, service_queue_name, caplog):
         queue.queue_setup(channel=channel)
 
     channel.exchange_declare.assert_called_with(
-        exchange=exchange,
+        exchange="health-assess-exchange",
         exchange_type="direct",
         durable=True,
         auto_delete=True,
