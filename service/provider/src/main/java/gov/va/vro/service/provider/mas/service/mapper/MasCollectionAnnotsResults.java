@@ -45,7 +45,7 @@ public class MasCollectionAnnotsResults {
   private static final String BP_READING_REGEX = "(-|\\d+)"; // "^\\d{1,3}\\s*\\/\\s*\\d{1,3}\\s*$";
   private static final int BP_VALUE_LENGTH = 3;
   DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-  DateFormat formatter1 = new SimpleDateFormat("MM/dd/yyyy");
+  DateFormat formatter1 = new SimpleDateFormat("M/d/yyyy");
 
   /**
    * Maps annotations to evidence.
