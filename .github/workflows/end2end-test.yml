@@ -66,6 +66,10 @@ jobs:
         env:
           ENV: "end2end-test"
 
+      - name: "Shut down docker containers"
+        if: always()
+        run: ./gradlew :app:dockerComposeDown
+
       - name: "Save container logs to files"
         if: always()
         run: |
