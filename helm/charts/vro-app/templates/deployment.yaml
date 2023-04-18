@@ -118,8 +118,6 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-            - name: BIP_APPLICATION_ISS
-              value: virtual_regional_office
             - name: BIP_CLAIM_URL
               value: {{ .Values.global.bip.bipClaimUrl }}
             - name: BIP_EVIDENCE_URL
