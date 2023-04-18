@@ -3,7 +3,7 @@ package gov.va.vro.service.provider.bgs.service;
 import static gov.va.vro.service.provider.bgs.service.BgsClaimNotes.OFFRAMP_ERROR_2_CLAIM_NOTE;
 import static gov.va.vro.service.provider.bgs.service.BgsVeteranNote.getArsdUploadedNote;
 
-import gov.va.vro.model.bgs.BgsApiClientRequest;
+import gov.va.vro.model.rrd.bgs.BgsApiClientRequest;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
 import gov.va.vro.service.provider.EntityNotFoundException;

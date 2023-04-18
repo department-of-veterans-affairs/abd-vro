@@ -1,7 +1,7 @@
 package gov.va.vro.service.provider.bgs.service;
 
-import gov.va.vro.model.bgs.BgsApiClientRequest;
-import gov.va.vro.model.bgs.BgsApiClientResponse;
+import gov.va.vro.model.rrd.bgs.BgsApiClientRequest;
+import gov.va.vro.model.rrd.bgs.BgsApiClientResponse;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

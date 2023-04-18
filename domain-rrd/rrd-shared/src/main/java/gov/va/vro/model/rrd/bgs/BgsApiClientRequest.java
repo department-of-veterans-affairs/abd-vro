@@ -1,4 +1,4 @@
-package gov.va.vro.model.bgs;
+package gov.va.vro.model.rrd.bgs;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
