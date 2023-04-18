@@ -62,11 +62,23 @@ jobs:
           timeout: 30000
 
       - name: "Run the end-to-end tests"
-        run: |
-          docker-compose -f app/src/docker/docker-compose.yml logs --follow app &
-          ./gradlew :app:end2EndTest --info
+        run: ./gradlew :app:end2EndTest --info
         env:
           ENV: "end2end-test"
+
+      - name: "Save container logs to files"
+        run: |
+          mkdir -p /tmp/vro-logs
+          for CONTAINER in app svc-assessor-dc7101 svc-pdf-generator svc-lighthouse-api svc-bgs-api; do
+            docker-compose -f app/src/docker/docker-compose.yml logs $CONTAINER >& /tmp/vro-logs/$CONTAINER.log
+          done
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: vro-logs
+          path: /tmp/vro-logs/*.log
+          retention-days: 14
 
       - name: "Check for tracking files"
         run: |
