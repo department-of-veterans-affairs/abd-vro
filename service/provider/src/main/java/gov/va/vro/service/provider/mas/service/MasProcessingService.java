@@ -1,11 +1,11 @@
 package gov.va.vro.service.provider.mas.service;
 
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.IMVP_EXCHANGE;
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
 import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NOTIFY_AUTOMATED_CLAIM_QUEUE;
 
 import gov.va.vro.camel.CamelEntry;
 import gov.va.vro.model.event.AuditEvent;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.mas.MasExamOrderStatusPayload;
 import gov.va.vro.service.provider.CamelEntrance;
@@ -103,7 +103,7 @@ public class MasProcessingService {
               payload.getDisabilityActionType(),
               payload.getVeteranFlashIds());
       log.info(logMessageOnly);
-      return Optional.of(NEW_NOT_PRESUMPTIVE);
+      return Optional.of(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     }
     return Optional.empty();
   }

@@ -4,9 +4,19 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 
 public class RabbitMqCamelUtils {
-  public static String wiretapProducer(String tapName) {
-    return ToRabbitMqRouteHelper.rabbitmqTopicProducerEndpoint(
-        "tap-" + tapName, "tap-" + tapName + "-not-used");
+  public static String wiretapProducer(RouteBuilder builder, String tapName) {
+    var exchangeName = "tap-" + tapName;
+    var directEndpoint = getTapProducerDirectEndpoint(tapName);
+    // Always use ToRabbitMqRouteHelper to create a route to send to RabbitMQ
+    new ToRabbitMqRouteHelper(builder, directEndpoint)
+        .routeId("to-rabbitmq-" + exchangeName + "-route")
+        .toTopic(exchangeName, "tap-" + tapName + "-not-used", "")
+        .createRoute();
+    return directEndpoint;
+  }
+
+  public static String getTapProducerDirectEndpoint(String exchangeName) {
+    return "direct:toMqTopic-tap-" + exchangeName;
   }
 
   public static String wiretapConsumer(String queuePrefix, String tapBasename) {

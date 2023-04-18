@@ -53,6 +53,7 @@ mock-bip-ce-api:
   jwt:
     userId: "${BIP_EVIDENCE_USERID:VRO_USER}"
     secret: "${BIP_EVIDENCE_SECRET:theSecret}"
-    issuer: "${BIP_EVIDENCE_ISS:VRO}"
+    # Should match the value of `evidenceIssuer` in app/src/main/resources/application.yml
+    issuer: "VRO"
     stationId: "${BIP_STATION_ID:281}"
     expirationSeconds: 900

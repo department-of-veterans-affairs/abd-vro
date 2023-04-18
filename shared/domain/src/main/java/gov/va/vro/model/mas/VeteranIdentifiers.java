@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class VeteranIdentifiers {
 
   @NotBlank(message = "ICN is required")
-  @Schema(description = "Veteran ICN", example = "9000682")
+  @Schema(description = "Veteran ICN", example = "mock1012666073V986297")
   private String icn;
 
   @Schema(description = "Social Security Number", example = "111-11-1111")

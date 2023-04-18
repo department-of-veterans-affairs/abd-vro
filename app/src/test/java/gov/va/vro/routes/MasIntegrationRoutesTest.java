@@ -12,11 +12,13 @@ import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.AbdEvidence;
 import gov.va.vro.model.AbdEvidenceWithSummary;
 import gov.va.vro.model.HealthDataAssessment;
+import gov.va.vro.model.event.EventReason;
 import gov.va.vro.model.mas.MasCollectionAnnotation;
 import gov.va.vro.model.mas.MasDocument;
 import gov.va.vro.model.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.camel.BgsApiClientRoutes;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.IMasApiService;
@@ -84,10 +86,12 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   void processClaimInsufficientEvidenceAccessError() throws Exception {
     var mpo = processClaim(null);
     Thread.sleep(200);
+    String expectedMessageStart =
+        String.format("reason code: %s", EventReason.SUFFICIENCY_UNDETERMINED.getCode());
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
-            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .filter(audit -> audit.getMessage().startsWith(expectedMessageStart))
             .findFirst()
             .isPresent());
   }
@@ -130,7 +134,7 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "generate-pdf",
-        RabbitMqCamelUtils.wiretapProducer(INCOMING_CLAIM_WIRETAP),
+        RabbitMqCamelUtils.getTapProducerDirectEndpoint(INCOMING_CLAIM_WIRETAP),
         "mock:empty-endpoint");
 
     replaceEndpoint(
@@ -145,6 +149,9 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
 
     replaceEndpoint(
         "mas-order-exam", MasIntegrationRoutes.ENDPOINT_UPLOAD_PDF, "mock:empty-endpoint");
+
+    // This route is tested in its own unit test and isn't required for the MAS workflow
+    replaceEndpoint("add-bgs-notes-route", BgsApiClientRoutes.ADD_BGS_NOTES, "mock:empty-endpoint");
 
     mockEmptyEndpoint.whenAnyExchangeReceived(exchange -> {});
 

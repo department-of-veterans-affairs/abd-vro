@@ -21,6 +21,29 @@ def sort_bp(bp_readings):
     return bp_readings
 
 
+def deduplicate(bp_readings):
+    """
+    Return bp readings with any lighthouse duplicates removed. A duplicate is identified by having the same diastolic
+    value, systolic value and date. HDR data has organization set to VAMC Other Output Reports.
+    :param bp_readings: full list of BP readings
+    :return: deduplicated list
+    """
+    deduplicated_readings = []
+    for reading in bp_readings:
+        duplicate = False
+        if reading["dataSource"] == "LH":
+            for bp_comp in bp_readings:
+                if reading["diastolic"]["value"] == bp_comp["diastolic"]["value"] \
+                    and reading["systolic"]["value"] == bp_comp["systolic"]["value"] \
+                        and reading["date"] == bp_comp["date"] \
+                        and bp_comp["organization"] == "VAMC Other Output Reports":
+                    duplicate = True
+                    break
+        if not duplicate:
+            deduplicated_readings.append(reading)
+    return deduplicated_readings
+
+
 def bp_reader(request_body):
     """
     Iterate through all the BP readings received by data sources and determine their recency relative to the date
@@ -73,6 +96,7 @@ def bp_reader(request_body):
               "twoYearsBpCount": len(bp_readings_in_past_two_years),
               "oneYearBpCount": len(bp_reading_in_past_year),
               "twoYearsElevatedBpCount": len(elevated_bp_in_past_two_years),
-              "totalBpCount": len(request_body["evidence"]["bp_readings"])}
+              "totalBpCount": len(bp_readings)
+              }
 
     return result

@@ -79,7 +79,7 @@ dependencies {
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
   end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
+  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
 }
 
 openApi {
