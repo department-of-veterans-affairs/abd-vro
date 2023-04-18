@@ -53,7 +53,7 @@ public class MasCollectionAnnotsResults {
    * @param masCollectionAnnotation annotation
    * @return abd evidence
    */
-  public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation) throws ParseException {
+  public AbdEvidence mapAnnotationsToEvidence(MasCollectionAnnotation masCollectionAnnotation) {
     List<AbdMedication> medications = new ArrayList<>();
     List<AbdCondition> conditions = new ArrayList<>();
     List<AbdBloodPressure> bpReadings = new ArrayList<>();
@@ -114,10 +114,9 @@ public class MasCollectionAnnotsResults {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
               veteranService.setDocument(source);
               String serviceReceiptDate;
-              try{
+              try {
                 serviceReceiptDate = formatter1.format(formatter.parse(receiptDate));
-              }
-              catch (ParseException e) {
+              } catch (ParseException e) {
                 serviceReceiptDate = receiptDate;
                 log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
               }
