@@ -1,7 +1,7 @@
-package gov.va.vro.model.claimmetrics;
+package gov.va.vro.model.rrd.claimmetrics;
 
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
-import gov.va.vro.model.event.Auditable;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.event.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
