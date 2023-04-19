@@ -66,6 +66,20 @@ jobs:
         env:
           ENV: "end2end-test"
 
+      - name: "Collect docker logs on failure"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './vro-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: vro-logs
+          path: ./vro-logs/**
+          retention-days: 14
+
       - name: "Check for tracking files"
         run: |
           TRACKING_FOLDER="/persist/tracking/mas-claim-submitted/$(date '+%Y-%m-%d')"
@@ -79,7 +93,9 @@ jobs:
           echo "::endgroup::"
 
       - name: "Clean docker container and images"
+        if: always()
         run: ./gradlew dockerclean
 
       - name: "Clean docker volumes"
+        if: always()
         run: ./gradlew dockermaintainerclean

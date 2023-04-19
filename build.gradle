@@ -135,12 +135,11 @@ ext {
   // Modules that use Java code
   codeModules = [
     ':app',
-    ':api',
-    ':controller',
     ':persistence:model',
     ':shared:lib-camel-connector',
-    ':service:provider',
-    ':service:spi',
+    ':domain-rrd:rrd-api-controller',
+    ':domain-rrd:rrd-workflows',
+    ':domain-rrd:rrd-shared',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
