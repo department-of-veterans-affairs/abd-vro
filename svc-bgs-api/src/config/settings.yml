@@ -1,11 +1,48 @@
 # Settings (like the RabbitMQ connection options or API keys)
 # Loaded by setup.rb and put into a global variable.
 
-bgs:
-  application: VRO
-  client_station_id: 281
-  client_username: VROSYSACCT
-  ssl_cert_file: /app/certs/tls_bip.crt
-  ssl_cert_key_file: /app/certs/tls.key
-  ssl_ca_cert_file: /app/certs/va_all.crt
-  log: true
+dev:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    log: true
+    base_url: http://beplinktest.vba.va.gov
+
+qa:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    log: true
+    base_url: http://beplinktest.vba.va.gov
+
+sandbox:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    log: true
+    base_url: http://beplinktest.vba.va.gov
+
+prod-test:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    log: true
+    base_url: https://bepprodtest.vba.va.gov
+    ssl_cert_file: /app/certs/tls_bip.crt
+    ssl_cert_key_file: /app/certs/tls.key
+    ssl_ca_cert_file: /app/certs/va_all.crt
+
+prod:
+  bgs:
+    application: VRO
+    client_station_id: 281
+    client_username: VROSYSACCT
+    log: true
+    base_url: https://vbmsprod.vba.va.gov
+    ssl_cert_file: /app/certs/tls_bip.crt
+    ssl_cert_key_file: /app/certs/tls.key
+    ssl_ca_cert_file: /app/certs/va_all.crt
