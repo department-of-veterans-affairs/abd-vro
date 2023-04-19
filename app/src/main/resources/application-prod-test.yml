@@ -26,4 +26,4 @@ lhAPIProvider:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
