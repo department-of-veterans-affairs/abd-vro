@@ -83,19 +83,19 @@ public class ClaimMetricsController implements ClaimMetricsResource {
 
   @Override
   public ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(
-          Integer page, Integer size, Boolean notOrdered) throws ClaimProcessingException {
+      Integer page, Integer size, Boolean notOrdered) throws ClaimProcessingException {
     ExamOrderInfoQueryParams params =
-            ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
+        ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
     try {
       AuditEvent message =
-              AuditEvent.fromAuditable(
-                      examOrdersInfo, "exam-order-slack", getSlackMessage(examOrdersInfo));
+          AuditEvent.fromAuditable(
+              examOrdersInfo, "exam-order-slack", getSlackMessage(examOrdersInfo));
       camelEntrance.examOrderSlack(message);
       return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
     } catch (Exception e) {
       throw new ClaimProcessingException(
-              "Error", HttpStatus.INTERNAL_SERVER_ERROR, "Could not slack exam Orders");
+          "Error", HttpStatus.INTERNAL_SERVER_ERROR, "Could not slack exam Orders");
     }
   }
 
@@ -104,13 +104,13 @@ public class ClaimMetricsController implements ClaimMetricsResource {
     if (exams != null) {
       for (ExamOrderInfoResponse exam : exams.getExamOrderInfoList()) {
         msg.append("[ExamOrder")
-                .append(" collection ID: ")
-                .append(exam.getCollectionId())
-                .append(" createdAt: ")
-                .append(exam.getCreatedAt())
-                .append(" status: ")
-                .append(exam.getStatus())
-                .append("], ");
+            .append(" collection ID: ")
+            .append(exam.getCollectionId())
+            .append(" createdAt: ")
+            .append(exam.getCreatedAt())
+            .append(" status: ")
+            .append(exam.getStatus())
+            .append("], ");
       }
     } else {
       log.error("No exam orders were available to slack.");

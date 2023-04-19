@@ -18,6 +18,7 @@ import java.util.Map;
 public class ExamOrdersInfo implements Auditable {
   private List<ExamOrderInfoResponse> examOrderInfoList;
   private long total;
+
   @Override
   public String getEventId() {
     return "ExamOrderSlackEvent";
@@ -28,12 +29,12 @@ public class ExamOrdersInfo implements Auditable {
     Map<String, String> detailsMap = new HashMap<>();
     for (ExamOrderInfoResponse exam : examOrderInfoList) {
       String examInfo =
-              "collectionId: "
-                      + exam.getCollectionId()
-                      + " createdAt: "
-                      + exam.getCreatedAt()
-                      + " status: "
-                      + exam.getStatus();
+          "collectionId: "
+              + exam.getCollectionId()
+              + " createdAt: "
+              + exam.getCreatedAt()
+              + " status: "
+              + exam.getStatus();
       detailsMap.put("ExamOrder", examInfo);
     }
     return detailsMap;
