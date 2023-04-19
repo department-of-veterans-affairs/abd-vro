@@ -8,16 +8,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimsInfo;
-import gov.va.vro.model.claimmetrics.ContentionInfo;
-import gov.va.vro.model.claimmetrics.DocumentInfo;
-import gov.va.vro.model.claimmetrics.ExamOrderInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ExamOrdersInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.DocumentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrdersInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
@@ -303,17 +303,16 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   // Verifies happy path where service returns an expected object.
   @Test
-  void testExamOrderInfoAll() throws JsonProcessingException {
+  void testExamOrderInfo() throws JsonProcessingException {
     int size = 5;
 
-    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size);
+    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size, Boolean.FALSE);
     ExamOrdersInfo serviceOutput = generateExamOrdersInfo(size);
 
     // Return an expected exception if argument does not match.
-    Mockito.when(service.findAllExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
         .thenThrow(new IllegalStateException("Unexpected input to service."));
-    Mockito.when(service.findAllExamOrderInfo(ArgumentMatchers.eq(params)))
-        .thenReturn(serviceOutput);
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.eq(params))).thenReturn(serviceOutput);
 
     ResponseEntity<String> responseEntity = callRestWithAuthorization("/v2/exam-order-info?size=5");
 
@@ -331,8 +330,7 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
   }
 
   // Checks if a specific uri results in the expected argument to the service call.
-  private void testExamInfoAllQueryParamDefaults(
-      String uri, ExamOrderInfoQueryParams expectedParams) {
+  private void testExamInfoQueryParamDefaults(String uri, ExamOrderInfoQueryParams expectedParams) {
     Mockito.reset(service);
 
     ArgumentCaptor<ExamOrderInfoQueryParams> captor =
@@ -340,31 +338,32 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     callRestWithAuthorization(uri);
 
-    Mockito.verify(service).findAllExamOrderInfo(captor.capture());
+    Mockito.verify(service).findExamOrderInfo(captor.capture());
     ExamOrderInfoQueryParams actualParams = captor.getValue();
 
     assertEquals(expectedParams.getPage(), actualParams.getPage());
     assertEquals(expectedParams.getSize(), actualParams.getSize());
+    assertEquals(expectedParams.getNotOrdered(), actualParams.getNotOrdered());
   }
 
   // Verifies default query parameters results in the expected argument to the service call.
   @Test
   void testExamInfoAllQueryParamDefaults() {
     String uri0 = "/v2/exam-order-info";
-    ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10);
-    testExamInfoAllQueryParamDefaults(uri0, params0);
+    ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri0, params0);
 
     String uri1 = "/v2/exam-order-info?size=15";
-    ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15);
-    testExamInfoAllQueryParamDefaults(uri1, params1);
+    ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri1, params1);
 
     String uri2 = "/v2/exam-order-info?page=1";
-    ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10);
-    testExamInfoAllQueryParamDefaults(uri2, params2);
+    ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri2, params2);
 
     String uri3 = "/v2/exam-order-info?page=1&size=15";
-    ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15);
-    testExamInfoAllQueryParamDefaults(uri3, params3);
+    ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri3, params3);
   }
 
   @Test

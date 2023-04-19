@@ -8,7 +8,7 @@ import gov.va.vro.mockbipce.config.TestConfig;
 import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
-import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
+import gov.va.vro.model.rrd.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
