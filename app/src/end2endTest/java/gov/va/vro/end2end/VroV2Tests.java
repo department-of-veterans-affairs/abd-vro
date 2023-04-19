@@ -870,7 +870,8 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveChangedStation() {
     AutomatedClaimTestSpec spec = specFor200("385");
     spec.setTempJurisdictionStationOverride("456");
-    spec.setExpectedSlackMessage("Claim 1085 is in station 456 not in 398. claim ID: 1085, collection ID: 385");
+    spec.setExpectedSlackMessage(
+        "Claim 1085 is in station 456 not in 398. claim ID: 1085, collection ID: 385");
     testAutomatedClaimFullPositive(spec);
   }
 
