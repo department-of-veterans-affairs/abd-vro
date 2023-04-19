@@ -47,9 +47,9 @@ public class BgsApiClient {
       case OFF_RAMP:
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
         // which only covers SUFFICIENCY_UNDETERMINED
-        var offRampError = mpo.getOffRampReason();
-        log.info("Create BGS notes for offRampError=" + offRampError);
-        String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampError, null);
+        var offRampReasonCode = mpo.getOffRampReason();
+        log.info("Create BGS notes for offRampReasonCode=" + offRampReasonCode);
+        String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampReasonCode, null);
         if (claimNote != null) body.pendingRequests.add(buildClaimNotesRequest(mpo, claimNote));
         break;
     }
