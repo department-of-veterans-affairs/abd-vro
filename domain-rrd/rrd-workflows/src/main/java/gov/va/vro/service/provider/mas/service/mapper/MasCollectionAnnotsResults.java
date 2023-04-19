@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,6 +44,8 @@ public class MasCollectionAnnotsResults {
   private static final String BP_UNIT = "mm[Hg]";
   private static final String BP_READING_REGEX = "(-|\\d+)"; // "^\\d{1,3}\\s*\\/\\s*\\d{1,3}\\s*$";
   private static final int BP_VALUE_LENGTH = 3;
+  DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+  DateFormat formatter1 = new SimpleDateFormat("M/d/yyyy");
 
   /**
    * Maps annotations to evidence.
@@ -108,7 +113,14 @@ public class MasCollectionAnnotsResults {
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
               veteranService.setDocument(source);
-              veteranService.setReceiptDate(receiptDate);
+              String serviceReceiptDate;
+              try {
+                serviceReceiptDate = formatter1.format(formatter.parse(receiptDate));
+              } catch (ParseException e) {
+                serviceReceiptDate = receiptDate;
+                log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
+              }
+              veteranService.setReceiptDate(serviceReceiptDate);
               veteranService.setDocumentId(documentId);
               serviceLocations.add(veteranService);
             }
