@@ -82,6 +82,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public static final String ENDPOINT_NOTIFY_AUDIT = "seda:notify-audit";
   public static final String END_POINT_RFD = "direct:rfd";
   public static final String ENDPOINT_ORDER_EXAM = "direct:order-exam";
+  public static final String ENDPOINT_EXAM_ORDER_SLACK = "direct: exam-order-slack";
 
   // Base names for wiretap endpoints
   public static final String MAS_CLAIM_WIRETAP = "mas-claim-submitted";
@@ -116,6 +117,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
   public void configure() {
     configureAuditing();
     configureNotify();
+    configureExamOrderSlack();
     configureAutomatedClaim();
     configureMasProcessing();
     configureCollectEvidence();
@@ -368,6 +370,11 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .multicast()
         .to(ENDPOINT_SLACK_EVENT)
         .to(ENDPOINT_AUDIT_EVENT);
+  }
+
+  private void configureExamOrderSlack() {
+    var routeId = "exam-order-slack";
+    from(ENDPOINT_EXAM_ORDER_SLACK).routeId(routeId).wireTap(ENDPOINT_NOTIFY_AUDIT);
   }
 
   /** Configure auditing. */

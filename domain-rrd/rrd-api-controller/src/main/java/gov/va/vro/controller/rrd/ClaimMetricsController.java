@@ -9,7 +9,10 @@ import gov.va.vro.model.rrd.claimmetrics.ExamOrdersInfo;
 import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.event.AuditEvent;
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimMetricsController implements ClaimMetricsResource {
   private final ClaimMetricsService claimMetricsService;
+
+  private final CamelEntrance camelEntrance;
 
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
@@ -74,5 +79,43 @@ public class ClaimMetricsController implements ClaimMetricsResource {
         ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
     return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+  }
+
+  @Override
+  public ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(
+          Integer page, Integer size, Boolean notOrdered) throws ClaimProcessingException {
+    ExamOrderInfoQueryParams params =
+            ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
+    ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
+    try {
+      AuditEvent message =
+              AuditEvent.fromAuditable(
+                      examOrdersInfo, "exam-order-slack", getSlackMessage(examOrdersInfo));
+      camelEntrance.examOrderSlack(message);
+      return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+    } catch (Exception e) {
+      throw new ClaimProcessingException(
+              "Error", HttpStatus.INTERNAL_SERVER_ERROR, "Could not slack exam Orders");
+    }
+  }
+
+  private static String getSlackMessage(ExamOrdersInfo exams) {
+    StringBuilder msg = new StringBuilder();
+    if (exams != null) {
+      for (ExamOrderInfoResponse exam : exams.getExamOrderInfoList()) {
+        msg.append("[ExamOrder")
+                .append(" collection ID: ")
+                .append(exam.getCollectionId())
+                .append(" createdAt: ")
+                .append(exam.getCreatedAt())
+                .append(" status: ")
+                .append(exam.getStatus())
+                .append("], ");
+      }
+    } else {
+      log.error("No exam orders were available to slack.");
+      throw new MasException("No exam orders were available to slack.");
+    }
+    return msg.toString();
   }
 }

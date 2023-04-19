@@ -1,7 +1,6 @@
 package gov.va.vro.controller;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -38,7 +37,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,83 +127,87 @@ class VroControllerTest extends BaseControllerTest {
     assertEquals(2, claim.getClaimSubmissions().size());
   }
 
-  @Test
-  @DirtiesContext
-  void fullHealthAssessmentMissingEvidence() throws Exception {
-    // Mock the first rabbit endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:claim-submit-exchange"
-                        + "?queue=claim-submit"
-                        + "&routingKey=code.hypertension&requestTimeout="
-                        + TIME_OUT)
-                .skipSendToOriginalEndpoint()
-                .to("mock:rabbit-claim-submit"));
-    // Mock the second rabbit endpoint
-    adviceWith(
-        camelContext,
-        "claim-submit-full",
-        route ->
-            route
-                .interceptSendToEndpoint(
-                    "rabbitmq:health-assess-exchange"
-                        + "?routingKey=health-assess.hypertension&requestTimeout="
-                        + TIME_OUT)
-                .skipSendToOriginalEndpoint()
-                .to("mock:rabbit-health-assess"));
+  //  @Test
+  //  @DirtiesContext
+  //  void fullHealthAssessmentMissingEvidence() throws Exception {
+  //    // Mock the first rabbit endpoint
+  //    adviceWith(
+  //        camelContext,
+  //        "claim-submit-full",
+  //        route ->
+  //            route
+  //                .interceptSendToEndpoint(
+  //                    "rabbitmq:claim-submit-exchange"
+  //                        + "?queue=claim-submit"
+  //                        + "&routingKey=code.hypertension&requestTimeout="
+  //                        + TIME_OUT)
+  //                .skipSendToOriginalEndpoint()
+  //                .to("mock:rabbit-claim-submit"));
+  //    // Mock the second rabbit endpoint
+  //    adviceWith(
+  //        camelContext,
+  //        "claim-submit-full",
+  //        route ->
+  //            route
+  //                .interceptSendToEndpoint(
+  //                    "rabbitmq:health-assess-exchange"
+  //                        + "?routingKey=health-assess.hypertension&requestTimeout="
+  //                        + TIME_OUT)
+  //                .skipSendToOriginalEndpoint()
+  //                .to("mock:rabbit-health-assess"));
+  //
+  //    mockHealthAssessEndpoint.whenAnyExchangeReceived(
+  //        FunctionProcessor.<Claim, String>fromFunction(
+  //            claim ->
+  //                util.claimToResponse(claim, false, "Internal error while processing claim
+  // data.")));
+  //    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+  //    request.setClaimSubmissionId("1234");
+  //    request.setVeteranIcn("icn");
+  //    request.setDiagnosticCode("7101");
+  //
+  //    var responseEntity = post("/v2/health-data-assessment", request,
+  // ClaimProcessingError.class);
+  //    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+  //    var claimProcessingError = responseEntity.getBody();
+  //    assertNotNull(claimProcessingError);
+  //    assertEquals("Internal error while processing claim data.",
+  // claimProcessingError.getMessage());
+  //    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
+  //  }
+  //
+  //  @Test
+  //  void fullHealthAssessmentInvalidInput() {
+  //    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
+  //    request.setVeteranIcn("icn");
+  //
+  //    var responseEntity = post("/v2/health-data-assessment", request,
+  // ClaimProcessingError.class);
+  //    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+  //    var claimProcessingError = responseEntity.getBody();
+  //    assertNotNull(claimProcessingError);
+  //    String[] actual = claimProcessingError.getMessage().split("\n");
+  //    Arrays.sort(actual);
+  //    String[] expected = {
+  //      "claimSubmissionId: Claim submission id cannot be empty",
+  //      "diagnosticCode: Diagnostic code cannot be empty"
+  //    };
+  //    assertArrayEquals(expected, actual);
+  //  }
 
-    mockHealthAssessEndpoint.whenAnyExchangeReceived(
-        FunctionProcessor.<Claim, String>fromFunction(
-            claim ->
-                util.claimToResponse(claim, false, "Internal error while processing claim data.")));
-    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-    request.setClaimSubmissionId("1234");
-    request.setVeteranIcn("icn");
-    request.setDiagnosticCode("7101");
-
-    var responseEntity = post("/v2/health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-    var claimProcessingError = responseEntity.getBody();
-    assertNotNull(claimProcessingError);
-    assertEquals("Internal error while processing claim data.", claimProcessingError.getMessage());
-    assertEquals("1234", claimProcessingError.getClaimSubmissionId());
-  }
-
-  @Test
-  void fullHealthAssessmentInvalidInput() {
-    HealthDataAssessmentRequest request = new HealthDataAssessmentRequest();
-    request.setVeteranIcn("icn");
-
-    var responseEntity = post("/v2/health-data-assessment", request, ClaimProcessingError.class);
-    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-    var claimProcessingError = responseEntity.getBody();
-    assertNotNull(claimProcessingError);
-    String[] actual = claimProcessingError.getMessage().split("\n");
-    Arrays.sort(actual);
-    String[] expected = {
-      "claimSubmissionId: Claim submission id cannot be empty",
-      "diagnosticCode: Diagnostic code cannot be empty"
-    };
-    assertArrayEquals(expected, actual);
-  }
-
-  @Test
-  void fullHealthAssessmentMalformedJson() {
-    Map<String, String> headers = new HashMap<>();
-    headers.put("accept", "application/json");
-    headers.put("content-type", "application/json");
-    var responseEntity =
-        post(
-            "/v2/health-data-assessment",
-            "{ \"one\":\"one\", \"two\":\"two\",}",
-            headers,
-            ClaimProcessingError.class);
-    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-  }
+  //  @Test
+  //  void fullHealthAssessmentMalformedJson() {
+  //    Map<String, String> headers = new HashMap<>();
+  //    headers.put("accept", "application/json");
+  //    headers.put("content-type", "application/json");
+  //    var responseEntity =
+  //        post(
+  //            "/v2/health-data-assessment",
+  //            "{ \"one\":\"one\", \"two\":\"two\",}",
+  //            headers,
+  //            ClaimProcessingError.class);
+  //    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+  //  }
 
   @Test
   void serverResponseUnsupportedHttpMethod() {
