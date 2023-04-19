@@ -437,7 +437,6 @@ public class VroV2Tests {
         assertNotNull(body);
         assertNotNull(expectedSlackMessage);
         assertTrue(expectedSlackMessage.length() > 0);
-        log.info("What was the slack message? {}", body);
         assertTrue(body.contains(expectedSlackMessage));
         return true;
       } catch (HttpStatusCodeException exception) {
@@ -871,7 +870,7 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveChangedStation() {
     AutomatedClaimTestSpec spec = specFor200("385");
     spec.setTempJurisdictionStationOverride("456");
-
+    spec.setExpectedSlackMessage("Claim 1085 is in station 456 not in 398. claim ID: 1085, collection ID: 385");
     testAutomatedClaimFullPositive(spec);
   }
 
