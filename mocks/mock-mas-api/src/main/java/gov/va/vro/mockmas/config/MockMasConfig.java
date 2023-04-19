@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockmas.model.CollectionStore;
 import gov.va.vro.mockmas.model.ExamOrderStore;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

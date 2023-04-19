@@ -1,6 +1,6 @@
 package gov.va.vro.mockmas.model;
 
-import gov.va.vro.model.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
 
 import java.util.HashMap;
 import java.util.List;

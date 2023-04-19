@@ -66,6 +66,26 @@ jobs:
         env:
           ENV: "end2end-test"
 
+      - name: "Shut down docker containers"
+        if: always()
+        run: ./gradlew :app:dockerComposeDown
+
+      - name: "Save container logs to files"
+        if: always()
+        run: |
+          mkdir -p /tmp/vro-logs
+          for CONTAINER in app svc-assessor-dc7101 svc-pdf-generator svc-lighthouse-api svc-bgs-api; do
+            docker-compose -f app/src/docker/docker-compose.yml logs --no-color --no-log-prefix $CONTAINER &> /tmp/vro-logs/$CONTAINER.log
+          done
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: vro-logs
+          path: /tmp/vro-logs/*.log
+          retention-days: 14
+
       - name: "Check for tracking files"
         run: |
           TRACKING_FOLDER="/persist/tracking/mas-claim-submitted/$(date '+%Y-%m-%d')"
@@ -79,7 +99,9 @@ jobs:
           echo "::endgroup::"
 
       - name: "Clean docker container and images"
+        if: always()
         run: ./gradlew dockerclean
 
       - name: "Clean docker volumes"
+        if: always()
         run: ./gradlew dockermaintainerclean
