@@ -22,7 +22,3 @@ global:
 vro-app-chart:
   vroAudUrl: https://api.va.gov/services/abd-vro
   lhApiAuthUrl: https://api.va.gov/internal/auth/v2/validation
-
-vro-svcs-chart:
-  bgs:
-    baseUrl: https://vbmsprod.vba.va.gov
