@@ -1,11 +1,14 @@
 package gov.va.vro.api.rrd.resources;
 
 import gov.va.vro.api.rrd.model.ClaimProcessingException;
+import gov.va.vro.api.rrd.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 @RequestMapping(value = "/v2", produces = "application/json")
@@ -151,4 +157,41 @@ public interface ClaimMetricsResource {
           Integer size,
       @RequestParam(name = "notOrdered", required = false, defaultValue = "False")
           Boolean notOrdered);
+
+  @Operation(
+      summary =
+          "Retrieves health evidence for a specific claimSubmissionId, claim version,"
+              + " veteran ICN, and diagnostic code.",
+      description =
+          "This endpoint does the same thing v2/health-data-assessment used to do. "
+              + " It does not store/write anything to the database.")
+  @PostMapping(value = "/health-evidence")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not found",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal service error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "health-evidence")
+  @Tag(name = "Claim Metrics")
+  @ResponseBody
+  ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
+      @Parameter(
+              description = "Request a MAS Automated Claim",
+              required = true,
+              schema = @Schema(implementation = MasAutomatedClaimRequest.class))
+          @Valid
+          @RequestBody
+          MasAutomatedClaimRequest request);
 }

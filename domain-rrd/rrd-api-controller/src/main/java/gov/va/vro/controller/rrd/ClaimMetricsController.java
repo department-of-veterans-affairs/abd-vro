@@ -2,6 +2,7 @@ package gov.va.vro.controller.rrd;
 
 import gov.va.vro.api.rrd.model.ClaimProcessingException;
 import gov.va.vro.api.rrd.resources.ClaimMetricsResource;
+import gov.va.vro.api.rrd.responses.FullHealthDataAssessmentResponse;
 import gov.va.vro.model.rrd.claimmetrics.ClaimInfoQueryParams;
 import gov.va.vro.model.rrd.claimmetrics.ClaimsInfo;
 import gov.va.vro.model.rrd.claimmetrics.ExamOrderInfoQueryParams;
@@ -10,6 +11,9 @@ import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
 import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -27,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimMetricsController implements ClaimMetricsResource {
   private final ClaimMetricsService claimMetricsService;
+  private final MasProcessingService masProcessingService;
 
   @Override
   public ResponseEntity<ClaimMetricsResponse> claimMetrics() {
@@ -74,5 +80,34 @@ public class ClaimMetricsController implements ClaimMetricsResource {
         ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
     return ResponseEntity.ok(examOrdersInfo.getExamOrderInfoList());
+  }
+
+  @Override
+  public ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
+      MasAutomatedClaimRequest request) {
+    log.info("Received health evidence request with collection ID {}", request.getCollectionId());
+    String correlationId = UUID.randomUUID().toString();
+    var payload =
+        MasAutomatedClaimPayload.builder()
+            .claimDetail(request.getClaimDetail())
+            .collectionId(request.getCollectionId())
+            .correlationId(correlationId)
+            .firstName(request.getFirstName())
+            .gender(request.getGender())
+            .lastName(request.getLastName())
+            .dateOfBirth(request.getDateOfBirth().replaceAll("Z", ""))
+            .veteranIdentifiers(request.getVeteranIdentifiers())
+            .veteranFlashIds(request.getVeteranFlashIds())
+            .build();
+    MasProcessingObject assessment = masProcessingService.getHealthEvidence(payload);
+
+    FullHealthDataAssessmentResponse response = new FullHealthDataAssessmentResponse();
+    response.setClaimSubmissionId(assessment.getBenefitClaimId());
+    response.setVeteranIcn(assessment.getVeteranIcn());
+    response.setDiagnosticCode(assessment.getDiagnosticCode());
+    response.setEvidence(assessment.getEvidence());
+    response.setSufficientForFastTracking(assessment.getSufficientForFastTracking());
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

@@ -31,6 +31,11 @@ public class CamelEntrance {
         PrimaryRoutes.ENDPOINT_SUBMIT_CLAIM_FULL, claim, String.class);
   }
 
+  public MasProcessingObject getHealthEvidence(MasProcessingObject payload) {
+    return producerTemplate.requestBody(
+        MasIntegrationRoutes.ENDPOINT_GET_HEALTH_EVIDENCE, payload, MasProcessingObject.class);
+  }
+
   public String generatePdf(GeneratePdfPayload resource) {
     return producerTemplate.requestBody(
         PrimaryRoutes.ENDPOINT_GENERATE_PDF, resource, String.class);

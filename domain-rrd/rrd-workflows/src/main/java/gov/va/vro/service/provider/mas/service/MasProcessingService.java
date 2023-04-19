@@ -13,6 +13,7 @@ import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasCamelStage;
+import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
@@ -212,5 +213,11 @@ public class MasProcessingService {
     Claim claim = toClaim(claimPayload);
     claim.setOffRampReason(offRampReason);
     saveToDbService.setOffRampReason(claim);
+  }
+
+  public MasProcessingObject getHealthEvidence(MasAutomatedClaimPayload payload)
+      throws MasException {
+    MasProcessingObject mpo = new MasProcessingObject(payload, MasCamelStage.START_COMPLETE);
+    return camelEntrance.getHealthEvidence(mpo);
   }
 }
