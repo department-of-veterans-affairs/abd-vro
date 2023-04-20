@@ -166,6 +166,50 @@ public interface ClaimMetricsResource {
           "This endpoint does the same thing v2/health-data-assessment used to do. "
               + " It does not store/write anything to the database.")
   @PostMapping(value = "/health-evidence")
+=======
+      summary = "Slacks all exam order records that have not been processed by MAS",
+      description = "Slacks the list of exam orders that have not been processed.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Successful"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+
+            content = @Content(schema = @Schema(hidden = true))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal service error",
+            content = @Content(schema = @Schema(hidden = true)))
+      })
+  @ResponseStatus(HttpStatus.OK)
+  @Timed(value = "exam-order-slack")
+  @Tag(name = "Claim Metrics")
+  @RequestMapping(value = "/exam-order-slack", method = RequestMethod.POST)
+  @ResponseBody
+  ResponseEntity<List<ExamOrderInfoResponse>> examOrderSlack(
+      @RequestParam(name = "page", required = false, defaultValue = "0")
+          @Min(value = 0, message = "invalid page number")
+          Integer page,
+      @RequestParam(name = "size", required = false, defaultValue = "10")
+          @Min(value = 1, message = "invalid size")
+          Integer size,
+      @RequestParam(name = "notOrdered", required = false, defaultValue = "False")
+          Boolean notOrdered)
+      throws ClaimProcessingException;
+      
+       @Operation(
+      summary =
+          "Retrieves health evidence for a specific claimSubmissionId, claim version,"
+              + " veteran ICN, and diagnostic code.",
+      description =
+          "This endpoint does the same thing v2/health-data-assessment used to do. "
+              + " It does not store/write anything to the database.")
+  @PostMapping(value = "/health-evidence")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
