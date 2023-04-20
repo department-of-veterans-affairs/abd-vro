@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MasPollingProcessor implements Processor {
+public class MasProcessEntry implements Processor {
   private final CamelEntrance camelEntrance;
 
   @Override

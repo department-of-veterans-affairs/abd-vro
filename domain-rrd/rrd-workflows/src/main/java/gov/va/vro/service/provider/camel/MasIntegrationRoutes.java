@@ -25,7 +25,7 @@ import gov.va.vro.service.provider.ExternalCallException;
 import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.MasOrderExamProcessor;
-import gov.va.vro.service.provider.MasPollingProcessor;
+import gov.va.vro.service.provider.MasProcessEntry;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.mas.MasException;
@@ -97,7 +97,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final MasConfig masConfig;
 
-  private final MasPollingProcessor masPollingProcessor;
+  private final MasProcessEntry masProcessingEntry;
 
   private final MasOrderExamProcessor masOrderExamProcessor;
 
@@ -142,9 +142,9 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
-        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
+//        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+//        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
+//        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
         //        .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
@@ -154,7 +154,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     RabbitMqCamelUtils.fromRabbitmq(this, MAS_NOTIFICATION_EXCHANGE, MAS_NOTIFICATION_ROUTING_KEY)
         .routeId(processClaimRouteId)
         .convertBodyTo(MasAutomatedClaimPayload.class)
-        .process(masPollingProcessor)
+        .process(masProcessingEntry)
         .setExchangePattern(ExchangePattern.InOnly); // TODO Q: Why is this needed?
   }
 
