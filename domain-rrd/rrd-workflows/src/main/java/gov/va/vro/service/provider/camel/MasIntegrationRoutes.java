@@ -142,9 +142,10 @@ public class MasIntegrationRoutes extends RouteBuilder {
     var checkClaimRouteId = "mas-claim-notification";
     from(ENDPOINT_AUTOMATED_CLAIM)
         .routeId(checkClaimRouteId)
-//        .wireTap(ENDPOINT_AUDIT_WIRETAP)
-//        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
-//        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
+        //        .wireTap(ENDPOINT_AUDIT_WIRETAP)
+        //        // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type
+        // AuditEvent
+        //        .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
         //        .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
