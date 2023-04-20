@@ -43,11 +43,13 @@ public class MasCollectionService {
   //            "Collection Status Response : Collection Status {} ",
   //            masCollectionStatus.getCollectionStatus());
   //        if ((MasStatus.VRONOTIFIED)
-  //                .equals(MasStatus.getMas public boolean checkCollectionStatus(int collectionId) throws MasException {
+  //                .equals(MasStatus.getMas public boolean checkCollectionStatus(int collectionId)
+  // throws MasException {
   ////
   ////    log.info("Checking collection status for collection {}.", collectionId);
   ////    try {
-  ////      var response = masApiService.getMasCollectionStatus(Collections.singletonList(collectionId));
+  ////      var response =
+  // masApiService.getMasCollectionStatus(Collections.singletonList(collectionId));
   ////      log.info("Collection Status Response : response Size: " + response.size());
   ////      for (MasCollectionStatus masCollectionStatus : response) {
   ////        log.info(
@@ -79,7 +81,6 @@ public class MasCollectionService {
   //      throw new MasException("Error in calling collection Status API ", e);
   //    }
   //    return false;
-
 
   /**
    * Collects annotations.
