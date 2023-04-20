@@ -13,10 +13,10 @@ import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.model.rrd.event.AuditEvent;
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
-import gov.va.vro.service.provider.mas.MasProcessingObject;
-import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.mas.MasException;
+import gov.va.vro.service.provider.mas.MasProcessingObject;
+import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import lombok.RequiredArgsConstructor;
@@ -124,7 +124,7 @@ public class ClaimMetricsController implements ClaimMetricsResource {
     }
     return msg.toString();
   }
-  
+
   @Override
   public ResponseEntity<FullHealthDataAssessmentResponse> healthEvidence(
       MasAutomatedClaimRequest request) {

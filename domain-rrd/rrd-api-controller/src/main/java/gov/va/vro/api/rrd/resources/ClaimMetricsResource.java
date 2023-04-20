@@ -159,16 +159,9 @@ public interface ClaimMetricsResource {
           Boolean notOrdered);
 
   @Operation(
-      summary =
-          "Retrieves health evidence for a specific claimSubmissionId, claim version,"
-              + " veteran ICN, and diagnostic code.",
-      description =
-          "This endpoint does the same thing v2/health-data-assessment used to do. "
-              + " It does not store/write anything to the database.")
-  @PostMapping(value = "/health-evidence")
-=======
       summary = "Slacks all exam order records that have not been processed by MAS",
       description = "Slacks the list of exam orders that have not been processed.")
+  @PostMapping(value = "/exam-order-slack")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful"),
@@ -179,7 +172,6 @@ public interface ClaimMetricsResource {
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
-
             content = @Content(schema = @Schema(hidden = true))),
         @ApiResponse(
             responseCode = "500",
@@ -201,8 +193,8 @@ public interface ClaimMetricsResource {
       @RequestParam(name = "notOrdered", required = false, defaultValue = "False")
           Boolean notOrdered)
       throws ClaimProcessingException;
-      
-       @Operation(
+
+  @Operation(
       summary =
           "Retrieves health evidence for a specific claimSubmissionId, claim version,"
               + " veteran ICN, and diagnostic code.",
