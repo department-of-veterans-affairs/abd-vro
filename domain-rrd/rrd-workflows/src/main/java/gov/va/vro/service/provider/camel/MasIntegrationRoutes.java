@@ -146,7 +146,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         // For the ENDPOINT_AUDIT_WIRETAP, use auditProcessor to convert body to type AuditEvent
         .onPrepare(auditProcessor(checkClaimRouteId, "Checking if claim is ready..."))
         // Msg body is still a MasAutomatedClaimPayload
-        .delay(header(MAS_DELAY_PARAM))
+        //        .delay(header(MAS_DELAY_PARAM))
         .setExchangePattern(ExchangePattern.InOnly)
         .to(DIRECT_TO_MQ_MAS);
 

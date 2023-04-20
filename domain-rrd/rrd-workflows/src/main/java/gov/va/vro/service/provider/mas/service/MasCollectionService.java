@@ -4,8 +4,6 @@ import gov.va.vro.model.rrd.AbdEvidence;
 import gov.va.vro.model.rrd.HealthAssessmentSource;
 import gov.va.vro.model.rrd.HealthDataAssessment;
 import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
-import gov.va.vro.model.rrd.mas.MasCollectionStatus;
-import gov.va.vro.model.rrd.mas.MasStatus;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
@@ -14,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,32 +28,58 @@ public class MasCollectionService {
    * @return true or false
    * @throws MasException exception
    */
-  public boolean checkCollectionStatus(int collectionId) throws MasException {
+  //  public boolean checkCollectionStatus(int collectionId) throws MasException {
+  //
+  //    log.info("Checking collection status for collection {}.", collectionId);
+  //    try {
+  //      var response =
+  // masApiService.getMasCollectionStatus(Collections.singletonList(collectionId));
+  //      log.info("Collection Status Response : response Size: " + response.size());
+  //      for (MasCollectionStatus masCollectionStatus : response) {
+  //        log.info(
+  //            "Collection Status Response : Collection ID  {} ",
+  //            masCollectionStatus.getCollectionsId());
+  //        log.info(
+  //            "Collection Status Response : Collection Status {} ",
+  //            masCollectionStatus.getCollectionStatus());
+  //        if ((MasStatus.VRONOTIFIED)
+  //                .equals(MasStatus.getMas public boolean checkCollectionStatus(int collectionId) throws MasException {
+  ////
+  ////    log.info("Checking collection status for collection {}.", collectionId);
+  ////    try {
+  ////      var response = masApiService.getMasCollectionStatus(Collections.singletonList(collectionId));
+  ////      log.info("Collection Status Response : response Size: " + response.size());
+  ////      for (MasCollectionStatus masCollectionStatus : response) {
+  ////        log.info(
+  ////            "Collection Status Response : Collection ID  {} ",
+  ////            masCollectionStatus.getCollectionsId());
+  ////        log.info(
+  ////            "Collection Status Response : Collection Status {} ",
+  ////            masCollectionStatus.getCollectionStatus());
+  ////        if ((MasStatus.VRONOTIFIED)
+  ////                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))
+  ////            || (MasStatus.PROCESSED)
+  ////                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
+  ////          return true;
+  ////        }
+  ////      }
+  ////    } catch (Exception e) {
+  ////      log.error("Error in calling collection Status API ", e);
+  ////      throw new MasException("Error in calling collection Status API ", e);
+  ////    }
+  ////    return false;
+  ////  }Status(masCollectionStatus.getCollectionStatus()))
+  //            || (MasStatus.PROCESSED)
+  //                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
+  //          return true;
+  //        }
+  //      }
+  //    } catch (Exception e) {
+  //      log.error("Error in calling collection Status API ", e);
+  //      throw new MasException("Error in calling collection Status API ", e);
+  //    }
+  //    return false;
 
-    log.info("Checking collection status for collection {}.", collectionId);
-    try {
-      var response = masApiService.getMasCollectionStatus(Collections.singletonList(collectionId));
-      log.info("Collection Status Response : response Size: " + response.size());
-      for (MasCollectionStatus masCollectionStatus : response) {
-        log.info(
-            "Collection Status Response : Collection ID  {} ",
-            masCollectionStatus.getCollectionsId());
-        log.info(
-            "Collection Status Response : Collection Status {} ",
-            masCollectionStatus.getCollectionStatus());
-        if ((MasStatus.VRONOTIFIED)
-                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))
-            || (MasStatus.PROCESSED)
-                .equals(MasStatus.getMasStatus(masCollectionStatus.getCollectionStatus()))) {
-          return true;
-        }
-      }
-    } catch (Exception e) {
-      log.error("Error in calling collection Status API ", e);
-      throw new MasException("Error in calling collection Status API ", e);
-    }
-    return false;
-  }
 
   /**
    * Collects annotations.
