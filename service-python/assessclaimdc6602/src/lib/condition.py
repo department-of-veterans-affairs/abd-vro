@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .codesets import hypertension_conditions
+from .codesets import condition_codesets
 from utils import extract_date, format_date
 
 
@@ -43,7 +43,8 @@ def conditions_calculation(request_body):
     for condition in veterans_conditions:
         condition_code = condition["code"]
         #  Only LH data has ICD codes, so no MAS data will pass the following condition
-        if condition_code in hypertension_conditions.conditions:
+        if condition_code in condition_codesets.asthma_conditions or \
+                condition_code in condition_codesets.persistent_asthma:
             condition["relevant"] = True
             lh_relevant_condition_count += 1
         else:
@@ -68,6 +69,6 @@ def conditions_calculation(request_body):
         "twoYearsConditions": sort_conditions(conditions_two_years),
         "totalConditionsCount": len(veterans_conditions),
         "relevantConditionsLighthouseCount": lh_relevant_condition_count,
-        }
+    }
     )
     return response

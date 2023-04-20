@@ -3,7 +3,8 @@ from typing import Dict
 
 import data_model
 
-from . import medication
+from . import medication, condition
+from utils import extract_date, format_date
 
 
 def assess_asthma(event: Dict):
@@ -19,16 +20,56 @@ def assess_asthma(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        active_medications = medication.medication_required(event)
+        medications = medication.medication_required(event)
 
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications["medications"],
+                    "medications": medications["medications"],
                 },
                 "evidenceSummary": {
-                    "relevantMedCount": active_medications["relevantMedCount"],
-                    "totalMedCount": active_medications["totalMedCount"],
+                    "relevantMedCount": medications["relevantMedCount"],
+                    "totalMedCount": medications["totalMedCount"],
+                },
+                "claimSubmissionId": event['claimSubmissionId']
+            }
+        )
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message processed successfully")
+    else:
+        logging.info(f"claimSubmissionId: {event['claimSubmissionId']}, message failed to process due to: {validation_results['errors']}")
+        response_body["errorMessage"] = "error validating request message data"
+        response_body["claimSubmissionId"] = event['claimSubmissionId']
+
+    return response_body
+
+
+def assess_suffiiciency_asthma(event: Dict):
+    """
+    Take a request that includes asthma related data, and return a suffficiency decision
+
+    :param event: request body
+    :type event: dict
+    :return: response body
+    :rtype: dict
+    """
+    validation_results = data_model.validate_request_body(event)
+    response_body = {}
+
+    if validation_results["is_valid"]:
+        medications = medication.filter_categorize_mas_medication(event)
+        conditions = condition.conditions_calculation(event)
+
+        response_body.update(
+            {
+                "evidence": {
+                    "medications": medications["allMedications"],
+                    "conditions": conditions["conditions"],
+                },
+                "evidenceSummary": {
+                    "totalMedCount": medications["allMedicationsCount"],
+                    "relevantMedicationCount": medications["relevantMedicationCount"],
+                    "totalConditionsCount": conditions["totalConditionsCount"],
+                    "relevantConditionsLighthouseCount": conditions["relevantConditionsLighthouseCount"]
                 },
                 "claimSubmissionId": event['claimSubmissionId']
             }

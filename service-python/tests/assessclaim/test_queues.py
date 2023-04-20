@@ -11,8 +11,6 @@ from assessclaimdc6522.src.lib import queues as q6522
 from assessclaimdc6522.src.lib.main import assess_rhinitis as main6522
 from assessclaimdc6602.src.lib import queues as q6602
 from assessclaimdc6602.src.lib.main import assess_asthma as main6602
-from assessclaimdc6602v2.src.lib import queues as q6602v2
-from assessclaimdc6602v2.src.lib.main import assess_asthma as main6602v2
 from assessclaimdc7101.src.lib import queues as q7101
 
 
@@ -22,7 +20,6 @@ from assessclaimdc7101.src.lib import queues as q7101
         (q7101, "health-assess.hypertension"),
         (q6602, "health-assess.asthma"),
         # V2
-        (q6602v2, "health-sufficiency-assess.asthma"),
         (q6522, "health-sufficiency-assess.rhinitis"),
         (q6510, "health-sufficiency-assess.sinusitis"),
         (qcancer, "health-sufficiency-assess.cancer")
@@ -57,8 +54,6 @@ def test_queue_setup(queue, service_queue_name, caplog):
     [
         (q6602, "6602", {"evidence": "some medical data body",
                          "claimSubmissionId": "1234"}, main6602),
-        (q6602v2, "6602v2", {"evidence": "some medical data body",
-                             "claimSubmissionId": "1234"}, main6602v2),
         (q6510, "6510", {"evidence": "some medical data body",
                          "claimSubmissionId": "1234"}, main6510),
         (q6522, "6522", {"evidence": "some medical data body",

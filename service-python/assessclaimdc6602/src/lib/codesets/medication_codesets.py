@@ -96,3 +96,31 @@ med_dict = {
         "omalizumab",
     },
 }
+
+
+asthma_medications = {
+    "Aerochamber",
+    "Albuterol",
+    "Beclomethasone",
+    "Benralizumab",
+    "Budesonide",
+    "Ciclesonide",
+    "Fluticasone",
+    "Levalbuterol",
+    "Mepolizumab",
+    "Methylprednisolone",
+    "Mometasone",
+    "Montelukast",
+    "Omalizumab",
+    "Prednisone",
+    "Reslizumab",
+    "Salmeterol",
+    "Theophylline",
+    "Zafirlukast",
+    "Zileuton",
+    "Asthma",
+    "Breath",
+    "Inhal",
+    "Puff",
+    "SOB",
+}

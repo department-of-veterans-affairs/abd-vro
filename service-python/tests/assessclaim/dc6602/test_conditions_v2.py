@@ -1,6 +1,6 @@
 import pytest
 
-from assessclaimdc6602v2.src.lib import condition
+from assessclaimdc6602.src.lib import condition
 
 
 @pytest.mark.parametrize(
@@ -14,9 +14,12 @@ from assessclaimdc6602v2.src.lib import condition
                     "conditions": [],
                     "medications": [{"description": "Albuterol"}],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {"conditions": [], "relevantConditionsCount": 0, "totalConditionsCount": 0},
+            {"conditions": [],
+             "relevantConditionsLighthouseCount": 0,
+             "totalConditionsCount": 0,
+             "twoYearsConditions": []}
         ),
         (
             {
@@ -31,13 +34,17 @@ from assessclaimdc6602v2.src.lib import condition
                     ],
                     "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09",
             },
             {"conditions": [{"code": "J82.83",
+                             "dateFormatted": "",
+                             "receiptDate": "",
+                             "relevant": True,
                              "status": "Active",
                              "text": "Eosinophilic asthma"}],
-             "relevantConditionsCount": 1,
-             "totalConditionsCount": 1}
+             "relevantConditionsLighthouseCount": 1,
+             "totalConditionsCount": 1,
+             "twoYearsConditions": []}
         ),
     ],
 )

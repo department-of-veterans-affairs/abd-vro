@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
 
 
 def sort_med(medication_list):
