@@ -42,14 +42,10 @@ spec:
             - -c
             - |
               /bin/sh -c "
-                echo WORKAROUND for failing: pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER
-                pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER || echo "failed"
-                sleep 30
-                pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER || echo "failed"
-                # until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
-                #  echo 'Waiting for Postgres DB to be available'
-                #  sleep 5
-                # done
+                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
+                 echo 'Waiting for Postgres DB to be available'
+                 sleep 5
+                done
               "
           resources:
             # TODO: reduce resources since this container requires very little
@@ -60,8 +56,6 @@ spec:
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
-          # WORKAROUND for initContainers not being able to connect to postgres
-          command: [ "/bin/sh" ]
           resources:
             requests:
               cpu: 150m
@@ -108,9 +102,6 @@ spec:
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
-            - name: VALIDATE_TOKEN
-              # Must quote, otherwise YAML interprets 'NO' as a boolean false
-              value: {{ .Values.validateToken | quote }}
 
             - name: VRO_SECRETS_MAS
               valueFrom:
@@ -127,8 +118,6 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-            - name: BIP_APPLICATION_ISS
-              value: virtual_regional_office
             - name: BIP_CLAIM_URL
               value: {{ .Values.global.bip.bipClaimUrl }}
             - name: BIP_EVIDENCE_URL

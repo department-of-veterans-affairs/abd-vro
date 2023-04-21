@@ -9,12 +9,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
 import gov.va.vro.camel.RabbitMqCamelUtils;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.HealthDataAssessment;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasDocument;
-import gov.va.vro.model.mas.request.MasOrderExamRequest;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.HealthDataAssessment;
+import gov.va.vro.model.rrd.event.EventReason;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasDocument;
+import gov.va.vro.model.rrd.mas.request.MasOrderExamRequest;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.service.provider.CamelEntrance;
 import gov.va.vro.service.provider.camel.BgsApiClientRoutes;
@@ -85,10 +86,12 @@ public class MasIntegrationRoutesTest extends BaseIntegrationTest {
   void processClaimInsufficientEvidenceAccessError() throws Exception {
     var mpo = processClaim(null);
     Thread.sleep(200);
+    String expectedMessageStart =
+        String.format("reason code: %s", EventReason.SUFFICIENCY_UNDETERMINED.getCode());
     var audits = auditEventRepository.findByEventIdOrderByEventTimeAsc(mpo.getEventId());
     assertTrue(
         audits.stream()
-            .filter(audit -> audit.getMessage().startsWith("Sufficiency cannot be determined"))
+            .filter(audit -> audit.getMessage().startsWith(expectedMessageStart))
             .findFirst()
             .isPresent());
   }

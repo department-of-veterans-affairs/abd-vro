@@ -1,6 +1,6 @@
 package gov.va.vro.end2end.util;
 
-import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.ClaimContention;
 import lombok.Getter;
 import lombok.Setter;
 

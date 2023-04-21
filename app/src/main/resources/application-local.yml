@@ -14,11 +14,8 @@ logging:
 bip:
   claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
   claimSecret: "${BIP_CLAIM_SECRET:theSecret}"
-  claimIssuer: "${BIP_CLAIM_ISS:VRO}"
   evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
   evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
-  evidenceIssuer: "${BIP_EVIDENCE_ISS:VRO}"
-  applicationName: "${BIP_APPLICATION_ISS:VRO}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
 
