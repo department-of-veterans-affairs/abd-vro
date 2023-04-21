@@ -58,10 +58,6 @@ def conditions_calculation(request_body):
         except (ValueError, KeyError):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
-        try:
-            condition["receiptDate"] = format_date(datetime.strptime(condition["receiptDate"], "%Y-%m-%d").date())
-        except (ValueError, KeyError):
-            condition["receiptDate"] = ""
 
     response.update({
         "conditions": sort_conditions(condition_with_date) + condition_without_date,
