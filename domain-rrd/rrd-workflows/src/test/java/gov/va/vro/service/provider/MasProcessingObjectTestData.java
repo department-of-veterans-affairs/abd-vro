@@ -11,6 +11,7 @@ import lombok.Builder;
 // TODO: refactor tests to use the resulting class to minimize duplicate code and facilitate changes
 @Builder(toBuilder = true)
 public class MasProcessingObjectTestData {
+  @Builder.Default int collectionId = 20230420;
   @Builder.Default String claimId = "0613";
   @Builder.Default String veteranParticipantId = "vetPid20230421";
 
@@ -22,6 +23,7 @@ public class MasProcessingObjectTestData {
     VeteranIdentifiers veteranIdentifiers = createVeteranIdentifiers();
     MasAutomatedClaimPayload claimPayload =
         MasAutomatedClaimPayload.builder()
+            .collectionId(collectionId)
             .claimDetail(claimDetail)
             .veteranIdentifiers(veteranIdentifiers)
             .build();

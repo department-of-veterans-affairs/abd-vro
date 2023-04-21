@@ -32,7 +32,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   private final BgsApiClient bgsApiClient;
 
-  int RETRY_LIMIT = 5;
+  static final int RETRY_LIMIT = 5;
 
   @Override
   public void configure() throws Exception {
@@ -102,6 +102,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .build();
   }
 
+  // https://github.com/department-of-veterans-affairs/abd-vro/issues/1289
   void configureRouteToBgsApiClientMicroservice() {
     new ToRabbitMqRouteHelper(this, BGSCLIENT_ADDNOTES)
         .toMq("bgs-api", "add-note")
@@ -136,7 +137,8 @@ public class BgsApiClientRoutes extends RouteBuilder {
         .filter(exchange -> StringUtils.isNotBlank(webhook))
         .process(buildErrorMessage)
         .log("slack: ${body}")
-        .to(String.format("slack:#%s?webhookUrl=%s", channel, webhook));
+        .to(String.format("slack:#%s?webhookUrl=%s", channel, webhook))
+        .id("message-to-slack");
   }
 
   // TODO: remove once a BGS Mock and associated microservice is used in end2end integration tests

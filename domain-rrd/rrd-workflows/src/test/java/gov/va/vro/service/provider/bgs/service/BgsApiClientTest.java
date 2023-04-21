@@ -2,6 +2,7 @@ package gov.va.vro.service.provider.bgs.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -10,6 +11,7 @@ import gov.va.vro.model.rrd.bgs.BgsApiClientRequest;
 import gov.va.vro.model.rrd.event.EventReason;
 import gov.va.vro.persistence.model.EvidenceSummaryDocumentEntity;
 import gov.va.vro.persistence.repository.EvidenceSummaryDocumentRepository;
+import gov.va.vro.service.provider.EntityNotFoundException;
 import gov.va.vro.service.provider.MasProcessingObjectTestData;
 import gov.va.vro.service.provider.mas.MasCamelStage;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
@@ -27,6 +29,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+// https://github.com/department-of-veterans-affairs/abd-vro/issues/1341
 @ExtendWith(MockitoExtension.class)
 public class BgsApiClientTest {
 
@@ -72,6 +75,17 @@ public class BgsApiClientTest {
     assertEquals(1, veteranNotes.size());
     var expectedVeteranNote = BgsVeteranNote.getArsdUploadedNote(uploadedAt);
     assertEquals(expectedVeteranNote, veteranNotes.get(0));
+  }
+
+  @Test
+  void buildRequestTest_ReadyForDecision_missingEsdEntity() {
+    when(esDocRepository.findById(any())).thenReturn(Optional.empty());
+
+    var mpo = mpoWithMasCamelStage(MasCamelStage.DURING_PROCESSING);
+    mpo.setSufficientForFastTracking(true);
+    // Should never occur -- throw an exception so we can investigate
+    assertThrows(
+        EntityNotFoundException.class, () -> client.buildRequests(mpo).getPendingRequests());
   }
 
   @Test
