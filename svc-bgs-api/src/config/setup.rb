@@ -31,7 +31,7 @@ Bundler.require(:default)
 lib_path = File.expand_path '../../lib', __FILE__
 $LOAD_PATH.unshift lib_path
 
-ENVIRONMENT = ENV['ENV'] || 'dev'
+ENVIRONMENT = ENV['ENV'] || 'local'
 
 require 'yaml'
 # some settings (like the RabbitMQ connection options or some API keys for the services we use)
