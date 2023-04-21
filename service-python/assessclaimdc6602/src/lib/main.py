@@ -2,6 +2,7 @@ import logging
 from typing import Dict
 
 import data_model
+import utils
 
 from . import condition, medication
 
@@ -63,6 +64,7 @@ def assess_sufficiency_asthma(event: Dict):
                 "evidence": {
                     "medications": medications["allMedications"],
                     "conditions": conditions["conditions"],
+                    "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
                     "totalMedCount": medications["allMedicationsCount"],

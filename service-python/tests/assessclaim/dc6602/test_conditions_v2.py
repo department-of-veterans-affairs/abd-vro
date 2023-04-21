@@ -6,21 +6,6 @@ from assessclaimdc6602.src.lib import condition
 @pytest.mark.parametrize(
     "request_body, conditions_calc",
     [
-        # Service connected and medication used to treat hypertension
-        (
-            {
-                "evidence": {
-                    "bp_readings": [],
-                    "conditions": [],
-                    "medications": [{"description": "Albuterol"}],
-                },
-                "claimSubmissionDateTime": "2021-11-09",
-            },
-            {"conditions": [],
-             "relevantConditionsLighthouseCount": 0,
-             "totalConditionsCount": 0,
-             "twoYearsConditions": []}
-        ),
         (
             {
                 "evidence": {
@@ -30,6 +15,7 @@ from assessclaimdc6602.src.lib import condition
                             "text": "Eosinophilic asthma",
                             "code": "J82.83",
                             "status": "Active",
+                            "dataSource": "LH"
                         }
                     ],
                     "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
@@ -39,12 +25,41 @@ from assessclaimdc6602.src.lib import condition
             {"conditions": [{"code": "J82.83",
                              "dateFormatted": "",
                              "receiptDate": "",
+                             "dataSource": "LH",
                              "relevant": True,
                              "status": "Active",
                              "text": "Eosinophilic asthma"}],
              "relevantConditionsLighthouseCount": 1,
              "totalConditionsCount": 1,
              "twoYearsConditions": []}
+        ),
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "conditions": [
+                            {
+                                "code": "Asthma",
+                                "text": "asthma",
+                                "recordedDate": "1950-04-06",
+                                "dataSource": "MAS"
+                            }
+                        ],
+                        "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
+                    },
+                    "claimSubmissionDateTime": "2021-11-09",
+                },
+                {"conditions": [{
+                                 "code": "Asthma",
+                                 "dateFormatted": "",
+                                 "receiptDate": "",
+                                 "dataSource": "MAS",
+                                 "relevant": True,
+                                 "status": "Active",
+                                 "text": "Asthma"}],
+                 "relevantConditionsLighthouseCount": 1,
+                 "totalConditionsCount": 1,
+                 "twoYearsConditions": []}
         ),
     ],
 )
