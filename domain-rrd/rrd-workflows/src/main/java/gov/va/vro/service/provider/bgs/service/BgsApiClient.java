@@ -27,6 +27,7 @@ public class BgsApiClient {
 
   private int retryDelayBaseMills = 130_000;
 
+  // https://github.com/department-of-veterans-affairs/abd-vro/issues/1341
   public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
     BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, retryDelayBaseMills);
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
@@ -57,7 +58,7 @@ public class BgsApiClient {
   }
 
   private BgsApiClientRequest buildVeteranNoteRequest(MasProcessingObject mpo) {
-    String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
+    String veteranId = mpo.getClaimPayload().getVeteranParticipantId();
     var request = new BgsApiClientRequest(mpo.getBenefitClaimId(), veteranId);
     request.veteranNote = getArsdUploadedNote(getDocUploadedAt(mpo));
     return request;
