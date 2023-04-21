@@ -35,7 +35,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   int RETRY_LIMIT = 5;
 
-  private String[] relevantEnvs = {"dev", "qa", "sandbox", "prod-test", "prod"};
+  private static final String[] relevantEnvs = {"dev", "qa", "sandbox", "prod-test", "prod"};
 
   @Override
   public void configure() throws Exception {

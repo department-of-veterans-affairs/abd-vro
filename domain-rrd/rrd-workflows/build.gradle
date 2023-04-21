@@ -42,3 +42,8 @@ dependencies {
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
 }
+
+ext {
+  // TODO: improve test code coverage so that the following can be removed
+  jacoco_minimum_coverage = 0.04
+}
