@@ -356,8 +356,6 @@ services:
     environment:
       <<: *common-vars
       <<: *rabbitmq-placeholder-vars
-      # A mock-bgs-api needs to be created and exposes an unused port
-      BGS_BASE_URL: http://mock-bgs-api:9020
     depends_on:
       rabbitmq-service:
         condition: service_healthy
