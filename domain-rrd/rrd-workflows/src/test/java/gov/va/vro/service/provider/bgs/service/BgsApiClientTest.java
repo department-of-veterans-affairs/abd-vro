@@ -57,7 +57,7 @@ public class BgsApiClientTest {
     mockEsdRepoFindById();
     var mpo = mpoWithMasCamelStage(MasCamelStage.DURING_PROCESSING);
     mpo.setSufficientForFastTracking(true);
-    var requests = client.buildRequest(mpo).getPendingRequests();
+    var requests = client.buildRequests(mpo).getPendingRequests();
 
     // Should be 2 separate requests -- one for veteran note, another for claim notes
     assertEquals(2, requests.size());
@@ -79,7 +79,7 @@ public class BgsApiClientTest {
     mockEsdRepoFindById();
     var mpo = mpoWithMasCamelStage(MasCamelStage.DURING_PROCESSING);
     mpo.setSufficientForFastTracking(false);
-    var requests = client.buildRequest(mpo).getPendingRequests();
+    var requests = client.buildRequests(mpo).getPendingRequests();
 
     // Should be 2 separate requests -- one for veteran note, another for claim notes
     assertEquals(2, requests.size());
@@ -129,7 +129,7 @@ public class BgsApiClientTest {
 
   void testClaimNotesForOffRampReason(EventReason reason, String expectedClaimNote) {
     var mpo = mpoWithOfframpReason(reason);
-    var requests = client.buildRequest(mpo).getPendingRequests();
+    var requests = client.buildRequests(mpo).getPendingRequests();
 
     assertEquals(1, requests.size());
     var claimNotes = requests.get(0).claimNotes;

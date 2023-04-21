@@ -28,7 +28,7 @@ public class BgsApiClient {
   private int retryDelayBaseMills = 130_000;
 
   // https://github.com/department-of-veterans-affairs/abd-vro/issues/1341
-  public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
+  public BgsNotesCamelBody buildRequests(MasProcessingObject mpo) {
     BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, retryDelayBaseMills);
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
     switch (completionStatus) {
