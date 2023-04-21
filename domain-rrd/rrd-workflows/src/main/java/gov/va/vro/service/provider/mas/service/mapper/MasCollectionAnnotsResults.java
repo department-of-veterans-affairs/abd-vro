@@ -69,7 +69,7 @@ public class MasCollectionAnnotsResults {
         String receiptDate = masDocument.getRecDate();
         try {
           receiptDate = formatter1.format(formatter.parse(receiptDate));
-        } catch (ParseException e) {
+        } catch (Exception e) {
           log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
         }
         String source = masDocument.getDocTypeDescription();
