@@ -37,7 +37,7 @@ def sufficiency_request_callback(channel, method, properties, body):
     logging.info(f"claimSubmissionId: {message['claimSubmissionId']}, health data received by {binding_key} processor")
 
     try:
-        response = main.assess_suffiiciency_asthma(message)
+        response = main.assess_sufficiency_asthma(message)
     except Exception as e:
         logging.error(e, exc_info=True)
         response = {"evidence": None, "evidenceSummary": None, "errorMessage": str(e), "claimSubmissionId": message['claimSubmissionId']}

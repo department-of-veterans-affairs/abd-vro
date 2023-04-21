@@ -3,8 +3,7 @@ from typing import Dict
 
 import data_model
 
-from . import medication, condition
-from utils import extract_date, format_date
+from . import condition, medication
 
 
 def assess_asthma(event: Dict):
@@ -43,7 +42,7 @@ def assess_asthma(event: Dict):
     return response_body
 
 
-def assess_suffiiciency_asthma(event: Dict):
+def assess_sufficiency_asthma(event: Dict):
     """
     Take a request that includes asthma related data, and return a suffficiency decision
 

@@ -1,7 +1,6 @@
 import sys
 
 import data_model
-
 import utils
 
 

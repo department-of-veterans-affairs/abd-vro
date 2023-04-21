@@ -236,18 +236,6 @@ services:
     networks:
       - internal
 
-  svc-assessor-dc6602v2:
-    profiles: ["all","svc","assessor","prototype"]
-    image: va/abd_vro-assessclaimdc6602v2:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
   svc-assessor-cancer:
     profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimcancer:latest

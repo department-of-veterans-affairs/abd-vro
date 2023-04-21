@@ -109,6 +109,6 @@ def test_main(request_body, response):
     :param response: response after running data through algorithms
     :type response: dict
     """
-    api_response = main.assess_suffiiciency_asthma(request_body)
+    api_response = main.assess_sufficiency_asthma(request_body)
 
     assert api_response == response
