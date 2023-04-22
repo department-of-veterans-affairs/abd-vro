@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import gov.va.vro.camel.processor.FunctionProcessor;
@@ -48,6 +48,9 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
     return true;
   }
 
+  public static final String CLAIM_ID_MULTIPLE_REQUESTS = "111";
+  public static final String CLAIM_ID_RETRY_FAILED = "222";
+
   void configureMockBgsApiMicroservice(RouteBuilder rb) {
     rb.from(TEST_BGS_CLIENT_SERVICE)
         .process(
@@ -56,10 +59,17 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
                 .function(
                     request -> {
                       var response = new BgsApiClientResponse();
+                      switch (request.getVbmsClaimId()) {
+                        case CLAIM_ID_MULTIPLE_REQUESTS:
+                          response.setStatusCode(200);
+                          break;
+                        case CLAIM_ID_RETRY_FAILED:
+                          if ("pid2".equals(request.getVeteranParticipantId()))
+                            response.setStatusCode(400);
+                          else response.setStatusCode(200);
+                          break;
+                      }
                       // return an error on the second request
-                      if ("pid2".equals(request.getVeteranParticipantId()))
-                        response.setStatusCode(400);
-                      else response.setStatusCode(200);
                       return response;
                     })
                 .build());
@@ -68,16 +78,20 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
   static final int NUM_REQUESTS = 2;
 
   private void mockBgsApiClient() {
-    // For testing, set tiny delay between retries
-    BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 200);
-    IntStream.rangeClosed(1, NUM_REQUESTS)
-        // For testing, use the veteranParticipantId to uniquely identify each request
-        .forEach(
-            i ->
-                body.pendingRequests.add(
-                    new BgsApiClientRequest(mpo.getBenefitClaimId(), "pid" + i)));
-
-    when(client.buildRequests(eq(mpo))).thenReturn(body);
+    when(client.buildRequests(any()))
+        .thenAnswer(
+            invocation -> {
+              final var mpo = invocation.getArgument(0, MasProcessingObject.class);
+              // For testing, set tiny delay between retries
+              BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, 200);
+              IntStream.rangeClosed(1, NUM_REQUESTS)
+                  // For testing, use the veteranParticipantId to uniquely identify each request
+                  .forEach(
+                      i ->
+                          body.pendingRequests.add(
+                              new BgsApiClientRequest(mpo.getBenefitClaimId(), "pid" + i)));
+              return body;
+            });
   }
 
   public static final String MOCK_SLACK = "mock:slack";
@@ -108,11 +122,11 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
     if (isUseAdviceWith()) context.start();
   }
 
-  MasProcessingObject mpo = MasProcessingObjectTestData.builder().build().create();
-
   @Test
   @SneakyThrows
   void multipleRequestsTest() {
+    MasProcessingObject mpo =
+        MasProcessingObjectTestData.builder().claimId(CLAIM_ID_MULTIPLE_REQUESTS).build().create();
     template.sendBody(BgsApiClientRoutes.ADD_BGS_NOTES, mpo);
 
     getMockEndpoint("mock:" + TEST_BGS_CLIENT_SERVICE).expectedMessageCount(NUM_REQUESTS);
@@ -122,6 +136,8 @@ public class BgsApiClientRoutesTest extends CamelTestSupport {
   @Test
   @SneakyThrows
   void retryFailedRequestsTest() {
+    MasProcessingObject mpo =
+        MasProcessingObjectTestData.builder().claimId(CLAIM_ID_RETRY_FAILED).build().create();
     template.sendBody(BgsApiClientRoutes.ADD_BGS_NOTES, mpo);
 
     // 1st request succeeds; tries the 2nd request RETRY_LIMIT times
