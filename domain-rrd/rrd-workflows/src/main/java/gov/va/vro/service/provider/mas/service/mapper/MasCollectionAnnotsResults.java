@@ -1,8 +1,12 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
-import static java.util.Objects.isNull;
-
-import gov.va.vro.model.rrd.*;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdBpMeasurement;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
+import gov.va.vro.model.rrd.ServiceLocation;
 import gov.va.vro.model.rrd.mas.MasAnnotType;
 import gov.va.vro.model.rrd.mas.MasAnnotation;
 import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
