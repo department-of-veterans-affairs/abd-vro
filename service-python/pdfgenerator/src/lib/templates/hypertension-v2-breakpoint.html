@@ -20,8 +20,8 @@
   <meta name="pdfkit-dpi" content="72"/>
 
   <!-- Bootstrap CSS -->
-  <link href="{{base_path}}/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{base_path}}/css/fontawesome.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https:////use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
 
   <title>{{pdf_title}}</title>
 
@@ -207,7 +207,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Condition History -->
   <div class="row">
     <div class="col">
@@ -242,7 +241,6 @@
         interaction with the patient, such as during an appointment or in-patient treatment. It may be a preliminary assessment.</i></p>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   {% endif %}
   <!-- Hypertension -->
   <div class="row">
@@ -301,7 +299,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Schedular evidence -->
   <div class="row">
     <div class="col">
@@ -357,7 +354,6 @@
       </table>
     </div>
   </div>
-  <div class="pagebreak"> </div>
   <!-- Other medical evidence -->
   <div class="row">
     <div class="col">
@@ -405,10 +401,10 @@
       </table>
     </div>
   </div>
-  <div class="row mb-30">
+  <div class="row">
     <div class="col">
       <h2 class="m-0 mb-13"><b>Schedule for rating disabilities for hypertension</b></h2>
-      <a href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
+      <a class="mb-30" href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
     </div>
   </div>
   <!-- Relevant documents with no keywords found -->
@@ -466,6 +462,29 @@
   <!-- <h3 class="text-center">&zwnj;End of Evidence Review Summary</h3> -->
   {% block body %}{% endblock %}
 
-  <script src="{{base_path}}/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script>
+    window.onload = function() {
+      const tables = document.querySelectorAll('table');
+
+      for (let i = 0; i < tables.length; i++) {
+        const currentHeight = tables[i].offsetHeight;
+
+        let followingHeight = 0;
+        if (i < tables.length - 1) {
+          followingHeight = tables[i + 1].offsetHeight;
+        }
+
+        if (currentHeight + followingHeight > 550) {
+          const parentRow = tables[i].closest('.row');
+          const pagebreak = document.createElement('div');
+          pagebreak.classList.add('pagebreak');
+          parentRow.insertAdjacentElement('beforeend', pagebreak);
+        }
+      }
+    };
+  </script>
 </body>
 </html>
