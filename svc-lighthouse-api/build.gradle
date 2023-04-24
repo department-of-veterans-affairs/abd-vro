@@ -16,16 +16,8 @@ configurations.all {
   }
 }
 
-sourceSets {
-  integrationTest {
-    compileClasspath += sourceSets.main.output
-    runtimeClasspath += sourceSets.main.output
-  }
-}
-
 dependencies {
-  implementation project(':shared:domain')
-
+  implementation project(':domain-rrd:rrd-shared')
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -40,54 +32,28 @@ dependencies {
   implementation 'org.projectlombok:lombok:1.18.26'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
-  implementation project(path: ':shared:domain')
+
   // Needed?
   // implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
   // implementation 'com.auth0:java-jwt:4.0.0'
-
 
   testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
   // Needed?
   // testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
   // testImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
   // testImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
-
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-
   // Needed?
   // testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
   // testImplementation 'org.skyscreamer:jsonassert:1.5.1'
   // testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
-
-  integrationTestImplementation "org.testcontainers:testcontainers:${testcontainers_version}"
-  integrationTestImplementation "org.testcontainers:junit-jupiter:${testcontainers_version}"
-  integrationTestImplementation "org.testcontainers:rabbitmq:${testcontainers_version}"
-  integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
-  integrationTestImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-  integrationTestImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
-  integrationTestImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
-  integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
 
-configurations {
-  integrationTestImplementation.extendsFrom implementation
-  integrationTestRuntimeOnly.extendsFrom runtimeOnly
-}
 
 test {
   useJUnitPlatform()
-  exclude '**/integrationTest'
 }
 
-task integrationTest(type: Test) {
-  description = 'Runs the integration tests.'
-  useJUnitPlatform()
-  testClassesDirs = sourceSets.integrationTest.output.classesDirs
-  classpath = sourceSets.integrationTest.runtimeClasspath
-  finalizedBy jacocoTestReport {
-    executionData(file("${project.buildDir}/jacoco/integrationTest.exec"))
-  }
-}
 
 docker {
   // buildArgs is immutable so we have to set it this way

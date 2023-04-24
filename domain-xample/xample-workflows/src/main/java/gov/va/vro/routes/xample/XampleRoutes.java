@@ -153,7 +153,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
   }
 
   void configureRouteToServiceJ() {
-    // Always use ToRabbitMqRouteHelper create a route to send to RabbitMQ
+    // Always use ToRabbitMqRouteHelper to create a route to send to RabbitMQ
     new ToRabbitMqRouteHelper(this, SERVICE_J_ENDPOINT)
         .routeId("to-rabbitmq-route")
         .toMq("xample", "serviceJ")

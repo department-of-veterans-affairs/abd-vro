@@ -10,6 +10,7 @@ volumes:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+# Also note https://yaml.org/type/merge.html
 
 x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
@@ -28,7 +29,6 @@ x-mas-vars: &mas-vars
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
-  VALIDATE_TOKEN: ${VALIDATE_TOKEN}
 
 x-postgres-vars: &postgres-vars
   POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
@@ -151,8 +151,7 @@ services:
 
   app:
     image: va/abd_vro-app:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: app
     ports:
       - "8080:8080"
@@ -160,11 +159,7 @@ services:
     environment:
       # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
       # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
-      <<: *common-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *redis-placeholder-vars
-      <<: *postgres-vars
-      <<: *mas-vars
+      <<: [*mas-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
       PERSIST_TRACKING_FOLDER: /persist/tracking
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
@@ -193,13 +188,10 @@ services:
 
   xample-workflows:
     image: va/abd_vro-xample-workflows:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     profiles: ["all","xample"]
     environment:
-      <<: *redis-placeholder-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *postgres-vars
+      <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
       postgres-service:
         condition: service_healthy
@@ -210,12 +202,10 @@ services:
 
   svc-xample-j:
     image: va/abd_vro-svc-xample-j:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     profiles: ["all","svc","xample"]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -225,12 +215,9 @@ services:
   svc-assessor-dc7101:
     profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc7101:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -240,12 +227,9 @@ services:
   svc-assessor-dc6602:
     profiles: ["all","svc","assessor","v2"]
     image: va/abd_vro-assessclaimdc6602:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -255,12 +239,9 @@ services:
   svc-assessor-dc6602v2:
     profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6602v2:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -270,12 +251,9 @@ services:
   svc-assessor-cancer:
     profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimcancer:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -285,12 +263,9 @@ services:
   svc-assessor-dc6510:
     profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6510:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -300,12 +275,9 @@ services:
   svc-assessor-dc6522:
     profiles: ["all","svc","assessor","prototype"]
     image: va/abd_vro-assessclaimdc6522:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -315,14 +287,10 @@ services:
   svc-pdf-generator:
     profiles: ["all","svc","pdfgen"]
     image: va/abd_vro-pdfgenerator:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    <<: *python-healthcheck
+    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
     environment:
       MODE: "docker"
-      <<: *redis-placeholder-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
       redis-service:
         condition: service_started
@@ -334,12 +302,10 @@ services:
   svc-lighthouse-api:
     profiles: ["all","svc","lh"]
     image: va/abd_vro-service-data-access:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: *common-vars
-      <<: *rabbitmq-placeholder-vars
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
@@ -351,11 +317,11 @@ services:
   svc-bgs-api:
     profiles: ["all","svc","bgs"]
     image: va/abd_vro-svc-bgs-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: *common-vars
-      <<: *rabbitmq-placeholder-vars
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+      # A mock-bgs-api needs to be created and exposes an unused port
+      BGS_BASE_URL: http://mock-bgs-api:9020
     depends_on:
       rabbitmq-service:
         condition: service_healthy
@@ -365,12 +331,9 @@ services:
   svc-feature-toggle:
     profiles: ["all","svc","feature-toggle"]
     image: va/abd_vro-featuretoggle:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: *redis-placeholder-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *rabbitmq-client-vars
+      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
       redis-service:
         condition: service_started
@@ -388,9 +351,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      <<: *redis-placeholder-vars
-      <<: *rabbitmq-placeholder-vars
-      <<: *postgres-vars
+      <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
       postgres-service:
         condition: service_healthy
@@ -409,8 +370,7 @@ services:
   mock-bip-ce-api:
     profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-ce-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: mock-bip-ce-api
     ports:
       - "8094:8094"
@@ -420,7 +380,6 @@ services:
       <<: *common-vars
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
       BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
-      BIP_EVIDENCE_ISS: ${BIP_EVIDENCE_ISS}
 #      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
@@ -430,8 +389,7 @@ services:
   mock-bip-claims-api:
     profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-claims-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: mock-bip-claims-api
     ports:
       - "8097:8097"
@@ -441,8 +399,6 @@ services:
       <<: *common-vars
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-      BIP_CLAIM_ISS: ${BIP_CLAIM_ISS}
-#      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
@@ -451,8 +407,7 @@ services:
   mock-mas-api:
     profiles: ["all","mock","mas","v2-mocks"]
     image: va/abd_vro-mock-mas-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: mock-mas-api
     ports:
       - "9001:9001"
@@ -473,8 +428,7 @@ services:
   mock-lighthouse-api:
     profiles: ["all","mock","lh","v2-mocks"]
     image: va/abd_vro-mock-lighthouse-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: mock-lighthouse-api
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
@@ -487,8 +441,7 @@ services:
   mock-slack:
     profiles: ["all","mock","lh","v2-mocks"]
     image: va/abd_vro-mock-slack:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
+    <<: [*common-sde-security, *common-security-opt]
     hostname: mock-slack
     ports:
       - "9008:9008"

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="pdfkit-orientation" content="Landscape"/>
+  <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
+  <meta name="pdfkit-footer-font-name" content="NotoSans"/>
+  <meta name="pdfkit-footer-font-size" content="8"/>
+  <meta name="pdfkit-page-size" content="Legal"/>
+  <meta name="pdfkit-margin-left" content="0.5in"/>
+  <meta name="pdfkit-margin-right" content="0.5in"/>
+  <meta name="pdfkit-margin-top" content="0.5in"/>
+  <meta name="pdfkit-margin-bottom" content="0.5in"/>
+  <!-- Formula for Zoom: (Default DPI / Desired DPI) -->
+  <meta name="pdfkit-zoom" content="1.33"/>
+  <!-- Default DPI = 96 but this line does not work. Just marking as 72 to keep track for future edits -->
+  <meta name="pdfkit-dpi" content="72"/>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https:////use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+
+  <title>{{pdf_title}}</title>
+
+  <style>
+    @font-face {
+      font-family: Bitter;
+      src: url("{{base_path}}/fonts/bitter-regular-webfont.ttf");
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: Bitter;
+      src: url("{{base_path}}/fonts/bitter-bold-webfont.ttf");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-regular-webfont.ttf");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-italic-webfont.ttf");
+      font-weight: 400;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-bold-webfont.ttf");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-bolditalic-webfont.ttf");
+      font-weight: 700;
+      font-style: italic;
+    }
+    body {
+      padding: 12px 32px;
+      color: #212121;
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    p {
+      color: #212121;
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    h1 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 22px;
+    }
+    h2 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    a {
+      color: #004795 !important;
+      text-decoration-line: underline;
+    }
+    table {
+      border: 1px solid #757575;
+    }
+    table, th, td {
+      text-align: left;
+      font-size: 11px;
+      font-family: NotoSans;
+    }
+    thead th {
+      background-color: #F1F1F1;
+    }
+    th {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    td {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .empty {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+      color: #323A45;
+    }
+    .footnote {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .mb-13 {
+      margin-bottom: 13px !important;
+    }
+    .mb-30 {
+      margin-bottom: 30px !important;
+    }
+    @media print {
+      .pagebreak {
+        clear: both;
+        page-break-after: always;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  {% if conditions.disabilityActionType == "NEW" %}
+  <!-- Relevant military service locations -->
+  <div class="row m-0">
+    <div class="col">
+      <h1 class="mb-13"><b>Evidence for service connection</b></h1>
+      <p class="m-0 mb-13"><b>Claimed as:</b> {{ conditions.name }}<br><b>Relevant diagnosis code:</b> Hypertension (7101)</p>
+    </div>
+  </div>
+  <div class="row m-0">
+    <div class="col">
+      <p class="m-0 mb-30">
+        <i class="fas fa-fw fa-check-circle" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> <b>Agent Orange Exposure Verified</b> corporate flash was found.<br>
+        <i class="fas fa-fw fa-check-circle" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> The Veteran is claiming a condition that may be presumptive based on their service.<br>
+        <i class="far fa-fw fa-calendar-check" style="transform: rotate(0.03deg); letter-spacing: 1px"></i> The PACT Act was signed into law on Aug. 10, 2022, and made hypertension presumptive for Agent Orange exposure.
+      </p>
+    </div>
+  </div>
+  <div class="row m-0">
+    <div class="col">
+      <h2 class="mb-13">&zwnj;<b>Relevant military service locations</b></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="relevant-military-service-locations" class="table table-bordered" style="width: 875px !important;">
+        <thead>
+          <tr>
+            <th style="width: 118px !important;">Key terms</th>
+            <th style="width: 280px !important;">Document</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 80px !important;">Page number(s)</th>
+            <th style="width: 260px !important;">Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for location in evidence.serviceLocations %}
+          <tr>
+            <th>{{ location.location }}</th>
+            <td>{{ location.document }}</td>
+            <td>{{ location.receiptDate }}</td>
+            <td>{{ location.page }}</td>
+            <td style="white-space: nowrap !important;">{{ location.documentId }}</td>
+          </tr>
+          {% endfor %}
+          {% if evidence.serviceLocations |length == 0 %}
+          <tr>
+            <td colspan="5" class="empty">No service locations found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Condition History -->
+  <div class="row">
+    <div class="col">
+      <h2 class="m-0 mb-13">&zwnj;<b>Condition history</b></h2>
+      <p>The VistA EHR search found the following diagnosis information in VHA records as of  <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="condition-history" class="table table-bordered" style="width: 400px !important;">
+        <thead>
+          <tr>
+            <th style="width: 310px !important;">Encounter diagnosis<sup>*</sup></th>
+            <th style="width: 90px !important;">Recorded date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list %}
+            <tr>
+              <th>{{ condition.text}}</th>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}Non-confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
+            </tr>
+          {% endfor %}
+          {% if evidence.conditions |selectattr("dataSource", "equalto", "LH") |selectattr("relevant") |list |length == 0 %}
+          <tr>
+            <td colspan="2" class="empty">No encounter diagnoses found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+      <p class="footnote"><i><sup>*</sup>An encounter diagnosis is a point-in-time diagnosis (for example, from a physician or nurse) made during a specific
+        interaction with the patient, such as during an appointment or in-patient treatment. It may be a preliminary assessment.</i></p>
+    </div>
+  </div>
+  {% endif %}
+  <!-- Hypertension -->
+  <div class="row">
+    <div class="col">
+      <h1 class="m-0 mb-30"><b>Condition: Hypertension</b></h1>
+      <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension – blood pressure readings</b></h2>
+      <p class="m-0 mb-13">The automated search found the following blood pressure readings in VistA EHR and the eFolder scan as of  <b>{{ timestamp.strftime('%b. %d, %Y') }}</b>. Some blood pressure readings may appear more than once from different sources, always check for duplicate readings.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="schedular-evidence-bp" class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 70px !important;">Blood pressure</th>
+            <th style="width: 90px !important;">Observation date</th>
+            <th style="width: 257px !important;">Source</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th style="width: 260px !important;">Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bp_reading in evidence.bp_readings %}
+          <tr>
+            <th>{{ bp_reading.systolic.value }}/{{ bp_reading.diastolic.value }}</th>
+            <td {% if bp_reading.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if bp_reading.dateFormatted == ""%}No associated date{% else %}{{ bp_reading.dateFormatted }}{% endif %}</td>
+            <td {% if bp_reading.organization == "" and bp_reading.dataSource == "MAS"  %}class="empty" {% endif %}>{% if not bp_reading.organization and bp_reading.dataSource == "MAS" %}n.a.{% elif not bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record {% elif bp_reading.organization and bp_reading.dataSource == "LH" %} VAMC record - {{ bp_reading.organization }}{% else %}{{ bp_reading.organization }}{% endif %}</td>
+            <td {% if bp_reading.receiptDate == "" %}class="empty" {% endif %}>{% if bp_reading.receiptDate == "" %}n.a.{% else %}{{ bp_reading.receiptDate }}{% endif %}</td>
+            <td {% if bp_reading.page == "" %}class="empty" {% endif %}>{% if bp_reading.page == "" %}n.a.{% else %}{{ bp_reading.page }}{% endif %}</td>
+            <td style="white-space: nowrap;" {% if bp_reading.document == "" %}class="empty" {% endif %}>
+              {% if bp_reading.dataSource == "MAS" %}
+                {% if bp_reading.organization == "VAMC Other Output Reports" and bp_reading.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif bp_reading.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ bp_reading.document }}
+                {% endif %}
+              {% else %}
+                {% if bp_reading.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ bp_reading.document }}
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          {% if evidence.bp_readings |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No blood pressure readings found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Schedular evidence -->
+  <div class="row">
+    <div class="col">
+      <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension</b></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="schedular-evidence" class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 153px !important;">Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
+            <th style="width: 174px !important;">Source</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for medication in evidence.medications %}
+          <tr>
+            <th>{{ medication.description }}</th>
+            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}Non-confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
+            <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
+            <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
+            <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
+            <td style="white-space: nowrap;" {% if medication.document == "" %}class="empty" {% endif %}>
+              {% if medication.dataSource == "MAS" %}
+                {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% else %}
+                {% if medication.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          {% if evidence.medications |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No keywords found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Other medical evidence -->
+  <div class="row">
+    <div class="col">
+      <h2 class="m-0 mb-13"><b>Other medical evidence for hypertension</b></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="other-medical-evidence" class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 153px !important;">Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
+            <th style="width: 174px !important;">Source</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for condition in evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list %}
+            <tr>
+              <th>{{ condition.text }}</th>
+              <td {% if condition.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if condition.dateFormatted == "" and condition.partialDate == "" %}No associated date{% elif condition.dateFormatted == "" and condition.partialDate != "" %}Non-confident date {{condition.partialDate}}{% else %}{{ condition.dateFormatted }}{% endif %}</td>
+              <td {% if condition.organization == "" %}class="empty" {% endif %}>{% if condition.organization == ""%}n.a.{% else %}{{ condition.organization }}{% endif %}</td>
+              <td {% if condition.receiptDate == "" %}class="empty" {% endif %}>{% if condition.receiptDate == ""%}n.a.{% else %}{{ condition.receiptDate }}{% endif %}</td>
+              <td {% if condition.page == "" %}class="empty" {% endif %}>{% if condition.page == ""%}n.a.{% else %}{{ condition.page }}{% endif %}</td>
+              <td style="white-space: nowrap;" {% if condition.document == "" %}class="empty" {% endif %}>
+                {% if condition.organization == "VAMC Other Output Reports" and condition.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif condition.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ condition.document }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          {% if evidence.conditions |selectattr("dataSource", "equalto", "MAS") |list |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No keywords found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h2 class="m-0 mb-13"><b>Schedule for rating disabilities for hypertension</b></h2>
+      <a class="mb-30" href="https://www.ecfr.gov/current/title-38/chapter-1/part-4/subpart-B/subject-group-ECFRc88f57fafb24f86/section-4.104">Schedule for Rating Disabilities under Title 38 Code of Federal Regulations (CFR) Chapter 1 Part 4 </a>
+    </div>
+  </div>
+  <!-- Relevant documents with no keywords found -->
+  <div class="row mt-3">
+    <div class="col">
+      <h1 class="m-0 mb-13"><b>Relevant documents unavailable for automated review</b></h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="unavailable-automated-review" class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 271px !important;">Document</th>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 240px !important;">Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for review in evidence.documentsWithoutAnnotationsChecked %}
+          <tr>
+            <td class="empty">n.a.</td>
+            <td class="empty">n.a.</td>
+            <td style="white-space: nowrap;">{{ review }}</td>
+          </tr>
+          {% endfor %}
+          {% if evidence.documentsWithoutAnnotationsChecked |length == 0 %}
+          <tr>
+            <td colspan="3" class="empty">The automated review scanned all relevant documents.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pagebreak"> </div>
+  <!-- About this document -->
+  <div class="row">
+    <div class="col" style="max-width: 530px !important;">
+      <h1 class="m-0 mb-13"><b>About this document</b></h1>
+      <p class="m-0 mb-13">The Evidence Review Summary retrieves and summarizes VistA electronic health records and scanned eFolder documents submitted through va.gov and the Centralized Mail Portal. VSRs and RVSRs can develop and rate this claim without ordering an exam if there is sufficient existing evidence to do so per existing statutory rules in 38 U.S.C § 5103A(d).</p>
+      <p class="m-0 mb-13"><b>This document summarizes data gathered from two sources:</b></p>
+      <ul>
+        <li class="m-0 mb-13"><b>VistA Electronic Health Records (EHRs):</b> This document includes digital medical information from VistA. This data will exclude some readings, such as blood pressure readings entered into clinical notes.</li>
+        <li class="m-0 mb-13"><b>eFolder document scan:</b> Certain documents within the Veteran’s eFolder are digitally scanned and relevant search terms and summarized in this document. Only data in the eFolder on the date of the claim are included, although some documents uploaded on the date of claim may not be included.</li>
+      </ul>
+      <p class="m-0 mb-13"><b>Always check for additional data.</b> The following data are only included if they were in the eFolder on the date of claim:</p>
+      <ul>
+        <li class="m-0 mb-13">Medical records at a military or non-governmental facility</li>
+        <li class="m-0 mb-13">Medical records from a VA medical facility using Cerner EHR</li>
+      </ul>
+      <p><b>Always check for duplicate data entries in this document; some data points may appear more than once.</b> The VistA EHR and eFolder scan both contain VAMC medical records, and may find the same information in both places.</p>
+    </div>
+  </div>
+  <!-- <h3 class="text-center">&zwnj;End of Evidence Review Summary</h3> -->
+  {% block body %}{% endblock %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script>
+    window.onload = function() {
+      const tables = document.querySelectorAll('table');
+
+      for (let i = 0; i < tables.length; i++) {
+        const currentHeight = tables[i].offsetHeight;
+
+        let followingHeight = 0;
+        if (i < tables.length - 1) {
+          followingHeight = tables[i + 1].offsetHeight;
+        }
+
+        if (currentHeight + followingHeight > 550) {
+          const parentRow = tables[i].closest('.row');
+          const pagebreak = document.createElement('div');
+          pagebreak.classList.add('pagebreak');
+          parentRow.insertAdjacentElement('beforeend', pagebreak);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
