@@ -54,7 +54,7 @@ jobs:
           snyk-image postgres
           snyk-image db-init
 
-          snyk-image service-data-access svc-lighthouse-api
+          snyk-image svc-lighthouse-api
 
           snyk-image pdfgenerator service-python/pdfgenerator
           snyk-image assessclaimdc7101 service-python/assessclaimdc7101

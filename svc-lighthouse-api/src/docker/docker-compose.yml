@@ -15,7 +15,7 @@ services:
       - internal
 
   svc-lighthouse-api:
-    image: va/abd_vro-service-data-access:latest
+    image: va/abd_vro-svc-lighthouse-api:latest
 
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service

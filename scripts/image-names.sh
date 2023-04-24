@@ -3,8 +3,8 @@
 # This is a quick and dirty script to generate image_vars.src that is compatible with Bash 3.
 # This script can be replaced with for example a Gradle task later.
 
-# TODO: we should be more consistent about naming our images. This script will
-#       help us migrate to get consistency
+# Be consistent about naming our images. This script helps us understand inconsistencies.
+# The aim is to have all functions use the default case `*)`.
 
 gradle_folder() {
   case "$1" in
@@ -13,29 +13,24 @@ gradle_folder() {
   esac
 }
 
+# These are used in docker-compose.yml files
 gradle_image_name() {
   case "$1" in
-    svc-lighthouse-api) echo "va/abd_vro-service-data-access";; # TODO: update image name
     *) echo "va/abd_vro-$1";;
   esac
 }
 
+# Bash variables can't have dashes, so strip them out of the directory names
 bash_var_prefix() {
   case "$1" in
-    svc-lighthouse-api) echo "serviceDataAccess";;       # TODO: rename to svcLighthouseApi
     *) echo "${1//-/}";;
   esac
 }
 
-nonprod_image_name() {
-  VROENV=${2:-dev}
-  echo "${VROENV}_$(prod_image_name "$1")"
-}
-
+# These names must match the images specified in Helm configs
 prod_image_name() {
   case "$1" in
-    svc-lighthouse-api) echo "vro-service-data-access";; # TODO: update image name
-    pdfgenerator|featuretoggle|assessclaim*) echo "vro-service-$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "vro-svc-$1";; #TODO: rename these folders so that we can use the "vro-$1" pattern
     *) echo "vro-$1";;
   esac
 }
