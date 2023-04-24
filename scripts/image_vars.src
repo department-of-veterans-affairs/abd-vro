@@ -11,8 +11,8 @@ export VRO_IMAGES="app postgres db-init console svc-bgs-api svc-lighthouse-api p
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( app postgres dbinit console svcbgsapi serviceDataAccess pdfgenerator assessclaimdc7101 assessclaimdc6602 )
-export VAR_PREFIXES="app postgres dbinit console svcbgsapi serviceDataAccess pdfgenerator assessclaimdc7101 assessclaimdc6602"
+VAR_PREFIXES_ARR=( app postgres dbinit console svcbgsapi svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+export VAR_PREFIXES="app postgres dbinit console svcbgsapi svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -54,19 +54,19 @@ export svcbgsapi_GRADLE_IMG="va/abd_vro-svc-bgs-api"
 export svcbgsapi_IMG="vro-svc-bgs-api"
 
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
-export serviceDataAccess_GRADLE_IMG="va/abd_vro-service-data-access"
-export serviceDataAccess_IMG="vro-service-data-access"
+export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
+export svclighthouseapi_IMG="vro-svc-lighthouse-api"
 
 # --- pdfgenerator in folder ./service-python/pdfgenerator
 export pdfgenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
-export pdfgenerator_IMG="vro-service-pdfgenerator"
+export pdfgenerator_IMG="vro-svc-pdfgenerator"
 
 # --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
 export assessclaimdc7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
-export assessclaimdc7101_IMG="vro-service-assessclaimdc7101"
+export assessclaimdc7101_IMG="vro-svc-assessclaimdc7101"
 
 # --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
 export assessclaimdc6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
-export assessclaimdc6602_IMG="vro-service-assessclaimdc6602"
+export assessclaimdc6602_IMG="vro-svc-assessclaimdc6602"
 
 # End of file
