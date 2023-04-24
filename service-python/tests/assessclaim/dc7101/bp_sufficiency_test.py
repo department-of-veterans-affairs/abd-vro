@@ -451,7 +451,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 },
                                 "organization": "",
                                 "dataSource": "",
-                                "receiptDate": "2021-09-13",
+                                "receiptDate": "9/13/2021",
                                 "date": ""  # no date
                             },
                             {
