@@ -8,12 +8,12 @@ import gov.va.vro.mockmas.model.MasTokenResponse;
 import gov.va.vro.mockmas.model.OrderExamCheckResponse;
 import gov.va.vro.mockmas.model.OrderExamResponse;
 import gov.va.vro.mockmas.model.OrderExamSuccess;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasCollectionStatus;
-import gov.va.vro.model.mas.MasStatus;
-import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
-import gov.va.vro.model.mas.request.MasCollectionStatusRequest;
-import gov.va.vro.model.mas.request.MasOrderExamRequest;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionStatus;
+import gov.va.vro.model.rrd.mas.MasStatus;
+import gov.va.vro.model.rrd.mas.request.MasCollectionAnnotationRequest;
+import gov.va.vro.model.rrd.mas.request.MasCollectionStatusRequest;
+import gov.va.vro.model.rrd.mas.request.MasOrderExamRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +54,10 @@ public class MockMasController {
     if (collectionId == 350) {
       List<MasCollectionAnnotation> collection = apiService.getAnnotation(collectionId);
       return new ResponseEntity<>(collection, HttpStatus.OK);
+    }
+
+    if (collectionId == 369) { // Used to test mas exceptions
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mas exception testing");
     }
 
     List<MasCollectionAnnotation> collection = store.get(collectionId);

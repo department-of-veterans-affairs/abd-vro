@@ -10,11 +10,11 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
 import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -178,12 +178,9 @@ class FhirClientTest {
     mockRest(conditionResp, "Condition");
     AbdEvidence evidence = client.getMedicalEvidence(testClaim);
     assertNotNull(evidence);
-    //
-    // TODO: It seems there is some problem using Hapi Fhir json parser in this test.
-    // Comment the next lines for now. We need to look into it later.
-    //    assertTrue(evidence.getBloodPressures().size() > 0);
-    //    assertEquals(evidence.getBloodPressures().size(),
-    // bpBundleInfo.getBundle().getEntry().size());
+
+    assertTrue(evidence.getBloodPressures().size() > 0);
+    assertEquals(evidence.getBloodPressures().size(), bpBundleInfo.getBundle().getEntry().size());
   }
 
   @Test

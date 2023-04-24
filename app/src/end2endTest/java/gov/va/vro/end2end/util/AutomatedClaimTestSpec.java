@@ -16,6 +16,9 @@ public class AutomatedClaimTestSpec {
   private String payloadPath;
   private boolean bipError = false;
   private boolean masError = false;
+  private boolean bipUpdateClaimError = false;
+  private String tempJurisdictionStationOverride;
+  private long extraSleep = 0;
 
   public AutomatedClaimTestSpec(String collectionId) {
     this.collectionId = collectionId;

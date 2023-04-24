@@ -1,10 +1,10 @@
 package gov.va.vro.abddataaccess.service;
 
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdBpMeasurement;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdBpMeasurement;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
 import org.hl7.fhir.r4.model.Annotation;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -152,19 +152,6 @@ public class FieldExtractor {
           result.setStatus(code);
         }
       }
-    }
-
-    if (condition.hasCategory()) {
-      List<CodeableConcept> conditionCategory = condition.getCategory();
-      if (conditionCategory.size() == 1) {
-        CodeableConcept category = condition.getCategory().get(0);
-        if (category.hasText()) {
-          String text = category.getText();
-          result.setCategory(text);
-        }
-      }
-    } else {
-      result.setCategory("");
     }
 
     return result;
@@ -320,11 +307,15 @@ public class FieldExtractor {
               String bpType = codingInner.getCode();
               if (SYSTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
-                result.setSystolic(m);
+                if (m.getValue() != null) {
+                  result.setSystolic(m);
+                }
               }
               if (DIASTOLIC_BP_CODE.equals(bpType)) {
                 AbdBpMeasurement m = extractBpMeasurement(codingInner, component);
-                result.setDiastolic(m);
+                if (m.getValue() != null) {
+                  result.setDiastolic(m);
+                }
               }
             }
           }

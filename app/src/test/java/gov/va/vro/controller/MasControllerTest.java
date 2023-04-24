@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.BipServiceTestConfiguration;
 import gov.va.vro.MasTestData;
-import gov.va.vro.api.responses.MasResponse;
-import gov.va.vro.model.event.AuditEvent;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasExamOrderStatusPayload;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.api.rrd.responses.MasResponse;
+import gov.va.vro.model.rrd.event.AuditEvent;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasExamOrderStatusPayload;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.repository.AuditEventRepository;
 import gov.va.vro.persistence.repository.ClaimRepository;
@@ -103,8 +103,8 @@ public class MasControllerTest extends BaseControllerTest {
         exchange -> {
           AuditEvent auditEvent = exchange.getMessage().getBody(AuditEvent.class);
           assertEquals(
-              "Claim with [collection id = 123], [diagnostic code = 1233], and"
-                  + " [disability action type = INCREASE] is not in scope.",
+              "Claim with collection id: 123, diagnostic code: 1233, and"
+                  + " disability action type: INCREASE is not in scope.",
               auditEvent.getMessage());
           offrampCalled.set(true);
         });
