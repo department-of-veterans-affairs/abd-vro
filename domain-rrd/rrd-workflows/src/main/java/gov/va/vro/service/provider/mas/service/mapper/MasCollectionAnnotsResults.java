@@ -1,5 +1,7 @@
 package gov.va.vro.service.provider.mas.service.mapper;
 
+import static java.util.Objects.isNull;
+
 import gov.va.vro.model.rrd.*;
 import gov.va.vro.model.rrd.mas.MasAnnotType;
 import gov.va.vro.model.rrd.mas.MasAnnotation;
@@ -17,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
