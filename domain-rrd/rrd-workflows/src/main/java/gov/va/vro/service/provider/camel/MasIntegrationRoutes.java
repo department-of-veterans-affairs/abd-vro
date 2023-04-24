@@ -225,7 +225,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .doTry()
         .process(masOrderExamProcessor)
-        .log("MAS Order Exam response: ${body}")
         // Upload PDF but catch errors since exam was ordered and continue
         .to(ENDPOINT_UPLOAD_PDF)
         .to(ENDPOINT_MAS_COMPLETE)
