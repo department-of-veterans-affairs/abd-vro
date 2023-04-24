@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.api.rrd.responses.MasResponse;
 import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
 import gov.va.vro.end2end.util.ContentionUpdatesResponse;
 import gov.va.vro.end2end.util.LifecycleUpdatesResponse;
@@ -16,15 +16,15 @@ import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.SuccessResponse;
 import gov.va.vro.end2end.util.TempJurisdictionStationRequest;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ContentionInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
-import gov.va.vro.model.mas.VeteranIdentifiers;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
-import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.model.rrd.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.ClaimStatus;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.event.EventReason;
+import gov.va.vro.model.rrd.mas.VeteranIdentifiers;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -810,7 +810,7 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimNewNotPresumptive() {
     AutomatedClaimTestSpec spec = specFor200("379");
-    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    spec.setExpectedMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -829,11 +829,29 @@ public class VroV2Tests {
     // Check for evidence from mock LH API.
     assertTrue(pdfText.contains("190/-"));
     assertTrue(pdfText.contains("-/93"));
+    // Check for evidence from mock LH API. These are missing value examples.
+    assertTrue(pdfText.contains("177/-"));
+    assertTrue(pdfText.contains("-/88"));
 
     // Check that BP with missing systolic and diastolic is not included as evidence.
     assertFalse(pdfText.contains("-/-"));
   }
 
+  /** This is a full positive end-to-end test for a case with duplicate blood pressures. */
+  @Test
+  void testAutomatedClaimFullPositiveDuplicateBloodPressures() {
+    AutomatedClaimTestSpec spec = specFor200("381");
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("139/77 8/11/2022 VAMC Other Output Reports"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 Medical Treatment Record - Government"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("167/93 5/11/2022 VAMC record - LYONS VA MEDICAL CENTER"));
+    assertTrue(pdfText.contains("153/115 6/21/2022 VAMC record - WASHINGTON VA MEDICAL"));
+
+    // Check that duplicate BP from LH is not included as evidence.
+    assertFalse(pdfText.contains("153/115 6/20/2021 VAMC record -WASHINGTON VA MEDICAL"));
+  }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
    * the Slack message when temporary station of jurisdiction changes during VRO processing.

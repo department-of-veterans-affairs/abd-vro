@@ -41,23 +41,3 @@ spec:
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-#        - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
-#          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
-#          env:
-#            { {- include "vro.commonEnvVars" . | nindent 12 }}
-#            { {- include "vro.mqClient.envVars" . | nindent 12 }}
-#          resources:
-#            { {- toYaml .Values.resources | nindent 12 }}
-        - name: svc-lighthouse-api{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-svc-lighthouse-api:{{ include "vro.imageTag" . }}
-          env:
-            {{- include "vro.commonEnvVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            # VRO_SECRETS_LH provides LH_ACCESS_CLIENT_ID and LH_PRIVATE_KEY
-            - name: VRO_SECRETS_LH
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_LH
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}

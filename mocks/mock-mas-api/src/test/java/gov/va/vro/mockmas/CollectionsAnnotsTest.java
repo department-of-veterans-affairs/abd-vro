@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.mockmas.config.MasApiProperties;
 import gov.va.vro.mockmas.config.MasOauth2Properties;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.request.MasCollectionAnnotationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

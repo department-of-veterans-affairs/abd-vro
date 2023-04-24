@@ -11,8 +11,8 @@ export VRO_IMAGES="app postgres db-init console svc-bgs-api svc-lighthouse-api p
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( app postgres dbinit console svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602 )
-export VAR_PREFIXES="app postgres dbinit console svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602"
+VAR_PREFIXES_ARR=( app postgres dbinit console svcbgsapi svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602 )
+export VAR_PREFIXES="app postgres dbinit console svcbgsapi svclighthouseapi pdfgenerator assessclaimdc7101 assessclaimdc6602"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
