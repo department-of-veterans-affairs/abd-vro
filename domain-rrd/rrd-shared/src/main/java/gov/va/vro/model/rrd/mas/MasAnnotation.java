@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * MAS annotation class. Fields are populated by automated processing
- * of supporting documents related to a given claim. A single @code{MasDocument} may be
- * associated with multiple @code{MasAnnotation}s.
+ * MAS annotation class. Fields are populated by automated processing of supporting documents
+ * related to a given claim. A single @code{MasDocument} may be associated with
+ * multiple @code{MasAnnotation}s.
  *
  * @author warren @Date 10/5/22
  */
