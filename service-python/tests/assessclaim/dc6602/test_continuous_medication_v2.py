@@ -27,7 +27,6 @@ from assessclaimdc6602.src.lib import medication
                                  'dataSource': 'MAS',
                                  'dateFormatted': '4/6/1950',
                                  'description': 'Albuterol inhaler',
-                                 'receiptDate': '',
                                  'status': 'active'}],
              'allMedicationsCount': 1,
              'twoYearsMedications': [],
@@ -55,7 +54,6 @@ from assessclaimdc6602.src.lib import medication
                                  'dataSource': 'MAS',
                                  'dateFormatted': '4/6/1950',
                                  'description': 'Albuterol',
-                                 'receiptDate': '',
                                  'status': 'active'}],
              'allMedicationsCount': 1,
              'twoYearsMedications': [],
@@ -82,7 +80,6 @@ from assessclaimdc6602.src.lib import medication
                                  'dataSource': 'MAS',
                                  'dateFormatted': '4/6/1950',
                                  'description': 'Advil',
-                                 'receiptDate': '',
                                  'status': 'active'}],
              'allMedicationsCount': 1,
              'twoYearsMedications': [],
@@ -115,7 +112,6 @@ from assessclaimdc6602.src.lib import medication
                                  'dataSource': 'MAS',
                                  'dateFormatted': '4/6/1952',
                                  'description': 'Advil',
-                                 'receiptDate': '',
                                  'status': 'active'},
                                 {'authoredOn': '1950-04-06T04:00:00Z',
                                  'classification': 'Bronchodilator/Used in Respiratory '
@@ -123,7 +119,6 @@ from assessclaimdc6602.src.lib import medication
                                  'dataSource': 'MAS',
                                  'dateFormatted': '4/6/1950',
                                  'description': 'Albuterol',
-                                 'receiptDate': '',
                                  'status': 'active'}],
              'allMedicationsCount': 2,
              'twoYearsMedications': [],
@@ -154,7 +149,6 @@ from assessclaimdc6602.src.lib import medication
                                  'description': '14 ACTUAT fluticasone furoate 0.1 '
                                                 'MG/ACTUAT / vilanterol 0.025 MG/ACTUAT '
                                                 'Dry Powder Inhaler',
-                                 'receiptDate': '',
                                  'status': 'active'}],
              'allMedicationsCount': 1,
              'twoYearsMedications': [],

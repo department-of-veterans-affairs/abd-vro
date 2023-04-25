@@ -61,7 +61,6 @@ def conditions_calculation(request_body):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
 
-
     response.update({
         "conditions": sort_conditions(condition_with_date) + condition_without_date,
         "twoYearsConditions": sort_conditions(conditions_two_years),

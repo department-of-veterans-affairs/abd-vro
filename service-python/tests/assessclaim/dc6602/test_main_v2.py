@@ -18,23 +18,29 @@ from assessclaimdc6602.src.lib import main
                             }
                         ],
                         "conditions": [],
+                        "procedures": []
                     },
                     "claimSubmissionDateTime": "2021-11-09",
-                    "claimSubmissionId": "1234"
+                    "claimSubmissionId": "1234",
+                    "disabilityActionType": "INCREASE"
                 },
-                {'claimSubmissionId': '1234',
-                 'evidence': {'conditions': [],
-                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                               'classification': 'Anti-Inflammatory/Corticosteroid/Immuno-Suppressive',
-                                               'dataSource': 'MAS',
-                                               'dateFormatted': '4/6/1952',
-                                               'description': 'Prednisone',
-                                               'receiptDate': '',
-                                               'status': 'active'}]},
-                 'evidenceSummary': {'relevantConditionsLighthouseCount': 0,
-                                     'totalConditionsCount': 0,
-                                     'relevantMedicationCount': 1,
-                                     'totalMedCount': 1}}
+                {"claimSubmissionDateTime": "2021-11-09",
+                 "claimSubmissionId": "1234",
+                 "disabilityActionType": "INCREASE",
+                 "evidence": {"conditions": [],
+                              "documentsWithoutAnnotationsChecked": [],
+                              "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
+                                               "classification": "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive",
+                                               "dataSource": "MAS",
+                                               "dateFormatted": "4/6/1952",
+                                               "description": "Prednisone",
+                                               "status": "active"}],
+                              "procedures": []},
+                 "evidenceSummary": {"proceduresCount": 0,
+                                     "relevantConditionsLighthouseCount": 0,
+                                     "relevantMedicationCount": 1,
+                                     "totalConditionsCount": 0,
+                                     "totalMedCount": 1}}
         ),
         # demonstrates ability to match substrings in medication["text"] property
         (
@@ -49,23 +55,30 @@ from assessclaimdc6602.src.lib import main
                             }
                         ],
                         "conditions": [],
+                        "procedures": []
                     },
                     "claimSubmissionDateTime": "2021-11-09",
-                    "claimSubmissionId": "1234"
+                    "claimSubmissionId": "1234",
+                    "disabilityActionType": "INCREASE"
+
                 },
-                {'claimSubmissionId': '1234',
-                 'evidence': {'conditions': [],
-                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                               'classification': 'Anti-Inflammatory/Corticosteroid/Immuno-Suppressive',
-                                               'dataSource': 'MAS',
-                                               'dateFormatted': '4/6/1952',
-                                               'description': 'predniSONE 1 MG Oral Tablet',
-                                               'receiptDate': '',
-                                               'status': 'active'}]},
-                 'evidenceSummary': {'relevantConditionsLighthouseCount': 0,
-                                     'totalConditionsCount': 0,
-                                     'relevantMedicationCount': 1,
-                                     'totalMedCount': 1}}
+                {"claimSubmissionDateTime": "2021-11-09",
+                 "claimSubmissionId": "1234",
+                 "disabilityActionType": "INCREASE",
+                 "evidence": {"conditions": [],
+                              "documentsWithoutAnnotationsChecked": [],
+                              "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
+                                               "classification": "Anti-Inflammatory/Corticosteroid/Immuno-Suppressive",
+                                               "dataSource": "MAS",
+                                               "dateFormatted": "4/6/1952",
+                                               "description": "predniSONE 1 MG Oral Tablet",
+                                               "status": "active"}],
+                              "procedures": []},
+                 "evidenceSummary": {"proceduresCount": 0,
+                                     "relevantConditionsLighthouseCount": 0,
+                                     "relevantMedicationCount": 1,
+                                     "totalConditionsCount": 0,
+                                     "totalMedCount": 1}}
         ),
         # calculator feild mild-persistent-asthma-or-greater is True
         (
@@ -80,23 +93,30 @@ from assessclaimdc6602.src.lib import main
                             }
                         ],
                         "conditions": [],
+                        "procedures": []
                     },
                     "claimSubmissionDateTime": "2021-11-09",
-                    "claimSubmissionId": "1234"
+                    "claimSubmissionId": "1234",
+                    "disabilityActionType": "INCREASE"
+
                 },
-                {'claimSubmissionId': '1234',
-                 'evidence': {'conditions': [],
-                              'medications': [{'authoredOn': '1952-04-06T04:00:00Z',
-                                               'classification': '',
-                                               'dataSource': 'MAS',
-                                               'dateFormatted': '4/6/1952',
-                                               'description': 'Advil',
-                                               'receiptDate': '',
-                                               'status': 'active'}]},
-                 'evidenceSummary': {'relevantConditionsLighthouseCount': 0,
-                                     'relevantMedicationCount': 0,
-                                     'totalConditionsCount': 0,
-                                     'totalMedCount': 1}}
+                {"claimSubmissionDateTime": "2021-11-09",
+                 "claimSubmissionId": "1234",
+                 "disabilityActionType": "INCREASE",
+                 "evidence": {"conditions": [],
+                              "documentsWithoutAnnotationsChecked": [],
+                              "medications": [{"authoredOn": "1952-04-06T04:00:00Z",
+                                               "classification": "",
+                                               "dataSource": "MAS",
+                                               "dateFormatted": "4/6/1952",
+                                               "description": "Advil",
+                                               "status": "active"}],
+                              "procedures": []},
+                 "evidenceSummary": {"proceduresCount": 0,
+                                     "relevantConditionsLighthouseCount": 0,
+                                     "relevantMedicationCount": 0,
+                                     "totalConditionsCount": 0,
+                                     "totalMedCount": 1}}
         ),
     ],
 )
