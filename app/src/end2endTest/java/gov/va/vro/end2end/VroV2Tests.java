@@ -842,6 +842,9 @@ public class VroV2Tests {
     // Check for evidence from mock LH API.
     assertTrue(pdfText.contains("190/-"));
     assertTrue(pdfText.contains("-/93"));
+    // Check for evidence from mock LH API. These are missing value examples.
+    assertTrue(pdfText.contains("177/-"));
+    assertTrue(pdfText.contains("-/88"));
 
     // Check that BP with missing systolic and diastolic is not included as evidence.
     assertFalse(pdfText.contains("-/-"));
