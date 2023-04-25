@@ -16,7 +16,7 @@ public class AuditEvent {
   private Throwable throwable;
 
   // WARNING: DO NOT STORE PII/PHI
-  private String message;
+  private String[] messages;
 
   // WARNING: DO NOT STORE PII/PHI
   private Map<String, String> details;
@@ -36,15 +36,33 @@ public class AuditEvent {
    * @return return.
    */
   public static AuditEvent fromAuditable(Auditable auditable, String routeId, String message) {
+
     return AuditEvent.builder()
         .eventId(auditable.getEventId())
         .routeId(routeId)
         .payloadType(auditable.getDisplayName())
-        .message(message)
+        .messages(new String[] {message})
         .details(auditable.getDetails())
         .build();
   }
 
+  /**
+   * From auditable.
+   *
+   * @param auditable auditable.
+   * @param routeId route ID.
+   * @param messages messages.
+   * @return return.
+   */
+  public static AuditEvent fromAuditable(Auditable auditable, String routeId, String[] messages) {
+    return AuditEvent.builder()
+        .eventId(auditable.getEventId())
+        .routeId(routeId)
+        .payloadType(auditable.getDisplayName())
+        .messages(messages)
+        .details(auditable.getDetails())
+        .build();
+  }
   /**
    * From exception.
    *
@@ -54,13 +72,13 @@ public class AuditEvent {
    * @return return.
    */
   public static AuditEvent fromException(Auditable auditable, String routeId, Throwable exception) {
+
     return AuditEvent.builder()
         .eventId(auditable.getEventId())
         .routeId(routeId)
         .payloadType(auditable.getDisplayName())
-        .message(exception.getMessage())
+        .messages(new String[] {exception.getMessage()})
         .throwable(exception)
-        .message(exception.getMessage())
         .build();
   }
 
@@ -75,7 +93,7 @@ public class AuditEvent {
       return String.format(
           "Exception occurred on route %s for %s(id = %s): %s.\n"
               + "Please check the audit store for more information.",
-          routeId, payloadType, eventId, message);
+          routeId, payloadType, eventId, String.join(",", messages));
     } else {
       return toSimpleString();
     }
@@ -94,7 +112,7 @@ public class AuditEvent {
         + ", payloadType="
         + payloadType
         + ", message='"
-        + message
+        + String.join(",", messages)
         + '\''
         + '}';
   }
