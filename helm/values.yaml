@@ -59,7 +59,7 @@ global:
 
   # TODO: Replace with images.tag or subchart's imageTag?
   # version is used in annotations for APP
-  version: 0.1
+  version: 0.2
 
   service:
     app:

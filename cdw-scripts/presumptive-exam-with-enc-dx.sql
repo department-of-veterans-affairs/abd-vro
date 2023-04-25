@@ -4,7 +4,7 @@
 WITH Measurements (PatientSID, Diastolic, Systolic) AS (
 	SELECT PatientSID, Diastolic, Systolic
 	FROM CDWWork.Vital.VitalSign
-	WHERE Systolic IS NOT NULL AND Diastolic is NOT NULL AND VitalSignTakenDateTime > '2022-04-10'
+	WHERE Systolic IS NOT NULL AND Diastolic is NOT NULL AND VitalSignTakenDateTime > DATEADD(year, -1, GETDATE())
 ), ICNMeasurement (PatientICN, PatientSID, PatientSSN, Diastolic, Systolic, Cnt) AS (
 	SELECT p.PatientICN, p.PatientSID, p.PatientSSN, v.Diastolic, v.Systolic,
 	COUNT(1) OVER (PARTITION BY p.PatientICN)
@@ -22,5 +22,5 @@ FROM CDWWork.Outpat.Visit v
 INNER JOIN SIDs s ON s.PatientSID = v.PatientSID
 INNER JOIN CDWWork.Outpat.VDiagnosis dx ON dx.VisitSID = v.VisitSID AND
     ICD10SID IN (SELECT ICD10SID FROM Dxs) AND dx.PrimarySecondary = 'P'
-WHERE v.EncounterDateTime >= '2022-04-20'
+WHERE v.EncounterDateTime >= DATEADD(year, -1, GETDATE())
 ORDER BY s.PatientSSN
