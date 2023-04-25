@@ -967,7 +967,9 @@ public class VroV2Tests {
     AutomatedClaimTestSpec spec = specFor200("370");
     spec.setMasError(true);
     spec.setBipUpdateClaimError(true);
-    String comboError = EventReason.ANNOTATIONS_FAILED.getReasonMessage() + EventReason.BIP_UPDATE_FAILED.getReasonMessage();
+    String comboError = EventReason.ANNOTATIONS_FAILED.getReasonMessage()
+            + " claim ID: 1370, collection ID: 370,"
+            + EventReason.BIP_UPDATE_FAILED.getReasonMessage();
     spec.setExpectedSlackMessage(comboError);
     testAutomatedClaimOffRamp(spec);
   }
