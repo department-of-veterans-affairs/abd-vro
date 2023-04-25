@@ -74,7 +74,6 @@ def assess_sufficiency_asthma(event: Dict):
                     "totalConditionsCount": conditions["totalConditionsCount"],
                     "relevantConditionsLighthouseCount": conditions["relevantConditionsLighthouseCount"]
                 },
-                "sufficientForFastTracking": False,  # hardcoded until criteria is decided
                 "claimSubmissionDateTime": event["claimSubmissionDateTime"],
                 "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
