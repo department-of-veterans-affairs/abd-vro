@@ -168,7 +168,52 @@ def validate_request_body(request_body):
                             }
                         }
                     }
-                }
+                },
+                "procedures": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "code": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "status": {
+                                "type": "string",
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "performedDate": {
+                                "type": "string",
+                            },
+                            "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "organization": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "page": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "receiptDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "dataSource": {
+                                "type": "string",
+                                "default": "",
+                            }
+                        }
+                    }
+                },
             }
         }
     }

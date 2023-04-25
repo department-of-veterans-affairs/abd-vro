@@ -64,14 +64,19 @@ def assess_sufficiency_asthma(event: Dict):
                 "evidence": {
                     "medications": medications["allMedications"],
                     "conditions": conditions["conditions"],
+                    "procedures": event["evidence"]["procedures"],
                     "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
                     "totalMedCount": medications["allMedicationsCount"],
                     "relevantMedicationCount": medications["relevantMedicationCount"],
+                    "proceduresCount": len(event["evidence"]["procedures"]),
                     "totalConditionsCount": conditions["totalConditionsCount"],
                     "relevantConditionsLighthouseCount": conditions["relevantConditionsLighthouseCount"]
                 },
+                "sufficientForFastTracking": False,  # hardcoded until criteria is decided
+                "claimSubmissionDateTime": event["claimSubmissionDateTime"],
+                "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             }
         )

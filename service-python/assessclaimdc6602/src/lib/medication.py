@@ -98,10 +98,6 @@ def filter_categorize_mas_medication(request_body):
             except (ValueError, KeyError):
                 medication["dateFormatted"] = ''
                 medication_without_date.append(medication)
-            try:
-                medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
-            except (ValueError, KeyError):
-                medication["receiptDate"] = ""
 
     response = {"twoYearsMedications": sort_med(medication_two_years),
                 "allMedications": sort_med(medication_with_date) + medication_without_date,
