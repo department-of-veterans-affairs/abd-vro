@@ -18,7 +18,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "value": 180
                             },
                             "organization": "",
-                            "receiptDate": "2022-11-01",
+                            "receiptDate": "11/1/2022",
                             "date": "2021-11-01",
                             "dataSource": "MAS"
                         },
@@ -30,7 +30,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "value": 200
                             },
                             "organization": "",
-                            "receiptDate": "2022-11-01",
+                            "receiptDate": "11/1/2022",
                             "date": "2021-09-01",
                             "dataSource": "LH"
                         }
@@ -451,7 +451,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 },
                                 "organization": "",
                                 "dataSource": "",
-                                "receiptDate": "2021-09-13",
+                                "receiptDate": "9/13/2021",
                                 "date": ""  # no date
                             },
                             {
