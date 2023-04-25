@@ -5,10 +5,10 @@ import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
 
@@ -19,9 +19,7 @@ public interface CCResource {
   @PostMapping("/domain-cc/{endpoint}")
   @Timed(value = "resource.post")
   ResponseEntity<ResourceResponse> callEndpoint(
-          @PathVariable(value = "endpoint") String endpoint,
-          @Valid
-          @RequestBody
-          ResourceRequest request)
-          throws MethodArgumentNotValidException, ResourceException;
+      @PathVariable(value = "endpoint") String endpoint,
+      @Valid @RequestBody ResourceRequest request)
+      throws MethodArgumentNotValidException, ResourceException;
 }
