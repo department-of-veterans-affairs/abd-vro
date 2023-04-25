@@ -1,12 +1,12 @@
-package gov.va.vro.controller.redo.v3;
+package gov.va.vro.controller.cc.v3;
 
 //import static gov.va.vro.model.redo.CamelConstants.POST_RESOURCE_QUEUE;
 //import static gov.va.vro.model.redo.CamelConstants.V3_EXCHANGE;
 
-import gov.va.vro.api.redo.ResourceException;
-import gov.va.vro.api.redo.v3.RedoResource;
-import gov.va.vro.api.redo.v3.ResourceRequest;
-import gov.va.vro.api.redo.v3.ResourceResponse;
+import gov.va.vro.api.cc.ResourceException;
+import gov.va.vro.api.cc.v3.CCResource;
+import gov.va.vro.api.cc.v3.ResourceRequest;
+import gov.va.vro.api.cc.v3.ResourceResponse;
 //import gov.va.vro.camel.CamelEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class RedoController implements RedoResource {
+public class ContentionClassificationController implements CCResource {
   @Override
   public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, ResourceRequest request)
     throws ResourceException {
