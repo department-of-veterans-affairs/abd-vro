@@ -64,6 +64,10 @@ public interface MasResource {
             responseCode = "500",
             description = "Data Access Server Error",
             content = @Content(schema = @Schema(hidden = true)))
+        @ApiResponse(
+            responseCode = "503",
+            description = "BIP Service Error",
+            content = @Content(schema = @Schema(hidden = true)))
       })
   @Timed(value = "mas-automated-claim")
   @Tag(name = "MAS Integration")
