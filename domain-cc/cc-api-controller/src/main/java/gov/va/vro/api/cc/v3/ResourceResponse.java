@@ -1,4 +1,4 @@
-package gov.va.vro.api.redo.v3;
+package gov.va.vro.api.cc.v3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

@@ -33,7 +33,7 @@ dependencies {
   implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
-  implementation project(':domain-cc:redo-api-controller')
+  implementation project(':domain-cc:cc-api-controller')
 
   implementation 'gov.va.starter:open-api'
   // Provides http://localhost:8081/health endpoint used in app's Dockerfile

@@ -1,4 +1,4 @@
-package gov.va.vro.api.redo.v3;
+package gov.va.vro.api.cc.v3;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
