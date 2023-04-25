@@ -24,23 +24,38 @@ import java.io.IOException;
 public class ContentionClassificationController implements ContentionClassificationResource {
 
   private final CamelEntry camelEntry;
-  private final ResourceMapper resourceMapper;
+  private final CCResourceMapper ccResourceMapper;
 
   @Override
   public ResponseEntity<CCResponse> postResource(String ccEndpoint)
-      throws ResourceException {
-    log.info(
-        "Post XResource for resource: {} and diagnostic code {}",
-//        request.getResourceId(),
-//        request.getDiagnosticCode());
+    throws ResourceException {
+      log.info("test");
     try {
       log.info("ContentionClassificationController postResource!");
       log.info(ccEndpoint);
       log.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+      //      var result = camelEntry.inOut(V3_EXCHANGE, POST_RESOURCE_QUEUE, model, SomeDtoModel.class);
+      String result = "testing";
+      CCResponse response = ccResourceMapper.toResourceResponse(result);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception ex) {
       log.error("Error in Post XResource", ex);
-      throw new ResourceException(request.getResourceId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+      throw new ResourceException(ccEndpoint, HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+  }
+
+  @Override
+  public ResponseEntity<CCResponse> getFixedPath() throws ResourceException {
+    log.info("not fetching anything");
+    try {
+      // var response =
+      //         camelEntry.inOut(V3_EXCHANGE, GET_RESOURCE_QUEUE, resourceId, SomeDtoModel.class);
+      var response = "not_real_response";
+      CCResponse someResponse = ccResourceMapper.toResourceResponse(response);
+      return new ResponseEntity<>(someResponse, HttpStatus.OK);
+    } catch (Exception ex) {
+      log.error("Error in nothing", ex);
+      throw new ResourceException("asdf", HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 }

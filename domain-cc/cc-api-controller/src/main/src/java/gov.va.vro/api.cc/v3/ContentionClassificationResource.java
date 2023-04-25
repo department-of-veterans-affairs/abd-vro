@@ -23,15 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v3", produces = "application/json")
-@Timed
+@Timed("cc")
 @Tag(name = "Contention Classification")
 public interface ContentionClassificationResource {
   @PostMapping(value = "/domain-cc/{ccEndpoint}")
   @Timed(value = "resource.post")
-  @Operation(
-      summary = "Hit python endpoint",
-      description =
-          "n/a")
+  @Operation( summary = "Hit python endpoint", description = "n/a")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Successful Request"),
@@ -48,15 +45,20 @@ public interface ContentionClassificationResource {
             description = "CC: Server Error",
             content = @Content(schema = @Schema(hidden = true)))
       })
-  ResponseEntity<CCResponse> postResource(
-          @PathVariable String ccEndpoint
-          // @Parameter(
-          //     description = "payload for resource",
-          //     required = true,
-          //     schema = @Schema(implementation = CCRequest.class))
-          // @Valid
-          // @RequestBody
-          // CCRequest request)
-          )
+  ResponseEntity<CCResponse> postResource( @PathVariable(value = "endpoint") String ccEndpoint )
       throws MethodArgumentNotValidException, ResourceException;
+
+    @GetMapping(value = "/domain-cc/fixed-endpoint")
+    @Timed(value = "resource.get")
+    @Operation(summary="retrieve from fixed url path", description="description goes here")
+    @ApiResponses(
+        value = {
+                @ApiResponse(responseCode = "200", description = "Successful Request"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Xample Resource: Server Error",
+                        content = @Content(schema = @Schema(hidden = true))),
+        })
+    ResponseEntity<CCResponse> getFixedPath()
+            throws MethodArgumentNotValidException, ResourceException;
 }

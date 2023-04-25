@@ -32,6 +32,7 @@ dependencies {
   implementation project(':domain-rrd:rrd-workflows')
   implementation project(':domain-rrd:service-rrd-db')
 
+  implementation project(':domain-redo:redo-api-controller')
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
 
