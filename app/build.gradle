@@ -31,6 +31,7 @@ dependencies {
   implementation project(':service:spi')
   implementation project(':service:db')
 
+  implementation project(':domain-redo:redo-api-controller')
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
 

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ResourceMapper {
+public interface CCResourceMapper {
 
  //  @Mapping(target = "status", ignore = true)
  //  @Mapping(target = "statusCode", ignore = true)

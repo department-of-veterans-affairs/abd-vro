@@ -76,6 +76,10 @@ public class RedoController implements RedoResource {
     log.info("callEndpoint logging info");
     try {
       log.info("endpoint received: ", endpoint);
+      log.info(endpoint);
+      log.info(endpoint);
+      log.info(endpoint);
+      log.info("^^^");
       ResourceResponse response = new ResourceResponse("resource_id", "diagnostic", "status", 409, "status_msg");
       return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     } catch (Exception ex) {
