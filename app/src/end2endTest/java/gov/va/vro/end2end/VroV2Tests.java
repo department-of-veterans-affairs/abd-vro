@@ -496,9 +496,11 @@ public class VroV2Tests {
     boolean slackResult = testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
-    final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    if(!spec.isBipUpdateClaimError()){
+      final String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    }
   }
 
   /** Out of scope test case because of disability action type. 422 response is verified. */
@@ -954,5 +956,19 @@ public class VroV2Tests {
     spec.setExpectedSlackMessage(LIGHTHOUSE_ERROR_MSG);
     boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * End to End Test that validates multiple VRO errors get sent in a slack message if this case
+   * occurs. Currently this happens with offramping + BIP Claim Error Based on Claim 369
+   */
+  @Test
+  void testAutomatedClaimMultipleError() {
+    AutomatedClaimTestSpec spec = specFor200("370");
+    spec.setMasError(true);
+    spec.setBipUpdateClaimError(true);
+    String comboError = EventReason.ANNOTATIONS_FAILED.getReasonMessage() + EventReason.BIP_UPDATE_FAILED.getReasonMessage();
+    spec.setExpectedSlackMessage(comboError);
+    testAutomatedClaimOffRamp(spec);
   }
 }
