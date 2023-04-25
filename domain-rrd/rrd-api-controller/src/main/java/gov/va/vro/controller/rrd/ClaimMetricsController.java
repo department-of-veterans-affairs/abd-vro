@@ -87,12 +87,6 @@ public class ClaimMetricsController implements ClaimMetricsResource {
     ExamOrderInfoQueryParams params =
         ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
     ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfoOlderThan24(params);
-    if (examOrdersInfo.getExamOrderInfoList().size() < 1) {
-      throw new ClaimProcessingException(
-          "exam-order-slack",
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          "Could not find exam orders older than 24hrs");
-    }
     try {
       AuditEvent message =
           AuditEvent.fromAuditable(
