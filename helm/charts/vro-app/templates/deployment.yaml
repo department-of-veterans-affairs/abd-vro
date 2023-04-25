@@ -33,21 +33,18 @@ spec:
             - name: POSTGRES_FLYWAY_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.dbinit.secretKeyRef.name }}
-                  key: {{ .Values.global.dbinit.secretKeyRef.usernameKey }}
+                  name: vro-db
+                  key: DB_FLYWAYUSER_NAME
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.postgres.secretKeyRef.name }}
-                  key: {{ .Values.global.postgres.secretKeyRef.dbnameKey }}
+              value: {{ .Values.global.service.db.databaseName }}
           command:
             - /bin/sh
             - -c
             - |
               /bin/sh -c "
                 until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
-                  echo 'Waiting for Postgres DB to be available'
-                  sleep 5
+                 echo 'Waiting for Postgres DB to be available'
+                 sleep 5
                 done
               "
           resources:
@@ -55,7 +52,7 @@ spec:
             limits:
               cpu: 10m
               memory: 256Mi
-        - name: dbinit{{ include "vro.containerSuffix" . }}
+        - name: db-init{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
@@ -77,46 +74,10 @@ spec:
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
-            - name: apiAuthKey01
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  key: {{ .Values.api.apiKey01 }}
-            - name: apiAuthKey02
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.api.apiKeySecret}}
-                  key: {{ .Values.api.apiKey02 }}
-            - name: LH_API_AUTH_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhApiAuthUrl }}
-            - name: SLACK_EXCEPTION_CHANNEL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.slackExceptionChannel }}
-            - name: SLACK_EXCEPTION_WEBHOOK
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.slackExceptionWebhook }}
-            - name: VRO_AUD_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.vroAudUrl }}
-            - name: LH_VRO_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhVroApiKey }}
-            - name: VALIDATE_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.validateToken }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
+            {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
@@ -126,111 +87,43 @@ spec:
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.global.serviceUriPrefix }}
 
-            {{- include "vro.dbClient.envVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+            - name: VRO_SECRETS_API
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_API
+            - name: VRO_SECRETS_SLACK
+              valueFrom:
+                secretKeyRef:
+                  name: vro-secrets
+                  key: VRO_SECRETS_SLACK
 
-            - name: MAS_API_AUTH_CLIENTID
+            - name: LH_API_AUTH_URL
+              value: {{ .Values.lhApiAuthUrl }}
+            - name: VRO_AUD_URL
+              value: {{ .Values.vroAudUrl }}
+
+            - name: VRO_SECRETS_MAS
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientId }}
-            - name: MAS_API_AUTH_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientSecret }}
-            - name: MAS_API_AUTH_SCOPE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthScope }}
+                  name: vro-secrets
+                  key: VRO_SECRETS_MAS
             - name: MAS_API_AUTH_TOKEN_URI
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthTokenUri }}
-            - name: MAS_API_BAS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiBaseUrl }}
-            - name: MAS_COLLECTION_ANNOTS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionAnnotsPath }}
-            - name: MAS_COLLECTION_STATUS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionStatusPath }}
-            - name: MAS_CREATE_EXAM_ORDER_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCreateExamOrderPath }}
+              value: {{ .Values.global.mas.masApiAuthTokenUri }}
+            - name: MAS_API_BASE_URL
+              value: {{ .Values.global.mas.masApiBaseUrl }}
 
-            - name: BIP_APPLICATION_ID
+            - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationId }}
-            - name: BIP_APPLICATION_ISS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationIss }}
-            - name: BIP_CLAIM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimSecret }}
+                  name: vro-secrets
+                  key: VRO_SECRETS_BIP
             - name: BIP_CLAIM_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUrl }}
-            - name: BIP_CLAIM_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUserId }}
-            - name: BIP_EVIDENCE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceSecret }}
+              value: {{ .Values.global.bip.bipClaimUrl }}
             - name: BIP_EVIDENCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUrl }}
-            - name: BIP_EVIDENCE_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUserId }}
+              value: {{ .Values.global.bip.bipEvidenceUrl }}
             - name: BIP_STATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipStationId }}
-            - name: BIP_KEYSTORE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipKeyStore }}
-            - name: BIP_TRUSTSTORE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipTrustStore }}
-            - name: BIP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipPassword }}
+              value: "281"
           resources:
             requests:
               cpu: 150m

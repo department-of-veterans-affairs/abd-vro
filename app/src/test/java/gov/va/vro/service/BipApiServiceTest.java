@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipUpdateClaimResp;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.rrd.bip.BipClaim;
+import gov.va.vro.model.rrd.bip.BipUpdateClaimResp;
+import gov.va.vro.model.rrd.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipApiService;
@@ -60,8 +60,6 @@ public class BipApiServiceTest {
   private static final String CLAIM_ISSUER = "issuer";
   private static final String STATION_ID = "280";
   private static final String APP_ID = "bip";
-  private static final String APP_NAME = "vro";
-  private static final String CLAIM_JTI = "032-83583455";
 
   @InjectMocks private BipApiService service;
 
@@ -80,8 +78,6 @@ public class BipApiServiceTest {
     BipApiProps props = new BipApiProps();
     props.setApplicationId(APP_ID);
     props.setApplicationId(CLAIM_ISSUER);
-    props.setJti(CLAIM_JTI);
-    props.setApplicationName(APP_NAME);
     props.setStationId(STATION_ID);
     props.setClaimClientId(CLAIM_USERID);
 

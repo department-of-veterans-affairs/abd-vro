@@ -6,6 +6,23 @@ from .codesets import hypertension_conditions
 from .utils import extract_date, format_date
 
 
+def sort_conditions(conditions):
+    """
+    Sort medications by 'recordedDate' date.
+
+    :param conditions: List of conditions
+    :return: Sorted list
+    """
+
+    conditions = sorted(
+        conditions,
+        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
+        reverse=True,
+    )
+
+    return conditions
+
+
 def conditions_calculation(request_body):
     """
     Determine if there is the veteran has a hypertension diagnosis
@@ -27,9 +44,8 @@ def conditions_calculation(request_body):
         condition_code = condition["code"]
         #  Only LH data has ICD codes, so no MAS data will pass the following condition
         if condition_code in hypertension_conditions.conditions:
-            if condition["category"] == "Encounter Diagnosis":
-                condition["relevant"] = True
-                lh_relevant_condition_count += 1
+            condition["relevant"] = True
+            lh_relevant_condition_count += 1
         else:
             condition["relevant"] = False
 
@@ -42,28 +58,10 @@ def conditions_calculation(request_body):
         except (ValueError, KeyError):
             condition["dateFormatted"] = ""
             condition_without_date.append(condition)
-        try:
-            condition["receiptDate"] = format_date(datetime.strptime(condition["receiptDate"], "%Y-%m-%d").date())
-        except (ValueError, KeyError):
-            condition["receiptDate"] = ""
-
-    condition_with_date = sorted(
-        condition_with_date,
-        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
-        reverse=True,
-    )
-
-    conditions_two_years = sorted(
-        conditions_two_years,
-        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
-        reverse=True,
-    )
-
-    condition_with_date.extend(condition_without_date)
 
     response.update({
-        "conditions": condition_with_date,
-        "twoYearsConditions": conditions_two_years,
+        "conditions": sort_conditions(condition_with_date) + condition_without_date,
+        "twoYearsConditions": sort_conditions(conditions_two_years),
         "totalConditionsCount": len(veterans_conditions),
         "relevantConditionsLighthouseCount": lh_relevant_condition_count,
         }

@@ -1,0 +1,37 @@
+
+plugins {
+  id 'local.java.container-spring-conventions'
+  id 'starter.std.java.library-spring-conventions'
+}
+
+ext {
+  jacocoExclude = ['**/*Application.*']
+}
+
+dependencies {
+  implementation project(':domain-xample:xample-shared')
+  implementation project(':shared:lib-camel-connector')
+  implementation project(':persistence:model')
+
+  // Needed for *Repository classes to save to DB
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  // Postgres DB client library
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
+
+  // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
+  implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
+
+  // Actuator for health check
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+  testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
+  testImplementation "com.github.fppt:jedis-mock:1.0.7"
+  testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+
+  // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+  // in order to convert ClaimEntity.createdAt into JSON.
+  // Also need to set `camel.dataformat.json-jackson.auto-discover-object-mapper: true`
+  // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
+  //runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+}

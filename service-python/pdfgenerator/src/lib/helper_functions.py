@@ -33,18 +33,20 @@ def pdf_helper_all(data: dict) -> dict:
     # Find out if the PDF is being generated locally(VENV, script, etc.) or through Docker. Depending on which, set the appropriate base path for fonts, images, etc.
     run_mode = os.environ.get("DOCKER", "local")
     if run_mode == "docker":
-        data["base_path"] = "/project/public"
+        data["base_path"] = "/app/public"
     else:
         current_dir = os.path.abspath(os.path.dirname(__file__))
         data["base_path"] = os.path.join(current_dir, "..", "public")
     # Starting date from when the data is fetched. Mainly to be used to display a range Ex: (start_date) to (timestamp)
     data["start_date"] = datetime.now() - relativedelta(years=1)
-    data["evidence"] = data["evidence"]
-    if data["veteranInfo"]["birthdate"] != "":
+    data["timestamp"] = pytz.utc.localize(datetime.now())
+    if "evidence" in data:
+        data["evidence"] = data["evidence"]
+    if "veteranInfo" in data and data["veteranInfo"]["birthdate"] != "":
         birth_date = data["veteranInfo"]["birthdate"].replace("Z", "")
         data["veteranInfo"]["birthdate"] = parser.parse(birth_date)
 
-    if data["version"] == "v1":
+    if "version" in data and data["version"] == "v1":
         for medication_info in data["evidence"]["medications"]:
             medication_info["authoredOn"] = parser.parse(medication_info["authoredOn"])
 

@@ -166,19 +166,20 @@ def test_medication_required(
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    "medications": [
-                        {
-                            "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "4/6/2020",
-                            "description": "Benazepril",
-                            "status": "active",
-                            "receiptDate": "",
-                            "dataSource": "MAS"
-                        }
-                    ],
-                    "medicationsCount": 1,
-                },
+                {'allMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/2020',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                          'dataSource': 'MAS',
+                                          'dateFormatted': '4/6/2020',
+                                          'description': 'Benazepril',
+                                          'receiptDate': '',
+                                          'status': 'active'}],
+                 'twoYearsMedicationsCount': 1},
         ),
         # Medication used to treat hypertension
         (
@@ -198,19 +199,20 @@ def test_medication_required(
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    "medications": [
-                        {
-                            "authoredOn": "2020-04-06T04:00:00Z",
-                            "dateFormatted": "4/6/2020",
-                            "description": "Benazepril",
-                            "status": "active",
-                            "receiptDate": "",
-                            "dataSource": "MAS"
-                        }
-                    ],
-                    "medicationsCount": 1,
-                },
+                {'allMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/2020',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [{'authoredOn': '2020-04-06T04:00:00Z',
+                                          'dataSource': 'MAS',
+                                          'dateFormatted': '4/6/2020',
+                                          'description': 'Benazepril',
+                                          'receiptDate': '',
+                                          'status': 'active'}],
+                 'twoYearsMedicationsCount': 1}
         ),
         # Medication not used to treat hypertension
         (
@@ -231,10 +233,15 @@ def test_medication_required(
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {
-                    "medications": [],
-                    "medicationsCount": 0
-                },
+                {'allMedications': [{'authoredOn': '1950-04-06T04:00:00Z',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '4/6/1950',
+                                     'description': 'Advil',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 1,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
         (
                 {
@@ -268,28 +275,22 @@ def test_medication_required(
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW"
                 },
-                {
-                    "medications": [
-                        {
-                            "description": "Benazepril",
-                            "status": "active",
-                            "dateFormatted": "",
-                            "receiptDate": "",
-                            "authoredOn": "",
-                            "dataSource": "MAS"
-                        },
-                        {
-                            "description": "some medication",
-                            "status": "active",
-                            "authoredOn": "",
-                            "receiptDate": "",
-                            "dateFormatted": "",
-                            "partialDate": "**/**/1988",
-                            "dataSource": "MAS"
-                        },
-                    ],
-                    "medicationsCount": 2,
-                },
+                {'allMedications': [{'authoredOn': '',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '',
+                                     'description': 'Benazepril',
+                                     'receiptDate': '',
+                                     'status': 'active'},
+                                    {'authoredOn': '',
+                                     'dataSource': 'MAS',
+                                     'dateFormatted': '',
+                                     'description': 'some medication',
+                                     'partialDate': '**/**/1988',
+                                     'receiptDate': '',
+                                     'status': 'active'}],
+                 'allMedicationsCount': 3,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
         (
                 {
@@ -300,7 +301,10 @@ def test_medication_required(
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "INCREASE"
                 },
-                {"medications": [], "medicationsCount": 0},
+                {'allMedications': [],
+                 'allMedicationsCount': 0,
+                 'twoYearsMedications': [],
+                 'twoYearsMedicationsCount': 0}
         ),
     ],
 )

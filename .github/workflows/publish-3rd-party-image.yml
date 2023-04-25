@@ -1,4 +1,4 @@
-name: "5. Publish 3rd-party image"
+name: "5. (Internal) Publish 3rd-party image"
 
 # SecRel will not sign images outside the scope of the repository that's calling SecRel,
 # so the image must exist in abd-vro-internal for SecRel to sign the images (required for sandbox and prod environments).

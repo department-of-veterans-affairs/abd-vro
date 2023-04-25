@@ -155,11 +155,11 @@ exportSecretIfUnset MAS_API_AUTH_CLIENT_SECRET
 
 # TODO: Move these to application*.yml
 export MAS_API_AUTH_TOKEN_URI=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
-export MAS_API_AUTH_SCOPE=openid
-export MAS_API_BAS_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
-export MAS_COLLECTION_ANNOTS_PATH=/pcQueryCollectionAnnots
-export MAS_COLLECTION_STATUS_PATH=/pcCheckCollectionStatus
-export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
+#export MAS_API_AUTH_SCOPE=openid
+export MAS_API_BASE_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
+#export MAS_COLLECTION_ANNOTS_PATH=/pcQueryCollectionAnnots
+#export MAS_COLLECTION_STATUS_PATH=/pcCheckCollectionStatus
+#export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 
 ###
 ### Integration with BIP ###
@@ -172,11 +172,9 @@ export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 ##
 export BIP_CLAIM_USERID=VRO_USER
 export BIP_CLAIM_SECRET=theSecret
-export BIP_CLAIM_ISS=VRO
 # Credentials for BIP Claim Evidence API
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret
-export BIP_EVIDENCE_ISS=VRO
 # BIP Common.
-export BIP_APPLICATION_ID=VRO
+#export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456

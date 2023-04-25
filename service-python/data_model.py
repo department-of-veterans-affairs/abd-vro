@@ -90,10 +90,14 @@ def validate_request_body(request_body):
                                     "unit": {"type": "string"},
                                 },
                             },
-                            "date": {"type": "string"},
+                            "date": {"type": "string", "default": ""},
                             "practitioner": {"type": "string", "nullable": True},
-                            "organization": {"type": "string", "nullable": True},
+                            "organization": {"type": "string", "default": ""},
                             "document": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "dataSource": {
                                 "type": "string",
                                 "default": "",
                             },
@@ -155,6 +159,10 @@ def validate_request_body(request_body):
                                 "default": "",
                             },
                             "partialDate": {
+                                "type": "string",
+                                "default": "",
+                            },
+                            "dataSource": {
                                 "type": "string",
                                 "default": "",
                             }

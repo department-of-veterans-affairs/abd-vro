@@ -19,163 +19,25 @@ spec:
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: dc6602accessor{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc6602:{{ include "vro.imageTag" . }}
+        - name: svc-dc6602accessor{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-assessclaimdc6602:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: dc7101accessor{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc7101:{{ include "vro.imageTag" . }}
+        - name: svc-dc7101accessor{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-assessclaimdc7101:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: pdfgenerator{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-pdfgenerator:{{ include "vro.imageTag" . }}
+        - name: svc-pdfgenerator{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-pdfgenerator:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-        - name: service-data-access{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-data-access:{{ include "vro.imageTag" . }}
-          env:
-            {{- include "vro.commonEnvVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            - name: LH_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhPrivateKey }}
-            - name: LH_ACCESS_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhAccessClientId }}
-
-            # TODO: I don't think the remaining env variables are needed based on docker-compose.yml
-            - name: LH_ASSERTION_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhAssertionUrl }}
-            # Setting these secrets are only needed for the prod cluster
-            # For the nonprod cluster, these settings are set directly in application-*.yml files
-            - name: LH_TOKEN_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhTokenUrl }}
-            - name: LH_FHIR_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dataservice.secretKeyRefName }}
-                  key: {{ .Values.dataservice.lhFhirUrl }}
-
-            - name: MAS_API_AUTH_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientId }}
-            - name: MAS_API_AUTH_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthClientSecret }}
-            - name: MAS_API_AUTH_SCOPE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthScope }}
-            - name: MAS_API_AUTH_TOKEN_URI
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiAuthTokenUri }}
-            - name: MAS_API_BAS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masApiBaseUrl }}
-            - name: MAS_COLLECTION_ANNOTS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionAnnotsPath }}
-            - name: MAS_COLLECTION_STATUS_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCollectionStatusPath }}
-            - name: MAS_CREATE_EXAM_ORDER_PATH
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mas.keyName }}
-                  key: {{ .Values.mas.masCreateExamOrderPath }}
-
-            - name: BIP_APPLICATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationId }}
-            - name: BIP_APPLICATION_ISS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipApplicationIss }}
-            - name: BIP_CLAIM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimSecret }}
-            - name: BIP_CLAIM_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUrl }}
-            - name: BIP_CLAIM_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipClaimUserId }}
-            - name: BIP_EVIDENCE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceSecret }}
-            - name: BIP_EVIDENCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUrl }}
-            - name: BIP_EVIDENCE_USERID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipEvidenceUserId }}
-            - name: BIP_STATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipStationId }}
-            - name: BIP_KEYSTORE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipKeyStore }}
-            - name: BIP_TRUSTSTORE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipTrustStore }}
-            - name: BIP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.bip.keyName }}
-                  key: {{ .Values.bip.bipPassword }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

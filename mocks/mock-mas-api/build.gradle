@@ -14,12 +14,12 @@ ext {
 
 configurations.all {
   resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:1.33")
+    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
   }
 }
 
 dependencies {
-  implementation project(':shared:domain')
+  implementation project(':domain-rrd:rrd-shared')
 
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"

@@ -5,3 +5,19 @@ global:
   lhdiCluster: prod
 
   imagePrefix: ""
+
+  bip:
+    bipClaimUrl: claims-prodtest.prod8.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-prodtest.prod8.bip.va.gov/api/v1/rest
+
+  mas:
+    masApiAuthTokenUri: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test/token
+    masApiBaseUrl: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test
+
+vro-app-chart:
+  vroAudUrl: https://api.va.gov/services/abd-vro
+  lhApiAuthUrl: https://api.va.gov/internal/auth/v2/validation
+
+vro-svcs-chart:
+  bgs:
+    baseUrl: https://bepprodtest.vba.va.gov

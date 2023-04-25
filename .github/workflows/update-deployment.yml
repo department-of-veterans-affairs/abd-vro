@@ -1,4 +1,4 @@
-name: "1. Update Deployment"
+name: "1. (Internal) Update Deployment"
 
 on:
   workflow_dispatch:
@@ -21,18 +21,14 @@ on:
         default: 'latest'
         type: string
 
+      # The following input names must match helm chart names (without the `-chart` suffix) and helm chart folder names
       vro-app:
         description: 'Enable & update VRO Application API'
         required: true
         type: boolean
         default: true
-      domain-rrd:
-        description: "Enable & update RRD domain services"
-        required: true
-        type: boolean
-        default: true
-      rabbitmq:
-        description: 'Enable MQ'
+      vro-svcs:
+        description: 'Enable & update VRO domain-independent microservices'
         required: true
         type: boolean
         default: true
@@ -41,17 +37,31 @@ on:
         required: true
         type: boolean
         default: true
-      redis:
-        description: 'Enable Redis'
+      rabbitmq:
+        description: 'RabbitMQ image tag'
         required: true
-        type: boolean
-        default: true
+        default: 3
+        type: choice
+        options:
+        - latest
+        - 3
+        - (disable)
+      redis:
+        description: 'Redis image tag'
+        required: true
+        default: 7
+        type: choice
+        options:
+        - latest
+        - 7
+        - (disable)
       console:
         description: 'Enable VRO Console'
         required: true
         type: boolean
         default: false
 
+      # Other deployment options
       rollback:
         description: 'If deploy fails, rollback to previous? (Always true for prod)'
         required: true
@@ -77,11 +87,7 @@ on:
         required: false
         type: boolean
         default: true
-      domain-rrd:
-        required: false
-        type: boolean
-        default: true
-      rabbitmq:
+      vro-svcs:
         required: false
         type: boolean
         default: true
@@ -89,10 +95,14 @@ on:
         required: false
         type: boolean
         default: true
+      rabbitmq:
+        required: false
+        type: string
+        default: "latest"
       redis:
         required: false
-        type: boolean
-        default: true
+        type: string
+        default: "latest"
       console:
         required: false
         type: boolean
@@ -114,8 +124,8 @@ env:
 
 jobs:
   update-deployment:
-    # Required secrets are set in the public repo
-    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    # Required secrets are set in the specific repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     runs-on: ubuntu-latest
     steps:
       - name: "Slack: workflow triggered"
@@ -125,7 +135,8 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
-            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|Updating deployment> \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
+            Updating deployment (#${{ github.run_number }})> \
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
             (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
 
@@ -153,7 +164,7 @@ jobs:
             HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
             echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
             # Show values with an `enabled` key
-            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
             # Set helm_values so that subsequent steps that access it don't fail
@@ -186,7 +197,8 @@ jobs:
           #     Forbidden: updates to statefulset spec for fields other than ...
           # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
 
-          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} --cascade=orphan --wait
+          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} \
+            --cascade=orphan --wait --ignore-not-found=true
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
@@ -197,7 +209,7 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying:\n\
             - vro-app: *${{ inputs.vro-app }}*\n\
-            - domain-rrd: *${{ inputs.domain-rrd }}*\n\
+            - vro-svcs: *${{ inputs.vro-svcs }}*\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
             - redis: *${{ inputs.redis }}*\n\
@@ -217,8 +229,19 @@ jobs:
             HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
+          helmArgsFor(){
+            if [ "$2" == "(disable)" ]; then
+              echo "--set $1.enabled=false"
+            else
+              echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
+            fi
+          }
+          HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "${{ inputs.rabbitmq }}")"
+          HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "${{ inputs.redis }}")"
+
           echo "HELM_ARGS: $HELM_ARGS"
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
+          set -x
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
@@ -226,10 +249,8 @@ jobs:
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
-            --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
-            --set rabbitmq.enabled=${{ inputs.rabbitmq }} \
+            --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
             --set postgres.enabled=${{ inputs.postgres }} \
-            --set redis.enabled=${{ inputs.redis }} \
             --set console.enabled=${{ inputs.console }}
           echo "::endgroup::"
 

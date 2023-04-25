@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ClaimStoreItem {
-  String description;
+  String[] description;
   ClaimDetail claimDetail;
   List<ContentionSummary> contentions;
 
@@ -24,18 +24,22 @@ public class ClaimStoreItem {
   /** Saves the content that can change for later recovery. */
   public void backupAllCanChange() {
     originalLifecycleStatus = claimDetail.getClaimLifecycleStatus();
-    originalContentions = new ArrayList<>();
-    for (ContentionSummary contention : contentions) {
-      originalContentions.add(contention);
+    if (contentions != null) {
+      originalContentions = new ArrayList<>();
+      for (ContentionSummary contention : contentions) {
+        originalContentions.add(contention);
+      }
     }
   }
 
   /** Restores original content of the data from back-ups. */
   public void reset() {
     claimDetail.setClaimLifecycleStatus(originalLifecycleStatus);
-    contentions = new ArrayList<>();
-    for (ContentionSummary contention : originalContentions) {
-      contentions.add(contention);
+    if (originalContentions != null) {
+      contentions = new ArrayList<>();
+      for (ContentionSummary contention : originalContentions) {
+        contentions.add(contention);
+      }
     }
   }
 }

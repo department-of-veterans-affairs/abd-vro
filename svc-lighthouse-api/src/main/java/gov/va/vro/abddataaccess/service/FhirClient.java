@@ -5,11 +5,11 @@ import ca.uhn.fhir.parser.IParser;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
 import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -219,8 +219,20 @@ public class FhirClient {
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
-      AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      result.add(summary);
+      AbdBloodPressure bpReading = FieldExtractor.extractBloodPressure(resource);
+      if ((bpReading.getDiastolic() == null) && (bpReading.getSystolic() == null)) {
+        continue; // skip it if both systolic and diastolic values are missing.
+      }
+      // Set default systolic / diastolic blood pressure value if one of them not exist.
+      if (bpReading.getDiastolic() == null) {
+        bpReading.setDiastolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.DIASTOLIC));
+      }
+      if (bpReading.getSystolic() == null) {
+        bpReading.setSystolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.SYSTOLIC));
+      }
+      result.add(bpReading);
     }
     result.sort(null);
     return result;

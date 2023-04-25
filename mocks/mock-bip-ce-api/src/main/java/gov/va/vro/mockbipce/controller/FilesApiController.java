@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockbipce.api.FilesApi;
 import gov.va.vro.mockbipce.model.store.BasicStore;
 import gov.va.vro.mockbipce.model.store.EvidenceFile;
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
-import gov.va.vro.model.bipevidence.response.UploadResponse;
+import gov.va.vro.model.rrd.bipevidence.BipFileUploadPayload;
+import gov.va.vro.model.rrd.bipevidence.response.UploadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +48,12 @@ public class FilesApiController implements FilesApi {
     if (!("VETERAN".equals(folderInfo[0]) && "FILENUMBER".equals(folderInfo[1]))) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Only veteran file numbers supported");
+    }
+
+    if ("9999390".equals(folderInfo[2])
+        || "9999392".equals(folderInfo[2])) { // This patient is used for BIP exception testing
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Returning 500 for testing");
     }
 
     ObjectMapper mapper = new ObjectMapper();
