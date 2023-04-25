@@ -142,10 +142,10 @@ public class MasIntegrationProcessors {
     };
   }
 
-  public static Processor setOffRampReasonProcessor(String offRampReason) {
+  public static Processor setOffRampReasonProcessor(String offRampReasonCode) {
     return exchange -> {
       MasProcessingObject mpoOfframp = exchange.getMessage().getBody(MasProcessingObject.class);
-      mpoOfframp.getClaimPayload().setOffRampReason(offRampReason);
+      mpoOfframp.getClaimPayload().setOffRampReason(offRampReasonCode);
       exchange.getMessage().setBody(mpoOfframp);
     };
   }
