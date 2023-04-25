@@ -152,7 +152,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
                 request -> {
                   log.warn("++ MOCK BgsApiClientMicroservice: " + request.toString());
                   var response = new BgsApiClientResponse();
-                  if (requestCounter.incrementAndGet() % 7 == 0) {
+                  if (requestCounter.incrementAndGet() % 1 == 0) {
                     log.warn("++++ Mock success");
                     response.setStatusCode(200);
                   } else {
