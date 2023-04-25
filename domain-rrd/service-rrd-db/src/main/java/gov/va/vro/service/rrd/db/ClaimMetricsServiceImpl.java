@@ -150,7 +150,9 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
           examOrderRepository.findByCreatedAtBeforeAndOrderedAtIsNull(date);
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     } else {
-      Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
+      LocalDateTime date = LocalDateTime.now();
+      date.minus(24, ChronoUnit.HOURS);
+      List<ExamOrderEntity> examOrders = examOrderRepository.findByCreatedAtBefore(date);
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     }
     return new ExamOrdersInfo(examOrdersInfo, examOrdersInfo.size());

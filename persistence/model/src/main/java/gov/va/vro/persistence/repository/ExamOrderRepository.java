@@ -17,4 +17,6 @@ public interface ExamOrderRepository extends JpaRepository<ExamOrderEntity, UUID
   List<ExamOrderEntity> findByOrderedAtIsNull();
 
   List<ExamOrderEntity> findByCreatedAtBeforeAndOrderedAtIsNull(LocalDateTime date);
+
+  List<ExamOrderEntity> findByCreatedAtBefore(LocalDateTime date);
 }
