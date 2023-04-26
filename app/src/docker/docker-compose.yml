@@ -430,6 +430,8 @@ services:
     image: va/abd_vro-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
     hostname: mock-lighthouse-api
+    ports:
+      - "9004:9004"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars

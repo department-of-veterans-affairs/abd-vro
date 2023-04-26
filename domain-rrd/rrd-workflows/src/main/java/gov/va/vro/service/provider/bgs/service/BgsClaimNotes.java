@@ -4,7 +4,7 @@ import gov.va.vro.model.rrd.event.EventReason;
 
 import java.util.Map;
 
-public class BgsClaimNotes {
+class BgsClaimNotes {
 
   static final String RFD_NOTE = "Claim status updated to RFD via automation";
 
