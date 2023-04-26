@@ -6,7 +6,7 @@ ARG BASE_IMAGE="python:3.10-alpine"
 FROM ${BASE_IMAGE}
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 libcom_err=1.46.6-r0 libcrypto1.1=1.1.1t-r2 libcrypto3 libssl1.1=1.1.1t-r2 libssl3 e2fsprogs=1.46.6-r0 py3-pip=22.1.1-r0 gcc=11.2.1_git20220219-r2 musl-dev=1.2.3-r2 python3-dev=3.10.9-r0 pango=1.50.7-r0 zlib-dev=1.2.12-r3 jpeg-dev=9d-r1 openjpeg-dev=2.5.0-r0 g++=11.2.1_git20220219-r2 libffi-dev=3.4.2-r1 && rm -rf /var/cache/apk/*
+RUN apk update && apk --no-cache add expat=2.5.0-r0 libcom_err=1.46.6-r0 libcrypto1.1=1.1.1t-r2 libcrypto3 libssl1.1=1.1.1t-r2 libssl3 e2fsprogs=1.46.6-r0 apk add py3-pip py3-pillow py3-cffi py3-brotli gcc musl-dev python3-dev pango && rm -rf /var/cache/apk/*
 
 RUN adduser --disabled-password tron
 
