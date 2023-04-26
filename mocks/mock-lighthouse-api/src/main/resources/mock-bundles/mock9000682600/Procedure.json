@@ -1,0 +1,68 @@
+{
+  "resourceType":"Bundle",
+  "type":"searchset",
+  "total":1,
+  "link":[
+    {
+      "relation":"first",
+      "url":"https://sandbox-api.va.gov/services/fhir/v0/r4/Procedure?patient=9000682&_count=100&page=1"
+    },
+    {
+      "relation":"self",
+      "url":"https://sandbox-api.va.gov/services/fhir/v0/r4/Procedure?patient=9000682&_count=100&page=1"
+    },
+    {
+      "relation":"last",
+      "url":"https://sandbox-api.va.gov/services/fhir/v0/r4/Procedure?patient=9000682&_count=100&page=1"
+    }
+  ],
+  "entry":[
+    {
+      "fullUrl":"https://sandbox-api.va.gov/services/fhir/v0/r4/Procedure/I2-4BYQ2FVTBNZK2AY42CCGVUYB5Y000000",
+      "resource":{
+        "resourceType":"Procedure",
+        "id":"I2-4BYQ2FVTBNZK2AY42CCGVUYB5Y000000",
+        "meta":{
+          "lastUpdated":"2015-02-01T16:09:19Z"
+          },
+        "status":"completed",
+        "code":{
+          "coding":[
+            {
+              "system":"http://www.ama-assn.org/go/cpt",
+              "code":"94010",
+              "display":"PULMONARY FUNCTION TESTING"
+            }
+          ],
+          "text":"PULMONARY FUNCTION TESTING"
+          },
+        "subject":{
+          "reference":"https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/9000682",
+          "display":"Mr. Walton167 Spinka232"
+          },
+        "encounter":{
+          "reference":"https://sandbox-api.va.gov/services/fhir/v0/r4/Encounter/I2-IY6XOWHFQE23E74XE2TE7DQJ6U000000"
+          },
+        "performedDateTime":"2015-01-02T16:09:19Z",
+        "performer":[
+          {
+            "actor":{
+              "reference":"https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-653XQQ3DNUIJTZ4IFPLVKRO3EA000000",
+              "display":"Dr. Solomon675 Gusikowski974"
+              }
+            }
+          ],
+          "location":{
+            "reference":"https://sandbox-api.va.gov/services/fhir/v0/r4/Location/I2-QGJC5KIXT676PL6VDA7ERE5HCQ000000",
+            "display":"TEST VA FACILITY"
+            },
+           "note":[
+              {
+                "text":"TEST Note:  Case # 7026"
+              }
+            ]
+            },
+            "search":{"mode":"match"}
+            }
+          ]
+        }
