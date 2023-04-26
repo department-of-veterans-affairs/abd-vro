@@ -22,4 +22,9 @@ public class BgsApiClientRequest {
 
   /** Multiple claim notes can be submitted */
   public List<String> claimNotes = new ArrayList<>();
+
+  public boolean isConstraintSatisfied() {
+    if (veteranNote == null) return vbmsClaimId != null && !claimNotes.isEmpty();
+    else return veteranParticipantId != null && claimNotes.isEmpty();
+  }
 }
