@@ -27,8 +27,8 @@ on:
         required: true
         type: boolean
         default: true
-      domain-rrd:
-        description: "Enable & update RRD domain services"
+      vro-svcs:
+        description: 'Enable & update VRO domain-independent microservices'
         required: true
         type: boolean
         default: true
@@ -87,7 +87,7 @@ on:
         required: false
         type: boolean
         default: true
-      domain-rrd:
+      vro-svcs:
         required: false
         type: boolean
         default: true
@@ -164,7 +164,7 @@ jobs:
             HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
             echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
             # Show values with an `enabled` key
-            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
             # Set helm_values so that subsequent steps that access it don't fail
@@ -209,7 +209,7 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying:\n\
             - vro-app: *${{ inputs.vro-app }}*\n\
-            - domain-rrd: *${{ inputs.domain-rrd }}*\n\
+            - vro-svcs: *${{ inputs.vro-svcs }}*\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
             - redis: *${{ inputs.redis }}*\n\
@@ -249,7 +249,7 @@ jobs:
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \
-            --set domain-rrd.enabled=${{ inputs.domain-rrd }} \
+            --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
             --set postgres.enabled=${{ inputs.postgres }} \
             --set console.enabled=${{ inputs.console }}
           echo "::endgroup::"

@@ -14,8 +14,11 @@ elif [ -e "fat.jar" ]; then
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}"
   exec java -jar fat.jar "$@"
 elif [ -e "main_consumer.py" ]; then
-  echo "Running main_consumer.py"
+  echo "Running: python -u main_consumer.py $@"
   exec python -u main_consumer.py "$@"
+elif [ -e "main_consumer.rb" ]; then
+  echo "Running: bundle exec ruby main_consumer.rb $@"
+  exec bundle exec ruby main_consumer.rb "$@"
 else
   echo ""
   ls -al
