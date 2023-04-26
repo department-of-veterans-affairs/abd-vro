@@ -79,31 +79,30 @@ def filter_categorize_mas_medication(request_body):
     """Filter MAS medication data"""
     medication_with_date = []
     medication_without_date = []
-    medication_two_years = []
+    medication_one_year = []
     relevant_med = 0
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for medication in request_body["evidence"]["medications"]:
-        if medication["dataSource"] == "MAS":
-            drug_class = classify_med(medication["description"])
-            if drug_class:
-                relevant_med += 1
-            medication["classification"] = drug_class
-            try:
-                date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
-                medication["dateFormatted"] = format_date(date)
-                medication_with_date.append(medication)
-                if date >= date_of_claim_date - relativedelta(years=2):
-                    medication_two_years.append(medication)
-            except (ValueError, KeyError):
-                medication["dateFormatted"] = ''
-                medication_without_date.append(medication)
+        drug_class = classify_med(medication["description"])
+        if drug_class:
+            relevant_med += 1
+        medication["classification"] = drug_class
+        try:
+            date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
+            medication["dateFormatted"] = format_date(date)
+            medication_with_date.append(medication)
+            if date >= date_of_claim_date - relativedelta(years=1):
+                medication_one_year.append(medication)
+        except (ValueError, KeyError):
+            medication["dateFormatted"] = ''
+            medication_without_date.append(medication)
 
-    response = {"twoYearsMedications": sort_med(medication_two_years),
+    response = {"oneYearMedication": sort_med(medication_one_year),
                 "allMedications": sort_med(medication_with_date) + medication_without_date,
                 "allMedicationsCount": len(request_body["evidence"]["medications"]),
                 "relevantMedicationCount": relevant_med,
-                "twoYearsMedicationsCount": len(medication_two_years)
+                "oneYearMedicationsCount": len(medication_one_year)
                 }
 
     return response
