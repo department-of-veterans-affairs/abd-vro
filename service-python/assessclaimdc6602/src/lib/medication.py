@@ -80,13 +80,11 @@ def filter_categorize_mas_medication(request_body):
     medication_with_date = []
     medication_without_date = []
     medication_one_year = []
-    relevant_med = 0
+    schedular_med_one_year = 0
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for medication in request_body["evidence"]["medications"]:
         drug_class = classify_med(medication["description"])
-        if drug_class:
-            relevant_med += 1
         medication["classification"] = drug_class
         try:
             date = datetime.strptime(medication["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date()
@@ -94,14 +92,16 @@ def filter_categorize_mas_medication(request_body):
             medication_with_date.append(medication)
             if date >= date_of_claim_date - relativedelta(years=1):
                 medication_one_year.append(medication)
+                if drug_class:
+                    schedular_med_one_year += 1
         except (ValueError, KeyError):
             medication["dateFormatted"] = ''
             medication_without_date.append(medication)
 
     response = {"oneYearMedication": sort_med(medication_one_year),
-                "allMedications": sort_med(medication_with_date) + medication_without_date,
+                "medications": sort_med(medication_with_date) + medication_without_date,
                 "allMedicationsCount": len(request_body["evidence"]["medications"]),
-                "relevantMedicationCount": relevant_med,
+                "schedularMedicationOneYearCount": schedular_med_one_year,
                 "oneYearMedicationsCount": len(medication_one_year)
                 }
 

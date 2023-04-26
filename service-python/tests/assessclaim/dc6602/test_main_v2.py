@@ -38,7 +38,7 @@ from assessclaimdc6602.src.lib import main
                               "procedures": []},
                  "evidenceSummary": {"proceduresCount": 0,
                                      "relevantConditionsLighthouseCount": 0,
-                                     "relevantMedicationCount": 1,
+                                     "schedularMedicationOneYearCount": 0,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 1}}
         ),
@@ -76,7 +76,7 @@ from assessclaimdc6602.src.lib import main
                               "procedures": []},
                  "evidenceSummary": {"proceduresCount": 0,
                                      "relevantConditionsLighthouseCount": 0,
-                                     "relevantMedicationCount": 1,
+                                     "schedularMedicationOneYearCount": 0,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 1}}
         ),
@@ -114,7 +114,7 @@ from assessclaimdc6602.src.lib import main
                               "procedures": []},
                  "evidenceSummary": {"proceduresCount": 0,
                                      "relevantConditionsLighthouseCount": 0,
-                                     "relevantMedicationCount": 0,
+                                     "schedularMedicationOneYearCount": 0,
                                      "totalConditionsCount": 0,
                                      "totalMedCount": 1}}
         ),

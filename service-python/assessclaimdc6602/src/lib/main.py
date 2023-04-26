@@ -69,7 +69,7 @@ def assess_sufficiency_asthma(event: Dict):
                 },
                 "evidenceSummary": {
                     "totalMedCount": medications["allMedicationsCount"],
-                    "relevantMedicationCount": medications["relevantMedicationCount"],
+                    "schedularMedicationOneYearCount": medications["schedularMedicationOneYearCount"],
                     "proceduresCount": len(event["evidence"]["procedures"]),
                     "totalConditionsCount": conditions["totalConditionsCount"],
                     "relevantConditionsLighthouseCount": conditions["relevantConditionsLighthouseCount"]
