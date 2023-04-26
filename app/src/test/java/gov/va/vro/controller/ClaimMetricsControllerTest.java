@@ -396,13 +396,11 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     response.setCollectionId("1234");
     respList.add(response);
     ExamOrdersInfo examOrdersInfo = new ExamOrdersInfo(respList, 1);
-    Mockito.when(
-            service.findExamOrderInfoOlderThan24(
-                ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
+    Mockito.when(service.findExamOrderInfoOlderThan24(ArgumentMatchers.eq(params)))
         .thenReturn(examOrdersInfo);
     // Call exam-order-slack
     ResponseEntity<String> responseEntity =
-        callPostRestWithAuthorization("/v2/exam-order-slack?page=0&size=10&true");
+        callPostRestWithAuthorization("/v2/exam-order-slack?page=0&size=10&notOrdered=true");
     // Expect a 200 and a list of size one
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     String body = responseEntity.getBody();
