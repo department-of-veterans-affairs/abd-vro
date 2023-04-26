@@ -1,12 +1,12 @@
 package gov.va.vro;
 
-import gov.va.vro.model.mas.ClaimCondition;
-import gov.va.vro.model.mas.ClaimDetail;
-import gov.va.vro.model.mas.MasAnnotation;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
-import gov.va.vro.model.mas.MasDocument;
-import gov.va.vro.model.mas.VeteranIdentifiers;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
+import gov.va.vro.model.rrd.mas.ClaimCondition;
+import gov.va.vro.model.rrd.mas.ClaimDetail;
+import gov.va.vro.model.rrd.mas.MasAnnotation;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.mas.MasDocument;
+import gov.va.vro.model.rrd.mas.VeteranIdentifiers;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -15,10 +15,6 @@ public class MasTestData {
 
   public static MasAutomatedClaimPayload getMasAutomatedClaimPayload() {
     return getMasAutomatedClaimPayload(123, "7101", "999");
-  }
-
-  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
-    return getMasAutomatedClaimRequest(123, "1233", "999");
   }
 
   /**
@@ -45,6 +41,18 @@ public class MasTestData {
         .build();
   }
 
+  public static MasAutomatedClaimRequest getMasAutomatedClaimRequest() {
+    return getMasAutomatedClaimRequest(123, "1233", "999");
+  }
+
+  /**
+   * Build claim request.
+   *
+   * @param collectionId collection ID.
+   * @param diagnosticCode diagnostic code.
+   * @param benefitClaimId benefit claim ID
+   * @return Claim request
+   */
   public static MasAutomatedClaimRequest getMasAutomatedClaimRequest(
       int collectionId, String diagnosticCode, String benefitClaimId) {
     VeteranIdentifiers veteranIdentifiers = getVeteranIdentifiers();

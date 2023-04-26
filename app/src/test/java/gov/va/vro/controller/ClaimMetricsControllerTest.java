@@ -5,14 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tngtech.archunit.thirdparty.com.google.common.collect.ImmutableMap;
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ClaimInfoQueryParams;
-import gov.va.vro.model.claimmetrics.ClaimsInfo;
-import gov.va.vro.model.claimmetrics.ContentionInfo;
-import gov.va.vro.model.claimmetrics.DocumentInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ClaimInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ClaimsInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.DocumentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrderInfoQueryParams;
+import gov.va.vro.model.rrd.claimmetrics.ExamOrdersInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimMetricsResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
 import gov.va.vro.service.spi.model.Claim;
 import gov.va.vro.service.spi.services.ClaimMetricsService;
 import org.junit.jupiter.api.Test;
@@ -32,7 +37,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,7 +54,11 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
   @Autowired TestRestTemplate restTemplate;
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  public ObjectMapper createObjectMapper() {
+    return JsonMapper.builder().addModule(new JavaTimeModule()).build();
+  }
+
+  private final ObjectMapper mapper = createObjectMapper();
 
   // Generates a generic ClaimInfoResponse object.
   private ClaimInfoResponse generateClaimInfoResponse() {
@@ -257,5 +270,111 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     ClaimMetricsResponse actual = mapper.readValue(body, ClaimMetricsResponse.class);
     assertNotNull(actual);
     assertEquals(info, actual);
+  }
+
+  // Generates a generic ClaimInfoResponse object.
+  private ExamOrderInfoResponse generateExamOrderInfoResponse() {
+    int index = counter.getAndIncrement();
+
+    ExamOrderInfoResponse result = new ExamOrderInfoResponse();
+
+    result.setCollectionId("collectionId_" + index);
+    result.setOrderedAt(LocalDateTime.now());
+    result.setStatus("DRAFT");
+    result.setCreatedAt(LocalDateTime.now());
+    result.setUpdatedAt(LocalDateTime.now());
+    result.setHasAssociatedClaimSubmission(false);
+
+    return result;
+  }
+
+  // Generates a generic ExamsOrdersInfo object.
+  private ExamOrdersInfo generateExamOrdersInfo(int size) {
+    ExamOrdersInfo result = new ExamOrdersInfo();
+    List<ExamOrderInfoResponse> examOrderInfoResponses = new ArrayList<>();
+    for (int i = 0; i < size; ++i) {
+      examOrderInfoResponses.add(generateExamOrderInfoResponse());
+    }
+    result.setExamOrderInfoList(examOrderInfoResponses);
+    int total = counter.getAndIncrement() + size + 1;
+    result.setTotal(total);
+    return result;
+  }
+
+  // Verifies happy path where service returns an expected object.
+  @Test
+  void testExamOrderInfo() throws JsonProcessingException {
+    int size = 5;
+
+    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, size, Boolean.FALSE);
+    ExamOrdersInfo serviceOutput = generateExamOrdersInfo(size);
+
+    // Return an expected exception if argument does not match.
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.any(ExamOrderInfoQueryParams.class)))
+        .thenThrow(new IllegalStateException("Unexpected input to service."));
+    Mockito.when(service.findExamOrderInfo(ArgumentMatchers.eq(params))).thenReturn(serviceOutput);
+
+    ResponseEntity<String> responseEntity = callRestWithAuthorization("/v2/exam-order-info?size=5");
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    String body = responseEntity.getBody();
+    assertNotNull(body);
+    ExamOrderInfoResponse[] actual = mapper.readValue(body, ExamOrderInfoResponse[].class);
+    assertNotNull(actual);
+    assertEquals(size, actual.length);
+
+    List<ExamOrderInfoResponse> responses = serviceOutput.getExamOrderInfoList();
+    for (int index = 0; index < size; ++index) {
+      assertEquals(responses.get(index), actual[index]);
+    }
+  }
+
+  // Checks if a specific uri results in the expected argument to the service call.
+  private void testExamInfoQueryParamDefaults(String uri, ExamOrderInfoQueryParams expectedParams) {
+    Mockito.reset(service);
+
+    ArgumentCaptor<ExamOrderInfoQueryParams> captor =
+        ArgumentCaptor.forClass(ExamOrderInfoQueryParams.class);
+
+    callRestWithAuthorization(uri);
+
+    Mockito.verify(service).findExamOrderInfo(captor.capture());
+    ExamOrderInfoQueryParams actualParams = captor.getValue();
+
+    assertEquals(expectedParams.getPage(), actualParams.getPage());
+    assertEquals(expectedParams.getSize(), actualParams.getSize());
+    assertEquals(expectedParams.getNotOrdered(), actualParams.getNotOrdered());
+  }
+
+  // Verifies default query parameters results in the expected argument to the service call.
+  @Test
+  void testExamInfoAllQueryParamDefaults() {
+    String uri0 = "/v2/exam-order-info";
+    ExamOrderInfoQueryParams params0 = new ExamOrderInfoQueryParams(0, 10, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri0, params0);
+
+    String uri1 = "/v2/exam-order-info?size=15";
+    ExamOrderInfoQueryParams params1 = new ExamOrderInfoQueryParams(0, 15, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri1, params1);
+
+    String uri2 = "/v2/exam-order-info?page=1";
+    ExamOrderInfoQueryParams params2 = new ExamOrderInfoQueryParams(1, 10, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri2, params2);
+
+    String uri3 = "/v2/exam-order-info?page=1&size=15";
+    ExamOrderInfoQueryParams params3 = new ExamOrderInfoQueryParams(1, 15, Boolean.FALSE);
+    testExamInfoQueryParamDefaults(uri3, params3);
+  }
+
+  @Test
+  void testExamOrderInfoAllInvalidQueryParam() {
+    ResponseEntity<String> re0 = callRestWithAuthorization("/v2/exam-order-info?size=0");
+    assertEquals(HttpStatus.BAD_REQUEST, re0.getStatusCode());
+
+    ResponseEntity<String> re1 = callRestWithAuthorization("/v2/exam-order-info?page=x");
+    assertEquals(HttpStatus.BAD_REQUEST, re1.getStatusCode());
+
+    ResponseEntity<String> re2 = callRestWithAuthorization("/v2/exam-order-info?page=-1");
+    assertEquals(HttpStatus.BAD_REQUEST, re2.getStatusCode());
   }
 }

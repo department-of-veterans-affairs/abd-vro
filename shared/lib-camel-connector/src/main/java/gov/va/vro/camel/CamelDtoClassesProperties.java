@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -15,6 +16,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -29,29 +31,33 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "vro.camel")
 public class CamelDtoClassesProperties {
-  private List<String> dtoClasses;
+  private List<String> dtoClasses = new ArrayList<>();
 
   List<Class> getActualDtoClasses() throws IOException {
+    log.info("Loading classes specified in vro.camel.dto-classes: {}", dtoClasses);
+    dtoClasses.add("gov.va.vro.model.*");
     return dtoClasses.stream()
-        .map(
-            classname -> {
-              if (classname.endsWith(".*")) {
-                String packageName = classname.substring(0, classname.length() - 2);
-                List<Class> foundClasses = classesInPackage(packageName).stream().toList();
-                log.debug("Classes in package {}: {}", packageName, foundClasses);
-                return foundClasses;
-              } else {
-                try {
-                  return Arrays.asList(Class.forName(classname));
-                } catch (ClassNotFoundException e) {
-                  log.error("Check the dto-classes in conf-camel.yml", e);
-                  return null;
-                }
-              }
-            })
+        .map(classname -> resolveClasses(classname))
         .filter(Objects::nonNull)
         .flatMap(Collection::stream)
         .collect(Collectors.toUnmodifiableList());
+  }
+
+  @Nullable
+  private List<? extends Class> resolveClasses(String classname) {
+    if (classname.endsWith(".*")) {
+      String packageName = classname.substring(0, classname.length() - 2);
+      List<Class> foundClasses = classesInPackage(packageName).stream().toList();
+      log.debug("Classes in package {}: {}", packageName, foundClasses);
+      return foundClasses;
+    } else {
+      try {
+        return Arrays.asList(Class.forName(classname));
+      } catch (ClassNotFoundException e) {
+        log.error("Check the dto-classes in conf-camel.yml", e);
+        return null;
+      }
+    }
   }
 
   // Adapted from https://github.com/spring-projects/spring-boot/issues/4375#issuecomment-154489971

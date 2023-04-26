@@ -1,0 +1,722 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 10,
+  "link": [
+    {
+      "relation": "first",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=mock1012666073V986366&page=1&_count=100"
+    },
+    {
+      "relation": "self",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=mock1012666073V986366&page=1&_count=100"
+    },
+    {
+      "relation": "last",
+      "url": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest?patient=mock1012666073V986366&page=1&_count=100"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYATHIPTD454QNU27VQ6DFZGYFPRLQ0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYATHIPTD454QNU27VQ6DFZGYFPRLQ0000",
+        "meta": {
+          "lastUpdated": "2020-08-14T08:00:00Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-WNE2DVN73IGHOU7MDDF6NJKQJ232Q262Q6UZXWKKXAWAIOJ65OGA0000",
+          "display": "Amlodipine 5 MG Oral Tablet"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2020-08-14T08:00:00Z",
+        "requester": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-VLZYJVF7MOB2SFAKTAPNSQIBWZS22HGVT3A56E5D5PHDUWJGQIGQ0000",
+          "display": "DR. JANE460 DOE922 MD"
+        },
+        "dosageInstruction": [
+          {
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2020-08-14T08:00:00Z"
+                }
+              },
+              "code": {
+                "text": "Once Per Day"
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "text": "ORAL"
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1.0
+                }
+              }
+            ]
+          },
+          {
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2020-08-14T08:00:00Z"
+                }
+              },
+              "code": {
+                "text": "Twice Per Day"
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "text": "ORAL"
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1.0
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "quantity": {
+            "value": 1.0
+          },
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYAS477OC36HK4JCCUEYVN2JZULEZA0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYAS477OC36HK4JCCUEYVN2JZULEZA0000",
+        "meta": {
+          "lastUpdated": "2018-02-03T08:00:00Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-6TKXY4NWCNKLXGBHFWMCU736FC2CEJHDL4RL4HYDK347BPOTKT4Q0000",
+          "display": "Escitalopram 10 MG"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2018-02-03T08:00:00Z",
+        "requester": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-VLZYJVF7MOB2SFAKTAPNSQIBWZS22HGVT3A56E5D5PHDUWJGQIGQ0000",
+          "display": "DR. JANE460 DOE922 MD"
+        },
+        "dosageInstruction": [
+          {
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2018-02-03T08:00:00Z"
+                }
+              },
+              "code": {
+                "text": "Once Per Day"
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "text": "ORAL"
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1.0
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "quantity": {
+            "value": 1.0
+          },
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYAQ5XHK2OAL5WWSHAYXQDX3MDQCLA0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYAQ5XHK2OAL5WWSHAYXQDX3MDQCLA0000",
+        "meta": {
+          "lastUpdated": "2021-04-15T08:00:00Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-6TKXY4NWCNKLXGBHFWMCU736FC5CYFVETDH5ODDXPDHLPXNXZ6EQ0000",
+          "display": "Omeprazole 10 MG"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2021-04-15T08:00:00Z",
+        "requester": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-VLZYJVF7MOB2SFAKTAPNSQIBWZS22HGVT3A56E5D5PHDUWJGQIGQ0000",
+          "display": "DR. JANE460 DOE922 MD"
+        },
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "quantity": {
+            "value": 1.0
+          },
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYATAHNQWZMLO5WCISRYSFP43KTKEQ0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYATAHNQWZMLO5WCISRYSFP43KTKEQ0000",
+        "meta": {
+          "lastUpdated": "2018-02-14T08:00:00Z"
+        },
+        "status": "completed",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-6TKXY4NWCNKLXGBHFWMCU736FBVIYI7OSPGY5FZ3TREPGSBCVARQ0000",
+          "display": "Hydrocortisone 10 MG/ML Topical Cream"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2018-02-14T08:00:00Z",
+        "requester": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Practitioner/I2-VLZYJVF7MOB2SFAKTAPNSQIBWZS22HGVT3A56E5D5PHDUWJGQIGQ0000",
+          "display": "DR. JANE460 DOE922 MD"
+        },
+        "dosageInstruction": [
+          {
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2018-02-14T08:00:00Z"
+                }
+              },
+              "code": {
+                "text": "Once Per Day"
+              }
+            },
+            "asNeededBoolean": false,
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1.0
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYATLO6VB7KKLYT3RPU2HVS4M4P5MQ0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYATLO6VB7KKLYT3RPU2HVS4M4P5MQ0000",
+        "meta": {
+          "lastUpdated": "2021-07-06T01:43:31Z"
+        },
+        "status": "completed",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-XRKHNR2H3CNP37MJQEFNGLIVMYDFMV2QSIN3WZBFBUSTPDA555HA0000",
+          "display": "IBUPROFEN 800MG TAB"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2021-07-06T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "TAKE ONE TABLET BY MOUTH EVERY 8 HOURS AS NEEDED -TAKE WITH FOOD",
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2021-07-06T01:43:31Z"
+                }
+              },
+              "code": {
+                "text": "As directed by physician."
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "text": "ORAL"
+            }
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 1,
+          "expectedSupplyDuration": {
+            "value": 15,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYAQHKCMB2GEQTWOZBQI3FLMSOIQKQ0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYAQHKCMB2GEQTWOZBQI3FLMSOIQKQ0000",
+        "meta": {
+          "lastUpdated": "2022-03-23T01:43:31Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-EK3ARQ73OVGMYQTC3HNYBBKVD5ISZAUX3TSAWCZHKCEYA6BHZG2A0000",
+          "display": "ALBUTEROL SO4 90MCG/ACTUAT (CFC-F) INHL,ORAL,6.7GM"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2022-03-23T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "INHALE 2 PUFFS BY INHALATION FOUR TIMES A DAY AS NEEDED FOR SHORTNESS OF BREATH OR WHEEZING",
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2022-03-23T01:43:31Z"
+                }
+              },
+              "code": {
+                "text": "As directed by physician."
+              }
+            },
+            "asNeededBoolean": false
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYASLWJ7GNZ36UEOF5DCTZ6EOIECIA0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYASLWJ7GNZ36UEOF5DCTZ6EOIECIA0000",
+        "meta": {
+          "lastUpdated": "2021-09-09T01:43:31Z"
+        },
+        "status": "on-hold",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-X2QZH3IXBDIJ2OFUZZ2A3NMNSCBQLZ7GO4TXONPVQRDA3GF2NODQ0000",
+          "display": "LEVALBUTEROL 45MCG/SPRAY INHL,ORAL,15GM"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2021-09-09T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "INHALE 2 PUFFS BY MOUTH DAILY USE AT THE SAME TIME EACH DAY",
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2021-09-09T01:43:31Z"
+                }
+              },
+              "code": {
+                "text": "As directed by physician."
+              }
+            },
+            "asNeededBoolean": false
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "expectedSupplyDuration": {
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYAQX5SDUMC6UAQQZJ5M3ALPPL7C7Q0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYAQX5SDUMC6UAQQZJ5M3ALPPL7C7Q0000",
+        "meta": {
+          "lastUpdated": "2020-03-23T01:43:31Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-KXRMLYFVSCXW4CRPQQHAOCQA2ZBKTKC5ZHK7EGBCY27OYWNELZ6Q0000",
+          "display": "MOMETASONE FUROATE 200MCG/ACTUAT INHL,ORAL,120D,13GM"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2020-03-23T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "asNeededBoolean": false,
+            "route": {
+              "text": "INHALATION"
+            }
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 0,
+          "expectedSupplyDuration": {
+            "value": 30,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYASPOW4MMBYKCEVHPZKRMVR33KMZA0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYASPOW4MMBYKCEVHPZKRMVR33KMZA0000",
+        "meta": {
+          "lastUpdated": "2022-03-06T01:43:31Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-3M52HHQDA7AUNFPFDOC37I6352677IDWKV3MUBOSP5MGLNJMDG4A0000",
+          "display": "MIRTAZAPINE 15MG TAB"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "TAKE ONE TABLET BY MOUTH AT BEDTIME AS NEEDED FOR SLEEP",
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2022-03-06T01:43:31Z"
+                }
+              },
+              "code": {
+                "text": "As directed by physician."
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "text": "ORAL"
+            }
+          }
+        ],
+        "dispenseRequest": {
+          "numberOfRepeatsAllowed": 2,
+          "expectedSupplyDuration": {
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          }
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://sandbox-api.va.gov/services/fhir/v0/r4/MedicationRequest/I2-DG5EAFAS4H4RGLQ44WMVGVNYAQNCI3CWFC3ZPLJP72VV5ISYVBPA0000",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "I2-DG5EAFAS4H4RGLQ44WMVGVNYAQNCI3CWFC3ZPLJP72VV5ISYVBPA0000",
+        "meta": {
+          "lastUpdated": "2022-03-06T01:43:31Z"
+        },
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ],
+            "text": "Outpatient"
+          }
+        ],
+        "medicationReference": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Medication/I2-UMATUHWC7KYV4IJ6TH4WBLIQ2UTOCOXNOM6MKWRSW7RBTT4WCOYA0000",
+          "display": "SERTRALINE HCL 100MG TA"
+        },
+        "subject": {
+          "reference": "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/mock1012666073V986366",
+          "display": "Mr. Jesse Gray"
+        },
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "_requester": {
+          "extension": [
+            {
+              "url": "https://hl7.org/fhir/extension-data-absent-reason.html",
+              "valueCode": "unknown"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "TAKE ONE TABLET BY MOUTH DAILY FOR ANXIETY, MOOD, AND SLEEP",
+            "timing": {
+              "repeat": {
+                "boundsPeriod": {
+                  "start": "2022-03-06T01:43:31Z"
+                }
+              },
+              "code": {
+                "text": "As directed by physician."
+              }
+            },
+            "asNeededBoolean": false
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}

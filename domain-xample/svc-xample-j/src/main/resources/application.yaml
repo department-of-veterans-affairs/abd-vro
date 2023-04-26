@@ -1,0 +1,17 @@
+spring:
+  # Specify where Spring connects to RabbitMQ
+  rabbitmq:
+    host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
+    port: 5672
+    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
+## Actuator for health check
+management:
+  server:
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true

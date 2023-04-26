@@ -6,9 +6,26 @@ from .codesets import hypertension_conditions
 from .utils import extract_date, format_date
 
 
+def sort_conditions(conditions):
+    """
+    Sort medications by 'recordedDate' date.
+
+    :param conditions: List of conditions
+    :return: Sorted list
+    """
+
+    conditions = sorted(
+        conditions,
+        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
+        reverse=True,
+    )
+
+    return conditions
+
+
 def conditions_calculation(request_body):
     """
-    Determine if there is the veteran requires continuous medication for hypertension
+    Determine if there is the veteran has a hypertension diagnosis
     :param request_body: request body
     :type request_body: dict
     :return: response body indicating success or failure with additional attributes
@@ -18,28 +35,19 @@ def conditions_calculation(request_body):
     condition_with_date = []
     condition_without_date = []
     conditions_two_years = []
-    lh_count = 0
-    mas_count = 0
-    mas_not_relevant = 0
+    lh_relevant_condition_count = 0
 
     veterans_conditions = request_body["evidence"]["conditions"]
     date_of_claim_date = extract_date(request_body["claimSubmissionDateTime"])
 
     for condition in veterans_conditions:
         condition_code = condition["code"]
-
+        #  Only LH data has ICD codes, so no MAS data will pass the following condition
         if condition_code in hypertension_conditions.conditions:
-            if condition["dataSource"] == "LH":
-                if condition["category"] == "Encounter Diagnosis":
-                    condition["relevant"] = True
-                    lh_count += 1
-            else:
-                condition["relevant"] = True
-                mas_count += 1
+            condition["relevant"] = True
+            lh_relevant_condition_count += 1
         else:
             condition["relevant"] = False
-            if condition["dataSource"] == "MAS":
-                mas_not_relevant += 1
 
         try:
             condition_date = datetime.strptime(condition["recordedDate"], "%Y-%m-%d").date()
@@ -55,27 +63,11 @@ def conditions_calculation(request_body):
         except (ValueError, KeyError):
             condition["receiptDate"] = ""
 
-    condition_with_date = sorted(
-        condition_with_date,
-        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
-        reverse=True,
-    )
-
-    conditions_two_years = sorted(
-        conditions_two_years,
-        key=lambda i: datetime.strptime(i["recordedDate"], "%Y-%m-%d").date(),
-        reverse=True,
-    )
-
-    condition_with_date.extend(condition_without_date)
-
     response.update({
-        "conditions": condition_with_date,
-        "conditionsTwoYears": conditions_two_years,
+        "conditions": sort_conditions(condition_with_date) + condition_without_date,
+        "twoYearsConditions": sort_conditions(conditions_two_years),
         "totalConditionsCount": len(veterans_conditions),
-        "relevantConditionsCountLighthouse": lh_count,
-        "relevantConditionsCountMAS": mas_count,
-        "irrelevantConditionsCountMAS": mas_not_relevant
+        "relevantConditionsLighthouseCount": lh_relevant_condition_count,
         }
     )
     return response

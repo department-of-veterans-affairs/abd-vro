@@ -15,15 +15,13 @@ services:
       - internal
 
   svc-lighthouse-api:
-    image: va/abd_vro-service-data-access:latest
+    image: va/abd_vro-svc-lighthouse-api:latest
 
     environment:
       RABBITMQ_PLACEHOLDERS_HOST: vro-api-rabbit-mq-service
       RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
       RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
-    build:
-      dockerfile: ./Dockerfile
     depends_on:
       - vro-api-rabbit-mq-service
     networks:

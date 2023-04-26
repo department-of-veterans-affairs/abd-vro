@@ -1,12 +1,11 @@
 import pytest
-
 from assessclaimdc7101.src.lib import main
 
 
 @pytest.mark.parametrize(
     "request_body, response",
     [
-        # New claim with two recent BP (one elevated, one normal) and relevant condition
+        # New claim with two twoYears BP (one elevated, one normal) and relevant condition
         (
                 {
                     "evidence": {
@@ -24,6 +23,7 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 120
                                 },
+                                "dataSource": "",
                                 "date": "2021-11-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
@@ -41,12 +41,13 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 200.0
                                 },
-
+                                "dataSource": "",
                                 "date": "2021-09-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
                             },
                             {'date': '2021-10-01',
+                             "dataSource": "",
                              'diastolic': {'code': '8462-4',
                                            'display': 'Diastolic blood '
                                                       'pressure',
@@ -62,7 +63,7 @@ from assessclaimdc7101.src.lib import main
                              },
 
                         ],
-                        "conditions": [{"code": "I10",
+                        "conditions": [{"code": "Hypertension",
                                         "text": "Essential (primary) hypertension",
                                         "recordedDate": "1950-04-06",
                                         "dataSource": "MAS"},
@@ -70,7 +71,7 @@ from assessclaimdc7101.src.lib import main
                                         "text": "other condition",
                                         "recordedDate": "2020-04-06",
                                         "dataSource": "MAS"},
-                                       {"code": "I10",
+                                       {"code": "I10.",
                                         "text": "Essential (primary) hypertension",
                                         "recordedDate": "",
                                         "category": "Encounter Diagnosis",
@@ -82,8 +83,7 @@ from assessclaimdc7101.src.lib import main
                     "claimSubmissionDateTime": "2021-11-09T04:00:00Z",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
@@ -95,6 +95,7 @@ from assessclaimdc7101.src.lib import main
                                                              'unit': 'mm[Hg]',
                                                              'value': 90},
                                                'document': '',
+                                               "dataSource": "",
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
                                                'partialDate': '',
@@ -113,6 +114,7 @@ from assessclaimdc7101.src.lib import main
                                                              'unit': 'mm[Hg]',
                                                              'value': 110},
                                                'document': '',
+                                               "dataSource": "",
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
                                                'partialDate': '',
@@ -131,6 +133,7 @@ from assessclaimdc7101.src.lib import main
                                                              'unit': 'mm[Hg]',
                                                              'value': 110},
                                                'document': '',
+                                               "dataSource": "",
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
                                                'partialDate': '',
@@ -142,6 +145,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200.0}}],
                               'conditions': [{'code': '123',
+                                              'category': '',
                                               'dataSource': 'MAS',
                                               'dateFormatted': '4/6/2020',
                                               'document': '',
@@ -152,7 +156,8 @@ from assessclaimdc7101.src.lib import main
                                               'recordedDate': '2020-04-06',
                                               'relevant': False,
                                               'text': 'other condition'},
-                                             {'code': 'I10',
+                                             {'code': 'Hypertension',
+                                              'category': '',
                                               'dataSource': 'MAS',
                                               'dateFormatted': '4/6/1950',
                                               'document': '',
@@ -161,10 +166,10 @@ from assessclaimdc7101.src.lib import main
                                               'partialDate': '',
                                               'receiptDate': '',
                                               'recordedDate': '1950-04-06',
-                                              'relevant': True,
+                                              'relevant': False,
                                               'text': 'Essential (primary) hypertension'},
                                              {'category': 'Encounter Diagnosis',
-                                              'code': 'I10',
+                                              'code': 'I10.',
                                               'dataSource': 'LH',
                                               'dateFormatted': '',
                                               'document': '',
@@ -177,16 +182,18 @@ from assessclaimdc7101.src.lib import main
                                               'text': 'Essential (primary) hypertension'}],
                               'medications': [],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 1,
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 3,
-                                     'relevantConditionsCountLighthouse': 1,
-                                     'relevantConditionsCountMAS': 1,
-                                     'totalBpReadings': 3,
-                                     'totalConditionsCount': 3},
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 3,
+                                     'relevantConditionsLighthouseCount': 1,
+                                     'totalBpCount': 3,
+                                     'totalConditionsCount': 3,
+                                     'twoYearsBpCount': 3,
+                                     'twoYearsElevatedBpCount': 2,
+                                     'twoYearsMedicationsCount': 0},
                  'sufficientForFastTracking': True}
         ),
-        # New claim with two recent BP both elevated and no condition
+        # New claim with two twoYears BP both elevated and no condition
         (
                 {
                     "evidence": {
@@ -204,6 +211,7 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 180
                                 },
+                                "dataSource": "",
                                 "date": "2020-11-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
@@ -213,7 +221,7 @@ from assessclaimdc7101.src.lib import main
                                     "code": "8462-4",
                                     "display": "Diastolic blood pressure",
                                     "unit": "mm[Hg]",
-                                    "value": 110
+                                    "value": 0
                                 },
                                 "systolic": {
                                     "code": "8480-6",
@@ -221,6 +229,7 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 200
                                 },
+                                "dataSource": "",
                                 "date": "2020-09-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
@@ -234,12 +243,10 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -250,6 +257,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -264,8 +272,9 @@ from assessclaimdc7101.src.lib import main
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
                                                              'unit': 'mm[Hg]',
-                                                             'value': 110},
+                                                             'value': 0},
                                                'document': '',
+                                               "dataSource": "",
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
                                                'partialDate': '',
@@ -277,18 +286,20 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
-                              'medications': [],
-                              'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 2,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 2,
-                                     'totalConditionsCount': 0},
+                              'documentsWithoutAnnotationsChecked': [],
+                              'medications': []},
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 2,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1,
+                                     'twoYearsMedicationsCount': 0},
                  'sufficientForFastTracking': None}
         ),
-        # New claim with relevant condition but no recent BP
+        # New claim with relevant condition but no twoYears BP
         (
                 {
                     "evidence": {
@@ -298,6 +309,7 @@ from assessclaimdc7101.src.lib import main
                                                                   "pressure",
                                                        "unit": "mm[Hg]",
                                                        "value": 115},
+                                         "dataSource": "",
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
                                          "systolic": {"code": "8480-6",
@@ -336,8 +348,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
@@ -351,6 +362,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -403,21 +415,23 @@ from assessclaimdc7101.src.lib import main
                                                'relevant': True,
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
-                                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'medicationsCount': 2,
-                                     'recentBpReadings': 1,
-                                     'relevantConditionsCountLighthouse': 1,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 1,
-                                     'totalConditionsCount': 2},
+                              'documentsWithoutAnnotationsChecked': []},
+                 'evidenceSummary': {'allMedicationsCount': 2,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 1,
+                                     'totalBpCount': 1,
+                                     'totalConditionsCount': 2,
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1,
+                                     'twoYearsMedicationsCount': 0},
                  'sufficientForFastTracking': False}
         ),
-        # New claim with no condition and no recent BP, BP not elevated
+        # New claim with no condition and no twoYears BP, BP not elevated
         (
                 {
                     "evidence": {
-                        "bp_readings": [{"date": "", # missing date
+                        "bp_readings": [{"date": "", # missing date # noqa: E261
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -425,6 +439,7 @@ from assessclaimdc7101.src.lib import main
                                                        "value": 115},
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
+                                         "dataSource": "",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
                                                                  "pressure",
@@ -437,6 +452,7 @@ from assessclaimdc7101.src.lib import main
                                                                   'pressure',
                                                        'unit': 'mm[Hg]',
                                                        'value': 90},
+                                         "dataSource": "",
                                          'organization': 'LYONS VA MEDICAL CENTER',
                                          'practitioner': 'DR. JANE460 DOE922 MD',
                                          'systolic': {'code': '8480-6',
@@ -445,6 +461,7 @@ from assessclaimdc7101.src.lib import main
                                                       'unit': 'mm[Hg]',
                                                       'value': 200}},
                                         {"date": "2020-09-01",
+                                         "dataSource": "",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -468,13 +485,12 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "NEW",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'NEW',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
+                                               "dataSource": "",
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
@@ -493,6 +509,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {'date': '2020-09-01',
+                                               "dataSource": "",
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
@@ -511,6 +528,7 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}},
                                               {'date': '',
+                                               "dataSource": "",
                                                'dateFormatted': '',
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
@@ -538,14 +556,16 @@ from assessclaimdc7101.src.lib import main
                                                'relevant': True,
                                                'text': 'some medication',
                                                "dataSource": "MAS"}],
-                                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'medicationsCount': 1,
-                                     'recentBpReadings': 2,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 3,
-                                     'totalConditionsCount': 0},
+                              'documentsWithoutAnnotationsChecked': []},
+                 'evidenceSummary': {'allMedicationsCount': 1,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 3,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 2,
+                                     'twoYearsElevatedBpCount': 0,
+                                     'twoYearsMedicationsCount': 0},
                  'sufficientForFastTracking': None}
         ),
         # Claim for increase, not enough BP readings
@@ -559,6 +579,7 @@ from assessclaimdc7101.src.lib import main
                                                        "unit": "mm[Hg]",
                                                        "value": 115},
                                          "organization": "LYONS VA MEDICAL CENTER",
+                                         "dataSource": "",
                                          "practitioner": "DR. JANE460 DOE922 MD",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
@@ -572,6 +593,7 @@ from assessclaimdc7101.src.lib import main
                                                        "unit": "mm[Hg]",
                                                        "value": 110},
                                          "organization": "LYONS VA MEDICAL CENTER",
+                                         "dataSource": "",
                                          "practitioner": "DR. JANE460 DOE922 MD",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
@@ -585,12 +607,10 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-09-01',
                                                'dateFormatted': '9/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -601,6 +621,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -610,19 +631,24 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
+                              'medications': [],
                               'documentsWithoutAnnotationsChecked': ['{guid}']},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'recentBpReadings': 1,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 2,
-                                     'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 2,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 1,
+                                     'twoYearsElevatedBpCount': 1,
+                                     'twoYearsMedicationsCount': 0},
+                 'sufficientForFastTracking': False}
         ),
         (
                 {
                     "evidence": {
                         "bp_readings": [{"date": "2020-11-01",
+                                         "dataSource": "",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -636,6 +662,7 @@ from assessclaimdc7101.src.lib import main
                                                       "unit": "mm[Hg]",
                                                       "value": 180}},
                                         {"date": "2020-09-01",
+                                         "dataSource": "",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -649,6 +676,7 @@ from assessclaimdc7101.src.lib import main
                                                       "unit": "mm[Hg]",
                                                       "value": 200}},
                                         {"date": "2020-11-01",
+                                         "dataSource": "",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -662,6 +690,7 @@ from assessclaimdc7101.src.lib import main
                                                       "unit": "mm[Hg]",
                                                       "value": 180}},
                                         {"date": "2020-09-01",
+                                         "dataSource": "",
                                          "diastolic": {"code": "8462-4",
                                                        "display": "Diastolic blood "
                                                                   "pressure",
@@ -680,12 +709,10 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
                  'evidence': {'bp_readings': [{'date': '2020-11-01',
                                                'dateFormatted': '11/1/2020',
                                                'diastolic': {'code': '8462-4',
@@ -696,6 +723,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -714,6 +742,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -732,6 +761,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -750,6 +780,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -759,14 +790,18 @@ from assessclaimdc7101.src.lib import main
                                                             'unit': 'mm[Hg]',
                                                             'value': 200}}],
                               'conditions': [],
+                              'medications':[],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'recentBpReadings': 4,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 4,
-                                     'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 4,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 4,
+                                     'twoYearsElevatedBpCount': 4,
+                                     'twoYearsMedicationsCount': 0},
+                 'sufficientForFastTracking': False}
         ),
         # Claim for increase
         (
@@ -781,6 +816,7 @@ from assessclaimdc7101.src.lib import main
                                                        "value": 115},
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
+                                         "dataSource": "",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
                                                                  "pressure",
@@ -794,6 +830,7 @@ from assessclaimdc7101.src.lib import main
                                                        "value": 110},
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
+                                         "dataSource": "",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
                                                                  "pressure",
@@ -807,6 +844,7 @@ from assessclaimdc7101.src.lib import main
                                                        "value": 115},
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
+                                         "dataSource": "",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
                                                                  "pressure",
@@ -820,6 +858,7 @@ from assessclaimdc7101.src.lib import main
                                                        "value": 110},
                                          "organization": "LYONS VA MEDICAL CENTER",
                                          "practitioner": "DR. JANE460 DOE922 MD",
+                                         "dataSource": "",
                                          "systolic": {"code": "8480-6",
                                                       "display": "Systolic blood "
                                                                  "pressure",
@@ -832,8 +871,7 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
@@ -848,6 +886,7 @@ from assessclaimdc7101.src.lib import main
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
                                                'partialDate': '',
+                                               "dataSource": "",
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
                                                'systolic': {'code': '8480-6',
@@ -857,6 +896,7 @@ from assessclaimdc7101.src.lib import main
                                                             'value': 180}},
                                               {'date': '2021-10-01',
                                                'dateFormatted': '10/1/2021',
+                                               "dataSource": "",
                                                'diastolic': {'code': '8462-4',
                                                              'display': 'Diastolic blood '
                                                                         'pressure',
@@ -886,6 +926,7 @@ from assessclaimdc7101.src.lib import main
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
+                                               "dataSource": "",
                                                'systolic': {'code': '8480-6',
                                                             'display': 'Systolic blood '
                                                                        'pressure',
@@ -901,6 +942,7 @@ from assessclaimdc7101.src.lib import main
                                                'document': '',
                                                'organization': 'LYONS VA MEDICAL CENTER',
                                                'page': '',
+                                               "dataSource": "",
                                                'partialDate': '',
                                                'practitioner': 'DR. JANE460 DOE922 MD',
                                                'receiptDate': '',
@@ -912,13 +954,15 @@ from assessclaimdc7101.src.lib import main
                               'conditions': [],
                               'medications': [],
                               'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 4,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 4,
-                                     'totalConditionsCount': 0},
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 4,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 4,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 4,
+                                     'twoYearsElevatedBpCount': 4,
+                                     'twoYearsMedicationsCount': 0},
                  'sufficientForFastTracking': True}
 
         ),
@@ -934,21 +978,21 @@ from assessclaimdc7101.src.lib import main
                     "diagnosticCode": "7101",
                     "disabilityActionType": "INCREASE",
                     "claimSubmissionId": "1234"
-                }
-                ,
+                },
                 {'claimSubmissionDateTime': '2021-11-09T04:00:00Z',
                  'claimSubmissionId': '1234',
                  'disabilityActionType': 'INCREASE',
-                 'errorMessage': 'insufficientHealthDataToOrderExam',
-                 'evidence': {'bp_readings': [], 'conditions': [], 'medications': [],'documentsWithoutAnnotationsChecked': []},
-                 'evidenceSummary': {'irrelevantConditionsCountMAS': 0,
-                                     'medicationsCount': 0,
-                                     'recentBpReadings': 0,
-                                     'relevantConditionsCountLighthouse': 0,
-                                     'relevantConditionsCountMAS': 0,
-                                     'totalBpReadings': 0,
-                                     'totalConditionsCount': 0},
-                 'sufficientForFastTracking': None}
+                 'evidence': {'bp_readings': [], 'conditions': [], 'medications': [], 'documentsWithoutAnnotationsChecked': []},
+                 'evidenceSummary': {'allMedicationsCount': 0,
+                                     "lighthouseDuplicateBpCount": 0,
+                                     'oneYearBpCount': 0,
+                                     'relevantConditionsLighthouseCount': 0,
+                                     'totalBpCount': 0,
+                                     'totalConditionsCount': 0,
+                                     'twoYearsBpCount': 0,
+                                     'twoYearsElevatedBpCount': 0,
+                                     'twoYearsMedicationsCount': 0},
+                 'sufficientForFastTracking': False}
         ),
         # Bad data missing action type
         (
@@ -983,6 +1027,7 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 180
                                 },
+                                "dataSource": "",
                                 "date": "2021-11-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"
@@ -1000,6 +1045,7 @@ from assessclaimdc7101.src.lib import main
                                     "unit": "mm[Hg]",
                                     "value": 200
                                 },
+                                "dataSource": "",
                                 "date": "2021-09-01",
                                 "practitioner": "DR. JANE460 DOE922 MD",
                                 "organization": "LYONS VA MEDICAL CENTER"

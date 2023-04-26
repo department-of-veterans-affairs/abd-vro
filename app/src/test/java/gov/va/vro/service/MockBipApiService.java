@@ -1,10 +1,10 @@
 package gov.va.vro.service;
 
-import gov.va.vro.model.bip.BipClaim;
-import gov.va.vro.model.bip.BipUpdateClaimResp;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.bip.UpdateContentionReq;
+import gov.va.vro.model.rrd.bip.BipClaim;
+import gov.va.vro.model.rrd.bip.BipUpdateClaimResp;
+import gov.va.vro.model.rrd.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.ClaimStatus;
+import gov.va.vro.model.rrd.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
 import gov.va.vro.service.provider.bip.service.IBipApiService;
@@ -186,6 +186,11 @@ public class MockBipApiService implements IBipApiService {
     } else {
       return new BipUpdateClaimResp(HttpStatus.CREATED, "OK from mock service.");
     }
+  }
+
+  @Override
+  public boolean verifySpecialIssueTypes() {
+    return true;
   }
 
   private BipClaim buildClaim(int claimId, String station) {

@@ -1,0 +1,28 @@
+
+global:
+  environment: prod
+  endpoint: api.lighthouse.va.gov
+  lhdiCluster: prod
+
+  imagePrefix: ""
+
+  bip:
+    bipClaimUrl: claims-prod.prod8.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence.prod8.bip.va.gov/api/v1/rest
+
+  mas:
+    masApiAuthTokenUri: https://viccs-api-prod.ibm-intelligent-automation.com/pca/api/prod/token
+    masApiBaseUrl: https://viccs-api-prod.ibm-intelligent-automation.com/pca/api/prod
+
+  pgdata:
+    storageSize: 5Gi
+  tracking:
+    storageSize: 2Gi
+
+vro-app-chart:
+  vroAudUrl: https://api.va.gov/services/abd-vro
+  lhApiAuthUrl: https://api.va.gov/internal/auth/v2/validation
+
+vro-svcs-chart:
+  bgs:
+    baseUrl: https://vbmsprod.vba.va.gov

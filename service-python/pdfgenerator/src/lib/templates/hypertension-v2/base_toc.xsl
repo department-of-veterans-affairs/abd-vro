@@ -11,43 +11,43 @@
       <head>
 
         <!-- Bootstrap CSS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css"  rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+        <link href="{{base_path}}/css/bootstrap.min.css"  rel="stylesheet"/>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <style>
           @font-face {
             font-family: Bitter;
-                  src: url("/home/docker/public/fonts/bitter-regular-webfont.ttf");
+                  src: url("{{base_path}}/fonts/bitter-regular-webfont.ttf");
             font-weight: normal;
             font-style: normal;
           }
           @font-face {
             font-family: Bitter;
-                  src: url("/home/docker/public/fonts/bitter-bold-webfont.ttf");
+                  src: url("{{base_path}}/fonts/bitter-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-regular-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-regular-webfont.ttf");
             font-weight: 400;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-italic-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-italic-webfont.ttf");
             font-weight: 400;
             font-style: italic;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-bold-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-bold-webfont.ttf");
             font-weight: 700;
             font-style: normal;
           }
           @font-face {
             font-family: NotoSans;
-                  src: url("/home/docker/public/fonts/notosans-bolditalic-webfont.ttf");
+                  src: url("{{base_path}}/fonts/notosans-bolditalic-webfont.ttf");
             font-weight: 700;
             font-style: italic;
           }
@@ -109,7 +109,7 @@
             font-weight: 400;
             font-size: 11px;
             line-height: 15px;
-            width: 178px !important;
+            width: 150px !important;
             padding-right: 0px !important;
             margin-right: 0px !important;
           }

@@ -5,11 +5,11 @@ import ca.uhn.fhir.parser.IParser;
 import gov.va.vro.abddataaccess.config.properties.LighthouseProperties;
 import gov.va.vro.abddataaccess.exception.AbdException;
 import gov.va.vro.abddataaccess.model.AbdClaim;
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.model.rrd.AbdBloodPressure;
+import gov.va.vro.model.rrd.AbdCondition;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.AbdMedication;
+import gov.va.vro.model.rrd.AbdProcedure;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -30,12 +30,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class FhirClient {
@@ -127,7 +129,13 @@ public class FhirClient {
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
               AbdDomain.PROCEDURE, (id) -> new SearchSpec("Procedure", id)),
           new AbstractMap.SimpleEntry<AbdDomain, Function<String, SearchSpec>>(
-              AbdDomain.CONDITION, (id) -> new SearchSpec("Condition", id)));
+              AbdDomain.CONDITION,
+              (id) -> {
+                SearchSpec result = new SearchSpec("Condition");
+                result.setSearchParams(new String[] {"patient", "category"});
+                result.setSearchValues(new String[] {id, "encounter-diagnosis"});
+                return result;
+              }));
 
   /**
    * Gets a FHIR {@link Bundle} for the given parameters.
@@ -165,6 +173,7 @@ public class FhirClient {
   }
 
   private List<AbdCondition> getPatientConditions(List<BundleEntryComponent> entries) {
+    log.info("Extract patient condition entries. number of entries: {}", entries.size());
     List<AbdCondition> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Condition resource = (Condition) entry.getResource();
@@ -188,6 +197,7 @@ public class FhirClient {
   }
 
   private List<AbdProcedure> getPatientProcedures(List<BundleEntryComponent> entries) {
+    log.info("Extract patient procedure entries. number of entries: {}", entries.size());
     List<AbdProcedure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Procedure resource = (Procedure) entry.getResource();
@@ -209,8 +219,20 @@ public class FhirClient {
     List<AbdBloodPressure> result = new ArrayList<>();
     for (BundleEntryComponent entry : entries) {
       Observation resource = (Observation) entry.getResource();
-      AbdBloodPressure summary = FieldExtractor.extractBloodPressure(resource);
-      result.add(summary);
+      AbdBloodPressure bpReading = FieldExtractor.extractBloodPressure(resource);
+      if ((bpReading.getDiastolic() == null) && (bpReading.getSystolic() == null)) {
+        continue; // skip it if both systolic and diastolic values are missing.
+      }
+      // Set default systolic / diastolic blood pressure value if one of them not exist.
+      if (bpReading.getDiastolic() == null) {
+        bpReading.setDiastolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.DIASTOLIC));
+      }
+      if (bpReading.getSystolic() == null) {
+        bpReading.setSystolic(
+            FieldExtractor.getDefaultBpMeasurement(FieldExtractor.BpMeasure.SYSTOLIC));
+      }
+      result.add(bpReading);
     }
     result.sort(null);
     return result;
@@ -227,16 +249,30 @@ public class FhirClient {
       throws AbdException {
     AbdDomain[] domains = dpToDomains.get(claim.getDiagnosticCode());
     if (domains == null) {
+      log.error("domains not found for the claim diagnostic code.");
       return null;
     }
+
     Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
     String patientIcn = claim.getVeteranIcn();
-    for (AbdDomain domain : domains) {
+    result =
+        Arrays.stream(domains)
+            .parallel()
+            .collect(Collectors.toMap(d -> d, d -> getBundleEntryComponents(patientIcn, d)));
+    return result;
+  }
+
+  @NotNull
+  private List<BundleEntryComponent> getBundleEntryComponents(String patientIcn, AbdDomain domain) {
+    Map<AbdDomain, List<BundleEntryComponent>> result = new HashMap<>();
+    try {
       String lighthouseToken = lighthouseApiService.getLighthouseToken(domain, patientIcn);
       List<BundleEntryComponent> records = getRecords(patientIcn, domain, lighthouseToken);
-      result.put(domain, records);
+      return records;
+    } catch (AbdException e) {
+      log.error("Failure in get light house patient data for {}", domain.name(), e);
+      return null;
     }
-    return result;
   }
 
   private List<BundleEntryComponent> getRecords(
@@ -246,7 +282,7 @@ public class FhirClient {
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;
-    log.info("Retrieve data for {}", domain.name());
+    log.info("Retrieve data for {} for ICN = {}", domain.name(), patientIcn);
 
     List<BundleEntryComponent> records = new ArrayList<>();
     String nextLink = fullUrl;

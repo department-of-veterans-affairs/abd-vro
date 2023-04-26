@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.requests.GeneratePdfRequest;
-import gov.va.vro.api.responses.GeneratePdfResponse;
+import gov.va.vro.api.rrd.requests.GeneratePdfRequest;
+import gov.va.vro.api.rrd.responses.GeneratePdfResponse;
 import gov.va.vro.config.AppTestConfig;
 import gov.va.vro.controller.BaseControllerTest;
 import gov.va.vro.persistence.model.ContentionEntity;
@@ -32,7 +32,7 @@ import java.util.Date;
 @CamelSpringBootTest
 public class EvidenceSummaryDocumentProcessorTest extends BaseControllerTest {
 
-  @Value("classpath:test-data/pdf-generator-mas.json")
+  @Value("classpath:test-data/pdf-generator-input-01.json")
   private Resource pdfGeneratorInput01;
 
   @Autowired protected ClaimRepository claimRepository;

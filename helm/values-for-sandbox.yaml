@@ -1,0 +1,18 @@
+
+global:
+  environment: sandbox
+  endpoint: sandbox.lighthouse.va.gov
+  lhdiCluster: nonprod
+
+  imagePrefix: ""
+
+  bip:
+    bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
+
+vro-app-chart:
+  vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
+
+vro-svcs-chart:
+  bgs:
+    baseUrl: http://beplinktest.vba.va.gov
