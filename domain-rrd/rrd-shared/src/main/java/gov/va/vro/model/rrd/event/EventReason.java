@@ -18,7 +18,8 @@ public enum EventReason {
   PDF_UPLOAD_FAILED_AFTER_RFD("docUploadFailedRfd", "Failed to upload PDF file."),
   EXAM_ORDER_FAILED("examOrderFailed", "Failed to order exam."),
   ANNOTATIONS_FAILED("annotationDataRequestFailed", "Failed to get annotation data."),
-  BIP_UPDATE_FAILED("bipUpdateFailed", "BIP update failed.");
+  BIP_UPDATE_FAILED("bipUpdateFailed", "BIP update failed."),
+  HEALTH_PROCESSOR_FAILED("healthProcessFailed", "Processing health data failed.");
 
   private static int MAX_CODE_LENGTH = 50;
 
