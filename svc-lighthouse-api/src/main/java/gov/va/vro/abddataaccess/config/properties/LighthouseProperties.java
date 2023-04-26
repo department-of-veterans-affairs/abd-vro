@@ -18,4 +18,6 @@ public class LighthouseProperties {
   private String tokenurl;
   private String fhirurl;
   private String pemkey;
+
+  private String filterLastUpdateDate;
 }

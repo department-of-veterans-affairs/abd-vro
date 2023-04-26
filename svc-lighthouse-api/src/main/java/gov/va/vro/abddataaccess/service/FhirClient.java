@@ -76,10 +76,13 @@ public class FhirClient {
       this.searchValues = searchValues;
     }
 
-    public String getUrl() {
+    public String getUrl(String lastUpdated) {
       StringBuilder url =
           new StringBuilder(
               String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]));
+      if ((lastUpdated != null) && !lastUpdated.isEmpty()) {
+        url.append(String.format("&_lastUpdated=ge%s", lastUpdated));
+      }
       for (int i = 1; i < searchParams.length; ++i) {
         url.append(String.format("&%s=%s", searchParams[i], searchValues[i]));
       }
@@ -278,7 +281,8 @@ public class FhirClient {
   private List<BundleEntryComponent> getRecords(
       String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl() + "&_count=" + DEFAULT_SIZE;
+    String url =
+        searchSpec.getUrl(properties.getFilterLastUpdateDate()) + "&_count=" + DEFAULT_SIZE;
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;
