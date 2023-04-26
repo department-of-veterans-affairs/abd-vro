@@ -62,7 +62,7 @@ def assess_sufficiency_asthma(event: Dict):
         response_body.update(
             {
                 "evidence": {
-                    "medications": medications["allMedications"],
+                    "medications": medications["medications"],
                     "conditions": conditions["conditions"],
                     "procedures": event["evidence"]["procedures"],
                     "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
