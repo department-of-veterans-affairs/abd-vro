@@ -37,7 +37,7 @@ def pyflake8 = tasks.register("pyflake8", PythonTask) {
 // Also skips pytest when `./gradlew build -x test` is run
 tasks.register("test", PythonTask) {
   module = 'pytest'
-  command = "service-python --ignore=pdfgenerator/src/local_pdf_test.py --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=../.coveragerc"
+  command = "service-python --ignore=service-python/pdfgenerator/src/local_pdf_test.py --cov-report term-missing --cov=. --cov-fail-under=80 --cov-config=.coveragerc"
   dependsOn pyflake8
 }
 
