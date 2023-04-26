@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,11 @@ public class MasCollectionAnnotsResults {
       if (masDocument.getAnnotations() != null) {
         String documentId = masDocument.getEfolderversionrefid();
         String receiptDate = masDocument.getRecDate();
+        try {
+          receiptDate = formatter1.format(formatter.parse(receiptDate));
+        } catch (Exception e) {
+          log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
+        }
         String source = masDocument.getDocTypeDescription();
         if (documentId == null) {
           documentId = "";
@@ -113,14 +117,8 @@ public class MasCollectionAnnotsResults {
             case SERVICE -> {
               ServiceLocation veteranService = createServiceLocation(masAnnotation);
               veteranService.setDocument(source);
-              String serviceReceiptDate;
-              try {
-                serviceReceiptDate = formatter1.format(formatter.parse(receiptDate));
-              } catch (ParseException e) {
-                serviceReceiptDate = receiptDate;
-                log.error("Un-parsable date for ReceiptDate: {}.", receiptDate);
-              }
-              veteranService.setReceiptDate(serviceReceiptDate);
+
+              veteranService.setReceiptDate(receiptDate);
               veteranService.setDocumentId(documentId);
               serviceLocations.add(veteranService);
             }
