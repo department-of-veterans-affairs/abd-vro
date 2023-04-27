@@ -54,8 +54,6 @@ def categorize_med(medication_display):
     return medication_category
 
 
-
-
 def filter_categorize_mas_medication(request_body):
     """Filter MAS medication data"""
     medication_with_date = []
