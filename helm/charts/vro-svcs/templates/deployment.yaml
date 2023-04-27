@@ -31,8 +31,8 @@ spec:
                   key: VRO_SECRETS_BIP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: service-data-access{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-data-access:{{ include "vro.imageTag" . }}
+        - name: svc-lighthouse-api{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-lighthouse-api:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}

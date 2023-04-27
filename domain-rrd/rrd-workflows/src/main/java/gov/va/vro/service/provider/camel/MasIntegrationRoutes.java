@@ -113,6 +113,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
+  public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
+
   @Override
   public void configure() {
     configureAuditing();
@@ -225,7 +227,6 @@ public class MasIntegrationRoutes extends RouteBuilder {
             auditProcessor(orderExamRouteId, "There is insufficient evidence. Ordering an exam"))
         .doTry()
         .process(masOrderExamProcessor)
-        .log("MAS Order Exam response: ${body}")
         // Upload PDF but catch errors since exam was ordered and continue
         .to(ENDPOINT_UPLOAD_PDF)
         .to(ENDPOINT_MAS_COMPLETE)
@@ -291,9 +292,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wiretap breaks onCatch behavior, onException wont work here. This is the workaround.
     from(wiretapLighthouse)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-            slackEventPropertyProcessor(
-                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"));
+        .onPrepare(slackEventPropertyProcessor(lighthouseRoute, LIGHTHOUSE_ERROR_MSG, "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
