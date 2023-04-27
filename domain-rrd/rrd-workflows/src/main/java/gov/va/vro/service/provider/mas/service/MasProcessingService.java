@@ -152,7 +152,7 @@ public class MasProcessingService {
         .eventId(Integer.toString(payload.getCollectionId()))
         .payloadType(payload.getDisplayName())
         .routeId("/automatedClaim")
-        .message(message)
+        .messages(new String[] {message})
         .build();
   }
 
