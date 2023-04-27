@@ -1,4 +1,4 @@
-package gov.va.vro.api.cc.v3;
+package gov.va.vro.api.cc.v1;
 
 import gov.va.vro.api.cc.ResourceException;
 import io.micrometer.core.annotation.Timed;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 
-@RequestMapping(value = "/v3", produces = "application/json")
+@RequestMapping(value = "/v1", produces = "application/json")
 @Timed("cc") // See https://www.baeldung.com/micrometer
 @Tag(name = "CC Domain")
 public interface CCResource {
