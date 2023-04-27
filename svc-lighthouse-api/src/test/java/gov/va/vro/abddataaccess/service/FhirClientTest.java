@@ -145,7 +145,18 @@ class FhirClientTest {
     Mockito.doReturn(medBundleInfo.getBundle())
         .when(jsonParser)
         .parseResource(Bundle.class, medBundleInfo.getResponseBody());
+    Mockito.doReturn(conditionBundleInfo.getBundle())
+        .when(jsonParser)
+        .parseResource(Bundle.class, conditionBundleInfo.getResponseBody());
+    Mockito.doReturn(procedureBundleInfo.getBundle())
+        .when(jsonParser)
+        .parseResource(Bundle.class, procedureBundleInfo.getResponseBody());
     ResponseEntity<String> medicationResp = ResponseEntity.ok(medBundleInfo.getResponseBody());
+    ResponseEntity<String> conditionResp = ResponseEntity.ok(conditionBundleInfo.getResponseBody());
+    ResponseEntity<String> procedureResp = ResponseEntity.ok(procedureBundleInfo.getResponseBody());
+    mockRest(medicationResp, "MedicationRequest");
+    mockRest(conditionResp, "Condition");
+    mockRest(procedureResp, "Procedure");
     mockRest(medicationResp, "MedicationRequest");
     AbdEvidence evidence = client.getMedicalEvidence(testClaim);
     assertNotNull(evidence);

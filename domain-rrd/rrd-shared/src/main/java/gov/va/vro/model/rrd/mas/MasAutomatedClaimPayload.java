@@ -22,7 +22,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class MasAutomatedClaimPayload implements Auditable {
 
-  public static final String BLOOD_PRESSURE_DIAGNOSTIC_CODE = "7101";
+  public static final String HYPERTENSION_DIAGNOSTIC_CODE = "7101";
+  public static final String ASTHMA_DIAGNOSTIC_CODE = "6602";
   public static final String DISABILITY_ACTION_TYPE_NEW = "NEW";
   public static final String DISABILITY_ACTION_TYPE_INCREASE = "INCREASE";
   public static final String AGENT_ORANGE_FLASH_ID = "266";
@@ -95,7 +96,8 @@ public class MasAutomatedClaimPayload implements Auditable {
    */
   @JsonIgnore
   public boolean isInScope() {
-    return Objects.equals(getDiagnosticCode(), BLOOD_PRESSURE_DIAGNOSTIC_CODE)
+    return (Objects.equals(getDiagnosticCode(), HYPERTENSION_DIAGNOSTIC_CODE)
+            || Objects.equals(getDiagnosticCode(), ASTHMA_DIAGNOSTIC_CODE))
         && (Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_NEW)
             || Objects.equals(getDisabilityActionType(), DISABILITY_ACTION_TYPE_INCREASE));
   }
