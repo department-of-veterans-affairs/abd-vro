@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AuditEventMapper {
 
-  @Mapping(target = "message", expression = "java(String.join(\",\",auditEvent.getMessages()))")
+  @Mapping(target = "message", expression = "java(String.join(\", \",auditEvent.getMessages()))")
   AuditEventEntity toEntity(AuditEvent auditEvent);
 
   default String className(Class<?> source) {

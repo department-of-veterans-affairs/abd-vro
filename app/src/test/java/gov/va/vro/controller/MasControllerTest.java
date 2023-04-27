@@ -105,7 +105,7 @@ public class MasControllerTest extends BaseControllerTest {
           assertEquals(
               "Claim with collection id: 123, diagnostic code: 1233, and"
                   + " disability action type: INCREASE is not in scope.",
-              String.join(",", auditEvent.getMessages()));
+              String.join(", ", auditEvent.getMessages()));
           offrampCalled.set(true);
         });
     var completeCalled = new AtomicBoolean(false);

@@ -93,7 +93,7 @@ public class AuditEvent {
       return String.format(
           "Exception occurred on route %s for %s(id = %s): %s.\n"
               + "Please check the audit store for more information.",
-          routeId, payloadType, eventId, String.join(",", messages));
+          routeId, payloadType, eventId, String.join(", ", messages));
     } else {
       return toSimpleString();
     }
