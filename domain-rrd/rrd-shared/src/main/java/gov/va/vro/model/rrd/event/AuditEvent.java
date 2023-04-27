@@ -112,7 +112,7 @@ public class AuditEvent {
         + ", payloadType="
         + payloadType
         + ", message='"
-        + String.join(",", messages)
+        + String.join(", ", messages)
         + '\''
         + '}';
   }
