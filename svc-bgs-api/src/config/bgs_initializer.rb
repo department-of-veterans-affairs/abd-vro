@@ -18,7 +18,7 @@ BGS.configure do |config|
 
   # Rather than fall back on {env}.vba.va.gov if $BGS_BASE_URL is blank, we require $BGS_BASE_URL.
   # $BGS_BASE_URL also determines whether HTTPS is used.
-  config.jumpbox_url = ENV["BGS_BASE_URL"]
+  config.jumpbox_url = ENV["BGS_BASE_URL"].presence || settings["base_url"]
   config.env = nil
   config.ssl_verify_mode = "none"
   if config.jumpbox_url.downcase.start_with?("https:")

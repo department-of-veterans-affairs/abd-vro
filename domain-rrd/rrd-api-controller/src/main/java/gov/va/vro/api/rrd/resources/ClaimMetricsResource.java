@@ -159,7 +159,8 @@ public interface ClaimMetricsResource {
           Boolean notOrdered);
 
   @Operation(
-      summary = "Slacks all exam order records that have not been processed by MAS",
+      summary =
+          "Slacks all exam order records that have not been processed by MAS and are at least 24 hours old",
       description = "Slacks the list of exam orders that have not been processed.")
   @PostMapping(value = "/exam-order-slack")
   @ApiResponses(

@@ -92,7 +92,7 @@ public class ClaimMetricsController implements ClaimMetricsResource {
       Integer page, Integer size, Boolean notOrdered) throws ClaimProcessingException {
     ExamOrderInfoQueryParams params =
         ExamOrderInfoQueryParams.builder().page(page).size(size).notOrdered(notOrdered).build();
-    ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfo(params);
+    ExamOrdersInfo examOrdersInfo = claimMetricsService.findExamOrderInfoOlderThan24(params);
     try {
       AuditEvent message =
           AuditEvent.fromAuditable(
