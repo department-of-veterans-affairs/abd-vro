@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from .codesets import hypertension_conditions
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
 
 
 def sort_conditions(conditions):
