@@ -63,7 +63,7 @@ public class ContentionsController implements ContentionsApi {
       Long claimId, UpdateContentionsRequest updateContentionsRequest) {
     log.info("Updating contentions claim (id: {})", claimId);
 
-    if (claimId.longValue() == 1086L) {
+    if (claimId.longValue() == 1086L || claimId.longValue() == 1370L) {
       String reason = "Intentional exception for testing: " + claimId;
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
     }
