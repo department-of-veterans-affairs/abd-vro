@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -164,11 +166,12 @@ public class MasIntegrationProcessors {
 
       MasCamelStage origin = payload.getOrigin();
       String offRampErrorPayload = payload.getOffRampReason();
+      ArrayList<String> completionSlackMessages = new ArrayList<>();
 
       // Update our database with offramp reason.
       if (offRampErrorPayload != null) {
         masProcessingService.offRampClaimForError(payload, offRampErrorPayload);
-        exchange.setProperty("completionSlackMessage", offRampErrorPayload);
+        completionSlackMessages.add(offRampErrorPayload);
       }
       MasCompletionStatus completionStatus =
           MasCompletionStatus.of(
@@ -176,7 +179,7 @@ public class MasIntegrationProcessors {
       try {
         BipUpdateClaimResult result = bipClaimService.updateClaim(payload, completionStatus);
         if (result.hasMessage()) {
-          exchange.setProperty("completionSlackMessage", result.getMessage());
+          completionSlackMessages.add(result.getMessage());
         }
       } catch (BipException exception) {
         log.error("Error using BIP Claims API", exception);
@@ -186,7 +189,9 @@ public class MasIntegrationProcessors {
                 EventReason.BIP_UPDATE_FAILED.getCode(),
                 EventReason.BIP_UPDATE_FAILED.getNarrative());
         String message = slackMsg + "BIP Claims API exception: " + exception.getMessage();
-        exchange.setProperty("completionSlackMessage", message);
+        completionSlackMessages.add(message);
+      } finally {
+        exchange.setProperty("completionSlackMessages", completionSlackMessages);
       }
     };
   }
@@ -203,16 +208,21 @@ public class MasIntegrationProcessors {
     };
   }
 
-  public static Processor slackEventPropertyProcessor(String routeId, String exchangeProperty) {
+  public static Processor slackEventArrayProcessor(String routeId, String exchangeProperty) {
     return exchange -> {
-      String message = exchange.getProperty(exchangeProperty, "Unidentified message", String.class);
+      String[] messages =
+          exchange.getProperty(exchangeProperty, "Unidentified message", String[].class);
       MasProcessingObject masProcessingObject =
           exchange.getMessage().getBody(MasProcessingObject.class);
+
+      String[] slackMessages =
+          Arrays.stream(messages)
+              .map(message -> getSlackMessage(masProcessingObject, message))
+              .toArray(String[]::new);
+
       exchange
           .getIn()
-          .setBody(
-              AuditEvent.fromAuditable(
-                  masProcessingObject, routeId, getSlackMessage(masProcessingObject, message)));
+          .setBody(AuditEvent.fromAuditable(masProcessingObject, routeId, slackMessages));
     };
   }
 
