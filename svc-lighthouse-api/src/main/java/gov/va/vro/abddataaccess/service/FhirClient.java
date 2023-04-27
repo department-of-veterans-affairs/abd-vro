@@ -282,7 +282,7 @@ public class FhirClient {
       String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
     String url =
-        searchSpec.getUrl(properties.getFilterLastUpdateDate()) + "&_count=" + DEFAULT_SIZE;
+        searchSpec.getUrl(properties.getFilterLastUpdatedDate()) + "&_count=" + DEFAULT_SIZE;
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;

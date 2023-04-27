@@ -19,5 +19,6 @@ public class LighthouseProperties {
   private String fhirurl;
   private String pemkey;
 
-  private String filterLastUpdateDate;
+  // use this date to filter out Lighthouse FHIR resource updated before this date.
+  private String filterLastUpdatedDate;
 }
