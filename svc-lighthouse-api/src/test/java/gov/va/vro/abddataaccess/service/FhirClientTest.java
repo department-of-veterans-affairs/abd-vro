@@ -157,7 +157,6 @@ class FhirClientTest {
     mockRest(medicationResp, "MedicationRequest");
     mockRest(conditionResp, "Condition");
     mockRest(procedureResp, "Procedure");
-    mockRest(medicationResp, "MedicationRequest");
     AbdEvidence evidence = client.getMedicalEvidence(testClaim);
     assertNotNull(evidence);
     assertTrue(evidence.getMedications().size() > 0);
