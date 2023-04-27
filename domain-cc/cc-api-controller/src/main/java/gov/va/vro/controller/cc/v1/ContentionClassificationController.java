@@ -1,12 +1,12 @@
-package gov.va.vro.controller.cc.v3;
+package gov.va.vro.controller.cc.v1;
 
 // import static gov.va.vro.model.redo.CamelConstants.POST_RESOURCE_QUEUE;
 // import static gov.va.vro.model.redo.CamelConstants.V3_EXCHANGE;
 
 import gov.va.vro.api.cc.ResourceException;
-import gov.va.vro.api.cc.v3.CCResource;
-import gov.va.vro.api.cc.v3.ResourceRequest;
-import gov.va.vro.api.cc.v3.ResourceResponse;
+import gov.va.vro.api.cc.v1.CCResource;
+import gov.va.vro.api.cc.v1.ResourceRequest;
+import gov.va.vro.api.cc.v1.ResourceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
