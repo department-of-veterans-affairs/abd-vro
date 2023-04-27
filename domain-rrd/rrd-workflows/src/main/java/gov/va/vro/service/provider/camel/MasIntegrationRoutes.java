@@ -351,11 +351,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
         .to(ExchangePattern.InOnly, BgsApiClientRoutes.ADD_BGS_NOTES)
-        .log("completionSlackMessage: ${exchangeProperty.completionSlackMessage}")
+        .log("completionSlackMessages: ${exchangeProperty.completionSlackMessages}")
         .choice()
-        .when(simple("${exchangeProperty.completionSlackMessage} != null"))
+        .when(simple("${exchangeProperty.completionSlackMessages} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
-        .onPrepare(slackEventPropertyProcessor(routeId, "completionSlackMessage"))
+        .onPrepare(
+            MasIntegrationProcessors.slackEventArrayProcessor(routeId, "completionSlackMessages"))
         .endChoice()
         .otherwise()
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
