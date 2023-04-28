@@ -17,7 +17,7 @@
     "claimSubmissionSource": "VA.GOV",
     "conditions": {
       "name": "blood pressure",
-      "diagnosticCode": "6602",
+      "diagnosticCode": "6510",
       "disabilityActionType": "INCREASE",
       "disabilityClassificationCode": "3460",
       "ratedDisabilityId": "unknown"

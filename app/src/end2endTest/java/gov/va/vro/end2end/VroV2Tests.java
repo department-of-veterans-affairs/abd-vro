@@ -521,10 +521,10 @@ public class VroV2Tests {
   @SneakyThrows
   void testAutomatedClaimOutOfScopeDiagnosticCode() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("15");
-    spec.setPayloadPath("test-mas/claim-15-6602-out-of-scope.json");
+    spec.setPayloadPath("test-mas/claim-15-6510-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with collection id: 15, diagnostic code: 6602, and "
+        "Claim with collection id: 15, diagnostic code: 6510, and "
             + "disability action type: INCREASE is not in scope.");
     startAutomatedClaim(spec);
   }
