@@ -31,6 +31,12 @@ public class LifecycleStatusesController implements LifecycleStatusesApi {
       String reason = "No claim found for id: " + claimId;
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
     }
+
+    if (claimId.longValue() == 1370L) {
+      String reason = "Intentional exception for testing: " + claimId;
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
+    }
+
     String status = updateClaimLifecycleStatusRequest.getClaimLifecycleStatus();
     item.getClaimDetail().setClaimLifecycleStatus(status);
     var response = new UpdateClaimLifecycleStatusResponse();
