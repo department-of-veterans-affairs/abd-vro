@@ -15,19 +15,23 @@ from assessclaimdc6602v2.src.lib import medication
                             "description": "Albuterol inhaler",
                             "status": "active",
                             "authoredOn": "1950-04-06T04:00:00Z",
+                            "dataSource": "MAS"
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
-                }
+                },
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': True,
-                              'description': 'Albuterol inhaler',
-                              'status': 'active',
-                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
-                                                    'Failure'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 1},
+            {"medications": [{"authoredOn": "1950-04-06T04:00:00Z",
+                                 "classification": "Bronchodilator/Used in Respiratory "
+                                                   "Failure",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1950",
+                                 "description": "Albuterol inhaler",
+                                 "status": "active"}],
+             "allMedicationsCount": 1,
+             "oneYearMedication": [],
+             "oneYearMedicationsCount": 0,
+             "schedularMedicationOneYearCount": 0}
         ),
         # Not service connected but uses medication used to treat hypertension
         (
@@ -36,23 +40,27 @@ from assessclaimdc6602v2.src.lib import medication
                     "medications": [
                         {
                             "description": "Albuterol",
+                            "dataSource": "MAS",
                             "status": "active",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
-                    ],
-                    "dateOfClaim": "2021-11-09",
-                }
+                    ]
+                },
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': True,
-                              'description': 'Albuterol',
-                              'status': 'active',
-                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
-                                                    'Failure'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 1},
+            {"medications": [{"authoredOn": "1950-04-06T04:00:00Z",
+                                 "classification": "Bronchodilator/Used in Respiratory "
+                                                   "Failure",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1950",
+                                 "description": "Albuterol",
+                                 "status": "active"}],
+             "allMedicationsCount": 1,
+              "oneYearMedication": [],
+              "oneYearMedicationsCount": 0,
+              "schedularMedicationOneYearCount": 0}
         ),
-        # Service connected but doesn't use medication used to treat hypertension
+        # Service connected but doesn"t use medication used to treat hypertension
         (
             {
                 "evidence": {
@@ -60,18 +68,23 @@ from assessclaimdc6602v2.src.lib import medication
                         {
                             "description": "Advil",
                             "status": "active",
+                            "dataSource": "MAS",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         }
                     ],
-                    "dateOfClaim": "2021-11-09",
-                }
+                },
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': False,
-                              'description': 'Advil',
-                              'status': 'active'}],
-             'relevantMedCount': 0,
-             'totalMedCount': 1},
+            {"medications": [{"authoredOn": "1950-04-06T04:00:00Z",
+                                 "classification": "",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1950",
+                                 "description": "Advil",
+                                 "status": "active"}],
+             "allMedicationsCount": 1,
+              "oneYearMedication": [],
+              "oneYearMedicationsCount": 0,
+              "schedularMedicationOneYearCount": 0}
         ),
         # multiple medications, some to treat and others not to treat asthma
         (
@@ -81,30 +94,36 @@ from assessclaimdc6602v2.src.lib import medication
                         {
                             "description": "Albuterol",
                             "status": "active",
+                            "dataSource": "MAS",
                             "authoredOn": "1950-04-06T04:00:00Z",
                         },
                         {
                             "description": "Advil",
                             "status": "active",
+                            "dataSource": "MAS",
                             "authoredOn": "1952-04-06T04:00:00Z",
                         },
-                    ],
-                    "dateOfClaim": "2021-11-09",
-                }
+                    ]
+                },
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': True,
-                              'description': 'Albuterol',
-                              'status': 'active',
-                              'suggestedCategory': 'Bronchodilator/Used in Respiratory '
-                                                    'Failure'},
-                             {'authoredOn': '1952-04-06T04:00:00Z',
-                              'conditionRelated': False,
-                              'description': 'Advil',
-                              'status': 'active',
-                              }],
-             'relevantMedCount': 1,
-             'totalMedCount': 2},
+            {"medications": [{"authoredOn": "1952-04-06T04:00:00Z",
+                                 "classification": "",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1952",
+                                 "description": "Advil",
+                                 "status": "active"},
+                                {"authoredOn": "1950-04-06T04:00:00Z",
+                                 "classification": "Bronchodilator/Used in Respiratory "
+                                                   "Failure",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1950",
+                                 "description": "Albuterol",
+                                 "status": "active"}],
+             "allMedicationsCount": 2,
+              "oneYearMedication": [],
+              "oneYearMedicationsCount": 0,
+              "schedularMedicationOneYearCount": 0}
         ),
         # medication description contains multiple keywords
         (
@@ -115,21 +134,25 @@ from assessclaimdc6602v2.src.lib import medication
                             "description": "14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT / "
                             "vilanterol 0.025 MG/ACTUAT Dry Powder Inhaler",
                             "status": "active",
-                            "authoredOn": "1950-04-06T04:00:00Z",
-                        },
-                    ],
-                    "dateOfClaim": "2021-11-09",
-                }
+                            "dataSource": "MAS",
+                            "authoredOn": "2021-04-06T04:00:00Z",
+                        }
+                    ]
+                },
+                "claimSubmissionDateTime": "2021-11-09",
             },
-            {'medications': [{'authoredOn': '1950-04-06T04:00:00Z',
-                              'conditionRelated': True,
-                              'description': '14 ACTUAT fluticasone furoate 0.1 MG/ACTUAT '
-                                             '/ vilanterol 0.025 MG/ACTUAT Dry Powder '
-                                             'Inhaler',
-                              'status': 'active',
-                              'suggestedCategory': 'Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive'}],
-             'relevantMedCount': 1,
-             'totalMedCount': 1}
+            {"medications": [{"authoredOn": "2021-04-06T04:00:00Z",
+                                 "classification": "Anti-Inflammatory/Bronchodilator/Corticosteroid/Immuno-Suppressive",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/2021",
+                                 "description": "14 ACTUAT fluticasone furoate 0.1 "
+                                                "MG/ACTUAT / vilanterol 0.025 MG/ACTUAT "
+                                                "Dry Powder Inhaler",
+                                 "status": "active"}],
+             "allMedicationsCount": 1,
+              "oneYearMedication": [],
+              "oneYearMedicationsCount": 0,
+              "schedularMedicationOneYearCount": 0}
         ),
     ],
 )
@@ -144,7 +167,7 @@ def test_continuous_medication_required(
     :type continuous_medication_required_calculation: dict
     """
     assert (
-        medication.medication_required(request_body)
+        medication.filter_categorize_mas_medication(request_body)
         == continuous_medication_required_calculation
     )
 
@@ -153,7 +176,7 @@ def test_continuous_medication_required(
     "medication_display, expected",
     [
         ("Albuterol", "Bronchodilator/Used in Respiratory Failure"),
-        ("Advil", ''),
+        ("Advil", ""),
         # medication description contains multiple keywords,
         # returns the most general category for any medication in description
         (
@@ -170,6 +193,6 @@ def test_categorize_med(medication_display, expected):
     :param expected: category
     """
 
-    category = medication.categorize_med(medication_display)
+    category = medication.classify_med(medication_display)
 
     assert category == expected
