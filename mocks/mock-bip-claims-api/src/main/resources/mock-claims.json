@@ -694,5 +694,31 @@
         ]
       }
     ]
+  },
+  {
+    "description": [
+      "for multiple exception (mas and BIP) handling tests"
+    ],
+    "claimDetail": {
+      "claimId": 1370,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2369",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
   }
 ]

@@ -2,6 +2,7 @@ package gov.va.vro.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -131,6 +133,12 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
     HttpEntity<Void> requestEntity = getAuthorizationHeader();
 
     return restTemplate.exchange(uri, HttpMethod.GET, requestEntity, String.class);
+  }
+
+  private ResponseEntity<String> callPostRestWithAuthorization(String uri) {
+    HttpEntity<Void> requestEntity = getAuthorizationHeader();
+
+    return restTemplate.exchange(uri, HttpMethod.POST, requestEntity, String.class);
   }
 
   @Test
@@ -376,5 +384,31 @@ public class ClaimMetricsControllerTest extends BaseControllerTest {
 
     ResponseEntity<String> re2 = callRestWithAuthorization("/v2/exam-order-info?page=-1");
     assertEquals(HttpStatus.BAD_REQUEST, re2.getStatusCode());
+  }
+
+  @Test
+  void testExamOrderSlackResponse() throws JsonProcessingException {
+    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, 10, Boolean.TRUE);
+    List<ExamOrderInfoResponse> respList = new ArrayList<>();
+    ExamOrderInfoResponse response = new ExamOrderInfoResponse();
+    response.setOrderedAt(null);
+    response.setCreatedAt(LocalDateTime.now().minus(24, ChronoUnit.HOURS));
+    response.setCollectionId("1234");
+    respList.add(response);
+    ExamOrdersInfo examOrdersInfo = new ExamOrdersInfo(respList, 1);
+    Mockito.when(service.findExamOrderInfoOlderThan24(ArgumentMatchers.eq(params)))
+        .thenReturn(examOrdersInfo);
+    // Call exam-order-slack
+    ResponseEntity<String> responseEntity =
+        callPostRestWithAuthorization("/v2/exam-order-slack?page=0&size=10&notOrdered=true");
+    // Expect a 200 and a list of size one
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    String body = responseEntity.getBody();
+    assertNotNull(body);
+    ExamOrderInfoResponse[] actual = mapper.readValue(body, ExamOrderInfoResponse[].class);
+    ExamOrderInfoResponse response1 = actual[0];
+    assertNotNull(response1);
+    assertNull(response1.getOrderedAt());
+    assertEquals(response1.getCollectionId(), "1234");
   }
 }
