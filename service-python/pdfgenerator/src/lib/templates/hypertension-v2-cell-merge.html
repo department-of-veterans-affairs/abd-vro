@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="pdfkit-orientation" content="Landscape"/>
+  <meta name="pdfkit-footer-right" content="Page [page] of [topage]"/>
+  <meta name="pdfkit-footer-font-name" content="NotoSans"/>
+  <meta name="pdfkit-footer-font-size" content="8"/>
+  <meta name="pdfkit-page-size" content="Legal"/>
+  <meta name="pdfkit-margin-left" content="0.5in"/>
+  <meta name="pdfkit-margin-right" content="0.5in"/>
+  <meta name="pdfkit-margin-top" content="0.5in"/>
+  <meta name="pdfkit-margin-bottom" content="0.5in"/>
+  <!-- Formula for Zoom: (Default DPI / Desired DPI) -->
+  <meta name="pdfkit-zoom" content="1.33"/>
+  <!-- Default DPI = 96 but this line does not work. Just marking as 72 to keep track for future edits -->
+  <meta name="pdfkit-dpi" content="72"/>
+
+  <!-- Bootstrap CSS -->
+  <link href="{{base_path}}/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{base_path}}/css/fontawesome.css" rel="stylesheet">
+
+  <title>{{pdf_title}}</title>
+
+  <style>
+    @font-face {
+      font-family: Bitter;
+      src: url("{{base_path}}/fonts/bitter-regular-webfont.ttf");
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: Bitter;
+      src: url("{{base_path}}/fonts/bitter-bold-webfont.ttf");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-regular-webfont.ttf");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-italic-webfont.ttf");
+      font-weight: 400;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-bold-webfont.ttf");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: NotoSans;
+      src: url("{{base_path}}/fonts/notosans-bolditalic-webfont.ttf");
+      font-weight: 700;
+      font-style: italic;
+    }
+    body {
+      padding: 12px 32px;
+      color: #212121;
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    p {
+      color: #212121;
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    h1 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 22px;
+    }
+    h2 {
+      font-family: Bitter;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    a {
+      color: #004795 !important;
+      text-decoration-line: underline;
+    }
+    table {
+      border: 1px solid #757575;
+    }
+    table, th, td {
+      text-align: left;
+      font-size: 11px;
+      font-family: NotoSans;
+    }
+    thead th {
+      background-color: #F1F1F1;
+    }
+    th {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    td {
+      font-family: NotoSans;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .empty {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+      color: #323A45;
+    }
+    .footnote {
+      font-family: NotoSans;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .mb-13 {
+      margin-bottom: 13px !important;
+    }
+    .mb-30 {
+      margin-bottom: 30px !important;
+    }
+    @media print {
+      .pagebreak {
+        clear: both;
+        page-break-after: always;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- Schedular evidence -->
+  <div class="row">
+    <div class="col">
+      <h2 class="m-0 mb-13"><b>Schedular evidence for hypertension</b></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table id="schedular-evidence" class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 90px !important;">VBMS receipt date</th>
+            <th style="width: 153px !important;">Key terms</th>
+            <th style="width: 90px !important;">Observation date</th>
+            <th style="width: 174px !important;">Source</th>
+            <th style="width: 120px !important;">Page number(s) / Event ID(s)</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for medication in evidence.medications %}
+          <tr>
+            <td {% if medication.receiptDate == "" %}class="empty" {% endif %}>{% if medication.receiptDate == ""%}n.a.{% else %}{{ medication.receiptDate }}{% endif %}</td>
+            <th>{{ medication.description }}</th>
+            <td {% if medication.dateFormatted == "" %}class="empty" style="line-height: 13px;"{% endif %}>{% if medication.dateFormatted == "" and medication.partialDate == "" %}No associated date{% elif medication.dateFormatted == "" and medication.partialDate != "" %}Non-confident date {{medication.partialDate}}{% else %}{{ medication.dateFormatted }}{% endif %}</td>
+            <td {% if medication.organization == "" and medication.dataSource == "MAS" %}class="empty" {% endif %}>{% if not medication.organization and medication.dataSource == "MAS" %}n.a.{% elif not medication.organization and medication.dataSource == "LH" %} VAMC record {% elif medication.organization and medication.dataSource == "LH" %} VAMC record - {{ medication.organization }}{% else %}{{ medication.organization }}{% endif %}</td>
+            <td {% if medication.page == "" %}class="empty" {% endif %}>{% if medication.page == ""%}n.a.{% else %}{{ medication.page }}{% endif %}</td>
+            <td style="white-space: nowrap;" {% if medication.document == "" %}class="empty" {% endif %}>
+              {% if medication.dataSource == "MAS" %}
+                {% if medication.organization == "VAMC Other Output Reports" and medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% elif medication.document == "" %}
+                  Pending upload to VBMS eFolder
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% else %}
+                {% if medication.document == "" %}
+                  n.a. - data pulled directly from VistA
+                {% else %}
+                  {{ medication.document }}
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          {% if evidence.medications |length == 0 %}
+          <tr>
+            <td colspan="6" class="empty">No keywords found through automated review.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- <h3 class="text-center">&zwnj;End of Evidence Review Summary</h3> -->
+  {% block body %}{% endblock %}
+
+  <script src="{{base_path}}/js/bootstrap.bundle.min.js"></script>
+  <script>
+    window.onload = function() {
+      const table = document.getElementById("schedular-evidence");
+  const rows = table.rows;
+  var prevValue = null;
+  var prevIndex = null;
+
+  for (var i = 0; i < rows.length; i++) {
+    const currentValue = rows[i].cells[0].innerHTML.trim();
+
+    if (currentValue === prevValue) {
+      if (prevIndex !== null) {
+        rows[prevIndex].cells[0].rowSpan += 1;
+        rows[i].deleteCell(0);
+      }
+    } else {
+      prevValue = currentValue;
+      prevIndex = i;
+    }
+  }
+    };
+  </script>
+</body>
+</html>
