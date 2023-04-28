@@ -20,5 +20,6 @@ public class LighthouseProperties {
   private String pemkey;
 
   // use this date to filter out Lighthouse FHIR resource updated before this date.
+  // Date string format: yyyy-MM-dd i.e. 2020-01-05
   private String filterLastUpdatedDate;
 }
