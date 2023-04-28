@@ -26,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +135,24 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     } else {
       Page<ExamOrderEntity> examOrders = findAllExamOrderInfoPage(params);
+      examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    }
+    return new ExamOrdersInfo(examOrdersInfo, examOrdersInfo.size());
+  }
+
+  @Override
+  public ExamOrdersInfo findExamOrderInfoOlderThan24(ExamOrderInfoQueryParams params) {
+    List<ExamOrderInfoResponse> examOrdersInfo;
+    if (params.getNotOrdered() == Boolean.TRUE) {
+      LocalDateTime date = LocalDateTime.now();
+      date.minus(24, ChronoUnit.HOURS);
+      List<ExamOrderEntity> examOrders =
+          examOrderRepository.findByCreatedAtBeforeAndOrderedAtIsNull(date);
+      examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
+    } else {
+      LocalDateTime date = LocalDateTime.now();
+      date.minus(24, ChronoUnit.HOURS);
+      List<ExamOrderEntity> examOrders = examOrderRepository.findByCreatedAtBefore(date);
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     }
     return new ExamOrdersInfo(examOrdersInfo, examOrdersInfo.size());
