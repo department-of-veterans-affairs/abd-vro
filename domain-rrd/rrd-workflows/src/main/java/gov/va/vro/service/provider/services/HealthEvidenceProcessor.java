@@ -3,7 +3,6 @@ package gov.va.vro.service.provider.services;
 import gov.va.vro.model.rrd.AbdEvidence;
 import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
 import gov.va.vro.model.rrd.ServiceLocation;
-import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -25,12 +24,6 @@ public class HealthEvidenceProcessor implements Processor {
         (List<String>) exchange.getProperty("docsWoutAnnotsChecked");
 
     AbdEvidenceWithSummary evidence = exchange.getMessage().getBody(AbdEvidenceWithSummary.class);
-
-    String evidenceError = evidence.getErrorMessage();
-    if (evidenceError != null) {
-      log.error("Health Assessment Failed");
-      throw new MasException("Health Assessment Failed with error:" + evidence.getErrorMessage());
-    }
 
     masTransferObject.setSufficientForFastTracking(evidence.getSufficientForFastTracking());
     log.info(
