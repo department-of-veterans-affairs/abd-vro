@@ -28,6 +28,20 @@ pip3 install -r requirements.txt
 uvicorn api:app --reload
 ```
 
+## testing it all together
+Get the java project up and running
+See [Local Setup](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Local-Setup) on the wiki.
+
+After you have the vro-app-1 container running...
+In another terminal, run the RabbitMQ client
+```
+# source ~/.virtualenvs/domain-cc/bin/activate
+python3 rabbitmq_client.py
+```
+
+Now you should be able to make a post request to the java code prefixed w/ "domain-cc" and the response from FastAPI will get sent back up
+
+
 ## Contributing
 ### Install dev dependencies
 ```
