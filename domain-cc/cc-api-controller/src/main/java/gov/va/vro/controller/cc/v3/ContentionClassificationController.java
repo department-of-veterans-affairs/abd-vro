@@ -2,14 +2,12 @@ package gov.va.vro.controller.cc.v3;
 
 // import static gov.va.vro.model.redo.CamelConstants.POST_RESOURCE_QUEUE;
 // import static gov.va.vro.model.redo.CamelConstants.V3_EXCHANGE;
-import com.fasterxml.jackson.databind.JsonNode;
-import gov.va.vro.camel.CamelEntry;
-import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import gov.va.vro.api.cc.ResourceException;
 import gov.va.vro.api.cc.v3.CCResource;
-import gov.va.vro.api.cc.v3.ResourceRequest;
 import gov.va.vro.api.cc.v3.ResourceResponse;
+import gov.va.vro.camel.CamelEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,21 +23,23 @@ public class ContentionClassificationController implements CCResource {
   private final String ENDPOINT_NAME = "domain-cc-classify";
 
   @Override
-  public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, ResourceRequest request)
-      throws ResourceException {
+  public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, JsonNode request)
+          throws ResourceException {
     log.info("callEndpoint logging info");
     try {
       log.info("endpoint received: {}", endpoint);
-      log.info(endpoint);
-      log.info(endpoint);
-      log.info(endpoint);
-      log.info("^^^");
+      var request_method = "POST";
+      var stringified_payload = String.format("{ \"endpoint\": \"%s\", \"method\": \"%s\", \"payload\": %s }", endpoint, request_method, request);
+      log.info("stringified_payload: {}", stringified_payload);
+      var result = camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, stringified_payload, String.class);
+      log.info("camel result received: {}", result);
       ResourceResponse response =
-          new ResourceResponse("resource_id", "diagnostic", "status", 409, "status_msg");
+              new ResourceResponse("resource_id", "diagnostic", "status", 409, "status_msg");
+
       return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     } catch (Exception ex) {
       log.error("error in POST request", ex);
-      throw new ResourceException(request.getResourceId(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+      throw new ResourceException(request, HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 }

@@ -1,5 +1,6 @@
 package gov.va.vro.api.cc.v3;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import gov.va.vro.api.cc.ResourceException;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +20,7 @@ public interface CCResource {
   @PostMapping("/domain-cc/{endpoint}")
   @Timed(value = "resource.post")
   ResponseEntity<ResourceResponse> callEndpoint(
-      @PathVariable(value = "endpoint") String endpoint,
-      @Valid @RequestBody ResourceRequest request)
+          @PathVariable(value = "endpoint") String endpoint,
+          @Valid @RequestBody JsonNode request)
       throws MethodArgumentNotValidException, ResourceException;
 }
