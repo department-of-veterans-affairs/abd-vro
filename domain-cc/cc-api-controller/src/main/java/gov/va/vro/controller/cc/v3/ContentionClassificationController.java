@@ -2,6 +2,9 @@ package gov.va.vro.controller.cc.v3;
 
 // import static gov.va.vro.model.redo.CamelConstants.POST_RESOURCE_QUEUE;
 // import static gov.va.vro.model.redo.CamelConstants.V3_EXCHANGE;
+import com.fasterxml.jackson.databind.JsonNode;
+import gov.va.vro.camel.CamelEntry;
+import org.json.JSONObject;
 
 import gov.va.vro.api.cc.ResourceException;
 import gov.va.vro.api.cc.v3.CCResource;
@@ -17,6 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ContentionClassificationController implements CCResource {
+  private final CamelEntry camelEntry;
+  private final String EXCHANGE_NAME = "contention-classification-exchange";
+  private final String ENDPOINT_NAME = "domain-cc-classify";
+
   @Override
   public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, ResourceRequest request)
       throws ResourceException {
