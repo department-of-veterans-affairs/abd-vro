@@ -34,12 +34,12 @@ public class ContentionClassificationController implements CCResource {
       var result = camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, stringified_payload, String.class);
       log.info("camel result received: {}", result);
       ResourceResponse response =
-              new ResourceResponse("resource_id", "diagnostic", "status", 409, "status_msg");
+              new ResourceResponse(result["statusCode"], result["responseBody"]);
 
       return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     } catch (Exception ex) {
       log.error("error in POST request", ex);
-      throw new ResourceException(request, HttpStatus.INTERNAL_SERVER_ERROR, ex);
+      throw new ResourceException(request.toString(), HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
   }
 }
