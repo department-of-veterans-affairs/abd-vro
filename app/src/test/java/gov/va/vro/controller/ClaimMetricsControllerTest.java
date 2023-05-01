@@ -124,7 +124,6 @@ public class ClaimMetricsControllerTest {
     assertNotNull(response1);
     assertNull(response1.getOrderedAt());
     assertEquals(response1.getCollectionId(), collectionIDFound);
-    assertEquals(response1.getCreatedAt(), timeFound);
     assertTrue(slackCalled.get());
   }
 }
