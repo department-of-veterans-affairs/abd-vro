@@ -1,5 +1,11 @@
 package gov.va.vro.controller;
 
+import static org.apache.camel.builder.AdviceWith.adviceWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,103 +33,98 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class ClaimMetricsControllerTest {
 
-    @Autowired private ExamOrderRepository examOrderRepository;
-    @EndpointInject("mock: exam-order-slack")
-    private MockEndpoint mockExamSlack;
+  @Autowired private ExamOrderRepository examOrderRepository;
 
-    @Autowired private CamelContext camelContext;
+  @EndpointInject("mock: exam-order-slack")
+  private MockEndpoint mockExamSlack;
 
-    @Autowired
-    TestRestTemplate restTemplate;
+  @Autowired private CamelContext camelContext;
 
-    public ObjectMapper createObjectMapper() {
-        return JsonMapper.builder().addModule(new JavaTimeModule()).build();
-    }
+  @Autowired TestRestTemplate restTemplate;
 
-    private final ObjectMapper mapper = createObjectMapper();
+  public ObjectMapper createObjectMapper() {
+    return JsonMapper.builder().addModule(new JavaTimeModule()).build();
+  }
 
-    private HttpEntity<Void> getAuthorizationHeader() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-API-Key", "test-key-01");
-        return new HttpEntity<>(headers);
-    }
-    private ResponseEntity<String> callPostRestWithAuthorization(String uri) {
-        HttpEntity<Void> requestEntity = getAuthorizationHeader();
+  private final ObjectMapper mapper = createObjectMapper();
 
-        return restTemplate.exchange(uri, HttpMethod.POST, requestEntity, String.class);
-    }
-    @Test
-    void testExamOrderSlackResponse() throws Exception {
-        examOrderRepository.deleteAll();
+  private HttpEntity<Void> getAuthorizationHeader() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-API-Key", "test-key-01");
+    return new HttpEntity<>(headers);
+  }
 
-        var slackCalled = new AtomicBoolean(false);
-        adviceWith(
-                camelContext,
-                "exam-order-slack",
-                route ->
-                        route
-                                .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_SLACK)
-                                .skipSendToOriginalEndpoint()
-                                .to(mockExamSlack))
-                .end();
-        // The mock endpoint returns a valid response
-        mockExamSlack.whenAnyExchangeReceived(
-                exchange -> {
-                    slackCalled.set(true);
-                });
+  private ResponseEntity<String> callPostRestWithAuthorization(String uri) {
+    HttpEntity<Void> requestEntity = getAuthorizationHeader();
 
-        ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, 10, Boolean.TRUE);
+    return restTemplate.exchange(uri, HttpMethod.POST, requestEntity, String.class);
+  }
 
-        String collectionIDFound = "1234";
-        LocalDateTime timeFound = LocalDateTime.now().minus(24, ChronoUnit.HOURS);
+  @Test
+  void testExamOrderSlackResponse() throws Exception {
+    examOrderRepository.deleteAll();
 
-        Field createdAtField = ExamOrderEntity.class.getSuperclass().getDeclaredField("createdAt");
-        createdAtField.setAccessible(true);
+    var slackCalled = new AtomicBoolean(false);
+    adviceWith(
+            camelContext,
+            "exam-order-slack",
+            route ->
+                route
+                    .interceptSendToEndpoint(MasIntegrationRoutes.ENDPOINT_EXAM_ORDER_SLACK)
+                    .skipSendToOriginalEndpoint()
+                    .to(mockExamSlack))
+        .end();
+    // The mock endpoint returns a valid response
+    mockExamSlack.whenAnyExchangeReceived(
+        exchange -> {
+          slackCalled.set(true);
+        });
 
-        ExamOrderEntity entity1 = new ExamOrderEntity();
-        entity1.setOrderedAt(null);
-        entity1.setCollectionId(collectionIDFound);
+    ExamOrderInfoQueryParams params = new ExamOrderInfoQueryParams(0, 10, Boolean.TRUE);
 
-        ExamOrderEntity entity2 = new ExamOrderEntity();
-        entity2.setOrderedAt(null);
-        entity2.setCollectionId("1235");
+    String collectionIDFound = "1234";
+    LocalDateTime timeFound = LocalDateTime.now().minus(24, ChronoUnit.HOURS);
 
-        examOrderRepository.save(entity1);
-        examOrderRepository.save(entity2);
+    Field createdAtField = ExamOrderEntity.class.getSuperclass().getDeclaredField("createdAt");
+    createdAtField.setAccessible(true);
 
-        // Override the created at date for one entity.
-        createdAtField.set(entity1, timeFound);
-        examOrderRepository.save(entity1);
+    ExamOrderEntity entity1 = new ExamOrderEntity();
+    entity1.setOrderedAt(null);
+    entity1.setCollectionId(collectionIDFound);
 
-        ExamOrderInfoResponse response = new ExamOrderInfoResponse();
-        response.setOrderedAt(null);
-        response.setCreatedAt(timeFound);
-        response.setCollectionId(collectionIDFound);
-        // Call exam-order-slack
-        ResponseEntity<String> responseEntity =
-                callPostRestWithAuthorization("/v2/exam-order-slack?page=0&size=10&notOrdered=true");
-        // Expect a 200 and a list of size one
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        String body = responseEntity.getBody();
-        assertNotNull(body);
-        ExamOrderInfoResponse[] actual = mapper.readValue(body, ExamOrderInfoResponse[].class);
-        assertEquals(1, actual.length);
-        ExamOrderInfoResponse response1 = actual[0];
-        assertNotNull(response1);
-        assertNull(response1.getOrderedAt());
-        assertEquals(response1.getCollectionId(), collectionIDFound);
-        assertEquals(response1.getCreatedAt(), timeFound);
-        assertTrue(slackCalled.get());
-    }
+    ExamOrderEntity entity2 = new ExamOrderEntity();
+    entity2.setOrderedAt(null);
+    entity2.setCollectionId("1235");
+
+    examOrderRepository.save(entity1);
+    examOrderRepository.save(entity2);
+
+    // Override the created at date for one entity.
+    createdAtField.set(entity1, timeFound);
+    examOrderRepository.save(entity1);
+
+    ExamOrderInfoResponse response = new ExamOrderInfoResponse();
+    response.setOrderedAt(null);
+    response.setCreatedAt(timeFound);
+    response.setCollectionId(collectionIDFound);
+    // Call exam-order-slack
+    ResponseEntity<String> responseEntity =
+        callPostRestWithAuthorization("/v2/exam-order-slack?page=0&size=10&notOrdered=true");
+    // Expect a 200 and a list of size one
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    String body = responseEntity.getBody();
+    assertNotNull(body);
+    ExamOrderInfoResponse[] actual = mapper.readValue(body, ExamOrderInfoResponse[].class);
+    assertEquals(1, actual.length);
+    ExamOrderInfoResponse response1 = actual[0];
+    assertNotNull(response1);
+    assertNull(response1.getOrderedAt());
+    assertEquals(response1.getCollectionId(), collectionIDFound);
+    assertEquals(response1.getCreatedAt(), timeFound);
+    assertTrue(slackCalled.get());
+  }
 }
-
