@@ -1,3 +1,6 @@
+# Contention Classification
+Mapping contention text to actual classifications per `/disabilties` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
+
 ## Getting started
 Install Python3.10
 If you're on a mac, you can use pyenv to handle multiple python versions
@@ -32,4 +35,14 @@ source ~/.virtualenvs/domain-cc/bin/activate
 pip install -r dev-requirements.txt
 # MAKE SURE you are in adb-vro/domain-cc to get the right pre-commit-config.yaml installed
 pre-commit install
+```
+
+## Building docs
+```
+source ~/.virtualenvs/domain-cc/bin/activate
+cd src/
+uvicorn api:app --reload &
+cd ../..
+cd app/src/main/java/gov/va/vro/config 
+curl localhost:8000/openapi.json > domain-cc-openapi.json
 ```

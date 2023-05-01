@@ -151,7 +151,8 @@ ext {
     ':domain-xample:xample-api-controller',
     ':domain-xample:xample-shared',
     ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j'
+    ':domain-xample:svc-xample-j',
+    ':domain-cc:cc-api-controller'
   ]
   // Modules that create Docker images
   dockerModules = [

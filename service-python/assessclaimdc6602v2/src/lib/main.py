@@ -2,14 +2,14 @@ import logging
 from typing import Dict
 
 import data_model
+import utils
 
 from . import condition, medication
 
 
-def assess_asthma(event: Dict):
+def assess_sufficiency_asthma(event: Dict):
     """
-    Take a request that includes asthma related data, and return a filtered response
-
+    Take a request that includes asthma related data, and return a suffficiency decision
     :param event: request body
     :type event: dict
     :return: response body
@@ -19,21 +19,26 @@ def assess_asthma(event: Dict):
     response_body = {}
 
     if validation_results["is_valid"]:
-        active_medications = medication.medication_required(event)
-        active_conditions = condition.conditions_calculation(event)
+        medications = medication.filter_categorize_mas_medication(event)
+        conditions = condition.conditions_calculation(event)
 
         response_body.update(
             {
                 "evidence": {
-                    "medications": active_medications["medications"],
-                    "conditions": active_conditions["conditions"],
+                    "medications": medications["medications"],
+                    "conditions": conditions["conditions"],
+                    "procedures": event["evidence"]["procedures"],
+                    "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
-                    "relevantMedCount": active_medications["relevantMedCount"],
-                    "totalMedCount": active_medications["totalMedCount"],
-                    "relevantConditionsCount": active_conditions["relevantConditionsCount"],
-                    "totalConditionsCount": active_conditions["totalConditionsCount"],
+                    "totalMedCount": medications["allMedicationsCount"],
+                    "schedularMedicationOneYearCount": medications["schedularMedicationOneYearCount"],
+                    "proceduresCount": len(event["evidence"]["procedures"]),
+                    "totalConditionsCount": conditions["totalConditionsCount"],
+                    "relevantConditionsLighthouseCount": conditions["relevantConditionsLighthouseCount"]
                 },
+                "claimSubmissionDateTime": event["claimSubmissionDateTime"],
+                "disabilityActionType": event["disabilityActionType"],
                 "claimSubmissionId": event['claimSubmissionId']
             }
         )
