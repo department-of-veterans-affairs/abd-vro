@@ -144,14 +144,12 @@ public class ClaimMetricsServiceImpl implements ClaimMetricsService {
   public ExamOrdersInfo findExamOrderInfoOlderThan24(ExamOrderInfoQueryParams params) {
     List<ExamOrderInfoResponse> examOrdersInfo;
     if (params.getNotOrdered() == Boolean.TRUE) {
-      LocalDateTime date = LocalDateTime.now();
-      date.minus(24, ChronoUnit.HOURS);
+      LocalDateTime date = LocalDateTime.now().minus(24, ChronoUnit.HOURS);
       List<ExamOrderEntity> examOrders =
           examOrderRepository.findByCreatedAtBeforeAndOrderedAtIsNull(date);
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     } else {
-      LocalDateTime date = LocalDateTime.now();
-      date.minus(24, ChronoUnit.HOURS);
+      LocalDateTime date = LocalDateTime.now().minus(24, ChronoUnit.HOURS);
       List<ExamOrderEntity> examOrders = examOrderRepository.findByCreatedAtBefore(date);
       examOrdersInfo = examOrderInfoResponseMapper.toExamOrderInfoResponses(examOrders);
     }
