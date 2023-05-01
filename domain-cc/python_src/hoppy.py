@@ -101,8 +101,10 @@ class QueueConsumer:
             if isinstance(response, tuple) and len(response) == 2 and isinstance(response[1], int):
                 response, status = response
             if not isinstance(response, dict):
-                response = {"responseBody": response}
-            response.setdefault("statusCode", status)
+                # response = {"responseBody": response}
+                response = {"response_body": response}
+            # response.setdefault("statusCode", status)
+            response.setdefault("status_code", status)
             return response
         except ServiceError as e:
             return self._error_response(e, "")

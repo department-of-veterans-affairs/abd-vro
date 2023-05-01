@@ -3,6 +3,7 @@ package gov.va.vro.api.cc.v3;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.json.JSONObject;
 
 @Getter
 @AllArgsConstructor
@@ -10,5 +11,5 @@ import lombok.Getter;
 public class ResourceResponse {
 
   private int statusCode;
-  private String responseBody;
+  private JSONObject responseBody;
 }

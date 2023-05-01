@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.json.JSONObject;
 
 @Slf4j
 @RestController
@@ -28,15 +29,21 @@ public class ContentionClassificationController implements CCResource {
     log.info("callEndpoint logging info");
     try {
       log.info("endpoint received: {}", endpoint);
-      var request_method = "POST";
-      var stringified_payload = String.format("{ \"endpoint\": \"%s\", \"method\": \"%s\", \"payload\": %s }", endpoint, request_method, request);
-      log.info("stringified_payload: {}", stringified_payload);
-      var result = camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, stringified_payload, String.class);
-      log.info("camel result received: {}", result);
-      ResourceResponse response =
-              new ResourceResponse(result["statusCode"], result["responseBody"]);
+      var payload_for_cc = new JSONObject();
+      payload_for_cc.put("endpoint", endpoint);
+      payload_for_cc.put("method", "POST");
+      payload_for_cc.put("payload", request);
+      log.info("sending this to the RabbitMQ: {}", payload_for_cc);
 
-      return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+      var result = camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, payload_for_cc.toString(), String.class);
+      log.info("camel result received: {}", result);
+      var result_json = new JSONObject(result);
+      var statusCode = result_json.getInt("status_code");
+
+      ResourceResponse response =
+          new ResourceResponse(statusCode, result_json.getJSONObject("response_body"));
+
+      return new ResponseEntity<>(response, HttpStatus.valueOf(statusCode));
     } catch (Exception ex) {
       log.error("error in POST request", ex);
       throw new ResourceException(request.toString(), HttpStatus.INTERNAL_SERVER_ERROR, ex);

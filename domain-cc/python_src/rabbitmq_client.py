@@ -22,7 +22,13 @@ def call_endpoint(message, routing_key):
     print(f'routing_key: {routing_key}')
     fastapi_url = f'http://localhost:8000/{message["endpoint"]}'
     payload = message["payload"]
-    return http_client.post(fastapi_url, data=payload).json()
+    fastapi_response = http_client.post(fastapi_url, data=payload)
+    print(f'fastapi_response.json(): {fastapi_response.json()}')
+    print(f'fastapi_response.status_code: {fastapi_response.status_code}')
+    return {
+        "status_code": fastapi_response.status_code,
+        "response_body": fastapi_response.json(),
+    }
 
 
 def main():
