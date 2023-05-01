@@ -93,15 +93,17 @@ public class ClaimMetricsControllerTest {
         ExamOrderEntity entity1 = new ExamOrderEntity();
         entity1.setOrderedAt(null);
         entity1.setCollectionId(collectionIDFound);
-        createdAtField.set(entity1, timeFound);
 
         ExamOrderEntity entity2 = new ExamOrderEntity();
         entity2.setOrderedAt(null);
         entity2.setCollectionId("1235");
-        createdAtField.set(entity2, LocalDateTime.now());
 
         examOrderRepository.save(entity1);
         examOrderRepository.save(entity2);
+
+        // Override the created at date for one entity.
+        createdAtField.set(entity1, timeFound);
+        examOrderRepository.save(entity1);
 
         ExamOrderInfoResponse response = new ExamOrderInfoResponse();
         response.setOrderedAt(null);
