@@ -56,7 +56,7 @@ pre-commit install
 ## Building docs
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
-cd python_src/
+cd svc-cc-j/
 uvicorn api:app --port 18000 --reload &
 cd ../..
 cd app/src/main/java/gov/va/vro/config 
