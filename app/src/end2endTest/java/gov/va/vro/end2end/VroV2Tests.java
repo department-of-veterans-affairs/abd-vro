@@ -1,5 +1,6 @@
 package gov.va.vro.end2end;
 
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.LIGHTHOUSE_ERROR_MSG;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -391,7 +392,7 @@ public class VroV2Tests {
       testLifecycleStatus(claimId, ClaimStatus.RFD);
     }
     if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
-      testSlackMessage(collectionId);
+      testSlackMessage(collectionId, spec.getExpectedSlackMessage());
     }
     return pdfText;
   }
@@ -425,13 +426,18 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean testSlackMessage(String collectionId) {
+  private boolean testSlackMessage(String collectionId, String expectedSlackMessage) {
     for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
       Thread.sleep(5000);
       String url = SLACK_URL + collectionId;
       try {
         ResponseEntity<String> testResponse = restTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        String body = testResponse.getBody();
+        assertNotNull(body);
+        assertNotNull(expectedSlackMessage);
+        assertTrue(expectedSlackMessage.length() > 0);
+        assertTrue(body.contains(expectedSlackMessage));
         return true;
       } catch (HttpStatusCodeException exception) {
         log.info("Did not find slack message for {}. Retrying...", collectionId);
@@ -487,12 +493,14 @@ public class VroV2Tests {
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
 
-    boolean slackResult = testSlackMessage(spec.getCollectionId());
+    boolean slackResult = testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
-    final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    if (!spec.isBipUpdateClaimError()) {
+      final String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    }
   }
 
   /** Out of scope test case because of disability action type. 422 response is verified. */
@@ -639,14 +647,16 @@ public class VroV2Tests {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     if (spec.isMasError()) {
-      boolean slackResult = testSlackMessage(spec.getCollectionId());
+      boolean slackResult =
+          testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       String claimId = request.getClaimDetail().getBenefitClaimId();
       testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
     } else {
       testExamOrdered(collectionId);
       if (spec.isBipError()) {
-        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        boolean slackResult =
+            testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
         assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       } else {
         testPdfUpload(request);
@@ -690,6 +700,7 @@ public class VroV2Tests {
   void testAutomatedClaimOrderExamBipError() {
     AutomatedClaimTestSpec spec = specFor200("390");
     spec.setBipError(true);
+    spec.setExpectedSlackMessage(EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getReasonMessage());
     testAutomatedClaimOrderExam(spec);
   }
 
@@ -701,6 +712,7 @@ public class VroV2Tests {
   void testAutomatedClaimOrderExamMasError() {
     AutomatedClaimTestSpec spec = specFor200("391");
     spec.setMasError(true);
+    spec.setExpectedSlackMessage(EventReason.EXAM_ORDER_FAILED.getReasonMessage());
     testAutomatedClaimOrderExam(spec);
   }
 
@@ -712,6 +724,7 @@ public class VroV2Tests {
   void testAutomatedClaimNoExamPDFError() {
     String collectionId = "392";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExpectedSlackMessage(EventReason.PDF_UPLOAD_FAILED_AFTER_RFD.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -805,12 +818,14 @@ public class VroV2Tests {
 
   /**
    * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
-   * message, removal of rdr1, and database update are verified.
+   * message, removal of rdr1, and database update are verified. This case both returns a message
+   * and slacks.
    */
   @Test
   void testAutomatedClaimNewNotPresumptive() {
     AutomatedClaimTestSpec spec = specFor200("379");
     spec.setExpectedMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
+    spec.setExpectedSlackMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -860,7 +875,8 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveChangedStation() {
     AutomatedClaimTestSpec spec = specFor200("385");
     spec.setTempJurisdictionStationOverride("456");
-
+    spec.setExpectedSlackMessage(
+        "Claim 1085 is in station 456 not in 398. claim ID: 1085, collection ID: 385");
     testAutomatedClaimFullPositive(spec);
   }
 
@@ -872,7 +888,7 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveBipGoesDown() {
     AutomatedClaimTestSpec spec = specFor200("386");
     spec.setBipUpdateClaimError(true);
-
+    spec.setExpectedSlackMessage(EventReason.BIP_UPDATE_FAILED.getReasonMessage());
     testAutomatedClaimFullPositive(spec);
   }
 
@@ -884,6 +900,7 @@ public class VroV2Tests {
   void testAutomatedClaimSufficiencyIsNull() {
     String collectionId = "500";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExpectedSlackMessage(EventReason.SUFFICIENCY_UNDETERMINED.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
   }
@@ -895,6 +912,7 @@ public class VroV2Tests {
   @Test
   void testAutomatedClaimMasException() {
     AutomatedClaimTestSpec spec = specFor200("369");
+    spec.setExpectedSlackMessage(EventReason.ANNOTATIONS_FAILED.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -907,7 +925,7 @@ public class VroV2Tests {
     String collectionId = "365";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    boolean slackResult = testSlackMessage(collectionId);
+    boolean slackResult = testSlackMessage(collectionId, LIGHTHOUSE_ERROR_MSG);
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
@@ -920,9 +938,9 @@ public class VroV2Tests {
     String collectionId = "366";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     spec.setExtraSleep(250000); // expected sleep time
-
+    spec.setExpectedSlackMessage(LIGHTHOUSE_ERROR_MSG);
     testAutomatedClaimFullPositive(spec);
-    boolean slackResult = testSlackMessage(collectionId);
+    boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
   }
 
@@ -935,7 +953,25 @@ public class VroV2Tests {
     String collectionId = "367";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
     testAutomatedClaimFullPositive(spec);
-    boolean slackResult = testSlackMessage(collectionId);
+    spec.setExpectedSlackMessage(LIGHTHOUSE_ERROR_MSG);
+    boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * End to End Test that validates multiple VRO errors get sent in a slack message if this case
+   * occurs. Currently this happens with offramping + BIP Claim Error Based on Claim 369
+   */
+  @Test
+  void testAutomatedClaimMultipleError() {
+    AutomatedClaimTestSpec spec = specFor200("370");
+    spec.setMasError(true);
+    spec.setBipUpdateClaimError(true);
+    String comboError =
+        EventReason.ANNOTATIONS_FAILED.getReasonMessage()
+            + " claim ID: 1370, collection ID: 370, "
+            + EventReason.BIP_UPDATE_FAILED.getReasonMessage();
+    spec.setExpectedSlackMessage(comboError);
+    testAutomatedClaimOffRamp(spec);
   }
 }

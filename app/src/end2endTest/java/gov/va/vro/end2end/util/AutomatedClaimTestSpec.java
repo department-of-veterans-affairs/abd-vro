@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 public class AutomatedClaimTestSpec {
   private String collectionId;
   private String expectedMessage;
-
+  private String expectedSlackMessage;
   private HttpStatus expectedStatusCode = HttpStatus.OK;
   private String payloadPath;
   private boolean bipError = false;

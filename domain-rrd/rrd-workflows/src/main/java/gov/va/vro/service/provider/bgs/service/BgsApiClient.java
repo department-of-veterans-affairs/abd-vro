@@ -27,7 +27,8 @@ public class BgsApiClient {
 
   private int retryDelayBaseMills = 130_000;
 
-  public BgsNotesCamelBody buildRequest(MasProcessingObject mpo) {
+  // https://github.com/department-of-veterans-affairs/abd-vro/issues/1341
+  public BgsNotesCamelBody buildRequests(MasProcessingObject mpo) {
     BgsNotesCamelBody body = new BgsNotesCamelBody(mpo, retryDelayBaseMills);
     MasCompletionStatus completionStatus = MasCompletionStatus.of(mpo);
     switch (completionStatus) {
@@ -47,9 +48,9 @@ public class BgsApiClient {
       case OFF_RAMP:
         // Tested with VroV2Tests.testAutomatedClaimSufficiencyIsNull,
         // which only covers SUFFICIENCY_UNDETERMINED
-        var offRampError = mpo.getOffRampReason();
-        log.info("Create BGS notes for offRampError=" + offRampError);
-        String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampError, null);
+        var offRampReasonCode = mpo.getOffRampReason();
+        log.info("Create BGS notes for offRampReasonCode=" + offRampReasonCode);
+        String claimNote = OFFRAMP_ERROR_2_CLAIM_NOTE.getOrDefault(offRampReasonCode, null);
         if (claimNote != null) body.pendingRequests.add(buildClaimNotesRequest(mpo, claimNote));
         break;
     }
@@ -57,7 +58,7 @@ public class BgsApiClient {
   }
 
   private BgsApiClientRequest buildVeteranNoteRequest(MasProcessingObject mpo) {
-    String veteranId = mpo.getClaimPayload().getVeteranIdentifiers().getParticipantId();
+    String veteranId = mpo.getClaimPayload().getVeteranParticipantId();
     var request = new BgsApiClientRequest(mpo.getBenefitClaimId(), veteranId);
     request.veteranNote = getArsdUploadedNote(getDocUploadedAt(mpo));
     return request;

@@ -113,6 +113,8 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
 
+  public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
+
   @Override
   public void configure() {
     configureAuditing();
@@ -176,7 +178,17 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .routingSlip(method(slipClaimSubmitRouter, "routeHealthSufficiency"))
         .convertBodyTo(AbdEvidenceWithSummary.class)
         .process(masAssessmentResultProcessor)
+        .choice()
+        .when(simple("${body.errorMessage} != null"))
+        .log("Health Assessment Processing failed. Off-ramping claim ${body.errorMessage}")
+        // Completion code needs the MasProcessingObject as the body.
+        .setBody(simple("${exchangeProperty.payload}"))
+        .process(setOffRampReasonProcessor(EventReason.HEALTH_PROCESSOR_FAILED.getCode()))
+        .to(ENDPOINT_MAS_COMPLETE)
+        .stop() // Do not continue processing
+        .otherwise()
         .process(new HealthEvidenceProcessor()) // returns MasTransferObject
+        .end()
         .choice()
         .when(simple("${body.sufficientForFastTracking} == false"))
         .to(ENDPOINT_ORDER_EXAM)
@@ -291,9 +303,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
     // Wiretap breaks onCatch behavior, onException wont work here. This is the workaround.
     from(wiretapLighthouse)
         .wireTap(ENDPOINT_NOTIFY_AUDIT) // Send error notification to slack
-        .onPrepare(
-            slackEventPropertyProcessor(
-                lighthouseRoute, "Lighthouse health data not retrieved.", "payload"));
+        .onPrepare(slackEventPropertyProcessor(lighthouseRoute, LIGHTHOUSE_ERROR_MSG, "payload"));
 
     from(lighthouseRetryRoute)
         .doTry()
@@ -352,11 +362,12 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .process(
             MasIntegrationProcessors.completionProcessor(bipClaimService, masProcessingService))
         .to(ExchangePattern.InOnly, BgsApiClientRoutes.ADD_BGS_NOTES)
-        .log("completionSlackMessage: ${exchangeProperty.completionSlackMessage}")
+        .log("completionSlackMessages: ${exchangeProperty.completionSlackMessages}")
         .choice()
-        .when(simple("${exchangeProperty.completionSlackMessage} != null"))
+        .when(simple("${exchangeProperty.completionSlackMessages} != null"))
         .wireTap(ENDPOINT_NOTIFY_AUDIT)
-        .onPrepare(slackEventPropertyProcessor(routeId, "completionSlackMessage"))
+        .onPrepare(
+            MasIntegrationProcessors.slackEventArrayProcessor(routeId, "completionSlackMessages"))
         .endChoice()
         .otherwise()
         .wireTap(ENDPOINT_AUDIT_WIRETAP)
