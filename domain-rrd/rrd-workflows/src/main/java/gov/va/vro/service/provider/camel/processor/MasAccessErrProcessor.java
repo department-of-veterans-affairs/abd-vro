@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider;
+package gov.va.vro.service.provider.camel.processor;
 
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
