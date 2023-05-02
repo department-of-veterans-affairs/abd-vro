@@ -53,8 +53,10 @@ public class MasOrderExamProcessorTest {
     Mockito.verify(masApiService, Mockito.times(1)).orderExam(Mockito.any());
     Mockito.verify(saveToDbService, Mockito.times(1))
         .insertOrUpdateExamOrderingStatus(Mockito.any());
-    String message = listAppender.list.get(listAppender.list.size() - 1).getFormattedMessage();
-    assertThat(message).contains("saving as ORDER_SUBMITTED");
+    String message = listAppender.list.get(0).getFormattedMessage();
+    assertThat(message).contains("Ordering Exam for the collection");
+    String lastMessage = listAppender.list.get(listAppender.list.size() - 1).getFormattedMessage();
+    assertThat(lastMessage).contains("saving as ORDER_SUBMITTED");
   }
 
   @Test
@@ -69,7 +71,9 @@ public class MasOrderExamProcessorTest {
     Mockito.verify(masApiService, Mockito.times(1)).orderExam(Mockito.any());
     Mockito.verify(saveToDbService, Mockito.never())
         .insertOrUpdateExamOrderingStatus(Mockito.any());
-    String message = listAppender.list.get(listAppender.list.size() - 1).getFormattedMessage();
-    assertThat(message).contains("Error in calling Order Exam API");
+    String message = listAppender.list.get(0).getFormattedMessage();
+    assertThat(message).contains("Ordering Exam for the collection");
+    String lastMessage = listAppender.list.get(listAppender.list.size() - 1).getFormattedMessage();
+    assertThat(lastMessage).contains("Error in calling Order Exam API");
   }
 }
