@@ -113,7 +113,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
-  private final LighthouseErrCheckProcessor healthAssessmentErrCheckProcessor;
+  private final LighthouseErrCheckProcessor lighthouseErrCheckProcessor;
 
   public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
 
@@ -311,7 +311,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("retryBody", simple("${body}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .process(lighthouseErrCheckProcessor) // Check for errors, and throw or do not alter
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .log("Retrying lighthouse due to error")
@@ -319,7 +319,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .removeProperty("retryBody")
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        .process(healthAssessmentErrCheckProcessor)
+        .process(lighthouseErrCheckProcessor)
         .endDoCatch();
   }
 
