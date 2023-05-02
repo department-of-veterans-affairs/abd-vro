@@ -29,7 +29,7 @@ public class ContentionClassificationController implements CCResource {
   // Get a POJO from the Camel response so jackson can automagically serialize the HTTP response
   // https://stackoverflow.com/a/44842806
   // https://stackoverflow.com/a/45465724
-  public HashMap<String, Object> getMapFromString(String jsonString) {
+  private HashMap<String, Object> getMapFromString(String jsonString) {
     final ObjectMapper mapper = new ObjectMapper();
     HashMap<String, Object> mapFromString = new HashMap<>();
     try {
