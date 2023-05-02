@@ -32,7 +32,9 @@ uvicorn api:app --reload
 Get the java project up and running
 See [Local Setup](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Local-Setup) on the wiki.
 
-After you have the vro-app-1 container running...
+Run the Python webserver (uvicorn command above)
+
+After you have the vro-app-1 container and FastAPI running...
 In another terminal, run the RabbitMQ client
 ```
 # source ~/.virtualenvs/domain-cc/bin/activate
