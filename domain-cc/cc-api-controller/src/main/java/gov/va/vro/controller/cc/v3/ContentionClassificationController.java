@@ -1,19 +1,22 @@
 package gov.va.vro.controller.cc.v3;
 
-// import static gov.va.vro.model.redo.CamelConstants.POST_RESOURCE_QUEUE;
-// import static gov.va.vro.model.redo.CamelConstants.V3_EXCHANGE;
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.api.cc.ResourceException;
 import gov.va.vro.api.cc.v3.CCResource;
 import gov.va.vro.api.cc.v3.ResourceResponse;
 import gov.va.vro.camel.CamelEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+
 
 @Slf4j
 @RestController
@@ -22,6 +25,21 @@ public class ContentionClassificationController implements CCResource {
   private final CamelEntry camelEntry;
   private final String EXCHANGE_NAME = "contention-classification-exchange";
   private final String ENDPOINT_NAME = "domain-cc-classify";
+
+  // Get a POJO from the Camel response so jackson can automagically serialize the HTTP response
+  // https://stackoverflow.com/a/44842806
+  // https://stackoverflow.com/a/45465724
+  public HashMap<String, Object> getMapFromString(String jsonString) {
+    final ObjectMapper mapper = new ObjectMapper();
+    HashMap<String, Object> mapFromString = new HashMap<>();
+    try {
+      mapFromString = mapper.readValue(jsonString, new TypeReference<HashMap<String, Object>>() {
+      });
+    } catch (IOException e) {
+      log.error("Exception launched while trying to parse String to Map.", e);
+    }
+    return mapFromString;
+  }
 
   @Override
   public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, JsonNode request)
@@ -39,9 +57,10 @@ public class ContentionClassificationController implements CCResource {
       log.info("camel result received: {}", result);
       var result_json = new JSONObject(result);
       var statusCode = result_json.getInt("status_code");
+      var resultResponseBodyObject = getMapFromString(result).get("response_body");
 
       ResourceResponse response =
-          new ResourceResponse(statusCode, result_json.getJSONObject("response_body"));
+          new ResourceResponse(statusCode, resultResponseBodyObject);
 
       return new ResponseEntity<>(response, HttpStatus.valueOf(statusCode));
     } catch (Exception ex) {
