@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HealthAssessmentErrCheckProcessor implements Processor {
+public class LighthouseErrCheckProcessor implements Processor {
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {

@@ -35,7 +35,7 @@ import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
 import gov.va.vro.service.provider.camel.processor.EvidenceSummaryDocumentProcessor;
-import gov.va.vro.service.provider.camel.processor.HealthAssessmentErrCheckProcessor;
+import gov.va.vro.service.provider.camel.processor.LighthouseErrCheckProcessor;
 import gov.va.vro.service.provider.camel.processor.HealthEvidenceProcessor;
 import gov.va.vro.service.provider.camel.processor.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
@@ -113,7 +113,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
-  private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
+  private final LighthouseErrCheckProcessor healthAssessmentErrCheckProcessor;
 
   public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
 
