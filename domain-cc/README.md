@@ -25,7 +25,7 @@ which python3
 Install dependencies and run webserver
 ```
 pip3 install -r requirements.txt
-uvicorn api:app --reload
+uvicorn api:app --port 18000 --reload
 ```
 
 ## testing it all together
@@ -56,8 +56,8 @@ pre-commit install
 ## Building docs
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
-cd src/
-uvicorn api:app --reload &
+cd python_src/
+uvicorn api:app --port 18000 --reload &
 cd ../..
 cd app/src/main/java/gov/va/vro/config 
 curl localhost:8000/openapi.json > domain-cc-openapi.json

@@ -12,6 +12,7 @@ RABBIT_MQ_CONFIG = {  # define this as a custom type
     "retry_limit": 3,
     "timeout": 60 * 2,  # rename this to "timeout_seconds"
 }
+FAST_API_HOST = 'http://localhost:18000'  # Note this will probably need to be pulled from an environment variable
 http_client = httpx.Client()
 
 
@@ -20,7 +21,7 @@ http_client = httpx.Client()
 def call_endpoint(message, routing_key):
     print(f"message: {message}")
     print(f"routing_key: {routing_key}")
-    fastapi_url = f'http://localhost:8000/{message["endpoint"]}'
+    fastapi_url = f'{FAST_API_HOST}/{message["endpoint"]}'
     payload = message["payload"]
     fastapi_response = http_client.post(fastapi_url, data=payload)
     print(f"fastapi_response.json(): {fastapi_response.json()}")
