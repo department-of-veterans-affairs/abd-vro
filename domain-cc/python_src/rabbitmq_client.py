@@ -2,11 +2,11 @@ import httpx
 from hoppy import Service as HoppyService
 
 RABBIT_MQ_CONFIG = {  # define this as a custom type
-    "host": 'localhost',
+    "host": "localhost",
     "port": 5672,
-    "username": 'guest',
-    "password": 'guest',
-    "queue_name": 'hello',
+    "username": "guest",
+    "password": "guest",
+    "queue_name": "hello",
     "exchange_name": "contention-classification-exchange",
     "service_queue_name": "domain-cc-classify",
     "retry_limit": 3,
@@ -18,13 +18,13 @@ http_client = httpx.Client()
 # ambiguous types, see
 # https://github.com/department-of-veterans-affairs/abd-vro/commit/260071d0a1f59ad0c44c78cb96dc2e511e59e3ee#diff-03e72a5bda60963cfbc4f88ab305c195a4f57d88ead1a0dafacdf2061c1cca41R9
 def call_endpoint(message, routing_key):
-    print(f'message: {message}')
-    print(f'routing_key: {routing_key}')
+    print(f"message: {message}")
+    print(f"routing_key: {routing_key}")
     fastapi_url = f'http://localhost:8000/{message["endpoint"]}'
     payload = message["payload"]
     fastapi_response = http_client.post(fastapi_url, data=payload)
-    print(f'fastapi_response.json(): {fastapi_response.json()}')
-    print(f'fastapi_response.status_code: {fastapi_response.status_code}')
+    print(f"fastapi_response.json(): {fastapi_response.json()}")
+    print(f"fastapi_response.status_code: {fastapi_response.status_code}")
     return {
         "status_code": fastapi_response.status_code,
         "response_body": fastapi_response.json(),
@@ -32,17 +32,15 @@ def call_endpoint(message, routing_key):
 
 
 def main():
-    print('initializing Hoppy thing')
+    print("initializing Hoppy thing")
     rabbitmq_client = HoppyService(
         config=RABBIT_MQ_CONFIG,
         exchange=RABBIT_MQ_CONFIG["exchange_name"],
-        consumers={
-            RABBIT_MQ_CONFIG["service_queue_name"]: call_endpoint
-        }
+        consumers={RABBIT_MQ_CONFIG["service_queue_name"]: call_endpoint},
     )
-    print('run()ing it')
+    print("run()ing it")
     rabbitmq_client.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
