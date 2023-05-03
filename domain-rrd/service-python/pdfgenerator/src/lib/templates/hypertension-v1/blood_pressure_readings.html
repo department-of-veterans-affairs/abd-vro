@@ -1,0 +1,24 @@
+<p>
+    {% if evidence.bp_readings and evidence.bp_readings|length > 0 %}
+        <h1 style="font-size: 21px; margin-top: 24px;">One Year of Blood Pressure History</h1>
+    {% else %}
+        <h2>No blood pressure records found</h2>
+    {% endif %}
+</p>
+<i>VHA records searched from {{ start_date.strftime('%m/%d/%Y') }} to {{ timestamp.strftime('%m/%d/%Y') }}</i>
+<br/>
+<i>All VAMC locations using VistA/CAPRI were checked</i>
+{% if evidence.bp_readings and evidence.bp_readings|length > 0 %}
+    <p>Blood pressure is shown as systolic/diastolic.</p>
+{% endif %}
+{% if evidence.bp_readings %}
+    {% for measurement in evidence.bp_readings %}
+        <p>
+            <b>Blood pressure: {{ measurement.systolic.value }}/{{ measurement.diastolic.value }} </b>
+            <br />
+            Taken on: {{ measurement.date }}
+            <br />
+            Location: {{ measurement.organization or "Unknown" }}
+        </p>
+    {% endfor %}
+{% endif %}

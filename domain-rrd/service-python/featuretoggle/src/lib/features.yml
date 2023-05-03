@@ -1,0 +1,13 @@
+# Feature flags
+#
+# name:
+#  description: string describing what the flag is for
+#  enabled: boolean
+#  env?: list of enabled environments
+features:
+  foo:
+    description: an example feature flag
+    enabled: true
+  bar:
+    description: another example feature flag
+    enabled: false

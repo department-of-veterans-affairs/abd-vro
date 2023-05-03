@@ -1,0 +1,16 @@
+{
+  "code": "6602",
+  "version": "v1",
+  "document_type": "asthma",
+  "veteranInfo": {
+    "first": "",
+    "middle": "",
+    "last": "",
+    "suffix": "",
+    "birthdate": "1935-06-15T00:00:00+00:00"
+  },
+  "evidence": {
+    "bp_readings": [],
+    "medications": []
+  }
+}
