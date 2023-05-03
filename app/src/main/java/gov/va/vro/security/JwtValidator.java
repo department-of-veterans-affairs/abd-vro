@@ -38,6 +38,8 @@ public class JwtValidator {
 
   private static final String VALIDATE_TOKEN = "yes";
 
+  private final LhApiProps lhApiProps;
+
   /**
    * Sub string bearer.
    *
