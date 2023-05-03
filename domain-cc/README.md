@@ -38,6 +38,7 @@ After you have the vro-app-1 container and FastAPI running...
 In another terminal, run the RabbitMQ client
 ```
 # source ~/.virtualenvs/domain-cc/bin/activate
+cd svc-cc-j/src/
 python3 rabbitmq_client.py
 ```
 
@@ -56,7 +57,7 @@ pre-commit install
 ## Building docs
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
-cd svc-cc-j/
+cd svc-cc-j/src/
 uvicorn api:app --port 18000 --reload &
 cd ../..
 cd app/src/main/java/gov/va/vro/config 
