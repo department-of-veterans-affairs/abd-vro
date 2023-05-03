@@ -9,17 +9,17 @@ from fastapi.openapi.utils import get_openapi
 
 
 def export_openapi(app: FastAPI, filename: str) -> None:
-    """ Export the OpenAPI specification of a FastAPI app to a JSON file. """
+    """Export the OpenAPI specification of a FastAPI app to a JSON file."""
     openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        routes=app.routes
+        title=app.title, version=app.version, routes=app.routes
     )
 
-    with open(filename, 'w') as outfile:
+    with open(filename, "w") as outfile:
         json.dump(openapi_schema, outfile, indent=4)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from api import app
-    export_openapi(app, 'fastapi.json')
-    print('Done!')
+
+    export_openapi(app, "fastapi.json")
+    print("Done!")
