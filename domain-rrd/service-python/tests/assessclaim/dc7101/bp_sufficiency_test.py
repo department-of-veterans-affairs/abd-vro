@@ -1637,7 +1637,7 @@ def test_bp_reader(request_body, bp_calculator_result):
                         "display": "Diastolic blood pressure",
                         "unit": "mm[Hg]",
                         "value": 110
-                     },
+                    },
                     "systolic": {
                         "code": "8480-6",
                         "display": "Systolic blood pressure",
@@ -1651,24 +1651,24 @@ def test_bp_reader(request_body, bp_calculator_result):
                     "organization": "LYONS VA MEDICAL CENTER"
                 },
                 {
-                     "diastolic": {
-                         "code": "8462-4",
-                         "display": "Diastolic blood pressure",
-                         "unit": "mm[Hg]",
-                         "value": 110
-                     },
-                     "systolic": {
-                         "code": "8480-6",
-                         "display": "Systolic blood pressure",
-                         "unit": "mm[Hg]",
-                         "value": 200
-                     },
-                     "dataSource": "MAS",
-                     "date": "2021-10-10",
-                     "receiptDate": "",
-                     "practitioner": "DR. JANE460 DOE922 MD",
-                     "organization": "VAMC Other Output Reports"
-                 }
+                    "diastolic": {
+                        "code": "8462-4",
+                        "display": "Diastolic blood pressure",
+                        "unit": "mm[Hg]",
+                        "value": 110
+                    },
+                    "systolic": {
+                        "code": "8480-6",
+                        "display": "Systolic blood pressure",
+                        "unit": "mm[Hg]",
+                        "value": 200
+                    },
+                    "dataSource": "MAS",
+                    "date": "2021-10-10",
+                    "receiptDate": "",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "VAMC Other Output Reports"
+                }
             ],
             [
                 {
