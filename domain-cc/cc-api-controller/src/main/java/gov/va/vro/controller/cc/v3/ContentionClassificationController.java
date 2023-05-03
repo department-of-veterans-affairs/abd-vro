@@ -32,8 +32,7 @@ public class ContentionClassificationController implements CCResource {
     final ObjectMapper mapper = new ObjectMapper();
     HashMap<String, Object> mapFromString = new HashMap<>();
     try {
-      mapFromString = mapper.readValue(jsonString, new TypeReference<HashMap<String, Object>>() {
-      });
+      mapFromString = mapper.readValue(jsonString, new TypeReference<HashMap<String, Object>>() {});
     } catch (IOException e) {
       log.error("Exception launched while trying to parse String to Map.", e);
     }
@@ -42,7 +41,7 @@ public class ContentionClassificationController implements CCResource {
 
   @Override
   public ResponseEntity<ResourceResponse> callEndpoint(String endpoint, JsonNode request)
-          throws ResourceException {
+      throws ResourceException {
     log.info("callEndpoint logging info");
     try {
       log.info("endpoint received: {}", endpoint);
@@ -52,14 +51,14 @@ public class ContentionClassificationController implements CCResource {
       payload_for_cc.put("payload", request);
       log.info("sending this to the RabbitMQ: {}", payload_for_cc);
 
-      var result = camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, payload_for_cc.toString(), String.class);
+      var result =
+          camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, payload_for_cc.toString(), String.class);
       log.info("camel result received: {}", result);
       var result_json = new JSONObject(result);
       var statusCode = result_json.getInt("status_code");
       var resultResponseBodyObject = getMapFromString(result).get("response_body");
 
-      ResourceResponse response =
-          new ResourceResponse(statusCode, resultResponseBodyObject);
+      ResourceResponse response = new ResourceResponse(statusCode, resultResponseBodyObject);
 
       return new ResponseEntity<>(response, HttpStatus.valueOf(statusCode));
     } catch (Exception ex) {

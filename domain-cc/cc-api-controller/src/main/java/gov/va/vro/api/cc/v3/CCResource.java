@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.validation.Valid;
 
 @RequestMapping(value = "/v3", produces = "application/json")
@@ -21,7 +22,6 @@ public interface CCResource {
   @Timed(value = "resource.post")
   @ResponseBody
   ResponseEntity<ResourceResponse> callEndpoint(
-          @PathVariable(value = "endpoint") String endpoint,
-          @Valid @RequestBody JsonNode request)
+      @PathVariable(value = "endpoint") String endpoint, @Valid @RequestBody JsonNode request)
       throws MethodArgumentNotValidException, ResourceException;
 }
