@@ -162,8 +162,8 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_CLAIM_URL: "mock-bip-claims-api:8097"
-      BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
+      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
+      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
     depends_on:
       postgres-service:
         condition: service_healthy
@@ -351,8 +351,8 @@ services:
     image: va/abd_vro-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "8094:8094"
-      - "8096:8096"
+      - "20310:20310"
+      - "20316:20316"
     environment:
       <<: *common-vars
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
@@ -368,8 +368,8 @@ services:
     image: va/abd_vro-mock-bip-claims-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "8097:8097"
-      - "8099:8099"
+      - "20300:20300"
+      - "20306:20306"
     environment:
       <<: *common-vars
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
@@ -384,7 +384,7 @@ services:
     image: va/abd_vro-mock-mas-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "9001:9001"
+      - "20400:20400"
     environment:
       <<: *common-vars
       MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
@@ -403,7 +403,7 @@ services:
     image: va/abd_vro-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "9004:9004"
+      - "20200:20200"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
@@ -417,7 +417,7 @@ services:
     image: va/abd_vro-mock-slack:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "9008:9008"
+      - "20100:20100"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars

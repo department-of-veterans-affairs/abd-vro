@@ -10,4 +10,4 @@ fi
 
 export ENV=end2end-test
 source scripts/setenv.sh
-export SLACK_EXCEPTION_WEBHOOK=http://mock-slack:9008/slack-messages
+export SLACK_EXCEPTION_WEBHOOK=http://mock-slack:20100/slack-messages

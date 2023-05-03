@@ -9,7 +9,7 @@ spring:
     serialization.WRITE_DATES_AS_TIMESTAMPS: false
 
 server:
-  port: 8097
+  port: 20300
   ssl:
     enabled: true
     key-store: classpath:server_keystore.p12
@@ -19,7 +19,7 @@ server:
     trust-store: classpath:client_truststore.p12
     trust-store-password: client_truststore_pw
     trust-store-type: PKCS12
-  http.port: 8099
+  http.port: 20306
 
 ## Logging
 logging:
@@ -29,7 +29,7 @@ logging:
 # Health
 management:
   server:
-    port: 8080
+    port: 20301
     ssl.enabled: false
   endpoint:
     health:

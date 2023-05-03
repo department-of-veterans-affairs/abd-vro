@@ -58,10 +58,10 @@ public class VroV2Tests {
   private static final String AUTOMATED_CLAIM_URL = BASE_URL + "/automatedClaim";
   private static final String CLAIM_INFO_URL = BASE_URL + "/claim-info/";
   private static final String EXAM_ORDER_INFO_URL = BASE_URL + "/exam-order-info";
-  private static final String UPDATES_URL = "http://localhost:8099/updates/";
-  private static final String RECEIVED_FILES_URL = "http://localhost:8096/received-files/";
-  private static final String ORDER_EXAM_URL = "http://localhost:9001/checkExamOrdered/";
-  private static final String SLACK_URL = "http://localhost:9008/slack-messages/";
+  private static final String UPDATES_URL = "http://localhost:20306/updates/";
+  private static final String RECEIVED_FILES_URL = "http://localhost:20316/received-files/";
+  private static final String ORDER_EXAM_URL = "http://localhost:20400/checkExamOrdered/";
+  private static final String SLACK_URL = "http://localhost:20100/slack-messages/";
 
   private static final String JWT_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMwOTI5NTJlLTM4ZDYtNDNjNi05MzBlLWZmOTNiYTUx"
@@ -790,7 +790,7 @@ public class VroV2Tests {
   /**
    * This is a full positive end-to-end test for an increase case. See
    * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
-   * http://localhost:8096/received-files/9999375
+   * http://localhost:20316/received-files/9999375
    */
   @Test
   void testAutomatedClaimFullPositiveIncrease() {
@@ -808,7 +808,7 @@ public class VroV2Tests {
   /**
    * This is a full positive end-to-end test for an presumptive case. See
    * testAutomatedClaimFullPositive to see what is being verified. After the run get the pdf from
-   * http://localhost:8096/received-files/9999376
+   * http://localhost:20316/received-files/9999376
    */
   @Test
   void testAutomatedClaimFullPositivePresumptive() {
@@ -832,7 +832,7 @@ public class VroV2Tests {
   /**
    * This is a full positive end-to-end test for a case with incomplete blood pressures. See
    * testAutomatedClaimFullPositiveTwo to see what is being verified. After the run get the pdf from
-   * http://localhost:8096/received-files/9999380
+   * http://localhost:20316/received-files/9999380
    */
   @Test
   void testAutomatedClaimFullPositiveIncompleteBloodPressures() {
