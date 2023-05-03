@@ -52,7 +52,7 @@ spec:
             limits:
               cpu: 10m
               memory: 256Mi
-        - name: dbinit{{ include "vro.containerSuffix" . }}
+        - name: db-init{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
@@ -118,8 +118,6 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-            - name: BIP_APPLICATION_ISS
-              value: virtual_regional_office
             - name: BIP_CLAIM_URL
               value: {{ .Values.global.bip.bipClaimUrl }}
             - name: BIP_EVIDENCE_URL

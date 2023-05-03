@@ -28,7 +28,7 @@ public class LayeredArchitectureTest {
         .layer("SPI")
         .definedBy(packageName + "..service.spi..")
         .layer("Services")
-        .definedBy(packageName + "..service.provider..", "..service.db..", "..service.event..")
+        .definedBy(packageName + "..service.provider..", "..service.rrd.db..", "..service.event..")
         .layer("Persistence")
         .definedBy(packageName + "..persistence..")
         .whereLayer("API")

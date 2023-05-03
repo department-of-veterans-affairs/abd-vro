@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
 
 
 def sort_bp(bp_readings):
@@ -65,10 +65,6 @@ def bp_reader(request_body):
     bp_readings = request_body["evidence"]["bp_readings"]
 
     for reading in bp_readings:
-        try:
-            reading["receiptDate"] = format_date(datetime.strptime(reading["receiptDate"], "%Y-%m-%d").date())
-        except (ValueError, KeyError):
-            reading["receiptDate"] = ""
         try:
             bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
             reading["dateFormatted"] = format_date(bp_reading_date)

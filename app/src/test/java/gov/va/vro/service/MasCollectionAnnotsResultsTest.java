@@ -1,15 +1,15 @@
 package gov.va.vro.service;
 
-import static gov.va.vro.model.mas.MasAnnotType.BLOOD_PRESSURE;
+import static gov.va.vro.model.rrd.mas.MasAnnotType.BLOOD_PRESSURE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.va.vro.model.AbdEvidence;
-import gov.va.vro.model.mas.MasAnnotation;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.MasDocument;
+import gov.va.vro.model.rrd.AbdEvidence;
+import gov.va.vro.model.rrd.mas.MasAnnotation;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.MasDocument;
 import gov.va.vro.service.provider.mas.service.mapper.MasCollectionAnnotsResults;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;

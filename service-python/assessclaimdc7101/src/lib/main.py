@@ -3,8 +3,9 @@ from datetime import date
 from typing import Dict
 
 import data_model
+import utils
 
-from . import bp_calculator, conditions, medications, utils
+from . import bp_calculator, conditions, medications
 
 
 def assess_hypertension(event: Dict):

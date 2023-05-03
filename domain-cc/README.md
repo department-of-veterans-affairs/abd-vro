@@ -58,6 +58,7 @@ pre-commit install
 source ~/.virtualenvs/domain-cc/bin/activate
 cd python_src/
 uvicorn api:app --port 18000 --reload &
+
 cd ../..
 cd app/src/main/java/gov/va/vro/config 
 curl localhost:8000/openapi.json > domain-cc-openapi.json

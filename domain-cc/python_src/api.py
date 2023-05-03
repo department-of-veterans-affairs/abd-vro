@@ -11,3 +11,4 @@ async def root():
 @app.post("/get_classification")
 def get_classification():
     return {"classification_code": 6602, "classification_name": "asthma"}
+

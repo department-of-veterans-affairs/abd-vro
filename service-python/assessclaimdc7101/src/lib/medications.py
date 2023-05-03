@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
 
 
 def sort_med(medication_list):
@@ -61,10 +61,6 @@ def filter_mas_medication(request_body):
             except (ValueError, KeyError):
                 medication["dateFormatted"] = ''
                 medication_without_date.append(medication)
-            try:
-                medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
-            except (ValueError, KeyError):
-                medication["receiptDate"] = ""
 
     response = {"twoYearsMedications": sort_med(medication_two_years),
                 "allMedications": sort_med(medication_with_date) + medication_without_date,
