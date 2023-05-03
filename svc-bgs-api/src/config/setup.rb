@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'active_support'
+
 # https://www.cloudbees.com/blog/writing-microservice-in-ruby
 # This is the file that we’ll always load initially (even in the spec_helper.rb),
 # so it’s desirable that it doesn’t do too much (or your tests will be slow).
@@ -31,7 +35,8 @@ Bundler.require(:default)
 lib_path = File.expand_path '../../lib', __FILE__
 $LOAD_PATH.unshift lib_path
 
-ENVIRONMENT = ENV['ENV'] || 'local'
+ENVIRONMENT = ENV['ENV'].presence || 'local'
+puts "Using environment #{ENVIRONMENT}..."
 
 require 'yaml'
 # some settings (like the RabbitMQ connection options or some API keys for the services we use)
