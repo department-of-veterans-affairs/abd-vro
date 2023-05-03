@@ -51,6 +51,11 @@ x-rabbitmq-client-vars: &rabbitmq-client-vars
   RABBITMQ_RETRY_LIMIT: 3
   RABBITMQ_TIMEOUT: 10800
 
+# All VRO microservices depend on RabbitMQ
+x-svc-depends-on-mq: &svc-depends-on-mq
+  rabbitmq-service:
+    condition: service_healthy
+
 x-common-security-opt: &common-security-opt
   security_opt:
     - no-new-privileges:true
@@ -73,7 +78,6 @@ services:
 
   rabbitmq-service:
     image: rabbitmq:3-management
-    hostname: rabbitmq-service
     # Specifying user to reduce/eliminate startup error about erlang.cookie
     # based on https://github.com/docker-library/rabbitmq/issues/318
     user: rabbitmq
@@ -82,9 +86,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
-    expose:
-      - "5672"
-      - "15672"
     networks:
       - internal
     ports:
@@ -96,9 +97,6 @@ services:
 
   redis-service:
     image: redis
-    hostname: redis-service
-    expose:
-      - "6379"
     networks:
       - internal
     ports:
@@ -107,14 +105,11 @@ services:
 
   postgres-service:
     image: va/abd_vro-postgres
-    hostname: postgres-service
     healthcheck:
       test: "pg_isready -U $$FLYWAY_USER -d $$FLYWAY_DB"
       interval: 10s
       timeout: 5s
       retries: 5
-    expose:
-      - "5432"
     environment:
       POSTGRES_USER: ${POSTGRES_SUPER_USER}
       POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
@@ -152,7 +147,6 @@ services:
   app:
     image: va/abd_vro-app:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: app
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -193,9 +187,8 @@ services:
     environment:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
+      <<: *svc-depends-on-mq
       postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
         condition: service_healthy
     networks:
       - internal
@@ -207,8 +200,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -219,8 +211,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -231,8 +222,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -243,8 +233,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -255,8 +244,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -267,8 +255,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -279,8 +266,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -292,10 +278,9 @@ services:
       MODE: "docker"
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
+      <<: *svc-depends-on-mq
       redis-service:
         condition: service_started
-      rabbitmq-service:
-        condition: service_healthy
     networks:
       - internal
 
@@ -309,8 +294,7 @@ services:
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -321,8 +305,7 @@ services:
     environment:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on-mq
     networks:
       - internal
 
@@ -333,10 +316,9 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
+      <<: *svc-depends-on-mq
       redis-service:
         condition: service_started
-      rabbitmq-service:
-        condition: service_healthy
     networks:
       - internal
 
@@ -351,9 +333,8 @@ services:
     environment:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
+      <<: *svc-depends-on-mq
       postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
         condition: service_healthy
       redis-service:
         condition: service_started
@@ -369,10 +350,8 @@ services:
     profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-bip-ce-api
     ports:
       - "8094:8094"
-# health check is on 8080 and doesn't need to be exposed - "8095:8095"
       - "8096:8096"
     environment:
       <<: *common-vars
@@ -388,10 +367,8 @@ services:
     profiles: ["all","mock","bip","v2-mocks"]
     image: va/abd_vro-mock-bip-claims-api:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-bip-claims-api
     ports:
       - "8097:8097"
-# health check is on 8080 and doesn't need to be exposed - "8098:8098"
       - "8099:8099"
     environment:
       <<: *common-vars
@@ -406,10 +383,8 @@ services:
     profiles: ["all","mock","mas","v2-mocks"]
     image: va/abd_vro-mock-mas-api:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-mas-api
     ports:
       - "9001:9001"
-# health check is on 8080 and doesn't need to be exposed - "9002:9002"
     environment:
       <<: *common-vars
       MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
@@ -427,7 +402,6 @@ services:
     profiles: ["all","mock","lh","v2-mocks"]
     image: va/abd_vro-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-lighthouse-api
     ports:
       - "9004:9004"
     environment:
@@ -442,10 +416,8 @@ services:
     profiles: ["all","mock","lh","v2-mocks"]
     image: va/abd_vro-mock-slack:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-slack
     ports:
       - "9008:9008"
-# health check is on 8080 and doesn't need to be exposed - "9009:9009"
     environment:
       # ENV=local causes application-local.properties to be used, in addition to the default application.properties
       <<: *common-vars
