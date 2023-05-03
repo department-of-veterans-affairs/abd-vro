@@ -51,10 +51,14 @@ x-rabbitmq-client-vars: &rabbitmq-client-vars
   RABBITMQ_RETRY_LIMIT: 3
   RABBITMQ_TIMEOUT: 10800
 
-# All VRO microservices depend on RabbitMQ
-x-svc-depends-on-mq: &svc-depends-on-mq
+# Don't start VRO microservices until VRO Platform services are up
+x-svc-depends-on: &svc-depends-on
   rabbitmq-service:
     condition: service_healthy
+  postgres-service:
+    condition: service_healthy
+  redis-service:
+    condition: service_started
 
 x-common-security-opt: &common-security-opt
   security_opt:
@@ -165,12 +169,7 @@ services:
       BIP_CLAIM_URL: "mock-bip-claims-api:20300"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
     depends_on:
-      postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
-        condition: service_healthy
-      redis-service:
-        condition: service_started
+      <<: *svc-depends-on
       db-init:
         condition: service_started
     volumes:
@@ -187,9 +186,7 @@ services:
     environment:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
-      postgres-service:
-        condition: service_healthy
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -200,7 +197,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -211,7 +208,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -222,7 +219,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -233,7 +230,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -244,7 +241,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -255,7 +252,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -266,7 +263,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -278,9 +275,7 @@ services:
       MODE: "docker"
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
-      redis-service:
-        condition: service_started
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -294,7 +289,7 @@ services:
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -305,7 +300,7 @@ services:
     environment:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
     depends_on:
-      <<: *svc-depends-on-mq
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -316,9 +311,7 @@ services:
     environment:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
-      redis-service:
-        condition: service_started
+      <<: *svc-depends-on
     networks:
       - internal
 
@@ -333,13 +326,7 @@ services:
     environment:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
-      <<: *svc-depends-on-mq
-      postgres-service:
-        condition: service_healthy
-      redis-service:
-        condition: service_started
-      db-init:
-        condition: service_started
+      <<: *svc-depends-on
     volumes:
       - pgdata:/persist/postgres
       - tracking:/persist/tracking
