@@ -3,7 +3,7 @@ package gov.va.vro.end2end.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.provider.utils.DiagnosisLookup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

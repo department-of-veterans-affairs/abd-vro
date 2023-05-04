@@ -16,6 +16,7 @@ spring:
 ## Actuator for health check
 management:
   server:
+    port: 10021
   endpoint:
     health:
       show-details: always

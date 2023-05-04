@@ -35,7 +35,7 @@ public class TestSpec {
     spec.setVeteranFileNumber("763789990");
     spec.setFileContent("Hello World !!, This is a test file.");
     spec.setFileName("example.pdf");
-    spec.setPort(8094);
+    spec.setPort(20310);
     return spec;
   }
 }

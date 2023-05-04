@@ -5,12 +5,12 @@ spring:
 
 # server settings
 server:
-  port: 9001
+  port: 20400
 
 # Health
 management:
   server:
-    port: 8080
+    port: 20401
     ssl.enabled: false
   endpoint:
     health:
