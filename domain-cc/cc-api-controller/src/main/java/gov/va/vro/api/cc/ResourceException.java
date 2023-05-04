@@ -8,12 +8,6 @@ public class ResourceException extends Exception {
   @Getter private final String resourceId;
   @Getter private final HttpStatus httpStatus;
 
-  //  public ResourceException(String resourceId, HttpStatus httpStatus, String message) {
-  //    super(message);
-  //    this.resourceId = resourceId;
-  //    this.httpStatus = httpStatus;
-  //  }
-
   /**
    * Wraps around exception for sending back to API client.
    *
