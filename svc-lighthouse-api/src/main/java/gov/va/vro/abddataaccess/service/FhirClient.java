@@ -57,7 +57,7 @@ public class FhirClient {
 
   @Autowired private LighthouseApiService lighthouseApiService;
 
-  private String lastUpdated = null;
+  private String lastUpdated = "";
 
   private static class SearchSpec {
     private String resourceType;
@@ -319,14 +319,14 @@ public class FhirClient {
   }
 
   private synchronized String getLastUpdated() {
-    if (lastUpdated == null) {
-      lastUpdated = "";
+    if (lastUpdated.isEmpty()) {
       String lastUpdatedDate = properties.getFilterLastUpdatedDate();
       if ((lastUpdatedDate != null) && !lastUpdatedDate.isEmpty()) {
         log.info("Update lastUpdated to {}", lastUpdatedDate);
         SimpleDateFormat dft = new SimpleDateFormat(LAST_UPDATED_DATE_FORMAT);
         try {
-          Date date = dft.parse(lastUpdatedDate);
+          // Verify that it is in the expected date format
+          dft.parse(lastUpdatedDate);
           lastUpdated = lastUpdatedDate;
           log.info("Set lastUpdated search parameter to {}", lastUpdated);
         } catch (ParseException e) {
