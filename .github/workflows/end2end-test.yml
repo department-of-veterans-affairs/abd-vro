@@ -43,14 +43,16 @@ jobs:
           source scripts/setenv.sh
           export COMPOSE_PROFILES="v2,v2-mocks,pdfgen,lh"
           export -p | sed 's/declare -x //'
-          ./gradlew :app:dockerComposeUp
+
           ./gradlew :mocks:dockerComposeUp
+          sleep 20
+          docker ps
+
+          ./gradlew :app:dockerComposeUp
+          sleep 20
+          docker ps
         env:
           ENV: "end2end-test"
-
-      - name: "Sleep a few seconds"
-        # App container is not immediately ready
-        run: sleep 20
 
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1
@@ -63,7 +65,9 @@ jobs:
           timeout: 30000
 
       - name: "Run the end-to-end tests"
-        run: ./gradlew :app:end2EndTest --info
+        run: |
+          docker ps
+          ./gradlew :app:end2EndTest --info
         env:
           ENV: "end2end-test"
 
