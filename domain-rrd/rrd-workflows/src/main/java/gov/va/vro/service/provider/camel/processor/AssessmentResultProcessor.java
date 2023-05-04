@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.services;
+package gov.va.vro.service.provider.camel.processor;
 
 import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
 import gov.va.vro.service.spi.db.SaveToDbService;

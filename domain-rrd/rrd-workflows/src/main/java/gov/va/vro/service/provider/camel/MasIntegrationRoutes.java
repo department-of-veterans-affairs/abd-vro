@@ -1,15 +1,15 @@
 package gov.va.vro.service.provider.camel;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.auditProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.combineExchangesProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToMasProcessingObject;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.convertToPdfResponse;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.generatePdfProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.lighthouseContinueProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.payloadToClaimProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.setOffRampReasonProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventProcessor;
-import static gov.va.vro.service.provider.camel.MasIntegrationProcessors.slackEventPropertyProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.auditProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.combineExchangesProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.convertToMasProcessingObject;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.convertToPdfResponse;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.generatePdfProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.lighthouseContinueProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.payloadToClaimProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.setOffRampReasonProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.slackEventProcessor;
+import static gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors.slackEventPropertyProcessor;
 
 import gov.va.vro.camel.FunctionProcessor;
 import gov.va.vro.camel.RabbitMqCamelUtils;
@@ -22,20 +22,22 @@ import gov.va.vro.model.rrd.event.EventReason;
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.model.rrd.mas.response.FetchPdfResponse;
 import gov.va.vro.service.provider.ExternalCallException;
-import gov.va.vro.service.provider.MasAccessErrProcessor;
 import gov.va.vro.service.provider.MasConfig;
-import gov.va.vro.service.provider.MasOrderExamProcessor;
-import gov.va.vro.service.provider.MasPollingProcessor;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipClaimService;
+import gov.va.vro.service.provider.camel.processor.EvidenceSummaryDocumentProcessor;
+import gov.va.vro.service.provider.camel.processor.HealthEvidenceProcessor;
+import gov.va.vro.service.provider.camel.processor.LighthouseErrCheckProcessor;
+import gov.va.vro.service.provider.camel.processor.MasAccessErrProcessor;
+import gov.va.vro.service.provider.camel.processor.MasAssessmentResultProcessor;
+import gov.va.vro.service.provider.camel.processor.MasIntegrationProcessors;
+import gov.va.vro.service.provider.camel.processor.MasOrderExamProcessor;
+import gov.va.vro.service.provider.camel.processor.MasPollingProcessor;
+import gov.va.vro.service.provider.camel.processor.ServiceLocationsExtractorProcessor;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.MasProcessingObject;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;
 import gov.va.vro.service.provider.mas.service.MasProcessingService;
-import gov.va.vro.service.provider.services.EvidenceSummaryDocumentProcessor;
-import gov.va.vro.service.provider.services.HealthAssessmentErrCheckProcessor;
-import gov.va.vro.service.provider.services.HealthEvidenceProcessor;
-import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.audit.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +113,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
 
   private final EvidenceSummaryDocumentProcessor evidenceSummaryDocumentProcessor;
 
-  private final HealthAssessmentErrCheckProcessor healthAssessmentErrCheckProcessor;
+  private final LighthouseErrCheckProcessor lighthouseErrCheckProcessor;
 
   public static final String LIGHTHOUSE_ERROR_MSG = "Lighthouse health data not retrieved.";
 
@@ -309,7 +311,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .setProperty("retryBody", simple("${body}"))
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        .process(healthAssessmentErrCheckProcessor) // Check for errors, and throw or do not alter
+        .process(lighthouseErrCheckProcessor) // Check for errors, and throw or do not alter
         .endDoTry()
         .doCatch(ExchangeTimedOutException.class, ExternalCallException.class)
         .log("Retrying lighthouse due to error")
@@ -317,7 +319,7 @@ public class MasIntegrationRoutes extends RouteBuilder {
         .removeProperty("retryBody")
         .routingSlip(method(slipClaimSubmitRouter, "routeClaimSubmit"))
         .convertBodyTo(HealthDataAssessment.class)
-        .process(healthAssessmentErrCheckProcessor)
+        .process(lighthouseErrCheckProcessor)
         .endDoCatch();
   }
 
