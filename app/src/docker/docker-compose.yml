@@ -5,8 +5,13 @@ networks:
   external:
 
 volumes:
+  # Volumes to simulate persistent volumes in LHDI deployment environments
   pgdata:
   tracking:
+  # The following are created so the volumes for the images have labels
+  var_pgdata:
+  var_rabbitmq:
+  var_redis:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -90,6 +95,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
+    volumes:
+      - var_rabbitmq:/var/lib/rabbitmq
     networks:
       - internal
     ports:
@@ -101,6 +108,8 @@ services:
 
   redis-service:
     image: redis
+    volumes:
+      - var_redis:/data
     networks:
       - internal
     ports:
@@ -123,6 +132,7 @@ services:
       PGDATA: /persist/postgres/pgdata
     volumes:
       - pgdata:/persist/postgres
+      - var_pgdata:/var/lib/postgresql/data
     networks:
       - internal
 # NOTE, security favors removing external access from the database container
