@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @Timed("cc") // See https://www.baeldung.com/micrometer
 @Tag(name = "CC Domain")
 public interface CCResource {
-  @PostMapping("/domain-cc/{endpoint}")
+  @PostMapping("/contention-classification/{endpoint}")
   @Timed(value = "resource.post")
   @ResponseBody
   ResponseEntity<ResourceResponse> callEndpoint(

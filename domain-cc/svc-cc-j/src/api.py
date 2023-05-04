@@ -6,9 +6,9 @@ from pydantic_models import ClaimForIncrease, PredictedClassification
 from typing import Optional
 
 
-@app.post("/get_classification")
+@app.post("/classifier")
 def get_classification(
     claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
-    print(f'received diagnostic code: {claim_for_increase["diagnostic_code"]}')
+    print(f'claim for increase: {claim_for_increase}')
     return {"classification_code": 6602, "classification_name": "asthma"}
