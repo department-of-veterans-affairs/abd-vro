@@ -33,3 +33,8 @@ runs:
       with:
         python-version: "3.9"
         cache: "pip"
+
+    - name: "Install Python dependencies"
+      shell: bash
+      run: |
+        pip install -r domain-rrd/service-python/requirements.txt
