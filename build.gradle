@@ -111,14 +111,14 @@ subprojects {
     // add a listener to all tasks of type Test
     tasks.withType(Test) {
       afterTest { TestDescriptor descriptor, TestResult result ->
-        if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+        if (result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE) {
           failedTests << "${descriptor.className}::${descriptor.name}"
         }
       }
     }
     // print out tracked failed tests when the build has finished
     gradle.buildFinished {
-      if(!failedTests.empty){
+      if (!failedTests.empty) {
         println "Failed tests:"
         failedTests.each { failedTest ->
           println "- " + failedTest
@@ -132,6 +132,7 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
+
   // Modules that use Java code
   codeModules = [
     ':app',
