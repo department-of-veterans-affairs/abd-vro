@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.services;
+package gov.va.vro.service.provider.camel.processor;
 
 import gov.va.vro.model.rrd.HealthDataAssessment;
 import gov.va.vro.service.provider.ExternalCallException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HealthAssessmentErrCheckProcessor implements Processor {
+public class LighthouseErrCheckProcessor implements Processor {
   @Override
   @SneakyThrows
   public void process(Exchange exchange) {

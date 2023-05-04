@@ -8,12 +8,12 @@
 
 spring.config.import: application-local.yml
 
-spring.security.oauth2.client.provider.mas.uri: "http://localhost:9001/token"
+spring.security.oauth2.client.provider.mas.uri: "http://localhost:20400/token"
 
-masAPIProvider.baseURL: "http://localhost:9001"
+masAPIProvider.baseURL: "http://localhost:20400"
 masAPIProvider.createExamOrderPath: "/pcOrderExam"
 
 slack:
   exception:
-    webhook: "http://localhost:9008/slack-messages"
+    webhook: "http://localhost:20100/slack-messages"
     channel: benefits-vro-end2end
