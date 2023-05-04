@@ -1,6 +1,6 @@
 package gov.va.vro.service.provider.camel;
 
-import gov.va.vro.service.provider.services.DiagnosisLookup;
+import gov.va.vro.service.provider.utils.DiagnosisLookup;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

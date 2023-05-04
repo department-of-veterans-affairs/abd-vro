@@ -1,6 +1,8 @@
-package gov.va.vro.service.provider;
+package gov.va.vro.service.provider.camel.processor;
 
 import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
+import gov.va.vro.service.provider.CamelEntrance;
+import gov.va.vro.service.provider.MasConfig;
 import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
 import gov.va.vro.service.provider.mas.MasException;
 import gov.va.vro.service.provider.mas.service.MasCollectionService;

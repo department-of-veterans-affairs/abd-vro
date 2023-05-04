@@ -1,5 +1,6 @@
-package gov.va.vro.service.provider.services;
+package gov.va.vro.service.provider.camel.processor;
 
+import gov.va.vro.service.provider.utils.DiagnosisLookup;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.GeneratePdfPayload;
 import lombok.RequiredArgsConstructor;

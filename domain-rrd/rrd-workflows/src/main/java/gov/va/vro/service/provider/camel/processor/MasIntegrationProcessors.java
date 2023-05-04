@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.camel;
+package gov.va.vro.service.provider.camel.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.FunctionProcessor;
