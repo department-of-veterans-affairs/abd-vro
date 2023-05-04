@@ -1,8 +1,8 @@
 version: '3.9'
 
 networks:
-  internal:
-  external:
+  # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
+  intranet:
 
 volumes:
   # Volumes to simulate persistent volumes in LHDI deployment environments
@@ -98,7 +98,7 @@ services:
     volumes:
       - var_rabbitmq:/var/lib/rabbitmq
     networks:
-      - internal
+      - intranet
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -111,7 +111,7 @@ services:
     volumes:
       - var_redis:/data
     networks:
-      - internal
+      - intranet
     ports:
       - "6379:6379"
     command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
@@ -134,10 +134,7 @@ services:
       - pgdata:/persist/postgres
       - var_pgdata:/var/lib/postgresql/data
     networks:
-      - internal
-# NOTE, security favors removing external access from the database container
-# This external access to the DB is enabled only for non-production environments.
-      - external
+      - intranet
     ports:
       - "5432:5432"
 
@@ -147,7 +144,7 @@ services:
       postgres-service:
         condition: service_healthy
     networks:
-      - internal
+      - intranet
     environment:
       FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
@@ -186,8 +183,7 @@ services:
       # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
       - tracking:/persist/tracking
     networks:
-      - internal
-      - external
+      - intranet
 
   svc-assessor-dc7101:
     profiles: ["all","svc","assessor","v2"]
@@ -198,7 +194,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-assessor-dc6602:
     profiles: ["all","svc","assessor","v2"]
@@ -209,7 +205,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-assessor-dc6602v2:
     profiles: ["all","svc","assessor","prototype"]
@@ -220,7 +216,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-assessor-cancer:
     profiles: ["all","svc","assessor","prototype"]
@@ -231,7 +227,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-assessor-dc6510:
     profiles: ["all","svc","assessor","prototype"]
@@ -242,7 +238,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-assessor-dc6522:
     profiles: ["all","svc","assessor","prototype"]
@@ -253,7 +249,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-pdf-generator:
     profiles: ["all","svc","pdfgen"]
@@ -265,7 +261,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-lighthouse-api:
     profiles: ["all","svc","lh"]
@@ -279,7 +275,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-bgs-api:
     profiles: ["all","svc","bgs"]
@@ -290,7 +286,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-feature-toggle:
     profiles: ["all","svc","feature-toggle"]
@@ -301,7 +297,7 @@ services:
     depends_on:
       <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   console:
     profiles: ["all","console"]
@@ -319,4 +315,4 @@ services:
       - pgdata:/persist/postgres
       - tracking:/persist/tracking
     networks:
-      - internal
+      - intranet

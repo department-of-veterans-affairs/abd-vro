@@ -2,8 +2,10 @@ version: '3.9'
 
 # https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects
 networks:
-  # Put these mock services on the same `internal` network as VRO -- see app/src/docker/docker-compose.yml
-  internal:
+  # Put these mock services on the same `vro_intranet` network as VRO -- see app/src/docker/docker-compose.yml
+  vro_intranet:
+    # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
+    external: true
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -38,7 +40,7 @@ services:
     environment:
       <<: *common-vars
     networks:
-      - internal
+      - vro_intranet
 
   mock-lighthouse-api:
     profiles: ["all","lh","v2-mocks"]
@@ -51,7 +53,7 @@ services:
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     networks:
-      - internal
+      - vro_intranet
 
   mock-bip-claims-api:
     profiles: ["all","bip","v2-mocks"]
@@ -67,7 +69,7 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
-      - internal
+      - vro_intranet
 
   mock-bip-ce-api:
     profiles: ["all","bip","v2-mocks"]
@@ -84,7 +86,7 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
     networks:
-      - internal
+      - vro_intranet
 
   mock-mas-api:
     profiles: ["all","mas","v2-mocks"]
@@ -103,4 +105,4 @@ services:
 #      MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
 #      MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
     networks:
-      - internal
+      - vro_intranet
