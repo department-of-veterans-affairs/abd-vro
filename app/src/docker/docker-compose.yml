@@ -420,3 +420,7 @@ services:
       <<: *common-vars
     networks:
       - internal
+
+# For port numbering convention, see https://github.com/department-of-veterans-affairs/abd-vro/wiki/Software-Conventions#port-numbers
+# - 20NNx = mock service ports, where NN is an index
+# - 20NN1 = health check port for mock service NN
