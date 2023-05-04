@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.mockmas.model.MasTokenResponse;
 import gov.va.vro.mockmas.model.OrderExamRequest;
 import gov.va.vro.mockmas.model.OrderExamResponse;
-import gov.va.vro.model.mas.MasCollectionAnnotation;
-import gov.va.vro.model.mas.request.MasCollectionAnnotationRequest;
+import gov.va.vro.model.rrd.mas.MasCollectionAnnotation;
+import gov.va.vro.model.rrd.mas.request.MasCollectionAnnotationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,11 @@ public class MasApiService {
   private final MasApiProperties apiProperties;
   private final MasOauth2Properties oauth2Properties;
 
+  /**
+   * Retrieves token from the MAS development server.
+   *
+   * @return MasTokenResponse
+   */
   public MasTokenResponse getToken() {
     final HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -47,6 +52,12 @@ public class MasApiService {
     return response.getBody();
   }
 
+  /**
+   * Retrieves the collection from the MAS development server.
+   *
+   * @param collectionId
+   * @return public List<MasCollectionAnnotation> annotations for the collection
+   */
   @SneakyThrows
   public List<MasCollectionAnnotation> getAnnotation(int collectionId) {
     MasTokenResponse tokenResponse = getToken();
@@ -69,6 +80,12 @@ public class MasApiService {
     return mapper.readValue(responseBody, new TypeReference<>() {});
   }
 
+  /**
+   * Order an exam for the collection.
+   *
+   * @param collectionId
+   * @return OrderExamResponse
+   */
   @SneakyThrows
   public OrderExamResponse orderExam(int collectionId) {
     MasTokenResponse tokenResponse = getToken();

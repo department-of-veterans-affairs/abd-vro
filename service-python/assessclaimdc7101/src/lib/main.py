@@ -3,8 +3,9 @@ from datetime import date
 from typing import Dict
 
 import data_model
+import utils
 
-from . import bp_calculator, conditions, medications, utils
+from . import bp_calculator, conditions, medications
 
 
 def assess_hypertension(event: Dict):
@@ -69,11 +70,14 @@ def assess_sufficiency(event: Dict):
         event["claimSubmissionDateTime"] = str(f"{date.today()}T04:00:00Z")
 
     if validation_results["is_valid"] and "disabilityActionType" in event:
+        all_bp_length = len(event["evidence"]["bp_readings"])
+        event["evidence"]["bp_readings"] = bp_calculator.deduplicate(event["evidence"]["bp_readings"])
         bp_calculation = bp_calculator.bp_reader(event)
         relevant_conditions = conditions.conditions_calculation(event)
         relevant_medications = medications.filter_mas_medication(event)
         bp_display = bp_calculation["twoYearsBp"]
         conditions_display = relevant_conditions["twoYearsConditions"]
+        medication_display = relevant_medications["twoYearsMedications"]
 
         sufficient = None
         if event["disabilityActionType"] == "INCREASE":
@@ -84,6 +88,7 @@ def assess_sufficiency(event: Dict):
         if event["disabilityActionType"] == "NEW":
             bp_display = bp_calculation["allBp"]  # Include all bp readings to display
             conditions_display = relevant_conditions["conditions"]
+            medication_display = relevant_medications["allMedications"]
             if relevant_conditions["relevantConditionsLighthouseCount"] >= 1:
                 if bp_calculation["twoYearsBpCount"] >= 3:
                     sufficient = True
@@ -97,7 +102,7 @@ def assess_sufficiency(event: Dict):
                 "evidence": {
                     "bp_readings": bp_display,
                     "conditions": conditions_display,
-                    "medications": relevant_medications["medications"],
+                    "medications": medication_display,
                     "documentsWithoutAnnotationsChecked": utils.docs_without_annotations_ids(event)
                 },
                 "evidenceSummary": {
@@ -107,7 +112,9 @@ def assess_sufficiency(event: Dict):
                     "twoYearsElevatedBpCount": bp_calculation["twoYearsElevatedBpCount"],
                     "relevantConditionsLighthouseCount": relevant_conditions["relevantConditionsLighthouseCount"],
                     "totalConditionsCount": relevant_conditions["totalConditionsCount"],
-                    "medicationsCount": relevant_medications["medicationsCount"]
+                    "allMedicationsCount": relevant_medications["allMedicationsCount"],
+                    "twoYearsMedicationsCount": relevant_medications["twoYearsMedicationsCount"],
+                    "lighthouseDuplicateBpCount": all_bp_length - bp_calculation["totalBpCount"]
                 },
                 "sufficientForFastTracking": sufficient,
                 "claimSubmissionDateTime": event["claimSubmissionDateTime"],

@@ -1,7 +1,7 @@
 package gov.va.vro.mockbipce.api;
 
-import gov.va.vro.model.bipevidence.response.UploadResponse;
-import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
+import gov.va.vro.model.rrd.bipevidence.response.UploadResponse;
+import gov.va.vro.model.rrd.bipevidence.response.VefsErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

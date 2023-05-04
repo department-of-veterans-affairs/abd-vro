@@ -16,7 +16,7 @@ buildscript {
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
   id("org.ajoberstar.grgit") version "${grgit_version}" apply false
-  id("io.freefair.lombok") version "6.6.3" apply false
+  id("io.freefair.lombok") version "8.0.1" apply false
   id("org.springframework.boot") version "${spring_boot_version}" apply false
   id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
   id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
@@ -135,12 +135,11 @@ ext {
   // Modules that use Java code
   codeModules = [
     ':app',
-    ':api',
-    ':controller',
     ':persistence:model',
     ':shared:lib-camel-connector',
-    ':service:provider',
-    ':service:spi',
+    ':domain-rrd:rrd-api-controller',
+    ':domain-rrd:rrd-workflows',
+    ':domain-rrd:rrd-shared',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
@@ -152,7 +151,8 @@ ext {
     ':domain-xample:xample-api-controller',
     ':domain-xample:xample-shared',
     ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j'
+    ':domain-xample:svc-xample-j',
+    ':domain-cc:cc-api-controller'
   ]
   // Modules that create Docker images
   dockerModules = [

@@ -23,15 +23,17 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 dependencies {
-  implementation project(':shared:domain')
-  implementation project(':api')
-  implementation project(':controller')
   implementation project(':persistence:model')
-  implementation project(':service:provider')
-  implementation project(':service:spi')
-  implementation project(':service:db')
+
+  implementation project(':domain-rrd:rrd-shared')
+  implementation project(':domain-rrd:rrd-api-controller')
+
+  // TODO: probably shouldn't be directly dependent on these
+  implementation project(':domain-rrd:rrd-workflows')
+  implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
+  implementation project(':domain-cc:cc-api-controller')
 
   implementation 'gov.va.starter:open-api'
   // Provides http://localhost:8081/health endpoint used in app's Dockerfile
@@ -79,7 +81,7 @@ dependencies {
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
   end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.27"
+  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
 }
 
 openApi {

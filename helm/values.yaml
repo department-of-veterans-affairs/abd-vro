@@ -9,6 +9,8 @@ redis:
   enabled: true
 vro-app:
   enabled: true
+vro-svcs:
+  enabled: true
 domain-rrd:
   enabled: true
 # Enable as needed:
@@ -57,7 +59,7 @@ global:
 
   # TODO: Replace with images.tag or subchart's imageTag?
   # version is used in annotations for APP
-  version: 0.1
+  version: 0.2
 
   service:
     app:
@@ -76,26 +78,16 @@ global:
       targetPort: 6379
 
   bip:
+    # TODO: Consider moving these URL settings to application-*.yml files
     bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
     bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
 
   mas:
+    # TODO: Consider moving these URL settings to application-*.yml files
     masApiAuthTokenUri: https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
     masApiBaseUrl: https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
 
 vro-app-chart:
-  # Must quote, otherwise YAML interprets 'NO' as a boolean false
-  validateToken: "NO"
+  # TODO: Consider moving these URL settings to application-*.yml files
   vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
   lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation
-
-#  dbinit:
-#    secretKeyRef:
-#      name: dbinit
-#      # DB super user
-#      superUsernameKey: superUsername
-#      superPasswordKey: superPassword
-#      # DB admin user; for Flyway to do DB migrations
-#      # used as POSTGRES_FLYWAY_USER (in pg-isready container) and FLYWAY_USER (in the postgres and dbinit containers)
-#      usernameKey: username
-#      passwordKey: password

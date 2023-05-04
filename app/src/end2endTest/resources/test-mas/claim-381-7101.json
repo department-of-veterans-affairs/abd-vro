@@ -1,0 +1,30 @@
+{
+  "dob": "1965-02-19",
+  "firstName": "Michael",
+  "lastName": "Duplicatebps",
+  "gender": "male",
+  "collectionId": 381,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986381",
+    "ssn": "111-11-1381",
+    "veteranFileId": "9999381",
+    "edipn": "1010234-381",
+    "participantId": "88888381"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1056",
+    "claimSubmissionDateTime": "2023-01-05Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375",
+    "Agent Orange Exposure Verified"
+  ]
+}

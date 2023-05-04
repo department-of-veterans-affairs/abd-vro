@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-test:
+  test-java:
     runs-on: ubuntu-latest
 
     steps:
@@ -83,3 +83,35 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           update-comment: true
           title: "JaCoCo Test Coverage"
+
+  test-ruby-svc-bgs-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          # Need to fetch more than 1 deep to see changes
+          fetch-depth: 2
+
+      - name: "Set up Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          # Used to resolve .ruby-version, .tool-versions and Gemfile.lock
+          working-directory: svc-bgs-api/src
+
+      - name: "Get changed Ruby files"
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: svc-bgs-api/**
+
+      - name: "Run rspec tests"
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        env:
+          # https://github.com/rails/spring
+          DISABLE_SPRING: true
+        run: |
+          cd svc-bgs-api/src
+          bundle exec rspec --format documentation

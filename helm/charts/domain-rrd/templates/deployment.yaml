@@ -19,45 +19,25 @@ spec:
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: dc6602accessor{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc6602:{{ include "vro.imageTag" . }}
+        - name: svc-dc6602accessor{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-assessclaimdc6602:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: dc7101accessor{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-assessclaimdc7101:{{ include "vro.imageTag" . }}
+        - name: svc-dc7101accessor{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-assessclaimdc7101:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: pdfgenerator{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-pdfgenerator:{{ include "vro.imageTag" . }}
+        - name: svc-pdfgenerator{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-pdfgenerator:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
             {{- include "vro.redisClient.envVars" . | nindent 12 }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-#        - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
-#          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
-#          env:
-#            { {- include "vro.commonEnvVars" . | nindent 12 }}
-#            { {- include "vro.mqClient.envVars" . | nindent 12 }}
-#          resources:
-#            { {- toYaml .Values.resources | nindent 12 }}
-        - name: service-data-access{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-service-data-access:{{ include "vro.imageTag" . }}
-          env:
-            {{- include "vro.commonEnvVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            # VRO_SECRETS_LH provides LH_ACCESS_CLIENT_ID and LH_PRIVATE_KEY
-            - name: VRO_SECRETS_LH
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_LH
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

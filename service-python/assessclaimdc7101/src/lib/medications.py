@@ -2,7 +2,24 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
+
+
+def sort_med(medication_list):
+    """
+    Sort medications by 'authoredOn' date.
+
+    :param medication_list: List of medication
+    :return: Sorted list
+    """
+
+    medication_list = sorted(
+        medication_list,
+        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
+        reverse=True,
+    )
+
+    return medication_list
 
 
 def medication_required(request_body):
@@ -21,19 +38,13 @@ def medication_required(request_body):
         if medication["status"].lower() == "active":
             relevant_medications.append(medication)
 
-    relevant_medications = sorted(
-        relevant_medications,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
-    response["medications"] = relevant_medications
+    response["medications"] = sort_med(relevant_medications)
     response["medicationsCount"] = len(relevant_medications)
     return response
 
 
 def filter_mas_medication(request_body):
     """Filter MAS medication data"""
-    response = {}
     medication_with_date = []
     medication_without_date = []
     medication_two_years = []
@@ -50,29 +61,11 @@ def filter_mas_medication(request_body):
             except (ValueError, KeyError):
                 medication["dateFormatted"] = ''
                 medication_without_date.append(medication)
-            try:
-                medication["receiptDate"] = format_date(datetime.strptime(medication["receiptDate"], "%Y-%m-%d").date())
-            except (ValueError, KeyError):
-                medication["receiptDate"] = ""
-    medication_with_date = sorted(
-        medication_with_date,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
 
-    medication_two_years = sorted(
-        medication_two_years,
-        key=lambda i: datetime.strptime(i["authoredOn"], "%Y-%m-%dT%H:%M:%SZ").date(),
-        reverse=True,
-    )
-
-    medication_with_date.extend(medication_without_date)
-    medication_display = medication_with_date
-
-    if request_body["disabilityActionType"] == "INCREASE":
-        medication_display = medication_two_years
-
-    response["medications"] = medication_display
-    response["medicationsCount"] = len(medication_display)
+    response = {"twoYearsMedications": sort_med(medication_two_years),
+                "allMedications": sort_med(medication_with_date) + medication_without_date,
+                "allMedicationsCount": len(request_body["evidence"]["medications"]),
+                "twoYearsMedicationsCount": len(medication_two_years)
+                }
 
     return response

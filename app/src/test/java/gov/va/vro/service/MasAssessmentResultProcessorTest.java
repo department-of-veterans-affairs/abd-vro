@@ -3,10 +3,10 @@ package gov.va.vro.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.va.vro.BaseIntegrationTest;
-import gov.va.vro.model.AbdEvidenceWithSummary;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.AbdEvidenceWithSummary;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.repository.AssessmentResultRepository;
-import gov.va.vro.service.provider.services.MasAssessmentResultProcessor;
+import gov.va.vro.service.provider.camel.processor.MasAssessmentResultProcessor;
 import gov.va.vro.service.spi.db.SaveToDbService;
 import gov.va.vro.service.spi.model.Claim;
 import org.apache.camel.Exchange;

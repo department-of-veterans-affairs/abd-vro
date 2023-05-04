@@ -2,14 +2,15 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from .utils import extract_date, format_date
+from utils import extract_date, format_date
 
 
 def sort_bp(bp_readings):
     """
-    Sort bp readings by date
+    Sort bp readings by date.
+
     :param bp_readings: List of bp readings
-    :return:
+    :return: Sorted list
     """
 
     bp_readings = sorted(
@@ -18,6 +19,29 @@ def sort_bp(bp_readings):
         reverse=True,
     )
     return bp_readings
+
+
+def deduplicate(bp_readings):
+    """
+    Return bp readings with any lighthouse duplicates removed. A duplicate is identified by having the same diastolic
+    value, systolic value and date. HDR data has organization set to VAMC Other Output Reports.
+    :param bp_readings: full list of BP readings
+    :return: deduplicated list
+    """
+    deduplicated_readings = []
+    for reading in bp_readings:
+        duplicate = False
+        if reading["dataSource"] == "LH":
+            for bp_comp in bp_readings:
+                if reading["diastolic"]["value"] == bp_comp["diastolic"]["value"] \
+                    and reading["systolic"]["value"] == bp_comp["systolic"]["value"] \
+                        and reading["date"] == bp_comp["date"] \
+                        and bp_comp["organization"] == "VAMC Other Output Reports":
+                    duplicate = True
+                    break
+        if not duplicate:
+            deduplicated_readings.append(reading)
+    return deduplicated_readings
 
 
 def bp_reader(request_body):
@@ -42,16 +66,12 @@ def bp_reader(request_body):
 
     for reading in bp_readings:
         try:
-            reading["receiptDate"] = format_date(datetime.strptime(reading["receiptDate"], "%Y-%m-%d").date())
-        except (ValueError, KeyError):
-            reading["receiptDate"] = ""
-        try:
             bp_reading_date = datetime.strptime(reading["date"], "%Y-%m-%d").date()
             reading["dateFormatted"] = format_date(bp_reading_date)
             sortable_bp.append(reading)
         except ValueError:
-            not_sortable_bp.append(reading)
             reading["dateFormatted"] = ''
+            not_sortable_bp.append(reading)
             continue  # If there is no date associated
 
         if reading["systolic"]["value"] == 0 or reading["diastolic"]["value"] == 0:
@@ -72,6 +92,7 @@ def bp_reader(request_body):
               "twoYearsBpCount": len(bp_readings_in_past_two_years),
               "oneYearBpCount": len(bp_reading_in_past_year),
               "twoYearsElevatedBpCount": len(elevated_bp_in_past_two_years),
-              "totalBpCount": len(request_body["evidence"]["bp_readings"])}
+              "totalBpCount": len(bp_readings)
+              }
 
     return result

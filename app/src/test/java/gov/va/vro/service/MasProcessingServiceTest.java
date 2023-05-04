@@ -1,12 +1,12 @@
 package gov.va.vro.service;
 
-import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.va.vro.BaseIntegrationTest;
 import gov.va.vro.MasTestData;
-import gov.va.vro.model.mas.MasAutomatedClaimPayload;
+import gov.va.vro.model.rrd.event.EventReason;
+import gov.va.vro.model.rrd.mas.MasAutomatedClaimPayload;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ClaimSubmissionEntity;
 import gov.va.vro.persistence.repository.ClaimSubmissionRepository;
@@ -64,8 +64,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response1 = masProcessingService.processIncomingClaimGetUnprocessableReason(request1);
     // wrong diagnostic code
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 71], and"
-            + " [disability action type = INCREASE] is not in scope.",
+        "Claim with collection id: 123, diagnostic code: 71, and"
+            + " disability action type: INCREASE is not in scope.",
         response1);
 
     var request2 = MasTestData.getMasAutomatedClaimPayload(collectionId1, "7101", claimId1);
@@ -73,8 +73,8 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     var response2 = masProcessingService.processIncomingClaimGetUnprocessableReason(request2);
     // wrong disability action
     assertEquals(
-        "Claim with [collection id = 123], [diagnostic code = 7101], and"
-            + " [disability action type = OTHER] is not in scope.",
+        "Claim with collection id: 123, diagnostic code: 7101, and"
+            + " disability action type: OTHER is not in scope.",
         response2);
   }
 
@@ -87,7 +87,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
         MasTestData.getMasAutomatedClaimPayload(collectionId1, diagnosticCode1, claimId1);
     request1.getClaimDetail().getConditions().setDisabilityActionType("NEW");
     var response = masProcessingService.getOffRampReasonPresumptiveCheck(request1);
-    assertEquals(NEW_NOT_PRESUMPTIVE, response.get());
+    assertEquals(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage(), response.get());
   }
 
   @Test
@@ -100,7 +100,7 @@ public class MasProcessingServiceTest extends BaseIntegrationTest {
     request = request.toBuilder().veteranFlashIds(List.of("123", "266")).build();
     var response = masProcessingService.processIncomingClaimGetUnprocessableReason(request);
     assertEquals(
-        "Claim with [collection id = 123] does not qualify for "
+        "Claim with collection id: 123 does not qualify for "
             + "automated processing because it is missing anchors.",
         response);
   }

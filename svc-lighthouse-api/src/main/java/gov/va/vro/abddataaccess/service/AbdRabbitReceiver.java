@@ -2,7 +2,7 @@ package gov.va.vro.abddataaccess.service;
 
 import gov.va.vro.abddataaccess.model.AbdClaim;
 import gov.va.vro.abddataaccess.model.AbdResponse;
-import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.rrd.AbdEvidence;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,10 @@ public class AbdRabbitReceiver {
       AbdResponse response = new AbdResponse(claim, evidence);
       return response;
     } catch (Exception e) {
+      // Message can be null despite exception existing.
       log.error(e.getMessage());
       AbdResponse response = new AbdResponse(claim);
-      response.setErrorMessage(e.getMessage());
+      response.setErrorMessage("Lighthouse Error: " + e.getMessage());
       return response;
     }
   }

@@ -104,6 +104,31 @@
   },
   {
     "description": [
+      "for happy path duplicate bps, used with collection id 381"
+    ],
+    "claimDetail": {
+      "claimId": 1056,
+      "tempStationOfJurisdiction": "398",
+      "claimLifecycleStatus": "Ready for Decision",
+      "phase": "Gathering of Evidence"
+    },
+    "contentions": [
+      {
+        "contentionId": "1019",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "lifecycleStatus": "Ready for Decision",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "off ramp no data",
       "contention automation indicator is true so should change to false",
       "claim/contention lifecycle status Ready For Decision so should change to Open",
@@ -390,7 +415,7 @@
   },
   {
     "description": [
-      "identical to happy path except used for out of scope"
+      "identical to happy path except used for out of scope (disability action type)"
     ],
     "claimDetail": {
       "claimId": 3010,
@@ -411,6 +436,27 @@
   },
   {
     "description": [
+      "identical to happy path except used for out of scope (diagnostic code)"
+    ],
+    "claimDetail": {
+      "claimId": 3015,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "4015",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6602",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
       "wrong temp station of jurisdiction"
     ],
     "claimDetail": {
@@ -419,11 +465,204 @@
     },
     "contentions": [
       {
-        "contentionId": "3021",
+        "contentionId": "4021",
         "lastModified": "2023-01-25T17:32:28Z",
         "classificationType": 1250,
         "diagnosticTypeCode": "7101",
         "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issue RDR1"],
+    "claimDetail": {
+      "claimId": 3030,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4030",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issue RRD"],
+    "claimDetail": {
+      "claimId": 3031,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4031",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true,
+        "specialIssueCodes": [
+          "RDR1"
+        ]
+      }
+    ]
+  },
+  {
+    "description": ["missing special issues RDR1 and RRD"],
+    "claimDetail": {
+      "claimId": 3032,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "4032",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "lifecycleStatus": "Open",
+        "diagnosticTypeCode": "7101",
+        "automationIndicator": true
+      }
+    ]
+  },
+  {
+    "description": [
+      "no contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3035,
+      "tempStationOfJurisdiction": "398"
+    }
+  },
+  {
+    "description": [
+      "empty contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3037,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": []
+  },
+  {
+    "description": [
+      "multiple contentions"
+    ],
+    "claimDetail": {
+      "claimId": 3040,
+      "tempStationOfJurisdiction": "398"
+    },
+    "contentions": [
+      {
+        "contentionId": "4040",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      },
+      {
+        "contentionId": "4041",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6602",
+        "specialIssueCodes": [
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas 5xx exception handling test",
+      "500 on observation retrieval"
+    ],
+    "claimDetail": {
+      "claimId": 1365,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2365",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas timeout exception handling tests"
+    ],
+    "claimDetail": {
+      "claimId": 1366,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2366",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for mas 5xx exception handling test, second",
+      "504 on condition retrieval"
+    ],
+    "claimDetail": {
+      "claimId": 1367,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2367",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
           "RDR1",
           "RRD"
         ]
@@ -436,6 +675,32 @@
     ],
     "claimDetail": {
       "claimId": 1369,
+      "tempStationOfJurisdiction": "398",
+      "phase": "Gathering of Evidence",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "contentionId": "2369",
+        "lastModified": "2023-01-25T17:32:28Z",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "7101",
+        "lifecycleStatus": "Open",
+        "automationIndicator": false,
+        "specialIssueCodes": [
+          "ANOTHER",
+          "RDR1",
+          "RRD"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "for multiple exception (mas and BIP) handling tests"
+    ],
+    "claimDetail": {
+      "claimId": 1370,
       "tempStationOfJurisdiction": "398",
       "phase": "Gathering of Evidence",
       "claimLifecycleStatus": "Open"

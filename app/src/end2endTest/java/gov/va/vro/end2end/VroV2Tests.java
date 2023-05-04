@@ -1,5 +1,6 @@
 package gov.va.vro.end2end;
 
+import static gov.va.vro.service.provider.camel.MasIntegrationRoutes.LIGHTHOUSE_ERROR_MSG;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.api.responses.MasResponse;
+import gov.va.vro.api.rrd.responses.MasResponse;
 import gov.va.vro.end2end.util.AutomatedClaimTestSpec;
 import gov.va.vro.end2end.util.ContentionUpdatesResponse;
 import gov.va.vro.end2end.util.LifecycleUpdatesResponse;
@@ -16,15 +17,15 @@ import gov.va.vro.end2end.util.OrderExamCheckResponse;
 import gov.va.vro.end2end.util.PdfTextV2;
 import gov.va.vro.end2end.util.SuccessResponse;
 import gov.va.vro.end2end.util.TempJurisdictionStationRequest;
-import gov.va.vro.model.bip.ClaimContention;
-import gov.va.vro.model.bip.ClaimStatus;
-import gov.va.vro.model.claimmetrics.AssessmentInfo;
-import gov.va.vro.model.claimmetrics.ContentionInfo;
-import gov.va.vro.model.claimmetrics.response.ClaimInfoResponse;
-import gov.va.vro.model.claimmetrics.response.ExamOrderInfoResponse;
-import gov.va.vro.model.mas.VeteranIdentifiers;
-import gov.va.vro.model.mas.request.MasAutomatedClaimRequest;
-import gov.va.vro.service.provider.camel.MasIntegrationRoutes;
+import gov.va.vro.model.rrd.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.ClaimStatus;
+import gov.va.vro.model.rrd.claimmetrics.AssessmentInfo;
+import gov.va.vro.model.rrd.claimmetrics.ContentionInfo;
+import gov.va.vro.model.rrd.claimmetrics.response.ClaimInfoResponse;
+import gov.va.vro.model.rrd.claimmetrics.response.ExamOrderInfoResponse;
+import gov.va.vro.model.rrd.event.EventReason;
+import gov.va.vro.model.rrd.mas.VeteranIdentifiers;
+import gov.va.vro.model.rrd.mas.request.MasAutomatedClaimRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -206,7 +207,7 @@ public class VroV2Tests {
       } else {
         log.info("Claim {} contentions are not updated. Retrying...", claimId);
       }
-      Thread.sleep(5);
+      Thread.sleep(5000);
     }
     return null;
   }
@@ -232,12 +233,17 @@ public class VroV2Tests {
 
     // Start automated claim
     var requestEntity = getBearerAuthEntity(content);
-    var response =
-        restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
-    assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
-    var masResponse = response.getBody();
-    assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
-    return request;
+    try {
+      var response =
+          restTemplate.postForEntity(AUTOMATED_CLAIM_URL, requestEntity, MasResponse.class);
+      assertEquals(spec.getExpectedStatusCode(), response.getStatusCode());
+      var masResponse = response.getBody();
+      assertEquals(spec.getExpectedMessage(), masResponse.getMessage());
+      return request;
+    } catch (HttpStatusCodeException exception) {
+      assertEquals(spec.getExpectedStatusCode(), exception.getStatusCode());
+      return null;
+    }
   }
 
   private AutomatedClaimTestSpec specFor200(String collectionId) {
@@ -368,18 +374,25 @@ public class VroV2Tests {
   private String testAutomatedClaimFullPositive(AutomatedClaimTestSpec spec) {
     String collectionId = spec.getCollectionId();
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
+
+    long extraSleep = spec.getExtraSleep();
+    if (extraSleep > 0) { // sleep before checks start
+      Thread.sleep(extraSleep);
+    }
+
     final String claimId = request.getClaimDetail().getBenefitClaimId();
     String tempJurisdictionStationOverride = spec.getTempJurisdictionStationOverride();
     if (tempJurisdictionStationOverride != null) {
       overrideTempJurisdictionStation(claimId, tempJurisdictionStationOverride);
     }
+
     String pdfText = testPdfUpload(request);
     if (!spec.isBipUpdateClaimError()) {
       testUpdatedContentions(claimId, false, true, ClaimStatus.RFD);
       testLifecycleStatus(claimId, ClaimStatus.RFD);
     }
     if (tempJurisdictionStationOverride != null || spec.isBipUpdateClaimError()) {
-      testSlackMessage(collectionId);
+      testSlackMessage(collectionId, spec.getExpectedSlackMessage());
     }
     return pdfText;
   }
@@ -413,13 +426,18 @@ public class VroV2Tests {
   }
 
   @SneakyThrows
-  private boolean testSlackMessage(String collectionId) {
+  private boolean testSlackMessage(String collectionId, String expectedSlackMessage) {
     for (int pollNumber = 0; pollNumber < 60; ++pollNumber) {
       Thread.sleep(5000);
       String url = SLACK_URL + collectionId;
       try {
         ResponseEntity<String> testResponse = restTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, testResponse.getStatusCode());
+        String body = testResponse.getBody();
+        assertNotNull(body);
+        assertNotNull(expectedSlackMessage);
+        assertTrue(expectedSlackMessage.length() > 0);
+        assertTrue(body.contains(expectedSlackMessage));
         return true;
       } catch (HttpStatusCodeException exception) {
         log.info("Did not find slack message for {}. Retrying...", collectionId);
@@ -475,42 +493,128 @@ public class VroV2Tests {
   private void testAutomatedClaimOffRamp(AutomatedClaimTestSpec spec) {
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
 
-    boolean slackResult = testSlackMessage(spec.getCollectionId());
+    boolean slackResult = testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
     assertTrue(slackResult, "No or unexpected slack messages received by slack server");
 
-    final String claimId = request.getClaimDetail().getBenefitClaimId();
-    testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
-    testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    if (!spec.isBipUpdateClaimError()) {
+      final String claimId = request.getClaimDetail().getBenefitClaimId();
+      testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
+      testLifecycleStatus(claimId, ClaimStatus.OPEN);
+    }
   }
 
-  /**
-   * Out of scope test case because of disability action type. Rest response message, Slack message
-   * and removal of RDR1 special issue are verified.
-   */
+  /** Out of scope test case because of disability action type. 422 response is verified. */
   @Test
   @SneakyThrows
-  void testAutomatedClaimOutOfScope() {
+  void testAutomatedClaimOutOfScopeDisabilityAction() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("10");
-    spec.setPayloadPath("test-mas/claim-10-7101-outofscope.json");
+    spec.setPayloadPath("test-mas/claim-10-7101-out-of-scope.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 10], [diagnostic code = 7101], and "
-            + "[disability action type = DECREASE] is not in scope.");
+        "Claim with collection id: 10, diagnostic code: 7101, and "
+            + "disability action type: DECREASE is not in scope.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Out of scope test case because of diagnostic code. 422 response is verified. */
+  @Test
+  @SneakyThrows
+  void testAutomatedClaimOutOfScopeDiagnosticCode() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("15");
+    spec.setPayloadPath("test-mas/claim-15-6602-out-of-scope.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with collection id: 15, diagnostic code: 6602, and "
+            + "disability action type: INCREASE is not in scope.");
+    startAutomatedClaim(spec);
   }
 
   /**
-   * Missing anchor test case because of wrong temporary jurisdiction station. Rest response
-   * message, Slack message and removal of RDR1 special issue are verified.
+   * Missing anchor test case because of wrong temporary jurisdiction station. 422 response is
+   * verified.
    */
   @Test
   @SneakyThrows
-  void testAutomatedClaimMissingAnchor() {
+  void testAutomatedClaimMissingAnchorJurisdiction() {
     AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("20");
-    spec.setPayloadPath("test-mas/claim-20-7101-noanchor.json");
+    spec.setPayloadPath("test-mas/claim-20-7101-no-anchor-jurisdiction.json");
     spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
     spec.setExpectedMessage(
-        "Claim with [collection id = 20] does not qualify for "
+        "Claim with collection id: 20 does not qualify for "
             + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RDR1 test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueRrd1() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("30");
+    spec.setPayloadPath("test-mas/claim-30-7101-no-anchor-rdr1-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 30] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RRD test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueRrd() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("31");
+    spec.setPayloadPath("test-mas/claim-31-7101-no-anchor-rrd-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 31] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing RDR1 and RRD test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingSpecialIssueBoth() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("32");
+    spec.setPayloadPath("test-mas/claim-32-7101-no-anchor-both-missing.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 32] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Missing contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMissingContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("35");
+    spec.setPayloadPath("test-mas/claim-35-7101-no-anchor-no-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 35] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Empty contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimEmptyContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("37");
+    spec.setPayloadPath("test-mas/claim-37-7101-no-anchor-empty-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 37] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
+  }
+
+  /** Multi contentions test case. 422 response is verified.. */
+  @Test
+  void testAutomatedClaimMultiContentions() {
+    AutomatedClaimTestSpec spec = new AutomatedClaimTestSpec("40");
+    spec.setPayloadPath("test-mas/claim-40-7101-no-anchor-multi-contentions.json");
+    spec.setExpectedStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+    spec.setExpectedMessage(
+        "Claim with [collection id = 40] does not qualify for "
+            + "automated processing because it is missing anchors.");
+    startAutomatedClaim(spec);
   }
 
   private ExamOrderInfoResponse findExamOrderInfoForCollectionId(
@@ -543,14 +647,16 @@ public class VroV2Tests {
     log.info("testing ordering exam for collection {}", collectionId);
     MasAutomatedClaimRequest request = startAutomatedClaim(spec);
     if (spec.isMasError()) {
-      boolean slackResult = testSlackMessage(spec.getCollectionId());
+      boolean slackResult =
+          testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
       assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       String claimId = request.getClaimDetail().getBenefitClaimId();
       testUpdatedContentions(claimId, true, false, ClaimStatus.OPEN);
     } else {
       testExamOrdered(collectionId);
       if (spec.isBipError()) {
-        boolean slackResult = testSlackMessage(spec.getCollectionId());
+        boolean slackResult =
+            testSlackMessage(spec.getCollectionId(), spec.getExpectedSlackMessage());
         assertTrue(slackResult, "No or unexpected slack messages received by slack server");
       } else {
         testPdfUpload(request);
@@ -594,6 +700,7 @@ public class VroV2Tests {
   void testAutomatedClaimOrderExamBipError() {
     AutomatedClaimTestSpec spec = specFor200("390");
     spec.setBipError(true);
+    spec.setExpectedSlackMessage(EventReason.PDF_UPLOAD_FAILED_AFTER_ORDER_EXAM.getReasonMessage());
     testAutomatedClaimOrderExam(spec);
   }
 
@@ -605,6 +712,7 @@ public class VroV2Tests {
   void testAutomatedClaimOrderExamMasError() {
     AutomatedClaimTestSpec spec = specFor200("391");
     spec.setMasError(true);
+    spec.setExpectedSlackMessage(EventReason.EXAM_ORDER_FAILED.getReasonMessage());
     testAutomatedClaimOrderExam(spec);
   }
 
@@ -616,6 +724,7 @@ public class VroV2Tests {
   void testAutomatedClaimNoExamPDFError() {
     String collectionId = "392";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExpectedSlackMessage(EventReason.PDF_UPLOAD_FAILED_AFTER_RFD.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -709,12 +818,14 @@ public class VroV2Tests {
 
   /**
    * This is an off-ramp test case with a NEW claim that is not presumptive. Rest message, Slack
-   * message, removal of rdr1, and database update are verified.
+   * message, removal of rdr1, and database update are verified. This case both returns a message
+   * and slacks.
    */
   @Test
   void testAutomatedClaimNewNotPresumptive() {
     AutomatedClaimTestSpec spec = specFor200("379");
-    spec.setExpectedMessage(MasIntegrationRoutes.NEW_NOT_PRESUMPTIVE);
+    spec.setExpectedMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
+    spec.setExpectedSlackMessage(EventReason.NEW_NOT_PRESUMPTIVE.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
   }
 
@@ -733,11 +844,29 @@ public class VroV2Tests {
     // Check for evidence from mock LH API.
     assertTrue(pdfText.contains("190/-"));
     assertTrue(pdfText.contains("-/93"));
+    // Check for evidence from mock LH API. These are missing value examples.
+    assertTrue(pdfText.contains("177/-"));
+    assertTrue(pdfText.contains("-/88"));
 
     // Check that BP with missing systolic and diastolic is not included as evidence.
     assertFalse(pdfText.contains("-/-"));
   }
 
+  /** This is a full positive end-to-end test for a case with duplicate blood pressures. */
+  @Test
+  void testAutomatedClaimFullPositiveDuplicateBloodPressures() {
+    AutomatedClaimTestSpec spec = specFor200("381");
+    String pdfText = testAutomatedClaimFullPositive(spec);
+    // Check for evidence from mock MAS evidence API.
+    assertTrue(pdfText.contains("139/77 8/11/2022 VAMC Other Output Reports"));
+    assertTrue(pdfText.contains("167/93 5/11/2022 Medical Treatment Record - Government"));
+    // Check for evidence from mock LH API.
+    assertTrue(pdfText.contains("167/93 5/11/2022 VAMC record - LYONS VA MEDICAL CENTER"));
+    assertTrue(pdfText.contains("153/115 6/21/2022 VAMC record - WASHINGTON VA MEDICAL"));
+
+    // Check that duplicate BP from LH is not included as evidence.
+    assertFalse(pdfText.contains("153/115 6/20/2021 VAMC record -WASHINGTON VA MEDICAL"));
+  }
   /**
    * This is a full positive end-to-end test for an increase case. It is copied from 375 and tests
    * the Slack message when temporary station of jurisdiction changes during VRO processing.
@@ -746,7 +875,8 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveChangedStation() {
     AutomatedClaimTestSpec spec = specFor200("385");
     spec.setTempJurisdictionStationOverride("456");
-
+    spec.setExpectedSlackMessage(
+        "Claim 1085 is in station 456 not in 398. claim ID: 1085, collection ID: 385");
     testAutomatedClaimFullPositive(spec);
   }
 
@@ -758,7 +888,7 @@ public class VroV2Tests {
   void testAutomatedClaimFullPositiveBipGoesDown() {
     AutomatedClaimTestSpec spec = specFor200("386");
     spec.setBipUpdateClaimError(true);
-
+    spec.setExpectedSlackMessage(EventReason.BIP_UPDATE_FAILED.getReasonMessage());
     testAutomatedClaimFullPositive(spec);
   }
 
@@ -770,16 +900,78 @@ public class VroV2Tests {
   void testAutomatedClaimSufficiencyIsNull() {
     String collectionId = "500";
     AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExpectedSlackMessage(EventReason.SUFFICIENCY_UNDETERMINED.getReasonMessage());
     testAutomatedClaimOffRamp(spec);
     testClaimSufficientStatus(collectionId, null);
   }
 
   /**
-   * This is a end-to-end test for an increase case based on 375. It is used to test mas exceptions.
+   * This is an end-to-end test for an increase case based on 375. It is used to test mas
+   * exceptions.
    */
   @Test
   void testAutomatedClaimMasException() {
     AutomatedClaimTestSpec spec = specFor200("369");
+    spec.setExpectedSlackMessage(EventReason.ANNOTATIONS_FAILED.getReasonMessage());
+    testAutomatedClaimOffRamp(spec);
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 500
+   * exceptions. This is on Observation retrieval.
+   */
+  @Test
+  void testAutomatedClaimLh500Exception() {
+    String collectionId = "365";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId, LIGHTHOUSE_ERROR_MSG);
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh timeout
+   * exceptions.
+   */
+  @Test
+  void testAutomatedClaimLhTimeoutException() {
+    String collectionId = "366";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    spec.setExtraSleep(250000); // expected sleep time
+    spec.setExpectedSlackMessage(LIGHTHOUSE_ERROR_MSG);
+    testAutomatedClaimFullPositive(spec);
+    boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * This is an end-to-end test for an increase case based on 375. It is used to test lh 504
+   * exceptions. This is on Condition retrieval.
+   */
+  @Test
+  void testAutomatedClaimLh504Exception() {
+    String collectionId = "367";
+    AutomatedClaimTestSpec spec = specFor200(collectionId);
+    testAutomatedClaimFullPositive(spec);
+    spec.setExpectedSlackMessage(LIGHTHOUSE_ERROR_MSG);
+    boolean slackResult = testSlackMessage(collectionId, spec.getExpectedSlackMessage());
+    assertTrue(slackResult, "No or unexpected slack messages received by slack server");
+  }
+
+  /**
+   * End to End Test that validates multiple VRO errors get sent in a slack message if this case
+   * occurs. Currently this happens with offramping + BIP Claim Error Based on Claim 369
+   */
+  @Test
+  void testAutomatedClaimMultipleError() {
+    AutomatedClaimTestSpec spec = specFor200("370");
+    spec.setMasError(true);
+    spec.setBipUpdateClaimError(true);
+    String comboError =
+        EventReason.ANNOTATIONS_FAILED.getReasonMessage()
+            + " claim ID: 1370, collection ID: 370, "
+            + EventReason.BIP_UPDATE_FAILED.getReasonMessage();
+    spec.setExpectedSlackMessage(comboError);
     testAutomatedClaimOffRamp(spec);
   }
 }

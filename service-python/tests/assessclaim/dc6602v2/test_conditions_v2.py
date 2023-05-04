@@ -6,33 +6,6 @@ from assessclaimdc6602v2.src.lib import condition
 @pytest.mark.parametrize(
     "request_body, conditions_calc",
     [
-        # Service connected and medication used to treat hypertension
-        (
-            {
-                "evidence": {
-                    "bp_readings": [],
-                    "conditions": [],
-                    "medications": [{"description": "Albuterol"}],
-                },
-                "dateOfClaim": "2021-11-09",
-            },
-            {"conditions": [], "relevantConditionsCount": 0, "totalConditionsCount": 0},
-        ),
-        (
-            {
-                "evidence": {
-                    "bp_readings": [],
-                    "conditions": [
-                        {"text": "Asthma", "code": "195967001", "status": "Active"}
-                    ],
-                    "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
-                },
-                "dateOfClaim": "2021-11-09",
-            },
-            {"conditions": [{"code": "195967001", "status": "Active", "text": "Asthma"}],
-             "relevantConditionsCount": 1,
-             "totalConditionsCount": 1},
-        ),
         (
             {
                 "evidence": {
@@ -42,24 +15,55 @@ from assessclaimdc6602v2.src.lib import condition
                             "text": "Eosinophilic asthma",
                             "code": "J82.83",
                             "status": "Active",
+                            "dataSource": "LH"
                         }
                     ],
                     "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
                 },
-                "dateOfClaim": "2021-11-09",
+                "claimSubmissionDateTime": "2021-11-09",
             },
             {"conditions": [{"code": "J82.83",
+                             "dateFormatted": "",
+                             "dataSource": "LH",
+                             "relevant": True,
                              "status": "Active",
                              "text": "Eosinophilic asthma"}],
-             "relevantConditionsCount": 1,
-             "totalConditionsCount": 1}
+             "relevantConditionsLighthouseCount": 1,
+             "totalConditionsCount": 1,
+             "twoYearsConditions": []}
+        ),
+        (
+                {
+                    "evidence": {
+                        "bp_readings": [],
+                        "conditions": [
+                            {
+                                "code": "Asthma",
+                                "text": "asthma",
+                                "recordedDate": "1950-04-06",
+                                "dataSource": "MAS"
+                            }
+                        ],
+                        "medications": [{"description": "Hydrochlorothiazide 25 MG"}],
+                    },
+                    "claimSubmissionDateTime": "2021-11-09",
+                },
+                {"conditions": [{
+                                 "code": "Asthma",
+                                 "dataSource": "MAS",
+                                 "dateFormatted": "4/6/1950",
+                                 "recordedDate": "1950-04-06",
+                                 "relevant": False,
+                                 "text": "asthma"}],
+                 "relevantConditionsLighthouseCount": 0,
+                 "totalConditionsCount": 1,
+                 "twoYearsConditions": []}
         ),
     ],
 )
 def test_conditions_calculation(request_body, conditions_calc):
     """
     Test the filtering of conditions for Asthma
-
     :param request_body: sample data for a claim reqeust
     :param conditions_calc:e expected output from the condition algorithm
     """
