@@ -12,6 +12,12 @@ dependencies {
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'
   implementation "gov.va.starter:exceptions"
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
   // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
   compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
