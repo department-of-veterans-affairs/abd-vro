@@ -28,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class FhirClient {
+  private static final String LAST_UPDATED_DATE_FORMAT = "yyyy-MM-dd";
   private static final String LIGHTHOUSE_AUTH_HEAD = "Authorization";
   private static final int DEFAULT_PAGE = 0;
   private static final int DEFAULT_SIZE = 100;
@@ -52,6 +55,8 @@ public class FhirClient {
   @Autowired private IParser jsonParser;
 
   @Autowired private LighthouseApiService lighthouseApiService;
+
+  private String lastUpdated = "";
 
   private static class SearchSpec {
     private String resourceType;
@@ -76,10 +81,13 @@ public class FhirClient {
       this.searchValues = searchValues;
     }
 
-    public String getUrl() {
+    public String getUrl(String lastUpdated) {
       StringBuilder url =
           new StringBuilder(
               String.format("%s?%s=%s", resourceType, searchParams[0], searchValues[0]));
+      if (!lastUpdated.isEmpty()) {
+        url.append(String.format("&_lastUpdated=ge%s", lastUpdated));
+      }
       for (int i = 1; i < searchParams.length; ++i) {
         url.append(String.format("&%s=%s", searchParams[i], searchValues[i]));
       }
@@ -278,7 +286,7 @@ public class FhirClient {
   private List<BundleEntryComponent> getRecords(
       String patientIcn, AbdDomain domain, String lighthouseToken) throws AbdException {
     SearchSpec searchSpec = domainToSearchSpec.get(domain).apply(patientIcn);
-    String url = searchSpec.getUrl() + "&_count=" + DEFAULT_SIZE;
+    String url = searchSpec.getUrl(getLastUpdated()) + "&_count=" + DEFAULT_SIZE;
 
     String baseUrl = properties.getFhirurl();
     String fullUrl = baseUrl + "/" + url;
@@ -307,6 +315,30 @@ public class FhirClient {
       }
     } while (!nextLink.isEmpty());
     return records;
+  }
+
+  private synchronized String getLastUpdated() {
+    if (lastUpdated.isEmpty()) {
+      String lastUpdatedDate = properties.getFilterLastUpdatedDate();
+      if ((lastUpdatedDate != null) && !lastUpdatedDate.isEmpty()) {
+        log.info("Update lastUpdated to {}", lastUpdatedDate);
+        SimpleDateFormat dft = new SimpleDateFormat(LAST_UPDATED_DATE_FORMAT);
+        try {
+          // Verify that it is in the expected date format
+          dft.parse(lastUpdatedDate);
+          lastUpdated = lastUpdatedDate;
+          log.info("Set lastUpdated search parameter to {}", lastUpdated);
+        } catch (ParseException e) {
+          log.error(
+              "Invalid filterLastUpdatedDate, {}, in the properties setup. No lastUpdated filter is used in LH service.",
+              lastUpdatedDate);
+        }
+      } else {
+        log.info(
+            "No FilterLastUpdatedDate is set in properties. No lastUpdated filter is used in LH service.");
+      }
+    }
+    return lastUpdated;
   }
 
   /**
