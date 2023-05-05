@@ -123,4 +123,9 @@ afterEvaluate {
   tasks.named('spectralLint').configure {
     dependsOn 'forkedSpringBootStop'
   }
+
+  tasks.named('dockerComposeDown') {
+    dependsOn ':mocks:dockerComposeDown'
+    dependsOn ':domain-xample:dockerComposeDown'
+  }
 }
