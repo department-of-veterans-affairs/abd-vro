@@ -1,5 +1,4 @@
 import pytest
-
 from data_model import validate_request_body
 
 

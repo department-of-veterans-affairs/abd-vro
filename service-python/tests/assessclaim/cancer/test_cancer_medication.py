@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimcancer.src.lib import medication
 
 
@@ -102,18 +101,20 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "male_reproductive",
-                {"medicationMeetsDateRequirements": False,
-                 "medications": [
-                    {
-                        "authoredOn": "1962-04-06T04:00:00Z",
-                        "description": "CISplatin 50 MG",
-                        "status": "active",
-                        "suggestedCategory": "Multiple",
-                        "conditionRelated": True
-                    }
-                ],
+                {
+                    "medicationMeetsDateRequirements": False,
+                    "medications": [
+                        {
+                            "authoredOn": "1962-04-06T04:00:00Z",
+                            "description": "CISplatin 50 MG",
+                            "status": "active",
+                            "suggestedCategory": "Multiple",
+                            "conditionRelated": True
+                        }
+                    ],
                     "relevantMedCount": 1,
-                    "totalMedCount": 2}
+                    "totalMedCount": 2
+                }
         ),
         (
                 {
@@ -136,18 +137,20 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "gyn",
-                {"medicationMeetsDateRequirements": False,
-                 "medications": [
-                    {
-                        "authoredOn": "1962-04-06T04:00:00Z",
-                        "description": "paclitaxel 6 MG/ML",
-                        "status": "active",
-                        "suggestedCategory": "Cervical, Uterine",
-                        "conditionRelated": True
-                    }
-                ],
+                {
+                    "medicationMeetsDateRequirements": False,
+                    "medications": [
+                        {
+                            "authoredOn": "1962-04-06T04:00:00Z",
+                            "description": "paclitaxel 6 MG/ML",
+                            "status": "active",
+                            "suggestedCategory": "Cervical, Uterine",
+                            "conditionRelated": True
+                        }
+                    ],
                     "relevantMedCount": 1,
-                    "totalMedCount": 2}
+                    "totalMedCount": 2
+                }
         ),
         (
                 {
@@ -170,17 +173,19 @@ from assessclaimcancer.src.lib import medication
                     "dateOfClaim": "2021-11-09",
                 },
                 "prostate",
-                {"medicationMeetsDateRequirements": False,
-                 "medications": [
-                    {
-                        "authoredOn": "1962-04-06T04:00:00Z",
-                        "description": "CISplatin 50 MG",
-                        "status": "active",
-                        "conditionRelated": True
-                    }
-                ],
+                {
+                    "medicationMeetsDateRequirements": False,
+                    "medications": [
+                        {
+                            "authoredOn": "1962-04-06T04:00:00Z",
+                            "description": "CISplatin 50 MG",
+                            "status": "active",
+                            "conditionRelated": True
+                        }
+                    ],
                     "relevantMedCount": 1,
-                    "totalMedCount": 2}
+                    "totalMedCount": 2
+                }
         ),
         (
                 {

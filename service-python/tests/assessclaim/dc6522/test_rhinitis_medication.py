@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimdc6522.src.lib import medication
 
 

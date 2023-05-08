@@ -1,9 +1,7 @@
-import json
 import logging
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pytest
-
 from featuretoggle.src.lib import queues
 
 

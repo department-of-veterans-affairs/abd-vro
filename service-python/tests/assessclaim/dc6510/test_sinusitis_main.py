@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimdc6510.src.lib import main
 
 

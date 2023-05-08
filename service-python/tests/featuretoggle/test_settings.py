@@ -1,4 +1,3 @@
-from featuretoggle.src.lib.queues import queue_config, redis_config
 from featuretoggle.src.lib.settings import queue_config, redis_config
 
 valid_redis = {
@@ -16,9 +15,8 @@ valid_queue = {
 
 
 def test_valid_redis_options():
-  assert all(key in valid_redis.keys() for key in redis_config.keys())
+    assert all(key in valid_redis.keys() for key in redis_config.keys())
 
 
 def test_valid_queue_options():
-  assert all(key in valid_queue.keys() for key in queue_config.keys())
-
+    assert all(key in valid_queue.keys() for key in queue_config.keys())

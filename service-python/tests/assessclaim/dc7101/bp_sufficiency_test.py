@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimdc7101.src.lib import bp_calculator
 
 
@@ -35,8 +34,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                             "dataSource": "LH"
                         }
                     ]
-                }
-                    ,
+                },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'dataSource': 'MAS',
@@ -128,8 +126,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                             "date": "2020-11-09"
                         }
                     ]
-                }
-                    ,
+                },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-09-01',
@@ -269,8 +266,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "date": "2021-10-14"
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-10-14',
@@ -503,8 +499,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "date": "2021-10-14"
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-10-14',
@@ -716,8 +711,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "receiptDate": "",
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-10-14',
@@ -909,8 +903,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-10-01',
@@ -1122,8 +1115,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "organization": "VAMC Other Output Reports"
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'dataSource': 'LH',
@@ -1409,8 +1401,7 @@ from assessclaimdc7101.src.lib import bp_calculator
                                 "organization": "LYONS VA MEDICAL CENTER"
                             }
                         ]
-                    }
-                    ,
+                    },
                     "claimSubmissionDateTime": "2021-11-09T17:45:59Z",
                 },
                 {'allBp': [{'date': '2021-11-01',
@@ -1640,44 +1631,44 @@ def test_bp_reader(request_body, bp_calculator_result):
         ),
         (
             [
-         {
-             "diastolic": {
-                 "code": "8462-4",
-                 "display": "Diastolic blood pressure",
-                 "unit": "mm[Hg]",
-                 "value": 110
-             },
-             "systolic": {
-                 "code": "8480-6",
-                 "display": "Systolic blood pressure",
-                 "unit": "mm[Hg]",
-                 "value": 210
-             },
-             "dataSource": "LH",
-             "date": "2021-10-10",
-             "receiptDate": "",
-             "practitioner": "DR. JANE460 DOE922 MD",
-             "organization": "LYONS VA MEDICAL CENTER"
-         },
-         {
-             "diastolic": {
-                 "code": "8462-4",
-                 "display": "Diastolic blood pressure",
-                 "unit": "mm[Hg]",
-                 "value": 110
-             },
-             "systolic": {
-                 "code": "8480-6",
-                 "display": "Systolic blood pressure",
-                 "unit": "mm[Hg]",
-                 "value": 200
-             },
-             "dataSource": "MAS",
-             "date": "2021-10-10",
-             "receiptDate": "",
-             "practitioner": "DR. JANE460 DOE922 MD",
-             "organization": "VAMC Other Output Reports"
-         }
+                {
+                    "diastolic": {
+                        "code": "8462-4",
+                        "display": "Diastolic blood pressure",
+                        "unit": "mm[Hg]",
+                        "value": 110
+                     },
+                    "systolic": {
+                        "code": "8480-6",
+                        "display": "Systolic blood pressure",
+                        "unit": "mm[Hg]",
+                        "value": 210
+                    },
+                    "dataSource": "LH",
+                    "date": "2021-10-10",
+                    "receiptDate": "",
+                    "practitioner": "DR. JANE460 DOE922 MD",
+                    "organization": "LYONS VA MEDICAL CENTER"
+                },
+                {
+                     "diastolic": {
+                         "code": "8462-4",
+                         "display": "Diastolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 110
+                     },
+                     "systolic": {
+                         "code": "8480-6",
+                         "display": "Systolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 200
+                     },
+                     "dataSource": "MAS",
+                     "date": "2021-10-10",
+                     "receiptDate": "",
+                     "practitioner": "DR. JANE460 DOE922 MD",
+                     "organization": "VAMC Other Output Reports"
+                 }
             ],
             [
                 {
