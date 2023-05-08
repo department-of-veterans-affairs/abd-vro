@@ -3,6 +3,7 @@ global:
   environment: prod
   endpoint: api.lighthouse.va.gov
   lhdiCluster: prod
+
   imagePrefix: ""
 
   bip:
