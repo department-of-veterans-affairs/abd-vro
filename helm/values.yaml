@@ -28,6 +28,7 @@ global:
 
   serviceUriPrefix: abd-vro
 
+
   hostnamePrefix: vro
 
   images:
@@ -79,8 +80,8 @@ global:
 
   bip:
     # TODO: Consider moving these URL settings to application-*.yml files
-    bipClaimUrl: claims-uat.stage8.bip.va.gov/api/v1
-    bipEvidenceUrl: vefs-claimevidence-uat.stage8.bip.va.gov/api/v1/rest
+    bipClaimUrl: claims-uat.stage.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-uat.stage.bip.va.gov/api/v1/rest
 
   mas:
     # TODO: Consider moving these URL settings to application-*.yml files
