@@ -56,10 +56,8 @@ pre-commit install
 ## Building docs
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
-cd python_src/
-uvicorn api:app --port 18000 --reload &
-
-cd ../..
-cd app/src/main/java/gov/va/vro/config 
-curl localhost:8000/openapi.json > domain-cc-openapi.json
+cd src
+python util/pull_api_documentation.py
+cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config 
+# somehow make the java code pull that json in
 ```
