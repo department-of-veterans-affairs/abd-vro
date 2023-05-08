@@ -6,7 +6,7 @@
 
 
 ## RabbitMQ configuration
-The application connects to RabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and 
+The application connects to RabbitMQ with the binding key `7101`. Claims are sent to the `health-assess-exchange` and
 are routed by VASRD code.
 
 ### Event object validation
@@ -23,4 +23,4 @@ on claim evidence sufficiency.
 ### Hypertension
 
 The `assessclaimdc7101` folder contains all logic for hypertension. This service builds two queues, `health-assess.7101`
-and `health-sufficiency-assess.7101`, the first of which is used in version 1.0 and the second is used in version 2.0. 
+and `health-sufficiency-assess.7101`, the first of which is used in version 1.0 and the second is used in version 2.0.

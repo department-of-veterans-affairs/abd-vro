@@ -1,6 +1,6 @@
 # General Cancer Processor
 
-## Code sets and associated VASRD codes 
+## Code sets and associated VASRD codes
 
 ### Neck : bone cancers (DC 5012), soft tissue sarcomas of muscle, fat, or fibrous connective tissue (DC 5329), respiratory cancers (DC 6819),  soft tissue sarcomas of vascular origin (DC 7123), malignant skin neoplasms (DC 7818), endocrine cancers (DC 7914), central nervous system cancers (DC 8021), and soft tissue sarcomas of neurogenic origin (DC 8540)
 
@@ -14,7 +14,7 @@
 
 ### Male reproductive: 7528
 
-### Brain: 
+### Brain:
 
 ### GI: 7343
 

@@ -4,6 +4,7 @@ python3.10 pull_api_documentation.py
 """
 
 import json
+
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 

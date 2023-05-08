@@ -37,4 +37,3 @@ lhAPIProvider:
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "NO"
-
