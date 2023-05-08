@@ -6,6 +6,7 @@ class ClaimForIncrease(BaseModel):
 
     diagnostic_code: int
     claim_id: int
+    form526_submission_id: int
 
 
 class PredictedClassification(BaseModel):
