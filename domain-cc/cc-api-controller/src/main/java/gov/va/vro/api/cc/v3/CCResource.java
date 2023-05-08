@@ -19,7 +19,7 @@ public interface CCResource {
   @Operation(
       summary = "Invoke contention classification python endpoint",
       description =
-              "See more detailed documentation here: https://github.com/department-of-veterans-affairs/abd-vro/blob/develop/domain-cc/README.md#building-docs")
+          "See more detailed documentation here: https://github.com/department-of-veterans-affairs/abd-vro/blob/develop/domain-cc/README.md#building-docs")
   @Timed(value = "resource.post")
   @ResponseBody
   ResponseEntity<ResourceResponse> callEndpoint(

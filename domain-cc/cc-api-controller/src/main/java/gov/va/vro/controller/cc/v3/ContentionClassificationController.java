@@ -52,7 +52,8 @@ public class ContentionClassificationController implements CCResource {
       log.info("sending this to the RabbitMQ: {}", payload_for_cc);
 
       var result =
-          camelEntry.inOut(EXCHANGE_NAME, RABBIT_MQ_ENDPOINT_NAME, payload_for_cc.toString(), String.class);
+          camelEntry.inOut(
+              EXCHANGE_NAME, RABBIT_MQ_ENDPOINT_NAME, payload_for_cc.toString(), String.class);
       log.info("camel result received: {}", result);
       var result_json = new JSONObject(result);
       var statusCode = result_json.getInt("status_code");
