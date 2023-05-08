@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class ContentionClassificationController implements CCResource {
   private final CamelEntry camelEntry;
   private final String EXCHANGE_NAME = "contention-classification-exchange";
-  private final String ENDPOINT_NAME = "domain-cc-classify";
+  private final String RABBIT_MQ_ENDPOINT_NAME = "domain-cc-classify";
 
   // Get a POJO from the Camel response so jackson can automagically serialize the HTTP response
   // https://stackoverflow.com/a/44842806
@@ -52,7 +52,8 @@ public class ContentionClassificationController implements CCResource {
       log.info("sending this to the RabbitMQ: {}", payload_for_cc);
 
       var result =
-          camelEntry.inOut(EXCHANGE_NAME, ENDPOINT_NAME, payload_for_cc.toString(), String.class);
+          camelEntry.inOut(
+              EXCHANGE_NAME, RABBIT_MQ_ENDPOINT_NAME, payload_for_cc.toString(), String.class);
       log.info("camel result received: {}", result);
       var result_json = new JSONObject(result);
       var statusCode = result_json.getInt("status_code");
