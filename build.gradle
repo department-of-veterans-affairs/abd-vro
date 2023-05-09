@@ -159,10 +159,10 @@ ext {
   dockerModules = [
     ':app',
     ':db-init',
-    ':service-python:assessclaimdc7101',
-    ':service-python:assessclaimdc6602',
-    ':service-python:pdfgenerator',
-    ':service-python:featuretoggle',
+    ':domain-rrd:service-python:assessclaimdc7101',
+    ':domain-rrd:service-python:assessclaimdc6602',
+    ':domain-rrd:service-python:pdfgenerator',
+    ':domain-rrd:service-python:featuretoggle',
     ':svc-bgs-api',
     ':svc-lighthouse-api',
     ':console',
@@ -175,10 +175,10 @@ ext {
     ':domain-xample:svc-xample-j'
   ]
   if (project.hasProperty("enablePrototype")) {
-    dockerModules.add(':service-python:assessclaimdc6602v2')
-    dockerModules.add(':service-python:assessclaimdc6510')
-    dockerModules.add(':service-python:assessclaimdc6522')
-    dockerModules.add(':service-python:assessclaimcancer')
+    dockerModules.add(':domain-rrd:service-python:assessclaimdc6602v2')
+    dockerModules.add(':domain-rrd:service-python:assessclaimdc6510')
+    dockerModules.add(':domain-rrd:service-python:assessclaimdc6522')
+    dockerModules.add(':domain-rrd:service-python:assessclaimcancer')
   }
 }
 
