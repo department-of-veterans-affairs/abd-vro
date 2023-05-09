@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-
 from utils import extract_date, format_date
 
 from .codesets import condition_codesets

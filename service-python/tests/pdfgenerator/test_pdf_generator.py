@@ -4,7 +4,6 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
-
 from pdfgenerator.src.lib.pdf_generator import PDFGenerator
 
 lib_dir = os.path.dirname(__file__)

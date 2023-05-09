@@ -1,2 +1,2 @@
-ALTER TABLE veteran 
+ALTER TABLE veteran
 ADD COLUMN icn_timestamp timestamp;

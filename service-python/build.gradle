@@ -19,16 +19,10 @@ pipInstall {
   enabled = false
 }
 
-def pyisort = tasks.register("pyisort", PythonTask) {
-  module = 'isort'
-  command = ". --check --skip tests"
-  dependsOn requirements
-}
-
 def pyflake8 = tasks.register("pyflake8", PythonTask) {
   module = 'flake8'
   command = "."
-  dependsOn pyisort
+  dependsOn requirements
 }
 
 // Runs pytest when `./gradlew test` is run

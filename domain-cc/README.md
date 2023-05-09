@@ -58,6 +58,6 @@ pre-commit install
 source ~/.virtualenvs/domain-cc/bin/activate
 cd src
 python util/pull_api_documentation.py
-cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config 
+cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config
 # somehow make the java code pull that json in
 ```

@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimdc7101.src.lib import main
 
 
@@ -96,7 +95,7 @@ from assessclaimdc7101.src.lib import main
                                  'recentBpCount': 2,
                                  'totalBpCount': 2},
                 "claimSubmissionId": "1234"
-            },
+             },
         ),
         (
             {
@@ -197,8 +196,7 @@ from assessclaimdc7101.src.lib import main
                     },
                     "claimSubmissionId": "1234"
                 }
-        )
-        ,
+        ),
         # Bad data:
         # - "diastolic" value is string instead of int
         # - Medication is an array with a single element *that is an int* rather than string

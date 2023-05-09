@@ -1,10 +1,10 @@
+import logging
+from typing import Optional
+
 from fastapi import FastAPI
+from pydantic_models import ClaimForIncrease, PredictedClassification
 
 app = FastAPI()
-
-from pydantic_models import ClaimForIncrease, PredictedClassification
-from typing import Optional
-import logging
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)-8s %(message)s",

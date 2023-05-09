@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
 import pytest
-
 from pdfgenerator.src.lib import queues
 
 

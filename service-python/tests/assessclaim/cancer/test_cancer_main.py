@@ -1,5 +1,4 @@
 import pytest
-
 from assessclaimcancer.src.lib import main
 
 
