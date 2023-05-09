@@ -1632,23 +1632,23 @@ def test_bp_reader(request_body, bp_calculator_result):
         (
             [
                 {
-                    "diastolic": {
-                        "code": "8462-4",
-                        "display": "Diastolic blood pressure",
-                        "unit": "mm[Hg]",
-                        "value": 110
+                     "diastolic": {
+                         "code": "8462-4",
+                         "display": "Diastolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 110
                      },
-                    "systolic": {
-                        "code": "8480-6",
-                        "display": "Systolic blood pressure",
-                        "unit": "mm[Hg]",
-                        "value": 210
-                    },
-                    "dataSource": "LH",
-                    "date": "2021-10-10",
-                    "receiptDate": "",
-                    "practitioner": "DR. JANE460 DOE922 MD",
-                    "organization": "LYONS VA MEDICAL CENTER"
+                     "systolic": {
+                         "code": "8480-6",
+                         "display": "Systolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 210
+                     },
+                     "dataSource": "LH",
+                     "date": "2021-10-10",
+                     "receiptDate": "",
+                     "practitioner": "DR. JANE460 DOE922 MD",
+                     "organization": "LYONS VA MEDICAL CENTER"
                 },
                 {
                      "diastolic": {
@@ -1668,27 +1668,27 @@ def test_bp_reader(request_body, bp_calculator_result):
                      "receiptDate": "",
                      "practitioner": "DR. JANE460 DOE922 MD",
                      "organization": "VAMC Other Output Reports"
-                 }
+                }
             ],
             [
                 {
-                 "diastolic": {
-                     "code": "8462-4",
-                     "display": "Diastolic blood pressure",
-                     "unit": "mm[Hg]",
-                     "value": 110
-                 },
-                 "systolic": {
-                     "code": "8480-6",
-                     "display": "Systolic blood pressure",
-                     "unit": "mm[Hg]",
-                     "value": 210
-                 },
-                 "dataSource": "LH",
-                 "date": "2021-10-10",
-                 "receiptDate": "",
-                 "practitioner": "DR. JANE460 DOE922 MD",
-                 "organization": "LYONS VA MEDICAL CENTER"
+                     "diastolic": {
+                         "code": "8462-4",
+                         "display": "Diastolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 110
+                     },
+                     "systolic": {
+                         "code": "8480-6",
+                         "display": "Systolic blood pressure",
+                         "unit": "mm[Hg]",
+                         "value": 210
+                     },
+                     "dataSource": "LH",
+                     "date": "2021-10-10",
+                     "receiptDate": "",
+                     "practitioner": "DR. JANE460 DOE922 MD",
+                     "organization": "LYONS VA MEDICAL CENTER"
                  },
                 {
                      "diastolic": {
