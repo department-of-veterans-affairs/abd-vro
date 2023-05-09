@@ -41,7 +41,7 @@ dependencies {
   // Not sure if these are needed:
   implementation 'gov.va.starter:tracing'
   implementation 'gov.va.starter:error-handling'
-  implementation 'gov.va.starter:exceptions'
+//  implementation 'gov.va.starter:exceptions'
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
