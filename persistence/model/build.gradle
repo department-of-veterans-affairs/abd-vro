@@ -8,6 +8,10 @@ ext {
 }
 
 dependencies {
+  implementation 'javax.validation:validation-api'
+}
+
+dependencies {
   // Needed?
   // implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
   // implementation 'gov.va.starter:test-data'

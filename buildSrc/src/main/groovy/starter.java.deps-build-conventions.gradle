@@ -12,7 +12,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // Added
-    implementation 'javax.validation:validation-api'
+//    implementation 'javax.validation:validation-api'
 
     // Removed
     // implementation "org.zalando:problem-spring-web"

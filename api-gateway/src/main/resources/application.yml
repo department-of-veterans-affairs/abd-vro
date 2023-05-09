@@ -5,6 +5,7 @@ info:
   app:
     name: abd_vro
     description: Virtual Regional Office API
+    version: 3.0.0
 
 # API Auth
 apiauth:
@@ -46,7 +47,7 @@ management:
       ns: "${NAMESPACE:example}"
       pod: "${POD_ID:docker}"
     web.server.request.autotime.enabled: true
-  server.port: 8081
+  server.port: 8061
 
 # Setting up K8 health probes - with health probes set to true you can use
 # the paths in your config like the snippet below
@@ -74,7 +75,7 @@ server:
     maxSwallowSize: 26214400
   ssl:
     enabled: false
-  port: 8080
+  port: 8060
   maxHttpHeaderSize: 48000
   session:
     timeout: 60
@@ -123,19 +124,11 @@ spring:
     encoding:
       force: true
 
-  datasource:
-    url: ${POSTGRES_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    hikari:
-      jdbc-url: ${POSTGRES_URL}
-      username: ${POSTGRES_USER}
-      password: ${POSTGRES_PASSWORD}
-      schema: ${POSTGRES_SCHEMA}
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
 
   security:
     oauth2:
@@ -150,39 +143,62 @@ spring:
             scope: "${MAS_API_AUTH_SCOPE:openid}"
             grant-type: client_credentials
 
-masAPIProvider:
-  baseURL: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
-  collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
-  collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
-  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"
-
-lhAPIProvider:
-  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
-  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
-  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
-  validateToken: "NO"
-
-masVeteranFlashIds:
-  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
-
 springdoc:
   writer-with-default-pretty-printer: true
-  show-actuator: false
+  # show-actuator: false
   packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
-
   swagger-ui:
+    # http://localhost:8078/swaggerui will be forwarded to http://localhost:8078/webjars/swagger-ui/index.html
+    path: /swaggerui
     operations-sorter: method
     tagsSorter: alpha
-    path: swagger
+    # Populate API dropdown on the upper-right of Swagger UI
+    urls:
+      - name: 0. Gateway API
+        # API defined for this API Gateway
+        url: /v3/api-docs
+      - name: App API
+        url: /app/v3/api-docs
+      - name: Contention Classification API
+        # Use the route defined under spring.cloud.gateway below
+        url: /contention-classification/openapi.json
+
+# TODO: Add Spring Cloud CircuitBreaker: https://spring.io/guides/gs/gateway/
+spring.cloud.gateway:
+#  actuator.verbose.enabled: true
+#  discovery:
+#    locator:
+#      enabled: false
+  routes:
+#  - id: openapi
+#    uri: http://localhost:${server.port}
+#    predicates:
+#    - Path=/v3/api-docs/**
+#    filters:
+#    - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+  # Each domain API should have one entry with a URI prefix
+  - id: vro-app
+    uri: http://localhost:8080
+    predicates:
+    - Path=/app/**
+    filters:
+    - RewritePath=/app/(?<path>.*), /$\{path}
+  - id: contention-classification-tenant
+    # TODO: add Swagger servers such that /contention-classification is used as the prefix for requests
+    uri: http://localhost:18000
+    predicates:
+    - Path=/contention-classification/**
+    filters:
+    - RewritePath=/contention-classification/(?<path>.*), /$\{path}
+
+#logging.level.org.springframework: DEBUG
+
+# Suppress "Cannot find template location" warning
+#spring.groovy.template.check-template-location: false
 
 vro:
   # Deployment environment
   env: ${ENV:local}
-  persist:
-    tracking:
-      enabled: true
-      # Dependent on the mountPath configured in Kubernetes
-      base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
     info:
@@ -200,41 +216,8 @@ vro:
         description: "Server"
         url: ${STARTER_OPENAPI_SERVERURL:/}
       -
-        description: "via API Gateway"
-        url: ${STARTER_OPENAPI_SERVERURL:/app}
-      -
         description: "Dev Server"
         url: "https://dev.lighthouse.va.gov/abd-vro"
       -
         description: "QA Server"
         url: "https://qa.lighthouse.va.gov/abd-vro"
-
-spring.redis:
-  # database index used by the connection factory
-  database: 0
-  host: ${REDIS_PLACEHOLDERS_HOST}
-  port: 6379
-  password: ${REDIS_PLACEHOLDERS_PASSWORD}
-
-bip:
-  claimClientId: "${BIP_CLAIM_USERID}"
-  claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "virtual_regional_office"
-  evidenceClientId: "${BIP_EVIDENCE_USERID}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
-  evidenceIssuer: "VRO"
-  applicationId: "${BIP_APPLICATION_ID:VRO}"
-  stationId: "${BIP_STATION_ID:281}"
-truststore: "${BIP_TRUSTSTORE}"
-truststore_password: "${BIP_PASSWORD}"
-keystore: "${BIP_KEYSTORE}"
-
-claim:
-  special_issue_1: "RDR1"
-  special_issue_2: "RRD"
-
-spring.config.import: >
-  conf-camel.yml,
-  conf-camel-rabbitmq.yml

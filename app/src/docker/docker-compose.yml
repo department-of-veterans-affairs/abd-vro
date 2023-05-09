@@ -67,6 +67,7 @@ services:
 
   rabbitmq-service:
     image: rabbitmq:3-management
+    platform: linux/arm64/v8
     # Specifying user to reduce/eliminate startup error about erlang.cookie
     # based on https://github.com/docker-library/rabbitmq/issues/318
     user: rabbitmq
