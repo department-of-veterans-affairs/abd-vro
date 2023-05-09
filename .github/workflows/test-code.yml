@@ -37,16 +37,8 @@ jobs:
       - name: "Python isort"
         uses: isort/isort-action@master
         with:
-          requirementsFiles: "domain-cc/python_src/requirements.txt \
-                              domain-cc/python_src/dev-requirements.txt \
-                              domain-rrd/service-python/requirements.txt \
-                              domain-rrd/service-python/pdfgenerator/src/requirements.txt \
-                              domain-rrd/service-python/featuretoggle/src/requirements.txt \
-                              domain-rrd/service-python/assessclaimdc7101/src/requirements.txt \
-                              domain-rrd/service-python/assessclaimdc6602v2/src/requirements.txt \
-                              domain-rrd/service-python/assessclaimdc6602/src/requirements.txt \
-                              domain-rrd/service-python/assessclaimdc6522/src/requirements.txt \
-                              domain-rrd/service-python/assessclaimcancer/src/requirements.txt"
+          requirementsFiles: "**/requirements.txt \
+                              **/dev-requirements.txt"
 
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
