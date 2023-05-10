@@ -57,15 +57,15 @@ export svcbgsapi_IMG="vro-svc-bgs-api"
 export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
 export svclighthouseapi_IMG="vro-svc-lighthouse-api"
 
-# --- pdfgenerator in folder ./service-python/pdfgenerator
+# --- pdfgenerator in folder ./domain-rrd/service-python/pdfgenerator
 export pdfgenerator_GRADLE_IMG="va/abd_vro-pdfgenerator"
 export pdfgenerator_IMG="vro-svc-pdfgenerator"
 
-# --- assessclaimdc7101 in folder ./service-python/assessclaimdc7101
+# --- assessclaimdc7101 in folder ./domain-rrd/service-python/assessclaimdc7101
 export assessclaimdc7101_GRADLE_IMG="va/abd_vro-assessclaimdc7101"
 export assessclaimdc7101_IMG="vro-svc-assessclaimdc7101"
 
-# --- assessclaimdc6602 in folder ./service-python/assessclaimdc6602
+# --- assessclaimdc6602 in folder ./domain-rrd/service-python/assessclaimdc6602
 export assessclaimdc6602_GRADLE_IMG="va/abd_vro-assessclaimdc6602"
 export assessclaimdc6602_IMG="vro-svc-assessclaimdc6602"
 
