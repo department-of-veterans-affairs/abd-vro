@@ -12,6 +12,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
 
+    // TODO: Where are versions of these set?
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
 

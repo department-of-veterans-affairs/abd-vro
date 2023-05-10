@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-  flywayMigration platform("gov.va.starter:starter-bom:${starter_boot_version}")
+//  flywayMigration platform("gov.va.starter:starter-bom:${starter_boot_version}")
   flywayMigration "org.postgresql:postgresql:${postgresql_version}"
 }
 

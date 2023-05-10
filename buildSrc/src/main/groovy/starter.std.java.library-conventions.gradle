@@ -2,6 +2,7 @@
  * Top-level configuration of all the typical standard configurations for a normal Java jar.
  */
 
+
 plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
@@ -20,4 +21,15 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
+
+    id 'winnowed-starter.bom.deps'
+}
+
+// To fix lack of main class of subprojects that are libraries
+// https://stackoverflow.com/questions/56861256/gradle-build-failed-main-class-name-has-not-been-configured-and-it-could-not-be
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
 }

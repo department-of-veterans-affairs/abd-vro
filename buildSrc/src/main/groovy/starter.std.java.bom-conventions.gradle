@@ -1,0 +1,14 @@
+// From https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/release-0.1.32/buildSrc/src/main/groovy/starter.std.java.bom-conventions.gradle
+
+plugins {
+//    id 'java-platform'
+//    id 'starter.java.publish-repo-conventions'
+//    id 'starter.java.publish-pom-conventions'
+    id 'starter.java.versions-conventions'
+//    id 'winnowed-starter.bom.deps'
+}
+dependencies {
+    constraints {
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+    }
+}
