@@ -48,7 +48,7 @@ dependencies {
 
   implementation "gov.va.starter:open-api:${starter_boot_version}"
   //  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-  implementation "gov.va.starter:health:${starter_boot_version}"
+  //  implementation "gov.va.starter:health:${starter_boot_version}"
   //  // Not sure if these are needed:
   //  implementation "gov.va.starter:tracing:${starter_boot_version}"
   //  implementation "gov.va.starter:error-handling:${starter_boot_version}"

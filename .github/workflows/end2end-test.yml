@@ -57,7 +57,7 @@ jobs:
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:8081/health'
+          url: 'http://localhost:8081/actuator/health'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
