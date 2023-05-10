@@ -7,7 +7,6 @@ plugins {
 
 // Needed?   id 'starter.java.deps-spring-config-conventions'
     id 'starter.java.config-conventions'
-//    id 'starter.java.build-utils-conventions'
 
 //    id 'winnowed-starter.bom.deps'
 }
