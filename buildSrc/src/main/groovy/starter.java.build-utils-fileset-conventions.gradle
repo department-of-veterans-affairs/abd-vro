@@ -16,4 +16,5 @@ ext {
     filterProjectFiles = { FileCollection fileSet, extensions ->
         return filterFiles(fileSet.filter { f -> f.path.contains(project.name) }, extensions)
     }
+
 }

@@ -1,0 +1,30 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    id 'base'
+    id 'com.felipefzdz.gradle.shellcheck'
+}
+
+shellcheck {
+    sources = files(".")
+    ignoreFailures = true
+    showViolations = true
+    shellcheckVersion = "${shellcheck_tool_version}"
+    useDocker = false
+    shellcheckBinary = 'shellcheck'
+    severity = 'style' // "error"
+}
+
+tasks.named('shellcheck').configure {
+    reports {
+        xml.enabled = false
+        txt.enabled = false
+        html.enabled = true
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('shellcheck')
+}

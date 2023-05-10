@@ -1,0 +1,11 @@
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    implementation 'io.swagger.core.v3:swagger-annotations'
+    implementation 'io.swagger.core.v3:swagger-models'
+}

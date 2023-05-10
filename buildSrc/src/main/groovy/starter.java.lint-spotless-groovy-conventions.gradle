@@ -7,7 +7,11 @@ plugins {
 }
 
 spotless {
-    java {
-        googleJavaFormat()
+    groovy {
+        importOrder('', 'java')
+        excludeJava()
+    }
+    groovyGradle {
+        target '*.gradle'
     }
 }

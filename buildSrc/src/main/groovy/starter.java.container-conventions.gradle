@@ -1,0 +1,131 @@
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+    id 'base'
+    id 'com.palantir.docker'
+    id 'com.palantir.docker-run'
+    id 'com.palantir.docker-compose'
+}
+// Requires
+// id 'starter.java.build-utils-property-conventions'
+
+ext {
+    dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
+    dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
+}
+
+docker {
+    dependsOn(assemble)
+    name "${dockerRegistry}/${rootProject.name}-${project.name}"
+    tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
+    tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
+    noCache true
+    dockerfile file('src/docker/Dockerfile')
+}
+
+dockerRun {
+    name project.name
+    image "${dockerRegistry}/${rootProject.name}-${project.name}"
+    ports '8080:8080'
+}
+
+dockerCompose {
+    dockerComposeFile 'src/docker/docker-compose.yml'
+}
+
+def dockerStart = tasks.register('dockerStart', DefaultTask) {
+    group = "Docker Run"
+    description = "Remove unused containers, build image, run container"
+    dependsOn tasks.named("dockerPrune")
+    dependsOn tasks.named("docker")
+    dependsOn tasks.named("dockerRun")
+}
+
+def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
+    group = "Docker"
+    description = "Remove unused containers"
+    executable "docker"
+    args "container", "prune", "-f"
+}
+
+def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
+    group = "Docker"
+    description = "Remove unused images"
+    executable "docker"
+    args "image", "prune", "-f"
+}
+
+def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
+    group = "Docker"
+    description = "Remove unused volumes"
+    executable "docker"
+    args "volume", "prune", "-f"
+}
+
+def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
+    group = "Docker"
+    description = "Stop container, then remove unused containers and images"
+    mustRunAfter tasks.named('dockerStop')
+    mustRunAfter tasks.named('dockerRemoveContainer')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
+}
+
+def dcPrune = tasks.register('dcPrune', DefaultTask) {
+    group = "Docker Container"
+    description = "Stop containers, then remove unused containers and images"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
+}
+
+def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
+    group = "Docker Container"
+    description = "Stop containers, then remove unused volumes"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneVolume
+}
+
+def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = 'Use linter (default hadolint) to perform static analysis on Dockerfile'
+    ext.binary = 'hadolint'
+    ext.targets = [ 'src/docker/Dockerfile' ]
+    ext.taskTimeout = 10000L
+    def result = 0
+    def sout = new StringBuilder()
+    def serr = new StringBuilder()
+    doLast {
+        ext.targets.each { f ->
+            def cmdLine = "${ext.binary} ${f}"
+            def proc = cmdLine.execute(null, project.projectDir)
+            proc.consumeProcessOutput(sout, serr)
+            proc.waitForOrKill(ext.taskTimeout)
+            result |= proc.exitValue()
+        }
+        if (result != 0 && serr) {
+            ant.fail(serr) }
+        else if (result != 0) {
+            ant.fail(sout)
+        }
+        return result
+    }
+}
+
+tasks.named("dockerRemoveContainer").configure {
+    mustRunAfter tasks.named('dockerStop')
+}
+
+tasks.named("dockerComposeUp").configure {
+    dependsOn tasks.named("docker")
+}
+
+tasks.named("dockerRun").configure {
+    dependsOn tasks.named("docker")
+}
+
+tasks.named("check").configure {
+    dependsOn lintDockerfile
+}

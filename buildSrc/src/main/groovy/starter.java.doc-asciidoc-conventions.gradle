@@ -89,6 +89,6 @@ asciidoctor {
 }
 
 tasks.register('reference', dependsOn: asciidoctor) {
-    group = 'Documentation'
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = 'Generate the reference documentation'
 }

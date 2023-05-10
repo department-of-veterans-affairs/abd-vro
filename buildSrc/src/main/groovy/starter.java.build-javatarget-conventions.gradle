@@ -1,0 +1,9 @@
+plugins {
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(getPropertyOrDefault("java_target_version", '17'))
+//        vendor = JvmVendorSpec.ADOPTOPENJDK
+    }
+}

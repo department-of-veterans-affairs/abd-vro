@@ -3,6 +3,11 @@
  */
 
 plugins {
+    id "org.springframework.boot"
     id "com.github.johnrengelman.processes"
     id "org.springdoc.openapi-gradle-plugin"
+}
+
+openApi {
+    outputDir.set(file("${project.buildDir}/springdoc"))
 }
