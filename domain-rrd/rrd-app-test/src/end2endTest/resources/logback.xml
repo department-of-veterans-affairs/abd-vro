@@ -1,0 +1,15 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36}.%M:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="org.springframework.web.client.RestTemplate" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+</configuration>

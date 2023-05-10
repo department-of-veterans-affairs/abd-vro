@@ -1,0 +1,148 @@
+{
+  "veteranIcn": "1012666073V986297",
+  "diagnosticCode": "7101",
+  "evidence": {
+    "medications": [
+      {
+        "status": "Active",
+        "description": "ALBUTEROL SO4 90MCG/ACTUAT (CFC-F) INHL,ORAL,6.7GM",
+        "refills": 0,
+        "authoredOn": "2022-03-23T01:43:31Z",
+        "dosageInstructions": [
+          "INHALE 2 PUFFS BY INHALATION FOUR TIMES A DAY AS NEEDED FOR SHORTNESS OF BREATH OR WHEEZING",
+          "As directed by physician."
+        ],
+        "route": "",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "MIRTAZAPINE 15MG TAB",
+        "refills": 2,
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "dosageInstructions": [
+          "TAKE ONE TABLET BY MOUTH AT BEDTIME AS NEEDED FOR SLEEP",
+          "As directed by physician."
+        ],
+        "route": "ORAL",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "SERTRALINE HCL 100MG TA",
+        "refills": 0,
+        "authoredOn": "2022-03-06T01:43:31Z",
+        "dosageInstructions": [
+          "TAKE ONE TABLET BY MOUTH DAILY FOR ANXIETY, MOOD, AND SLEEP",
+          "As directed by physician."
+        ],
+        "route": "",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "Omeprazole 10 MG",
+        "refills": 0,
+        "authoredOn": "2021-04-15T08:00:00Z",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "Amlodipine 5 MG Oral Tablet",
+        "refills": 0,
+        "authoredOn": "2020-08-14T08:00:00Z",
+        "dosageInstructions": [
+          "Once Per Day",
+          "Twice Per Day"
+        ],
+        "route": "ORAL",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "MOMETASONE FUROATE 200MCG/ACTUAT INHL,ORAL,120D,13GM",
+        "refills": 0,
+        "authoredOn": "2020-03-23T01:43:31Z",
+        "dosageInstructions": [],
+        "route": "INHALATION",
+        "dataSource": "LH"
+      },
+      {
+        "status": "Active",
+        "description": "Escitalopram 10 MG",
+        "refills": 0,
+        "authoredOn": "2018-02-03T08:00:00Z",
+        "dosageInstructions": [
+          "Once Per Day"
+        ],
+        "route": "ORAL",
+        "dataSource": "LH"
+      }
+    ],
+    "bp_readings": [
+      {
+        "date": "2022-07-20",
+        "dateFormatted": "7/20/2022",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 93.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 167.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
+      },
+      {
+        "date": "2022-06-20",
+        "dateFormatted": "6/20/2022",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 93.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 167.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
+      },
+      {
+        "date": "2022-05-20",
+        "dateFormatted": "5/20/2022",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 104.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 190.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "WASHINGTON VA MEDICAL CENTER",
+        "dataSource": "LH"
+      }
+    ]
+  },
+  "evidenceSummary": {
+    "totalBpCount": 8,
+    "recentBpCount": 3,
+    "medicationsCount": 7
+  },
+  "claimSubmissionId": "7001"
+}

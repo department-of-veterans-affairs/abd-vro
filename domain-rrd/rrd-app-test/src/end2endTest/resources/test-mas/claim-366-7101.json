@@ -1,0 +1,29 @@
+{
+  "dob": "1974-02-19",
+  "firstName": "Michael",
+  "lastName": "Lhtimeouting",
+  "gender": "male",
+  "collectionId": 366,
+  "veteranIdentifiers": {
+    "icn": "mock1012666073V986366",
+    "ssn": "111-11-1366",
+    "veteranFileId": "9999366",
+    "edipn": "1010234-366",
+    "participantId": "88888366"
+  },
+  "claimDetail": {
+    "benefitClaimId": "1366",
+    "claimSubmissionDateTime": "2023-01-05Z",
+    "claimSubmissionSource": "MAS",
+    "conditions": {
+      "name": "Hyperotension",
+      "diagnosticCode": "7101",
+      "disabilityActionType": "INCREASE",
+      "disabilityClassificationCode": "3460",
+      "ratedDisabilityId": "7645"
+    }
+  },
+  "veteranFlashIds": [
+    "999375"
+  ]
+}

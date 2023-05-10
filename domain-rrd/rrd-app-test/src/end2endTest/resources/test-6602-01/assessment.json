@@ -1,0 +1,89 @@
+{
+  "claimSubmissionId": "7002",
+  "diagnosticCode": "6602",
+  "evidence": {
+    "medications": [
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2009-08-06T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Levothyroxine Sodium 0.075 MG Oral Tablet",
+        "dosageInstructions": [
+          "Take 1 time(s) every 60.0 day(s) - spread out evenly.",
+          "As directed by physician."
+        ],
+        "notes": [
+          "Levothyroxine Sodium 0.075 MG Oral Tablet"
+        ],
+        "refills": 0,
+        "route": "As directed by physician.",
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Clopidogrel 75 MG Oral Tablet",
+        "notes": [
+          "Clopidogrel 75 MG Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet",
+        "notes": [
+          "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Simvastatin 20 MG Oral Tablet",
+        "refills": 3,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "2008-04-23T13:17:22Z",
+        "dataSource": "LH",
+        "description": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray",
+        "refills": 1,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "1999-01-20T15:27:05Z",
+        "dataSource": "LH",
+        "description": "Sertraline 100 MG Oral Tablet",
+        "notes": [
+          "Sertraline 100 MG Oral Tablet"
+        ],
+        "refills": 0,
+        "status": "Active"
+      },
+      {
+        "asthmaRelevant": false,
+        "authoredOn": "1999-01-20T15:27:05Z",
+        "dataSource": "LH",
+        "description": "Acetaminophen/Hydrocodone",
+        "notes": [
+          "Acetaminophen/Hydrocodone"
+        ],
+        "refills": 0,
+        "status": "Active"
+      }
+    ]
+  },
+  "evidenceSummary": {
+    "relevantMedCount": 0,
+    "totalMedCount": 7
+  },
+  "veteranIcn": "9000682"
+}
