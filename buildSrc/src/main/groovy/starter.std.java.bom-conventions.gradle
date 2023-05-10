@@ -2,10 +2,13 @@
 
 plugins {
 //    id 'java-platform'
+// Don't need these
 //    id 'starter.java.publish-repo-conventions'
 //    id 'starter.java.publish-pom-conventions'
     id 'starter.java.versions-conventions'
 }
+
+// Added to fix error
 dependencies {
     constraints {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
