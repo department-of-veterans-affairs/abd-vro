@@ -1,7 +1,7 @@
 plugins {
   id 'local.std.java.application-conventions'
   id 'starter.java.config-conventions'
-//  id 'starter.java.build-utils-conventions'
+  //  id 'starter.java.build-utils-conventions'
   id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
@@ -23,7 +23,7 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 ext {
-    mapstruct_version = "1.4.2.Final"
+  mapstruct_version = "1.4.2.Final"
 }
 
 dependencies {
@@ -47,12 +47,12 @@ dependencies {
   implementation project(':domain-cc:cc-api-controller')
 
   implementation "gov.va.starter:open-api:${starter_boot_version}"
-//  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-//  implementation "gov.va.starter:health:${starter_boot_version}"
-//  // Not sure if these are needed:
-//  implementation "gov.va.starter:tracing:${starter_boot_version}"
-//  implementation "gov.va.starter:error-handling:${starter_boot_version}"
-//  implementation "gov.va.starter:exceptions:${starter_boot_version}"
+  //  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
+  //  implementation "gov.va.starter:health:${starter_boot_version}"
+  //  // Not sure if these are needed:
+  //  implementation "gov.va.starter:tracing:${starter_boot_version}"
+  //  implementation "gov.va.starter:error-handling:${starter_boot_version}"
+  //  implementation "gov.va.starter:exceptions:${starter_boot_version}"
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'

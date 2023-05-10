@@ -4,7 +4,7 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
   id "io.freefair.lombok"
-//  id 'starter.java.build-utils-conventions'
+  //  id 'starter.java.build-utils-conventions'
   id 'jacoco'
 }
 
