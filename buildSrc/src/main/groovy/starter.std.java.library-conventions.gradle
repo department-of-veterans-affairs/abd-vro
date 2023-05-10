@@ -20,14 +20,11 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
-// Needed?
-//    id 'starter.java.lint-spotless-conventions'
-//    id 'starter.java.lint-spotless-java-conventions'
 
     id 'winnowed-starter.bom.deps'
 }
 
-// FIXME: try better solution
+// TODO PR #1549: find a better solution
 // To fix lack of main class of subprojects that are libraries
 // https://stackoverflow.com/questions/56861256/gradle-build-failed-main-class-name-has-not-been-configured-and-it-could-not-be
 bootJar {

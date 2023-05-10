@@ -16,28 +16,6 @@ pluginManagement {
       url "https://repo1.maven.org/maven2/"
     }
     mavenCentral()
-    //    maven {
-    //      name = "starterBootPkgs"
-    //      url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
-    //      credentials(HttpHeaderCredentials) {
-    //        name = "Authorization"
-    //        value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
-    //      }
-    //      authentication {
-    //        register("header", HttpHeaderAuthentication)
-    //      }
-    //    }
-    maven {
-      name = "nexus"
-      url = uri("https://tools.health.dev-developer.va.gov/nexus")
-      credentials {
-        String result = "unknown"
-        result = System.getenv("NEXUS_USERNAME")
-        username = !result ? "NEXUS_USERNAME_FIXME" : result;
-        result = System.getenv("NEXUS_TOKEN")
-        password = !result ? "NEXUS_TOKEN_FIXME" : result;
-      }
-    }
   }
 }
 
@@ -50,28 +28,6 @@ dependencyResolutionManagement {
       url "https://repo1.maven.org/maven2/"
     }
     mavenCentral()
-    //    maven {
-    //      name = "starterBootPkgs"
-    //      url = uri("https://maven.pkg.github.com/department-of-veterans-affairs/lighthouse-di-starter-boot")
-    //      credentials(HttpHeaderCredentials) {
-    //        name = "Authorization"
-    //        value = "Bearer " + (System.getenv("GITHUB_ACCESS_TOKEN") ?: GITHUB_ACCESS_TOKEN)
-    //      }
-    //      authentication {
-    //        register("header", HttpHeaderAuthentication)
-    //      }
-    //    }
-    maven {
-      name = "nexus"
-      url = uri("https://tools.health.dev-developer.va.gov/nexus")
-      credentials {
-        String result = "unknown"
-        result = System.getenv("NEXUS_USERNAME")
-        username = !result ? "NEXUS_USERNAME_FIXME" : result;
-        result = System.getenv("NEXUS_TOKEN")
-        password = !result ? "NEXUS_TOKEN_FIXME" : result;
-      }
-    }
   }
 }
 

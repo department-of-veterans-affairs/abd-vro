@@ -11,7 +11,6 @@ dependencies {
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'
-  //  implementation "gov.va.starter:exceptions"
 
   // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
   compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'

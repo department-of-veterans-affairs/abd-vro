@@ -46,6 +46,7 @@ docker {
   files "src/main/resources/groovysh.rc", "src/main/resources/emerg.sh"
 }
 bootJar {
+  // TODO PR #1549: Is there a better solution?
   enabled = true
 }
 

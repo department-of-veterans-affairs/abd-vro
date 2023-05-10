@@ -37,5 +37,6 @@ dependencies {
 }
 
 bootJar {
+  // TODO PR #1549: Is there a better solution?
   enabled = true
 }

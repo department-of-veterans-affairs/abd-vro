@@ -21,16 +21,11 @@ tasks.withType(Test).named("end2endTest") {
   }
 }
 
-ext {
-  mapstruct_version = "1.4.2.Final"
-}
-
 dependencies {
-  // TODO: Where are these declared? spring-boot-dependencies
-  //annotationProcessor "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+  // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
   // For now, specifying versions here
   annotationProcessor 'org.projectlombok:lombok:1.18.26'
-  annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+  annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
   annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
 
   implementation project(':persistence:model')
@@ -44,14 +39,6 @@ dependencies {
 
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
-
-  //  implementation "gov.va.starter:open-api:${starter_boot_version}"
-  //  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-  //  implementation "gov.va.starter:health:${starter_boot_version}"
-  //  // Not sure if these are needed:
-  //  implementation "gov.va.starter:tracing:${starter_boot_version}"
-  //  implementation "gov.va.starter:error-handling:${starter_boot_version}"
-  //  implementation "gov.va.starter:exceptions:${starter_boot_version}"
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -93,7 +80,7 @@ dependencies {
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
   end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
 
-  // Removing va.starter TODO: fix this
+  // TODO PR #1549: fix having to specify version in this file
   testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
   end2endTestAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
