@@ -1,0 +1,131 @@
+{
+  "claimSubmissionId": "1234",
+  "diagnosticCode": "7101",
+  "pdfTemplate": "v2",
+  "conditions":  {
+    "disabilityActionType": "NEW",
+    "name": "high blood pressure"
+  },
+  "veteranInfo": {
+    "first": "Joe",
+    "middle": "M",
+    "last": "Doe",
+    "suffix": "Jr",
+    "birthdate": "01/04/1971"
+  },
+  "evidence": {
+    "serviceLocations": [
+      {"location": "Vietnam",
+        "document": "VA 21-3101 Request for Information",
+        "receiptDate" : "1/28/2016",
+        "page": "2",
+        "documentId": "{BFA4943C-4F56-4AC5-B48F-5FDE469B1226}"}],
+    "conditions": [{"code": "I10",
+      "text": "Essential (primary) hypertension",
+      "recordedDate": "04-06-1950",
+      "dateFormatted": "4/6/1950",
+      "relevant": true,
+      "dataSource":  "LH",
+      "partialDate": ""
+    },
+      {"code": "38341003",
+        "relevant": false,
+        "text": "Hypertensive disorder",
+        "dateFormatted": "4/6/1950",
+        "dataSource":  "MAS",
+        "partialDate": ""}
+    ],
+    "medications": [
+      {
+        "status": "Active",
+        "description": "Hydrochlorothiazide 6.25 MG",
+        "refills": 0,
+        "authoredOn": "1950-04-05T23:00:00Z",
+        "dateFormatted": "4/6/1950",
+        "docTypeDescription": "C and P Exam",
+        "dosageInstructions": [
+          "QD"
+        ],
+        "route": "ORAL",
+        "dataSource": "MAS",
+        "partialDate": ""
+      },
+      {
+        "status": "Active",
+        "notes": [
+          "Hydrochlorothiazide 6.25 MG"
+        ],
+        "description": "Hydrochlorothiazide 6.25 MG",
+        "refills": 0,
+        "authoredOn": "",
+        "dateFormatted": "",
+        "dosageInstructions": [
+          "Once per day.",
+          "As directed by physician."
+        ],
+        "route": "As directed by physician.",
+        "dataSource": "MAS",
+        "partialDate": "*/6/1950"
+      }
+    ],
+    "bp_readings": [
+      {
+        "date": "2009-03-19",
+        "dateFormatted": "3/19/2009",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 83.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 131.0
+        },
+        "practitioner": "DR. JANE460 DOE922 MD",
+        "organization": "LYONS VA MEDICAL CENTER"
+      },
+      {
+        "date": "2010-03-25",
+        "dateFormatted": "3/25/2010",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 82.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 138.0
+        },
+        "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+        "organization": "NEW AMSTERDAM CBOC"
+      },
+      {
+        "date": "2011-03-31",
+        "dateFormatted": "3/25/2010",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 71.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 101.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "LYONS VA MEDICAL CENTER"
+      }
+    ],
+    "documentsWithoutAnnotationsChecked": [
+      "{guid1}"
+    ]
+  }
+}
