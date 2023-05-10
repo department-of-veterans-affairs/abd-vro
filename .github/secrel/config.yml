@@ -5,6 +5,7 @@ languages:
     version: 17.0
     build-source: false
     build-args:
+      # TODO: remove?
       # Snyk does its own build to run SCA, so it needs the token to pull private artifacts
       - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
   python:
