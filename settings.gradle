@@ -12,6 +12,9 @@ pluginManagement {
   repositories {
     mavenLocal()
     gradlePluginPortal()
+    maven {
+        url "https://repo1.maven.org/maven2/"
+    }
     mavenCentral()
 //    maven {
 //      name = "starterBootPkgs"
@@ -43,6 +46,9 @@ dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
   repositories {
     mavenLocal()
+    maven {
+        url "https://repo1.maven.org/maven2/"
+    }
     mavenCentral()
 //    maven {
 //      name = "starterBootPkgs"
