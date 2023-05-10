@@ -1,6 +1,5 @@
 package gov.va.vro;
 
-import gov.va.starter.boot.openapi.config.OpenApiConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -13,13 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Slf4j
 @SpringBootConfiguration
 @ConfigurationPropertiesScan(basePackages = {"gov.va.vro.config"})
-@EnableAutoConfiguration(exclude = {OpenApiConfiguration.class})
+@EnableAutoConfiguration
 @ComponentScan(
     basePackages = {"gov.va.vro", "gov.va.starter.boot"},
     excludeFilters = {
       @ComponentScan.Filter(
           type = FilterType.ASSIGNABLE_TYPE,
-          value = {OpenApiConfiguration.class, WebSecurityConfigurerAdapter.class})
+          value = {WebSecurityConfigurerAdapter.class})
     })
 public class VroApplication {
   public static void main(String[] args) {

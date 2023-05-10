@@ -46,7 +46,7 @@ dependencies {
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
 
-  implementation "gov.va.starter:open-api:${starter_boot_version}"
+  //  implementation "gov.va.starter:open-api:${starter_boot_version}"
   //  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
   //  implementation "gov.va.starter:health:${starter_boot_version}"
   //  // Not sure if these are needed:
