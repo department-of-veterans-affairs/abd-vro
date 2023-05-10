@@ -24,34 +24,12 @@ tasks.withType(Test).named("end2endTest") {
 
 dependencies {
   implementation project(':app')
-
   implementation project(':persistence:model')
-
   implementation project(':domain-rrd:rrd-shared')
   implementation project(':domain-rrd:rrd-api-controller')
-
-  // TODO: probably shouldn't be directly dependent on these
   implementation project(':domain-rrd:rrd-workflows')
-  implementation project(':domain-rrd:service-rrd-db')
 
-  implementation project(':domain-xample:xample-api-controller')
-  implementation project(':domain-cc:cc-api-controller')
-
-  implementation 'gov.va.starter:open-api'
-  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-  implementation 'gov.va.starter:health'
-  // Not sure if these are needed:
-  implementation 'gov.va.starter:tracing'
-  implementation 'gov.va.starter:error-handling'
-  implementation 'gov.va.starter:exceptions'
-
-  implementation 'org.springframework.boot:spring-boot-starter-web'
-  implementation 'org.springframework.boot:spring-boot-starter-validation'
-  implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation 'org.springframework.boot:spring-boot-starter-amqp'
-  implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
   implementation "org.springframework.security:spring-security-core:${spring_security_version}"
   implementation "org.springframework.security:spring-security-config:${spring_security_version}"
   implementation "org.springframework.security:spring-security-web:${spring_security_version}"
@@ -61,23 +39,10 @@ dependencies {
   implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
   implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
-  // https://mvnrepository.com/artifact/com.auth0/java-jwt
-  implementation "com.auth0:java-jwt:${auth0_jwt}"
-  // https://mvnrepository.com/artifact/com.auth0/jwks-rsa
-  implementation "com.auth0:jwks-rsa:${auth0_jwks}"
-  // https://mvnrepository.com/artifact/com.google.code.gson/gson
-  implementation "com.google.code.gson:gson:${gson_version}"
-
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
-
-  // Needed?
-  // implementation "org.postgresql:postgresql:${postgresql_version}"
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
-
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 
   testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-  testImplementation "io.jsonwebtoken:jjwt:0.2"
 
   // end to end dependencies
   end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
@@ -124,10 +89,5 @@ afterEvaluate {
 
   tasks.named('spectralLint').configure {
     dependsOn 'forkedSpringBootStop'
-  }
-
-  tasks.named('dockerComposeDown') {
-    dependsOn ':mocks:dockerComposeDown'
-    dependsOn ':domain-xample:dockerComposeDown'
   }
 }
