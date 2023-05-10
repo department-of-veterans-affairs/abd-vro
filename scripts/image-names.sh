@@ -8,7 +8,7 @@
 
 gradle_folder() {
   case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "./service-python/$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
     *) echo "./$1";;
   esac
 }
