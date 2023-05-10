@@ -29,9 +29,9 @@ plugins {
   id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
   id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
   id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
-  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
 
   // Apply these
+  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" // for task jacocoAggregatedReport
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
   id('nebula.lint') version '18.0.3'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
