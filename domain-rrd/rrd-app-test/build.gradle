@@ -1,16 +1,6 @@
 plugins {
-  id 'local.std.java.application-conventions'
-  id 'starter.java.config-conventions'
-  id 'starter.java.build-utils-conventions'
+  id 'starter.std.java.library-spring-conventions'
   id 'org.unbroken-dome.test-sets' version '4.0.0'
-}
-
-bootJar {
-  enabled = false
-}
-
-jar {
-  enabled = true
 }
 
 testSets {
@@ -47,6 +37,9 @@ dependencies {
   implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
   implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
 
+  implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 
@@ -57,45 +50,4 @@ dependencies {
   end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
   end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
-}
-
-openApi {
-  // Generates build/springdoc/openapi.json
-  customBootRun {
-    getClasspath().setFrom(sourceSets.test.runtimeClasspath)
-    args = [
-      "--spring.profiles.active=test"
-    ]
-  }
-}
-
-afterEvaluate {
-  // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
-  // Not particularly useful
-  generateOpenApiDocs.enabled = false
-  forkedSpringBootRun.enabled = false
-
-  tasks.named('forkedSpringBootRun').configure {
-    dependsOn 'bootStartScripts'
-    dependsOn 'checkstyleIntegrationTest'
-    dependsOn 'checkstyleMain'
-    dependsOn 'checkstyleTest'
-    dependsOn 'compileIntegrationTestJava'
-    dependsOn 'dockerfileZip'
-    dependsOn 'integrationTest'
-    dependsOn 'jar'
-    dependsOn 'spotlessJava'
-    dependsOn 'startScripts'
-    dependsOn 'test'
-    // dependsOn ':service-python:pytest' // slows down `:app:build` task
-
-    dependsOn 'jacocoTestReport'
-    dependsOn 'jacocoTestCoverageVerification'
-
-    dependsOn 'dockerPrepare'
-  }
-
-  tasks.named('spectralLint').configure {
-    dependsOn 'forkedSpringBootStop'
-  }
 }
