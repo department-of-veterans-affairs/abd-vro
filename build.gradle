@@ -104,7 +104,7 @@ subprojects {
       // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
       //      annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
       // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
-      //      checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
+      checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
     }
 
     // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442
