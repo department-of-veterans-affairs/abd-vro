@@ -33,4 +33,20 @@ ext {
         String ref = System.getenv(tagName)
         return !ref ? defaultValue : ref;
     }
+
+    /**
+     * Utility function for constructing and applying task dependencies.
+     *
+     * @param modules module names (as array or list supporting ::each)
+     * @param taskClosure closure which constructs the task name given a module name
+     */
+    depender = { modules, taskClosure -> modules.each { dependsOn taskClosure(it) } }
+
+    /**
+     * Utility function to construct a closure given a task name (or task path).
+     *
+     * @param name task name (as String)
+     * @return closure constructing name of submodule task give submodule name
+     */
+    taskBuilder = { name -> return { module -> return "${module}:${name}" } }
 }

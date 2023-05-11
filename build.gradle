@@ -33,6 +33,7 @@ plugins {
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
   id('nebula.lint') version '18.0.3'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
+  id 'starter.java.build-utils-property-conventions'
 }
 
 allprojects {
