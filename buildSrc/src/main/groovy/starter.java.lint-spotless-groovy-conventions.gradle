@@ -1,0 +1,17 @@
+/**
+ * Configuration for spotless code formatting
+ */
+
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
+    groovy {
+        importOrder('', 'java')
+        excludeJava()
+    }
+    groovyGradle {
+        target '*.gradle'
+    }
+}

@@ -1,0 +1,7 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    id 'starter.java.lint-shellcheck-conventions'
+}

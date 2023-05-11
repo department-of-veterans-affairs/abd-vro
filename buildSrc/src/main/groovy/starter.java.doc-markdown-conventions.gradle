@@ -1,0 +1,41 @@
+/**
+ * Swaggerhub configurations
+ */
+
+plugins {
+    id 'base'
+}
+// Requires
+// id 'starter.java.build-utils-git-conventions'
+// id 'starter.java.build-utils-fileset-conventions'
+
+
+tasks.register('updateMarkdownToc') {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "(re)builds table of contents for Markdown documentation"
+    onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
+    if (gitPresent) {
+        def extensions = [ '.md' ]
+        inputs.files(filterProjectFiles(modifiedFiles, extensions))
+    }
+    //outputs.dir('build')
+    outputs.upToDateWhen { false }
+
+    doLast {
+        StringBuilder files = new StringBuilder()
+
+        inputs.files.each { f -> files.append(" ").append(f) }
+        def cmdLine = "${project.rootDir}/scripts/generate-toc.sh --update ${files.toString()}  "
+        logger.debug("[{}]: {}", project.projectDir, cmdLine)
+        def proc = cmdLine.execute(null, project.projectDir)
+
+        proc.in.eachLine { line -> logger.quiet(line) }
+        proc.out.close()
+        proc.waitFor()
+        logger.quiet("Exit code: [{}]", proc.exitValue())
+    }
+}
+
+tasks.named('build').configure {
+    dependsOn tasks.named('updateMarkdownToc')
+}

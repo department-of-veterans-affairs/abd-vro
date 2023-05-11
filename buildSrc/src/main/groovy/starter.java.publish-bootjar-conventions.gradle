@@ -1,0 +1,15 @@
+/**
+ * Configuration for publishing fat jar for spring-boot application
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        bootJarArtifact(MavenPublication) {
+            artifact bootJar
+        }
+    }
+}

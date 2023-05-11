@@ -1,0 +1,7 @@
+/**
+ * Configurations for specifying only local maven `~/.m2` repository
+ */
+
+repositories {
+    mavenLocal()
+}

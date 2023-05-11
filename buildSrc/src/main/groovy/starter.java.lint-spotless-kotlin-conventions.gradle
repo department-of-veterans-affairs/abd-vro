@@ -1,0 +1,16 @@
+/**
+ * Configuration for spotless code formatting
+ */
+
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
+    kotlin {
+        ktfmt(getPropertyOrDefault('ktfmt_format_version', '0.25'))
+    }
+    kotlinGradle {
+        target '*.gradle.kts'
+    }
+}

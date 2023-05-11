@@ -1,0 +1,23 @@
+plugins {
+}
+// id 'starter.java.build-utils-property-conventions'
+
+// NOTE: This is a simplified implementation.
+// For some reason, the tasks from com.palantir.docker don't have proper
+// input/outputs defined for the context where we just define a docker-compose.yaml
+// file and don't actually build our own docker image.
+// We re-use the same task names for consistency
+
+def dockerComposeUp = tasks.register('dockerComposeUp', Exec) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Start up a set of containers defined by a docker-compose.yaml file"
+    executable 'docker-compose'
+    args "-f", "${project.projectDir}/src/docker/${getPropertyOrDefault('dockerComposeFile', 'docker-compose.yml')}", "up", "-d"
+}
+
+def dockerComposeDown = tasks.register('dockerComposeDown', Exec) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Shut down a set of containers defined by a docker-compose.yaml file"
+    executable 'docker-compose'
+    args "-f", "${project.projectDir}/src/docker/${getPropertyOrDefault('dockerComposeFile', 'docker-compose.yml')}", "down"
+}

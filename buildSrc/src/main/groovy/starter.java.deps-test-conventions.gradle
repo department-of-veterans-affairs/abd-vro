@@ -5,6 +5,8 @@ plugins {
     id 'java'
 }
 
+// starter.java.build-javatarget-conventions
+
 dependencies {
     testImplementation 'org.mockito:mockito-core'
     testCompileOnly 'org.projectlombok:lombok'

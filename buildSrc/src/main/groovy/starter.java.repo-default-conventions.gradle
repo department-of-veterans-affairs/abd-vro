@@ -1,0 +1,9 @@
+/**
+ * Configurations for specifying standard defaults (local, mavenCentral, JCenter)
+ */
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
