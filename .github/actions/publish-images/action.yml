@@ -2,11 +2,6 @@ name: Publish images to GHCR
 description: Builds, tags, and publish VRO's Docker images
 
 inputs:
-  # TODO: remove
-  access_token:
-    description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
-    type: string
-    required: true
   image_prefix:
     description: 'The prefix for the image name, e.g., "dev_" or "" (no prefix)'
     type: string
@@ -39,8 +34,6 @@ runs:
     # Run build-images action to set up build env before testing code
     - name: "Build the images"
       uses: ./.github/actions/build-images
-      with:
-        access_token: ${{ inputs.access_token }}
 
     - name: "Test code"
       if: inputs.run_tests

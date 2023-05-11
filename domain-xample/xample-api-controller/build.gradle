@@ -1,6 +1,6 @@
 
 plugins {
-  id 'starter.std.java.library-spring-conventions'
+  id 'local.std.java.library-spring-conventions'
 }
 
 ext {

@@ -1,12 +1,6 @@
 name: Build images
 description: Builds VRO's Docker images without testing code
 
-inputs:
-  # TODO: remove
-  access_token:
-    description: 'GITHUB_ACCESS_TOKEN'
-    required: true
-
 runs:
   using: composite
   steps:

@@ -1,0 +1,13 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ */
+
+plugins {
+    id 'shared.std.java-conventions'
+    id 'java-library'
+
+    id 'starter.java.deps-open-tracing-common-conventions'
+    id 'starter.java.publish-jar-conventions'
+
+    id 'replacement-for-starter.bom'
+}

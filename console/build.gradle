@@ -1,6 +1,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'starter.std.java.library-spring-conventions'
+  id 'local.std.java.library-spring-conventions'
   id 'groovy'
 }
 
@@ -44,10 +44,6 @@ dependencies {
 
 docker {
   files "src/main/resources/groovysh.rc", "src/main/resources/emerg.sh"
-}
-bootJar {
-  // TODO PR #1549: Is there a better solution?
-  enabled = true
 }
 
 spotless {

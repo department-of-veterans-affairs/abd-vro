@@ -1,19 +1,12 @@
 
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'starter.std.java.library-spring-conventions'
+  id 'local.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
-  id "io.freefair.lombok"
   id 'jacoco'
 }
 
 description = 'Mock Bip Claim Evidence Service'
-
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
-  }
-}
 
 dependencies {
   implementation project(':domain-rrd:rrd-shared')
@@ -36,8 +29,4 @@ dependencies {
   implementation 'commons-io:commons-io:2.11.0'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-}
-
-bootJar {
-  enabled = true
 }
