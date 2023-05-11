@@ -7,7 +7,6 @@ plugins {
     id 'java-library'
 
     id 'starter.java.deps-open-tracing-common-conventions'
-//    i d 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-unit-conventions'
     id 'starter.java.publish-jar-conventions'
 
