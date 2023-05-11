@@ -14,9 +14,9 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'org.springframework:spring-web:5.3.23'
+  implementation "org.springframework:spring-web:${spring_framework_version}"
 
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api"
 
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
