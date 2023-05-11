@@ -37,7 +37,3 @@ dependencies {
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }
-
-bootJar {
-  enabled = true
-}

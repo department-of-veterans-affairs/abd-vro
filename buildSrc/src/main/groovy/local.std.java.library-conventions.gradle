@@ -11,13 +11,3 @@ plugins {
 
     id 'winnowed-starter.bom.deps'
 }
-
-// TODO PR #1549: find a better solution
-// To fix lack of main class of subprojects that are libraries
-// https://stackoverflow.com/questions/56861256/gradle-build-failed-main-class-name-has-not-been-configured-and-it-could-not-be
-bootJar {
-    enabled = false
-}
-jar {
-    enabled = true
-}

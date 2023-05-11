@@ -5,7 +5,6 @@
  */
 plugins {
   id 'java'
-//  id "io.freefair.lombok"
 }
 
 dependencies {
@@ -31,8 +30,5 @@ dependencies {
         // Specifying versions here
         annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
-//        implementation "org.projectlombok:lombok:${lombok_version}"
-//        annotationProcessor "org.projectlombok:lombok:${lombok_version}"
-//        testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
     }
 }
