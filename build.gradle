@@ -86,7 +86,7 @@ subprojects {
 
     // Defines springBom, annotationBom, and checkstyleRules
     // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.config-conventions.gradle
-    apply plugin: 'starter.java.config-conventions'
+    apply plugin: 'local.java.config-conventions'
 
     dependencies {
     }
