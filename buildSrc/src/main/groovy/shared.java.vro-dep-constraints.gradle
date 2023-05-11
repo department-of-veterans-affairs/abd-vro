@@ -7,6 +7,14 @@ plugins {
   id 'java'
 }
 
+afterEvaluate {
+    configurations.all {
+      resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
+      }
+    }
+}
+
 dependencies {
     constraints {
         // for starter-bom

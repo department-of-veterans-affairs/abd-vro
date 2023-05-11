@@ -12,12 +12,6 @@ ext {
   jacoco_minimum_coverage = 0.0
 }
 
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
-  }
-}
-
 dependencies {
   implementation project(':domain-rrd:rrd-shared')
 

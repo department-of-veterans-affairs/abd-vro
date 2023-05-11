@@ -8,12 +8,6 @@ plugins {
 
 description = 'Mock Bip Claims Service'
 
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
-  }
-}
-
 dependencies {
   implementation project(':domain-rrd:rrd-shared')
   implementation project(':mocks:mock-shared')
