@@ -26,5 +26,9 @@ dependencies {
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r5:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
+
+        // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
+        // For now, specifying versions here
+//        annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
     }
 }

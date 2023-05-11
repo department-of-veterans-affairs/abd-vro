@@ -3,7 +3,6 @@
 // Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/release-0.1.32/starter-bom/build.gradle
 
 plugins {
-    id 'starter.std.java.bom-conventions'
     id 'org.springframework.boot'
 }
 
@@ -46,5 +45,6 @@ dependencies {
         // TODO: consolidate lombok deps
         annotationProcessor 'org.projectlombok:lombok:1.18.26'
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
     }
 }

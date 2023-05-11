@@ -4,7 +4,14 @@
 
 plugins {
     id 'local.std.java.library-conventions'
-// TODO PR #1549: Is this needed?
-//    i d 'starter.java.deps-spring-config-conventions'
+    id 'starter.java.deps-spring-config-conventions'
     id 'local.java.config-conventions'
+}
+
+dependencies {
+    constraints {
+        // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
+        // For now, specifying versions here
+        annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
+    }
 }
