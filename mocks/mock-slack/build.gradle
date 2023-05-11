@@ -3,7 +3,6 @@ plugins {
   id 'starter.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
   id "io.freefair.lombok"
-  id 'starter.java.build-utils-conventions'
   id 'jacoco'
 }
 
@@ -36,4 +35,8 @@ dependencies {
   implementation 'org.apache.commons:commons-lang3:3.12.0'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+}
+
+bootJar {
+  enabled = true
 }

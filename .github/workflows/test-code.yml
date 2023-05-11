@@ -32,7 +32,7 @@ jobs:
 
       - name: "Run quick linters"
         run: |
-          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} spotlessCheck shellcheck lintDockerfile
+          ./gradlew spotlessCheck shellcheck lintDockerfile
 
       - name: "Python isort"
         uses: isort/isort-action@master
@@ -43,10 +43,10 @@ jobs:
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
-          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} test check
+          ./gradlew test check
       - name: "Check for adequate test coverage"
         run: |
-          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} jacocoLogTestCoverage jacocoTestCoverageVerification
+          ./gradlew jacocoLogTestCoverage jacocoTestCoverageVerification
 
       - name: "Publish Test Results as PR comment and GH Check Run"
         # Known issue: Associates results to random workflow
@@ -64,8 +64,7 @@ jobs:
         # `jacocoAggregatedReport` reports aggregated coverage of all the subprojects
         #     excluding integrationTest and end2endTest (which are run elsewhere)
         run: |
-          ./gradlew -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }} \
-            jacocoAggregatedReport -x integrationTest -x end2endTest
+          ./gradlew jacocoAggregatedReport -x integrationTest -x end2endTest
       - name: "Report JaCoCo Coverage as a GH Check Run"
         # This takes about 1 minute, so don't run on PRs
         # if: github.event_name != 'pull_request'

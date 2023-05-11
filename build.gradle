@@ -1,7 +1,5 @@
 buildscript {
   dependencies {
-    classpath "gov.va.starter:plugins:${starter_boot_version}"
-    classpath "gov.va.starter:cookiecutter:${starter_boot_version}"
     classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
     classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
   }
@@ -29,21 +27,12 @@ plugins {
   id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
   id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
   id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
-  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
 
   // Apply these
+  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" // for task jacocoAggregatedReport
   id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
   id('nebula.lint') version '18.0.3'
   id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
-  // VA's starter plugins
-  // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
-  id("starter.java.build-utils-property-conventions") version "${starter_boot_version}"
-  id("starter.java.build-utils-task-conventions") version "${starter_boot_version}"
-  id("starter.java.release-conventions") version "${starter_boot_version}"
-  id("starter.metrics.build-time-tracker-conventions") version "${starter_boot_version}"
-  id("starter.java.versions-conventions") version "${starter_boot_version}"
-  id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
-  id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
 }
 
 allprojects {
@@ -98,11 +87,8 @@ subprojects {
     // Defines springBom, annotationBom, and checkstyleRules
     // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.config-conventions.gradle
     apply plugin: 'starter.java.config-conventions'
+
     dependencies {
-      // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
-      annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-      // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
-      checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
     }
 
     // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442

@@ -11,9 +11,6 @@ dependencies {
   implementation project(':domain-rrd:rrd-shared')
   implementation project(':persistence:model')
 
-  // Needed?
-  // implementation "gov.va.starter:exceptions"
-
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
 

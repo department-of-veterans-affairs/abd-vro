@@ -1,6 +1,5 @@
 /**
  * Top-level configuration of all the typical standard configurations for a Spring Boot application package.
- * https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.std.java.application-conventions.gradle
  */
 
 plugins {
@@ -9,7 +8,6 @@ plugins {
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-
     id 'starter.java.build-utils-property-conventions'
     id 'starter.java.build-javatarget-conventions'
     id 'starter.java.build-springboot-conventions'
@@ -17,19 +15,15 @@ plugins {
     id 'starter.java.deps-openapi-conventions'
     id 'starter.java.deps-spring-config-conventions'
     id 'starter.java.deps-springdoc-conventions'
-
-    // Use our `local` versions
-    id 'local.java.container-conventions'
-    id 'local.java.container-spring-conventions'
-
+    id 'starter.java.container-conventions'
+    id 'starter.java.container-spring-conventions'
     id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.lint-spectral-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-integration-conventions'
-    // VRO currently doesn't use gatling
-    // id 'starter.java.test-gatling-conventions'
+    id 'starter.java.test-gatling-conventions'
     id 'starter.java.deps-test-conventions'
     id 'starter.java.deps-integration-conventions'
     id 'starter.java.publish-repo-conventions'
@@ -40,12 +34,6 @@ plugins {
 }
 
 dependencies {
-    implementation "org.zalando:problem-spring-web"
-    implementation "org.springdoc:springdoc-openapi-ui"
-    implementation "org.springdoc:springdoc-openapi-webmvc-core"
-    //implementation "org.springdoc:springdoc-openapi-security"
-    implementation "org.springdoc:springdoc-openapi-data-rest"
-
     testImplementation 'org.mock-server:mockserver-netty'
     // open tracing testing/mock support
     testImplementation 'io.opentracing:opentracing-mock'

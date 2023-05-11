@@ -6,12 +6,21 @@
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // Added
     implementation 'javax.validation:validation-api'
+
+    // Removed
+    // implementation "org.zalando:problem-spring-web"
+    // implementation "org.springdoc:springdoc-openapi-ui"
+    // implementation "org.springdoc:springdoc-openapi-webmvc-core"
+    // //implementation "org.springdoc:springdoc-openapi-security"
+    // implementation "org.springdoc:springdoc-openapi-data-rest"
 
     implementation 'org.mapstruct:mapstruct'
 
     compileOnly 'org.projectlombok:lombok'
 
+    // TODO: Where are versions of these set?
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
 

@@ -30,6 +30,11 @@
           default="checkstyle-suppressions.xml" />
         <property name="optional" value="true"/>
     </module>
+    <module name="SuppressWithPlainTextCommentFilter">
+        <property name="offCommentFormat" value="CSOFF: ([\w\|]+)"/>
+        <property name="onCommentFormat" value="CSON: ([\w\|]+)"/>
+        <property name="checkFormat" value="$1"/>
+    </module>
 
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.org/config_whitespace.html -->
@@ -60,7 +65,7 @@
         <module name="AvoidStarImport"/>
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap">
-            <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
+            <property name="tokens" value="PACKAGE_DEF, STATIC_IMPORT, IMPORT"/>
         </module>
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
@@ -133,7 +138,7 @@
         <module name="ModifierOrder"/>
         <module name="EmptyLineSeparator">
             <property name="tokens"
-              value="PACKAGE_DEF, IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+              value="PACKAGE_DEF, STATIC_IMPORT, IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
                     STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, RECORD_DEF,
                     COMPACT_CTOR_DEF"/>
             <property name="allowNoEmptyLineBetweenFields" value="true"/>
@@ -257,7 +262,7 @@
         <module name="VariableDeclarationUsageDistance"/>
         <module name="CustomImportOrder">
             <property name="customImportOrderRules"
-                      value="THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
+                      value="STATIC###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
             <!--property name="specialImportsRegExp" value="^javax\."/-->
             <property name="standardPackageRegExp" value="^(java|javax)\."/>
             <property name="sortImportsInGroupAlphabetically" value="true"/>

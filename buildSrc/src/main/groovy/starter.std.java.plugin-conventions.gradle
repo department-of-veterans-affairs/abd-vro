@@ -19,4 +19,7 @@ plugins {
     id 'starter.java.deps-test-conventions'
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
+    id 'starter.java.lint-spotless-groovy-conventions'
 }

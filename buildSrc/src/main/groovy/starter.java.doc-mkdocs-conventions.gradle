@@ -13,5 +13,5 @@ tasks.register('serveDocs', Exec) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "use mkdocs to serve documents locally"
     executable('mkdocs')
-    args('serve', "-f", "../mkdocs.yml")
+    args('serve', "-f", "mkdocs.yml")
 }

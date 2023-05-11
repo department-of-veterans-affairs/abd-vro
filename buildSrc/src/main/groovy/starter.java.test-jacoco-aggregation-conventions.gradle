@@ -14,12 +14,12 @@ jacocoLogTestCoverage {
 }
 
 def cleanReports = tasks.register('cleanReports', Exec) {
-    group = 'Verification'
+    group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Clean up aggregate jacoco reports"
     executable('rm')
     args('-rf', "${project.buildDir}/{reports,jacoco}")
 }
 
-clean.configure {
+tasks.named('clean').configure {
     dependsOn cleanReports
 }

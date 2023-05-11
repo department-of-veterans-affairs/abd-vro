@@ -2,6 +2,7 @@ name: Publish images to GHCR
 description: Builds, tags, and publish VRO's Docker images
 
 inputs:
+  # TODO: remove
   access_token:
     description: 'GITHUB_ACCESS_TOKEN needed by Gradle to build VRO'
     type: string
@@ -44,7 +45,7 @@ runs:
     - name: "Test code"
       if: inputs.run_tests
       shell: bash
-      run: ./gradlew check -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
+      run: ./gradlew check
 
     - name: "Login to GitHub Container Registry"
       uses: docker/login-action@v2.1.0
