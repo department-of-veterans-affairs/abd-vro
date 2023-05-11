@@ -4,7 +4,8 @@
  *   - This would result in creating another Gradle module/subfolder, which seems unnecessary at this point.
  */
 plugins {
-    id 'java'
+  id 'java'
+//  id "io.freefair.lombok"
 }
 
 dependencies {
@@ -29,6 +30,9 @@ dependencies {
 
         // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
         // For now, specifying versions here
-//        annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
+        annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
+//        implementation "org.projectlombok:lombok:${lombok_version}"
+//        annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+//        testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
     }
 }

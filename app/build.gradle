@@ -25,9 +25,7 @@ dependencies {
   constraints {
     // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
     // For now, specifying versions here
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
-    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
   }
 
   implementation project(':persistence:model')
@@ -82,9 +80,6 @@ dependencies {
   end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
   end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
 
-  // TODO PR #1549: fix having to specify version in this file
-  testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
-  end2endTestAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
 
 openApi {

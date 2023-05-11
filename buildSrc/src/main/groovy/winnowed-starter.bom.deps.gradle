@@ -35,16 +35,12 @@ dependencies {
         api "org.springdoc:springdoc-openapi-ui:${springdoc_version}"
         api "org.zalando:problem-spring-web:${problem_spring_web_version}"
 
-        // mocks/*
+        // Added for mocks/*
         api "com.tngtech.archunit:archunit:${arch_unit_version}"
         api "org.mock-server:mockserver-netty:${mockserver_netty_version}"
         api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
 
         // ADDED to address build error
-        annotationProcessor "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-        // TODO: consolidate lombok deps
-        annotationProcessor 'org.projectlombok:lombok:1.18.26'
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
     }
 }

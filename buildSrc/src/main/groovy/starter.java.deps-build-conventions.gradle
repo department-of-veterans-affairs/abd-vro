@@ -3,6 +3,11 @@
  * Includes proper dependencies for lombok and mapstruct annotation processing.
  */
 
+plugins {
+    // Provides the version for lombok and mapstruct libraries
+    id "io.freefair.lombok"
+}
+
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
@@ -20,8 +25,6 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
 
-    // TODO: Where are versions of these set?
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
-
 }

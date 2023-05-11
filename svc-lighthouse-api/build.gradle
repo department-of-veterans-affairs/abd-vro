@@ -28,24 +28,11 @@ dependencies {
     exclude group: 'xalan', module: 'xalan'
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
-  implementation 'org.projectlombok:lombok:1.18.26'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
-  // Needed?
-  // implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
-  // implementation 'com.auth0:java-jwt:4.0.0'
-
   testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
-  // Needed?
-  // testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.4'
-  // testImplementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-  // testImplementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-  // Needed?
-  // testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-  // testImplementation 'org.skyscreamer:jsonassert:1.5.1'
-  // testImplementation 'org.mockito:mockito-junit-jupiter:4.8.0'
 }
 
 
