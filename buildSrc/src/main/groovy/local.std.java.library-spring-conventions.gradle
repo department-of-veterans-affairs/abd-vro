@@ -1,5 +1,5 @@
 /**
- * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ * Top-level configuration of all the typical standard configurations for a Spring-based Java jar.
  */
 
 plugins {

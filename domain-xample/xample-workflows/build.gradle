@@ -35,8 +35,3 @@ dependencies {
   // https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
   //runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }
-
-bootJar {
-  // TODO PR #1549: Is there a better solution?
-  enabled = true
-}

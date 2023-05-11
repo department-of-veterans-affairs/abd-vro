@@ -1,6 +1,5 @@
 plugins {
   id 'local.std.java.library-conventions'
-  id "io.freefair.lombok"
 }
 
 dependencies {

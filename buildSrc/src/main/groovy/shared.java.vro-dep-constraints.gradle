@@ -27,7 +27,7 @@ dependencies {
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
 
-        // Specifying versions here
+        // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
     }

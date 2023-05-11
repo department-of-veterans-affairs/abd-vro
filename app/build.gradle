@@ -21,12 +21,6 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 dependencies {
-  // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
-  // For now, specifying versions here
-  annotationProcessor 'org.projectlombok:lombok:1.18.26'
-  annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
-  annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:2.5.14'
-
   implementation project(':persistence:model')
 
   implementation project(':domain-rrd:rrd-shared')

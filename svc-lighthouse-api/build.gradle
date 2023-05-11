@@ -3,7 +3,6 @@ plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
-  id "io.freefair.lombok"
   id 'jacoco'
 }
 
@@ -38,9 +37,4 @@ dependencies {
 
 test {
   useJUnitPlatform()
-}
-
-bootJar {
-  // TODO PR #1549: Is there a better solution?
-  enabled = true
 }

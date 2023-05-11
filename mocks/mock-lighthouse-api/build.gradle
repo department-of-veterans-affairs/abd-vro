@@ -2,7 +2,6 @@ plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-spring-conventions'
   id 'io.spring.dependency-management'
-  id "io.freefair.lombok"
   id 'jacoco'
 }
 
@@ -33,8 +32,4 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-}
-
-bootJar {
-  enabled = true
 }
