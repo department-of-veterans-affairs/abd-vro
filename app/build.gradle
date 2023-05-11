@@ -1,6 +1,5 @@
 plugins {
   id 'local.std.java.application-conventions'
-  id 'local.java.config-conventions'
   id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 

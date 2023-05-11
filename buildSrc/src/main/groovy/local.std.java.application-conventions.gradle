@@ -8,6 +8,9 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 
+    // Added since it defines springBom
+    id 'starter.java.config-conventions'
+
     id 'starter.java.build-springboot-conventions'
     id 'starter.java.deps-openapi-conventions'
     id 'starter.java.deps-spring-config-conventions'
