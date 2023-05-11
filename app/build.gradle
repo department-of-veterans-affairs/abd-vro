@@ -22,12 +22,6 @@ tasks.withType(Test).named("end2endTest") {
 }
 
 dependencies {
-  constraints {
-    // TODO PR #1549: Where are these versions declared? Maybe in spring-boot-dependencies.
-    // For now, specifying versions here
-    annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
-  }
-
   implementation project(':persistence:model')
 
   implementation project(':domain-rrd:rrd-shared')
