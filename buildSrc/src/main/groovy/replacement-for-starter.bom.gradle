@@ -2,10 +2,6 @@
 // annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
 // Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/release-0.1.32/starter-bom/build.gradle
 
-plugins {
-//    id 'org.springframework.boot'
-}
-
 ext {
     opentracing_api_version = "0.33.0"
     opentracing_mock_version = "0.33.0"

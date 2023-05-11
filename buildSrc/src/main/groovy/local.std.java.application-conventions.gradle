@@ -4,7 +4,7 @@
  */
 
 plugins {
-    id 'local.std.java.shared-conventions'
+    id 'shared.std.java-conventions'
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 

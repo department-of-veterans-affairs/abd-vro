@@ -16,6 +16,5 @@ plugins {
     id 'starter.java.publish-repo-conventions'
 
     // Constrains transitive dependencies to use versions without vulnerabilities
-    // buildSrc/src/main/groovy/local.java.vro-dep-constraints.gradle
-    id 'local.java.vro-dep-constraints'
+    id 'shared.java.vro-dep-constraints'
 }

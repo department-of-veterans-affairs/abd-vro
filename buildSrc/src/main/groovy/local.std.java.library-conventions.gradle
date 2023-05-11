@@ -3,11 +3,11 @@
  */
 
 plugins {
-    id 'local.std.java.shared-conventions'
+    id 'shared.std.java-conventions'
     id 'java-library'
 
     id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.publish-jar-conventions'
 
-    id 'winnowed-starter.bom.deps'
+    id 'replacement-for-starter.bom'
 }
