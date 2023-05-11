@@ -12,13 +12,11 @@ dependencies {
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'io.micrometer:micrometer-core'
 
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+
   // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
   compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-
-  // Needed?
-  // implementation 'gov.va.starter:test-data'
-  // implementation "gov.va.starter:entity-lifecycle-notifier"
-  // implementation 'org.springframework.boot:spring-boot-starter-web'
-  // implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  // implementation "io.opentracing.contrib:opentracing-spring-web-starter"
 }
