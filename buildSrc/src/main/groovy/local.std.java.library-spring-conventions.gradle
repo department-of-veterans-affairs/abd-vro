@@ -5,6 +5,6 @@
 plugins {
     id 'local.std.java.library-conventions'
 // TODO PR #1549: Is this needed?
-//    id 'starter.java.deps-spring-config-conventions'
+//    i d 'starter.java.deps-spring-config-conventions'
     id 'local.java.config-conventions'
 }

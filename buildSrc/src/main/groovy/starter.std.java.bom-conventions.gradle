@@ -1,10 +1,10 @@
 // From https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/release-0.1.32/buildSrc/src/main/groovy/starter.std.java.bom-conventions.gradle
 
 plugins {
-//    id 'java-platform'
+//    i d 'java-platform'
 // Don't need these
-//    id 'starter.java.publish-repo-conventions'
-//    id 'starter.java.publish-pom-conventions'
+//    i d 'starter.java.publish-repo-conventions'
+//    i d 'starter.java.publish-pom-conventions'
     id 'starter.java.versions-conventions'
 }
 

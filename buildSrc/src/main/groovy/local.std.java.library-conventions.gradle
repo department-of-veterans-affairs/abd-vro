@@ -12,7 +12,7 @@ plugins {
     id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.lint-checkstyle-conventions'
-//    id 'starter.java.doc-swagger-conventions'
+//    i d 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-unit-conventions'
     id 'starter.java.test-jacoco-conventions'
