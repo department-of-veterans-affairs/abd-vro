@@ -12,11 +12,6 @@ dependencies {
   implementation project(':persistence:model')
 
   implementation project(':domain-rrd:rrd-shared')
-  implementation project(':domain-rrd:rrd-api-controller')
-
-  // TODO: probably shouldn't be directly dependent on these
-  implementation project(':domain-rrd:rrd-workflows')
-  implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
@@ -40,6 +35,7 @@ dependencies {
   implementation "com.google.code.gson:gson:${gson_version}"
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+  implementation 'io.jsonwebtoken:jjwt:0.2'
 
   // Needed?
   // implementation "org.postgresql:postgresql:${postgresql_version}"

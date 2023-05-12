@@ -19,6 +19,6 @@ jobs:
     uses: ./.github/workflows/codeql.yml
     secrets: inherit
 
-  end2end-test:
-    uses: ./.github/workflows/end2end-test.yml
-    secrets: inherit
+#  end2end-test:
+#    uses: ./.github/workflows/rrd-end2end-test.yml
+#    secrets: inherit
