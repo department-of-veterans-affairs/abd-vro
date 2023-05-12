@@ -2,7 +2,6 @@ package gov.va.vro.service.provider.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.rrd.bip.*;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -13,7 +12,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -22,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.*;
 
 /**
  * BIP claim API service.
