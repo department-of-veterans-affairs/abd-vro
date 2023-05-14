@@ -1,22 +1,26 @@
-name: "PR: End-to-end test for v2"
-
+# ALL BUT MANUAL DISPATCH IS DISABLED AS PART OF EXCLUDING
+# RRD CODE
+# MAINTAINED AS A FORMAT FOR FUTURE E2E TESTING
+#
+name: "PR: RRD End-to-end test for v2"
+#
 on:
-  pull_request:
-    branches: [ main, qa, develop ]
-    # Limit to certain PR event types since this action doesn't need to run for every commit
-    types: [ready_for_review, review_requested]
-
-  # When changes are pushed to special branches
-  push:
-    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
-    branches: [main, qa]
-
+#  pull_request:
+#    branches: [ main, qa, develop ]
+#    # Limit to certain PR event types since this action doesn't need to run for every commit
+#    types: [ready_for_review, review_requested]
+#
+#  # When changes are pushed to special branches
+#  push:
+#    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+#    branches: [main, qa]
+#
   # Allow manual triggering
   workflow_dispatch:
-
-  # Trigger when called by another GitHub Action
-  workflow_call:
-
+#
+#  # Trigger when called by another GitHub Action
+#  workflow_call:
+#
 concurrency:
   group: end2end-${{ github.ref }}
 

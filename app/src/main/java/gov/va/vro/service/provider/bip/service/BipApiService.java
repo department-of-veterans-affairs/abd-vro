@@ -2,6 +2,13 @@ package gov.va.vro.service.provider.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.rrd.bip.BipClaim;
+import gov.va.vro.model.rrd.bip.BipClaimResp;
+import gov.va.vro.model.rrd.bip.BipContentionResp;
+import gov.va.vro.model.rrd.bip.BipUpdateClaimResp;
+import gov.va.vro.model.rrd.bip.ClaimContention;
+import gov.va.vro.model.rrd.bip.ClaimStatus;
+import gov.va.vro.model.rrd.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import io.jsonwebtoken.Claims;
@@ -12,14 +19,25 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * BIP claim API service.
