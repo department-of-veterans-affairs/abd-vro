@@ -11,10 +11,10 @@ ext {
 dependencies {
   implementation project(':persistence:model')
 
-  implementation project(':domain-rrd:rrd-shared')
 
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
+  implementation project(':svc-bip-api')
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
