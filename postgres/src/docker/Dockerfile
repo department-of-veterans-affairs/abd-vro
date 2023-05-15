@@ -1,4 +1,4 @@
-FROM postgres:14.7-alpine
+FROM postgres:15.3-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && apk --no-cache add sudo && rm -rf /var/cache/apk/*
