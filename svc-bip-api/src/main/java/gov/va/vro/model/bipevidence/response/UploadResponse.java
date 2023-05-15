@@ -1,4 +1,4 @@
-package gov.va.vro.model.rrd.bipevidence.response;
+package gov.va.vro.model.bipevidence.response;
 
 import lombok.Builder;
 import lombok.Getter;

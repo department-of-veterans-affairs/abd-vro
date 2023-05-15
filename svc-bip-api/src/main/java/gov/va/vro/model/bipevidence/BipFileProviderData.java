@@ -1,4 +1,4 @@
-package gov.va.vro.model.rrd.bipevidence;
+package gov.va.vro.model.bipevidence;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;

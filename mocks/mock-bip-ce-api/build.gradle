@@ -9,8 +9,8 @@ plugins {
 description = 'Mock Bip Claim Evidence Service'
 
 dependencies {
-  implementation project(':domain-rrd:rrd-shared')
   implementation project(':mocks:mock-shared')
+  implementation project(':svc-bip-api')
 
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"

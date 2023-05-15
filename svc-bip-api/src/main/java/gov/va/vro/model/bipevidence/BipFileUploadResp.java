@@ -1,6 +1,6 @@
-package gov.va.vro.model.rrd.bipevidence;
+package gov.va.vro.model.bipevidence;
 
-import gov.va.vro.model.rrd.bipevidence.response.UploadResponse;
+import gov.va.vro.model.bipevidence.response.UploadResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
