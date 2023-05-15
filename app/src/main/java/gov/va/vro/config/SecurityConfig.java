@@ -71,19 +71,15 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .requestMatchers()
-        .antMatchers(
-            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
-        .and()
-        .csrf()
-        .disable()
+        .authorizeHttpRequests((authz) -> authz
+                .requestMatchers(claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf).hasAnyRole()
+                .anyRequest()
+                .authenticated())
+        .csrf().disable()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
+        .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
 
@@ -105,18 +101,15 @@ public class SecurityConfig {
         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     // Secure end point
     httpSecurity
-        .requestMatchers()
-        .antMatchers(automatedClaim, examOrder)
-        .and()
+            .authorizeHttpRequests((authz) -> authz
+            .requestMatchers(automatedClaim, examOrder).hasAnyRole()
+                    .anyRequest().authenticated())
         .csrf()
         .disable()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
+        .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
 }

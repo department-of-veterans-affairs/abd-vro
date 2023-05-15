@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api"
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
 }
