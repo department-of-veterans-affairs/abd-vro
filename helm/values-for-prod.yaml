@@ -1,6 +1,4 @@
-#Exclude rrd
-domain-rrd:
-  enabled: false
+
 global:
   environment: prod
   endpoint: api.lighthouse.va.gov

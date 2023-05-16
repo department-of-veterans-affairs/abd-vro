@@ -1,4 +1,3 @@
-#Exclude rrd
 domain-rrd:
   enabled: false
 global:

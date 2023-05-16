@@ -1,6 +1,4 @@
-#Exclude rrd
-domain-rrd:
-  enabled: false
+
 global:
   environment: qa
   endpoint: qa.lighthouse.va.gov
