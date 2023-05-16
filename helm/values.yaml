@@ -12,7 +12,7 @@ vro-app:
 vro-svcs:
   enabled: true
 domain-rrd:
-  enabled: true
+  enabled: false
 # Enable as needed:
 console:
   enabled: false
