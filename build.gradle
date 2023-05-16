@@ -159,7 +159,7 @@ scmVersion {
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
     // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file       : "helm-app/Chart.yaml",
+    pre("fileUpdate", [file       : "helm/vro-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")
