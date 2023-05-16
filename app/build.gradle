@@ -1,6 +1,5 @@
 plugins {
   id 'local.std.java.application-conventions'
-  id 'starter.java.config-conventions'
 }
 
 ext {
@@ -31,11 +30,11 @@ dependencies {
   implementation "org.springframework.security:spring-security-web:${spring_security_version}"
 
   // https://mvnrepository.com/artifact/com.auth0/java-jwt
-  implementation "com.auth0:java-jwt:${auth0_jwt}"
+  implementation "com.auth0:java-jwt:4.2.1"
   // https://mvnrepository.com/artifact/com.auth0/jwks-rsa
-  implementation "com.auth0:jwks-rsa:${auth0_jwks}"
+  implementation "com.auth0:jwks-rsa:0.21.2"
   // https://mvnrepository.com/artifact/com.google.code.gson/gson
-  implementation "com.google.code.gson:gson:${gson_version}"
+  implementation "com.google.code.gson:gson:2.10"
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
   implementation 'io.jsonwebtoken:jjwt:0.2'

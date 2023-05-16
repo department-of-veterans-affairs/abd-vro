@@ -13,26 +13,26 @@ buildscript {
 
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
-  id("org.ajoberstar.grgit") version "${grgit_version}" apply false
-  id("io.freefair.lombok") version "8.0.1" apply false
-  id("org.springframework.boot") version "${spring_boot_version}" apply false
-  id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
-  id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
-  id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
-  id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
-  id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
-  id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
-  id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
-  id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
-  id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
-  id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
-  id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
+  id 'org.ajoberstar.grgit' version '4.1.0' apply false
+  id 'io.freefair.lombok' version '8.0.1' apply false
+  id 'org.springframework.boot' version "${spring_boot_version}" apply false
+  id 'io.swagger.swaggerhub' version '1.0.1' apply false
+  id 'com.diffplug.spotless' version '5.14.1' apply false
+  id 'com.palantir.docker' version '0.27.0' apply false
+  id 'com.palantir.docker-run' version '0.27.0' apply false
+  id 'net.rdrei.android.buildtimetracker' version '0.11.0' apply false
+  id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
+  id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
+  id 'com.github.johnrengelman.processes' version '0.5.0' apply false
+  id 'org.springdoc.openapi-gradle-plugin' version '1.4.0' apply false
+  id 'org.flywaydb.flyway' version '9.2.0' apply false
+  id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
 
   // Apply these
-  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" // for task jacocoAggregatedReport
-  id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '18.0.3'
-  id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
+  id 'org.barfuin.gradle.jacocolog' version '1.2.4' // provides task jacocoAggregatedReport
+  id 'org.barfuin.gradle.taskinfo' version '2.0.0'
+  id 'nebula.lint' version '18.0.3'
+  id 'pl.allegro.tech.build.axion-release' version '1.13.2'
   id 'starter.java.build-utils-property-conventions'
 }
 
@@ -154,7 +154,7 @@ scmVersion {
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
     // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file       : "helm-app/Chart.yaml",
+    pre("fileUpdate", [file       : "helm/vro-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")

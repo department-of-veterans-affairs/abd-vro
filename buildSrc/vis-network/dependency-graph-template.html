@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/alea@1.0.0/alea.js"></script>
+    <script type="text/javascript">
+      function loadJSON(path, success, error) {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              success(JSON.parse(xhr.responseText));
+            } else {
+              error(xhr);
+            }
+          }
+        };
+        xhr.open("GET", path, true);
+        xhr.send();
+      }
+
+      /**
+       * @param nodeCount
+       */
+      function getScaleFreeNetwork(nodeCount) {
+        const nodes = [];
+        const edges = [];
+        const connectionCount = [];
+
+        // randomly create some nodes and edges
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            id: i,
+            label: String(i),
+          });
+
+          connectionCount[i] = 0;
+
+          // create edges in a scale-free-network way
+          if (i == 1) {
+            const from = i;
+            const to = 0;
+            edges.push({
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          } else if (i > 1) {
+            const conn = edges.length * 2;
+            const rand = Math.floor(seededRandom() * conn);
+            let cum = 0;
+            let j = 0;
+            while (j < connectionCount.length && cum < rand) {
+              cum += connectionCount[j];
+              j++;
+            }
+
+            const from = i;
+            const to = j;
+            edges.push({
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          }
+        }
+
+        return { nodes: nodes, edges: edges };
+      }
+
+      seededRandom = Alea("SEED");
+
+      /**
+       * @param nodeCount
+       */
+      function getScaleFreeNetworkSeeded(nodeCount) {
+        const nodes = [];
+        const edges = [];
+        const connectionCount = [];
+        let edgesId = 0;
+
+        // randomly create some nodes and edges
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            id: i,
+            label: String(i),
+          });
+
+          connectionCount[i] = 0;
+
+          // create edges in a scale-free-network way
+          if (i == 1) {
+            const from = i;
+            const to = 0;
+            edges.push({
+              id: edgesId++,
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          } else if (i > 1) {
+            const conn = edges.length * 2;
+            const rand = Math.floor(seededRandom() * conn);
+            let cum = 0;
+            let j = 0;
+            while (j < connectionCount.length && cum < rand) {
+              cum += connectionCount[j];
+              j++;
+            }
+
+            const from = i;
+            const to = j;
+            edges.push({
+              id: edgesId++,
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          }
+        }
+
+        return { nodes: nodes, edges: edges };
+      }
+
+    </script>
+    <style>
+      #mynetwork {
+      float: left;
+      width: 1400px;
+      height: 1000px;
+      margin: 5px;
+      border: 1px solid lightgray;
+      }
+      #config {
+      float: left;
+      width: 400px;
+      height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mynetwork"></div>
+    <div id="config"></div>
+    <p id="selection"></p>
+    <script type="text/javascript">
+      // provide data in the DOT language
+      var DOTstring = `digraph G {
+$PLUGIN_DEPS
+
+$PLUGIN_USES
+      }`;
+      var parsedData = vis.parseDOTNetwork(DOTstring);
+
+      var data = {
+      nodes: parsedData.nodes,
+      edges: parsedData.edges
+      }
+
+      // var nodes = data.nodes
+      // console.log(vis.DataSet.prototype.isPrototypeOf(nodes));
+      // console.log(nodes);
+      // var dataset = new vis.DataSet(nodes)
+      // console.log(vis.DataSet.prototype.isPrototypeOf(dataset));
+
+      var options = parsedData.options;
+      options.autoResize = true;
+      options.height='100%';
+      options.width='100%';
+      options.configure={
+              filter: function (option, path) {
+                if (path.indexOf("physics") !== -1) {
+                  return true;
+                }
+                if (path.indexOf("smooth") !== -1 || option === "smooth") {
+                  return true;
+                }
+                return false;
+              },
+              container: document.getElementById("config"),
+            };
+      // options.layout={
+      //     clusterThreshold: 1500
+      // };
+      // options.physics={
+      //             stabilization: false,
+      //             wind: { x: 0, y: 0 },
+      //           };
+
+      var container = document.getElementById('mynetwork');
+      var network = new vis.Network(container, data, options);
+
+    </script>
+  </body>
+</html>

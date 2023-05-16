@@ -18,7 +18,7 @@ plugins {
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
 
-    // i d 'starter.java.publish-repo-conventions'
+    // id 'starter.java.publish-repo-conventions'
 
     // Constrains transitive dependencies to use versions without vulnerabilities
     id 'shared.java.vro-dep-constraints'
