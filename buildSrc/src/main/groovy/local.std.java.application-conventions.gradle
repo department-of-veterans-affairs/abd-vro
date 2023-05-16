@@ -4,35 +4,29 @@
  */
 
 plugins {
-    // Apply the java Plugin to add support for Java.
-    id 'java'
-    id "org.ajoberstar.grgit"
+    id 'shared.std.java-conventions'
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-    id 'starter.java.build-utils-property-conventions'
-    id 'starter.java.build-javatarget-conventions'
+
+    // Added since it defines springBom
+    id 'starter.java.config-conventions'
+
     id 'starter.java.build-springboot-conventions'
-    id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-openapi-conventions'
     id 'starter.java.deps-spring-config-conventions'
     id 'starter.java.deps-springdoc-conventions'
-    // Use our `local` versions
+
+    // Use our `local` container variants
     id 'local.java.container-conventions'
     id 'local.java.container-spring-conventions'
-    id 'starter.java.lint-checkstyle-conventions'
+
     id 'starter.java.lint-spectral-conventions'
     id 'starter.java.doc-springdoc-conventions'
-    id 'starter.java.test-conventions'
-    id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-integration-conventions'
-    // VRO currently doesn't use gatling
-    // id 'starter.java.test-gatling-conventions'
-    id 'starter.java.deps-test-conventions'
+
     id 'starter.java.deps-integration-conventions'
-    id 'starter.java.publish-repo-conventions'
-    id 'starter.java.publish-bootjar-conventions'
-    id 'starter.java.versions-conventions'
-    id 'starter.java.lint-spotless-conventions'
+//    id 'starter.java.publish-bootjar-conventions'
+//    id 'starter.java.lint-spotless-conventions'
     id 'starter.java.lint-spotless-java-conventions'
 }
 

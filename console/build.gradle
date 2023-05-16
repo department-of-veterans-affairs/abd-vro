@@ -1,6 +1,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'starter.std.java.library-spring-conventions'
+  id 'local.std.java.library-spring-conventions'
   id 'groovy'
 }
 
@@ -11,9 +11,6 @@ ext {
 dependencies {
   // Needed to access DB Entity records
   implementation project(':persistence:model')
-
-  // Needed to deserialize objects passed in MQ messages
-  implementation project(':domain-rrd:rrd-shared')
 
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')

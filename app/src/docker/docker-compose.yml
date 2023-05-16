@@ -1,12 +1,17 @@
 version: '3.9'
 
 networks:
-  internal:
-  external:
+  # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
+  intranet:
 
 volumes:
+  # Volumes to simulate persistent volumes in LHDI deployment environments
   pgdata:
   tracking:
+  # The following are created so the volumes for the images have labels
+  var_pgdata:
+  var_rabbitmq:
+  var_redis:
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -16,15 +21,7 @@ x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
   ENV: ${ENV:-local}
 
-x-mas-vars: &mas-vars
-  MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
-  MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
-  MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
-#  MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
-  MAS_API_BASE_URL: ${MAS_API_BASE_URL}
-#  MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
-#  MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
-#  MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
+x-api-vars: &api-vars
   SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
   LH_API_AUTH_URL: ${LH_API_AUTH_URL}
   VRO_AUD_URL: ${VRO_AUD_URL}
@@ -46,10 +43,14 @@ x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
   RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
-x-rabbitmq-client-vars: &rabbitmq-client-vars
-  RABBITMQ_PORT: 5672
-  RABBITMQ_RETRY_LIMIT: 3
-  RABBITMQ_TIMEOUT: 10800
+# Don't start VRO microservices until VRO Platform services are up
+x-svc-depends-on: &svc-depends-on
+  rabbitmq-service:
+    condition: service_healthy
+  postgres-service:
+    condition: service_healthy
+  redis-service:
+    condition: service_started
 
 x-common-security-opt: &common-security-opt
   security_opt:
@@ -59,13 +60,6 @@ x-common-sde-security: &common-sde-security
   ulimits:
     nproc: 65535
 
-x-python-healthcheck: &python-healthcheck
-  healthcheck:
-    test: ["CMD-SHELL", "pgrep python || exit 1"]
-    interval: 10s
-    timeout: 5s
-    retries: 5
-
 services:
   # Containers with the `-service` suffix are need by the VRO app.
   # Containers with the `svc-` prefix are microservices to support domain workflows.
@@ -73,7 +67,6 @@ services:
 
   rabbitmq-service:
     image: rabbitmq:3-management
-    hostname: rabbitmq-service
     # Specifying user to reduce/eliminate startup error about erlang.cookie
     # based on https://github.com/docker-library/rabbitmq/issues/318
     user: rabbitmq
@@ -82,11 +75,10 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
-    expose:
-      - "5672"
-      - "15672"
+    volumes:
+      - var_rabbitmq:/var/lib/rabbitmq
     networks:
-      - internal
+      - intranet
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -96,25 +88,21 @@ services:
 
   redis-service:
     image: redis
-    hostname: redis-service
-    expose:
-      - "6379"
+    volumes:
+      - var_redis:/data
     networks:
-      - internal
+      - intranet
     ports:
       - "6379:6379"
     command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
 
   postgres-service:
     image: va/abd_vro-postgres
-    hostname: postgres-service
     healthcheck:
       test: "pg_isready -U $$FLYWAY_USER -d $$FLYWAY_DB"
       interval: 10s
       timeout: 5s
       retries: 5
-    expose:
-      - "5432"
     environment:
       POSTGRES_USER: ${POSTGRES_SUPER_USER}
       POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
@@ -124,11 +112,9 @@ services:
       PGDATA: /persist/postgres/pgdata
     volumes:
       - pgdata:/persist/postgres
+      - var_pgdata:/var/lib/postgresql/data
     networks:
-      - internal
-# NOTE, security favors removing external access from the database container
-# This external access to the DB is enabled only for non-production environments.
-      - external
+      - intranet
     ports:
       - "5432:5432"
 
@@ -138,7 +124,7 @@ services:
       postgres-service:
         condition: service_healthy
     networks:
-      - internal
+      - intranet
     environment:
       FLYWAY_URL: jdbc:postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
@@ -152,14 +138,13 @@ services:
   app:
     image: va/abd_vro-app:latest
     <<: [*common-sde-security, *common-security-opt]
-    hostname: app
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
       # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
       # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
-      <<: [*mas-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
+      <<: [*api-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
       PERSIST_TRACKING_FOLDER: /persist/tracking
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
@@ -168,136 +153,17 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_CLAIM_URL: "mock-bip-claims-api:8097"
-      BIP_EVIDENCE_URL: "mock-bip-ce-api:8094"
+      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
+      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
     depends_on:
-      postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
-        condition: service_healthy
-      redis-service:
-        condition: service_started
+      <<: *svc-depends-on
       db-init:
         condition: service_started
     volumes:
       # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
       - tracking:/persist/tracking
     networks:
-      - internal
-      - external
-
-  xample-workflows:
-    image: va/abd_vro-xample-workflows:latest
-    <<: [*common-sde-security, *common-security-opt]
-    profiles: ["all","xample"]
-    environment:
-      <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
-    depends_on:
-      postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-xample-j:
-    image: va/abd_vro-svc-xample-j:latest
-    <<: [*common-sde-security, *common-security-opt]
-    profiles: ["all","svc","xample"]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-dc7101:
-    profiles: ["all","svc","assessor","v2"]
-    image: va/abd_vro-assessclaimdc7101:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-dc6602:
-    profiles: ["all","svc","assessor","v2"]
-    image: va/abd_vro-assessclaimdc6602:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-dc6602v2:
-    profiles: ["all","svc","assessor","prototype"]
-    image: va/abd_vro-assessclaimdc6602v2:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-cancer:
-    profiles: ["all","svc","assessor","prototype"]
-    image: va/abd_vro-assessclaimcancer:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-dc6510:
-    profiles: ["all","svc","assessor","prototype"]
-    image: va/abd_vro-assessclaimdc6510:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-assessor-dc6522:
-    profiles: ["all","svc","assessor","prototype"]
-    image: va/abd_vro-assessclaimdc6522:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
-    depends_on:
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
-
-  svc-pdf-generator:
-    profiles: ["all","svc","pdfgen"]
-    image: va/abd_vro-pdfgenerator:latest
-    <<: [*python-healthcheck, *common-sde-security, *common-security-opt]
-    environment:
-      MODE: "docker"
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
-    depends_on:
-      redis-service:
-        condition: service_started
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
+      - intranet
 
   svc-lighthouse-api:
     profiles: ["all","svc","lh"]
@@ -309,10 +175,9 @@ services:
       LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
       LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on
     networks:
-      - internal
+      - intranet
 
   svc-bgs-api:
     profiles: ["all","svc","bgs"]
@@ -321,24 +186,9 @@ services:
     environment:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
     depends_on:
-      rabbitmq-service:
-        condition: service_healthy
+      <<: *svc-depends-on
     networks:
-      - internal
-
-  svc-feature-toggle:
-    profiles: ["all","svc","feature-toggle"]
-    image: va/abd_vro-featuretoggle:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
-    depends_on:
-      redis-service:
-        condition: service_started
-      rabbitmq-service:
-        condition: service_healthy
-    networks:
-      - internal
+      - intranet
 
   console:
     profiles: ["all","console"]
@@ -351,119 +201,10 @@ services:
     environment:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     depends_on:
-      postgres-service:
-        condition: service_healthy
-      rabbitmq-service:
-        condition: service_healthy
-      redis-service:
-        condition: service_started
-      db-init:
-        condition: service_started
+      <<: *svc-depends-on
     volumes:
       - pgdata:/persist/postgres
       - tracking:/persist/tracking
     networks:
-      - internal
+      - intranet
 
-  mock-bip-ce-api:
-    profiles: ["all","mock","bip","v2-mocks"]
-    image: va/abd_vro-mock-bip-ce-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-bip-ce-api
-    ports:
-      - "8094:8094"
-# health check is on 8080 and doesn't need to be exposed - "8095:8095"
-      - "8096:8096"
-    environment:
-      <<: *common-vars
-      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
-      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
-#      BIP_APPLICATION_ID: ${BIP_APPLICATION_ID}
-      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
-      BIP_KEYSTORE: ${BIP_KEYSTORE}
-    networks:
-      - internal
-
-  mock-bip-claims-api:
-    profiles: ["all","mock","bip","v2-mocks"]
-    image: va/abd_vro-mock-bip-claims-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-bip-claims-api
-    ports:
-      - "8097:8097"
-# health check is on 8080 and doesn't need to be exposed - "8098:8098"
-      - "8099:8099"
-    environment:
-      <<: *common-vars
-      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
-      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
-      BIP_KEYSTORE: ${BIP_KEYSTORE}
-    networks:
-      - internal
-
-  mock-mas-api:
-    profiles: ["all","mock","mas","v2-mocks"]
-    image: va/abd_vro-mock-mas-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-mas-api
-    ports:
-      - "9001:9001"
-# health check is on 8080 and doesn't need to be exposed - "9002:9002"
-    environment:
-      <<: *common-vars
-      MAS_API_AUTH_CLIENTID: ${MAS_API_AUTH_CLIENTID}
-      MAS_API_AUTH_CLIENT_SECRET: ${MAS_API_AUTH_CLIENT_SECRET}
-      MAS_API_AUTH_TOKEN_URI: ${MAS_API_AUTH_TOKEN_URI}
-#      MAS_API_AUTH_SCOPE: ${MAS_API_AUTH_SCOPE}
-      MAS_API_BASE_URL: ${MAS_API_BASE_URL}
-#      MAS_COLLECTION_ANNOTS_PATH: ${MAS_COLLECTION_ANNOTS_PATH}
-#      MAS_COLLECTION_STATUS_PATH: ${MAS_COLLECTION_STATUS_PATH}
-#      MAS_CREATE_EXAM_ORDER_PATH: ${MAS_CREATE_EXAM_ORDER_PATH}
-    networks:
-      - internal
-
-  mock-lighthouse-api:
-    profiles: ["all","mock","lh","v2-mocks"]
-    image: va/abd_vro-mock-lighthouse-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-lighthouse-api
-    ports:
-      - "9004:9004"
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: *common-vars
-      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-    networks:
-      - internal
-
-  mock-slack:
-    profiles: ["all","mock","lh","v2-mocks"]
-    image: va/abd_vro-mock-slack:latest
-    <<: [*common-sde-security, *common-security-opt]
-    hostname: mock-slack
-    ports:
-      - "9008:9008"
-    # health check is on 8080 and doesn't need to be exposed - "9009:9009"
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: *common-vars
-    networks:
-      - internal
-
-
-  mock-bgs-api:
-    profiles: ["all","mock","lh","v2-mocks"]
-    image: va/abd_vro-mock-bgs-api:latest
-    <<: *common-security-opt
-    <<: *common-sde-security
-    hostname: mock-bgs-api
-    ports:
-      - "9090:8080"
-    # health check is on 8080 and doesn't need to be exposed - "9009:9009"
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: *common-vars
-    networks:
-      - internal

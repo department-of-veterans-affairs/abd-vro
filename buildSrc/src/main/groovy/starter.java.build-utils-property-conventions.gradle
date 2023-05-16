@@ -1,0 +1,52 @@
+
+ext {
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable (or null)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getValueOrDefault = { String value, String defaultValue ->
+        return !value ? defaultValue : value;
+    }
+
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable name (as String)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getPropertyOrDefault = { String propertyName,  defaultValue ->
+        return project.hasProperty(propertyName) ? project.properties[propertyName] : defaultValue;
+    }
+
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param tagName environment variable name (or null)
+     * @param defaultValue return value if environment value is null or doesn't exist
+     * @return environment value or default
+     */
+    getEnvOrDefault = { String tagName, String defaultValue ->
+        String ref = System.getenv(tagName)
+        return !ref ? defaultValue : ref;
+    }
+
+    /**
+     * Utility function for constructing and applying task dependencies.
+     *
+     * @param modules module names (as array or list supporting ::each)
+     * @param taskClosure closure which constructs the task name given a module name
+     */
+    depender = { modules, taskClosure -> modules.each { dependsOn taskClosure(it) } }
+
+    /**
+     * Utility function to construct a closure given a task name (or task path).
+     *
+     * @param name task name (as String)
+     * @return closure constructing name of submodule task give submodule name
+     */
+    taskBuilder = { name -> return { module -> return "${module}:${name}" } }
+}

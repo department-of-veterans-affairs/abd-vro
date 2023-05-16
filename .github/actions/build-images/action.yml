@@ -1,11 +1,6 @@
 name: Build images
 description: Builds VRO's Docker images without testing code
 
-inputs:
-  access_token:
-    description: 'GITHUB_ACCESS_TOKEN'
-    required: true
-
 runs:
   using: composite
   steps:
@@ -15,4 +10,4 @@ runs:
     - name: "Build Docker images without testing"
       shell: bash
       # Do not call ./gradlew build, which will run tests
-      run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ inputs.access_token }}
+      run: ./gradlew docker

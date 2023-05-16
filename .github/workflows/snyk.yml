@@ -38,7 +38,7 @@ jobs:
 #          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: "Build Docker images"
-        run: ./gradlew docker -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+        run: ./gradlew docker
 
 # These image scans don't count towards Snyk's limit
       - name: "Snyk scan images"

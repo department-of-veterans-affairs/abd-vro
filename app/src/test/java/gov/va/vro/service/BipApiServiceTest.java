@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.va.vro.model.rrd.bip.BipClaim;
-import gov.va.vro.model.rrd.bip.BipUpdateClaimResp;
-import gov.va.vro.model.rrd.bip.ClaimContention;
-import gov.va.vro.model.rrd.bip.UpdateContentionReq;
+import gov.va.vro.model.bip.BipClaim;
+import gov.va.vro.model.bip.BipUpdateClaimResp;
+import gov.va.vro.model.bip.ClaimContention;
+import gov.va.vro.model.bip.UpdateContentionReq;
 import gov.va.vro.service.provider.BipApiProps;
 import gov.va.vro.service.provider.bip.BipException;
 import gov.va.vro.service.provider.bip.service.BipApiService;

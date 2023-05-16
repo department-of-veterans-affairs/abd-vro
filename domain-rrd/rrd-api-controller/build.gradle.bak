@@ -1,0 +1,22 @@
+
+plugins {
+  id 'local.std.java.library-spring-conventions'
+}
+
+dependencies {
+  implementation project(':domain-rrd:rrd-shared')
+
+  // TODO: api-controller should not be dependent directly on services
+  implementation project(':domain-rrd:rrd-workflows')
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation 'io.micrometer:micrometer-core'
+
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+
+  // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+  compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+}

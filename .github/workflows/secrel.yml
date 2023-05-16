@@ -109,7 +109,6 @@ jobs:
         with:
           image_prefix: "${{ steps.image-props.outputs.image_prefix }}"
           image_tag: "${{ steps.image-props.outputs.image_tag }}"
-          access_token: ${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ steps.image-props.outputs.run_tests }}

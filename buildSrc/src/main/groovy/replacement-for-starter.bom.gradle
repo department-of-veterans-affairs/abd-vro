@@ -1,0 +1,39 @@
+// This file is to replace the need for:
+// annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
+// Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/release-0.1.32/starter-bom/build.gradle
+
+ext {
+    opentracing_api_version = "0.33.0"
+    opentracing_mock_version = "0.33.0"
+    brave_opentracing_version = "1.0.0"
+    zipkin_sender_okhttp3_version = "2.16.3"
+    springdoc_version =  "1.5.4"
+    problem_spring_web_version="0.26.2"
+    arch_unit_version = "0.21.0"
+    mockserver_netty_version = "5.11.2"
+}
+
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:${spring_boot_version}")
+
+    // TODO: consider merging this into java.vro-deps-constraints even though these versions were set in starter-bom
+    constraints {
+        api "io.opentracing:opentracing-api:${opentracing_api_version}"
+        api "io.opentracing.brave:brave-opentracing:${brave_opentracing_version}"
+        api "io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkin_sender_okhttp3_version}"
+        api "org.mapstruct:mapstruct:${mapstruct_version}"
+        api "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+
+        api "org.springdoc:springdoc-openapi-webmvc-core:${springdoc_version}"
+
+        // Added for `app`
+        api "org.springdoc:springdoc-openapi-data-rest:${springdoc_version}"
+        api "org.springdoc:springdoc-openapi-ui:${springdoc_version}"
+        api "org.zalando:problem-spring-web:${problem_spring_web_version}"
+
+        // Added for mocks/*
+        api "com.tngtech.archunit:archunit:${arch_unit_version}"
+        api "org.mock-server:mockserver-netty:${mockserver_netty_version}"
+        api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
+    }
+}

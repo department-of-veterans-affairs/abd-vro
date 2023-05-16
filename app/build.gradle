@@ -1,46 +1,22 @@
 plugins {
   id 'local.std.java.application-conventions'
-  id 'starter.java.config-conventions'
-  id 'starter.java.build-utils-conventions'
-  id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
-testSets {
-  end2endTest
-}
-
-tasks.withType(Test).named("end2endTest") {
-  useJUnitPlatform()
-  testLogging {
-    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
-    showStandardStreams = true
-    events "skipped", "failed", "passed"
-    exceptionFormat = 'full'
-    showStackTraces = true
-    showExceptions = true
-    showCauses = true
-  }
+ext {
+  // TODO: improve test code coverage so that the following can be removed
+  jacoco_minimum_coverage = 0.6
 }
 
 dependencies {
   implementation project(':persistence:model')
 
-  implementation project(':domain-rrd:rrd-shared')
-  implementation project(':domain-rrd:rrd-api-controller')
-
-  // TODO: probably shouldn't be directly dependent on these
-  implementation project(':domain-rrd:rrd-workflows')
-  implementation project(':domain-rrd:service-rrd-db')
 
   implementation project(':domain-xample:xample-api-controller')
+  implementation project(':domain-cc:cc-api-controller')
 
-  implementation 'gov.va.starter:open-api'
-  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-  implementation 'gov.va.starter:health'
-  // Not sure if these are needed:
-  implementation 'gov.va.starter:tracing'
-  implementation 'gov.va.starter:error-handling'
-  implementation 'gov.va.starter:exceptions'
+  // TODO PR#1568 this dependency should be removed once BIP functionality is exposed
+  // as a proper microservice
+  implementation project(':svc-bip-api')
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -53,19 +29,15 @@ dependencies {
   implementation "org.springframework.security:spring-security-config:${spring_security_version}"
   implementation "org.springframework.security:spring-security-web:${spring_security_version}"
 
-  //MAS oAuth2 webclient libs
-  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
-  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
-  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
-
   // https://mvnrepository.com/artifact/com.auth0/java-jwt
-  implementation "com.auth0:java-jwt:${auth0_jwt}"
+  implementation "com.auth0:java-jwt:4.2.1"
   // https://mvnrepository.com/artifact/com.auth0/jwks-rsa
-  implementation "com.auth0:jwks-rsa:${auth0_jwks}"
+  implementation "com.auth0:jwks-rsa:0.21.2"
   // https://mvnrepository.com/artifact/com.google.code.gson/gson
-  implementation "com.google.code.gson:gson:${gson_version}"
+  implementation "com.google.code.gson:gson:2.10"
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+  implementation 'io.jsonwebtoken:jjwt:0.2'
 
   // Needed?
   // implementation "org.postgresql:postgresql:${postgresql_version}"
@@ -75,12 +47,6 @@ dependencies {
 
   testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
   testImplementation "io.jsonwebtoken:jjwt:0.2"
-
-  // end to end dependencies
-  end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-  end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
-  end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
-  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
 }
 
 openApi {
@@ -121,5 +87,10 @@ afterEvaluate {
 
   tasks.named('spectralLint').configure {
     dependsOn 'forkedSpringBootStop'
+  }
+
+  tasks.named('dockerComposeDown') {
+    dependsOn ':mocks:dockerComposeDown'
+    dependsOn ':domain-xample:dockerComposeDown'
   }
 }

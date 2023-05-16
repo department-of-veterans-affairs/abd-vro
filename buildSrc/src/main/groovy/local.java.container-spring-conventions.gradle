@@ -6,6 +6,7 @@
 plugins {
     id 'org.springframework.boot'
     id 'local.java.container-conventions'
+    id 'shared.java.vro-dep-constraints'
 }
 
 docker {
@@ -14,7 +15,11 @@ docker {
         new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
         new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
 
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+    def healthcheckPort = project.hasProperty('healthcheck_port') ? project.healthcheck_port : 8080
+    buildArgs([
+        JAR_FILE: bootJar.archiveFileName.get(),
+        HEALTHCHECK_PORT_ARG: healthcheckPort
+    ])
 }
 
 // VRO runs via docker-compose, so we don't use this

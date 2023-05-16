@@ -34,7 +34,9 @@ runs:
         python-version: "3.9"
         cache: "pip"
 
-    - name: "Install Python dependencies"
-      shell: bash
-      run: |
-        pip install -r service-python/requirements.txt
+#    Removing this for now to avoid bringing in unused dependencies
+#    but maintaining it as a comment to more easily support other domains in the future
+#    - name: "Install Python dependencies"
+#      shell: bash
+#      run: |
+#        pip install -r domain-rrd/service-python/requirements.txt

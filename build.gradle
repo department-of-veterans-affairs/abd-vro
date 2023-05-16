@@ -1,7 +1,5 @@
 buildscript {
   dependencies {
-    classpath "gov.va.starter:plugins:${starter_boot_version}"
-    classpath "gov.va.starter:cookiecutter:${starter_boot_version}"
     classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
     classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
   }
@@ -15,35 +13,27 @@ buildscript {
 
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
-  id("org.ajoberstar.grgit") version "${grgit_version}" apply false
-  id("io.freefair.lombok") version "8.0.1" apply false
-  id("org.springframework.boot") version "${spring_boot_version}" apply false
-  id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
-  id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
-  id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
-  id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
-  id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
-  id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
-  id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
-  id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
-  id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
-  id("org.flywaydb.flyway") version "${flyway_plugin_version}" apply false
-  id("com.felipefzdz.gradle.shellcheck") version "${shellcheck_plugin_version}" apply false
-  id("org.barfuin.gradle.jacocolog") version "${jacocolog_plugin_version}" apply false
+  id 'org.ajoberstar.grgit' version '4.1.0' apply false
+  id 'io.freefair.lombok' version '8.0.1' apply false
+  id 'org.springframework.boot' version "${spring_boot_version}" apply false
+  id 'io.swagger.swaggerhub' version '1.0.1' apply false
+  id 'com.diffplug.spotless' version '5.14.1' apply false
+  id 'com.palantir.docker' version '0.27.0' apply false
+  id 'com.palantir.docker-run' version '0.27.0' apply false
+  id 'net.rdrei.android.buildtimetracker' version '0.11.0' apply false
+  id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
+  id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
+  id 'com.github.johnrengelman.processes' version '0.5.0' apply false
+  id 'org.springdoc.openapi-gradle-plugin' version '1.4.0' apply false
+  id 'org.flywaydb.flyway' version '9.2.0' apply false
+  id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
 
   // Apply these
-  id("org.barfuin.gradle.taskinfo") version "${taskinfo_plugin_version}"
-  id('nebula.lint') version '18.0.3'
-  id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}"
-  // VA's starter plugins
-  // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/tree/main/buildSrc/src/main/groovy
-  id("starter.java.build-utils-property-conventions") version "${starter_boot_version}"
-  id("starter.java.build-utils-task-conventions") version "${starter_boot_version}"
-  id("starter.java.release-conventions") version "${starter_boot_version}"
-  id("starter.metrics.build-time-tracker-conventions") version "${starter_boot_version}"
-  id("starter.java.versions-conventions") version "${starter_boot_version}"
-  id("starter.java.test-jacoco-aggregation-conventions") version "${starter_boot_version}"
-  id('starter.java.doc-mkdocs-conventions') version "${starter_boot_version}"
+  id 'org.barfuin.gradle.jacocolog' version '1.2.4' // provides task jacocoAggregatedReport
+  id 'org.barfuin.gradle.taskinfo' version '2.0.0'
+  id 'nebula.lint' version '18.0.3'
+  id 'pl.allegro.tech.build.axion-release' version '1.13.2'
+  id 'starter.java.build-utils-property-conventions'
 }
 
 allprojects {
@@ -91,34 +81,20 @@ subprojects {
   task allDependencies(type: DependencyReportTask) {}
 
   pluginManager.withPlugin('java') {
-    // Constrains transitive dependencies to use versions without vulnerabilities
-    // buildSrc/src/main/groovy/local.java.vro-dep-constraints.gradle
-    apply plugin: 'local.java.vro-dep-constraints'
-
-    // Defines springBom, annotationBom, and checkstyleRules
-    // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.config-conventions.gradle
-    apply plugin: 'starter.java.config-conventions'
-    dependencies {
-      // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/starter-bom/build.gradle
-      annotationBom platform("gov.va.starter:starter-bom:${starter_boot_version}")
-      // https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/checkstyle-bom/build.gradle
-      checkstyleRules platform("gov.va.starter:checkstyle-bom:${starter_boot_version}")
-    }
-
     // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442
     // add a collection to track failedTests
     ext.failedTests = []
     // add a listener to all tasks of type Test
     tasks.withType(Test) {
       afterTest { TestDescriptor descriptor, TestResult result ->
-        if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+        if (result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE) {
           failedTests << "${descriptor.className}::${descriptor.name}"
         }
       }
     }
     // print out tracked failed tests when the build has finished
     gradle.buildFinished {
-      if(!failedTests.empty){
+      if (!failedTests.empty) {
         println "Failed tests:"
         failedTests.each { failedTest ->
           println "- " + failedTest
@@ -132,53 +108,40 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
+
   // Modules that use Java code
   codeModules = [
     ':app',
     ':persistence:model',
     ':shared:lib-camel-connector',
-    ':domain-rrd:rrd-api-controller',
-    ':domain-rrd:rrd-workflows',
-    ':domain-rrd:rrd-shared',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
     ':mocks:mock-bip-claims-api',
     ':mocks:mock-shared',
-    ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
     ':domain-xample:xample-api-controller',
     ':domain-xample:xample-shared',
     ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j'
+    ':domain-xample:svc-xample-j',
+    ':domain-cc:cc-api-controller'
   ]
   // Modules that create Docker images
   dockerModules = [
     ':app',
     ':db-init',
-    ':service-python:assessclaimdc7101',
-    ':service-python:assessclaimdc6602',
-    ':service-python:pdfgenerator',
-    ':service-python:featuretoggle',
     ':svc-bgs-api',
     ':svc-lighthouse-api',
     ':console',
     ':mocks:mock-bip-ce-api',
     ':mocks:mock-bip-claims-api',
-    ':mocks:mock-mas-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
     ':mock:mock-bgs-api',
     ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j'
   ]
-  if (project.hasProperty("enablePrototype")) {
-    dockerModules.add(':service-python:assessclaimdc6602v2')
-    dockerModules.add(':service-python:assessclaimdc6510')
-    dockerModules.add(':service-python:assessclaimdc6522')
-    dockerModules.add(':service-python:assessclaimcancer')
-  }
 }
 
 // Used by `release` task to create a new version
@@ -192,7 +155,7 @@ scmVersion {
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
     // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file       : "helm-app/Chart.yaml",
+    pre("fileUpdate", [file       : "helm/vro-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")

@@ -7,8 +7,8 @@ global:
   imagePrefix: ""
 
   bip:
-    bipClaimUrl: claims-prodtest.prod8.bip.va.gov/api/v1
-    bipEvidenceUrl: vefs-claimevidence-prodtest.prod8.bip.va.gov/api/v1/rest
+    bipClaimUrl: claims-prodtest.prod.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-prodtest.prod.bip.va.gov/api/v1/rest
 
   mas:
     masApiAuthTokenUri: https://viccs-api-test.ibm-intelligent-automation.com/pca/api/test/token

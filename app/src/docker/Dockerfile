@@ -5,7 +5,7 @@ RUN apk update && apk --no-cache add expat=2.5.0-r0 curl && rm -rf /var/cache/ap
 
 RUN adduser --no-create-home --disabled-password tron
 
-HEALTHCHECK CMD curl --fail http://localhost:8081/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8081/actuator/health || exit 1
 
 WORKDIR /app
 ARG ENTRYPOINT_FILE=entrypoint.sh

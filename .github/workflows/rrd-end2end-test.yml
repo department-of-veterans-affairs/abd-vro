@@ -1,0 +1,107 @@
+# ALL BUT MANUAL DISPATCH IS DISABLED AS PART OF EXCLUDING
+# RRD CODE
+# MAINTAINED AS A FORMAT FOR FUTURE E2E TESTING
+#
+name: "PR: RRD End-to-end test for v2"
+#
+on:
+#  pull_request:
+#    branches: [ main, qa, develop ]
+#    # Limit to certain PR event types since this action doesn't need to run for every commit
+#    types: [ready_for_review, review_requested]
+#
+#  # When changes are pushed to special branches
+#  push:
+#    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+#    branches: [main, qa]
+#
+  # Allow manual triggering
+  workflow_dispatch:
+#
+#  # Trigger when called by another GitHub Action
+#  workflow_call:
+#
+concurrency:
+  group: end2end-${{ github.ref }}
+
+env:
+  LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
+  LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
+  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
+  MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
+  COMPOSE_PROFILES: "v2,v2-mocks,pdfgen,lh"
+
+jobs:
+  end2end-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Build the images"
+        uses: ./.github/actions/build-images
+
+      - name: "Start the containers"
+        env:
+          ENV: "end2end-test"
+        run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :app:dockerComposeUp
+          sleep 20
+          docker ps
+
+          ./gradlew :mocks:dockerComposeUp
+          sleep 20
+          docker ps
+
+      - name: "Wait for VRO to be ready"
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:8081/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quite after 60 seconds
+          timeout: 60000
+
+      - name: "Run the end-to-end tests"
+        env:
+          ENV: "end2end-test"
+        run: |
+          docker ps
+          ./gradlew :domain-rrd:rrd-app-test:end2EndTest --info
+
+      - name: "Collect docker logs on failure"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './vro-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: vro-logs
+          path: ./vro-logs/**
+          retention-days: 14
+
+      - name: "Check for tracking files"
+        run: |
+          TRACKING_FOLDER="/persist/tracking/mas-claim-submitted/$(date '+%Y-%m-%d')"
+          echo "::group::Examining app's tracking files in $TRACKING_FOLDER"
+          TRACKING_FILES=$(docker exec vro_app_1 ls "$TRACKING_FOLDER")
+          echo "$TRACKING_FILES"
+          for COLLECTION_ID in 365 366 367 369 375 376 377 378 380 381 385 386 390 391 392 400 401 500; do
+            echo "Checking for $COLLECTION_ID.json"
+            echo "$TRACKING_FILES" | grep "$COLLECTION_ID.json"
+          done
+          echo "::endgroup::"
+
+      - name: "Clean docker container, images, and volumes"
+        if: always()
+        run: |
+          source scripts/setenv.sh
+          ./gradlew dockerclean
+          ./gradlew dockermaintainerclean

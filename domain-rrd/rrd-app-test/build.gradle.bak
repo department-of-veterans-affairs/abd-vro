@@ -1,0 +1,53 @@
+plugins {
+  id 'local.std.java.library-spring-conventions'
+  id 'org.unbroken-dome.test-sets' version '4.0.0'
+}
+
+testSets {
+  end2endTest
+}
+
+tasks.withType(Test).named("end2endTest") {
+  useJUnitPlatform()
+  testLogging {
+    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
+    showStandardStreams = true
+    events "skipped", "failed", "passed"
+    exceptionFormat = 'full'
+    showStackTraces = true
+    showExceptions = true
+    showCauses = true
+  }
+}
+
+dependencies {
+  implementation project(':app')
+  implementation project(':persistence:model')
+  implementation project(':domain-rrd:rrd-shared')
+  implementation project(':domain-rrd:rrd-api-controller')
+  implementation project(':domain-rrd:rrd-workflows')
+
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation "org.springframework.security:spring-security-core:${spring_security_version}"
+  implementation "org.springframework.security:spring-security-config:${spring_security_version}"
+  implementation "org.springframework.security:spring-security-web:${spring_security_version}"
+
+  //MAS oAuth2 webclient libs
+  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
+  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
+  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
+
+  implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
+  testRuntimeOnly "com.h2database:h2:${h2_version}"
+
+  testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
+
+  // end to end dependencies
+  end2endTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+  end2endTestImplementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version})"
+  end2endTestImplementation "org.skyscreamer:jsonassert:${json_assert_version}"
+  end2endTestImplementation "org.apache.pdfbox:pdfbox:2.0.28"
+}

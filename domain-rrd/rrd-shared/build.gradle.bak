@@ -1,0 +1,7 @@
+plugins {
+  id 'local.std.java.library-conventions'
+}
+
+dependencies {
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+}

@@ -8,7 +8,7 @@ import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
-import gov.va.vro.model.rrd.bip.ClaimStatus;
+import gov.va.vro.model.bip.ClaimStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

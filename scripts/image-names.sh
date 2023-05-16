@@ -4,39 +4,31 @@
 # This script can be replaced with for example a Gradle task later.
 
 # Be consistent about naming our images. This script helps us understand inconsistencies.
-# The aim is to have all functions use the default case `*)`.
 
 gradle_folder() {
   case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "./service-python/$1";;
+    pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
     *) echo "./$1";;
   esac
 }
 
 # These are used in docker-compose.yml files
 gradle_image_name() {
-  case "$1" in
-    *) echo "va/abd_vro-$1";;
-  esac
+  echo "va/abd_vro-$1"
 }
 
 # Bash variables can't have dashes, so strip them out of the directory names
 bash_var_prefix() {
-  case "$1" in
-    *) echo "${1//-/}";;
-  esac
+  echo "${1//-/}"
 }
 
 # These names must match the images specified in Helm configs
 prod_image_name() {
-  case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "vro-svc-$1";; #TODO: rename these folders so that we can use the "vro-$1" pattern
-    *) echo "vro-$1";;
-  esac
+  echo "vro-$1"
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-bgs-api svc-lighthouse-api pdfgenerator assessclaimdc7101 assessclaimdc6602 ) #
+IMAGES=( app postgres db-init console svc-bgs-api svc-lighthouse-api )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

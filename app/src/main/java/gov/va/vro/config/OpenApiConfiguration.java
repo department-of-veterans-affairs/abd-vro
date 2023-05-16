@@ -1,8 +1,8 @@
 package gov.va.vro.config;
 
-import gov.va.starter.boot.openapi.spi.CustomSecuritySchemeProvider;
 import gov.va.vro.config.propmodel.Info;
 import gov.va.vro.config.propmodel.OpenApi;
+import gov.va.vro.openapi.spi.CustomSecuritySchemeProvider;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

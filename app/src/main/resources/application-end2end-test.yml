@@ -10,12 +10,12 @@ opentracing:
 
 spring.config.import: application-local.yml
 
-spring.security.oauth2.client.provider.mas.uri: "http://mock-mas-api:9001/token"
-
-masAPIProvider.baseURL: "http://mock-mas-api:9001"
-masAPIProvider.createExamOrderPath: "/pcOrderExam"
+#spring.security.oauth2.client.provider.mas.uri: "http://mock-mas-api:20400/token"
+#
+#masAPIProvider.baseURL: "http://mock-mas-api:20400"
+#masAPIProvider.createExamOrderPath: "/pcOrderExam"
 
 slack:
   exception:
-    webhook: "http://mock-slack:9008/slack-messages"
+    webhook: "http://mock-slack:20100/slack-messages"
     channel: benefits-vro-end2end

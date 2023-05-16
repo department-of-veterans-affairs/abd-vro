@@ -34,7 +34,7 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
       - name: "Build jars and Docker images"
-        run: ./gradlew assemble -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
+        run: ./gradlew assemble
 
       - name: "Scan rootfs"
         uses: aquasecurity/trivy-action@master
