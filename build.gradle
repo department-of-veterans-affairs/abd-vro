@@ -69,7 +69,7 @@ allprojects {
 
   apply plugin: 'com.diffplug.spotless'
   spotless {
-    // to format build.gradle files consistently
+    // to format build.gradle.bak.bak.bak files consistently
     groovyGradle {
       greclipse()
       indentWithSpaces(2)
