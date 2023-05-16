@@ -1,4 +1,6 @@
-
+#Exclude rrd
+domain-rrd:
+  enabled: false
 global:
   environment: sandbox
   endpoint: sandbox.lighthouse.va.gov
