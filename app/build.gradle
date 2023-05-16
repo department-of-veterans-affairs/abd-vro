@@ -10,10 +10,13 @@ ext {
 dependencies {
   implementation project(':persistence:model')
 
-  implementation project(':domain-rrd:rrd-shared')
 
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
+
+  // TODO PR#1568 this dependency should be removed once BIP functionality is exposed
+  // as a proper microservice
+  implementation project(':svc-bip-api')
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'

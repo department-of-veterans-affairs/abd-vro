@@ -1,5 +1,6 @@
 plugins {
   id 'java'
+  id 'local.std.java.library-conventions'
 }
 
 group 'gov.va.vro'
@@ -10,6 +11,8 @@ repositories {
 }
 
 dependencies {
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.controller;
 
-import gov.va.vro.model.rrd.bipevidence.response.VefsErrorResponse;
+import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
