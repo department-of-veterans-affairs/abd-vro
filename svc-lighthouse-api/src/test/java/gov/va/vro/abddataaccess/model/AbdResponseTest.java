@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import gov.va.vro.model.rrd.AbdBloodPressure;
-import gov.va.vro.model.rrd.AbdCondition;
-import gov.va.vro.model.rrd.AbdEvidence;
-import gov.va.vro.model.rrd.AbdMedication;
-import gov.va.vro.model.rrd.AbdProcedure;
+import gov.va.vro.model.AbdBloodPressure;
+import gov.va.vro.model.AbdCondition;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.AbdMedication;
+import gov.va.vro.model.AbdProcedure;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

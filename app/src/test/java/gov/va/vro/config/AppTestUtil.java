@@ -1,8 +1,8 @@
 package gov.va.vro.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.rrd.AbdEvidence;
-import gov.va.vro.model.rrd.HealthDataAssessment;
+import gov.va.vro.model.AbdEvidence;
+import gov.va.vro.model.HealthDataAssessment;
 import gov.va.vro.service.spi.model.Claim;
 import lombok.SneakyThrows;
 
