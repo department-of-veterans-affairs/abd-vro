@@ -136,9 +136,9 @@ ext {
     ':console',
     ':mocks:mock-bip-ce-api',
     ':mocks:mock-bip-claims-api',
+    ':mocks:mock-bgs-api',
     ':mocks:mock-lighthouse-api',
     ':mocks:mock-slack',
-    ':mock:mock-bgs-api',
     ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j'
   ]
