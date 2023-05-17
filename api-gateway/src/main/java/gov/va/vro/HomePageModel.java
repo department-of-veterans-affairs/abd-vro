@@ -5,6 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Data
 class HomePageModel {
-    @Value("${info.app.version}")
+    @Value("${vro.openapi.info.version}")
     String version;
 }

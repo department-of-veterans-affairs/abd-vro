@@ -105,12 +105,11 @@ log4j2:
   formatMsgNoLookups: true
 
 vro:
-  # TODO: Include this in the API UI
   openapi:
     info:
-      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-      description: This API provides functionality to improve benefit delivery to Veterans using health data.
-      version: v2
+      title: "Automated Benefits Delivery (ABD): Virtual Regional Office (VRO) API"
+      description: "To improve benefit delivery to Veterans"
+      version: "3.0.0"
       contact:
         name: Premal Shah
         email: "premal.shah@va.gov"

@@ -1,10 +1,11 @@
-package gov.va.vro.config;
+package gov.va.vro;
 
-import gov.va.vro.config.propmodel.OpenApiProperties;
-import gov.va.vro.openapi.spi.CustomSecuritySchemeProvider;
+import gov.va.vro.propmodel.Info;
+import gov.va.vro.propmodel.OpenApiProperties;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -21,9 +22,6 @@ import java.util.stream.Collectors;
 @OpenAPIDefinition
 @Configuration
 public class OpenApiConfiguration {
-  @Autowired(required = false)
-  private List<CustomSecuritySchemeProvider> securitySchemeProviders;
-
   @Autowired
   private final OpenApiProperties openApi = new OpenApiProperties();
 
@@ -34,6 +32,10 @@ public class OpenApiConfiguration {
    */
   @Bean
   public OpenAPI customOpenApi() {
+    Info info = openApi.getInfo();
+    gov.va.vro.propmodel.Contact contact = info.getContact();
+    gov.va.vro.propmodel.License license = info.getLicense();
+
     List<Server> servers =
         openApi.getServers().stream()
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
@@ -53,39 +55,17 @@ public class OpenApiConfiguration {
         new OpenAPI()
             .info(
                 new io.swagger.v3.oas.models.info.Info()
-                    .title("VRO App")
-                    .description("VRO Java-based application")
-                    .version("3.0.0")
-            )
+                    .title(info.getTitle())
+                    .description(info.getDescription())
+                    .version(info.getVersion())
+                    .license(new License().name(license.getName()).url(license.getUrl()))
+                    .contact(new Contact().name(contact.getName()).email(contact.getEmail())))
             .servers(servers)
             .addSecurityItem(
                 new SecurityRequirement()
                     .addList("bearer-jwt", Arrays.asList("read", "write"))
                     .addList("oauth2", Arrays.asList("read", "write")))
             .tags(tags);
-
-    config = configureSecuritySchemes(config);
-    return config;
-  }
-
-  /**
-   * Configure OpenAPI Security schemes.
-   *
-   * @param config current OpenAPI config object
-   * @return OpenAPI config object
-   */
-  protected OpenAPI configureSecuritySchemes(OpenAPI config) {
-    if (null != securitySchemeProviders && securitySchemeProviders.size() > 0) {
-      Components securitySchemes = new Components();
-      securitySchemeProviders.forEach(
-          p -> {
-            log.info("Adding SecurityScheme [{}]", p.getName());
-            securitySchemes.addSecuritySchemes(p.getName(), p.create());
-          });
-      config.components(securitySchemes);
-    } else {
-      log.warn("No SecuritySchemeProviders defined.");
-    }
     return config;
   }
 }

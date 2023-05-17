@@ -185,16 +185,6 @@ vro:
       base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
-    info:
-      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-      description: This API provides functionality to improve benefit delivery to Veterans using health data.
-      version: v2
-      contact:
-        name: Premal Shah
-        email: "premal.shah@va.gov"
-      license:
-        name: CCO 1.0
-        url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
       -
         description: "via API Gateway"
@@ -202,12 +192,6 @@ vro:
       -
         description: "Server"
         url: ${STARTER_OPENAPI_SERVERURL:/}
-      -
-        description: "Dev Server"
-        url: "https://dev.lighthouse.va.gov/abd-vro"
-      -
-        description: "QA Server"
-        url: "https://qa.lighthouse.va.gov/abd-vro"
 
 spring.redis:
   # database index used by the connection factory
