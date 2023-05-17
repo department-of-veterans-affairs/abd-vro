@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @Slf4j
 @SpringBootApplication
+@ConfigurationPropertiesScan(basePackages = {"gov.va.vro"})
 @OpenAPIDefinition(info = @Info(title = "VRO Gateway API", version = "1.0", description = "API for the Gateway"))
 public class GatewayApplication {
   public static void main(String[] args) {

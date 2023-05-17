@@ -1,6 +1,5 @@
 package gov.va.vro.config.propmodel;
 
-import gov.va.vro.config.propmodel.Server;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

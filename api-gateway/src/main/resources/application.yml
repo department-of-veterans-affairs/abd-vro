@@ -31,7 +31,6 @@ management:
 
 server:
   ssl:
-    # TODO: enable SSL
     enabled: false
   port: 8060
   maxHttpHeaderSize: 48000
@@ -120,9 +119,3 @@ vro:
       -
         description: "Server"
         url: ${STARTER_OPENAPI_SERVERURL:/}
-      -
-        description: "Dev Server"
-        url: "https://dev.lighthouse.va.gov/abd-vro"
-      -
-        description: "QA Server"
-        url: "https://qa.lighthouse.va.gov/abd-vro"

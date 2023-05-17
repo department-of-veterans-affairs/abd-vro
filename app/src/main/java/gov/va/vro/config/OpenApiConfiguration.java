@@ -24,8 +24,7 @@ public class OpenApiConfiguration {
   @Autowired(required = false)
   private List<CustomSecuritySchemeProvider> securitySchemeProviders;
 
-  @Autowired
-  private final OpenApiProperties openApi = new OpenApiProperties();
+  @Autowired private final OpenApiProperties openApiProperties = new OpenApiProperties();
 
   /**
    * Configure OpenAPI processor.
@@ -35,28 +34,20 @@ public class OpenApiConfiguration {
   @Bean
   public OpenAPI customOpenApi() {
     List<Server> servers =
-        openApi.getServers().stream()
+        openApiProperties.getServers().stream()
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
             .collect(Collectors.toList());
 
     // Adding to this list will have it appear under `tags` at http://localhost:8080/v3/api-docs
     // Not sure why this list isn't automatically populated when @Tag is used.
-    final List<Tag> tags =
-        Arrays.asList(
-            new Tag().name("Pdf Generation"),
-            new Tag().name("Claim Metrics"),
-            new Tag().name("MAS Integration"),
-            new Tag().name("Xample Domain"),
-            new Tag().name("Verification Test"));
+    final List<Tag> tags = Arrays.asList(new Tag().name("Xample Domain"));
 
     OpenAPI config =
         new OpenAPI()
             .info(
                 new io.swagger.v3.oas.models.info.Info()
                     .title("VRO App")
-                    .description("VRO Java-based application")
-                    .version("3.0.0")
-            )
+                    .description("VRO Java-based application"))
             .servers(servers)
             .addSecurityItem(
                 new SecurityRequirement()
