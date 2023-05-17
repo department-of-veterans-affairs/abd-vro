@@ -1,5 +1,5 @@
 plugins {
-  id 'local.docker.container-conventions'
+  id 'shared.docker.container-conventions'
 }
 
 docker {
