@@ -62,7 +62,7 @@ springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
   swagger-ui:
-    # http://localhost:8078/swaggerui will be forwarded to http://localhost:8078/webjars/swagger-ui/index.html
+    # http://localhost:8060/swaggerui will be forwarded to http://localhost:8060/webjars/swagger-ui/index.html
     path: /swaggerui
     operations-sorter: method
     tagsSorter: alpha

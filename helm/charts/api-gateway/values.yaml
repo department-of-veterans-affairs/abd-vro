@@ -1,0 +1,40 @@
+# owner is used in annotations
+name: abd-vro
+owner: VA-OCTO
+
+labels:
+  app: api-gateway
+
+replicaCount: 1
+
+ports:
+  - name: liveness
+    containerPort: 8061
+    protocol: TCP
+  - name: debug
+    containerPort: 5005
+    protocol: TCP
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8061
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8061
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80

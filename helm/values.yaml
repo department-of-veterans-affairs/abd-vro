@@ -7,6 +7,8 @@ postgres:
   enabled: true
 redis:
   enabled: true
+api-gateway:
+  enabled: true
 vro-app:
   enabled: true
 vro-svcs:
@@ -63,6 +65,9 @@ global:
   version: 0.2
 
   service:
+    apiGateway:
+      sourcePort: 8060
+      targetPort: 8060
     app:
       sourcePort: 8080
       targetPort: 8080

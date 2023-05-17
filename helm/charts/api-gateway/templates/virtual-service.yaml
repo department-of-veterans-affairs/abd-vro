@@ -13,10 +13,10 @@ spec:
         prefix: /{{ .Values.global.serviceUriPrefix }}
     route:
     - destination:
-        # Should match metadata.name in helm/charts/vro-app/templates/service.yaml
-        host: {{ .Values.global.hostnamePrefix }}-app
+        # Should match metadata.name in helm/charts/api-gateway/templates/service.yaml
+        host: {{ .Values.global.hostnamePrefix }}-api-gateway
         port:
-          number: 8080
+          number: 8060
     headers:
       response:
           remove:
