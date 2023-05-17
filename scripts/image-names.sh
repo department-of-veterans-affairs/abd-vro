@@ -28,7 +28,7 @@ prod_image_name() {
 }
 
 # These names should match directory names
-IMAGES=( app postgres db-init console svc-bgs-api svc-lighthouse-api )
+IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
