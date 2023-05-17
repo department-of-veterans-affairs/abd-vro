@@ -136,6 +136,7 @@ services:
       FLYWAY_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
 
   api-gateway:
+    profiles: ["all","gateway"]
     image: va/abd_vro-api-gateway:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
@@ -143,6 +144,8 @@ services:
       - "8061:8061"
     environment:
       <<: *common-vars
+      VRO_APP_HOSTNAME: app
+      # VRO_CC_HOSTNAME: cc-app
     networks:
       - intranet
 

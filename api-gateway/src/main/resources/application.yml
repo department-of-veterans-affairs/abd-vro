@@ -87,14 +87,14 @@ spring.cloud.gateway:
   routes:
   # Each domain API should have one entry with a URI prefix
   - id: vro-app
-    uri: http://localhost:8080
+    uri: http://${VRO_APP_HOSTNAME:localhost}:8080
     predicates:
     - Path=/app/**
     filters:
     - RewritePath=/app/(?<path>.*), /$\{path}
   - id: contention-classification-tenant
     # TODO: add Swagger servers such that /contention-classification is used as the prefix for requests
-    uri: http://localhost:18000
+    uri: http://${VRO_CC_HOSTNAME:localhost}:18000
     predicates:
     - Path=/contention-classification/**
     filters:
