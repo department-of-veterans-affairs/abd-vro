@@ -17,7 +17,6 @@ plugins {
     id 'starter.java.deps-springdoc-conventions'
 
     // Use our `local` container variants
-    //id 'local.java.container-conventions'
     id 'local.java.container-spring-conventions'
 
     id 'starter.java.lint-spectral-conventions'

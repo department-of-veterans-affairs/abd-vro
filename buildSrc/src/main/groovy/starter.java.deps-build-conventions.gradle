@@ -11,9 +11,6 @@ plugins {
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // Added
-//    implementation 'javax.validation:validation-api'
-
     // Removed
     // implementation "org.zalando:problem-spring-web"
     // implementation "org.springdoc:springdoc-openapi-ui"

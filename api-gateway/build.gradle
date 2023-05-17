@@ -1,7 +1,6 @@
 plugins {
   id 'local.std.java.library-spring-conventions'
   id 'local.java.container-spring-conventions'
-  //  id 'starter.java.config-conventions'
   id "com.google.osdetector" version "1.7.3"
 }
 
@@ -22,81 +21,4 @@ dependencies {
 
   // Swagger UI for WebFlux
   implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
-
-  //  implementation 'gov.va.starter:open-api'
-  //  // Provides http://localhost:8081/health endpoint used in app's Dockerfile
-  //  implementation 'gov.va.starter:health'
-  //  // Not sure if these are needed:
-  //  implementation 'gov.va.starter:tracing'
-  //  implementation 'gov.va.starter:error-handling'
-  //  implementation 'gov.va.starter:exceptions'
-
-  //  implementation "org.springframework.boot:spring-boot-dependencies:3.0.6"
-  //  implementation "org.springframework.cloud:spring-cloud-starter-gateway:${spring_cloud_gateway_version}"
-
-  //  implementation 'org.springframework.boot:spring-boot-starter-web'
-  //  implementation 'org.springframework.boot:spring-boot-starter-validation'
-  //  implementation 'org.springframework.boot:spring-boot-starter-security'
-  //  implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  //  implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
-  //  implementation "org.springframework.security:spring-security-core:${spring_security_version}"
-  //  implementation "org.springframework.security:spring-security-config:${spring_security_version}"
-  //  implementation "org.springframework.security:spring-security-web:${spring_security_version}"
-
-  //MAS oAuth2 webclient libs
-  //  implementation "org.springframework.boot:spring-boot-starter-webflux:${sb_webflux}"
-  //  implementation "org.springframework.security:spring-security-oauth2-client:${spring_security_version}"
-  //  implementation "org.springframework.boot:spring-boot-starter-security:${sb_security}"
-
-  //  // https://mvnrepository.com/artifact/com.auth0/java-jwt
-  //  implementation "com.auth0:java-jwt:${auth0_jwt}"
-  //  // https://mvnrepository.com/artifact/com.auth0/jwks-rsa
-  //  implementation "com.auth0:jwks-rsa:${auth0_jwks}"
-  //  // https://mvnrepository.com/artifact/com.google.code.gson/gson
-  //  implementation "com.google.code.gson:gson:${gson_version}"
-  //
-  //  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
-  //
-  //  testImplementation "io.jsonwebtoken:jjwt:0.2"
-}
-
-//openApi {
-//  // Generates build/springdoc/openapi.json
-//  customBootRun {
-//    getClasspath().setFrom(sourceSets.test.runtimeClasspath)
-//    args = [
-//      "--spring.profiles.active=test"
-//    ]
-//  }
-//}
-
-afterEvaluate {
-  // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
-  // Not particularly useful
-  //  generateOpenApiDocs.enabled = false
-  //  forkedSpringBootRun.enabled = false
-
-  //  tasks.named('forkedSpringBootRun').configure {
-  //    dependsOn 'bootStartScripts'
-  //    dependsOn 'checkstyleIntegrationTest'
-  //    dependsOn 'checkstyleMain'
-  //    dependsOn 'checkstyleTest'
-  //    dependsOn 'compileIntegrationTestJava'
-  //    dependsOn 'dockerfileZip'
-  //    dependsOn 'integrationTest'
-  //    dependsOn 'jar'
-  //    dependsOn 'spotlessJava'
-  //    dependsOn 'startScripts'
-  //    dependsOn 'test'
-  //    // dependsOn ':service-python:pytest' // slows down `:app:build` task
-  //
-  //    dependsOn 'jacocoTestReport'
-  //    dependsOn 'jacocoTestCoverageVerification'
-  //
-  //    dependsOn 'dockerPrepare'
-  //  }
-  //
-  //  tasks.named('spectralLint').configure {
-  //    dependsOn 'forkedSpringBootStop'
-  //  }
 }

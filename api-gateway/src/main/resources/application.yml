@@ -200,6 +200,7 @@ vro:
   # Deployment environment
   env: ${ENV:local}
 
+  # TODO: Include this in the API UI
   openapi:
     info:
       title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API

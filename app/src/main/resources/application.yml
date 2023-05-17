@@ -197,11 +197,11 @@ vro:
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
       -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
-      -
         description: "via API Gateway"
         url: ${STARTER_OPENAPI_SERVERURL:/app}
+      -
+        description: "Server"
+        url: ${STARTER_OPENAPI_SERVERURL:/}
       -
         description: "Dev Server"
         url: "https://dev.lighthouse.va.gov/abd-vro"
