@@ -60,6 +60,9 @@ x-common-sde-security: &common-sde-security
   ulimits:
     nproc: 65535
 
+x-image-platform: &image-platform
+  platform: ${VRO_DOCKER_IMAGE_PLATFORM}
+
 services:
   # Containers with the `-service` suffix are need by the VRO app.
   # Containers with the `svc-` prefix are microservices to support domain workflows.
@@ -67,6 +70,7 @@ services:
 
   rabbitmq-service:
     image: rabbitmq:3-management
+    <<: *image-platform
     # Specifying user to reduce/eliminate startup error about erlang.cookie
     # based on https://github.com/docker-library/rabbitmq/issues/318
     user: rabbitmq
@@ -88,6 +92,7 @@ services:
 
   redis-service:
     image: redis
+    <<: *image-platform
     volumes:
       - var_redis:/data
     networks:
