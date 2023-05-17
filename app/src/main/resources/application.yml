@@ -89,7 +89,7 @@ log4j2:
 
 spring:
   application:
-    name: "abd-vro"
+    name: "vro-app"
   profiles:
     # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
     active: ${ENV:default}

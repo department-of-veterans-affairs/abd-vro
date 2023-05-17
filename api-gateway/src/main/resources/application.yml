@@ -1,27 +1,7 @@
 # This file contains shared properties across all environments; it is always loaded by Spring
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
 
-info:
-  app:
-    name: abd_vro
-    description: Virtual Regional Office API
-    version: 3.0.0
-
-# API Auth
-apiauth:
-  hdr-key-name-v1: X-API-Key
-  claim-metrics: /v2/claim-metrics
-  claim-info: /v2/claim-info/**
-  full-health-assessment: /v1/full-health-data-assessment
-  health-assessment: /v2/health-data-assessment
-  hdr-key-name-v2: Authorization
-  automated-claim: /v2/automatedClaim
-  exam-order: /v2/examOrderingStatus
-  evidence-pdf: /v1/evidence-pdf/**
-  immediate-pdf: /v1/immediate-pdf
-
 management:
-  # TODO: Figure out the proper security for these, and perhaps don't expose everything
   endpoints.web:
     exposure.include: "*"
   endpoint:
@@ -49,31 +29,9 @@ management:
     web.server.request.autotime.enabled: true
   server.port: 8061
 
-# Setting up K8 health probes - with health probes set to true you can use
-# the paths in your config like the snippet below
-
-#livenessProbe:
-#  httpGet:
-#    path: /actuator/health/liveness
-#    port: 8081
-#  failureThreshold: ...
-#  periodSeconds: ...
-#
-#readinessProbe:
-#  httpGet:
-#    path: /actuator/health/readiness
-#    port: 8081
-#  failureThreshold: ...
-#
-
 server:
-  tomcat:
-    basedir: build/tomcat
-    max-threads: 100
-    maxHttpFormPostSize: 26214400
-    maxHttpPostSize: 26214400
-    maxSwallowSize: 26214400
   ssl:
+    # TODO: enable SSL
     enabled: false
   port: 8060
   maxHttpHeaderSize: 48000
@@ -85,30 +43,9 @@ server:
     session:
       timeout: 120000
 
-log4j2:
-  formatMsgNoLookups: true
-
 spring:
   application:
-    name: "abd-vro"
-  profiles:
-    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
-    active: ${ENV:default}
-    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
-    group:
-      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
-      local: nonprod
-      # Remaining profiles are for deployment to LHDI's EKS environments
-      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
-      # along with application-$ENV.yml
-      dev: nonprod,k8s
-      qa: nonprod,k8s
-      sandbox: nonprod,k8s
-      # For prod, only load application-prod.yml and application-k8s.yml
-      prod: k8s
-      # For prod-test, only load application-prod-test.yml and application-k8s.yml
-      prod-test: k8s
-
+    name: "vro-api"
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -118,35 +55,13 @@ spring:
       timeout: 120000
   resources:
     add-mappings: false
-  mvc:
-    throw-exception-if-no-handler-found: true
   http:
     encoding:
       force: true
 
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: false
-
-  security:
-    oauth2:
-      client:
-        provider:
-          mas:
-            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
-        registration:
-          mas:
-            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
-            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
-            scope: "${MAS_API_AUTH_SCOPE:openid}"
-            grant-type: client_credentials
-
 springdoc:
   writer-with-default-pretty-printer: true
-  # show-actuator: false
-  packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
+  show-actuator: true
   swagger-ui:
     # http://localhost:8078/swaggerui will be forwarded to http://localhost:8078/webjars/swagger-ui/index.html
     path: /swaggerui
@@ -158,6 +73,7 @@ springdoc:
         # API defined for this API Gateway
         url: /v3/api-docs
       - name: App API
+        # API defined for the VRO Java-base App
         url: /app/v3/api-docs
       - name: Contention Classification API
         # Use the route defined under spring.cloud.gateway below
@@ -165,17 +81,11 @@ springdoc:
 
 # TODO: Add Spring Cloud CircuitBreaker: https://spring.io/guides/gs/gateway/
 spring.cloud.gateway:
-#  actuator.verbose.enabled: true
-#  discovery:
-#    locator:
-#      enabled: false
+  actuator.verbose.enabled: true
+  discovery:
+    locator:
+      enabled: false
   routes:
-#  - id: openapi
-#    uri: http://localhost:${server.port}
-#    predicates:
-#    - Path=/v3/api-docs/**
-#    filters:
-#    - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
   # Each domain API should have one entry with a URI prefix
   - id: vro-app
     uri: http://localhost:8080
@@ -191,15 +101,10 @@ spring.cloud.gateway:
     filters:
     - RewritePath=/contention-classification/(?<path>.*), /$\{path}
 
-#logging.level.org.springframework: DEBUG
-
-# Suppress "Cannot find template location" warning
-#spring.groovy.template.check-template-location: false
+log4j2:
+  formatMsgNoLookups: true
 
 vro:
-  # Deployment environment
-  env: ${ENV:local}
-
   # TODO: Include this in the API UI
   openapi:
     info:
