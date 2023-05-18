@@ -66,8 +66,8 @@ global:
 
   service:
     apiGateway:
-      sourcePort: 8060
-      targetPort: 8060
+      sourcePort: 8080
+      targetPort: 8080
     app:
       sourcePort: 8080
       targetPort: 8080

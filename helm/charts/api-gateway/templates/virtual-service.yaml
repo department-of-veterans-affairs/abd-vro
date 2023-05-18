@@ -16,7 +16,7 @@ spec:
         # Should match metadata.name in helm/charts/api-gateway/templates/service.yaml
         host: {{ .Values.global.hostnamePrefix }}-api-gateway
         port:
-          number: 8060
+          number: 8080
     headers:
       response:
           remove:

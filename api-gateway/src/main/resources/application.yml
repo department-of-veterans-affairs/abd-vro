@@ -32,7 +32,7 @@ management:
 server:
   ssl:
     enabled: false
-  port: 8060
+  port: 8080
   maxHttpHeaderSize: 48000
   session:
     timeout: 60
