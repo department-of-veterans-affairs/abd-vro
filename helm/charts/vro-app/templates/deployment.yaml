@@ -76,9 +76,9 @@ spec:
             - name: PERSIST_TRACKING_FOLDER
               value: {{ .Values.global.tracking.mountPath }}
             - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.global.serviceUriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}/app
             - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.serviceUriPrefix }}
+              value: /{{ .Values.global.serviceUriPrefix }}/app
 
             - name: VRO_SECRETS_API
               valueFrom:

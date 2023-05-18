@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.global.hostnamePrefix }}-virtservice2
+  name: {{ .Values.global.hostnamePrefix }}-api-gateway-virtservice
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
