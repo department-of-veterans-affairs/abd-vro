@@ -39,6 +39,11 @@ spec:
 
             - name: VRO_APP_HOSTNAME
               value: app{{ include "vro.containerSuffix" . }}
+            - name: SPRING_WEBFLUX_BASEPATH
+              # Webflux uses base-path while Spring MVC uses context-path
+              value: /{{ .Values.global.serviceUriPrefix }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.global.serviceUriPrefix }}
           resources:
             requests:
               cpu: 50m

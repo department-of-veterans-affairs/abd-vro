@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.global.hostnamePrefix }}-virtservice
+  name: {{ .Values.global.hostnamePrefix }}-virtservice2
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
@@ -16,7 +16,7 @@ spec:
         # Should match metadata.name in helm/charts/api-gateway/templates/service.yaml
         host: {{ .Values.global.hostnamePrefix }}-api-gateway
         port:
-          number: 8080
+          number: 8060
     headers:
       response:
           remove:
