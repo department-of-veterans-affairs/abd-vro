@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@OpenAPIDefinition
 @Configuration
+@RequiredArgsConstructor
 public class OpenApiConfiguration {
-  @Autowired
-  private final OpenApiProperties openApiProperties = new OpenApiProperties();
+  private final OpenApiProperties openApiProperties;
 
   @Bean
   public OpenAPI customOpenApi() {

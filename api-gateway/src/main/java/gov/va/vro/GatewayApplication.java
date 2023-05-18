@@ -10,7 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @Slf4j
 @SpringBootApplication
 @ConfigurationPropertiesScan(basePackages = {"gov.va.vro"})
-@OpenAPIDefinition(info = @Info(title = "VRO Gateway API", version = "1.0", description = "API for the Gateway"))
 public class GatewayApplication {
   public static void main(String[] args) {
     new SpringApplication(GatewayApplication.class).run(args);
