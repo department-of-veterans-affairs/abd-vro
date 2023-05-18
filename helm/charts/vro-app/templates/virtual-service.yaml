@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.global.hostnamePrefix }}-virtservice1
+  name: {{ .Values.global.hostnamePrefix }}-app-virtservice
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
@@ -10,7 +10,12 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /{{ .Values.global.serviceUriPrefix }}1
+        prefix: /app-{{ .Values.global.serviceUriPrefix }}/
+    - uri:
+        exact: /app-{{ .Values.global.serviceUriPrefix }}
+    rewrite:
+      # https://github.com/istio/istio/issues/8076#issuecomment-515278023
+      uri: /
     route:
     - destination:
         # Should match metadata.name in helm/charts/vro-app/templates/service.yaml
