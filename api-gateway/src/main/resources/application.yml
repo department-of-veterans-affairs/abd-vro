@@ -41,6 +41,9 @@ server:
   servlet:
     session:
       timeout: 120000
+  # Needed to handle Swagger error: https://stackoverflow.com/questions/70906081/springboot-swagger3-failed-to-load-remote-configuration
+  # https://stackoverflow.com/questions/68318269/spring-server-forward-headers-strategy-native-vs-framework
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -63,13 +66,14 @@ springdoc:
   show-actuator: true
   swagger-ui:
     # http://localhost:8060/swaggerui will be forwarded to http://localhost:8060/webjars/swagger-ui/index.html
-    path: /swaggerui
+    # Doesn't account for context-path: path: /swaggerui
     operations-sorter: method
     tagsSorter: alpha
     # Populate API dropdown on the upper-right of Swagger UI
     urls:
       - name: 0. Gateway API
         # API defined for this API Gateway
+        # TODO: convert /abd-vro into a variable
         url: /abd-vro/v3/api-docs
       - name: App API
         # API defined for the VRO Java-base App
@@ -78,7 +82,7 @@ springdoc:
         # Use the route defined under spring.cloud.gateway below
         url: /abd-vro-contention-classification/openapi.json
 
-# TODO: Add Spring Cloud CircuitBreaker: https://spring.io/guides/gs/gateway/
+# TODO: Move this to application-local.yml
 spring.cloud.gateway:
   actuator.verbose.enabled: true
   discovery:
