@@ -1,8 +1,6 @@
 package gov.va.vro.bip;
 
-import gov.va.vro.bip.BipApiProps;
-import gov.va.vro.service.provider.ClaimProps;
-import gov.va.vro.bip.BipException;
+import gov.va.vro.bip.ClaimProps;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
