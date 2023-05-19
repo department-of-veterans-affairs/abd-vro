@@ -10,7 +10,12 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /{{ .Values.global.serviceUriPrefix }}
+        prefix: /{{ .Values.global.serviceUriPrefix }}/
+    - uri:
+        exact: /{{ .Values.global.serviceUriPrefix }}
+    rewrite:
+      # https://github.com/istio/istio/issues/8076#issuecomment-515278023
+      uri: /
     route:
     - destination:
         # Should match metadata.name in helm/charts/api-gateway/templates/service.yaml

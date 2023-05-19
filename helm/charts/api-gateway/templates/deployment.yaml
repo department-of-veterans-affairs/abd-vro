@@ -36,24 +36,25 @@ spec:
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
-            - name: VRO_GW_ROUTE_URI
-              value: "{{ .Values.global.hostnamePrefix }}-app:8080"
-            - name: VRO_GW_ROUTE_PREDICATE
-              value: "/{{ .Values.global.serviceUriPrefix }}/app/**"
-            - name: VRO_GW_ROUTE_REWRITE
-              value: "/{{ .Values.global.serviceUriPrefix }}/app"
 
-            - name: VRO_APP_HOSTNAME
-              value: {{ .Values.global.hostnamePrefix }}-app
+            - name: VRO_GW_ROUTE_URI
+              value: "http://{{ .Values.global.hostnamePrefix }}-app:8080"
+            - name: VRO_GW_ROUTE_PREDICATE
+              value: "/{{ .Values.global.serviceUriPrefix }}-app/**"
+            - name: VRO_GW_ROUTE_REWRITE
+              value: "/{{ .Values.global.serviceUriPrefix }}-app"
+
+            # - name: VRO_APP_HOSTNAME
+            #   value: {{ .Values.global.hostnamePrefix }}-app
 #            - name: VRO_CC_HOSTNAME
 #              value: {{ .Values.global.hostnamePrefix }}-cc-app
-            - name: VRO_BASEPATH
-              value: /{{ .Values.global.serviceUriPrefix }}
-            - name: SPRING_WEBFLUX_BASEPATH
-              # Webflux uses base-path while Spring MVC uses context-path
-              value: /{{ .Values.global.serviceUriPrefix }}
-            - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.serviceUriPrefix }}
+            #- name: VRO_BASEPATH
+            #  value: /{{ .Values.global.serviceUriPrefix }}
+            #- name: SPRING_WEBFLUX_BASEPATH
+            #  # Webflux uses base-path while Spring MVC uses context-path
+            #  value: /{{ .Values.global.serviceUriPrefix }}
+            #- name: STARTER_OPENAPI_SERVERURL
+            #  value: /{{ .Values.global.serviceUriPrefix }}
           resources:
             requests:
               cpu: 50m

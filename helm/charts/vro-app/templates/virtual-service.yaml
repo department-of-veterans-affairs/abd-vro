@@ -10,9 +10,9 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /app-{{ .Values.global.serviceUriPrefix }}/
+        prefix: /{{ .Values.global.serviceUriPrefix }}-app/
     - uri:
-        exact: /app-{{ .Values.global.serviceUriPrefix }}
+        exact: /{{ .Values.global.serviceUriPrefix }}-app
     rewrite:
       # https://github.com/istio/istio/issues/8076#issuecomment-515278023
       uri: /
