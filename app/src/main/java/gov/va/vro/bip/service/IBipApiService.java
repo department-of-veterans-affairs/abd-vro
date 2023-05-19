@@ -1,11 +1,11 @@
-package gov.va.vro.service.provider.bip.service;
+package gov.va.vro.bip.service;
 
+import gov.va.vro.bip.BipException;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.ClaimStatus;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.service.provider.bip.BipException;
 
 import java.util.List;
 

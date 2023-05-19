@@ -1,10 +1,11 @@
-package gov.va.vro.config;
+package gov.va.vro.bip;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import gov.va.vro.service.provider.bip.BipException;
+import gov.va.vro.bip.BipApiConfig;
+import gov.va.vro.bip.BipException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

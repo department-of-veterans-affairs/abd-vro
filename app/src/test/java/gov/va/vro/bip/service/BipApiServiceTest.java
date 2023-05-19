@@ -1,17 +1,16 @@
-package gov.va.vro.service;
+package gov.va.vro.bip.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import gov.va.vro.bip.BipApiProps;
+import gov.va.vro.bip.BipException;
 import gov.va.vro.model.bip.BipClaim;
 import gov.va.vro.model.bip.BipUpdateClaimResp;
 import gov.va.vro.model.bip.ClaimContention;
 import gov.va.vro.model.bip.UpdateContentionReq;
-import gov.va.vro.service.provider.BipApiProps;
-import gov.va.vro.service.provider.bip.BipException;
-import gov.va.vro.service.provider.bip.service.BipApiService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

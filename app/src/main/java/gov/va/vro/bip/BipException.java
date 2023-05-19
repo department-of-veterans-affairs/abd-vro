@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider.bip;
+package gov.va.vro.bip;
 
 import lombok.Getter;
 import lombok.Setter;

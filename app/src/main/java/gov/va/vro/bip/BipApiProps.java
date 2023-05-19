@@ -1,4 +1,4 @@
-package gov.va.vro.service.provider;
+package gov.va.vro.bip;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
