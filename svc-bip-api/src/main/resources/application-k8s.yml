@@ -1,0 +1,16 @@
+# This file is used when deploying to Kubernetes (i.e., when ENV is dev, qa, sandbox, prodtest, or prod)
+# Contrast this file against application-local.yml
+#
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+# Secrets should reference environment variables, which will be set in Kubernetes.
+# If environment variable doesn't exist and doesn't have default, it fails fast and an exception will be thrown.
+# This is beneficial to indicate that the environment variable wasn't configured.
+
+logging:
+  level:
+    org.springframework.jdbc.core: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    org.hibernate.SQL: INFO
+    org.type.descriptor.sql.BasicBinder: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO

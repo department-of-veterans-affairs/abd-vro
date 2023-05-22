@@ -1,0 +1,21 @@
+# This file is used when ENV="end2end-test" (in .github/workflows/end2end-test.yml)
+# Compare this file with application-local.yml since both are used when running VRO via docker-compose
+#
+# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
+
+opentracing:
+  zipkin:
+    # Disabling to run locally without errors
+    enabled: false
+
+spring.config.import: application-local.yml
+
+#spring.security.oauth2.client.provider.mas.uri: "http://mock-mas-api:20400/token"
+#
+#masAPIProvider.baseURL: "http://mock-mas-api:20400"
+#masAPIProvider.createExamOrderPath: "/pcOrderExam"
+
+slack:
+  exception:
+    webhook: "http://mock-slack:20100/slack-messages"
+    channel: benefits-vro-end2end
