@@ -46,7 +46,7 @@ management:
       ns: "${NAMESPACE:example}"
       pod: "${POD_ID:docker}"
     web.server.request.autotime.enabled: true
-  server.port: 8081
+  server.port: 8111
 
 # Setting up K8 health probes - with health probes set to true you can use
 # the paths in your config like the snippet below
@@ -54,14 +54,14 @@ management:
 #livenessProbe:
 #  httpGet:
 #    path: /actuator/health/liveness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #  periodSeconds: ...
 #
 #readinessProbe:
 #  httpGet:
 #    path: /actuator/health/readiness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #
 
@@ -74,7 +74,7 @@ server:
     maxSwallowSize: 26214400
   ssl:
     enabled: false
-  port: 8080
+  port: 8110
   maxHttpHeaderSize: 48000
   session:
     timeout: 60

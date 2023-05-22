@@ -158,8 +158,8 @@ services:
     image: va/abd_vro-app:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - "8110:8110"
+      - "8111:8111"
     environment:
       # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
       # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa

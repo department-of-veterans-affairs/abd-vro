@@ -22,7 +22,7 @@ spring.cloud.gateway:
   # Be aware: https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
   # because SPRING_WEBFLUX_BASEPATH is set in Helm configuration
   - id: app-route
-    uri: http://${VRO_APP_HOSTNAME:localhost}:8080
+    uri: http://${VRO_APP_HOSTNAME:localhost}:8110
     predicates:
     - Path=/vro-app/**
     filters:

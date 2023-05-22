@@ -66,8 +66,8 @@ global:
       sourcePort: 8060
       targetPort: 8060
     app:
-      sourcePort: 8080
-      targetPort: 8080
+      sourcePort: 8110
+      targetPort: 8110
     db:
       sourcePort: 5432
       targetPort: 5432

@@ -11,7 +11,7 @@ serviceUriPrefix: vro-app
 
 ports:
   - name: liveness
-    containerPort: 8081
+    containerPort: 8111
     protocol: TCP
   - name: debug
     containerPort: 5005
@@ -20,7 +20,7 @@ ports:
 livenessProbe:
   httpGet:
     path: /actuator/health/liveness
-    port: 8081
+    port: 8111
   initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 10
@@ -29,7 +29,7 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
-    port: 8081
+    port: 8111
   initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 10
