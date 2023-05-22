@@ -28,7 +28,7 @@ spring.cloud.gateway:
     filters:
     - StripPrefix=1
   - id: contention-classification-route
-    uri: http://${VRO_CC_HOSTNAME:localhost}:18000
+    uri: http://${VRO_CC_HOSTNAME:localhost}:8120
     predicates:
     - Path=/contention-classification/**
     filters:
