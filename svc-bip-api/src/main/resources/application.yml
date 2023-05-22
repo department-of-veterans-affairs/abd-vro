@@ -1,0 +1,237 @@
+# This file contains shared properties across all environments; it is always loaded by Spring
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+
+info:
+  app:
+    name: abd_vro
+    description: Virtual Regional Office API
+
+# API Auth
+apiauth:
+  hdr-key-name-v1: X-API-Key
+  claim-metrics: /v2/claim-metrics
+  claim-info: /v2/claim-info/**
+  full-health-assessment: /v1/full-health-data-assessment
+  health-assessment: /v2/health-data-assessment
+  hdr-key-name-v2: Authorization
+  automated-claim: /v2/automatedClaim
+  exam-order: /v2/examOrderingStatus
+  evidence-pdf: /v1/evidence-pdf/**
+  immediate-pdf: /v1/immediate-pdf
+
+management:
+  # TODO: Figure out the proper security for these, and perhaps don't expose everything
+  endpoints.web:
+    exposure.include: "*"
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState, db
+  metrics:
+    enabled: true
+    distribution:
+      percentiles.http.server.requests: 0.5, 0.90, 0.95, 0.99, 0.999
+      percentiles-histogram.http.server.requests: true
+      sla.http.server.requests: 10ms, 50ms
+      slo.http.server.requests: 10ms, 50ms
+    tags:
+      group: starter
+      service: example
+      region: "${POD_REGION:local}"
+      stack: "${CLUSTER:dev}"
+      ns: "${NAMESPACE:example}"
+      pod: "${POD_ID:docker}"
+    web.server.request.autotime.enabled: true
+  server.port: 8081
+
+# Setting up K8 health probes - with health probes set to true you can use
+# the paths in your config like the snippet below
+
+#livenessProbe:
+#  httpGet:
+#    path: /actuator/health/liveness
+#    port: 8081
+#  failureThreshold: ...
+#  periodSeconds: ...
+#
+#readinessProbe:
+#  httpGet:
+#    path: /actuator/health/readiness
+#    port: 8081
+#  failureThreshold: ...
+#
+
+server:
+  tomcat:
+    basedir: build/tomcat
+    max-threads: 100
+    maxHttpFormPostSize: 26214400
+    maxHttpPostSize: 26214400
+    maxSwallowSize: 26214400
+  ssl:
+    enabled: false
+  port: 8080
+  maxHttpHeaderSize: 48000
+  session:
+    timeout: 60
+  connection:
+    timeout: 60000
+  servlet:
+    session:
+      timeout: 120000
+
+log4j2:
+  formatMsgNoLookups: true
+
+spring:
+  application:
+    name: "abd-vro"
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
+    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
+    group:
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
+      local: nonprod
+      # Remaining profiles are for deployment to LHDI's EKS environments
+      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
+      # along with application-$ENV.yml
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      # For prod, only load application-prod.yml and application-k8s.yml
+      prod: k8s
+      # For prod-test, only load application-prod-test.yml and application-k8s.yml
+      prod-test: k8s
+
+  servlet:
+    multipart:
+      maxFileSize: 25MB
+      maxRequestSize: 25MB
+      enabled: true
+    session:
+      timeout: 120000
+  resources:
+    add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  http:
+    encoding:
+      force: true
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      jdbc-url: ${POSTGRES_URL}
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      schema: ${POSTGRES_SCHEMA}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  security:
+    oauth2:
+      client:
+        provider:
+          mas:
+            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
+        registration:
+          mas:
+            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
+            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
+            scope: "${MAS_API_AUTH_SCOPE:openid}"
+            grant-type: client_credentials
+
+masAPIProvider:
+  baseURL: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
+  collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
+  collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
+  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"
+
+lhAPIProvider:
+  tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
+  vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
+  apiKey: "${LH_VRO_API_KEY:placeholderKey}"
+  validateToken: "NO"
+
+masVeteranFlashIds:
+  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
+
+springdoc:
+  writer-with-default-pretty-printer: true
+  show-actuator: false
+  packages-to-exclude: gov.va.starter,gov.va.vro.controller.demo
+
+  swagger-ui:
+    operations-sorter: method
+    tagsSorter: alpha
+    path: swagger
+
+vro:
+  # Deployment environment
+  env: ${ENV:local}
+  persist:
+    tracking:
+      enabled: true
+      # Dependent on the mountPath configured in Kubernetes
+      base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
+
+  openapi:
+    info:
+      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
+      description: This API provides functionality to improve benefit delivery to Veterans using health data.
+      version: v2
+      contact:
+        name: Premal Shah
+        email: "premal.shah@va.gov"
+      license:
+        name: CCO 1.0
+        url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
+    servers:
+      -
+        description: "Server"
+        url: ${STARTER_OPENAPI_SERVERURL:/}
+      -
+        description: "Dev Server"
+        url: "https://dev.lighthouse.va.gov/abd-vro"
+      -
+        description: "QA Server"
+        url: "https://qa.lighthouse.va.gov/abd-vro"
+
+spring.redis:
+  # database index used by the connection factory
+  database: 0
+  host: ${REDIS_PLACEHOLDERS_HOST}
+  port: 6379
+  password: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+bip:
+  claimClientId: "${BIP_CLAIM_USERID}"
+  claimSecret: "${BIP_CLAIM_SECRET}"
+  claimBaseURL: "${BIP_CLAIM_URL}"
+  claimIssuer: "virtual_regional_office"
+  evidenceClientId: "${BIP_EVIDENCE_USERID}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
+  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
+  evidenceIssuer: "VRO"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:281}"
+truststore: "${BIP_TRUSTSTORE}"
+truststore_password: "${BIP_PASSWORD}"
+keystore: "${BIP_KEYSTORE}"
+
+claim:
+  special_issue_1: "RDR1"
+  special_issue_2: "RRD"
+
+spring.config.import: >
+  conf-camel.yml,
+  conf-camel-rabbitmq.yml

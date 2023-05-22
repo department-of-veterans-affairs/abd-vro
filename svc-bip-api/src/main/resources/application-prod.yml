@@ -1,0 +1,25 @@
+# This file is used when ENV=prod
+# Contrast this file against application-nonprod.yml
+#
+# File application-k8s.yml will also be loaded due to the spring.profiles.group configuration in application.yml
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+# Secrets should reference environment variables, which will be set in Kubernetes.
+# If environment variable doesn't exist and doesn't have default, it fails fast and an exception will be thrown.
+# This is beneficial to indicate that the environment variable wasn't configured.
+
+opentracing:
+  zipkin:
+    enabled: false
+    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+
+slack:
+  exception:
+    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
+    channel: benefits-vro-alerts
+
+lhAPIProvider:
+  validateToken: "YES"
+
+springdoc:
+  swagger-ui:
+    enabled: false
