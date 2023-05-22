@@ -10,10 +10,9 @@ spring.cloud.gateway:
   discovery:
     locator:
       enabled: false
-  # In LHDI, causes exception: "Invalid contextPath '/abd-vro': must match the start of requestPath"
   routes:
   - id: gateway-route
-    uri: http://${VRO_APP_HOSTNAME:localhost:8060}
+    uri: http://localhost:8060
     predicates:
     - Path=/abd-vro/**
     filters:
@@ -23,13 +22,13 @@ spring.cloud.gateway:
   # Be aware: https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
   # because SPRING_WEBFLUX_BASEPATH is set in Helm configuration
   - id: app-route
-    uri: http://${VRO_APP_HOSTNAME:localhost:8080}
+    uri: http://${VRO_APP_HOSTNAME:localhost}:8080
     predicates:
     - Path=/vro-app/**
     filters:
     - StripPrefix=1
   - id: contention-classification-route
-    uri: http://${VRO_CC_HOSTNAME:localhost:18000}
+    uri: http://${VRO_CC_HOSTNAME:localhost}:18000
     predicates:
     - Path=/contention-classification/**
     filters:
