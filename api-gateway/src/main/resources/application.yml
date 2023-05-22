@@ -46,11 +46,15 @@ server:
   # and https://tomgregory.com/spring-boot-behind-load-balancer-using-x-forwarded-headers/
   # https://stackoverflow.com/questions/68318269/spring-server-forward-headers-strategy-native-vs-framework
   # https://springdoc.org/faq.html#_how_can_i_deploy_springdoc_openapi_ui_behind_a_reverse_proxy
+  use-forward-headers: true
   forward-headers-strategy: framework
 
 spring:
   application:
     name: "vro-api"
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -64,14 +68,21 @@ spring:
     encoding:
       force: true
 
+# Set the context-path. WebFlux calls it base-path
+# https://stackoverflow.com/questions/49196368/context-path-with-webflux
+# Kubernetes rewrites the url to use `/`
+spring.webflux.base-path: /
+
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
+  # Useful diagnostics: https://docs.bmc.com/docs/ars2002/troubleshooting-issues-when-using-swagger-as-a-remedy-rest-api-client-941865631.html
   swagger-ui:
     operations-sorter: method
     tagsSorter: alpha
-    # http://localhost:8060/swaggerui will be forwarded to http://localhost:8060/webjars/swagger-ui/index.html
-    # Doesn't account for context-path: path: /abd-vro/swaggerui
+    # Redirects http.../swaggerui to http.../webjars/swagger-ui/index.html
+    path: swaggerui
+    disable-swagger-default-url: true
     configUrl: /abd-vro/v3/api-docs/swagger-config
     # Populate API dropdown on the upper-right of Swagger UI
     urls:
@@ -86,41 +97,6 @@ springdoc:
         # Use the route defined under spring.cloud.gateway below
         url: /abd-vro-contention-classification/openapi.json
 
-# TODO: Move this to application-local.yml
-spring.cloud.gateway:
-  actuator.verbose.enabled: true
-  discovery:
-    locator:
-      enabled: false
-  routes:
-  # Each domain API should have one entry with a URI prefix
-  # Be aware: https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
-  # because SPRING_WEBFLUX_BASEPATH is set in Helm configuration
-  - id: vro-configurable
-    uri: ${VRO_GW_ROUTE_URI}
-    predicates:
-    - Path=${VRO_GW_ROUTE_PREDICATE}
-    filters:
-    - RewritePath=${VRO_GW_ROUTE_REWRITE}/(?<path>.*), /$\{path}
-  - id: gateway-route
-    uri: http://${VRO_APP_HOSTNAME:localhost:8060}
-    predicates:
-    - Path=/abd-vro/**
-    filters:
-    - RewritePath=/abd-vro/(?<path>.*), /$\{path}
-  - id: app-route
-    uri: http://${VRO_APP_HOSTNAME:localhost:8080}
-    predicates:
-    - Path=/abd-vro-app/**
-    filters:
-    - RewritePath=/abd-vro-app/(?<path>.*), /$\{path}
-  - id: contention-classification-route
-    # TODO: add Swagger servers such that /contention-classification is used as the prefix for requests
-    uri: http://${VRO_CC_HOSTNAME:localhost:18000}
-    predicates:
-    - Path=/abd-vro-contention-classification/**
-    filters:
-    - RewritePath=/abd-vro-contention-classification/(?<path>.*), /$\{path}
 
 #logging:
 #  level:

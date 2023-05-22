@@ -26,3 +26,6 @@ spec:
       response:
           remove:
           - Server
+      request:
+          set:
+            X-Forwarded-Prefix: /{{ .Values.global.serviceUriPrefix }}-app
