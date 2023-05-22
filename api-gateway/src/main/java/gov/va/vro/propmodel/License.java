@@ -1,4 +1,4 @@
-package gov.va.vro.config.propmodel;
+package gov.va.vro.propmodel;
 
 import lombok.Getter;
 import lombok.Setter;

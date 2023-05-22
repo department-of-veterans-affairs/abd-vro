@@ -1,4 +1,4 @@
-package gov.va.vro.config.propmodel;
+package gov.va.vro.propmodel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Info {
-  private String title = "VRO API";
-  private String description = "VRO Description";
-  private String version = "v1.0.25";
+  private String title = "API";
+  private String description = "Description";
+  private String version = "v0.0.0";
 
   private final Contact contact = new Contact();
 

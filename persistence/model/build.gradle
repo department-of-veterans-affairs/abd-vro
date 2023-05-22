@@ -8,9 +8,8 @@ ext {
 }
 
 dependencies {
-  // Needed?
-  // implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-  // implementation 'gov.va.starter:test-data'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
   // include jdbc tracing here since we are assuming for this version we are using JDBC SQL
   // implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"

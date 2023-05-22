@@ -19,12 +19,9 @@ dependencies {
   implementation project(':svc-bip-api')
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
-  implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation 'org.springframework.boot:spring-boot-starter-amqp'
-  implementation "com.vladmihalcea:hibernate-types-55:${hibernate_types_version}"
   implementation "org.springframework.security:spring-security-core:${spring_security_version}"
   implementation "org.springframework.security:spring-security-config:${spring_security_version}"
   implementation "org.springframework.security:spring-security-web:${spring_security_version}"
@@ -39,14 +36,7 @@ dependencies {
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
   implementation 'io.jsonwebtoken:jjwt:0.2'
 
-  // Needed?
-  // implementation "org.postgresql:postgresql:${postgresql_version}"
-  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
-
   testRuntimeOnly "com.h2database:h2:${h2_version}"
-
-  testImplementation "org.apache.camel:camel-test-spring-junit5:${camel_version}"
-  testImplementation "io.jsonwebtoken:jjwt:0.2"
 }
 
 openApi {

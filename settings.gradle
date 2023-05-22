@@ -33,6 +33,7 @@ dependencyResolutionManagement {
 
 
 rootProject.name = 'abd_vro'
+include ':api-gateway'
 include ':app'
 include ':console'
 include ':docs'
