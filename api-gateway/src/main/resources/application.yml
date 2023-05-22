@@ -55,6 +55,20 @@ spring:
   profiles:
     # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
     active: ${ENV:default}
+    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
+    group:
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
+      local: nonprod
+      # Remaining profiles are for deployment to LHDI's EKS environments
+      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
+      # along with application-$ENV.yml
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      # For prod, only load application-prod.yml and application-k8s.yml
+      prod: k8s
+      # For prod-test, only load application-prod-test.yml and application-k8s.yml
+      prod-test: k8s
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -83,19 +97,17 @@ springdoc:
     # Redirects http.../swaggerui to http.../webjars/swagger-ui/index.html
     path: swaggerui
     disable-swagger-default-url: true
-    configUrl: /abd-vro/v3/api-docs/swagger-config
     # Populate API dropdown on the upper-right of Swagger UI
     urls:
       - name: 0. Gateway API
         # API defined for this API Gateway
-        # TODO: convert /abd-vro into a serviceUriPrefix variable
         url: /abd-vro/v3/api-docs
       - name: App API
         # API defined for the VRO Java-base App
-        url: /abd-vro-app/v3/api-docs
+        url: /vro-app/v3/api-docs
       - name: Contention Classification API
         # Use the route defined under spring.cloud.gateway below
-        url: /abd-vro-contention-classification/openapi.json
+        url: /contention-classification/openapi.json
 
 
 #logging:
@@ -118,6 +130,4 @@ vro:
         name: CCO 1.0
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
-      -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
+      - url: ${STARTER_OPENAPI_SERVERURL:/}

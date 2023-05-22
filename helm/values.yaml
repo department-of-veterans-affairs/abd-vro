@@ -28,9 +28,6 @@ redis-chart:
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
 
-  serviceUriPrefix: abd-vro
-
-
   hostnamePrefix: vro
 
   images:

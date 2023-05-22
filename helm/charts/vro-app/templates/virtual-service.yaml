@@ -10,9 +10,9 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /{{ .Values.global.serviceUriPrefix }}-app/
+        prefix: /{{ .Values.serviceUriPrefix }}/
     - uri:
-        exact: /{{ .Values.global.serviceUriPrefix }}-app
+        exact: /{{ .Values.serviceUriPrefix }}
     rewrite:
       # https://github.com/istio/istio/issues/8076#issuecomment-515278023
       uri: /
@@ -28,4 +28,4 @@ spec:
           - Server
       request:
           set:
-            X-Forwarded-Prefix: /{{ .Values.global.serviceUriPrefix }}-app
+            X-Forwarded-Prefix: /{{ .Values.serviceUriPrefix }}

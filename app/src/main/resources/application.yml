@@ -177,8 +177,8 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
-    configUrl: /v3/api-docs/swagger-config
     disable-swagger-default-url: true
+    configUrl: /v3/api-docs/swagger-config
     url: /v3/api-docs
 
 vro:
@@ -192,12 +192,7 @@ vro:
 
   openapi:
     servers:
-      -
-        description: "via API Gateway"
-        url: ${STARTER_OPENAPI_SERVERURL:/abd-vro-app}
-      -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
+      - url: ${STARTER_OPENAPI_SERVERURL:/}
 
 spring.redis:
   # database index used by the connection factory

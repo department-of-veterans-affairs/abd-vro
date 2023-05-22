@@ -75,10 +75,8 @@ spec:
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
               value: {{ .Values.global.tracking.mountPath }}
-#            - name: SERVER_SERVLET_CONTEXTPATH
-#              value: /app-{{ .Values.global.serviceUriPrefix }}
-#            - name: STARTER_OPENAPI_SERVERURL
-#              value: /app-{{ .Values.global.serviceUriPrefix }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: {{ .Values.serviceUriPrefix }}
 
             - name: VRO_SECRETS_API
               valueFrom:

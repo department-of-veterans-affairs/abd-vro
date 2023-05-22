@@ -7,6 +7,8 @@ labels:
 
 replicaCount: 1
 
+serviceUriPrefix: abd-vro
+
 ports:
   - name: liveness
     containerPort: 8061

@@ -1,6 +1,10 @@
 # This file is used when ENV=local -- see app/src/docker/docker-compose.yml
+# Contrast this file against application-k8s.yml
+#
+# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 
 # In LHDI, Istio's VirtualService is used to redirect and rewrite the request URL
+# For ENV=local, Spring Cloud Gateway does this redirection
 spring.cloud.gateway:
   actuator.verbose.enabled: true
   discovery:
@@ -8,32 +12,25 @@ spring.cloud.gateway:
       enabled: false
   # In LHDI, causes exception: "Invalid contextPath '/abd-vro': must match the start of requestPath"
   routes:
+  - id: gateway-route
+    uri: http://${VRO_APP_HOSTNAME:localhost:8060}
+    predicates:
+    - Path=/abd-vro/**
+    filters:
+#    - RewritePath=/abd-vro/(?<path>.*), /$\{path}
+    - StripPrefix=1
   # Each domain API should have one entry with a URI prefix
   # Be aware: https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
   # because SPRING_WEBFLUX_BASEPATH is set in Helm configuration
-  - id: vro-configurable
-    uri: ${VRO_GW_ROUTE_URI}
-    predicates:
-    - Path=${VRO_GW_ROUTE_PREDICATE}
-    filters:
-    - RewritePath=${VRO_GW_ROUTE_REWRITE}/(?<path>.*), /$\{path}
-#  - id: gateway-route
-#    uri: http://${VRO_APP_HOSTNAME:localhost:8060}
-#    predicates:
-#    - Path=/abd-vro/**
-#    filters:
-#    - RewritePath=/abd-vro/(?<path>.*), /$\{path}
   - id: app-route
     uri: http://${VRO_APP_HOSTNAME:localhost:8080}
     predicates:
-    - Path=/abd-vro/abd-vro-app/**
+    - Path=/vro-app/**
     filters:
-    #- RewritePath=/abd-vro/abd-vro-app/(?<path>.*), /$\{path}
-    - StripPrefix=2
+    - StripPrefix=1
   - id: contention-classification-route
-    # TODO: add Swagger servers such that /contention-classification is used as the prefix for requests
     uri: http://${VRO_CC_HOSTNAME:localhost:18000}
     predicates:
-    - Path=/abd-vro/abd-vro-contention-classification/**
+    - Path=/contention-classification/**
     filters:
-    - RewritePath=/abd-vro/abd-vro-contention-classification/(?<path>.*), /$\{path}
+    - StripPrefix=1
