@@ -251,7 +251,8 @@ jobs:
             --set vro-app.enabled=${{ inputs.vro-app }} \
             --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
             --set postgres.enabled=${{ inputs.postgres }} \
-            --set console.enabled=${{ inputs.console }}
+            --set console.enabled=${{ inputs.console }} \
+            --atomic
           echo "::endgroup::"
 
           echo "==================================="
