@@ -3,6 +3,14 @@
 #
 # File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
 
+vro:
+  openapi:
+    servers:
+      - url: ${STARTER_OPENAPI_SERVERURL:/}
+      # In case this API is being accessed via the API Gateway:
+      - description: "via API Gateway"
+        url: /vro-app
+
 logging:
   level:
     org.springframework.jdbc.core: INFO

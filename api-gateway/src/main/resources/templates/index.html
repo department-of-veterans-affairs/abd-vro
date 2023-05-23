@@ -6,7 +6,10 @@ Automated Benefits Delivery - Virtual Regional Office (ABD-VRO)
 </p>
 
 <h3>Swagger UI</h3>
-APIs for each VRO tenant is available via VRO's <a href="webjars/swagger-ui/index.html">Swagger UI</a>.
+<!-- For links, use th:href so that X-Forwarded-Prefix headers are used to prepend the URI prefix.
+  See https://www.thymeleaf.org/doc/articles/standardurlsyntax.html
+-->
+APIs for each VRO tenant is available via VRO's <a th:href="@{/webjars/swagger-ui/index.html}">Swagger UI</a>.
 <ul>
     <li>Select the tenant from the "Select a definition" dropdown on the upper-right of the UI.</li>
     <li>Each tenant page has a link to the API spec.</li>

@@ -38,7 +38,7 @@ public class OpenApiConfiguration {
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
             .collect(Collectors.toList());
 
-    // Adding to this list will have it appear under `tags` at http://localhost:8080/v3/api-docs
+    // Adding to this list will have it appear under `tags` at /v3/api-docs
     // Not sure why this list isn't automatically populated when @Tag is used.
     final List<Tag> tags = Arrays.asList(new Tag().name("Xample Domain"));
 

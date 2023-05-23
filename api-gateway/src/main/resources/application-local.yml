@@ -1,0 +1,35 @@
+# This file is used when ENV=local -- see app/src/docker/docker-compose.yml
+# Contrast this file against application-k8s.yml
+#
+# File application-nonprod.yml will also be loaded due to the spring.profiles.group configuration in application.yml
+
+# In LHDI, Istio's VirtualService is used to redirect and rewrite the request URL
+# For ENV=local, Spring Cloud Gateway does this redirection
+spring.cloud.gateway:
+  actuator.verbose.enabled: true
+  discovery:
+    locator:
+      enabled: false
+  routes:
+  - id: gateway-route
+    uri: http://localhost:8060
+    predicates:
+    - Path=/abd-vro/**
+    filters:
+#    - RewritePath=/abd-vro/(?<path>.*), /$\{path}
+    - StripPrefix=1
+  # Each domain API should have one entry with a URI prefix
+  # Be aware: https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
+  # because SPRING_WEBFLUX_BASEPATH is set in Helm configuration
+  - id: app-route
+    uri: http://${VRO_APP_HOSTNAME:localhost}:8110
+    predicates:
+    - Path=/vro-app/**
+    filters:
+    - StripPrefix=1
+  - id: contention-classification-route
+    uri: http://${VRO_CC_HOSTNAME:localhost}:8120
+    predicates:
+    - Path=/contention-classification/**
+    filters:
+    - StripPrefix=1

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Also used as the pod's prefix
+  name: vro-api-gateway
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+  annotations:
+    app.kubernetes.io/owner: {{ .Values.owner }}
+    app.kubernetes.io/name: {{ .Values.name }}
+    app.kubernetes.io/version: {{ .Values.global.version | quote }}
+    app.kubernetes.io/env: {{ .Values.global.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+        {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
+        app.kubernetes.io/podowner: {{ .Values.owner }}
+        app.kubernetes.io/podname: {{ .Values.name }}
+        app.kubernetes.io/podversion: {{ .Values.global.version | quote }}
+        app.kubernetes.io/podenv: {{ .Values.global.environment }}
+    spec:
+      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: api-gateway{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-api-gateway:{{ include "vro.imageTag" . }}
+          ports: {{- toYaml .Values.ports | nindent 12 }}
+            - containerPort: {{ .Values.global.service.apiGateway.sourcePort }}
+              protocol: TCP
+              name: http
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
+          env:
+            {{- include "vro.commonEnvVars" . | nindent 12 }}
+            - name: STARTER_OPENAPI_SERVERURL
+              value: /{{ .Values.serviceUriPrefix }}
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

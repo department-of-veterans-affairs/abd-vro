@@ -12,7 +12,7 @@ RABBIT_MQ_CONFIG = {  # define this as a custom type
     "retry_limit": 3,
     "timeout": 60 * 2,  # rename this to "timeout_seconds"
 }
-FAST_API_HOST = "http://localhost:18000"  # Note this will probably need to be pulled from an environment variable
+FAST_API_HOST = "http://localhost:8120"  # Note this will probably need to be pulled from an environment variable
 http_client = httpx.Client()
 
 

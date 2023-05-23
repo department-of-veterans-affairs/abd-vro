@@ -4,25 +4,18 @@ metadata:
   # Also used as the pod's prefix
   name: vro-app
   labels: {{- toYaml .Values.labels | nindent 4 }}
-  annotations:
-    app.kubernetes.io/owner: {{ .Values.owner }}
-    app.kubernetes.io/name: {{ .Values.name }}
-    app.kubernetes.io/version: {{ .Values.global.version | quote }}
-    app.kubernetes.io/env: {{ .Values.global.environment }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels: {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
-      labels: {{- toYaml .Values.labels | nindent 8 }}
+      labels:
+        sidecar.istio.io/inject: "false"
+        {{- toYaml .Values.labels | nindent 8 }}
       annotations:
         {{- include "vro.annotations.pod" . | nindent 8 }}
         {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
-        app.kubernetes.io/podowner: {{ .Values.owner }}
-        app.kubernetes.io/podname: {{ .Values.name }}
-        app.kubernetes.io/podversion: {{ .Values.global.version | quote }}
-        app.kubernetes.io/podenv: {{ .Values.global.environment }}
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -82,10 +75,8 @@ spec:
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
               value: {{ .Values.global.tracking.mountPath }}
-            - name: SERVER_SERVLET_CONTEXTPATH
-              value: /{{ .Values.global.serviceUriPrefix }}
             - name: STARTER_OPENAPI_SERVERURL
-              value: /{{ .Values.global.serviceUriPrefix }}
+              value: {{ .Values.serviceUriPrefix }}
 
             - name: VRO_SECRETS_API
               valueFrom:
