@@ -21,9 +21,9 @@ shellcheck {
 
 tasks.named('shellcheck').configure {
     reports {
-        xml.enabled = false
-        txt.enabled = false
-        html.enabled = true
+        xml.required = false
+        txt.required = false
+        html.required = true
     }
 }
 
