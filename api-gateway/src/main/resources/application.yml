@@ -109,11 +109,6 @@ springdoc:
         # Use the route defined under spring.cloud.gateway below
         url: /contention-classification/openapi.json
 
-
-#logging:
-#  level:
-#    org.springframework.cloud.gateway: DEBUG
-
 log4j2:
   formatMsgNoLookups: true
 

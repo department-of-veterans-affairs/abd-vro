@@ -9,12 +9,12 @@ spec:
   gateways: [istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway]
   http:
   - match:
+    # Using solution at https://github.com/istio/istio/issues/8076#issuecomment-515278023
     - uri:
         prefix: /{{ .Values.serviceUriPrefix }}/
     - uri:
         exact: /{{ .Values.serviceUriPrefix }}
     rewrite:
-      # https://github.com/istio/istio/issues/8076#issuecomment-515278023
       uri: /
     route:
     - destination:

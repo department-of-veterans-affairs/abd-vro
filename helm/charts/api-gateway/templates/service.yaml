@@ -11,5 +11,5 @@ spec:
       targetPort: {{ .Values.global.service.apiGateway.targetPort }}
       protocol: TCP
       name: http
-  # Forward requests to the port to pods matching the selector labels
+  # Forward requests to pods matching the selector labels
   selector: {{- toYaml .Values.labels | nindent 4 }}
