@@ -8,7 +8,7 @@ ext {
 }
 
 dependencies {
-  implementation project(':persistence:model')
+  implementation project(':shared:persistence-model')
 
 
   implementation project(':domain-xample:xample-api-controller')
