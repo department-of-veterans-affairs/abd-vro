@@ -8,7 +8,6 @@ ext {
 }
 
 dependencies {
-  implementation project(":svc-bip-api")
   implementation project(':persistence:model')
   implementation project(':domain-xample:xample-api-controller')
   implementation project(':domain-cc:cc-api-controller')
