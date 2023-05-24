@@ -13,7 +13,7 @@ plugins {
 
 jacoco {
   toolVersion = jacoco_tool_version
-  reportsDir = file("$buildDir/jacoco")
+  reportsDirectory = file("$buildDir/jacoco")
 }
 
 test {
@@ -28,10 +28,10 @@ ext {
 
 jacocoTestReport {
   reports {
-    html.enabled true
+    html.required = true
     // Need xml output for task jacocoLogTestCoverage
-    xml.enabled true
-    csv.enabled false
+    xml.required = true
+    csv.required = false
   }
 
   // use afterEvaluate to allow subprojects to set different variable values
