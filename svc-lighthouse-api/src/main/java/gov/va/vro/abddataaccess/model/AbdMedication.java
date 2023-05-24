@@ -1,4 +1,4 @@
-package gov.va.vro.model;
+package gov.va.vro.abddataaccess.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,4 +1,4 @@
-package gov.va.vro.model;
+package gov.va.vro.abddataaccess.model;
 
 public enum HealthAssessmentSource {
   LIGHTHOUSE,
