@@ -25,7 +25,7 @@ which python3
 Install dependencies and run webserver
 ```
 pip3 install -r requirements.txt
-uvicorn api:app --port 18000 --reload
+uvicorn api:app --port 8120 --reload
 ```
 
 ## testing it all together

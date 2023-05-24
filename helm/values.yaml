@@ -7,6 +7,8 @@ postgres:
   enabled: true
 redis:
   enabled: true
+api-gateway:
+  enabled: true
 vro-app:
   enabled: true
 vro-svcs:
@@ -25,9 +27,6 @@ redis-chart:
 
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
-
-  serviceUriPrefix: abd-vro
-
 
   hostnamePrefix: vro
 
@@ -63,9 +62,12 @@ global:
   version: 0.2
 
   service:
+    apiGateway:
+      sourcePort: 8060
+      targetPort: 8060
     app:
-      sourcePort: 8080
-      targetPort: 8080
+      sourcePort: 8110
+      targetPort: 8110
     db:
       sourcePort: 5432
       targetPort: 5432

@@ -6,6 +6,11 @@
 # If environment variable doesn't exist and doesn't have default, it fails fast and an exception will be thrown.
 # This is beneficial to indicate that the environment variable wasn't configured.
 
+springdoc:
+  swagger-ui:
+    configUrl: /vro-app/v3/api-docs/swagger-config
+    url: /vro-app/v3/api-docs
+
 logging:
   level:
     org.springframework.jdbc.core: INFO
