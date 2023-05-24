@@ -19,6 +19,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class BipApplication {
   public static void main(String[] args) {
     new SpringApplication(BipApplication.class).run(args);
-    log.info("\n-------- VRO App Started ---------");
+    log.info("\n-------- BIP API microservice Started ---------");
   }
 }
