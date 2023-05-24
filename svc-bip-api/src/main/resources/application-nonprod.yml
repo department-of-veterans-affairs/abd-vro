@@ -1,4 +1,4 @@
-# Contains shared properties for non-prod environments (local, dev, qa, sandbox)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Contains shared properties for non-prod environments (local, dev, qa, sandbox)
 # Contrast this file against application-prod.yml
 #
 # This file is used when a Spring Group Profile is set up
