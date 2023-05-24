@@ -49,6 +49,11 @@ openApi {
   }
 }
 
+tasks.named('jacocoTestReport').configure {
+  dependsOn 'processResources'
+  dependsOn 'compileJava'
+}
+
 afterEvaluate {
   // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
   // Not particularly useful
