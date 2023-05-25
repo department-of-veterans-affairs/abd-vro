@@ -126,7 +126,7 @@ ext {
     ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j',
     ':domain-cc:cc-api-controller',
-    ':domain-cc:svc-cc-api'
+    ':domain-cc:svc-cc-app'
   ]
   // Modules that create Docker images
   dockerModules = [
@@ -141,7 +141,7 @@ ext {
     ':mocks:mock-slack',
     ':domain-xample:xample-workflows',
     ':domain-xample:svc-xample-j',
-    ':domain-cc:svc-cc-api'
+    ':domain-cc:svc-cc-app'
   ]
 }
 
