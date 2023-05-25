@@ -61,3 +61,9 @@ python util/pull_api_documentation.py
 cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config
 # somehow make the java code pull that json in
 ```
+
+## Docker Stuff
+### Build the image
+```
+./gradlew :domain-cc:svc-cc-app:docker
+```
