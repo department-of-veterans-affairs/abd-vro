@@ -4,7 +4,14 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic_models import ClaimForIncrease, PredictedClassification
 
-app = FastAPI()
+app = FastAPI(
+    servers=[
+        {
+            "url": "/contention-classification",
+            "description": "Contention Classification Default",
+        },
+    ]
+)
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)-8s %(message)s",
