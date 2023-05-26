@@ -2,8 +2,9 @@ from fastapi.testclient import TestClient
 
 RESPIRATORY_CLASSIFICATION = {
     "classification_code": 9012,
-    "classification_name": 'Respiratory',
+    "classification_name": "Respiratory",
 }
+
 
 def test_classification(client: TestClient):
     json_post_dict = {
@@ -14,8 +15,14 @@ def test_classification(client: TestClient):
 
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 201
-    assert response.json()["classification_code"] == RESPIRATORY_CLASSIFICATION["classification_code"]
-    assert response.json()["classification_name"] == RESPIRATORY_CLASSIFICATION["classification_name"]
+    assert (
+        response.json()["classification_code"]
+        == RESPIRATORY_CLASSIFICATION["classification_code"]
+    )
+    assert (
+        response.json()["classification_name"]
+        == RESPIRATORY_CLASSIFICATION["classification_name"]
+    )
 
 
 def test_missing_params(client: TestClient):
