@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 
-@app.post("/classifier", status_code=200)
+@app.post("/classifier", status_code=201)
 def get_classification(
     claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
