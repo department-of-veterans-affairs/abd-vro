@@ -2,8 +2,8 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI
-from pydantic_models import ClaimForIncrease, PredictedClassification
-from util.lookup_table import get_lookup_table, get_classification_name
+from .pydantic_models import ClaimForIncrease, PredictedClassification
+from .util.lookup_table import get_lookup_table, get_classification_name
 
 LOOKUP_TABLE = get_lookup_table()
 
@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 
-@app.post("/classifier")
+@app.post("/classifier", status_code=200)
 def get_classification(
     claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
