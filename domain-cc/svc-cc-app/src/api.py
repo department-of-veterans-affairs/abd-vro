@@ -23,10 +23,6 @@ logging.basicConfig(
 )
 
 
-def diagnostic_code_lookup(diagnostic_code) -> Optional[int]:
-    return LOOKUP_TABLE.get(diagnostic_code, None)
-
-
 @app.post("/classifier")
 def get_classification(
     claim_for_increase: ClaimForIncrease,

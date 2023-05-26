@@ -13,7 +13,6 @@ BRD_CLASSIFICATIONS_PATH = os.path.join(
 def get_classification_names_by_code():
     name_by_code = {}
     with open(BRD_CLASSIFICATIONS_PATH, "r") as fh:
-        print(f'BRD_CLASSIFICATIONS_PATH fh: {fh}')
         disability_items = json.load(fh)["items"]
         for item in disability_items:
             name_by_code[item["id"]] = item["name"]
@@ -24,12 +23,8 @@ CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
 
 
 def get_lookup_table():
-    print(f'LOOKUP_TABLE_PATH: {LOOKUP_TABLE_PATH}')
     with open(LOOKUP_TABLE_PATH, "r") as fh:
-        print(f'fh: {fh}')
-        print('idk')
         lookup_table = json.load(fh)
-        print(f'lookup_table: {lookup_table}')
         lookup_table = {
             int(diagnostic_code): classification_id
             for diagnostic_code, classification_id in lookup_table.items()
