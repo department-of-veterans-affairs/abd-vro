@@ -2,7 +2,9 @@ import json
 import os
 
 # lookup table generated from code in vagov-claim-classification-data/create_mdeo_dc_to_cc_mapping.py
-LOOKUP_TABLE_PATH = os.path.join(os.path.dirname(__file__), "data", "dc_lookup_table_mvp.json")
+LOOKUP_TABLE_PATH = os.path.join(
+    os.path.dirname(__file__), "data", "dc_lookup_table_mvp.json"
+)
 # sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
 # https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current
 BRD_CLASSIFICATIONS_PATH = os.path.join(
