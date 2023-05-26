@@ -2,8 +2,9 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI
+
 from .pydantic_models import ClaimForIncrease, PredictedClassification
-from .util.lookup_table import get_lookup_table, get_classification_name
+from .util.lookup_table import get_classification_name, get_lookup_table
 
 LOOKUP_TABLE = get_lookup_table()
 
