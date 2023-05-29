@@ -1,0 +1,21 @@
+# https://helm.sh/docs/topics/charts/
+
+apiVersion: v2
+type: application
+
+# numbers, lowercase, and dashes only
+# https://helm.sh/docs/chart_best_practices/conventions/#chart-names
+name: domain-cc-chart
+description: Workflows and microservices for the Contention Classification domain
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# TODO discuss: How can we enforce or automate incrementing this?
+version: 0.2.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+# This field is informational, and has no impact on chart version calculations.
+# TODO decide: This should probably match the service's Docker image version
+# Can we reference {{ .Values.images.mq.version }} in this file?
+appVersion: "1.0.25"
