@@ -1,4 +1,4 @@
-name: "1. (Internal) Update Deployment"
+name: "2. (Internal) Update CC Deployment"
 
 on:
   workflow_dispatch:
@@ -21,53 +21,15 @@ on:
         default: 'latest'
         type: string
 
-      vro-app:
-        description: 'Enable & update VRO Application API'
+      domain-cc:
+        description: 'Enable & update CC Application'
         required: true
         type: boolean
         default: true
-      vro-svcs:
-        description: 'Enable & update VRO domain-independent microservices'
-        required: true
-        type: boolean
-        default: true
-      postgres:
-        description: 'Enable DB'
-        required: true
-        type: boolean
-        default: true
-      rabbitmq:
-        description: 'RabbitMQ image tag'
-        required: true
-        default: 3
-        type: choice
-        options:
-        - latest
-        - 3
-        - (disable)
-      redis:
-        description: 'Redis image tag'
-        required: true
-        default: 7
-        type: choice
-        options:
-        - latest
-        - 7
-        - (disable)
-      console:
-        description: 'Enable VRO Console'
-        required: true
-        type: boolean
-        default: false
 
       # Other deployment options
       rollback:
         description: 'If deploy fails, rollback to previous? (Always true for prod)'
-        required: true
-        type: boolean
-        default: false
-      restart:
-        description: 'Shut down deployment completely, then redeploy (For emergency use)'
         required: true
         type: boolean
         default: false
@@ -82,36 +44,12 @@ on:
         required: true
         type: string
 
-      vro-app:
+      domain-cc:
         required: false
         type: boolean
         default: true
-      vro-svcs:
-        required: false
-        type: boolean
-        default: true
-      postgres:
-        required: false
-        type: boolean
-        default: true
-      rabbitmq:
-        required: false
-        type: string
-        default: "latest"
-      redis:
-        required: false
-        type: string
-        default: "latest"
-      console:
-        required: false
-        type: boolean
-        default: false
 
       rollback:
-        required: false
-        type: boolean
-        default: false
-      restart:
         required: false
         type: boolean
         default: false
@@ -122,7 +60,7 @@ env:
   RELEASE_NAME: vro
 
 jobs:
-  update-deployment:
+  update-cc-deployment:
     # Required secrets are set in the specific repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     runs-on: ubuntu-latest
@@ -135,7 +73,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
-            Updating deployment (#${{ github.run_number }})> \
+            Updating CC deployment (#${{ github.run_number }})> \
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
             (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
 
@@ -173,32 +111,6 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Slack thread: Post shutdown message"
-        if: inputs.restart
-        # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":broom: Shutting down current deployment"
-      - name: "Shutting down deployment in ${{ inputs.target_env }} env"
-        if: inputs.restart
-        run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
-
-      - name: "Workaround for postgres StatefulSet"
-        # If upgrading existing deployment and you want postgres and it's already enabled, then
-        # apply the workaround to delete StatefulSets without deleting pods (allow pods to be temporarily orphaned)
-        if: (!inputs.restart) && inputs.postgres && fromJSON(steps.kube-setup.outputs.helm_values).postgres.enabled
-        run: |
-          # This is a workaround for `helm upgrade` reporting error due to a StatefulSet:
-          #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
-          #     Forbidden: updates to statefulset spec for fields other than ...
-          # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
-
-          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} \
-            --cascade=orphan --wait --ignore-not-found=true
-
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
@@ -207,14 +119,8 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying:\n\
-            - vro-app: *${{ inputs.vro-app }}*\n\
-            - vro-svcs: *${{ inputs.vro-svcs }}*\n\
-            - rabbitmq: *${{ inputs.rabbitmq }}*\n\
-            - postgres: *${{ inputs.postgres }}*\n\
-            - redis: *${{ inputs.redis }}*\n\
-            - console: ${{ inputs.console }}\n\
-            Rollback if deployment fails: ${{ inputs.rollback }}\n\
-            Restart before deployment: ${{ inputs.restart }}"
+            - domain-cc: *${{ inputs.domain-cc }}*\n\
+            Rollback if deployment fails: ${{ inputs.rollback }}"
       - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           HELM_ARGS=""
@@ -228,29 +134,15 @@ jobs:
             HELM_ARGS="$HELM_ARGS --atomic"
           fi
 
-          helmArgsFor(){
-            if [ "$2" == "(disable)" ]; then
-              echo "--set $1.enabled=false"
-            else
-              echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
-            fi
-          }
-          HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "${{ inputs.rabbitmq }}")"
-          HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "${{ inputs.redis }}")"
-
           echo "HELM_ARGS: $HELM_ARGS"
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
           set -x
+          # Use arg --reuse-values to reuse settings for VRO's container
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
-            --install --reset-values --wait --timeout 10m \
+            --install --reuse-values --wait --timeout 10m \
             ${HELM_ARGS} \
-            --set-string global.environment=${{ inputs.target_env }} \
-            --set-string global.imageTag=${{ inputs.image_tag }} \
-            --set-string global.commitSha=${GITHUB_SHA} \
-            --set vro-app.enabled=${{ inputs.vro-app }} \
-            --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
-            --set postgres.enabled=${{ inputs.postgres }} \
-            --set console.enabled=${{ inputs.console }}
+            --set-string domain-cc-chart.imageTag=${{ inputs.image_tag }} \
+            --set domain-cc.enabled=${{ inputs.domain-cc }}
           echo "::endgroup::"
 
           echo "==================================="
@@ -277,7 +169,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_cry: Failed deployment to *${{ inputs.target_env }}*"
+          slack-text: ":panda_cry: Failed CC deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React failure on top-level Slack notification"
         if: failure()
         uses: archive/github-actions-slack@v2.6.0
@@ -294,7 +186,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_duck_yay: Completed deployment to ${{ inputs.target_env }}"
+          slack-text: ":panda_duck_yay: Completed CC deployment to ${{ inputs.target_env }}"
       - name: "Slack emoji: React success on top-level Slack notification"
         uses: archive/github-actions-slack@v2.6.0
         with:
