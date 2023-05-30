@@ -1,0 +1,21 @@
+name: "7. Fast-forward merge the develop branch"
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain_branch:
+        description: 'Target domain branch'
+        required: true
+        type: choice
+        options:
+        - domain-cc
+
+jobs:
+  create-gh-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: GitHub Tag info
+        run: git merge --ff-only ${{ inputs.domain_branch }}
