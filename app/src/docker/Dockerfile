@@ -1,7 +1,7 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat curl && rm -rf /var/cache/apk/*
+RUN apk update && apk --no-cache add curl && rm -rf /var/cache/apk/*
 
 RUN adduser --no-create-home --disabled-password tron
 
