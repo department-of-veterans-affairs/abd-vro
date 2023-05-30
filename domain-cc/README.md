@@ -43,6 +43,20 @@ python3 rabbitmq_client.py
 
 Now you should be able to make a post request to the java code prefixed w/ "domain-cc" and the response from FastAPI will get sent back up
 
+## Unit tests
+Make sure you're in your virtualenv
+```
+source ~/.virtualenvs/domain-cc/bin/activate
+```
+Navigate to svc-cc-app/
+```
+cd domain-cc/svc-cc-app
+```
+Run the tests
+```
+pytest
+```
+
 
 ## Contributing
 ### Install dev dependencies
