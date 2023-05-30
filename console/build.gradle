@@ -10,7 +10,7 @@ ext {
 
 dependencies {
   // Needed to access DB Entity records
-  implementation project(':persistence:model')
+  implementation project(':shared:persistence-model')
 
   // To connect to Camel
   implementation project(':shared:lib-camel-connector')

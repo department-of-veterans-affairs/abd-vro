@@ -112,7 +112,7 @@ ext {
   // Modules that use Java code
   codeModules = [
     ':app',
-    ':persistence:model',
+    ':shared:persistence-model',
     ':shared:lib-camel-connector',
     ':svc-lighthouse-api',
     ':console',

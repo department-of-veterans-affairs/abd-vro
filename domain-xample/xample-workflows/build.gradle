@@ -11,7 +11,7 @@ ext {
 dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
-  implementation project(':persistence:model')
+  implementation project(':shared:persistence-model')
 
   // Needed for *Repository classes to save to DB
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
