@@ -82,7 +82,7 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
       - name: "Add JaCoCo Coverage Report as PR comment"
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
         uses: madrapps/jacoco-report@v1.3
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/jacocoAggregatedReport/jacocoAggregatedReport.xml
