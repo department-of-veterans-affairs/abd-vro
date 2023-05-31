@@ -117,7 +117,8 @@ class QueueConsumer:
             return self._error_response(e, "Request deserialization error", code=400)
         try:
             response = self.callback(message, method.routing_key)
-            status = 200
+            # we want to default to 200 for GET, 201 for POST
+            status = 201
             if (
                 isinstance(response, tuple)
                 and len(response) == 2

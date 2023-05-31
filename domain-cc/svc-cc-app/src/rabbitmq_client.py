@@ -1,5 +1,6 @@
 import httpx
-from util.hoppy import Service as HoppyService
+
+from .util.hoppy import Service as HoppyService
 
 RABBIT_MQ_CONFIG = {  # define this as a custom type
     "host": "localhost",

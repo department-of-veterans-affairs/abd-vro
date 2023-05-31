@@ -11,41 +11,41 @@ updates:
     # Raise pull requests for updates against this branch
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "gradle"
     directory: "/"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pip"
     directory: "/"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   # For Docker ecosystem, we must specify each file because Dependabot doesn't recursive search
   - package-ecosystem: "docker"
     directory: "/app/src/docker"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "docker"
     directory: "/postgres/src/docker"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "docker"
     directory: "/db-init/src/docker"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "docker"
     directory: "/buildSrc/docker"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "daily"
