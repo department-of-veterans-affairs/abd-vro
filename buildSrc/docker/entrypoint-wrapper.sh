@@ -12,7 +12,7 @@ if [ -e /app/entrypoint.sh ]; then
   exec /app/entrypoint.sh "$@"
 elif [ -e "fat.jar" ]; then
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}"
-  exec java -jar fat.jar "$@"
+  eval exec java -jar $JAVA_OPTS fat.jar "$@"
 elif [ -e "main_consumer.py" ]; then
   echo "Running: python -u main_consumer.py $@"
   exec python -u main_consumer.py "$@"

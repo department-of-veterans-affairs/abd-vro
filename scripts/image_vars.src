@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( app postgres db-init console svc-bgs-api svc-lighthouse-api )
+VRO_IMAGES_ARR=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="app postgres db-init console svc-bgs-api svc-lighthouse-api"
+export VRO_IMAGES="api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( app postgres dbinit console svcbgsapi svclighthouseapi )
-export VAR_PREFIXES="app postgres dbinit console svcbgsapi svclighthouseapi"
+VAR_PREFIXES_ARR=( apigateway app postgres dbinit console svcbgsapi svclighthouseapi )
+export VAR_PREFIXES="apigateway app postgres dbinit console svcbgsapi svclighthouseapi"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -32,6 +32,10 @@ getVarValue(){
 # done
 
 
+
+# --- api-gateway in folder ./api-gateway
+export apigateway_GRADLE_IMG="va/abd_vro-api-gateway"
+export apigateway_IMG="vro-api-gateway"
 
 # --- app in folder ./app
 export app_GRADLE_IMG="va/abd_vro-app"

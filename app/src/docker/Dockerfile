@@ -1,11 +1,11 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 curl && rm -rf /var/cache/apk/*
+RUN apk update && apk --no-cache add curl && rm -rf /var/cache/apk/*
 
 RUN adduser --no-create-home --disabled-password tron
 
-HEALTHCHECK CMD curl --fail http://localhost:8081/actuator/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8111/actuator/health || exit 1
 
 WORKDIR /app
 ARG ENTRYPOINT_FILE=entrypoint.sh

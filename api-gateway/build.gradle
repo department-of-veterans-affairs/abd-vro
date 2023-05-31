@@ -21,4 +21,9 @@ dependencies {
 
   // Swagger UI for WebFlux
   implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
+
+  constraints {
+    // To address Snyk alert on DoS vulnerability
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.0.7'
+  }
 }

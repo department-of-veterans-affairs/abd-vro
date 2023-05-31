@@ -46,7 +46,7 @@ management:
       ns: "${NAMESPACE:example}"
       pod: "${POD_ID:docker}"
     web.server.request.autotime.enabled: true
-  server.port: 8081
+  server.port: 8111
 
 # Setting up K8 health probes - with health probes set to true you can use
 # the paths in your config like the snippet below
@@ -54,14 +54,14 @@ management:
 #livenessProbe:
 #  httpGet:
 #    path: /actuator/health/liveness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #  periodSeconds: ...
 #
 #readinessProbe:
 #  httpGet:
 #    path: /actuator/health/readiness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #
 
@@ -74,7 +74,7 @@ server:
     maxSwallowSize: 26214400
   ssl:
     enabled: false
-  port: 8080
+  port: 8110
   maxHttpHeaderSize: 48000
   session:
     timeout: 60
@@ -83,6 +83,9 @@ server:
   servlet:
     session:
       timeout: 120000
+  # https://springdoc.org/index.html#how-can-i-deploy-springdoc-openapi-ui-behind-a-reverse-proxy
+  use-forward-headers: true
+  forward-headers-strategy: framework
 
 log4j2:
   formatMsgNoLookups: true
@@ -174,6 +177,9 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
+    disable-swagger-default-url: true
+    configUrl: /v3/api-docs/swagger-config
+    url: /v3/api-docs
 
 vro:
   # Deployment environment
@@ -186,12 +192,7 @@ vro:
 
   openapi:
     servers:
-      -
-        description: "via API Gateway"
-        url: ${STARTER_OPENAPI_SERVERURL:/app}
-      -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
+      - url: ${STARTER_OPENAPI_SERVERURL:/}
 
 spring.redis:
   # database index used by the connection factory

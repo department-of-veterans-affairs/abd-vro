@@ -8,7 +8,7 @@ ext {
 }
 
 dependencies {
-  implementation project(':persistence:model')
+  implementation project(':shared:persistence-model')
 
 
   implementation project(':domain-xample:xample-api-controller')
@@ -31,7 +31,7 @@ dependencies {
   // https://mvnrepository.com/artifact/com.auth0/jwks-rsa
   implementation "com.auth0:jwks-rsa:0.21.2"
   // https://mvnrepository.com/artifact/com.google.code.gson/gson
-  implementation "com.google.code.gson:gson:2.10"
+  implementation "com.google.code.gson:gson:2.10.1"
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
   implementation 'io.jsonwebtoken:jjwt:0.2'
@@ -47,6 +47,11 @@ openApi {
       "--spring.profiles.active=test"
     ]
   }
+}
+
+tasks.named('jacocoTestReport').configure {
+  dependsOn 'processResources'
+  dependsOn 'compileJava'
 }
 
 afterEvaluate {

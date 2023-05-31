@@ -12,8 +12,8 @@ configurations {
 }
 
 dependencies {
-    checkstyleRules platform('gov.va.starter:checkstyle-bom')
-    checkstyleRules 'gov.va.starter:checkstyle'
+//    checkstyleRules platform('gov.va.starter:checkstyle-bom')
+//    checkstyleRules 'gov.va.starter:checkstyle'
 }
 
 // Also refer to https://github.com/moznion/gradle-multi-project-checkstyle/blob/master/build.gradle

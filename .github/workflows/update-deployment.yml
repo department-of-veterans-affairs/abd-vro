@@ -21,7 +21,6 @@ on:
         default: 'latest'
         type: string
 
-      # The following input names must match helm chart names (without the `-chart` suffix) and helm chart folder names
       vro-app:
         description: 'Enable & update VRO Application API'
         required: true

@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.global.hostnamePrefix }}-api-gateway-virtservice
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
+  hosts: [{{ .Values.global.endpoint }}]
+  gateways: [istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway]
+  http:
+  - match:
+    # Using solution at https://github.com/istio/istio/issues/8076#issuecomment-515278023
+    - uri:
+        prefix: /{{ .Values.serviceUriPrefix }}/
+    - uri:
+        exact: /{{ .Values.serviceUriPrefix }}
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        # Should match metadata.name in helm/charts/api-gateway/templates/service.yaml
+        host: {{ .Values.global.hostnamePrefix }}-api-gateway
+        port:
+          number: 8060
+    headers:
+      response:
+          remove:
+          - Server
+      request:
+          set:
+            X-Forwarded-Prefix: /{{ .Values.serviceUriPrefix }}

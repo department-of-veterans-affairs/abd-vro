@@ -34,9 +34,13 @@ dependencies:
     condition: postgres.enabled
   - name: redis-chart
     condition: redis.enabled
+  - name: api-gateway-chart
+    condition: api-gateway.enabled
   - name: vro-app-chart
     condition: vro-app.enabled
   - name: vro-svcs-chart
     condition: vro-svcs.enabled
+  - name: domain-cc-chart
+    condition: domain-cc.enabled
   - name: domain-rrd-chart
     condition: domain-rrd.enabled

@@ -41,10 +41,34 @@ server:
   servlet:
     session:
       timeout: 120000
+  # Needed to handle Swagger error: https://stackoverflow.com/questions/70906081/springboot-swagger3-failed-to-load-remote-configuration
+  # Explanation: https://codetinkering.com/spring-forwarded-headers-example/
+  # and https://tomgregory.com/spring-boot-behind-load-balancer-using-x-forwarded-headers/
+  # https://stackoverflow.com/questions/68318269/spring-server-forward-headers-strategy-native-vs-framework
+  # https://springdoc.org/faq.html#_how_can_i_deploy_springdoc_openapi_ui_behind_a_reverse_proxy
+  use-forward-headers: true
+  forward-headers-strategy: framework
 
 spring:
   application:
     name: "vro-api"
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
+    # Define Sprint Profile Groups with group names corresponding to the value of $ENV
+    group:
+      # Configure profile group so that application-nonprod.yml is loaded, along with application-$ENV.yml
+      local: nonprod
+      # Remaining profiles are for deployment to LHDI's EKS environments
+      # Configure profile group so that application-nonprod.yml and application-k8s.yml is loaded,
+      # along with application-$ENV.yml
+      dev: nonprod,k8s
+      qa: nonprod,k8s
+      sandbox: nonprod,k8s
+      # For prod, only load application-prod.yml and application-k8s.yml
+      prod: k8s
+      # For prod-test, only load application-prod-test.yml and application-k8s.yml
+      prod-test: k8s
   servlet:
     multipart:
       maxFileSize: 25MB
@@ -58,47 +82,32 @@ spring:
     encoding:
       force: true
 
+# Set the context-path. WebFlux calls it base-path
+# https://stackoverflow.com/questions/49196368/context-path-with-webflux
+# Kubernetes rewrites the url to use `/`
+spring.webflux.base-path: /
+
 springdoc:
   writer-with-default-pretty-printer: true
   show-actuator: true
+  # Useful diagnostics: https://docs.bmc.com/docs/ars2002/troubleshooting-issues-when-using-swagger-as-a-remedy-rest-api-client-941865631.html
   swagger-ui:
-    # http://localhost:8078/swaggerui will be forwarded to http://localhost:8078/webjars/swagger-ui/index.html
-    path: /swaggerui
     operations-sorter: method
     tagsSorter: alpha
+    # Redirects http.../swaggerui to http.../webjars/swagger-ui/index.html
+    path: swaggerui
+    disable-swagger-default-url: true
     # Populate API dropdown on the upper-right of Swagger UI
     urls:
       - name: 0. Gateway API
         # API defined for this API Gateway
-        url: /v3/api-docs
+        url: /abd-vro/v3/api-docs
       - name: App API
         # API defined for the VRO Java-base App
-        url: /app/v3/api-docs
+        url: /vro-app/v3/api-docs
       - name: Contention Classification API
         # Use the route defined under spring.cloud.gateway below
         url: /contention-classification/openapi.json
-
-# TODO: Add Spring Cloud CircuitBreaker: https://spring.io/guides/gs/gateway/
-spring.cloud.gateway:
-  actuator.verbose.enabled: true
-  discovery:
-    locator:
-      enabled: false
-  routes:
-  # Each domain API should have one entry with a URI prefix
-  - id: vro-app
-    uri: http://localhost:8080
-    predicates:
-    - Path=/app/**
-    filters:
-    - RewritePath=/app/(?<path>.*), /$\{path}
-  - id: contention-classification-tenant
-    # TODO: add Swagger servers such that /contention-classification is used as the prefix for requests
-    uri: http://localhost:18000
-    predicates:
-    - Path=/contention-classification/**
-    filters:
-    - RewritePath=/contention-classification/(?<path>.*), /$\{path}
 
 log4j2:
   formatMsgNoLookups: true
@@ -116,6 +125,4 @@ vro:
         name: CCO 1.0
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
-      -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
+      - url: ${STARTER_OPENAPI_SERVERURL:/}
