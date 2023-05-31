@@ -14,27 +14,40 @@ jobs:
   fast-forward-develop:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           # Checkout using a PAT so that we can do `git push` later
           token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
-      - name: Fast-forward merge ${{ inputs.domain_branch }}
+      - name: "Checkout branch ${{ inputs.domain_branch }}"
         run: |
           git fetch origin ${{ inputs.domain_branch }}
           git checkout --track origin/${{ inputs.domain_branch }}
+
+      - name: "Before merge: Git log graph ${{ inputs.domain_branch }}"
+        run: |
+          echo "## Before merge: Git log graph of ${{ inputs.domain_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          git log --graph --decorate --date=relative --since="2 months ago" \
+            --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
+            origin/develop..origin/${{ inputs.domain_branch }} >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: "Fast-forward merge ${{ inputs.domain_branch }}"
+        run: |
           git checkout develop
           git merge --ff-only ${{ inputs.domain_branch }}
           git push origin
 
-      - name: Git log graph ${{ inputs.domain_branch }}
-        if: always()
+      - name: "After merge: Git log graph ${{ inputs.domain_branch }}"
         run: |
-          echo '## Git log graph' >> $GITHUB_STEP_SUMMARY
+          echo '## After merge: Git log graph' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          git log --graph --decorate --date=relative \
+          git log --graph --decorate --date=relative --since="2 months ago" \
             --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
-            origin/develop origin/${{ inputs.domain_branch }} >> $GITHUB_STEP_SUMMARY
+            origin/develop origin/${{ inputs.domain_branch }} > git-graph.log
+          cat git-graph.log
+          cat git-graph.log >> $GITHUB_STEP_SUMMARY
           echo '' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
