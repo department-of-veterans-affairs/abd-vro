@@ -27,3 +27,14 @@ jobs:
           git checkout develop
           git merge --ff-only ${{ inputs.domain_branch }}
           git push origin
+
+      - name: Git log graph ${{ inputs.domain_branch }}
+        if: always()
+        run: |
+          echo '## Git log graph' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          git log --graph --decorate --date=relative \
+            --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
+            origin/develop origin/${{ inputs.domain_branch }} >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
