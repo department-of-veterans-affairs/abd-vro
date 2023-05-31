@@ -19,7 +19,6 @@ gradle_image_name() {
 }
 
 # Bash variables can't have dashes, so strip them out of the directory names
-# also strip out subdirectory slashes
 bash_var_prefix() {
   echo "${1//-/}"
 }
@@ -29,7 +28,8 @@ prod_image_name() {
   echo "vro-$1"
 }
 
-# These names should match directory names
+# These names should match directory names, if the docker image is built in a
+# subdirectory, be sure to add the sub directory to the gradle_folder function above
 IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api svc-cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
