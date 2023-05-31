@@ -13,13 +13,13 @@ buildscript {
 
 plugins {
   // Set versions for these plugins (but don't apply) so we don't have to specify the version later
-  id 'org.ajoberstar.grgit' version '4.1.0' apply false
+  id 'org.ajoberstar.grgit' version '5.2.0' apply false
   id 'io.freefair.lombok' version '8.0.1' apply false
   id 'org.springframework.boot' version "${spring_boot_version}" apply false
   id 'io.swagger.swaggerhub' version '1.0.1' apply false
   id 'com.diffplug.spotless' version '5.14.1' apply false
-  id 'com.palantir.docker' version '0.27.0' apply false
-  id 'com.palantir.docker-run' version '0.27.0' apply false
+  id 'com.palantir.docker' version '0.35.0' apply false
+  id 'com.palantir.docker-run' version '0.35.0' apply false
   id 'net.rdrei.android.buildtimetracker' version '0.11.0' apply false
   id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
   id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
@@ -29,8 +29,8 @@ plugins {
   id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
 
   // Apply these
-  id 'org.barfuin.gradle.jacocolog' version '1.2.4' // provides task jacocoAggregatedReport
-  id 'org.barfuin.gradle.taskinfo' version '2.0.0'
+  id 'org.barfuin.gradle.jacocolog' version '3.1.0' // provides task jacocoAggregatedReport
+  id 'org.barfuin.gradle.taskinfo' version '2.1.0'
   id 'nebula.lint' version '18.0.3'
   id 'pl.allegro.tech.build.axion-release' version '1.13.2'
   id 'starter.java.build-utils-property-conventions'
@@ -112,7 +112,7 @@ ext {
   // Modules that use Java code
   codeModules = [
     ':app',
-    ':persistence:model',
+    ':shared:persistence-model',
     ':shared:lib-camel-connector',
     ':svc-lighthouse-api',
     ':console',
@@ -150,11 +150,11 @@ scmVersion {
   useHighestVersion = true
 
   hooks {
-    pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
+    pre("fileUpdate", [file: "api-gateway/src/main/java/gov/va/vro/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
     // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file       : "helm/vro-app/Chart.yaml",
+    pre("fileUpdate", [file: "helm/charts/vro-app/Chart.yaml",
       pattern    : { v, p -> /appVersion: .*/ },
       replacement: { v, p -> "appVersion: $v" }])
     pre("commit")

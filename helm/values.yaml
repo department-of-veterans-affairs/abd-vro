@@ -13,6 +13,8 @@ vro-app:
   enabled: true
 vro-svcs:
   enabled: true
+domain-cc:
+  enabled: false
 domain-rrd:
   enabled: false
 # Enable as needed:

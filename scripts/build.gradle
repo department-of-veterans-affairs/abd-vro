@@ -2,6 +2,8 @@ plugins {
   id 'local.java.lint-shellcheck-conventions'
 }
 
+tasks.named("shellcheck").configure { dependsOn("spotlessGroovyGradle") }
+
 shellcheck {
   sourceFiles = fileTree(".") {
     include("*.sh", "*.src")

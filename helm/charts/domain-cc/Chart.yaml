@@ -5,8 +5,8 @@ type: application
 
 # numbers, lowercase, and dashes only
 # https://helm.sh/docs/chart_best_practices/conventions/#chart-names
-name: vro-app-chart
-description: ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
+name: domain-cc-chart
+description: Workflows and microservices for the Contention Classification domain
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
@@ -18,4 +18,4 @@ version: 0.2.0
 # This field is informational, and has no impact on chart version calculations.
 # TODO decide: This should probably match the service's Docker image version
 # Can we reference {{ .Values.images.mq.version }} in this file?
-appVersion: 3.0.1
+appVersion: "1.0.25"

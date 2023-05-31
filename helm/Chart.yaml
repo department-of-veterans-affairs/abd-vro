@@ -40,5 +40,7 @@ dependencies:
     condition: vro-app.enabled
   - name: vro-svcs-chart
     condition: vro-svcs.enabled
+  - name: domain-cc-chart
+    condition: domain-cc.enabled
   - name: domain-rrd-chart
     condition: domain-rrd.enabled
