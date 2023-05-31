@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api domain-cc/svc-cc-app )
+VRO_IMAGES_ARR=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api svc-cc-app )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api domain-cc/svc-cc-app"
+export VRO_IMAGES="api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api svc-cc-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( apigateway app postgres dbinit console svcbgsapi svclighthouseapi domainccsvcccapp )
-export VAR_PREFIXES="apigateway app postgres dbinit console svcbgsapi svclighthouseapi domainccsvcccapp"
+VAR_PREFIXES_ARR=( apigateway app postgres dbinit console svcbgsapi svclighthouseapi svcccapp )
+export VAR_PREFIXES="apigateway app postgres dbinit console svcbgsapi svclighthouseapi svcccapp"
 
 # Helper function
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -61,8 +61,8 @@ export svcbgsapi_IMG="vro-svc-bgs-api"
 export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
 export svclighthouseapi_IMG="vro-svc-lighthouse-api"
 
-# --- domain-cc/svc-cc-app in folder ./domain-cc/svc-cc-app
-export domainccsvcccapp_GRADLE_IMG="va/abd_vro-domain-cc-svc-cc-app"
-export domainccsvcccapp_IMG="vro-domain-cc-svc-cc-app"
+# --- svc-cc-app in folder domain-cc/svc-cc-app
+export svcccapp_GRADLE_IMG="va/abd_vro-svc-cc-app"
+export svcccapp_IMG="vro-svc-cc-app"
 
 # End of file

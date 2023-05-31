@@ -8,28 +8,29 @@
 gradle_folder() {
   case "$1" in
     pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
+    svc-cc-app) echo "domain-cc/$1";;
     *) echo "./$1";;
   esac
 }
 
 # These are used in docker-compose.yml files
 gradle_image_name() {
-  echo "va/abd_vro-${1//[\/]/-}"
+  echo "va/abd_vro-$1"
 }
 
 # Bash variables can't have dashes, so strip them out of the directory names
 # also strip out subdirectory slashes
 bash_var_prefix() {
-  echo "${1//[\/-]/}"
+  echo "${1//-/}"
 }
 
 # These names must match the images specified in Helm configs
 prod_image_name() {
-  echo "vro-${1//[\/]/-}"
+  echo "vro-$1"
 }
 
 # These names should match directory names
-IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api domain-cc/svc-cc-app )
+IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api svc-cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
