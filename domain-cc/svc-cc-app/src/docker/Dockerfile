@@ -1,9 +1,5 @@
 # This file is referenced from local.python.container-service-convention.
-# It acts as the default Dockerfile for Python-based containers, i.e., those created by build.gradle
-# that use the local.python.container-service-convention plugin.
-# To override this file, create a src/docker/Dockerfile file in your Gradle module.
-ARG BASE_IMAGE="python:3.10-alpine"
-FROM ${BASE_IMAGE}
+FROM python:3.10.0-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && apk --no-cache add libcrypto1.1 libcrypto3 libssl1.1 libssl3 && rm -rf /var/cache/apk/*
