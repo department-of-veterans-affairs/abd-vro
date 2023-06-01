@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can do `git push` later
+          token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
       - name: Run Gradle Release
         run: |
