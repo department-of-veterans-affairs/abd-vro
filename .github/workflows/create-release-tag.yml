@@ -1,0 +1,25 @@
+name: "4. Create release tag"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The new semantic version number of the form X.Y.Z'
+        required: true
+        type: string
+
+jobs:
+  update-code-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run Gradle Release
+        run: |
+          ./gradlew release -Prelease.forceVersion=${{ github.event.inputs.version }}
+
+      - name: Push version tag and update commit
+        run: |
+          git push origin v${{ github.event.inputs.version }}
+          git push
