@@ -1,7 +1,7 @@
 FROM flyway/flyway:9.19-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add libcrypto3 libssl3 openssl  && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add libcrypto3 libssl3 openssl  && rm -rf /var/cache/apk/*
 
 
 COPY database /flyway/sql
