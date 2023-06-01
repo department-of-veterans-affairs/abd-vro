@@ -16,6 +16,3 @@ slack:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: benefits-vro-nonprod
 
-springdoc:
-  swagger-ui:
-    enabled: true
