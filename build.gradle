@@ -32,7 +32,7 @@ plugins {
   id 'org.barfuin.gradle.jacocolog' version '3.1.0' // provides task jacocoAggregatedReport
   id 'org.barfuin.gradle.taskinfo' version '2.1.0'
   id 'nebula.lint' version '18.0.3'
-  id 'pl.allegro.tech.build.axion-release' version '1.13.2'
+  id 'pl.allegro.tech.build.axion-release' version '1.15.3'
   id 'starter.java.build-utils-property-conventions'
 }
 
