@@ -9,15 +9,15 @@ jobs:
   create-gh-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: GitHub Tag info
+      - name: "Log tag info"
         run: |
           echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
           echo "Tag name from github.ref_name: ${{  github.ref_name }}"
 
-      - name: Release
+      - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
           append_body: true

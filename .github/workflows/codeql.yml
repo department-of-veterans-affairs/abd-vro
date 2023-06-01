@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: "Checkout source code"
         uses: actions/checkout@v3
 
       # Initializes the CodeQL tools for scanning.

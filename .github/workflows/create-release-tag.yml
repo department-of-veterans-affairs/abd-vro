@@ -10,19 +10,22 @@ on:
 
 jobs:
   update-code-version:
+    # only run in public repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: "Checkout source code"
         uses: actions/checkout@v3
         with:
           # Checkout using a PAT so that we can do `git push` later
           token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
-      - name: Run Gradle Release
+      - name: "Run gradle release"
         run: |
           ./gradlew release -Prelease.forceVersion=${{ github.event.inputs.version }}
 
-      - name: Push version tag and update commit
+      - name: "Push updated version number and new tag"
         run: |
-          git push origin v${{ github.event.inputs.version }}
           git push
+          # Push the release tag after a successful `git push`
+          git push origin v${{ github.event.inputs.version }}

@@ -31,11 +31,12 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: "Checkout source code"
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: yesolutions/mirror-action@master
+      - name: "Mirror to internal repo"
+        uses: yesolutions/mirror-action@master
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
           GIT_USERNAME: ${{ github.actor }}
