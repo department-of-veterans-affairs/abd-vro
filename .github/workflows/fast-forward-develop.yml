@@ -12,6 +12,8 @@ on:
 
 jobs:
   fast-forward-develop:
+    # only run in public repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
