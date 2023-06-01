@@ -47,7 +47,7 @@ services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
   cc-rabbitmq:
-    image: va/abd_vro-xample-workflows:latest
+    image: department-of-veterans-affairs/abd-vro-internal/vro-svc-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     networks:
       - vro_intranet
