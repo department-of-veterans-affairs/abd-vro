@@ -4,7 +4,7 @@ FROM ruby:2.7.8-alpine3.16
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
 # hadolint ignore=DL3018
-RUN apk update && apk upgrade  && apk --no-cache add git ruby-dev=3.1.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.1.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
 
 RUN adduser --disabled-password --gecos "" tron
 
