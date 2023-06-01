@@ -3,7 +3,7 @@ name: "2. (Internal) SecRel workflow"
 on:
   # Trigger on every code push to main and develop branches
   push:
-    branches: [ main, qa, develop ]
+    branches: [ main, qa, develop, domain-* ]
 
   # Trigger on all published GitHub Releases
   release:

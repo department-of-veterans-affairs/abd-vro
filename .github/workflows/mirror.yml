@@ -9,7 +9,7 @@ on:
 
   # When changes are pushed to special branches
   push:
-    branches: [ main, qa, develop ]
+    branches: [ main, qa, develop, domain-* ]
 
   # When a Git reference (Git branch or tag) is created
   create:
