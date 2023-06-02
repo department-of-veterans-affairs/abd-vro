@@ -33,9 +33,3 @@ services:
       <<: *common-vars
     networks:
       - vro_intranet
-
-#  svc-cc-rabbitmq:
-#    image: va/abd_vro-svc-cc-app:latest
-#    <<: [*common-sde-security, *common-security-opt]
-#    networks:
-#      - vro_intranet
