@@ -24,7 +24,7 @@ plugins {
   id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
   id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
   id 'com.github.johnrengelman.processes' version '0.5.0' apply false
-  id 'org.springdoc.openapi-gradle-plugin' version '1.4.0' apply false
+  id 'org.springdoc.openapi-gradle-plugin' version '1.6.0' apply false
   id 'org.flywaydb.flyway' version '9.2.0' apply false
   id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
 
