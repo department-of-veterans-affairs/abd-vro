@@ -12,7 +12,7 @@ def spectralLint = tasks.register("spectralLint", Exec) {
     ext.spectralLintCommand = "lint"
     executable('spectral')
     args(ext.spectralLintCommand, ext.oasPath)
-    dependsOn tasks.named('generateOpenApiDocs')
+    dependsOn 'generateOpenApiDocs'
 }
 
 tasks.named("check").configure {
