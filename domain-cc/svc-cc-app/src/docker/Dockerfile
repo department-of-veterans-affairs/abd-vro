@@ -33,5 +33,5 @@ RUN chmod +x entrypoint*.sh && chown -R tron .
 USER tron
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.
-#ENTRYPOINT ["/domainc-cc/docker/rabbitmq/entrypoint.sh"]
-ENTRYPOINT ["/domain-cc/svc-cc-app/src/docker/entrypoint.sh"]
+#ENTRYPOINT ["/domain-cc/svc-cc-app/src/docker/entrypoint.sh"]
+ENTRYPOINT ["/domain-cc/svc-cc-app/entrypoint.sh"]

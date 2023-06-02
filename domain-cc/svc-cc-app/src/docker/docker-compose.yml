@@ -46,14 +46,14 @@ x-common-sde-security: &common-sde-security
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
-  cc-rabbitmq:
+  svc-cc-api:
     image: va/abd_vro-svc-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     networks:
       - vro_intranet
 
-  svc-xample-j:
-    image: va/abd_vro-svc-xample-j:latest
-    <<: [*common-sde-security, *common-security-opt]
-    networks:
-      - vro_intranet
+#  svc-cc-rabbitmq:
+#    image: va/abd_vro-svc-cc-app:latest
+#    <<: [*common-sde-security, *common-security-opt]
+#    networks:
+#      - vro_intranet
