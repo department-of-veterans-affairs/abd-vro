@@ -36,6 +36,12 @@ plugins {
   id 'starter.java.build-utils-property-conventions'
 }
 
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("org.glassfish:javax.el:3.0.0") using module("org.glassfish:jakarta.el:3.0.4") because "security vulnerability"
+  }
+}
+
 allprojects {
   apply plugin: 'nebula.lint'
   gradleLint {
