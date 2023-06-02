@@ -177,6 +177,7 @@
 "local.python.container-service" -> "shared.docker.container"
 "local.ruby.container-service" [style=filled,color=pink]
 "local.ruby.container-service" -> "shared.docker.container"
+"local.std.domain.folder" [style=filled,color=pink]
 "local.std.java.application" [style=filled,color=pink]
 "local.std.java.application" -> "starter.java.config"
 "local.std.java.application" -> "starter.java.build-springboot"
@@ -188,7 +189,6 @@
 "local.std.java.application" -> "starter.java.test-integration"
 "local.std.java.application" -> "starter.java.deps-integration"
 "local.std.java.application" -> "starter.java.lint-spotless-java"
-"local.std.java.application" -> "local.java.container"
 "local.std.java.application" -> "local.java.container-spring"
 "local.std.java.application" -> "shared.std.java"
 "local.std.java.library" [style=filled,color=pink]
@@ -215,9 +215,6 @@
 "./mocks/mock-bip-ce-api" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-bip-ce-api" -> "local.java.container-spring"
 "./mocks/mock-bip-ce-api" -> "local.std.java.library-spring"
-"./mocks/mock-mas-api" [style=filled,color=lightgrey,shape=box]
-"./mocks/mock-mas-api" -> "local.java.container-spring"
-"./mocks/mock-mas-api" -> "local.std.java.library-spring"
 "./mocks" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-slack" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-slack" -> "local.java.container-spring"
@@ -237,45 +234,21 @@
 "./svc-lighthouse-api" [style=filled,color=lightgrey,shape=box]
 "./svc-lighthouse-api" -> "local.java.container-spring"
 "./svc-lighthouse-api" -> "local.std.java.library-spring"
+"./api-gateway" [style=filled,color=lightgrey,shape=box]
+"./api-gateway" -> "local.std.java.library-spring"
+"./api-gateway" -> "local.java.container-spring"
 "./shared/lib-camel-connector" [style=filled,color=lightgrey,shape=box]
 "./shared/lib-camel-connector" -> "local.std.java.library-spring"
+"./shared/persistence-model" [style=filled,color=lightgrey,shape=box]
+"./shared/persistence-model" -> "local.std.java.library-spring"
 "./buildSrc" [style=filled,color=lightgrey,shape=box]
 "./postgres" [style=filled,color=lightgrey,shape=box]
 "./postgres" -> "local.java.container"
 "./db-init" [style=filled,color=lightgrey,shape=box]
 "./db-init" -> "local.java.container"
 "./db-init" -> "starter.java.build-utils-property"
-"./domain-rrd/rrd-api-controller" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/rrd-api-controller" -> "local.std.java.library-spring"
-"./domain-rrd/service-python/assessclaimdc7101" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc7101" -> "local.python.container-service"
-"./domain-rrd/service-python/pdfgenerator" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/pdfgenerator" -> "local.python.container-service"
-"./domain-rrd/service-python/assessclaimdc6522" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc6522" -> "local.python.container-service"
-"./domain-rrd/service-python" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc6602v2" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc6602v2" -> "local.python.container-service"
-"./domain-rrd/service-python/featuretoggle" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/featuretoggle" -> "local.python.container-service"
-"./domain-rrd/service-python/assessclaimdc6510" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc6510" -> "local.python.container-service"
-"./domain-rrd/service-python/assessclaimcancer" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimcancer" -> "local.python.container-service"
-"./domain-rrd/service-python/assessclaimdc6602" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-python/assessclaimdc6602" -> "local.python.container-service"
-"./domain-rrd/rrd-app-test" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/rrd-app-test" -> "local.std.java.library-spring"
-"./domain-rrd/service-rrd-db" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/service-rrd-db" -> "local.std.java.library-spring"
-"./domain-rrd/rrd-workflows" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/rrd-workflows" -> "local.std.java.library-spring"
-"./domain-rrd/rrd-shared" [style=filled,color=lightgrey,shape=box]
-"./domain-rrd/rrd-shared" -> "local.std.java.library"
 "./domain-cc/cc-api-controller" [style=filled,color=lightgrey,shape=box]
 "./domain-cc/cc-api-controller" -> "local.std.java.library-spring"
-"./persistence/model" [style=filled,color=lightgrey,shape=box]
-"./persistence/model" -> "local.std.java.library-spring"
 "./scripts" [style=filled,color=lightgrey,shape=box]
 "./scripts" -> "local.java.lint-shellcheck"
 "." [style=filled,color=lightgrey,shape=box]
@@ -286,11 +259,13 @@
 "./domain-xample/xample-shared" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/xample-shared" -> "local.std.java.library-spring"
 "./domain-xample" [style=filled,color=lightgrey,shape=box]
+"./domain-xample" -> "local.std.domain.folder"
 "./domain-xample/svc-xample-j" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/svc-xample-j" -> "local.java.container-spring"
 "./domain-xample/xample-api-controller" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/xample-api-controller" -> "local.std.java.library-spring"
 "./svc-bip-api" [style=filled,color=lightgrey,shape=box]
+"./svc-bip-api" -> "local.std.java.library"
 "./console" [style=filled,color=lightgrey,shape=box]
 "./console" -> "local.java.container-spring"
 "./console" -> "local.std.java.library-spring"
