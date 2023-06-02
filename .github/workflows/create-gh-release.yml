@@ -21,6 +21,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: "${{ github.ref_name }}-auto"
+          # Use a token so that auto-creating a GH Release will trigger the SecRel workflow
+          token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
           prerelease: true
           generate_release_notes: true
           append_body: true
