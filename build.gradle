@@ -153,7 +153,7 @@ scmVersion {
   def postgresDockerfileContent=file("${project.rootDir}/postgres/src/docker/Dockerfile").getText()
   def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
   def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
-  def helmValues = (Map<String, Object>) new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/values.yaml").getText())
+  Map<String, Object> helmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/values.yaml").text)
   def helmChartAppVersions = [
     // These rarely change
     'postgres'   : postgresBaseImageVersion, // extracted from Dockerfile
@@ -174,7 +174,7 @@ scmVersion {
 
   def setHelmChartAppVersions = { currentVersion ->
     helmChartAppVersions.collect { projectName, version ->
-      if (version==null) version=currentVersion
+      if (version == null) version = currentVersion
 
       def helmChartFilePaths = [
         project.findProperty("helm.${projectName}.chart_file"),
@@ -185,7 +185,7 @@ scmVersion {
       println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)
       if (version != null && helmChartFilePath != null) {
         def helmChartFile = file("${project.rootDir}/$helmChartFilePath")
-        String s = helmChartFile.getText().replaceFirst(/(?m)^appVersion: ".*"/, "appVersion: \"$version\"")
+        String s = helmChartFile.text.replaceFirst(/(?m)^appVersion: ".*"/, "appVersion: \"$version\"")
         helmChartFile.setText(s)
         helmChartFile
       }
