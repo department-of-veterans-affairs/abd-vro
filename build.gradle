@@ -181,7 +181,7 @@ scmVersion {
         "/helm/charts/${projectName}/Chart.yaml",
         "/helm/charts/vro-${projectName}/Chart.yaml"
       ]
-      def helmChartFilePath = helmChartFilePaths.find(path -> path != null && file("${project.rootDir}/$path").exists())
+      def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
       println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)
       if (version != null && helmChartFilePath != null) {
         def helmChartFile = file("${project.rootDir}/$helmChartFilePath")
@@ -198,7 +198,7 @@ scmVersion {
       replacement: { v, p -> "version = \"v$v\"" }])
     pre({ context ->
       setHelmChartAppVersions(context.currentVersion)
-        .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
+          .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
     })
     pre("commit")
   }
