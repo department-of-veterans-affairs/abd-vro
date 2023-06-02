@@ -18,4 +18,4 @@ version: 0.2.0
 # This field is informational, and has no impact on chart version calculations.
 # TODO decide: This should probably match the service's Docker image version
 # Can we reference {{ .Values.images.mq.version }} in this file?
-appVersion: 3.0.6
+appVersion: 3.0.7
