@@ -3,6 +3,13 @@ plugins {
   id 'local.std.java.library-conventions'
 }
 
+group 'gov.va.vro'
+version '1.0.98-SNAPSHOT'
+
+repositories {
+//  mavenCentral()
+}
+
 ext {
   jacoco_minimum_coverage = 0.5
 }
