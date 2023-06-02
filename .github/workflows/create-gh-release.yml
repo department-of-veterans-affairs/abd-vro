@@ -22,5 +22,6 @@ jobs:
         with:
           name: "${{ github.ref_name }}-auto"
           prerelease: true
+          generate_release_notes: true
           append_body: true
           body: "Automatically created by create-gh-release GitHub Action"
