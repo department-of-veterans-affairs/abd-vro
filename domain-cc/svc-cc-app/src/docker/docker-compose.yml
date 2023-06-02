@@ -4,6 +4,7 @@ networks:
   # Put these services on the same `vro_intranet` network as VRO -- see app/src/docker/docker-compose.yml
   vro_intranet:
     # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
+    # Change this to true if running with app/src/docker/docker-compose.yml
     external: false
 
 # Reusable blocks
@@ -13,27 +14,6 @@ networks:
 x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
   ENV: ${ENV:-local}
-
-x-postgres-vars: &postgres-vars
-  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
-  POSTGRES_DB: ${POSTGRES_DB}
-  POSTGRES_USER: ${POSTGRES_USER}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  POSTGRES_SCHEMA: claims
-
-x-redis-placeholder-vars: &redis-placeholder-vars
-  REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
-
-x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
-  RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
-
-x-rabbitmq-client-vars: &rabbitmq-client-vars
-  RABBITMQ_PORT: 5672
-  RABBITMQ_RETRY_LIMIT: 3
-  RABBITMQ_TIMEOUT: 10800
 
 x-common-security-opt: &common-security-opt
   security_opt:
@@ -49,6 +29,8 @@ services:
   svc-cc-api:
     image: va/abd_vro-svc-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: *common-vars
     networks:
       - vro_intranet
 
