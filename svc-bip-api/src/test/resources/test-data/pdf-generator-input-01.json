@@ -1,0 +1,96 @@
+{
+  "claimSubmissionId": "1234",
+  "diagnosticCode": "7101",
+  "veteranInfo": {
+    "first": "Joe",
+    "middle": "M",
+    "last": "Doe",
+    "suffix": "Jr",
+    "birthdate": "01/04/1971"
+  },
+  "veteranFileId": "12345",
+  "pdfTemplate": "v1",
+  "evidence": {
+    "medications": [
+      {
+        "status": "Active",
+        "description": "Hydrochlorothiazide 6.25 MG",
+        "refills": 0,
+        "authoredOn": "1950-04-05T23:00:00Z",
+        "dosageInstructions": [
+          "QD"
+        ],
+        "route": "ORAL",
+        "partialDate":""
+      },
+      {
+        "status": "Active",
+        "notes": [
+          "Hydrochlorothiazide 6.25 MG"
+        ],
+        "description": "Hydrochlorothiazide 6.25 MG",
+        "refills": 0,
+        "authoredOn": "1950-04-06T07:24:55Z",
+        "dosageInstructions": [
+          "Once per day.",
+          "As directed by physician."
+        ],
+        "route": "As directed by physician.",
+        "partialDate":""
+      }
+    ],
+    "bp_readings": [
+      {
+        "date": "2009-03-19",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 83.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 131.0
+        },
+        "practitioner": "DR. JANE460 DOE922 MD",
+        "organization": "LYONS VA MEDICAL CENTER"
+      },
+      {
+        "date": "2010-03-25",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 82.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 138.0
+        },
+        "practitioner": "DR. THOMAS359 REYNOLDS206 PHD",
+        "organization": "NEW AMSTERDAM CBOC"
+      },
+      {
+        "date": "2011-03-31",
+        "diastolic": {
+          "code": "8462-4",
+          "display": "Diastolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 71.0
+        },
+        "systolic": {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "unit": "mm[Hg]",
+          "value": 101.0
+        },
+        "practitioner": "DR. JOHN248 SMITH811 MD",
+        "organization": "LYONS VA MEDICAL CENTER"
+      }
+    ]
+  }
+}
