@@ -1,6 +1,8 @@
 name: "PR: CodeQL security scan"
 
 on:
+  # When changes are pushed to special branches
+  # Branch `develop` and `domain-*` are handled by continuous-integration.yml, which calls this workflow
   push:
     branches: [main]
 
@@ -12,7 +14,11 @@ on:
   schedule:
     - cron: 31 6 * * 5
 
-  workflow_dispatch: null
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
 
 jobs:
   analyze:
