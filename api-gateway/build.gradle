@@ -1,3 +1,13 @@
+buildscript {
+  configurations.classpath {
+    resolutionStrategy {
+      dependencySubstitution {
+        substitute module("org.glassfish:javax.el:3.0.0") using module("org.glassfish:jakarta.el:3.0.4") because "security vulnerability"
+      }
+    }
+  }
+}
+
 plugins {
   id 'local.std.java.library-spring-conventions'
   id 'local.java.container-spring-conventions'
