@@ -2,12 +2,12 @@ name: "PR: CodeQL security scan"
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, domain-*]
     # Limit to certain PR event types since this action is slow
     types: [ready_for_review, review_requested]
 
   # When changes are pushed to special branches
-  # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+  # Branch `develop` and `domain-*` are handled by continuous-integration.yml, which calls this workflow
   push:
     branches: [main]
 
