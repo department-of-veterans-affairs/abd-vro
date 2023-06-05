@@ -165,15 +165,6 @@ services:
       # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
       <<: [*api-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
       PERSIST_TRACKING_FOLDER: /persist/tracking
-      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
-      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
-      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
-      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
-      BIP_PASSWORD: ${BIP_PASSWORD}
-      BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
-      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
     depends_on:
       <<: *svc-depends-on
       db-init:
@@ -197,6 +188,20 @@ services:
       <<: *svc-depends-on
     networks:
       - intranet
+
+  svc-bip-api:
+    profiles: ["all", "svc", "bip"]
+    environment:
+      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_PASSWORD: ${BIP_PASSWORD}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
+      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+
 
   svc-bgs-api:
     profiles: ["all","svc","bgs"]
