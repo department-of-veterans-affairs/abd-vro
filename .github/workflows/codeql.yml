@@ -1,3 +1,4 @@
+# Delete this once codeql-analysis.yml is working
 name: "PR: CodeQL security scan"
 
 on:

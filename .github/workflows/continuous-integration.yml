@@ -16,6 +16,7 @@ jobs:
     secrets: inherit
 
   codeql:
+    # TODO: Once working, replace with uses: ./.github/workflows/codeql-analysis.yml
     uses: ./.github/workflows/codeql.yml
     secrets: inherit
 

@@ -1,14 +1,19 @@
-name: CodeQL
-'on':
+name: "PR: CodeQL security scan"
+
+on:
   push:
-    branches:
-      - develop
+    branches: [main]
+
   pull_request:
-    branches:
-      - develop
+    branches: [main, develop, domain-*]
+    # Limit to certain PR event types since this action is slow
+    types: [ready_for_review, review_requested]
+
   schedule:
     - cron: 31 6 * * 5
+
   workflow_dispatch: null
+
 jobs:
   analyze:
     name: Analyze
@@ -26,6 +31,17 @@ jobs:
           - python
           - ruby
     steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: Set up VRO build env
+        uses: ./.github/actions/setup-vro
+
+      # Run a build in case it results in new files being generated but don't test since that is done in a different workflow.
+      # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning#configuring-code-scanning-for-compiled-languages
+      - name: Build VRO without testing
+        run: ./gradlew build -x test -x check
+
       - name: Run Code Scanning
         uses: department-of-veterans-affairs/codeql-tools/codeql-analysis@main
         with:
