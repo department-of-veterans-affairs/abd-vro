@@ -5,7 +5,7 @@ name: "3. Continuous Integration (run tests and checks)"
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, domain-* ]
 
   # Allow manual triggering
   workflow_dispatch:

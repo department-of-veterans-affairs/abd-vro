@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The new semantic version number using the form X.Y.Z. Using the default (next patch version) will increment Z.'
+        description: 'The new semantic version number using the form X.Y.Z. \
+          Using the default (next patch version) will increment Z.'
         required: true
         default: "(next patch version)"
         type: string

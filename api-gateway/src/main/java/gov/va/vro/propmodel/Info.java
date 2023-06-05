@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Info {
   private String title = "API";
   private String description = "Description";
-  private String version = "v3.0.6";
+  private String version = "v3.0.7-domaincc1";
 
   private final Contact contact = new Contact();
 
