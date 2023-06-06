@@ -37,4 +37,4 @@ runs:
     - name: "Install Python dependencies"
       shell: bash
       run: |
-        pip install -r domain-cc/*/requirements.txt
+        pip install -r domain-cc/*/*/requirements.txt

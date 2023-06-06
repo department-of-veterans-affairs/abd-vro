@@ -20,8 +20,7 @@ spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: cc-app{{ include "vro.containerSuffix" . }}
-          # TODO: replace with CC's new image
-          image: {{ include "vro.imageRegistryPath" . }}vro-svc-pdfgenerator:{{ include "vro.imageTag" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-cc-app:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}

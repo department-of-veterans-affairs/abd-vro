@@ -48,9 +48,9 @@ Make sure you're in your virtualenv
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
 ```
-Navigate to svc-cc-app/
+Navigate to cc-app/
 ```
-cd domain-cc/svc-cc-app
+cd domain-cc/cc-app
 ```
 Run the tests
 ```
@@ -74,4 +74,10 @@ cd src
 python util/pull_api_documentation.py
 cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config
 # somehow make the java code pull that json in
+```
+
+## Docker Stuff
+### Build the image
+```
+./gradlew :domain-cc:cc-app:docker
 ```

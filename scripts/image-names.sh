@@ -8,6 +8,7 @@
 gradle_folder() {
   case "$1" in
     pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
+    cc-app) echo "domain-cc/$1";;
     *) echo "./$1";;
   esac
 }
@@ -27,8 +28,9 @@ prod_image_name() {
   echo "vro-$1"
 }
 
-# These names should match directory names
-IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api )
+# These names should match directory names, if the docker image is built in a
+# subdirectory, be sure to add the sub directory to the gradle_folder function above
+IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

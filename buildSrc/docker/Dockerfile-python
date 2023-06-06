@@ -10,7 +10,11 @@ FROM ${BASE_IMAGE}
 
 RUN adduser --gecos "" --disabled-password tron
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=5 CMD [ "CMD-SHELL", "pgrep python || exit 1" ]
+ARG HEALTHCHECK_PORT_ARG
+ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
+ARG HEALTHCHECK_CMD_ARG="curl --fail http://localhost:${HEALTHCHECK_PORT}/health || exit 1"
+ENV HEALTHCHECK_CMD=${HEALTHCHECK_CMD_ARG}
+HEALTHCHECK CMD eval $HEALTHCHECK_CMD
 
 WORKDIR /app
 ARG ENTRYPOINT_FILE=entrypoint.sh
