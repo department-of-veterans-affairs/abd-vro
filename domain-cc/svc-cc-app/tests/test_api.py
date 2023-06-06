@@ -1,14 +1,14 @@
 from fastapi.testclient import TestClient
 
-RESPIRATORY_CLASSIFICATION = {
-    "classification_code": 9012,
-    "classification_name": "Respiratory",
+TUBERCULOSIS_CLASSIFICATION = {
+    "classification_code": 6890,
+    "classification_name": "Tuberculosis",
 }
 
 
 def test_classification(client: TestClient):
     json_post_dict = {
-        "diagnostic_code": 6510,
+        "diagnostic_code": 7710,
         "claim_id": 100,
         "form526_submission_id": 500,
     }
@@ -17,11 +17,11 @@ def test_classification(client: TestClient):
     assert response.status_code == 201
     assert (
         response.json()["classification_code"]
-        == RESPIRATORY_CLASSIFICATION["classification_code"]
+        == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
     assert (
         response.json()["classification_name"]
-        == RESPIRATORY_CLASSIFICATION["classification_name"]
+        == TUBERCULOSIS_CLASSIFICATION["classification_name"]
     )
 
 
