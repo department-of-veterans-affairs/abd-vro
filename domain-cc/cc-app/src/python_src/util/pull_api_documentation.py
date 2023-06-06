@@ -1,5 +1,5 @@
 """
-Make sure you are in svc-cc-app/src/ and have set your PYTHONPATH accordingly in order to execute
+Make sure you are in cc-app/src/ and have set your PYTHONPATH accordingly in order to execute
 python3.10 pull_api_documentation.py
 """
 

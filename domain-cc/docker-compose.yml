@@ -27,7 +27,7 @@ services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
   svc-cc-api:
-    image: va/abd_vro-svc-cc-app:latest
+    image: va/abd_vro-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
       <<: *common-vars
