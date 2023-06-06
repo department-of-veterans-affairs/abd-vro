@@ -1,6 +1,6 @@
+import csv
 import json
 import os
-import csv
 
 # csv file exported from DC Lookup v0.1
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
