@@ -31,5 +31,7 @@ services:
     <<: [*common-sde-security, *common-security-opt]
     environment:
       <<: *common-vars
+    ports:
+      - "8120:8120"
     networks:
       - vro_intranet
