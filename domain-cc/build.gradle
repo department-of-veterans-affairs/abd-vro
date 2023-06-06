@@ -1,8 +1,9 @@
 plugins {
-  id 'base'
-  id 'com.palantir.docker-compose'
+  id 'local.std.domain.folder-conventions'
 }
 
-dockerCompose {
-  dockerComposeFile 'docker-compose.yml'
+dockerComposeUp {
+  // Rebuild Docker images before docker-compose up
+  // Run `docker` Gradle task on all subprojects
+  dependsOn getTasksByName('docker', true)
 }
