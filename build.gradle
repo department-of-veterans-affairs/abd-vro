@@ -2,6 +2,7 @@ buildscript {
   dependencies {
     classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
     classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
+    classpath "org.yaml:snakeyaml:${snakeyaml_version}"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
@@ -149,14 +150,56 @@ scmVersion {
   localOnly = true
   useHighestVersion = true
 
+  def postgresDockerfileContent=file("${project.rootDir}/postgres/src/docker/Dockerfile").getText()
+  def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
+  def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
+  Map<String, Object> helmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/values.yaml").text)
+  def helmChartAppVersions = [
+    // These rarely change
+    'postgres'   : postgresBaseImageVersion, // extracted from Dockerfile
+    'redis'      : (String) helmValues.get("redis-chart").get("imageTag"),
+    'rabbitmq'   : (String) helmValues.get("rabbitmq-chart").get("imageTag"),
+
+    // These change occasionally
+    'app'        : '3.0.0',
+    'svcs'       : '3.0.0',
+    'console'    : '2.5.0',
+
+    // These change often (i.e., with each release)
+    // A null value will result in the currentVersion being used
+    '..'         : null, // '..' will resolve to helm/Charts.yaml
+    'api-gateway': null,
+    'domain-cc'  : null,
+  ]
+
+  def setHelmChartAppVersions = { currentVersion ->
+    helmChartAppVersions.collect { projectName, version ->
+      if (version == null) version = currentVersion
+
+      def helmChartFilePaths = [
+        project.findProperty("helm.${projectName}.chart_file"),
+        "/helm/charts/${projectName}/Chart.yaml",
+        "/helm/charts/vro-${projectName}/Chart.yaml"
+      ]
+      def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
+      println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)
+      if (version != null && helmChartFilePath != null) {
+        def helmChartFile = file("${project.rootDir}/$helmChartFilePath")
+        String s = helmChartFile.text.replaceFirst(/(?m)^appVersion: ".*"/, "appVersion: \"$version\"")
+        helmChartFile.setText(s)
+        helmChartFile
+      }
+    }
+  }
+
   hooks {
     pre("fileUpdate", [file: "api-gateway/src/main/java/gov/va/vro/propmodel/Info.java",
       pattern    : { v, p -> /version = "v.*"/ },
       replacement: { v, p -> "version = \"v$v\"" }])
-    // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file: "helm/charts/vro-app/Chart.yaml",
-      pattern    : { v, p -> /appVersion: .*/ },
-      replacement: { v, p -> "appVersion: $v" }])
+    pre({ context ->
+      setHelmChartAppVersions(context.currentVersion)
+          .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
+    })
     pre("commit")
   }
 }

@@ -1,19 +1,18 @@
 name: "PR: CodeQL security scan"
 
 on:
-  pull_request:
-    branches: [main, develop, domain-*]
-    # Limit to certain PR event types since this action is slow
-    types: [ready_for_review, review_requested]
-
   # When changes are pushed to special branches
   # Branch `develop` and `domain-*` are handled by continuous-integration.yml, which calls this workflow
   push:
     branches: [main]
 
-  # In case vulnerability checks are updated
+  pull_request:
+    branches: [main, develop, domain-*]
+    # Limit to certain PR event types since this action is slow
+    types: [ready_for_review, review_requested]
+
   schedule:
-    - cron: "30 12 * * 1"
+    - cron: 31 6 * * 5
 
   # Allow manual triggering
   workflow_dispatch:
@@ -21,28 +20,25 @@ on:
   # Trigger when called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: codeql-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-
+    concurrency: ${{ github.workflow }}-${{ matrix.language }}-${{ github.ref }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - java
+          - python
+          - ruby
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: java, python
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
       - name: Set up VRO build env
         uses: ./.github/actions/setup-vro
@@ -52,5 +48,7 @@ jobs:
       - name: Build VRO without testing
         run: ./gradlew build -x test -x check
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      - name: Run Code Scanning
+        uses: department-of-veterans-affairs/codeql-tools/codeql-analysis@main
+        with:
+          language: ${{ matrix.language }}
