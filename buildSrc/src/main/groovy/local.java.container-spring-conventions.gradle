@@ -15,11 +15,12 @@ docker {
         new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
         new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
 
-    def healthcheckPort = project.hasProperty('healthcheck_port') ? project.healthcheck_port : 8080
-    buildArgs([
-        JAR_FILE: bootJar.archiveFileName.get(),
-        HEALTHCHECK_PORT_ARG: healthcheckPort
-    ])
+    def dockerArgs=[
+        JAR_FILE: bootJar.archiveFileName.get()
+    ]
+    if(project.hasProperty('healthcheck_port'))
+        dockerArgs["HEALTHCHECK_PORT_ARG"] = project.property('healthcheck_port')
+    buildArgs(dockerArgs)
 }
 
 // VRO runs via docker-compose, so we don't use this
