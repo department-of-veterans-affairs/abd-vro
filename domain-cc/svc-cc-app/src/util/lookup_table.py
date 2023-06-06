@@ -1,10 +1,11 @@
 import json
 import os
+import csv
 
-# lookup table generated from code in vagov-claim-classification-data/create_mdeo_dc_to_cc_mapping.py
-LOOKUP_TABLE_PATH = os.path.join(
-    os.path.dirname(__file__), "data", "dc_lookup_table_mvp.json"
-)
+# csv file exported from DC Lookup v0.1
+# https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
+TABLE_NAME = "Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup v0.1.csv"
+
 # sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
 # https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current
 BRD_CLASSIFICATIONS_PATH = os.path.join(
@@ -25,13 +26,20 @@ CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
 
 
 def get_lookup_table():
-    with open(LOOKUP_TABLE_PATH, "r") as fh:
-        lookup_table = json.load(fh)
-        lookup_table = {
-            int(diagnostic_code): classification_id
-            for diagnostic_code, classification_id in lookup_table.items()
-        }
-        return lookup_table
+    filename = os.path.join(os.path.dirname(__file__), "data", TABLE_NAME)
+    diagnostic_code_to_classification_code = {}
+    with open(filename, "r") as f:
+        csv_reader = csv.reader(f)
+        for index, csv_line in enumerate(csv_reader):
+            if index == 0 or index == 1:
+                continue
+            diagnostic_code, _, classification_code, _, _, _ = csv_line
+            diagnostic_code = int(diagnostic_code)
+            classification_code = int(json.loads(classification_code)[0])
+            diagnostic_code_to_classification_code[
+                diagnostic_code
+            ] = classification_code
+    return diagnostic_code_to_classification_code
 
 
 def get_classification_name(classification_code):
