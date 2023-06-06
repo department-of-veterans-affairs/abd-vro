@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.api;
 
-import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
+import gov.va.vro.bip.model.evidence.response.VefsErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
