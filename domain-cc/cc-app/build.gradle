@@ -29,7 +29,7 @@ tasks.register("pyflake8", PythonTask) {
 // Runs pytest when `./gradlew test` is run
 tasks.register("pytest", PythonTask) {
   module = 'pytest'
-  dependsOn pyflake8
+  dependsOn 'pyflake8'
 }
 
 tasks.test.dependsOn pytest
