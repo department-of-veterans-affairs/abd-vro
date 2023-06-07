@@ -1,8 +1,9 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add curl redis sudo && rm -rf /var/cache/apk/*
-RUN apk upgrade openssl libssl3 libcrypto3
+RUN apk update && \
+    apk --no-cache add curl redis sudo && rm -rf /var/cache/apk/* && \
+    apk upgrade openssl libssl3 libcrypto3
 
 RUN adduser --disabled-password tron
 
