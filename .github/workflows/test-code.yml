@@ -132,11 +132,11 @@ jobs:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
 
-      - name: "Get changed Python files"
+      - name: "Get changed files"
         id: changed-files-specific
         uses: tj-actions/changed-files@v35
         with:
-          files: domain-cc/cc-app/**
+          files: domain-cc/**
 
       - name: "Install Python"
         uses: actions/setup-python@v4
@@ -144,9 +144,7 @@ jobs:
           python-version: "3.10"
           cache: "pip"
 
-      - name: "Run pytest tests"
+      - name: "Run contention classification tests"
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          cd domain-cc/cc-app
-          pip install -r src/requirements.txt
-          pytest
+          ./gradlew :domain-cc:test

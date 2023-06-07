@@ -7,3 +7,7 @@ dockerComposeUp {
   // Run `docker` Gradle task on all subprojects
   dependsOn getTasksByName('docker', true)
 }
+
+tasks.register("test", Task) {
+  dependsOn "cc-app:test"
+}
