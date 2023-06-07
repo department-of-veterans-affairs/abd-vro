@@ -9,7 +9,7 @@ python {
   installVirtualenv = true
 }
 
-def devrequirements = tasks.register("devrequirements", PythonTask) {
+tasks.register("devrequirements", PythonTask) {
   module = 'pip'
   command = "install -r src/dev-requirements.txt"
 }
