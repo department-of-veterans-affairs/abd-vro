@@ -1,4 +1,4 @@
-FROM postgres:14.7-alpine
+FROM postgres:14.8-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && \
