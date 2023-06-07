@@ -1,9 +1,10 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add curl && rm -rf /var/cache/apk/*
-
-RUN adduser --no-create-home --disabled-password tron
+RUN apk update && \
+    apk --no-cache add curl redis sudo && rm -rf /var/cache/apk/* && \
+    apk upgrade openssl libssl3 libcrypto3 \
+    adduser --no-create-home --disabled-password tron
 
 HEALTHCHECK CMD curl --fail http://localhost:8111/actuator/health || exit 1
 
