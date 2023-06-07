@@ -14,7 +14,7 @@ tasks.register("devrequirements", PythonTask) {
   command = "install -r src/dev-requirements.txt"
 }
 
-def requirements = tasks.register("requirements", PythonTask) {
+tasks.register("requirements", PythonTask) {
   module = 'pip'
   command = "install -r src/requirements.txt"
   dependsOn 'devrequirements'
