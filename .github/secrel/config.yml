@@ -9,6 +9,6 @@ languages:
       # Snyk does its own build to run SCA, so it needs the token to pull private artifacts
       - -PGITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN_GRADLE_BUILD }}
   python:
-    version: 3.9
+    version: 3.10
     requirements:
-      - ./domain-cc/cc-app/requirements.txt
+      - ./domain-cc/cc-app/src/requirements.txt
