@@ -17,13 +17,13 @@ tasks.register("devrequirements", PythonTask) {
 def requirements = tasks.register("requirements", PythonTask) {
   module = 'pip'
   command = "install -r src/requirements.txt"
-  dependsOn devrequirements
+  dependsOn 'devrequirements'
 }
 
-def pyflake8 = tasks.register("pyflake8", PythonTask) {
+tasks.register("pyflake8", PythonTask) {
   module = 'flake8'
   command = "."
-  dependsOn requirements
+  dependsOn 'requirements'
 }
 
 // Runs pytest when `./gradlew test` is run
