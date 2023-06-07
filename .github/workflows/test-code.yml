@@ -121,3 +121,32 @@ jobs:
         run: |
           cd svc-bgs-api/src
           bundle exec rspec --format documentation
+
+  test-python-cc-app-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          # Need to fetch more than 1 deep to see changes
+          fetch-depth: 2
+
+      - name: "Get changed Python files"
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: domain-cc/cc-app/**
+
+      - name: "Install Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: "Run pytest tests"
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          cd domain-cc/cc-app
+          pip install -r src/requirements-txt
+          pytest
