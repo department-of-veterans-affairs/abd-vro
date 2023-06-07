@@ -8,6 +8,6 @@ dockerComposeUp {
   dependsOn getTasksByName('docker', true)
 }
 
-tasks.register("test", Task) {
-  dependsOn "cc-app:test"
+tasks.register("test") {
+  dependsOn subprojects*.getTasksByName('test', true)
 }
