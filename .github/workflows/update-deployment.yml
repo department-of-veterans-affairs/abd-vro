@@ -242,7 +242,7 @@ jobs:
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
           set -x
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
-            --install --reuse-values --wait --timeout 10m \
+            --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \
