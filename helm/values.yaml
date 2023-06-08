@@ -14,7 +14,7 @@ vro-app:
 vro-svcs:
   enabled: true
 domain-cc:
-  enabled: false
+  enabled: true
 domain-rrd:
   enabled: false
 # Enable as needed:
@@ -66,6 +66,9 @@ global:
     app:
       sourcePort: 8110
       targetPort: 8110
+    ccApp:
+      sourcePort: 8120
+      targetPort: 8120
     db:
       sourcePort: 5432
       targetPort: 5432
