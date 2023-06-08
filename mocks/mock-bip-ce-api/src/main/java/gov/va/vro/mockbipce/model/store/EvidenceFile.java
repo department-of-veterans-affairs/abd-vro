@@ -1,6 +1,6 @@
 package gov.va.vro.mockbipce.model.store;
 
-import gov.va.vro.model.bipevidence.BipFileUploadPayload;
+import gov.va.vro.bip.model.evidence.BipFileUploadPayload;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

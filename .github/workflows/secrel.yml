@@ -68,7 +68,8 @@ jobs:
           case "${{ github.ref_name }}" in
             main)      IMG_PREFIX=""
                        ;;
-            release-*) IMG_PREFIX=""
+            release-*|v*.*.*) # if git tag reflects a release, then publish non-dev images
+                       IMG_PREFIX=""
                        IMG_TAG="${{ github.ref_name }}"
                        ;;
             develop)   RUN_GRADLE_TESTS=false

@@ -24,6 +24,14 @@ docker {
     copySpec.into(".").from("../"){
         include("*.py")
     }
+
+    def dockerArgs=[:]
+    if(project.hasProperty('healthcheck_port'))
+        dockerArgs["HEALTHCHECK_PORT_ARG"] = project.property('healthcheck_port')
+    if(project.hasProperty('healthcheck_cmd'))
+        dockerArgs["HEALTHCHECK_CMD_ARG"] = project.property('healthcheck_cmd')
+
+    buildArgs(dockerArgs)
 }
 
 //dockerRun {

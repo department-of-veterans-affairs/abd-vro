@@ -1,10 +1,10 @@
 package gov.va.vro.abddataaccess.service;
 
-import gov.va.vro.model.AbdBloodPressure;
-import gov.va.vro.model.AbdBpMeasurement;
-import gov.va.vro.model.AbdCondition;
-import gov.va.vro.model.AbdMedication;
-import gov.va.vro.model.AbdProcedure;
+import gov.va.vro.abddataaccess.model.AbdBloodPressure;
+import gov.va.vro.abddataaccess.model.AbdBpMeasurement;
+import gov.va.vro.abddataaccess.model.AbdCondition;
+import gov.va.vro.abddataaccess.model.AbdMedication;
+import gov.va.vro.abddataaccess.model.AbdProcedure;
 import org.hl7.fhir.r4.model.Annotation;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;

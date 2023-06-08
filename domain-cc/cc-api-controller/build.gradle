@@ -1,6 +1,7 @@
 
 plugins {
   id 'local.std.java.library-spring-conventions'
+  //  id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
 ext {
@@ -9,6 +10,24 @@ ext {
     '**/api/**/*Exception.*'
   ]
 }
+
+//testSets {
+//  end2endTest
+//}
+//
+//tasks.withType(Test).named("testJavaApi") {
+//  useJUnitPlatform()
+//  testLogging {
+//    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
+//    showStandardStreams = true
+//    events "skipped", "failed", "passed"
+//    exceptionFormat = 'full'
+//    showStackTraces = true
+//    showExceptions = true
+//    showCauses = true
+//  }
+//}
+//
 
 dependencies {
   // Used by API classes

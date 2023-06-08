@@ -21,7 +21,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
   // Spring Cloud
-  implementation 'org.springframework.cloud:spring-cloud-starter-gateway:4.0.5'
+  implementation 'org.springframework.cloud:spring-cloud-starter-gateway:4.0.6'
   if (osdetector.classifier == "osx-aarch_64") {
     // Fix MacOS error: Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider,
     // which may result in incorrect DNS resolutions.
