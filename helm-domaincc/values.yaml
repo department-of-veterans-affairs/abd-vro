@@ -1,0 +1,11 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+# Normal state:
+domain-cc:
+  enabled: true
+
+global:
+  service:
+    ccApp:
+      sourcePort: 8120
+      targetPort: 8120

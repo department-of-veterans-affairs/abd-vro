@@ -1,0 +1,22 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+# To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
+global:
+
+  hostnamePrefix: vro
+
+  images:
+    # Configurable b/c VRO has 2 repos
+    repo: abd-vro-internal
+
+  imagePrefix: dev_
+  # tag is used to set the default image tag for all VRO images
+  imageTag: "latest"
+
+  commitSha: placeholder
+
+  environment: dev
+  # Used by virtual-service's hosts
+  # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
+  endpoint: dev.lighthouse.va.gov
+  lhdiCluster: nonprod

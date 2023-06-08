@@ -1,10 +1,5 @@
 
 global:
-  environment: prod
-  endpoint: api.lighthouse.va.gov
-  lhdiCluster: prod
-
-  imagePrefix: ""
 
   bip:
     bipClaimUrl: claims-prod.prod.bip.va.gov/api/v1

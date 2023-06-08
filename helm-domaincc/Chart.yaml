@@ -1,6 +1,6 @@
 apiVersion: v2
-name: vro
-description: VRO
+name: vro-domain-cc
+description: Contention Classification Domain in VRO
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -26,19 +26,5 @@ appVersion: "3.0.9"
 # https://levelup.gitconnected.com/helm-data-sharing-between-parent-and-child-chart-c4487a452d4e
 dependencies:
   # name must match the subchart's Chart.yaml's name
-  - name: console-chart
-    condition: console.enabled
-  - name: rabbitmq-chart
-    condition: rabbitmq.enabled
-  - name: postgres-chart
-    condition: postgres.enabled
-  - name: redis-chart
-    condition: redis.enabled
-  - name: api-gateway-chart
-    condition: api-gateway.enabled
-  - name: vro-app-chart
-    condition: vro-app.enabled
-  - name: vro-svcs-chart
-    condition: vro-svcs.enabled
-  - name: domain-rrd-chart
-    condition: domain-rrd.enabled
+  - name: domain-cc-chart
+    condition: domain-cc.enabled

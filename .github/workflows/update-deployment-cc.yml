@@ -57,7 +57,7 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
-  RELEASE_NAME: vro
+  RELEASE_NAME: vro-domaincc
 
 jobs:
   update-cc-deployment:
@@ -125,10 +125,15 @@ jobs:
         run: |
           HELM_ARGS=""
 
-          VALUES_FILE="helm/values-for-${{ inputs.target_env }}.yaml"
-          if [ -e "${VALUES_FILE}" ]; then
-            HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
-          fi
+          # Order of these files matter; contents of latter files will override earlier files
+          for VALUES_FILE in \
+            "helm/shared/values-for-${{ inputs.target_env }}.yaml" \
+            "helm-domaincc/values-for-${{ inputs.target_env }}.yaml" \
+          do
+            if [ -e "${VALUES_FILE}" ]; then
+              HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
+            fi
+          done
 
           if [ "${{ inputs.rollback }}" == "true" ] || [ "${{ inputs.target_env }}" == "prod" ]; then
             HELM_ARGS="$HELM_ARGS --atomic"
@@ -140,6 +145,7 @@ jobs:
           # Use arg --reuse-values to reuse settings for VRO's container
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reuse-values --wait --timeout 10m \
+            -f helm/shared/values.yaml -f helm-domaincc/values.yaml \
             ${HELM_ARGS} \
             --set-string domain-cc-chart.imageTag=${{ inputs.image_tag }} \
             --set domain-cc.enabled=${{ inputs.domain-cc }}

@@ -13,8 +13,6 @@ vro-app:
   enabled: true
 vro-svcs:
   enabled: true
-domain-cc:
-  enabled: true
 domain-rrd:
   enabled: false
 # Enable as needed:
@@ -27,20 +25,7 @@ rabbitmq-chart:
 redis-chart:
   imageTag: "7"
 
-# To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
-
-  hostnamePrefix: vro
-
-  images:
-    # Configurable b/c VRO has 2 repos
-    repo: abd-vro-internal
-
-  imagePrefix: dev_
-  # tag is used to set the default image tag for all VRO images
-  imageTag: "latest"
-
-  commitSha: placeholder
 
   # Persistent Volumes
   pgdata:
@@ -52,13 +37,6 @@ global:
     mountPath: /persist/tracking
     storageSize: 1Gi
 
-  # environment is overridden by deploy scripts with $ENV values like dev, qa, prod
-  environment: dev
-  # Used by virtual-service's hosts
-  # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
-  endpoint: dev.lighthouse.va.gov
-  lhdiCluster: nonprod
-
   service:
     apiGateway:
       sourcePort: 8060
@@ -66,9 +44,6 @@ global:
     app:
       sourcePort: 8110
       targetPort: 8110
-    ccApp:
-      sourcePort: 8120
-      targetPort: 8120
     db:
       sourcePort: 5432
       targetPort: 5432

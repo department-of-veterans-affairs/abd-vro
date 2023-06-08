@@ -1,8 +1,5 @@
 
 global:
-  environment: qa
-  endpoint: qa.lighthouse.va.gov
-  lhdiCluster: nonprod
 
   bip:
     bipClaimUrl: claims-uat.stage.bip.va.gov/api/v1
