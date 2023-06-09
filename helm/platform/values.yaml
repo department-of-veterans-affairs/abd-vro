@@ -1,0 +1,24 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+console:
+  enabled: true
+postgres:
+  enabled: true
+rabbitmq:
+  enabled: true
+redis:
+  enabled: true
+
+rabbitmq-chart:
+  imageTag: "3"
+
+redis-chart:
+  imageTag: "7"
+
+global:
+
+  # Persistent Volumes
+  pgdata:
+    storageSize: 2Gi
+  tracking:
+    storageSize: 1Gi

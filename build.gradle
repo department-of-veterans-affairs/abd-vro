@@ -162,8 +162,8 @@ scmVersion {
     'rabbitmq'   : (String) helmValues.get("rabbitmq-chart").get("imageTag"),
 
     // These change occasionally
-    'app'        : '3.0.0',
-    'svcs'       : '3.0.0',
+    'vro-app'    : '3.0.0',
+    'vro-svcs'   : '3.0.0',
     'console'    : '2.5.0',
 
     // These change often (i.e., with each release)
@@ -179,8 +179,9 @@ scmVersion {
 
       def helmChartFilePaths = [
         project.findProperty("helm.${projectName}.chart_file"),
-        "/helm/charts/${projectName}/Chart.yaml",
-        "/helm/charts/vro-${projectName}/Chart.yaml"
+        "/helm/${projectName}/Chart.yaml",
+        "/helm/platform/charts/${projectName}/Chart.yaml",
+        "/helm/vro/charts/${projectName}/Chart.yaml"
       ]
       def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
       println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)

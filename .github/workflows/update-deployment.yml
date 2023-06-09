@@ -221,8 +221,8 @@ jobs:
 
           # Order of these files matter; contents of latter files will override earlier files
           for VALUES_FILE in \
-            "helm/shared/values-for-${{ inputs.target_env }}.yaml" \
-            "helm/values-for-${{ inputs.target_env }}.yaml" \
+            "helm/_shared/values-for-${{ inputs.target_env }}.yaml" \
+            "helm/vro/values-for-${{ inputs.target_env }}.yaml" \
           do
             if [ -e "${VALUES_FILE}" ]; then
               HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
@@ -243,12 +243,14 @@ jobs:
           HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "${{ inputs.rabbitmq }}")"
           HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "${{ inputs.redis }}")"
 
+          // TODO: api-gateway, platform, vro
+
           echo "HELM_ARGS: $HELM_ARGS"
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
           set -x
-          helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          helm upgrade ${{ env.RELEASE_NAME }} helm/vro -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reset-values --wait --timeout 10m \
-            -f helm/shared/values.yaml -f helm/values.yaml \
+            -f helm/_shared/values.yaml -f helm/vro/values.yaml \
             ${HELM_ARGS} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \

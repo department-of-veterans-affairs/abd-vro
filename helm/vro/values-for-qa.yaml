@@ -1,0 +1,6 @@
+
+vro-app-chart:
+
+  bip:
+    bipClaimUrl: claims-uat.stage.bip.va.gov/api/v1
+    bipEvidenceUrl: vefs-claimevidence-uat.stage.bip.va.gov/api/v1/rest/

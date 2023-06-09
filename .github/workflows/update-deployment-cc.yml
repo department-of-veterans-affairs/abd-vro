@@ -127,8 +127,8 @@ jobs:
 
           # Order of these files matter; contents of latter files will override earlier files
           for VALUES_FILE in \
-            "helm/shared/values-for-${{ inputs.target_env }}.yaml" \
-            "helm-domaincc/values-for-${{ inputs.target_env }}.yaml" \
+            "helm/_shared/values-for-${{ inputs.target_env }}.yaml" \
+            "helm/domain-cc/values-for-${{ inputs.target_env }}.yaml" \
           do
             if [ -e "${VALUES_FILE}" ]; then
               HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
@@ -143,9 +143,9 @@ jobs:
           echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
           set -x
           # Use arg --reuse-values to reuse settings for VRO's container
-          helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
+          helm upgrade ${{ env.RELEASE_NAME }} helm/domain-cc -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reuse-values --wait --timeout 10m \
-            -f helm/shared/values.yaml -f helm-domaincc/values.yaml \
+            -f helm/_shared/values.yaml -f helm/domain-cc/values.yaml \
             ${HELM_ARGS} \
             --set-string domain-cc-chart.imageTag=${{ inputs.image_tag }} \
             --set domain-cc.enabled=${{ inputs.domain-cc }}

@@ -1,0 +1,9 @@
+
+global:
+  environment: dev
+  # Used by virtual-service's hosts
+  # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
+  endpoint: dev.lighthouse.va.gov
+  lhdiCluster: nonprod
+
+  imagePrefix: dev_
