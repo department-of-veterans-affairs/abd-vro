@@ -11,4 +11,4 @@ languages:
   python:
     version: 3.9
     requirements:
-      - ./domain-cc/cc-app/requirements.txt
+      - ./domain-cc/cc-app/src/requirements.txt

@@ -244,7 +244,6 @@ jobs:
           helm upgrade ${{ env.RELEASE_NAME }} helm/ -n va-abd-rrd-${{ inputs.target_env }} \
             --install --reset-values --wait --timeout 10m \
             ${HELM_ARGS} \
-            --set-string global.environment=${{ inputs.target_env }} \
             --set-string global.imageTag=${{ inputs.image_tag }} \
             --set-string global.commitSha=${GITHUB_SHA} \
             --set vro-app.enabled=${{ inputs.vro-app }} \

@@ -1,13 +1,7 @@
 labels:
   app: domain-cc-app
 
-resources:
-  requests:
-    cpu: 150m
-    memory: 512Mi
-  limits:
-    cpu: 1000m
-    memory: 1024Mi
+serviceUriPrefix: contention-classification
 
 replicaCount: 1
 
