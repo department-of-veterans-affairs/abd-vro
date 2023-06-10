@@ -46,4 +46,6 @@ readinessProbe:
 #   maxReplicas: 100
 #   targetCPUUtilizationPercentage: 80
 
-vroAudUrl: https://sandbox-api.va.gov/services/abd-vro
+# TODO: Consider moving these URL settings to application-*.yml files
+vroAudUrl:    https://sandbox-api.va.gov/services/abd-vro
+lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation

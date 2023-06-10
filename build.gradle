@@ -154,12 +154,12 @@ scmVersion {
   def postgresDockerfileContent=file("${project.rootDir}/postgres/src/docker/Dockerfile").getText()
   def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
   def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
-  Map<String, Object> helmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/values.yaml").text)
+  Map<String, Object> platformHelmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/platform/values.yaml").text)
   def helmChartAppVersions = [
     // These rarely change
     'postgres'   : postgresBaseImageVersion, // extracted from Dockerfile
-    'redis'      : (String) helmValues.get("redis-chart").get("imageTag"),
-    'rabbitmq'   : (String) helmValues.get("rabbitmq-chart").get("imageTag"),
+    'redis'      : (String) platformHelmValues.get("redis-chart").get("imageTag"),
+    'rabbitmq'   : (String) platformHelmValues.get("rabbitmq-chart").get("imageTag"),
 
     // These change occasionally
     'vro-app'    : '3.0.0',

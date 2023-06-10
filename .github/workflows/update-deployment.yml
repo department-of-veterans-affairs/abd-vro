@@ -15,29 +15,42 @@ on:
         - prod-test
         - prod
 
+      helm_chart:
+        description: 'Helm chart to deploy'
+        required: true
+        type: choice
+        options:
+        - api-gateway
+        - platform
+        - vro-svcs
+        - vro-app
+
       image_tag:
-        description: 'First 7 of the commit hash, "latest", or "release-1.2.3"'
+        description: 'First 7 of the commit hash, "latest", "v1.2.3", or "release-1.2.3"'
         required: true
         default: 'latest'
         type: string
 
-      vro-app:
-        description: 'Enable & update VRO Application API'
+      # Other deployment options
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
         required: true
         type: boolean
-        default: true
-      vro-svcs:
-        description: 'Enable & update VRO domain-independent microservices'
+        default: false
+      shutdown:
+        description: 'Shut down deployment completely, then redeploy (For emergency use)'
         required: true
         type: boolean
-        default: true
+        default: false
+
+      # VRO Platform options
       postgres:
-        description: 'Enable DB'
+        description: '(Platform chart only) Enable DB'
         required: true
         type: boolean
         default: true
       rabbitmq:
-        description: 'RabbitMQ image tag'
+        description: '(Platform chart only) RabbitMQ image tag'
         required: true
         default: 3
         type: choice
@@ -46,7 +59,7 @@ on:
         - 3
         - (disable)
       redis:
-        description: 'Redis image tag'
+        description: '(Platform chart only) Redis image tag'
         required: true
         default: 7
         type: choice
@@ -55,19 +68,7 @@ on:
         - 7
         - (disable)
       console:
-        description: 'Enable VRO Console'
-        required: true
-        type: boolean
-        default: false
-
-      # Other deployment options
-      rollback:
-        description: 'If deploy fails, rollback to previous? (Always true for prod)'
-        required: true
-        type: boolean
-        default: false
-      restart:
-        description: 'Shut down deployment completely, then redeploy (For emergency use)'
+        description: '(Platform chart only) Enable VRO Console'
         required: true
         type: boolean
         default: false
@@ -78,18 +79,13 @@ on:
       target_env:
         required: true
         type: string
+      helm_chart:
+        required: true
+        type: string
       image_tag:
         required: true
         type: string
 
-      vro-app:
-        required: false
-        type: boolean
-        default: true
-      vro-svcs:
-        required: false
-        type: boolean
-        default: true
       postgres:
         required: false
         type: boolean
@@ -111,7 +107,7 @@ on:
         required: false
         type: boolean
         default: false
-      restart:
+      shutdown:
         required: false
         type: boolean
         default: false
@@ -119,7 +115,7 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
-  RELEASE_NAME: vro
+  RELEASE_NAME: "vro-${{ inputs.helm_chart }}"
 
 jobs:
   update-deployment:
@@ -150,54 +146,28 @@ jobs:
           echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
           chmod go-rwx ~/.kube/config
 
-          echo "==================================="
-          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
-            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
-            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
-
-            echo '## Before update' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-
-            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
-            echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
-            # Show values with an `enabled` key
-            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
-          else
-            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
-            # Set helm_values so that subsequent steps that access it don't fail
-            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
-          fi
+#          echo "==================================="
+#          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
+#            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+#            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+#
+#            echo '## Before update' >> $GITHUB_STEP_SUMMARY
+#            echo '```' >> $GITHUB_STEP_SUMMARY
+#            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+#            echo '```' >> $GITHUB_STEP_SUMMARY
+#
+#            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
+#            echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
+#            # Show values with an `enabled` key
+#            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+#          else
+#            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+#            # Set helm_values so that subsequent steps that access it don't fail
+#            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
+#          fi
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
-
-      - name: "Slack thread: Post shutdown message"
-        if: inputs.restart
-        # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":broom: Shutting down current deployment"
-      - name: "Shutting down deployment in ${{ inputs.target_env }} env"
-        if: inputs.restart
-        run: helm del ${{ env.RELEASE_NAME }} --wait -n va-abd-rrd-${{ inputs.target_env }}
-
-      - name: "Workaround for postgres StatefulSet"
-        # If upgrading existing deployment and you want postgres and it's already enabled, then
-        # apply the workaround to delete StatefulSets without deleting pods (allow pods to be temporarily orphaned)
-        if: (!inputs.restart) && inputs.postgres && fromJSON(steps.kube-setup.outputs.helm_values).postgres.enabled
-        run: |
-          # This is a workaround for `helm upgrade` reporting error due to a StatefulSet:
-          #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
-          #     Forbidden: updates to statefulset spec for fields other than ...
-          # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
-
-          kubectl delete statefulsets vro-postgres -n va-abd-rrd-${{ inputs.target_env }} \
-            --cascade=orphan --wait --ignore-not-found=true
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
@@ -206,71 +176,28 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_angel: Deploying:\n\
-            - vro-app: *${{ inputs.vro-app }}*\n\
-            - vro-svcs: *${{ inputs.vro-svcs }}*\n\
+          slack-text: ":panda_angel: Deploying *${{ inputs.helm_chart }}* Helm chart:\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
             - redis: *${{ inputs.redis }}*\n\
             - console: ${{ inputs.console }}\n\
-            Rollback if deployment fails: ${{ inputs.rollback }}\n\
-            Restart before deployment: ${{ inputs.restart }}"
+            Rollback if chart deployment fails: ${{ inputs.rollback }}\n\
+            Shutdown chart before deployment: ${{ inputs.shutdown }}"
       - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
-          HELM_ARGS=""
+          echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
 
-          # Order of these files matter; contents of latter files will override earlier files
-          for VALUES_FILE in \
-            "helm/_shared/values-for-${{ inputs.target_env }}.yaml" \
-            "helm/vro/values-for-${{ inputs.target_env }}.yaml" \
-          do
-            if [ -e "${VALUES_FILE}" ]; then
-              HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
-            fi
-          done
+          export ROLLBACK=${{ inputs.rollback }}
+          export RABBITMQ_VER=${{ inputs.rabbitmq }}
+          export REDIS_VER=${{ inputs.redis }}
 
-          if [ "${{ inputs.rollback }}" == "true" ] || [ "${{ inputs.target_env }}" == "prod" ]; then
-            HELM_ARGS="$HELM_ARGS --atomic"
-          fi
+          export ENABLE_POSTGRES=${{ inputs.postgres }}
+          export ENABLE_CONSOLE=${{ inputs.console }}
 
-          helmArgsFor(){
-            if [ "$2" == "(disable)" ]; then
-              echo "--set $1.enabled=false"
-            else
-              echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
-            fi
-          }
-          HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "${{ inputs.rabbitmq }}")"
-          HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "${{ inputs.redis }}")"
-
-          // TODO: api-gateway, platform, vro
-
-          echo "HELM_ARGS: $HELM_ARGS"
-          echo "::group::Upgrading Helm release: ${{ env.RELEASE_NAME }}"
-          set -x
-          helm upgrade ${{ env.RELEASE_NAME }} helm/vro -n va-abd-rrd-${{ inputs.target_env }} \
-            --install --reset-values --wait --timeout 10m \
-            -f helm/_shared/values.yaml -f helm/vro/values.yaml \
-            ${HELM_ARGS} \
-            --set-string global.imageTag=${{ inputs.image_tag }} \
-            --set-string global.commitSha=${GITHUB_SHA} \
-            --set vro-app.enabled=${{ inputs.vro-app }} \
-            --set vro-svcs.enabled=${{ inputs.vro-svcs }} \
-            --set postgres.enabled=${{ inputs.postgres }} \
-            --set console.enabled=${{ inputs.console }}
+          export K8SINFO=true
+          export WAIT_TIMEOUT="10m"
+          helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"
-
-          echo "==================================="
-          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
-          # https://kubernetes.io/docs/reference/kubectl/jsonpath/
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods -o jsonpath='{range .items[*]}
-            {"pod: "}{.metadata.name}{range .spec.containers[*]}
-            {"\tname: "}{.name}
-            {"\timage: "}{.image}{end}'
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get pvc
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get services
-          kubectl -n va-abd-rrd-${{ inputs.target_env }} get events
 
           echo '## After update' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY

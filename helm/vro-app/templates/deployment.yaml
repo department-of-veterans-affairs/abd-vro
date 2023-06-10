@@ -99,20 +99,20 @@ spec:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_MAS
-            - name: MAS_API_AUTH_TOKEN_URI
-              value: {{ .Values.mas.masApiAuthTokenUri }}
-            - name: MAS_API_BASE_URL
-              value: {{ .Values.mas.masApiBaseUrl }}
+#            - name: MAS_API_AUTH_TOKEN_URI
+#              value: { { .Values.mas.masApiAuthTokenUri }}
+#            - name: MAS_API_BASE_URL
+#              value: { { .Values.mas.masApiBaseUrl }}
 
             - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
                   name: vro-secrets
                   key: VRO_SECRETS_BIP
-            - name: BIP_CLAIM_URL
-              value: {{ .Values.bip.bipClaimUrl }}
-            - name: BIP_EVIDENCE_URL
-              value: {{ .Values.bip.bipEvidenceUrl }}
+#            - name: BIP_CLAIM_URL
+#              value: { { .Values.bip.bipClaimUrl }}
+#            - name: BIP_EVIDENCE_URL
+#              value: { { .Values.bip.bipEvidenceUrl }}
             - name: BIP_STATION_ID
               value: "281"
           resources:

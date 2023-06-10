@@ -25,12 +25,32 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 #echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
 #echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
 
-: ${ENABLE_VROAPP:=true}
-: ${ENABLE_VROSVCS:=true}
-: ${ENABLE_POSTGRES:=true}
-: ${ENABLE_CONSOLE:=false}
-: ${RABBITMQ_VER:=3}
-: ${REDIS_VER:=7}
+if [ "${RESTART_CHART}" ]; then
+  helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
+fi
+
+HELM_ARGS=""
+
+if [ "${ROLLBACK}" == "true" ] || [ "${TARGET_ENV}" == "prod" ]; then
+  HELM_ARGS="$HELM_ARGS --atomic"
+fi
+
+if [ "${WAIT_TIMEOUT}" ]; then
+  HELM_ARGS="$HELM_ARGS --wait --timeout '${WAIT_TIMEOUT}'"
+fi
+
+# Load values from files first; command-line parameters can override these values
+# Order of these files matter; contents of latter files will override earlier files
+for VALUES_FILE in \
+  "helm/_shared/values.yaml" \
+  "helm/_shared/values-for-${TARGET_ENV}.yaml" \
+  "helm/$HELM_CHART/values.yaml" \
+  "helm/$HELM_CHART/values-for-${TARGET_ENV}.yaml"
+do
+  if [ -e "${VALUES_FILE}" ]; then
+    HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
+  fi
+done
 
 # Workaround for postgres StatefulSet
 # If upgrading existing deployment and you want postgres and it's already enabled, then
@@ -45,43 +65,37 @@ deletePostgresStatefulSet(){
     --cascade=orphan --wait --ignore-not-found=true
 }
 
-if [ "${RESTART}" ]; then
-  helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
-elif [ "$HELM_CHART" == "platform" ] && [ "$ENABLE_POSTGRES" == "true" ]; then
-  deletePostgresStatefulSet
-fi
-
-HELM_ARGS=""
-
-if [ "${ROLLBACK}" == "true" ] || [ "${TARGET_ENV}" == "prod" ]; then
-  HELM_ARGS="$HELM_ARGS --atomic"
-fi
-
-if [ "${WAIT_TIMEOUT}" ]; then
-  HELM_ARGS="$HELM_ARGS --wait --timeout '${WAIT_TIMEOUT}'"
-fi
-
-# Order of these files matter; contents of latter files will override earlier files
-for VALUES_FILE in \
-  "helm/_shared/values.yaml" \
-  "helm/_shared/values-for-${TARGET_ENV}.yaml" \
-  "helm/$HELM_CHART/values.yaml" \
-  "helm/$HELM_CHART/values-for-${TARGET_ENV}.yaml"
-do
-  if [ -e "${VALUES_FILE}" ]; then
-    HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
-  fi
-done
-
-helmArgsFor(){
-  if [ "$2" == "(disable)" ]; then
-    echo "--set $1.enabled=false"
-  else
-    echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
-  fi
+platformChartArgs(){
+  helmArgsForSubchart(){
+    if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
+      echo "--set $1.enabled=false"
+    else
+      echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
+    fi
+  }
+  HELM_ARGS="$HELM_ARGS \
+    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
+    $(helmArgsForSubchart redis "$REDIS_VER") \
+    --set postgres.enabled=$ENABLE_POSTGRES \
+    --set console.enabled=$ENABLE_CONSOLE \
+  "
+  echo "platform HELM_ARGS: $HELM_ARGS"
 }
-HELM_ARGS="$HELM_ARGS $(helmArgsFor rabbitmq "$RABBITMQ_VER")"
-HELM_ARGS="$HELM_ARGS $(helmArgsFor redis "$REDIS_VER")"
+
+case "$HELM_CHART" in
+  platform)
+    : ${ENABLE_POSTGRES:=true}
+    : ${ENABLE_CONSOLE:=false}
+    : ${RABBITMQ_VER:=3}
+    : ${REDIS_VER:=7}
+    if [ "${RESTART_CHART}" ]; then
+      : echo "Since Helm chart was shut down, don't need to delete other charts."
+    elif [ "$ENABLE_POSTGRES" == "true" ]; then
+      deletePostgresStatefulSet
+    fi
+    platformChartArgs
+    ;;
+esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
 set -x
@@ -89,11 +103,7 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
   ${HELM_ARGS} \
   --set-string "global.imageTag=${IMAGE_TAG}" \
-  --set-string "global.commitSha=${GITHUB_SHA}" \
-  --set "vro-app.enabled=$ENABLE_VROAPP" \
-  --set "vro-svcs.enabled=$ENABLE_VROSVCS" \
-  --set "postgres.enabled=$ENABLE_POSTGRES" \
-  --set "console.enabled=$ENABLE_CONSOLE"
+  --set-string "global.commitSha=${GITHUB_SHA}"
 set +x
 
 k8sInfo(){
