@@ -36,7 +36,7 @@ if [ "${ROLLBACK}" == "true" ] || [ "${TARGET_ENV}" == "prod" ]; then
 fi
 
 if [ "${WAIT_TIMEOUT}" ]; then
-  HELM_ARGS="$HELM_ARGS --wait --timeout '${WAIT_TIMEOUT}'"
+  HELM_ARGS="$HELM_ARGS --wait --timeout ${WAIT_TIMEOUT}"
 fi
 
 # Load values from files first; command-line parameters can override these values

@@ -76,9 +76,6 @@ spec:
   - metadata:
       # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>
       name: {{ .Values.global.pgdata.pvcName }}
-      # The label is needed to ensure containers that use this volume are deployed in the same node. Such containers should
-      # use podAffinity https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-      # labels: { {- toYaml .Values.global.pgdata.labels | nindent 4 }}
     spec:
       accessModes:
         # Due to several issues with EFS (https://dsva.slack.com/archives/C03UA9MV1EH/p1677507203922209),
