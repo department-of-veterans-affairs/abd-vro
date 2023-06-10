@@ -146,25 +146,25 @@ jobs:
           echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
           chmod go-rwx ~/.kube/config
 
-#          echo "==================================="
-#          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
-#            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
-#            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
-#
-#            echo '## Before update' >> $GITHUB_STEP_SUMMARY
-#            echo '```' >> $GITHUB_STEP_SUMMARY
-#            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
-#            echo '```' >> $GITHUB_STEP_SUMMARY
-#
-#            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
-#            echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
-#            # Show values with an `enabled` key
-#            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
-#          else
-#            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
-#            # Set helm_values so that subsequent steps that access it don't fail
-#            echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
-#          fi
+          echo "==================================="
+          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+
+            echo '## Before update' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
+            # echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
+            # Show values with an `enabled` key
+            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+          else
+            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+            # Set helm_values so that subsequent steps that access it don't fail
+            # echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
+          fi
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -188,6 +188,8 @@ jobs:
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
 
           export ROLLBACK=${{ inputs.rollback }}
+          export SHUTDOWN_FIRST=${{ inputs.shutdown }}
+
           export RABBITMQ_VER=${{ inputs.rabbitmq }}
           export REDIS_VER=${{ inputs.redis }}
 
