@@ -1,7 +1,7 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
 console:
-  enabled: true
+  enabled: false
 postgres:
   enabled: true
 rabbitmq:
