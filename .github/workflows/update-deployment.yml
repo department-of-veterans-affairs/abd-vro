@@ -20,13 +20,13 @@ on:
         required: true
         type: choice
         options:
+        - vro-app
+        - vro-svcs
         - api-gateway
         - platform
-        - vro-svcs
-        - vro-app
 
       image_tag:
-        description: 'First 7 of the commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
         required: true
         default: 'latest'
         type: string
@@ -38,19 +38,20 @@ on:
         type: boolean
         default: false
       shutdown:
-        description: 'Shut down deployment completely, then redeploy (For emergency use)'
+        description: '(As a last resort) Shut down chart completely, then redeploy'
         required: true
         type: boolean
         default: false
 
       # VRO Platform options
-      postgres:
-        description: '(Platform chart only) Enable DB'
-        required: true
-        type: boolean
-        default: true
+      platformHeader:
+        description: '======= Platform chart only ======='
+        type: choice
+        options:
+          - Remaining options are for 'platform'
+          - Selections are ignored for others charts
       rabbitmq:
-        description: '(Platform chart only) RabbitMQ image tag'
+        description: 'RabbitMQ image tag'
         required: true
         default: 3
         type: choice
@@ -59,7 +60,7 @@ on:
         - 3
         - (disable)
       redis:
-        description: '(Platform chart only) Redis image tag'
+        description: 'Redis image tag'
         required: true
         default: 7
         type: choice
@@ -67,8 +68,13 @@ on:
         - latest
         - 7
         - (disable)
+      postgres:
+        description: 'Enable DB'
+        required: true
+        type: boolean
+        default: true
       console:
-        description: '(Platform chart only) Enable VRO Console'
+        description: 'Enable VRO Console'
         required: true
         type: boolean
         default: false
@@ -86,10 +92,15 @@ on:
         required: true
         type: string
 
-      postgres:
+      rollback:
         required: false
         type: boolean
-        default: true
+        default: false
+      shutdown:
+        required: false
+        type: boolean
+        default: false
+
       rabbitmq:
         required: false
         type: string
@@ -98,16 +109,11 @@ on:
         required: false
         type: string
         default: "latest"
+      postgres:
+        required: false
+        type: boolean
+        default: true
       console:
-        required: false
-        type: boolean
-        default: false
-
-      rollback:
-        required: false
-        type: boolean
-        default: false
-      shutdown:
         required: false
         type: boolean
         default: false
@@ -131,9 +137,11 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
-            Updating deployment (#${{ github.run_number }})> \
+            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}* \
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
-            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n"
+            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n\
+            - Rollback if chart deployment fails: ${{ inputs.rollback }}\n\
+            - Shutdown chart before deployment: ${{ inputs.shutdown }}"
 
       - name: "Set up kube config"
         id: kube-setup
@@ -156,10 +164,10 @@ jobs:
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
 
-            HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
+            # HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
             # echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
             # Show values with an `enabled` key
-            echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
+            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
             # Set helm_values so that subsequent steps that access it don't fail
@@ -170,6 +178,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Slack thread: Post deploying message"
+        if: inputs.helm_chart == 'platform'
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:
@@ -178,11 +187,9 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_angel: Deploying *${{ inputs.helm_chart }}* Helm chart:\n\
             - rabbitmq: *${{ inputs.rabbitmq }}*\n\
-            - postgres: *${{ inputs.postgres }}*\n\
             - redis: *${{ inputs.redis }}*\n\
-            - console: ${{ inputs.console }}\n\
-            Rollback if chart deployment fails: ${{ inputs.rollback }}\n\
-            Shutdown chart before deployment: ${{ inputs.shutdown }}"
+            - postgres: *${{ inputs.postgres }}*\n\
+            - console: ${{ inputs.console }}"
       - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
@@ -213,7 +220,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_cry: Failed deployment to *${{ inputs.target_env }}*"
+          slack-text: ":panda_cry: Failed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React failure on top-level Slack notification"
         if: failure()
         uses: archive/github-actions-slack@v2.6.0
@@ -230,7 +237,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_duck_yay: Completed deployment to ${{ inputs.target_env }}"
+          slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to ${{ inputs.target_env }}"
       - name: "Slack emoji: React success on top-level Slack notification"
         uses: archive/github-actions-slack@v2.6.0
         with:
