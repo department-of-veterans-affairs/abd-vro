@@ -74,7 +74,7 @@ spec:
   volumeClaimTemplates:
   # This template is used to create a PVC
   - metadata:
-      # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>
+      # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>, such as vro-pgdata-pvc-vro-postgres-0
       name: {{ .Values.global.pv.pgdata.pvcName }}
     spec:
       accessModes:

@@ -5,7 +5,7 @@ labels:
   app: vro-console
 
 pvcClaimName:
-  # Allow this to be configurable due to the index as the suffix
+  # Allow this to be configurable due to the incrementing StatefulSet-index suffix
   postgres: vro-pgdata-pvc-vro-postgres-0
 
 replicaCount: 1

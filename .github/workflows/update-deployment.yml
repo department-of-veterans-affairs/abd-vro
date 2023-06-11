@@ -137,7 +137,7 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
-            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}*\
+            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}* \
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
             (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n\
             - Rollback if chart deployment fails: *${{ inputs.rollback }}*\n\
