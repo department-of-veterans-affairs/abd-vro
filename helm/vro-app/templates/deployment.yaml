@@ -74,7 +74,7 @@ spec:
             - name: JAVA_OPTS
               value: -Xmx512m
             - name: PERSIST_TRACKING_FOLDER
-              value: {{ .Values.global.tracking.mountPath }}
+              value: {{ .Values.global.pv.tracking.mountPath }}
             - name: STARTER_OPENAPI_SERVERURL
               value: /{{ .Values.serviceUriPrefix }}
 

@@ -44,6 +44,6 @@ spec:
             {{- include "vro.volumeMounts.pgdata" . | nindent 12 }}
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
-        - name: {{ .Values.global.pgdata.pvcName }}
+        - name: {{ .Values.global.pv.pgdata.pvcName }}
           persistentVolumeClaim:
             claimName: {{ .Values.pvcClaimName.postgres }}

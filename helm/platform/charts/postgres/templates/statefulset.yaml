@@ -40,7 +40,7 @@ spec:
                   key: DB_SUPERUSER_PASS
             - name: PGDATA
               # https://hub.docker.com/_/postgres recommends using a subdirectory under the mounted directory
-              value: {{ .Values.global.pgdata.mountPath }}/pgdata
+              value: {{ .Values.global.pv.pgdata.mountPath }}/pgdata
             # Following is used to set up a user and DB schema for Flyway migrations
             - name: FLYWAY_USER
               valueFrom:
@@ -75,7 +75,7 @@ spec:
   # This template is used to create a PVC
   - metadata:
       # Used as the prefix for the PVC. The suffix is the StatefulSet-<index>
-      name: {{ .Values.global.pgdata.pvcName }}
+      name: {{ .Values.global.pv.pgdata.pvcName }}
     spec:
       accessModes:
         # Due to several issues with EFS (https://dsva.slack.com/archives/C03UA9MV1EH/p1677507203922209),
@@ -87,4 +87,4 @@ spec:
       storageClassName: ebs-sc
       resources:
         requests:
-          storage: {{ .Values.global.pgdata.storageSize }}
+          storage: {{ .Values.global.pv.pgdata.storageSize }}

@@ -1,7 +1,6 @@
 
 global:
+  lhdiCluster: nonprod
   environment: sandbox
   endpoint: sandbox.lighthouse.va.gov
-  lhdiCluster: nonprod
-
   imagePrefix: ""

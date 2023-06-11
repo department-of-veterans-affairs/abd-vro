@@ -1,4 +1,3 @@
-
 {{/***************************************************************
   Reusable templates for accessing K8s secrets
 */}}

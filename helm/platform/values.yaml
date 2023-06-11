@@ -16,9 +16,9 @@ redis-chart:
   imageTag: "7"
 
 global:
-
   # Persistent Volumes
-  pgdata:
-    storageSize: 2Gi
-  tracking:
-    storageSize: 1Gi
+  pv:
+    pgdata:
+      storageSize: 2Gi
+    tracking:
+      storageSize: 1Gi

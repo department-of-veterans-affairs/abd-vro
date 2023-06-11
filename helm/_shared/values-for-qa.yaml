@@ -1,7 +1,6 @@
 
 global:
+  lhdiCluster: nonprod
   environment: qa
   endpoint: qa.lighthouse.va.gov
-  lhdiCluster: nonprod
-
   imagePrefix: dev_

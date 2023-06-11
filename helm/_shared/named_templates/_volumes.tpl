@@ -1,4 +1,3 @@
-
 {{/***************************************************************
     Persistent Volumes
 */}}
@@ -8,36 +7,36 @@
   Containers using this EBS volume must also use pgdata.affinity below
 
 {{- define "vro.volumes.pgdata" -}}
-- name: {{ .Values.global.pgdata.pvcName }}
+- name: {{ .Values.global.pv.pgdata.pvcName }}
   persistentVolumeClaim:
-    claimName: {{ .Values.global.pgdata.pvcName }}
+    claimName: {{ .Values.global.pv.pgdata.pvcName }}
 {{- end }}
 */}}
 
 {{- define "vro.volumeMounts.pgdata" -}}
-- name: {{ .Values.global.pgdata.pvcName }}
-  mountPath: {{ .Values.global.pgdata.mountPath }}
+- name: {{ .Values.global.pv.pgdata.pvcName }}
+  mountPath: {{ .Values.global.pv.pgdata.mountPath }}
 {{- end }}
 
 {{/*
   EFS Volume mount for tracking API requests
 */}}
 {{- define "vro.volumes.tracking" -}}
-- name: {{ .Values.global.tracking.pvcName }}
+- name: {{ .Values.global.pv.tracking.pvcName }}
   persistentVolumeClaim:
-    claimName: {{ .Values.global.tracking.pvcName }}
+    claimName: {{ .Values.global.pv.tracking.pvcName }}
 {{- end }}
 
 {{- define "vro.volumeMounts.tracking" -}}
-- name: {{ .Values.global.tracking.pvcName }}
-  mountPath: {{ .Values.global.tracking.mountPath }}
+- name: {{ .Values.global.pv.tracking.pvcName }}
+  mountPath: {{ .Values.global.pv.tracking.mountPath }}
 {{- end }}
 
 {{/*
   EBS volumes can only be mounted by containers in the same node.
   This affinity added to pod specs ensures the pod runs on the same node.
   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-  Remember to also add `.Values.global.pgdata.labels` to spec.template.metadata.labels
+  Remember to also add `.Values.global.pv.pgdata.labels` to spec.template.metadata.labels
 */}}
 {{- define "vro.volume.pgdata.affinity" -}}
 affinity:

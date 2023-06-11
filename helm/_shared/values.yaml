@@ -2,25 +2,21 @@
 
 # To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
 global:
-
   hostnamePrefix: vro
-
+  commitSha: placeholder
   images:
-    # Configurable b/c VRO has 2 repos
     repo: abd-vro-internal
-
   # tag is used to set the default image tag for all VRO images
   imageTag: "latest"
 
-  commitSha: placeholder
-
   # Persistent Volumes
-  pgdata:
-    pvcName: vro-pgdata-pvc
-    mountPath: /persist/postgres
-  tracking:
-    pvcName: vro-tracking-pvc
-    mountPath: /persist/tracking
+  pv:
+    pgdata:
+      pvcName: vro-pgdata-pvc
+      mountPath: /persist/postgres
+    tracking:
+      pvcName: vro-tracking-pvc
+      mountPath: /persist/tracking
 
   service:
     db:

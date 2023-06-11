@@ -137,11 +137,11 @@ jobs:
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-text: ":rocket: \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
-            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}* \
+            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}*\
             in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
             (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n\
-            - Rollback if chart deployment fails: ${{ inputs.rollback }}\n\
-            - Shutdown chart before deployment: ${{ inputs.shutdown }}"
+            - Rollback if chart deployment fails: *${{ inputs.rollback }}*\n\
+            - Shutdown chart before deployment: *${{ inputs.shutdown }}*"
 
       - name: "Set up kube config"
         id: kube-setup
@@ -190,7 +190,8 @@ jobs:
             - redis: *${{ inputs.redis }}*\n\
             - postgres: *${{ inputs.postgres }}*\n\
             - console: ${{ inputs.console }}"
-      - name: "Deploy '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
+
+      - name: "Deploy ${{ inputs.helm_chart }} '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
 
@@ -199,12 +200,11 @@ jobs:
 
           export RABBITMQ_VER=${{ inputs.rabbitmq }}
           export REDIS_VER=${{ inputs.redis }}
-
           export ENABLE_POSTGRES=${{ inputs.postgres }}
           export ENABLE_CONSOLE=${{ inputs.console }}
 
           export K8SINFO=true
-          export WAIT_TIMEOUT="10m"
+          export WAIT_TIMEOUT=10m
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"
 

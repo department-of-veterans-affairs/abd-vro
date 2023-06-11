@@ -1,7 +1,7 @@
-
 {{/*
   For clients to connect to Redis
 */}}
+
 {{- define "vro.redisClient.envVars" -}}
 - name: REDIS_PLACEHOLDERS_HOST
   value: {{ .Values.global.hostnamePrefix }}-redis

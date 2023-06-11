@@ -1,7 +1,6 @@
 
 global:
+  lhdiCluster: prod
   environment: prod-test
   endpoint: prod-test.lighthouse.va.gov
-  lhdiCluster: prod
-
   imagePrefix: ""

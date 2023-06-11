@@ -1,7 +1,3 @@
-# owner is used in annotations
-name: abd-vro
-owner: VA-OCTO
-
 labels:
   app: vro-app
 
