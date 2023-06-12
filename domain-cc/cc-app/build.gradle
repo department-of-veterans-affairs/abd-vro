@@ -3,6 +3,23 @@ import ru.vyarus.gradle.plugin.python.task.PythonTask
 plugins {
   id 'local.python.container-service-conventions'
   id('ru.vyarus.use-python') version "3.0.0"
+  id 'org.unbroken-dome.test-sets' version '4.0.0'
+}
+
+testSets {
+  end2endTest
+}
+
+tasks.withType(Test).named("end2endTest") {
+  testLogging {
+    // https://wjw465150.github.io/blog/Gradle/my_data/Gradle_Goodness/Show_Standard_Out_or_Error_Output_from_Tests.htm
+    showStandardStreams = true
+    events "skipped", "failed", "passed"
+    exceptionFormat = 'full'
+    showStackTraces = true
+    showExceptions = true
+    showCauses = true
+  }
 }
 
 python {
