@@ -25,7 +25,7 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 #echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
 #echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
 
-if [ "${SHUTDOWN_FIRST}" ]; then
+if [ "${SHUTDOWN_FIRST}" == "true" ]; then
   helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
 fi
 
@@ -88,7 +88,7 @@ case "$HELM_CHART" in
     : ${ENABLE_CONSOLE:=false}
     : ${RABBITMQ_VER:=3}
     : ${REDIS_VER:=7}
-    if [ "${SHUTDOWN_FIRST}" ]; then
+    if [ "${SHUTDOWN_FIRST}" == "true" ]; then
       : echo "Since Helm chart was shut down, don't need to delete other charts."
     elif [ "$ENABLE_POSTGRES" == "true" ]; then
       deletePostgresStatefulSet
