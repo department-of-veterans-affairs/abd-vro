@@ -1,7 +1,7 @@
 name: "PR: CC End-to-End Testing"
 on:
   pull_request:
-    branches: [ main, qa, develop ]
+    branches: [ main, qa, develop, domain-cc ]
     # Limit to certain PR event types since this action doesn't need to run for every commit
     types: [ready_for_review, review_requested]
 
