@@ -30,3 +30,13 @@ jobs:
       helm_chart: vro-svcs
       image_tag: latest
     secrets: inherit
+  deploy-domain-cc:
+    # only run in one of the repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: "Deploy vro-svcs to ${{ inputs.target_env }}"
+    uses: ./.github/workflows/update-deployment.yml
+    with:
+      target_env: dev
+      helm_chart: domain-cc
+      image_tag: latest
+    secrets: inherit
