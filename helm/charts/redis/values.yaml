@@ -1,8 +1,0 @@
-# Best practices: https://helm.sh/docs/chart_best_practices/values/
-
-labels:
-  app: redis
-
-imageTag: "latest"
-
-replicaCount: 1

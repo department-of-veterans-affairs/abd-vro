@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.global.pv.tracking.pvcName }}
+  annotations:
+    # As an alternative to a StatefulSet (mentioned below), keep this PVC when the deploy is deleted/uninstalled.
+    # Helm will no longer manage it in any way, so this PVC must be manually deleted.
+    # https://helm.sh/docs/topics/charts_hooks/#hook-resources-are-not-managed-with-corresponding-releases
+    helm.sh/resource-policy: keep
+spec:
+  # EFS volumes allow ReadWriteMany, which enable multiple containers to mount the volume from any node,
+  # providing easier access than EBS volumes (such as the postgres volume).
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: {{ .Values.global.pv.tracking.storageSize }}

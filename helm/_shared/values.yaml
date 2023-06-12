@@ -1,0 +1,26 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+# To override a setting on commandline: helm --set-string "global.someKey=someValue" ...
+global:
+  hostnamePrefix: vro
+  commitSha: placeholder
+  images:
+    repo: abd-vro-internal
+  # tag is used to set the default image tag for all VRO images
+  imageTag: "latest"
+
+  # Persistent Volumes
+  pv:
+    pgdata:
+      pvcName: vro-pgdata-pvc
+      mountPath: /persist/postgres
+    tracking:
+      pvcName: vro-tracking-pvc
+      mountPath: /persist/tracking
+
+  service:
+    db:
+      sourcePort: 5432
+      targetPort: 5432
+      databaseName: vro
+      schemaName: claims
