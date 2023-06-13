@@ -3,17 +3,9 @@ plugins {
   id 'local.std.java.library-conventions'
 }
 
-group 'gov.va.vro'
-version '1.0.98-SNAPSHOT'
-
-repositories {
-  mavenCentral()
-}
-
 ext {
   jacoco_minimum_coverage = 0.5
 }
-
 
 dependencies {
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
@@ -21,8 +13,4 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt:0.2'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-  useJUnitPlatform()
 }

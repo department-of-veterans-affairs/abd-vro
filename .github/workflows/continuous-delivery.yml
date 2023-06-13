@@ -10,13 +10,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-dev-images:
+  deploy-vro-app:
     # only run in one of the repos
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
-    name: "Deploy to ${{ inputs.target_env }}"
+    name: "Deploy vro-app to ${{ inputs.target_env }}"
     uses: ./.github/workflows/update-deployment.yml
     with:
       target_env: dev
+      helm_chart: vro-app
       image_tag: latest
-      rollback: false
+    secrets: inherit
+  deploy-vro-svcs:
+    # only run in one of the repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: "Deploy vro-svcs to ${{ inputs.target_env }}"
+    uses: ./.github/workflows/update-deployment.yml
+    with:
+      target_env: dev
+      helm_chart: vro-svcs
+      image_tag: latest
+    secrets: inherit
+  deploy-domain-cc:
+    # only run in one of the repos
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    name: "Deploy vro-svcs to ${{ inputs.target_env }}"
+    uses: ./.github/workflows/update-deployment.yml
+    with:
+      target_env: dev
+      helm_chart: domain-cc
+      image_tag: latest
     secrets: inherit
