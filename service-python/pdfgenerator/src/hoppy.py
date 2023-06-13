@@ -39,7 +39,7 @@ class Service:
         channel = connection.channel()
         channel.exchange_declare(exchange=self.exchange, exchange_type="direct", durable=True, auto_delete=True)
         for name, callback in self.consumers.items():
-            QueueConsumer(name, callback).bind_to_channel(channel, self.exchange)
+            QueueConsumer(name, self.exchange, callback).bind_to_channel(channel)
             logging.info(f" [*] Waiting for data for queue: {name}. To exit press CTRL+C")
         return channel
 
@@ -68,15 +68,15 @@ class Service:
 
 
 class QueueConsumer:
-    def __init__(self, service, name, callback):
-        self.service = service
+    def __init__(self, name, exchange, callback):
         self.name = name
+        self.exchange = exchange
         self.callback = callback
         self.wrapped_callback = self._wrap_callback()
 
-    def bind_to_channel(self, channel, exchange):
+    def bind_to_channel(self, channel):
         channel.queue_declare(queue=self.name, durable=True, auto_delete=True)
-        channel.queue_bind(queue=self.name, exchange=exchange)
+        channel.queue_bind(queue=self.name, exchange=self.exchange)
         channel.basic_consume(queue=self.name, on_message_callback=self.wrapped_callback, auto_ack=True)
 
     def _wrap_callback(self):
@@ -99,26 +99,26 @@ class QueueConsumer:
         try:
             message = json.loads(body)
         except Exception as e:
-            return self._error_response(e, "Request deserialization error", code=400)
+            return self._error_response(e, "Request deserialization error", status_code=400)
         try:
             response = self.callback(message, method.routing_key)
-            status = 200
-            if isinstance(response, tuple) and len(response) == 2 and isinstance(response[1], int):
-                response, status = response
             if not isinstance(response, dict):
-                response = {"responseBody": response}
-            response.setdefault("statusCode", status)
+                response = {"responseValue": response}
+            response.setdefault("header", {})
+            response["header"].setdefault("statusCode", 200)
             return response
         except ServiceError as e:
             return self._error_response(e, "")
         except Exception as e:
             return self._error_response(e, "Unhandled error")
 
-    def _error_response(self, exception, description, code=None):
+    def _error_response(self, exception, description, status_code=None):
         message = str(exception) or type(exception).__name__
         return {
-            "statusCode": code or getattr(exception, "ERROR_CODE", 500),
-            "statusMessage": f"{description}: {message}",
+            "header": {
+                "statusCode": status_code or getattr(exception, "ERROR_CODE", 500),
+                "statusMessage": f"{description}: {message}",
+            },
         }
 
 
