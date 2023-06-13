@@ -201,21 +201,6 @@ spring.redis:
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
 
-bip:
-  claimClientId: "${BIP_CLAIM_USERID}"
-  claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "virtual_regional_office"
-  evidenceClientId: "${BIP_EVIDENCE_USERID}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
-  evidenceIssuer: "VRO"
-  applicationId: "${BIP_APPLICATION_ID:VRO}"
-  stationId: "${BIP_STATION_ID:281}"
-truststore: "${BIP_TRUSTSTORE}"
-truststore_password: "${BIP_PASSWORD}"
-keystore: "${BIP_KEYSTORE}"
-
 claim:
   special_issue_1: "RDR1"
   special_issue_2: "RRD"
