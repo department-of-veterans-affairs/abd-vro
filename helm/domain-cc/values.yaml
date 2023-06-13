@@ -1,0 +1,17 @@
+labels:
+  app: domain-cc-app
+
+serviceUriPrefix: contention-classification
+
+replicaCount: 1
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+
+service:
+  ccApp:
+    sourcePort: 8120
+    targetPort: 8120
