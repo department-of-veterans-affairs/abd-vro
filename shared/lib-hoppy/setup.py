@@ -7,4 +7,5 @@ setup(
     version="0.1",
     description="Python library for building VRO microservices",
     packages=["hoppy"],
+    install_requires=["pika"],
 )
