@@ -2,8 +2,9 @@ FROM postgres:14.8-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && \
-    apk --no-cache add curl redis sudo && rm -rf /var/cache/apk/* && \
-    apk upgrade openssl libssl3 libcrypto3
+    apk --no-cache add curl redis sudo && \
+    apk upgrade openssl libssl3 libcrypto3 && \
+    rm -rf /var/cache/apk/*
 
 # The following is needed to run the init-folder.sh script as root (to run chown)
 # before the postgres container does it's normal thing
