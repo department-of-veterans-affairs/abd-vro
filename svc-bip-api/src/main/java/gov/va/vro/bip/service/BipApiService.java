@@ -16,6 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -106,11 +107,13 @@ public class BipApiService implements IBipApiService {
    * @throws BipException error occurs
    */
   @Override
+  @RabbitListener(queues = "setClaimToRfdStatus")
   public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
     return updateClaimStatus(claimId, ClaimStatus.RFD);
   }
 
   @Override
+  @RabbitListener(queues = "updateClaimStatus")
   public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
       throws BipException {
     final String description = status.getDescription();
@@ -137,6 +140,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
+  @RabbitListener(queues = "getClaimContentions")
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
@@ -162,9 +166,11 @@ public class BipApiService implements IBipApiService {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
+
   }
 
   @Override
+  @RabbitListener(queues = "updateClaimContention")
   public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
     try {
@@ -187,6 +193,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
+  @RabbitListener(queues = "verifySpecialIssueTypes")
   public boolean verifySpecialIssueTypes() {
     String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
     log.info("Call {} to get special_issue_types", url);

@@ -32,6 +32,4 @@ dependencies {
 
   testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
-
-
 }
