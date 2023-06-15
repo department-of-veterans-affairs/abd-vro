@@ -52,7 +52,7 @@ class Service:
                 connection.close()
                 if retry_time is None:
                     retry_time = time.time()
-                elif time() - retry_time >= self.config["timeout"]:
+                elif time.time() - retry_time >= self.config["timeout"]:
                     break
                 logging.warning(e, exc_info=True)
                 logging.warning("Connection was closed. Retrying...")
