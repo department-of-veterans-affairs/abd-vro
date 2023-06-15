@@ -32,7 +32,6 @@ def get_health_status():
     return {"status": "ok"}
 
 
-
 @app.post("/classifier")
 def get_classification(
     claim_for_increase: ClaimForIncrease,
