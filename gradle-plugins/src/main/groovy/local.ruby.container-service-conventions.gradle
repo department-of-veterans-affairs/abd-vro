@@ -11,12 +11,12 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        // TODO: create buildSrc/docker/Dockerfile-ruby once stable
-        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-ruby')
+        // TODO: create gradle-plugins/docker/Dockerfile-ruby once stable
+        dockerfile new File(project.rootDir, 'gradle-plugins/docker/Dockerfile-ruby')
 
     files "src/docker/entrypoint.sh",
-        new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
-        new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
+        new File(project.rootDir, 'gradle-plugins/docker/entrypoint-wrapper.sh'),
+        new File(project.rootDir, 'gradle-plugins/docker/set-env-secrets.src')
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){

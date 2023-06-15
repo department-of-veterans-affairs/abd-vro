@@ -11,11 +11,11 @@ docker {
     if (file('src/docker/Dockerfile').exists())
         dockerfile file('src/docker/Dockerfile')
     else
-        dockerfile new File(project.rootDir, 'buildSrc/docker/Dockerfile-python')
+        dockerfile new File(project.rootDir, 'gradle-plugins/docker/Dockerfile-python')
 
     files "src/docker/entrypoint.sh",
-        new File(project.rootDir, 'buildSrc/docker/entrypoint-wrapper.sh'),
-        new File(project.rootDir, 'buildSrc/docker/set-env-secrets.src')
+        new File(project.rootDir, 'gradle-plugins/docker/entrypoint-wrapper.sh'),
+        new File(project.rootDir, 'gradle-plugins/docker/set-env-secrets.src')
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
