@@ -14,7 +14,7 @@ def test_classification(client: TestClient):
     }
 
     response = client.post("/classifier", json=json_post_dict)
-    assert response.status_code == 201
+    assert response.status_code == 200
     assert (
         response.json()["classification_code"]
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
@@ -44,5 +44,5 @@ def test_unmapped_diagnostic_code(client: TestClient):
     }
 
     response = client.post("/classifier", json=json_post_dict)
-    assert response.status_code == 201
+    assert response.status_code == 200
     assert response.json() is None
