@@ -1,0 +1,13 @@
+# Best practices: https://helm.sh/docs/chart_best_practices/values/
+
+labels:
+  app: redis
+
+imageTag: "latest"
+
+replicaCount: 1
+
+service:
+  redis:
+    sourcePort: 6379
+    targetPort: 6379

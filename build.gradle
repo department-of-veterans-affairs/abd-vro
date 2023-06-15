@@ -154,22 +154,23 @@ scmVersion {
   def postgresDockerfileContent=file("${project.rootDir}/postgres/src/docker/Dockerfile").getText()
   def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
   def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
-  Map<String, Object> helmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/values.yaml").text)
+  Map<String, Object> platformHelmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/platform/values.yaml").text)
   def helmChartAppVersions = [
     // These rarely change
     'postgres'   : postgresBaseImageVersion, // extracted from Dockerfile
-    'redis'      : (String) helmValues.get("redis-chart").get("imageTag"),
-    'rabbitmq'   : (String) helmValues.get("rabbitmq-chart").get("imageTag"),
+    'redis'      : (String) platformHelmValues.get("redis-chart").get("imageTag"),
+    'rabbitmq'   : (String) platformHelmValues.get("rabbitmq-chart").get("imageTag"),
 
-    // These change occasionally
-    'app'        : '3.0.0',
-    'svcs'       : '3.0.0',
+    // Stable versions -- changes occasionally
     'console'    : '2.5.0',
 
     // These change often (i.e., with each release)
     // A null value will result in the currentVersion being used
     '..'         : null, // '..' will resolve to helm/Charts.yaml
-    'api-gateway': null,
+    'api-gateway': null, // Update the version presented in SwaggerUI
+    'vro-app'    : null,
+    'vro-svcs'   : null,
+    // Once stable, set a version and move to previous section
     'domain-cc'  : null,
   ]
 
@@ -179,8 +180,9 @@ scmVersion {
 
       def helmChartFilePaths = [
         project.findProperty("helm.${projectName}.chart_file"),
-        "/helm/charts/${projectName}/Chart.yaml",
-        "/helm/charts/vro-${projectName}/Chart.yaml"
+        "/helm/${projectName}/Chart.yaml",
+        "/helm/platform/charts/${projectName}/Chart.yaml",
+        "/helm/vro/charts/${projectName}/Chart.yaml"
       ]
       def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
       println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)

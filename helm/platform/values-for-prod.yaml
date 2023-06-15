@@ -1,0 +1,6 @@
+
+global:
+  pgdata:
+    storageSize: 5Gi
+  tracking:
+    storageSize: 2Gi
