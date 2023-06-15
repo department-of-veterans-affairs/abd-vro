@@ -1,0 +1,20 @@
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+  id 'local.java.container-conventions'
+  id 'starter.java.build-utils-property-conventions'
+}
+
+docker {
+  copySpec.from("src/main/resources").into(".")
+}
+
+dockerRun {
+  image "${dockerRegistry}/${rootProject.name}-db-init"
+  env 'ALLOW_PLAINTEXT_LISTENER': getEnvOrDefault('ALLOW_PLAINTEXT_LISTENER', 'yes')
+}
+
+dependencies {
+}
