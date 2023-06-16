@@ -241,12 +241,15 @@
 "./shared/lib-camel-connector" -> "local.std.java.library-spring"
 "./shared/persistence-model" [style=filled,color=lightgrey,shape=box]
 "./shared/persistence-model" -> "local.std.java.library-spring"
-"./buildSrc" [style=filled,color=lightgrey,shape=box]
 "./postgres" [style=filled,color=lightgrey,shape=box]
 "./postgres" -> "local.java.container"
 "./db-init" [style=filled,color=lightgrey,shape=box]
 "./db-init" -> "local.java.container"
 "./db-init" -> "starter.java.build-utils-property"
+"./domain-cc/cc-app" [style=filled,color=lightgrey,shape=box]
+"./domain-cc/cc-app" -> "local.python.container-service"
+"./domain-cc" [style=filled,color=lightgrey,shape=box]
+"./domain-cc" -> "local.std.domain.folder"
 "./domain-cc/cc-api-controller" [style=filled,color=lightgrey,shape=box]
 "./domain-cc/cc-api-controller" -> "local.std.java.library-spring"
 "./scripts" [style=filled,color=lightgrey,shape=box]
@@ -264,6 +267,7 @@
 "./domain-xample/svc-xample-j" -> "local.java.container-spring"
 "./domain-xample/xample-api-controller" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/xample-api-controller" -> "local.std.java.library-spring"
+"./gradle-plugins" [style=filled,color=lightgrey,shape=box]
 "./svc-bip-api" [style=filled,color=lightgrey,shape=box]
 "./svc-bip-api" -> "local.std.java.library"
 "./console" [style=filled,color=lightgrey,shape=box]
