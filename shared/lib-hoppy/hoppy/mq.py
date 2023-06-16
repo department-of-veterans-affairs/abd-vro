@@ -9,7 +9,7 @@ from hoppy.config import RABBITMQ_CONFIG
 
 class Service:
     def __init__(self, exchange, consumers, config={}):
-        self.config = {**RABBITMQ_CONFIG, **config}
+        self.config = config = {**RABBITMQ_CONFIG, **config}
         self.exchange = exchange
         self.consumers = consumers
 
