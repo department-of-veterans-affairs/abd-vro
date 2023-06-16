@@ -43,7 +43,14 @@ jobs:
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
+          echo "::group::Gradle test check"
           ./gradlew test check
+          echo "::endgroup::"
+
+          echo "::group::Gradle test check - mocks"
+          cd mocks
+          ../gradlew test check
+          echo "::endgroup::"
       - name: "Check for adequate test coverage"
         run: |
           ./gradlew jacocoLogTestCoverage jacocoTestCoverageVerification

@@ -1,6 +1,20 @@
 plugins {
   id 'base'
-  id 'com.palantir.docker-compose'
+  id 'com.palantir.docker-compose' version '0.35.0'
+
+  id 'org.barfuin.gradle.jacocolog' version '3.1.0' // provides task jacocoAggregatedReport
+  id 'org.barfuin.gradle.taskinfo' version '2.1.0'
+  id 'nebula.lint' version '18.0.3'
+  id 'pl.allegro.tech.build.axion-release' version '1.15.3'
+  id 'starter.java.build-utils-property-conventions'
+
+  // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
+  id "org.springframework.boot" version "${spring_boot_version}" apply false
+}
+
+ext {
+  jacoco_enforce_violations = false
+  jacoco_minimum_coverage = 0.0
 }
 
 dockerCompose {

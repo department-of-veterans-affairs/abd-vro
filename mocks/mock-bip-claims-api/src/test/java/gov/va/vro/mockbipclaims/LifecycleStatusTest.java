@@ -8,7 +8,6 @@ import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
-import gov.va.vro.bip.model.ClaimStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class LifecycleStatusTest {
     assertEquals(false, updatedBefore);
 
     ClaimDetail claimDetail = helper.getClaimDetail(spec);
-    String rfd = ClaimStatus.RFD.getDescription();
+    String rfd = "Ready for Decision";
     assertNotEquals(rfd, claimDetail.getClaimLifecycleStatus());
 
     ResponseEntity<UpdateClaimLifecycleStatusResponse> response =
