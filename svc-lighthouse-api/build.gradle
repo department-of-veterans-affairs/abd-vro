@@ -9,8 +9,6 @@ plugins {
 description = 'Automated Benefit Delivery Data Access Service'
 
 dependencies {
-  implementation project(":svc-bip-api")
-
   implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
   implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
