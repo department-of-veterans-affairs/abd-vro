@@ -79,7 +79,7 @@ afterEvaluate {
   }
 
   tasks.named('dockerComposeDown') {
-    dependsOn ':mocks:dockerComposeDown'
+    //dependsOn ':mocks:dockerComposeDown'
     dependsOn ':domain-xample:dockerComposeDown'
   }
 }

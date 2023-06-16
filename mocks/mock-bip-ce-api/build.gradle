@@ -9,8 +9,8 @@ plugins {
 description = 'Mock Bip Claim Evidence Service'
 
 dependencies {
-  implementation project(':mocks:mock-shared')
-  implementation project(':svc-bip-api')
+  implementation project(':mock-bip-shared')
+//  implementation project(':svc-bip-api')
 
   implementation "com.fasterxml.jackson.core:jackson-databind"
   implementation 'org.springframework.boot:spring-boot-starter-web'
