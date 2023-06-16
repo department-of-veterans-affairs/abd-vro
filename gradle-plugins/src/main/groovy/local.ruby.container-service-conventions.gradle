@@ -8,15 +8,13 @@ plugins {
 }
 
 docker {
-    if (file('src/docker/Dockerfile').exists())
-        dockerfile file('src/docker/Dockerfile')
-    else
-        // TODO: create gradle-plugins/docker/Dockerfile-ruby once stable
-        dockerfile new File(project.rootDir, 'gradle-plugins/docker/Dockerfile-ruby')
+    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-ruby'])
 
-    files "src/docker/entrypoint.sh",
-        new File(project.rootDir, 'gradle-plugins/docker/entrypoint-wrapper.sh'),
-        new File(project.rootDir, 'gradle-plugins/docker/set-env-secrets.src')
+    copyFromResources(copySpec, [
+        '/docker/set-env-secrets.src',
+        '/docker/entrypoint-wrapper.sh'
+    ])
+    files "src/docker/entrypoint.sh"
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
