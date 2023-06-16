@@ -11,8 +11,5 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 docker {
-    if (file('src/docker/Dockerfile').exists())
-        dockerfile file('src/docker/Dockerfile')
-    else
-        dockerfile new File(project.rootDir, 'gradle-plugins/docker/Dockerfile-java')
+    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-java'])
 }

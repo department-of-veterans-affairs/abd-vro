@@ -36,7 +36,7 @@ ENV PYTHONUNBUFFERED 1
 COPY . ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod +x entrypoint*.sh && chown -R tron .
+RUN chmod +x ./*.sh && chown -R tron /app
 USER tron
 # The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
 # The advantage is that the java process responds to KILL signals sent to the container.

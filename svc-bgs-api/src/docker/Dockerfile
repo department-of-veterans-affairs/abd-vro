@@ -31,7 +31,7 @@ RUN gem install bundler:2.4.10 --no-document && bundle install && gem update cgi
 # Put commands that produce project-specific image layers below this line.
 
 COPY . .
-RUN chmod +x entrypoint*.sh && chown -R tron /app
+RUN chmod +x ./*.sh && chown -R tron /app
 
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
