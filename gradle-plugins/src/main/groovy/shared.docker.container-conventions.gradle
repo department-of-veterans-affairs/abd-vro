@@ -16,6 +16,34 @@ plugins {
 ext {
     dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
+
+    findDockerfile = { pathStrings ->
+        for(String pathString : pathStrings){
+            def projectFile = file(pathString);
+            if (projectFile.exists()) return projectFile
+
+            def resource = getClass().getResource(pathString)
+            if (resource==null) continue
+
+            def resourceFile = project.resources.text.fromUri(resource.toURI()).asFile()
+            return resourceFile
+        }
+    }
+
+    copyFromResources = { copySpec, resourcePaths ->
+        def resourceToFilenameMap = [:]
+        // Set up rename closure: If it's in the map, then return the desired filename;
+        // otherwise if closure returns null, file will not be renamed.
+        copySpec.rename({ resourceToFilenameMap[it] })
+
+        resourcePaths.forEach({
+            def source = project.resources.text.fromUri(getClass().getResource(it).toURI()).asFile()
+            // Copy the source into the Docker build context
+            copySpec.from(source)
+            // source.name is a randomly generated name, so save the mapping so it can be renamed to the original filename
+            resourceToFilenameMap[source.name] = new File(it).name
+        })
+    }
 }
 
 docker {

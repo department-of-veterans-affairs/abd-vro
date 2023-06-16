@@ -10,10 +10,13 @@ plugins {
 }
 
 docker {
+    copyFromResources(copySpec, [
+        '/docker/set-env-secrets.src',
+        '/docker/entrypoint-wrapper.sh'
+    ])
+
     files "build/libs/${bootJar.archiveFileName.get()}",
-        "src/docker/entrypoint.sh",
-        new File(project.rootDir, 'gradle-plugins/docker/entrypoint-wrapper.sh'),
-        new File(project.rootDir, 'gradle-plugins/docker/set-env-secrets.src')
+        "src/docker/entrypoint.sh"
 
     def dockerArgs=[
         JAR_FILE: bootJar.archiveFileName.get()

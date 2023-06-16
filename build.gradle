@@ -1,8 +1,8 @@
 buildscript {
   dependencies {
-    classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
-    classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
     classpath "org.yaml:snakeyaml:${snakeyaml_version}"
+    //    classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
+    //    classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
