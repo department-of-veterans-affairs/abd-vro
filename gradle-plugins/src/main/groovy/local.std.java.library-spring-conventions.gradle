@@ -5,5 +5,5 @@
 plugins {
     id 'local.std.java.library-conventions'
 //    id 'starter.java.deps-spring-config-conventions'
-    id 'starter.java.config-conventions'
+    //id 'starter.java.config-conventions'
 }

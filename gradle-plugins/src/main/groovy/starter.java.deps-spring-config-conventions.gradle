@@ -9,5 +9,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
 
-    testImplementation "org.springframework:spring-web:${spring_framework_version}"
+    //testImplementation "org.springframework:spring-web:${spring_framework_version}"
 }
