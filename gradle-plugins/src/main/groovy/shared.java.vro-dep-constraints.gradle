@@ -15,14 +15,20 @@ afterEvaluate {
     }
 }
 
+ext {
+    mapstruct_version="1.4.2.Final"
+    spring_framework_version="5.3.26"
+    snakeyaml_version="2.0"
+}
+
 dependencies {
     constraints {
         // for starter-bom
         implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
         implementation "org.springframework:spring-webmvc:${spring_framework_version}"
         implementation "org.springframework:spring-beans:${spring_framework_version}"
-        implementation "io.github.classgraph:classgraph:${class_graph_version}"
-        implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+        implementation "io.github.classgraph:classgraph:4.8.149"
+        implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
         implementation "com.squareup.okhttp3:okhttp:4.10.0"
         implementation "org.yaml:snakeyaml:${snakeyaml_version}"
 

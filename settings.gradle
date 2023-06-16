@@ -18,6 +18,7 @@ pluginManagement {
     }
     mavenCentral()
   }
+  includeBuild 'gradle-plugins'
 }
 
 
@@ -35,7 +36,7 @@ dependencyResolutionManagement {
 
 
 rootProject.name = 'abd_vro'
-includeBuild 'gradle-plugins'
+//includeBuild 'gradle-plugins'
 include ':api-gateway'
 include ':app'
 include ':console'
