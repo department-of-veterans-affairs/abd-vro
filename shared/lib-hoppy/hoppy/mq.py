@@ -101,17 +101,14 @@ class QueueConsumer:
             response.setdefault("header", {})
             response["header"].setdefault("statusCode", 200)
             return response
-        except ServiceError as e:
-            return self._error_response(e, "")
         except Exception as e:
-            return self._error_response(e, "Unhandled error")
+            return self._error_response(e, f"Unhandled {type(e).__name__}")
 
     def _error_response(self, exception, description, status_code=None):
-        message = str(exception) or type(exception).__name__
         body = {
             "header": {
                 "statusCode": status_code or getattr(exception, "ERROR_CODE", 500),
-                "statusMessage": f"{description}: {message}",
+                "statusMessage": f"{description}: {exception}",
             },
         }
         logging.warning(f"Error response generated: {body}")
