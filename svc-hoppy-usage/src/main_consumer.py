@@ -10,7 +10,7 @@ class ServiceUnavailableError(hoppy.ServiceError):
     ERROR_CODE = 503
 
     def __str__(self):
-        return f"Custom exception with parametrized argument {self.args[0]}"
+        return f"Custom exception with parametrized argument {self.args[0]!r}"
 
 
 def handler_one(message, routing_key):
@@ -25,7 +25,12 @@ def handler_one(message, routing_key):
 
 
 def handler_two(message, routing_key):
-    raise ServiceUnavailableError("no handler available for this queue")
+    raise ServiceUnavailableError("no handler for this queue")
+
+
+def handler_reciprocal(message, routing_key):
+    # a "working" arithmetic handler with opportunities for "unexpected" exceptions
+    return {"value": 1 / message["value"]}
 
 
 hoppy.Service(
@@ -34,5 +39,6 @@ hoppy.Service(
     consumers={
         "queue-one": handler_one,
         "queue-two": handler_two,
+        "queue-reciprocal": handler_reciprocal,
     },
 ).run()
