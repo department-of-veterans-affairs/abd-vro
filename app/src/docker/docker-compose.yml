@@ -214,6 +214,16 @@ services:
     networks:
       - intranet
 
+  svc-hoppy-usage:
+    image: va/abd_vro-svc-hoppy-usage:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+    depends_on:
+      <<: *svc-depends-on
+    networks:
+      - intranet
+
   console:
     profiles: ["all","console"]
     image: va/abd_vro-console:latest

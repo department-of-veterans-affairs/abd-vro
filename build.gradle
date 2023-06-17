@@ -134,6 +134,7 @@ ext {
     ':db-init',
     ':svc-bgs-api',
     ':svc-lighthouse-api',
+    ':svc-hoppy-usage',
     ':console',
     ':mocks:mock-bip-ce-api',
     ':mocks:mock-bip-claims-api',
