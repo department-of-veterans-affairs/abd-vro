@@ -108,12 +108,14 @@ class QueueConsumer:
 
     def _error_response(self, exception, description, status_code=None):
         message = str(exception) or type(exception).__name__
-        return {
+        body = {
             "header": {
                 "statusCode": status_code or getattr(exception, "ERROR_CODE", 500),
                 "statusMessage": f"{description}: {message}",
             },
         }
+        logging.warning(f"Error response generated: {body}")
+        return body
 
 
 class ServiceError(Exception):
