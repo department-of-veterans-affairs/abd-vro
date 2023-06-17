@@ -189,18 +189,18 @@ services:
     networks:
       - intranet
 
-  svc-bip-api:
-    profiles: ["all", "svc", "bip"]
-    environment:
-      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
-      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
-      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
-      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
-      BIP_PASSWORD: ${BIP_PASSWORD}
-      BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
-      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+#  svc-bip-api:
+#    profiles: ["all", "svc", "bip"]
+#    environment:
+#      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+#      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+#      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+#      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+#      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+#      BIP_PASSWORD: ${BIP_PASSWORD}
+#      BIP_KEYSTORE: ${BIP_KEYSTORE}
+#      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
+#      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
 
 
   svc-bgs-api:
