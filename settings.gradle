@@ -13,9 +13,7 @@ pluginManagement {
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:case-for-maven-local
     // Not recommended: mavenLocal()
     gradlePluginPortal()
-    maven {
-      url "https://repo1.maven.org/maven2/"
-    }
+    maven { url "https://repo1.maven.org/maven2/" }
     mavenCentral()
   }
   includeBuild 'gradle-plugins'
@@ -27,9 +25,7 @@ dependencyResolutionManagement {
   repositories {
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:case-for-maven-local
     // Not recommended: mavenLocal()
-    maven {
-      url "https://repo1.maven.org/maven2/"
-    }
+    maven { url "https://repo1.maven.org/maven2/" }
     mavenCentral()
   }
 }

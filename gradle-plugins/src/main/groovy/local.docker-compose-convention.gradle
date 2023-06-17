@@ -28,7 +28,7 @@ def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
     args "volume", "prune", "-f"
 }
 
-def dcPrune = tasks.register('dcPrune', DefaultTask) {
+tasks.register('dcPrune', DefaultTask) {
     group = "Docker Container"
     description = "Stop containers, then remove unused containers and images"
     mustRunAfter tasks.named('dockerComposeDown')
@@ -36,9 +36,18 @@ def dcPrune = tasks.register('dcPrune', DefaultTask) {
     dependsOn dockerPruneImage
 }
 
-def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
+tasks.register('dcPruneVolume', DefaultTask) {
     group = "Docker Container"
     description = "Stop containers, then remove unused volumes"
     mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneVolume
+}
+
+tasks.register('dcPruneAll', DefaultTask) {
+    group = "Docker Container"
+    description = "Prune containers, images, and volumes"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
     dependsOn dockerPruneVolume
 }

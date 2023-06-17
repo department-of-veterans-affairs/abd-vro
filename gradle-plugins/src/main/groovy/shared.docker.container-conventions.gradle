@@ -59,7 +59,7 @@ dockerRun {
     ports '8080:8080'
 }
 
-def dockerStart = tasks.register('dockerStart', DefaultTask) {
+tasks.register('dockerStart', DefaultTask) {
     group = "Docker Run"
     description = "Remove unused containers, build image, run container"
     dependsOn tasks.named("dockerRemove")
@@ -67,7 +67,7 @@ def dockerStart = tasks.register('dockerStart', DefaultTask) {
     dependsOn tasks.named("dockerRun")
 }
 
-def dockerRemove = tasks.register('dockerRemove', DefaultTask) {
+tasks.register('dockerRemove', DefaultTask) {
     group = "Docker"
     description = "Stop container, then remove unused containers and images"
     mustRunAfter tasks.named('dockerStop')
