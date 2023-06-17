@@ -1,0 +1,44 @@
+plugins {
+    id 'base'
+    id 'com.palantir.docker-compose'
+}
+
+dockerCompose {
+  dockerComposeFile 'docker-compose.yml'
+}
+
+def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
+    group = "Docker"
+    description = "Remove unused containers"
+    executable "docker"
+    args "container", "prune", "-f"
+}
+
+def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
+    group = "Docker"
+    description = "Remove unused images"
+    executable "docker"
+    args "image", "prune", "-f"
+}
+
+def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
+    group = "Docker"
+    description = "Remove unused volumes"
+    executable "docker"
+    args "volume", "prune", "-f"
+}
+
+def dcPrune = tasks.register('dcPrune', DefaultTask) {
+    group = "Docker Container"
+    description = "Stop containers, then remove unused containers and images"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
+}
+
+def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
+    group = "Docker Container"
+    description = "Stop containers, then remove unused volumes"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneVolume
+}

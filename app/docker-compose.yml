@@ -10,8 +10,7 @@ volumes:
   # Volumes to simulate persistent volumes in deployment environments -- see ./docker-compose.yml
   tracking:
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#external
-    external:
-      name: vro_tracking
+    name: vro_tracking
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd

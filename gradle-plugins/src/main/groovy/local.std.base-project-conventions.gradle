@@ -1,5 +1,6 @@
 plugins {
     id 'starter.java.build-utils-property-conventions'
+    id 'local.docker-compose-convention'
 
     // provides task jacocoAggregatedReport
     id 'org.barfuin.gradle.jacocolog'

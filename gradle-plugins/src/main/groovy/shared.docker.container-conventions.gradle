@@ -8,7 +8,6 @@ plugins {
     id 'java'
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'
-    id 'com.palantir.docker-compose'
 }
 // Requires
 // id 'starter.java.build-utils-property-conventions'
@@ -60,69 +59,23 @@ dockerRun {
     ports '8080:8080'
 }
 
-dockerCompose {
-    dockerComposeFile 'src/docker/docker-compose.yml'
-}
-
 def dockerStart = tasks.register('dockerStart', DefaultTask) {
     group = "Docker Run"
     description = "Remove unused containers, build image, run container"
-    dependsOn tasks.named("dockerPrune")
+    dependsOn tasks.named("dockerRemove")
     dependsOn tasks.named("docker")
     dependsOn tasks.named("dockerRun")
 }
 
-def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
-    group = "Docker"
-    description = "Remove unused containers"
-    executable "docker"
-    args "container", "prune", "-f"
-}
-
-def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
-    group = "Docker"
-    description = "Remove unused images"
-    executable "docker"
-    args "image", "prune", "-f"
-}
-
-def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
-    group = "Docker"
-    description = "Remove unused volumes"
-    executable "docker"
-    args "volume", "prune", "-f"
-}
-
-def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
+def dockerRemove = tasks.register('dockerRemove', DefaultTask) {
     group = "Docker"
     description = "Stop container, then remove unused containers and images"
     mustRunAfter tasks.named('dockerStop')
     mustRunAfter tasks.named('dockerRemoveContainer')
-    dependsOn dockerPruneContainer
-    dependsOn dockerPruneImage
-}
-
-def dcPrune = tasks.register('dcPrune', DefaultTask) {
-    group = "Docker Container"
-    description = "Stop containers, then remove unused containers and images"
-    mustRunAfter tasks.named('dockerComposeDown')
-    dependsOn dockerPruneContainer
-    dependsOn dockerPruneImage
-}
-
-def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
-    group = "Docker Container"
-    description = "Stop containers, then remove unused volumes"
-    mustRunAfter tasks.named('dockerComposeDown')
-    dependsOn dockerPruneVolume
 }
 
 tasks.named("dockerRemoveContainer").configure {
     mustRunAfter tasks.named('dockerStop')
-}
-
-tasks.named("dockerComposeUp").configure {
-    dependsOn tasks.named("docker")
 }
 
 tasks.named("dockerRun").configure {

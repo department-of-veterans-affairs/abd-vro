@@ -186,6 +186,13 @@ allprojects {
   project.version = scmVersion.version
 }
 
+tasks.named("dockerComposeDown").configure {
+  // Shut down subprojects' containers before Platform containers, volumes, and network
+  mustRunAfter ':app:dockerComposeDown'
+  mustRunAfter ':domain-xample:dockerComposeDown'
+  mustRunAfter ':domain-cc:dockerComposeDown'
+}
+
 def maintainerclean = tasks.register('maintainerclean') {
   group = "Workflow"
   description = "clean all submodules"
