@@ -78,6 +78,9 @@ class QueueConsumer:
                 response_body = json.dumps(response)
             except Exception as e:
                 response_body = json.dumps(self._error_response(e, "Response serialization error"))
+            if not properties.reply_to:
+                logging.error(f"No reply_to in message on exchange {self.exchange}, queue {self.name}")
+                return
             channel.basic_publish(
                 exchange=self.exchange,
                 routing_key=properties.reply_to,
