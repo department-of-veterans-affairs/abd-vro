@@ -48,8 +48,7 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Gradle test check - mocks"
-          cd mocks
-          ../gradlew test check
+          ./gradlew -p mocks test check
           echo "::endgroup::"
       - name: "Check for adequate test coverage"
         run: |
