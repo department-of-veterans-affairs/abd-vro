@@ -40,5 +40,5 @@ dependencies {
   implementation project(':shared:lib-camel-connector')
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
-  implementation "org.json:json:20230227"
+  implementation "org.json:json:20230618"
 }
