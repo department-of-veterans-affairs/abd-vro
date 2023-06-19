@@ -28,7 +28,7 @@ pluginUsageEdges(){
   find . -type f -name build.gradle | while read BFILE; do
     PROJECT=$(dirname "${BFILE}")
     echo "\"$PROJECT\" [style=filled,color=lightgrey,shape=box]"
-    grep 'id .local.\|id .starter.' "$BFILE" | pluginNames | while read -r PLUGIN; do
+    grep '^\s* id .local.\|id .starter.' "$BFILE" | pluginNames | while read -r PLUGIN; do
       echo "\"$PROJECT\" -> $PLUGIN"
     done
   done

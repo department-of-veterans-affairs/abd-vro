@@ -1,8 +1,4 @@
 plugins {
   id 'base'
-  id 'com.palantir.docker-compose'
-}
-
-dockerCompose {
-  dockerComposeFile 'docker-compose.yml'
+  id 'local.docker-compose-convention'
 }

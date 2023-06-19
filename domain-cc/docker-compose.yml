@@ -5,7 +5,7 @@ networks:
   vro_intranet:
     # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
     # Change this to true if running with app/src/docker/docker-compose.yml
-    external: false
+    external: true
 
 # Reusable blocks
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd

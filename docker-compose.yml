@@ -6,6 +6,7 @@ networks:
 
 volumes:
   # Volumes to simulate persistent volumes in LHDI deployment environments
+  # Creates `vro_tracking` volume name if env variable COMPOSE_PROJECT_NAME=vro
   pgdata:
   tracking:
   # Create the following volumes so that they have recognizable names rather than UUIDs
@@ -151,66 +152,6 @@ services:
       <<: *common-vars
       VRO_APP_HOSTNAME: app
       # VRO_CC_HOSTNAME: cc-app
-    networks:
-      - intranet
-
-  app:
-    image: va/abd_vro-app:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "8110:8110"
-      - "8111:8111"
-    environment:
-      # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
-      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
-      <<: [*api-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
-      PERSIST_TRACKING_FOLDER: /persist/tracking
-    depends_on:
-      <<: *svc-depends-on
-      db-init:
-        condition: service_started
-    volumes:
-      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
-      - tracking:/persist/tracking
-    networks:
-      - intranet
-
-  svc-lighthouse-api:
-    profiles: ["all","svc","lh"]
-    image: va/abd_vro-svc-lighthouse-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
-      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-    depends_on:
-      <<: *svc-depends-on
-    networks:
-      - intranet
-
-#  svc-bip-api:
-#    profiles: ["all", "svc", "bip"]
-#    environment:
-#      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
-#      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
-#      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
-#      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
-#      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
-#      BIP_PASSWORD: ${BIP_PASSWORD}
-#      BIP_KEYSTORE: ${BIP_KEYSTORE}
-#      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
-#      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
-
-
-  svc-bgs-api:
-    profiles: ["all","svc","bgs"]
-    image: va/abd_vro-svc-bgs-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
-    depends_on:
-      <<: *svc-depends-on
     networks:
       - intranet
 

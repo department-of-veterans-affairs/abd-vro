@@ -1,8 +1,5 @@
 plugins {
-  id 'base'
   id 'local.std.base-project-conventions'
-
-  id 'com.palantir.docker-compose' version '0.35.0'
 
   // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
   id "org.springframework.boot" version "${spring_boot_version}" apply false
@@ -11,8 +8,4 @@ plugins {
 ext {
   jacoco_enforce_violations = false
   jacoco_minimum_coverage = 0.0
-}
-
-dockerCompose {
-  dockerComposeFile 'docker-compose.yml'
 }

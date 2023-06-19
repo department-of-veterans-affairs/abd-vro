@@ -32,7 +32,7 @@ services:
   # Containers with the `mock-` prefix are used for development and testing.
 
   mock-slack:
-    profiles: ["all","slack","v2-mocks"]
+    profiles: ["all","slack"]
     image: va/abd_vro-mock-slack:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
@@ -43,7 +43,7 @@ services:
       - vro_intranet
 
   mock-lighthouse-api:
-    profiles: ["all","lh","v2-mocks"]
+    profiles: ["all","lh"]
     image: va/abd_vro-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
@@ -56,7 +56,7 @@ services:
       - vro_intranet
 
   mock-bip-claims-api:
-    profiles: ["all","bip","v2-mocks"]
+    profiles: ["all","bip"]
     image: va/abd_vro-mock-bip-claims-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
@@ -72,7 +72,7 @@ services:
       - vro_intranet
 
   mock-bip-ce-api:
-    profiles: ["all","bip","v2-mocks"]
+    profiles: ["all","bip"]
     image: va/abd_vro-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
@@ -89,7 +89,7 @@ services:
       - vro_intranet
 
 #  mock-mas-api:
-#    profiles: ["all","mas","v2-mocks"]
+#    profiles: ["all","mas"]
 #    image: va/abd_vro-mock-mas-api:latest
 #    <<: [*common-sde-security, *common-security-opt]
 #    ports:

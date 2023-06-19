@@ -1,5 +1,6 @@
 plugins {
   id 'local.std.java.application-conventions'
+  id 'local.docker-compose-convention'
 }
 
 ext {

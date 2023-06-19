@@ -102,7 +102,7 @@ export COMPOSE_PROJECT_NAME=vro
 # To start a specific container (along with containers it depends_on), run:
 #   cd app/src/docker
 #   docker-compose up $CONTAINER_NAME
-exportIfUnset COMPOSE_PROFILES "svc"
+# exportIfUnset COMPOSE_PROFILES " "
 
 ###
 ### Credentials for VRO internal services ###
