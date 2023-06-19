@@ -11,6 +11,8 @@ ext {
     problem_spring_web_version="0.26.2"
     arch_unit_version = "0.21.0"
     mockserver_netty_version = "5.11.2"
+
+    mapstruct_version="1.4.2.Final"
 }
 
 dependencies {
