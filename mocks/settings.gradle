@@ -1,0 +1,15 @@
+dependencyResolutionManagement {
+  repositories {
+    maven { url "https://repo1.maven.org/maven2/" }
+    mavenCentral()
+  }
+}
+
+rootProject.name = 'abd_vro_mocks'
+
+includeBuild '../gradle-plugins'
+include ':mock-bip-shared'
+include ':mock-bip-ce-api'
+include ':mock-bip-claims-api'
+include ':mock-lighthouse-api'
+include ':mock-slack'
