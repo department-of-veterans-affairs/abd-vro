@@ -178,6 +178,9 @@
 "local.python.container-service" -> "shared.docker.container"
 "local.ruby.container-service" [style=filled,color=pink]
 "local.ruby.container-service" -> "shared.docker.container"
+"local.std.base-project" [style=filled,color=pink]
+"local.std.base-project" -> "starter.java.build-utils-property"
+"local.std.base-project" -> "local.docker-compose-convention"
 "local.std.domain.folder" [style=filled,color=pink]
 "local.std.domain.folder" -> "local.docker-compose-convention"
 "local.std.java.application" [style=filled,color=pink]
@@ -199,7 +202,6 @@
 "local.std.java.library" -> "shared.std.java"
 "local.std.java.library" -> "replacement-for-starter.bom"
 "local.std.java.library-spring" [style=filled,color=pink]
-"local.std.java.library-spring" -> "starter.java.config"
 "local.std.java.library-spring" -> "local.std.java.library"
 "shared.docker.container" [style=filled,color=lightgreen]
 "shared.java.vro-dep-constraints" [style=filled,color=lightgreen]
@@ -218,7 +220,9 @@
 "./mocks/mock-bip-ce-api" -> "local.java.container-spring"
 "./mocks/mock-bip-ce-api" -> "local.std.java.library-spring"
 "./mocks" [style=filled,color=lightgrey,shape=box]
-"./mocks" -> "local.docker-compose-convention"
+"./mocks" -> "local.std.base-project"
+"./mocks/mock-bip-shared" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-bip-shared" -> "local.std.java.library"
 "./mocks/mock-slack" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-slack" -> "local.java.container-spring"
 "./mocks/mock-slack" -> "local.std.java.library-spring"
@@ -228,8 +232,6 @@
 "./mocks/mock-lighthouse-api" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-lighthouse-api" -> "local.java.container-spring"
 "./mocks/mock-lighthouse-api" -> "local.std.java.library-spring"
-"./mocks/mock-shared" [style=filled,color=lightgrey,shape=box]
-"./mocks/mock-shared" -> "local.std.java.library"
 "./svc-bgs-api" [style=filled,color=lightgrey,shape=box]
 "./svc-bgs-api" -> "local.ruby.container-service"
 "./app" [style=filled,color=lightgrey,shape=box]
@@ -239,7 +241,6 @@
 "./svc-lighthouse-api" -> "local.java.container-spring"
 "./svc-lighthouse-api" -> "local.std.java.library-spring"
 "./api-gateway" [style=filled,color=lightgrey,shape=box]
-"./api-gateway" -> "local.docker-compose-convention"
 "./api-gateway" -> "local.std.java.library-spring"
 "./shared/lib-camel-connector" [style=filled,color=lightgrey,shape=box]
 "./shared/lib-camel-connector" -> "local.std.java.library-spring"
@@ -259,8 +260,7 @@
 "./scripts" [style=filled,color=lightgrey,shape=box]
 "./scripts" -> "local.java.lint-shellcheck"
 "." [style=filled,color=lightgrey,shape=box]
-"." -> "starter.java.build-utils-property"
-"." -> "local.docker-compose-convention"
+"." -> "local.std.base-project"
 "./domain-xample/xample-workflows" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/xample-workflows" -> "local.java.container-spring"
 "./domain-xample/xample-workflows" -> "local.std.java.library-spring"
