@@ -33,7 +33,7 @@ services:
 
   mock-slack:
     profiles: ["all","slack"]
-    image: va/abd_vro-mock-slack:latest
+    image: va/vro_mocks-mock-slack:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20100:20100"
@@ -44,7 +44,7 @@ services:
 
   mock-lighthouse-api:
     profiles: ["all","lh"]
-    image: va/abd_vro-mock-lighthouse-api:latest
+    image: va/vro_mocks-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20200:20200"
@@ -57,7 +57,7 @@ services:
 
   mock-bip-claims-api:
     profiles: ["all","bip"]
-    image: va/abd_vro-mock-bip-claims-api:latest
+    image: va/vro_mocks-mock-bip-claims-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20300:20300"
@@ -73,7 +73,7 @@ services:
 
   mock-bip-ce-api:
     profiles: ["all","bip"]
-    image: va/abd_vro-mock-bip-ce-api:latest
+    image: va/vro_mocks-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20310:20310"
@@ -90,7 +90,7 @@ services:
 
 #  mock-mas-api:
 #    profiles: ["all","mas"]
-#    image: va/abd_vro-mock-mas-api:latest
+#    image: va/vro_mocks-mock-mas-api:latest
 #    <<: [*common-sde-security, *common-security-opt]
 #    ports:
 #      - "20400:20400"

@@ -9,7 +9,7 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = 'abd_vro_mocks'
+rootProject.name = 'vro_mocks'
 
 include ':mock-bip-shared'
 include ':mock-bip-ce-api'
