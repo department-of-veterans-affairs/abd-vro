@@ -89,20 +89,12 @@ export COMPOSE_PROJECT_NAME=vro
 # COMPOSE_PROFILES determines which containers are started by docker-compose.
 # This allows developers to start only the containers they need for their current work.
 # See https://docs.docker.com/compose/profiles/
-# Refer to the src/docker/docker-compose.yml file for profile names.
-# For the iMVP, set to "v2,v2-mocks,pdfgen,lh"
-# - "v2" = all services for v2
-# - "v2-mocks" = all mocks for v2
-# - "pdfgen" = pdf generator microservice
-# - "lh" = Lighthouse API client microservice and the mock LH API
-# For minimal VRO, set to " " (space). This starts the app and required application services.
+# Refer to https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-Compose#platform-base--java-app-with-platform-microservices
+# For minimal VRO, set to " " (space). This prevents Platform microservices from starting.
 #   (A space is used to distinguish it from an empty string, which is interpreted as
 #   being unset by function exportIfUnset.)
 # To start all containers, set to "all".
-# To start a specific container (along with containers it depends_on), run:
-#   cd app/src/docker
-#   docker-compose up $CONTAINER_NAME
-# exportIfUnset COMPOSE_PROFILES " "
+exportIfUnset COMPOSE_PROFILES "svc"
 
 ###
 ### Credentials for VRO internal services ###
