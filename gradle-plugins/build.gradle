@@ -25,13 +25,8 @@ dependencies {
     implementation 'com.palantir.docker:com.palantir.docker.gradle.plugin:0.35.0'
     implementation 'com.palantir.docker-run:com.palantir.docker-run.gradle.plugin:0.35.0'
     implementation 'org.springdoc.openapi-gradle-plugin:org.springdoc.openapi-gradle-plugin.gradle.plugin:1.6.0'
-    //implementation 'io.swagger.swaggerhub:io.swagger.swaggerhub.gradle.plugin:1.2.0'
-    //implementation 'com.github.johnrengelman.processes:com.github.johnrengelman.processes.gradle.plugin:0.5.0'
-    //implementation 'org.ajoberstar.grgit:org.ajoberstar.grgit.gradle.plugin:5.2.0'
-    //implementation 'net.rdrei.android.buildtimetracker:net.rdrei.android.buildtimetracker.gradle.plugin:0.11.0'
 
     implementation 'org.barfuin.gradle.jacocolog:org.barfuin.gradle.jacocolog.gradle.plugin:3.1.0'
     implementation 'org.barfuin.gradle.taskinfo:org.barfuin.gradle.taskinfo.gradle.plugin:2.1.0'
     implementation 'nebula.lint:nebula.lint.gradle.plugin:18.0.3'
-    //implementation 'pl.allegro.tech.build.axion-release:pl.allegro.tech.build.axion-release.gradle.plugin:1.15.3'
 }
