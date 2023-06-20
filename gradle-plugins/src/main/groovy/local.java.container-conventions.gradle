@@ -7,8 +7,6 @@ plugins {
     id 'java'
     id 'shared.docker.container-conventions'
 }
-// Requires
-// id 'starter.java.build-utils-property-conventions'
 
 docker {
     dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-java'])

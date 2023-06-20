@@ -1,7 +1,5 @@
 buildscript {
   dependencies {
-    //    classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
-    //    classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
     classpath "org.yaml:snakeyaml:2.0"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
@@ -77,6 +75,8 @@ subprojects {
       }
     }
     // print out tracked failed tests when the build has finished
+    // TODO: https://github.com/gradle/gradle/issues/20151#issuecomment-1551007455
+    // and https://docs.gradle.org/current/userguide/dataflow_actions.html#lifecycle_event_providers
     gradle.buildFinished {
       if (!failedTests.empty) {
         println "Failed tests:"
@@ -92,31 +92,6 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
-
-  // Modules that use Java code
-  codeModules = [
-    ':app',
-    ':shared:persistence-model',
-    ':shared:lib-camel-connector',
-    ':svc-lighthouse-api',
-    ':console',
-    ':domain-xample:xample-api-controller',
-    ':domain-xample:xample-shared',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j',
-    ':domain-cc:cc-api-controller'
-  ]
-  // Modules that create Docker images
-  dockerModules = [
-    ':app',
-    ':db-init',
-    ':svc-bgs-api',
-    ':svc-lighthouse-api',
-    ':console',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j',
-    ':domain-cc:cc-app'
-  ]
 }
 
 // Used by `release` task to create a new version
