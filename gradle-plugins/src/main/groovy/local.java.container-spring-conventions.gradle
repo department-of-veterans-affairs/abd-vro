@@ -10,11 +10,6 @@ plugins {
 }
 
 docker {
-    copyFromResources(copySpec, [
-        '/docker/set-env-secrets.src',
-        '/docker/entrypoint-wrapper.sh'
-    ])
-
     files "build/libs/${bootJar.archiveFileName.get()}",
         "src/docker/entrypoint.sh"
 
