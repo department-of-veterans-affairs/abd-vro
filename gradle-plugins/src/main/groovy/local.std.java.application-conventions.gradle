@@ -24,8 +24,6 @@ plugins {
     id 'starter.java.test-integration-conventions'
 
     id 'starter.java.deps-integration-conventions'
-//    id 'starter.java.publish-bootjar-conventions'
-//    id 'starter.java.lint-spotless-conventions'
     id 'starter.java.lint-spotless-java-conventions'
 }
 

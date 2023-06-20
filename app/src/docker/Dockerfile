@@ -22,6 +22,6 @@ COPY ${JAR_FILE} fat.jar
 # This folder should correspond with $PERSIST_TRACKING_FOLDER
 RUN mkdir -p /persist/tracking && chown -R tron /persist/tracking
 
-RUN mkdir -p /app/build/tomcat && chmod +x entrypoint.sh  && chown -R tron /app
+RUN mkdir -p /app/build/tomcat && chmod +x ./*.sh  && chown -R tron /app
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

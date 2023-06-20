@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import ClaimForIncrease, PredictedClassification
 from .util.lookup_table import get_classification_name, get_lookup_table
@@ -22,6 +22,14 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
+
+
+@app.get("/health")
+def get_health_status():
+    if not len(LOOKUP_TABLE):
+        raise HTTPException(status_code=500, detail="Lookup table is empty")
+
+    return {"status": "ok"}
 
 
 @app.post("/classifier")

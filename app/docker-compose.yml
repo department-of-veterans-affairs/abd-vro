@@ -1,0 +1,110 @@
+version: '3.9'
+
+networks:
+  # Put these services on the same `vro_intranet` network as VRO -- see ./docker-compose.yml
+  vro_intranet:
+    # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
+    external: true
+
+volumes:
+  # Volumes to simulate persistent volumes in deployment environments -- see ./docker-compose.yml
+  tracking:
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#external
+    name: vro_tracking
+
+# Reusable blocks
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+# Also note https://yaml.org/type/merge.html
+
+x-common-vars: &common-vars
+  # ENV determines which configuration settings to use.
+  ENV: ${ENV:-local}
+
+x-api-vars: &api-vars
+  SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
+  LH_API_AUTH_URL: ${LH_API_AUTH_URL}
+  VRO_AUD_URL: ${VRO_AUD_URL}
+  LH_VRO_API_KEY: ${LH_VRO_API_KEY}
+
+x-postgres-vars: &postgres-vars
+  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: claims
+
+x-redis-placeholder-vars: &redis-placeholder-vars
+  REDIS_PLACEHOLDERS_HOST: redis-service
+  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+
+x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
+  RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
+  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+
+x-common-security-opt: &common-security-opt
+  security_opt:
+    - no-new-privileges:true
+
+x-common-sde-security: &common-sde-security
+  ulimits:
+    nproc: 65535
+
+services:
+  # Containers with the `-service` suffix are need by the VRO app.
+  # Containers with the `svc-` prefix are microservices to support domain workflows.
+  # Containers with the `mock-` prefix are used for development and testing.
+
+  app:
+    image: va/abd_vro-app:latest
+    <<: [*common-sde-security, *common-security-opt]
+    ports:
+      - "8110:8110"
+      - "8111:8111"
+    environment:
+      # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
+      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
+      <<: [*api-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
+      PERSIST_TRACKING_FOLDER: /persist/tracking
+    volumes:
+      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
+      - tracking:/persist/tracking
+    networks:
+      - vro_intranet
+
+  svc-lighthouse-api:
+    profiles: ["all","svc","lh"]
+    image: va/abd_vro-svc-lighthouse-api:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
+      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
+    networks:
+      - vro_intranet
+
+#  svc-bip-api:
+#    profiles: ["all", "svc", "bip"]
+#    environment:
+#      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+#      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+#      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+#      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+#      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+#      BIP_PASSWORD: ${BIP_PASSWORD}
+#      BIP_KEYSTORE: ${BIP_KEYSTORE}
+#      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
+#      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+#    networks:
+#      - vro_intranet
+
+
+  svc-bgs-api:
+    profiles: ["all","svc","bgs"]
+    image: va/abd_vro-svc-bgs-api:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+    networks:
+      - vro_intranet

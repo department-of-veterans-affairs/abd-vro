@@ -2,9 +2,11 @@ import csv
 import json
 import os
 
+from .table_version import TABLE_VERSION
+
 # csv file exported from DC Lookup v0.1
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
-TABLE_NAME = "Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup v0.1.csv"
+TABLE_NAME = f'Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv'
 
 # sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
 # https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current

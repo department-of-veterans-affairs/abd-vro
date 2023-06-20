@@ -5,7 +5,7 @@ plugins {
 dockerComposeUp {
   // Rebuild Docker images before docker-compose up
   // Run `docker` Gradle task on all subprojects
-  dependsOn getTasksByName('docker', true)
+  dependsOn subprojects*.getTasksByName('docker', true)
 }
 
 tasks.register("test") {

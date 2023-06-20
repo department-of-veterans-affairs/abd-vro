@@ -1,0 +1,12 @@
+plugins {
+    id 'starter.java.build-utils-property-conventions'
+    id 'local.docker-compose-convention'
+
+    // provides task jacocoAggregatedReport
+    id 'org.barfuin.gradle.jacocolog'
+    // provides task tiOrder and tiTree
+    id 'org.barfuin.gradle.taskinfo'
+
+    // provides task generateGradleLintReport and fixGradleLint
+    id 'nebula.lint'
+}

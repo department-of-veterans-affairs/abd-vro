@@ -1,40 +1,21 @@
 buildscript {
   dependencies {
-    classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
-    classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
-    classpath "org.yaml:snakeyaml:${snakeyaml_version}"
+    classpath "org.yaml:snakeyaml:2.0"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
     resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+      force 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
     }
   }
 }
 
 plugins {
-  // Set versions for these plugins (but don't apply) so we don't have to specify the version later
-  id 'org.ajoberstar.grgit' version '5.2.0' apply false
-  id 'io.freefair.lombok' version '8.0.1' apply false
-  id 'org.springframework.boot' version "${spring_boot_version}" apply false
-  id 'io.swagger.swaggerhub' version '1.2.0' apply false
-  id 'com.diffplug.spotless' version '5.14.1' apply false
-  id 'com.palantir.docker' version '0.35.0' apply false
-  id 'com.palantir.docker-run' version '0.35.0' apply false
-  id 'net.rdrei.android.buildtimetracker' version '0.11.0' apply false
-  id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
-  id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
-  id 'com.github.johnrengelman.processes' version '0.5.0' apply false
-  id 'org.springdoc.openapi-gradle-plugin' version '1.6.0' apply false
-  id 'org.flywaydb.flyway' version '9.19.4' apply false
-  id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
-
-  // Apply these
-  id 'org.barfuin.gradle.jacocolog' version '3.1.0' // provides task jacocoAggregatedReport
-  id 'org.barfuin.gradle.taskinfo' version '2.1.0'
-  id 'nebula.lint' version '18.0.3'
+  id 'local.std.base-project-conventions'
   id 'pl.allegro.tech.build.axion-release' version '1.15.3'
-  id 'starter.java.build-utils-property-conventions'
+
+  // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
+  id "org.springframework.boot" version "${spring_boot_version}" apply false
 }
 
 allprojects {
@@ -61,11 +42,11 @@ allprojects {
     // Workaround for gradleLint failure
     // https://github.com/nebula-plugins/gradle-lint-plugin/issues/336#issuecomment-844989277
     // https://github.com/gradle/gradle/issues/6854
-    configurations.all {
-      if (name.startsWith("incrementalScalaAnalysis")) {
-        extendsFrom = []
-      }
-    }
+    // configurations.all {
+    //   if (name.startsWith("incrementalScalaAnalysis")) {
+    //     extendsFrom = []
+    //   }
+    // }
   }
 
   apply plugin: 'com.diffplug.spotless'
@@ -94,6 +75,8 @@ subprojects {
       }
     }
     // print out tracked failed tests when the build has finished
+    // TODO: https://github.com/gradle/gradle/issues/20151#issuecomment-1551007455
+    // and https://docs.gradle.org/current/userguide/dataflow_actions.html#lifecycle_event_providers
     gradle.buildFinished {
       if (!failedTests.empty) {
         println "Failed tests:"
@@ -109,40 +92,6 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
-
-  // Modules that use Java code
-  codeModules = [
-    ':app',
-    ':shared:persistence-model',
-    ':shared:lib-camel-connector',
-    ':svc-lighthouse-api',
-    ':console',
-    ':mocks:mock-bip-ce-api',
-    ':mocks:mock-bip-claims-api',
-    ':mocks:mock-shared',
-    ':mocks:mock-lighthouse-api',
-    ':mocks:mock-slack',
-    ':domain-xample:xample-api-controller',
-    ':domain-xample:xample-shared',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j',
-    ':domain-cc:cc-api-controller'
-  ]
-  // Modules that create Docker images
-  dockerModules = [
-    ':app',
-    ':db-init',
-    ':svc-bgs-api',
-    ':svc-lighthouse-api',
-    ':console',
-    ':mocks:mock-bip-ce-api',
-    ':mocks:mock-bip-claims-api',
-    ':mocks:mock-lighthouse-api',
-    ':mocks:mock-slack',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j',
-    ':domain-cc:cc-app'
-  ]
 }
 
 // Used by `release` task to create a new version
@@ -212,53 +161,9 @@ allprojects {
   project.version = scmVersion.version
 }
 
-def maintainerclean = tasks.register('maintainerclean') {
-  group = "Workflow"
-  description = "clean all submodules"
-  def tb = taskBuilder('clean')
-  codeModules.each { dependsOn tb(it) }
-  dockerModules.each { dependsOn tb(it) }
-  //depender codeModules, taskBuilder('clean')
-  //depender dockerModules, taskBuilder('clean')
-}
-
-def dockerclean = tasks.register('dockerclean') {
-  group = "Workflow"
-  description = "clean docker images"
-  dependsOn ':app:dockerComposeDown'
-  dependsOn ':app:dockerPrune'
-}
-
-def dockermaintainerclean = tasks.register('dockermaintainerclean') {
-  group = "Workflow"
-  description = "clean docker images"
-  dependsOn ':app:dockerPruneVolume'
-  mustRunAfter dockerclean
-}
-
-def devloop = tasks.register('devloop') {
-  group = "Workflow"
-  description = "Rebuild code, docker images, and restart docker-compose"
-  dependsOn ':app:build'
-  def tb = taskBuilder('docker')
-  dockerModules.each { dependsOn tb(it) }
-  //depender(dockerModules, taskBuilder('docker'))
-  dependsOn ':app:dockerComposeUp'
-  mustRunAfter dockerclean
-  mustRunAfter dockermaintainerclean
-}
-
-def restartloop = tasks.register('restartloop') {
-  group = "Workflow"
-  description = "Stop docker-compose, delete unused images, continue with devloop task"
-  dependsOn dockerclean
-  dependsOn devloop
-}
-
-tasks.register('resetloop') {
-  group = "Workflow"
-  description = "Remove docker volumes, continue with restartloop task"
-  dependsOn dockerclean
-  dependsOn dockermaintainerclean
-  dependsOn restartloop
+tasks.named("dockerComposeDown").configure {
+  // Shut down subprojects' containers before Platform containers, volumes, and network
+  mustRunAfter ':app:dockerComposeDown'
+  mustRunAfter ':domain-xample:dockerComposeDown'
+  mustRunAfter ':domain-cc:dockerComposeDown'
 }
