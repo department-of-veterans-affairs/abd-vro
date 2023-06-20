@@ -1,4 +1,4 @@
-FROM bitnami/kafka:latest
+FROM bitnami/kafka:3.4
 
 # Settings are for development only
 ENV ALLOW_PLAINTEXT_LISTENER=yes
