@@ -1,0 +1,23 @@
+/**
+ * Shared plugins for std.java.{library and application}.conventions
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    //id "org.ajoberstar.grgit"
+
+    id 'starter.java.lint-checkstyle-conventions'
+
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
+
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+
+    id 'starter.java.test-conventions'
+    id 'starter.java.test-jacoco-conventions'
+
+    // Constrains transitive dependencies to use versions without vulnerabilities
+    id 'shared.java.vro-dep-constraints'
+}

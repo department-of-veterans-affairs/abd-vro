@@ -1,0 +1,33 @@
+/**
+ * Provides docker container settings
+ * Mimics local.java.container-conventions.gradle except for Python projects
+ */
+
+plugins {
+    id 'shared.docker.container-conventions'
+}
+
+docker {
+    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-python'])
+
+    // Copy files into build/docker/ folder, where the container image will be built
+    copySpec.into(".").from("src"){
+        exclude('docker')
+    }
+    copySpec.into(".").from("../"){
+        include("*.py")
+    }
+
+    def dockerArgs=[:]
+    if(project.hasProperty('healthcheck_port'))
+        dockerArgs["HEALTHCHECK_PORT_ARG"] = project.property('healthcheck_port')
+    if(project.hasProperty('healthcheck_cmd'))
+        dockerArgs["HEALTHCHECK_CMD_ARG"] = project.property('healthcheck_cmd')
+
+    buildArgs(dockerArgs)
+}
+
+//dockerRun {
+//    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
+//        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
+//}

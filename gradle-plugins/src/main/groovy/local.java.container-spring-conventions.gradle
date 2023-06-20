@@ -1,0 +1,41 @@
+/**
+ * Provides docker container settings
+ * Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.container-spring-conventions.gradle
+ */
+
+plugins {
+    id 'org.springframework.boot'
+    id 'local.java.container-conventions'
+    id 'shared.java.vro-dep-constraints'
+}
+
+docker {
+    files "build/libs/${bootJar.archiveFileName.get()}",
+        "src/docker/entrypoint.sh"
+
+    def dockerArgs=[
+        JAR_FILE: bootJar.archiveFileName.get()
+    ]
+    if(project.hasProperty('healthcheck_port'))
+        dockerArgs["HEALTHCHECK_PORT_ARG"] = project.property('healthcheck_port')
+    buildArgs(dockerArgs)
+}
+
+// VRO runs via docker-compose, so we don't use this
+// Leaving it since it is part of VA-starter's convention
+dockerRun {
+    env 'JAVA_PROFILE': '-Dspring.profiles.include=docker'
+}
+
+tasks.dockerPrepare.configure {
+    dependsOn(tasks.bootJar)
+}
+
+bootJar {
+    manifest {
+        attributes(
+                'Application-Version': "${project.version}",
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
+        )
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Provides docker container settings
+ * Based on https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.container-conventions.gradle
+ */
+
+plugins {
+    id 'java'
+    id 'shared.docker.container-conventions'
+}
+
+docker {
+    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-java'])
+}

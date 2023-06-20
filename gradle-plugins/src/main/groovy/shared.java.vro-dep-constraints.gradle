@@ -1,0 +1,48 @@
+/**
+ * This plugin is used to specify versions of transitive dependencies to address security vulnerability alerts.
+ * If more formality is desired, convert this into a Platform -- https://docs.gradle.org/current/userguide/platforms.html#sub:platforms-vs-catalog
+ *   - This would result in creating another Gradle module/subfolder, which seems unnecessary at this point.
+ */
+plugins {
+  id 'java'
+}
+
+afterEvaluate {
+    configurations.all {
+      resolutionStrategy.dependencySubstitution {
+        substitute module("org.yaml:snakeyaml") using module("org.yaml:snakeyaml:${snakeyaml_version}")
+      }
+    }
+}
+
+ext {
+    mapstruct_version="1.4.2.Final"
+    spring_framework_version="5.3.26"
+    snakeyaml_version="2.0"
+}
+
+dependencies {
+    constraints {
+        // for starter-bom
+        implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+        implementation "org.springframework:spring-webmvc:${spring_framework_version}"
+        implementation "org.springframework:spring-beans:${spring_framework_version}"
+        implementation "io.github.classgraph:classgraph:4.8.149"
+        implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
+        implementation "com.squareup.okhttp3:okhttp:4.10.0"
+        implementation "org.yaml:snakeyaml:${snakeyaml_version}"
+
+        // for mockserver-netty and hapi-fhir
+        implementation 'org.apache.commons:commons-text:1.10.0'
+
+        // for hapi-fhir-server-openapi
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.utilities:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r5:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
+        implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
+
+        // These are used indirectly but we need to specify versions, otherwise build error
+        annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+    }
+}

@@ -1,0 +1,325 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/alea@1.0.0/alea.js"></script>
+    <script type="text/javascript">
+      function loadJSON(path, success, error) {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              success(JSON.parse(xhr.responseText));
+            } else {
+              error(xhr);
+            }
+          }
+        };
+        xhr.open("GET", path, true);
+        xhr.send();
+      }
+
+      /**
+       * @param nodeCount
+       */
+      function getScaleFreeNetwork(nodeCount) {
+        const nodes = [];
+        const edges = [];
+        const connectionCount = [];
+
+        // randomly create some nodes and edges
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            id: i,
+            label: String(i),
+          });
+
+          connectionCount[i] = 0;
+
+          // create edges in a scale-free-network way
+          if (i == 1) {
+            const from = i;
+            const to = 0;
+            edges.push({
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          } else if (i > 1) {
+            const conn = edges.length * 2;
+            const rand = Math.floor(seededRandom() * conn);
+            let cum = 0;
+            let j = 0;
+            while (j < connectionCount.length && cum < rand) {
+              cum += connectionCount[j];
+              j++;
+            }
+
+            const from = i;
+            const to = j;
+            edges.push({
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          }
+        }
+
+        return { nodes: nodes, edges: edges };
+      }
+
+      seededRandom = Alea("SEED");
+
+      /**
+       * @param nodeCount
+       */
+      function getScaleFreeNetworkSeeded(nodeCount) {
+        const nodes = [];
+        const edges = [];
+        const connectionCount = [];
+        let edgesId = 0;
+
+        // randomly create some nodes and edges
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            id: i,
+            label: String(i),
+          });
+
+          connectionCount[i] = 0;
+
+          // create edges in a scale-free-network way
+          if (i == 1) {
+            const from = i;
+            const to = 0;
+            edges.push({
+              id: edgesId++,
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          } else if (i > 1) {
+            const conn = edges.length * 2;
+            const rand = Math.floor(seededRandom() * conn);
+            let cum = 0;
+            let j = 0;
+            while (j < connectionCount.length && cum < rand) {
+              cum += connectionCount[j];
+              j++;
+            }
+
+            const from = i;
+            const to = j;
+            edges.push({
+              id: edgesId++,
+              from: from,
+              to: to,
+            });
+            connectionCount[from]++;
+            connectionCount[to]++;
+          }
+        }
+
+        return { nodes: nodes, edges: edges };
+      }
+
+    </script>
+    <style>
+      #mynetwork {
+      float: left;
+      width: 1400px;
+      height: 1000px;
+      margin: 5px;
+      border: 1px solid lightgray;
+      }
+      #config {
+      float: left;
+      width: 400px;
+      height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mynetwork"></div>
+    <div id="config"></div>
+    <p id="selection"></p>
+    <script type="text/javascript">
+      // provide data in the DOT language
+      var DOTstring = `digraph G {
+"starter.java.build-javatarget" [style=filled,color=yellow]
+"starter.java.build-springboot" [style=filled,color=yellow]
+"starter.java.build-utils-property" [style=filled,color=yellow]
+"starter.java.config" [style=filled,color=yellow]
+"starter.java.deps-build" [style=filled,color=yellow]
+"starter.java.deps-integration" [style=filled,color=yellow]
+"starter.java.deps-open-tracing-common" [style=filled,color=yellow]
+"starter.java.deps-openapi" [style=filled,color=yellow]
+"starter.java.deps-spring-config" [style=filled,color=yellow]
+"starter.java.deps-springdoc" [style=filled,color=yellow]
+"starter.java.deps-test" [style=filled,color=yellow]
+"starter.java.doc-springdoc" [style=filled,color=yellow]
+"starter.java.lint-checkstyle" [style=filled,color=yellow]
+"starter.java.lint-spectral" [style=filled,color=yellow]
+"starter.java.lint-spotless-java" [style=filled,color=yellow]
+"starter.java.publish-jar" [style=filled,color=yellow]
+"starter.java.test" [style=filled,color=yellow]
+"starter.java.test-integration" [style=filled,color=yellow]
+"starter.java.test-jacoco" [style=filled,color=yellow]
+"local.docker-compose-convention" [style=filled,color=pink]
+"local.java.container" [style=filled,color=pink]
+"local.java.container" -> "shared.docker.container"
+"local.java.container-spring" [style=filled,color=pink]
+"local.java.container-spring" -> "local.java.container"
+"local.java.container-spring" -> "shared.java.vro-dep-constraints"
+"local.java.lint-shellcheck" [style=filled,color=pink]
+"local.python.container-service" [style=filled,color=pink]
+"local.python.container-service" -> "shared.docker.container"
+"local.ruby.container-service" [style=filled,color=pink]
+"local.ruby.container-service" -> "shared.docker.container"
+"local.std.base-project" [style=filled,color=pink]
+"local.std.base-project" -> "starter.java.build-utils-property"
+"local.std.base-project" -> "local.docker-compose-convention"
+"local.std.domain.folder" [style=filled,color=pink]
+"local.std.domain.folder" -> "local.docker-compose-convention"
+"local.std.java.application" [style=filled,color=pink]
+"local.std.java.application" -> "starter.java.config"
+"local.std.java.application" -> "starter.java.build-springboot"
+"local.std.java.application" -> "starter.java.deps-openapi"
+"local.std.java.application" -> "starter.java.deps-spring-config"
+"local.std.java.application" -> "starter.java.deps-springdoc"
+"local.std.java.application" -> "starter.java.lint-spectral"
+"local.std.java.application" -> "starter.java.doc-springdoc"
+"local.std.java.application" -> "starter.java.test-integration"
+"local.std.java.application" -> "starter.java.deps-integration"
+"local.std.java.application" -> "starter.java.lint-spotless-java"
+"local.std.java.application" -> "local.java.container-spring"
+"local.std.java.application" -> "shared.std.java"
+"local.std.java.library" [style=filled,color=pink]
+"local.std.java.library" -> "starter.java.deps-open-tracing-common"
+"local.std.java.library" -> "starter.java.publish-jar"
+"local.std.java.library" -> "shared.std.java"
+"local.std.java.library" -> "replacement-for-starter.bom"
+"local.std.java.library-spring" [style=filled,color=pink]
+"local.std.java.library-spring" -> "local.std.java.library"
+"shared.docker.container" [style=filled,color=lightgreen]
+"shared.java.vro-dep-constraints" [style=filled,color=lightgreen]
+"shared.std.java" [style=filled,color=lightgreen]
+"shared.std.java" -> "starter.java.lint-checkstyle"
+"shared.std.java" -> "starter.java.deps-build"
+"shared.std.java" -> "starter.java.deps-test"
+"shared.std.java" -> "starter.java.build-utils-property"
+"shared.std.java" -> "starter.java.build-javatarget"
+"shared.std.java" -> "starter.java.test"
+"shared.std.java" -> "starter.java.test-jacoco"
+"shared.std.java" -> "shared.java.vro-dep-constraints"
+"replacement-for-starter.bom" [style=filled,color="#db9e2c"]
+
+"./mocks/mock-bip-ce-api" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-bip-ce-api" -> "local.java.container-spring"
+"./mocks/mock-bip-ce-api" -> "local.std.java.library-spring"
+"./mocks" [style=filled,color=lightgrey,shape=box]
+"./mocks" -> "local.std.base-project"
+"./mocks/mock-bip-shared" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-bip-shared" -> "local.std.java.library"
+"./mocks/mock-slack" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-slack" -> "local.java.container-spring"
+"./mocks/mock-slack" -> "local.std.java.library-spring"
+"./mocks/mock-bip-claims-api" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-bip-claims-api" -> "local.java.container-spring"
+"./mocks/mock-bip-claims-api" -> "local.std.java.library-spring"
+"./mocks/mock-lighthouse-api" [style=filled,color=lightgrey,shape=box]
+"./mocks/mock-lighthouse-api" -> "local.java.container-spring"
+"./mocks/mock-lighthouse-api" -> "local.std.java.library-spring"
+"./svc-bgs-api" [style=filled,color=lightgrey,shape=box]
+"./svc-bgs-api" -> "local.ruby.container-service"
+"./app" [style=filled,color=lightgrey,shape=box]
+"./app" -> "local.std.java.application"
+"./app" -> "local.docker-compose-convention"
+"./svc-lighthouse-api" [style=filled,color=lightgrey,shape=box]
+"./svc-lighthouse-api" -> "local.java.container-spring"
+"./svc-lighthouse-api" -> "local.std.java.library-spring"
+"./api-gateway" [style=filled,color=lightgrey,shape=box]
+"./api-gateway" -> "local.std.java.library-spring"
+"./api-gateway" -> "local.java.container"
+"./shared/lib-camel-connector" [style=filled,color=lightgrey,shape=box]
+"./shared/lib-camel-connector" -> "local.std.java.library-spring"
+"./shared/persistence-model" [style=filled,color=lightgrey,shape=box]
+"./shared/persistence-model" -> "local.std.java.library-spring"
+"./postgres" [style=filled,color=lightgrey,shape=box]
+"./postgres" -> "local.java.container"
+"./db-init" [style=filled,color=lightgrey,shape=box]
+"./db-init" -> "local.java.container"
+"./db-init" -> "starter.java.build-utils-property"
+"./domain-cc/cc-app" [style=filled,color=lightgrey,shape=box]
+"./domain-cc/cc-app" -> "local.python.container-service"
+"./domain-cc" [style=filled,color=lightgrey,shape=box]
+"./domain-cc" -> "local.std.domain.folder"
+"./domain-cc/cc-api-controller" [style=filled,color=lightgrey,shape=box]
+"./domain-cc/cc-api-controller" -> "local.std.java.library-spring"
+"./scripts" [style=filled,color=lightgrey,shape=box]
+"./scripts" -> "local.java.lint-shellcheck"
+"." [style=filled,color=lightgrey,shape=box]
+"." -> "local.std.base-project"
+"./domain-xample/xample-workflows" [style=filled,color=lightgrey,shape=box]
+"./domain-xample/xample-workflows" -> "local.java.container-spring"
+"./domain-xample/xample-workflows" -> "local.std.java.library-spring"
+"./domain-xample/xample-shared" [style=filled,color=lightgrey,shape=box]
+"./domain-xample/xample-shared" -> "local.std.java.library-spring"
+"./domain-xample" [style=filled,color=lightgrey,shape=box]
+"./domain-xample" -> "local.std.domain.folder"
+"./domain-xample/svc-xample-j" [style=filled,color=lightgrey,shape=box]
+"./domain-xample/svc-xample-j" -> "local.java.container-spring"
+"./domain-xample/xample-api-controller" [style=filled,color=lightgrey,shape=box]
+"./domain-xample/xample-api-controller" -> "local.std.java.library-spring"
+"./gradle-plugins" [style=filled,color=lightgrey,shape=box]
+"./svc-bip-api" [style=filled,color=lightgrey,shape=box]
+"./svc-bip-api" -> "local.std.java.library"
+"./console" [style=filled,color=lightgrey,shape=box]
+"./console" -> "local.java.container-spring"
+"./console" -> "local.std.java.library-spring"
+      }`;
+      var parsedData = vis.parseDOTNetwork(DOTstring);
+
+      var data = {
+      nodes: parsedData.nodes,
+      edges: parsedData.edges
+      }
+
+      // var nodes = data.nodes
+      // console.log(vis.DataSet.prototype.isPrototypeOf(nodes));
+      // console.log(nodes);
+      // var dataset = new vis.DataSet(nodes)
+      // console.log(vis.DataSet.prototype.isPrototypeOf(dataset));
+
+      var options = parsedData.options;
+      options.autoResize = true;
+      options.height='100%';
+      options.width='100%';
+      options.configure={
+              filter: function (option, path) {
+                if (path.indexOf("physics") !== -1) {
+                  return true;
+                }
+                if (path.indexOf("smooth") !== -1 || option === "smooth") {
+                  return true;
+                }
+                return false;
+              },
+              container: document.getElementById("config"),
+            };
+      // options.layout={
+      //     clusterThreshold: 1500
+      // };
+      // options.physics={
+      //             stabilization: false,
+      //             wind: { x: 0, y: 0 },
+      //           };
+
+      var container = document.getElementById('mynetwork');
+      var network = new vis.Network(container, data, options);
+
+    </script>
+  </body>
+</html>

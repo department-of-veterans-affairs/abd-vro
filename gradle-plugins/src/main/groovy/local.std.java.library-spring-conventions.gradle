@@ -1,0 +1,7 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a Spring-based Java jar.
+ */
+
+plugins {
+    id 'local.std.java.library-conventions'
+}
