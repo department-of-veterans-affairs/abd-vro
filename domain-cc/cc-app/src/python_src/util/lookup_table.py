@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+
 from .table_version import TABLE_VERSION
 
 # csv file exported from DC Lookup v0.1
