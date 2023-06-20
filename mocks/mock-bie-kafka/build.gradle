@@ -8,12 +8,7 @@ plugins {
 }
 
 docker {
-  copySpec.from("src/main/resources").into(".")
-}
-
-dockerRun {
-  image "${dockerRegistry}/${rootProject.name}-db-init"
-  env 'ALLOW_PLAINTEXT_LISTENER': getEnvOrDefault('ALLOW_PLAINTEXT_LISTENER', 'yes')
+  // copySpec.from("src/main/resources").into(".")
 }
 
 dependencies {
