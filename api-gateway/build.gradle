@@ -7,6 +7,12 @@ plugins {
 dependencies {
   // Spring Boot
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
+  constraints {
+    implementation('io.netty:netty-handler:4.1.94.Final') {
+      because("security vulnerability in prior versions")
+    }
+  }
+
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
