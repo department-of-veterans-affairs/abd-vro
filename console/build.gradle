@@ -28,6 +28,11 @@ dependencies {
 
   // Redis
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+  constraints {
+    implementation('io.netty:netty-handler:4.1.94.Final') {
+      because("security vulnerability in prior versions")
+    }
+  }
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
   testImplementation "com.github.fppt:jedis-mock:1.0.9"
