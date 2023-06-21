@@ -41,6 +41,12 @@ dependencies {
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
 
+        constraints {
+            implementation('io.netty:netty-handler:4.1.94.Final') {
+                because("security vulnerability in prior versions")
+            }
+        }
+
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
