@@ -51,8 +51,7 @@ runs:
       shell: bash
       run: |
         # GHCR_TOKEN is expected by imageTagExists
-        # Reusing existing secret ACCESS_TOKEN_DELETE_PACKAGE to query packages, not deleted it.
-        export GHCR_TOKEN=$(echo ${{ secrets.ACCESS_TOKEN_DELETE_PACKAGE }} | base64)
+        export GHCR_TOKEN=$(echo ${{ inputs.ghcr_password }} | base64)
 
         echo "## Published images" >> $GITHUB_STEP_SUMMARY
         echo "images<<EOF" >> $GITHUB_OUTPUT
