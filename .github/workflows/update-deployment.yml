@@ -22,7 +22,8 @@ on:
         type: choice
         options:
         - vro-app
-        - vro-svcs
+        - svc-bgs-api
+        - svc-lighthouse-api
         - api-gateway
         - platform
 

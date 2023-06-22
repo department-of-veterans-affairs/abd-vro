@@ -5,8 +5,8 @@ type: application
 
 # numbers, lowercase, and dashes only
 # https://helm.sh/docs/chart_best_practices/conventions/#chart-names
-name: vro-svcs-chart
-description: Domain-independent microservices for VRO
+name: vro-svc-lh-api-chart
+description: VRO microservice - client for Lighthouse API
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.

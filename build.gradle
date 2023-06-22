@@ -118,7 +118,8 @@ scmVersion {
     '..'         : null, // '..' will resolve to helm/Charts.yaml
     'api-gateway': null, // Update the version presented in SwaggerUI
     'vro-app'    : null,
-    'vro-svcs'   : null,
+    'svc-bgs-api': null,
+    'svc-lighthouse-api': null,
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
   ]

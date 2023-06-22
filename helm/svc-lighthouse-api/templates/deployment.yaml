@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-svcs
+  name: vro-svc-lighthouse-api
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -19,18 +19,6 @@ spec:
     spec:
       {{ include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
-          env:
-            {{- include "vro.commonEnvVars" . | nindent 12 }}
-            {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            - name: VRO_SECRETS_BIP
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_BIP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
         - name: svc-lighthouse-api{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-svc-lighthouse-api:{{ include "vro.imageTag" . }}
           env:
