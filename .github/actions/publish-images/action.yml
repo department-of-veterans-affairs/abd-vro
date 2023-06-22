@@ -63,8 +63,10 @@ runs:
           else
             IMG_TAG=$(getVarValue "${VAR_PREFIX}" _VER)
           fi
+          echo "::group::Push image $IMG_NAME $IMG_TAG"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
             echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
+            echo "* Image already exists, not overwriting: ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
           else
             GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
             GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
@@ -79,6 +81,7 @@ runs:
             echo "* ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
             echo "${GHCR_PATH}:$IMG_TAG" >> $GITHUB_OUTPUT
           fi
+          echo "::endgroup::"
         done
         echo "EOF" >> $GITHUB_OUTPUT
         docker image list

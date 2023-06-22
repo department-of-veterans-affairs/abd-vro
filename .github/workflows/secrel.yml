@@ -1,4 +1,5 @@
 name: "2. (Internal) SecRel workflow"
+run-name: "SecRel ${{inputs.image_prefix}} (${{github.ref_type}} ${{github.ref_name}}) ${{github.event.head_commit.message}}"
 
 on:
   # Trigger on every code push to main and develop branches
