@@ -73,11 +73,21 @@ echo '# Array of variable prefixes
 echo "VAR_PREFIXES_ARR=( ${VAR_PREFIXES[@]} )"
 echo "export VAR_PREFIXES=\"${VAR_PREFIXES[@]}\""
 echo '
-# Helper function
+## Helper functions
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
 getVarValue(){
   local VARNAME=${1}${2}
   echo "${!VARNAME}"
+}
+
+# Return non-zero error code if image tag does not exist
+# Usage: imageTagExists IMAGE_NAME IMAGE_TAG
+# Environment variable GHCR_TOKEN should be in base64
+imageTagExists(){
+  [ "$GHCR_TOKEN" ] || { echo "GHCR_TOKEN not set!" >&2; return 2; }
+  # https://superuser.com/a/442395
+  curl -s -o /dev/null -w "%{http_code}" -I -H "Authorization: Bearer ${GHCR_TOKEN}" \
+    "https://ghcr.io/v2/department-of-veterans-affairs/abd-vro-internal/$1/manifests/$2"
 }
 
 # Note: Bash arrays cannot be exported; use this workaround to
@@ -89,8 +99,8 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
 #   echo "$VARNAME = `getVarValue ${PREFIX} _GRADLE_IMG`"
 #   echo
 # done
-
 '
+  echo '######################################'
   echo
   for IMG in "${IMAGES[@]}"; do
     GRADLE_FOLDER=$(gradle_folder "$IMG")
@@ -100,6 +110,9 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
     echo
   done
+
+  echo '######################################'
+  echo 'source scripts/image_versions.src'
   echo '# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"

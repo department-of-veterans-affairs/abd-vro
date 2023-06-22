@@ -70,7 +70,8 @@ jobs:
                        ;;
             release-*|v*.*.*) # if git tag reflects a release, then publish non-dev images
                        IMG_PREFIX=""
-                       IMG_TAG="${{ github.ref_name }}"
+                       # A blank IMG_TAG value will cause image_versions.src to be used
+                       IMG_TAG=""
                        ;;
             develop)   RUN_GRADLE_TESTS=false
                        ;;

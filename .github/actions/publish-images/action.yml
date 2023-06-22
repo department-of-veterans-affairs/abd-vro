@@ -7,9 +7,8 @@ inputs:
     type: string
     default: 'dev_'
   image_tag:
-    description: 'The tag/version for the image, e.g., first 7 of the commit hash or "release-1.2.3"'
+    description: 'The tag/version for the image, e.g., first 7 of the commit hash or "" (blank) to use image_versions.src'
     type: string
-    required: true
   ghcr_username:
     description: 'GHCR username'
     type: string
@@ -26,7 +25,7 @@ inputs:
 outputs:
   images_list:
     description: 'list of URLs to published images'
-    value: ${{ steps.published-images.outputs.images }}
+    value: ${{ steps.push-images.outputs.images }}
 
 runs:
   using: composite
@@ -48,34 +47,39 @@ runs:
         password: ${{ inputs.ghcr_password }}
 
     - name: "Tag and push images using commit hash and `latest`"
+      id: push-images
       shell: bash
       run: |
-        source scripts/image_vars.src
-        for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-          GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
-          IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
-          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+        # GHCR_TOKEN is expected by imageTagExists
+        # Reusing existing secret ACCESS_TOKEN_DELETE_PACKAGE to query packages, not deleted it.
+        export GHCR_TOKEN=$(echo ${{ secrets.ACCESS_TOKEN_DELETE_PACKAGE }} | base64)
 
-          echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:${{ inputs.image_tag }}' and '$IMG_NAME:latest'"
-          docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:${{ inputs.image_tag }}"
-          docker push "${GHCR_PATH}:${{ inputs.image_tag }}"
-
-          docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
-          docker push "${GHCR_PATH}:latest"
-        done
-
-    - name: "Published images list"
-      id: published-images
-      shell: bash
-      run: |
-        docker image list
-        source scripts/image_vars.src
         echo "## Published images" >> $GITHUB_STEP_SUMMARY
         echo "images<<EOF" >> $GITHUB_OUTPUT
-        for VAR_PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-          IMG_NAME=${{ inputs.image_prefix }}$(getVarValue "${VAR_PREFIX}" _IMG)
-          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
-          echo "${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
-          echo "* ${GHCR_PATH}:${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+        source scripts/image_vars.src
+        for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+          IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
+          if [ "${{ inputs.image_tag }}" ]; then
+            IMG_TAG="${{ inputs.image_tag }}"
+          else
+            IMG_TAG=$(getVarValue "${VAR_PREFIX}" _VER)
+          fi
+          if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
+            echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
+          else
+            GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
+            GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+
+            echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:$IMG_TAG' and '$IMG_NAME:latest'"
+            docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:$IMG_TAG"
+            docker push "${GHCR_PATH}:$IMG_TAG"
+
+            docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
+            docker push "${GHCR_PATH}:latest"
+
+            echo "* ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
+            echo "${GHCR_PATH}:$IMG_TAG" >> $GITHUB_OUTPUT
+          fi
         done
         echo "EOF" >> $GITHUB_OUTPUT
+        docker image list
