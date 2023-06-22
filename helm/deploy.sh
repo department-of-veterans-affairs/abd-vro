@@ -65,36 +65,45 @@ deletePostgresStatefulSet(){
     --cascade=orphan --wait --ignore-not-found=true
 }
 
+# Load *_VER environment variables
+source scripts/image_vars.src
+
+helmArgsForSubchart(){
+  if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
+    echo "--set $1.enabled=false"
+  else
+    echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
+  fi
+}
 platformChartArgs(){
-  helmArgsForSubchart(){
-    if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
-      echo "--set $1.enabled=false"
-    else
-      echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
-    fi
-  }
   HELM_ARGS="$HELM_ARGS \
     $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
     $(helmArgsForSubchart redis "$REDIS_VER") \
-    --set postgres.enabled=$ENABLE_POSTGRES \
-    --set console.enabled=$ENABLE_CONSOLE \
+    $(helmArgsForSubchart postgres "$postgres_VER") \
+    $(helmArgsForSubchart console "$console_VER") \
   "
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }
 
 case "$HELM_CHART" in
   platform)
-    : ${ENABLE_POSTGRES:=true}
-    : ${ENABLE_CONSOLE:=false}
-    : ${RABBITMQ_VER:=3}
-    : ${REDIS_VER:=7}
     if [ "${SHUTDOWN_FIRST}" == "true" ]; then
       : echo "Since Helm chart was shut down, don't need to delete other charts."
-    elif [ "$ENABLE_POSTGRES" == "true" ]; then
+    else
       deletePostgresStatefulSet
     fi
     platformChartArgs
     ;;
+  api-gateway)
+    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$apigateway_VER' ";;
+  app)
+    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$app_VER' "
+    # TODO: use $dbinit_VER
+    ;;
+  svc-bgs-api)
+    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$svcbgsapi_VER' ";;
+  svc-lighthouse-api)
+    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$svclighthouseapi_VER' ";;
 esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
@@ -103,10 +112,10 @@ set -x
 set -e
 helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
-  ${HELM_ARGS} \
   --set-string "global.imageTag=${IMAGE_TAG}" \
-  --set-string "global.commitSha=${GITHUB_SHA}"
-set +e
+  --set-string "global.commitSha=${GITHUB_SHA}" \
+  ${HELM_ARGS} \
+  "
 set +x
 
 k8sInfo(){
