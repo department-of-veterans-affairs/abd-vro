@@ -3,10 +3,19 @@ plugins {
   id 'local.docker-compose-convention'
 }
 
+configurations.all {
+  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    if (details.requested.group == 'org.glassfish' && details.requested.name == 'javax.el') {
+      details.useTarget group: 'org.glassfish', name: 'jakarta.el', version: '3.0.4'
+    }
+  }
+}
+
 ext {
   // TODO: improve test code coverage so that the following can be removed
   jacoco_minimum_coverage = 0.5
 }
+
 
 dependencies {
   implementation project(':shared:persistence-model')
