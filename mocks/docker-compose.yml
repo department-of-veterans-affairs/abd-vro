@@ -55,6 +55,20 @@ services:
     networks:
       - vro_intranet
 
+  mock-bie-kafka:
+    profiles: ["all","kafka"]
+    image: va/vro_mocks-mock-bie-kafka:latest
+    <<: [*common-sde-security, *common-security-opt]
+    ports:
+      - "9092:9092"
+    environment:
+      <<: *common-vars
+      # for development only; TODO: Update with BIE-like authentication
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092
+    networks:
+      - vro_intranet
+
   mock-bip-claims-api:
     profiles: ["all","bip"]
     image: va/vro_mocks-mock-bip-claims-api:latest
