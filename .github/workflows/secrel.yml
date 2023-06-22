@@ -1,5 +1,5 @@
 name: "2. (Internal) SecRel workflow"
-run-name: "SecRel ${{inputs.image_prefix}} (${{github.ref_type}} ${{github.ref_name}}) ${{github.event.head_commit.message}}"
+run-name: "SecRel ${{inputs.image_prefix}} (${{github.ref_name}}) ${{github.event.head_commit.message}}"
 
 on:
   # Trigger on every code push to main and develop branches
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       image_prefix:
-        description: 'Image prefix for the chosen branch. Choose `dev_` for deploys to dev and qa environments.'
+        description: 'Image prefix for the chosen branch. Choose `(no prefix)` to create non-dev images.'
         required: true
         default: 'dev_'
         type: choice
