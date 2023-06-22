@@ -99,11 +99,14 @@ esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
 set -x
+# Exit with error code when command fails so that GH Action fails
+set -e
 helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
   ${HELM_ARGS} \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}"
+set +e
 set +x
 
 k8sInfo(){
