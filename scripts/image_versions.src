@@ -1,0 +1,15 @@
+
+CURRENT_RELEASE_VER="v3.1.0"
+
+: ${postgres_VER:=$CURRENT_RELEASE_VER}
+
+: ${console_VER:=$CURRENT_RELEASE_VER}
+apigateway_VER="v3.0.9"
+
+: ${app_VER:=$CURRENT_RELEASE_VER}
+: ${dbinit_VER:=$CURRENT_RELEASE_VER}
+
+: ${svcbgsapi_VER:=$CURRENT_RELEASE_VER}
+: ${svclighthouseapi_VER:=$CURRENT_RELEASE_VER}
+
+: ${ccapp_VER:=$CURRENT_RELEASE_VER}
