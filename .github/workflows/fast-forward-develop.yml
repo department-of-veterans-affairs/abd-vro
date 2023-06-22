@@ -1,4 +1,5 @@
 name: "7. Fast-forward merge the develop branch"
+run-name: "Fast-forward merge to ${{inputs.domain_branch}}"
 
 on:
   workflow_dispatch:

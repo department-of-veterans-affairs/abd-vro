@@ -12,7 +12,7 @@ shellcheck {
     sources = files(".")
     ignoreFailures = true
     showViolations = true
-    shellcheckVersion = "${shellcheck_tool_version}"
+    shellcheckVersion = "1.4.6"
     useDocker = false
     // don't specify the absolute path so that it can work in GH Actions and locally
     shellcheckBinary = "shellcheck"

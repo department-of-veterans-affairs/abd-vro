@@ -10,12 +10,6 @@ plugins {
 docker {
     dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-ruby'])
 
-    copyFromResources(copySpec, [
-        '/docker/set-env-secrets.src',
-        '/docker/entrypoint-wrapper.sh'
-    ])
-    files "src/docker/entrypoint.sh"
-
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){
         exclude('docker')
