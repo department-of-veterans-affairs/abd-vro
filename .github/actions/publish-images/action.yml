@@ -61,7 +61,7 @@ runs:
           if [ "${{ inputs.image_tag }}" ]; then
             IMG_TAG="${{ inputs.image_tag }}"
           else
-            IMG_TAG=$(getVarValue "${VAR_PREFIX}" _VER)
+            IMG_TAG=$(getVarValue "${PREFIX}" _VER)
           fi
           echo "::group::Push image $IMG_NAME $IMG_TAG"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
