@@ -1,4 +1,5 @@
 name: "1. (Internal) Update Deployment"
+run-name: "${{inputs.target_env}}: Update deployment ${{inputs.helm_chart}} ${{inputs.image_tag}}"
 
 on:
   workflow_dispatch:
