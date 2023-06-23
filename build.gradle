@@ -118,7 +118,8 @@ scmVersion {
     '..'         : null, // '..' will resolve to helm/Charts.yaml
     'api-gateway': null, // Update the version presented in SwaggerUI
     'vro-app'    : null,
-    'vro-svcs'   : null,
+    'svc-bgs-api': null,
+    'svc-lighthouse-api': null,
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
   ]
@@ -146,8 +147,11 @@ scmVersion {
 
   hooks {
     pre("fileUpdate", [file: "api-gateway/src/main/java/gov/va/vro/propmodel/Info.java",
-      pattern    : { v, p -> /version = "v.*"/ },
-      replacement: { v, p -> "version = \"v$v\"" }])
+      pattern    : { v, p -> /String version = "v.*"/ },
+      replacement: { v, p -> "String version = \"v$v\"" }])
+    pre("fileUpdate", [file: "scripts/image_versions.src",
+      pattern    : { v, p -> /CURRENT_RELEASE_VER="v.*"/ },
+      replacement: { v, p -> "CURRENT_RELEASE_VER=\"v$v\"" }])
     pre({ context ->
       setHelmChartAppVersions(context.currentVersion)
           .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }

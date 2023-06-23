@@ -1,5 +1,5 @@
 labels:
-  app: vro-svcs
+  app: vro-svc-bgs-api
 
 resources:
   requests:
