@@ -45,7 +45,13 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "docker"
-    directory: "/gradle-plugins/docker"
+    directory: "/console/src/docker"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker"
+    directory: "/svc-bgs-api/src/docker"
     target-branch: "develop"
     schedule:
       interval: "daily"
