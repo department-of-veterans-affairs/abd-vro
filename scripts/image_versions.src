@@ -1,5 +1,7 @@
 # This file sets environment variables that enables pinning a version for specific containers
 # overriding the variables set in image_vars.src.
+# This file is automatically updated by scripts/image-version.sh.
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
 #
 # These versions are used as image tags for:
 # - image publishing to GHCR (see .github/actions/publish-images/action.yml)

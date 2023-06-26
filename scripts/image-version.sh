@@ -30,6 +30,7 @@ pinnedImages(){
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
   local IMG_NAME=$(getVarValue "${PREFIX}" _IMG)
+  >&2 docker pull "ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${IMG_VER}"
   >&2 echo "  Comparing ${IMG_NAME}: $1 vs $IMG_VER"
   container-diff diff --type=history --type=size --json \
     "daemon://ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${1}" \
