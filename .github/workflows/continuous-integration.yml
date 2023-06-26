@@ -19,6 +19,6 @@ jobs:
     uses: ./.github/workflows/codeql-analysis.yml
     secrets: inherit
 
-#  end2end-test:
-#    uses: ./.github/workflows/rrd-end2end-test.yml
-#    secrets: inherit
+  container-healthchecks:
+    uses: ./.github/workflows/container-healthchecks.yml
+    secrets: inherit
