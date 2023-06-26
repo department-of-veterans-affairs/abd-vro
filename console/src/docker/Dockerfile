@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:20-jre-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && \
