@@ -1,11 +1,8 @@
-name: "Container Health Checks"
+name: "PR: Run Container Health Checks"
 
 on:
   # Allow manual triggering
   workflow_dispatch:
-
-  # Trigger when called by another GitHub Action
-  workflow_call:
 
 concurrency:
   group: containerHealthChecks-${{ github.ref }}
@@ -18,25 +15,23 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
       - name: "Create platform containers with healthchecks"
         shell: bash
         run: |
-          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+          ./gradlew :dockerComposeUp
 
       - name: "Create app containers with healthchecks"
         shell: bash
         run: |
-          COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
+          ./gradlew :app:dockerComposeUp
 
       - name: "Create domain-cc containers with healthchecks"
         shell: bash
         run: |
           ./gradlew :domain-cc:dockerComposeUp
-
-      - name: "Clean shutdown of all containers"
-        shell: bash
-        run: |
-          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
