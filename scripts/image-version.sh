@@ -29,12 +29,14 @@ pinnedImages(){
 }
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
+  local GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
   local IMG_NAME=$(getVarValue "${PREFIX}" _IMG)
+  local GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
   >&2 docker pull "ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${IMG_VER}"
-  >&2 echo "  Comparing ${IMG_NAME}: $1 vs $IMG_VER"
+  >&2 echo "  Comparing local ${GRADLE_IMG_NAME} vs GHCR's ${IMG_NAME}:$IMG_VER"
   container-diff diff --type=history --type=size --json \
-    "daemon://ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${1}" \
-    "daemon://ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${IMG_VER}"
+    "daemon://${GRADLE_IMG_NAME}" \
+    "daemon://ghcr.io/${GHCR_PATH}/${IMG_NAME}:${IMG_VER}"
 }
 isImageSame(){
   local IMG_DIFFS=$1
@@ -51,10 +53,9 @@ isImageSame(){
   fi
 }
 changedPinnedImages(){
-  local CURR_VERSION=$1
   for PREFIX in $(pinnedImages); do
     >&2 echo "Found pinned image: ${PREFIX}"
-    local IMG_DIFFS=$(comparePinnedImages "${CURR_VERSION}")
+    local IMG_DIFFS=$(comparePinnedImages)
     if ! isImageSame "$IMG_DIFFS"; then
       echo "${PREFIX}"
     fi
@@ -68,8 +69,7 @@ case "$1" in
   pin) pinImageVersions >> scripts/image_versions.src
     ;;
   unpinIfDiff)
-    CURR_VERSION=$2
-    for PREFIX in $(changedPinnedImages "${CURR_VERSION}"); do
+    for PREFIX in $(changedPinnedImages); do
       unpinImageVersion "${PREFIX}" > unpinned_versions.src && \
         mv unpinned_versions.src scripts/image_versions.src
     done
@@ -78,7 +78,7 @@ case "$1" in
   To pin versions of unpinned images:
     $0 pin
   To unpin versions of pinned images that have changed:
-    $0 unpinIfDiff <image_tag>
+    $0 unpinIfDiff
 "
     ;;
 esac

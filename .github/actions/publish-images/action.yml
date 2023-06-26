@@ -50,17 +50,20 @@ runs:
       id: unpin-changed-pinned-images
       shell: bash
       run: |
+        # Install container-diff needed by image-version.sh
         curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
         mkdir -p "/tmp/bin" && \
         export PATH="/tmp/bin:$PATH" && \
         install container-diff-linux-amd64 /tmp/bin/container-diff
 
-        NEW_IMG_TAG=${GITHUB_SHA:0:7}
-        scripts/image-version.sh unpinIfDiff "$NEW_IMG_TAG"
+        # Unpin pinned images that have changed
+        scripts/image-version.sh unpinIfDiff
 
-        # Check for changes -- https://stackoverflow.com/a/3879077
+        # Push any changes to image_versions.src -- https://stackoverflow.com/a/3879077
         git update-index --refresh || echo "Files changed"
         if ! git diff-index --quiet HEAD --; then
+          git config --global user.name "VRO Machine User"
+          git config --global user.email "abd-vro-machine@users.noreply.github.com"
           git add scripts/image_versions.src
           git commit -m "Automated: Unpin versions of updated images $NEW_IMG_TAG"
           git push
