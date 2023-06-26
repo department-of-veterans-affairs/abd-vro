@@ -46,6 +46,21 @@ runs:
         username: ${{ inputs.ghcr_username }}
         password: ${{ inputs.ghcr_password }}
 
+    - name: "Unpin changed pinned images"
+      id: unpin-changed-pinned-images
+      shell: bash
+      run: |
+        NEW_IMG_TAG=${GITHUB_SHA:0:7}
+        scripts/image-version.sh unpinIfDiff "$NEW_IMG_TAG"
+
+        # Check for changes -- https://stackoverflow.com/a/3879077
+        git update-index --refresh
+        if ! git diff-index --quiet HEAD --; then
+          git add scripts/image_versions.src
+          git commit -m "Automated: Unpin versions of updated images $NEW_IMG_TAG"
+          git push
+        fi
+
     - name: "Tag and push images using commit hash and `latest`"
       id: push-images
       shell: bash

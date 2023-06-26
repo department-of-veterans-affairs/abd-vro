@@ -94,6 +94,9 @@ jobs:
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can do `git push` later in publish-images
+          token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
       - name: "Slack: workflow triggered"
         id: notify-slack
