@@ -4,6 +4,9 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+  # Trigger when called by another GitHub Action
+  workflow_call:
+
 concurrency:
   group: containerHealthChecks-${{ github.ref }}
 
