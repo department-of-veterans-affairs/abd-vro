@@ -10,6 +10,11 @@ on:
 concurrency:
   group: containerHealthChecks-${{ github.ref }}
 
+env:
+  LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
+  LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
+  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
+
 jobs:
   container-healthcheck:
     runs-on: ubuntu-latest
@@ -22,8 +27,9 @@ jobs:
         uses: ./.github/actions/build-images
 
       - name: "Create platform containers with healthchecks"
-        shell: bash
         run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
 
       - name: "Create app containers with healthchecks"
