@@ -1,4 +1,4 @@
-name: "PR: Run Container Health Checks"
+name: "Container Health Checks"
 
 on:
   # Allow manual triggering
