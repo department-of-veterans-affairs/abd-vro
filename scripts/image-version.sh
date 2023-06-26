@@ -29,14 +29,14 @@ pinnedImages(){
 }
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
-  local GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
   local IMG_NAME=$(getVarValue "${PREFIX}" _IMG)
+  local GHCR_PATH="ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}"
   local GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
-  >&2 docker pull "ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}:${IMG_VER}"
+  >&2 docker pull "${GHCR_PATH}:${IMG_VER}"
   >&2 echo "  Comparing local ${GRADLE_IMG_NAME} vs GHCR's ${IMG_NAME}:$IMG_VER"
   container-diff diff --type=history --type=size --json \
     "daemon://${GRADLE_IMG_NAME}" \
-    "daemon://ghcr.io/${GHCR_PATH}/${IMG_NAME}:${IMG_VER}"
+    "remote://${GHCR_PATH}:${IMG_VER}"
 }
 isImageSame(){
   local IMG_DIFFS=$1
