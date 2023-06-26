@@ -1,0 +1,37 @@
+name: "PR: Run Container Health Checks"
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+concurrency:
+  group: containerHealthChecks-${{ github.ref }}
+
+jobs:
+  container-healthcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: "Docker build"
+        uses: ./.github/actions/build-images
+
+      - name: "Create platform containers with healthchecks"
+        shell: bash
+        run: |
+          ./gradlew :dockerComposeUp
+
+      - name: "Create app containers with healthchecks"
+        shell: bash
+        run: |
+          ./gradlew :app:dockerComposeUp
+
+      - name: "Create domain-cc containers with healthchecks"
+        shell: bash
+        run: |
+          ./gradlew :domain-cc:dockerComposeUp
