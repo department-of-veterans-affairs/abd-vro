@@ -35,7 +35,7 @@ runs:
       uses: ./.github/actions/build-images
 
     - name: "Test code"
-      if: inputs.run_tests
+      if: inputs.run_tests == true
       shell: bash
       run: ./gradlew check
 
@@ -50,11 +50,16 @@ runs:
       id: unpin-changed-pinned-images
       shell: bash
       run: |
+        curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
+        mkdir -p "/tmp/bin" && \
+        export PATH="/tmp/bin:$PATH" && \
+        install container-diff-linux-amd64 /tmp/bin/container-diff
+
         NEW_IMG_TAG=${GITHUB_SHA:0:7}
         scripts/image-version.sh unpinIfDiff "$NEW_IMG_TAG"
 
         # Check for changes -- https://stackoverflow.com/a/3879077
-        git update-index --refresh
+        git update-index --refresh || echo "Files changed"
         if ! git diff-index --quiet HEAD --; then
           git add scripts/image_versions.src
           git commit -m "Automated: Unpin versions of updated images $NEW_IMG_TAG"
