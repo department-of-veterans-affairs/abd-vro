@@ -26,17 +26,11 @@ jobs:
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
-      - name: "Set environment variables"
-        env:
-          ENV: "end2end-test"
+      - name: "Create platform containers with healthchecks"
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
-
-      - name: "Create platform containers with healthchecks"
-        shell: bash
-        run: |
-          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp --info
+          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
 
       - name: "Create app containers with healthchecks"
         shell: bash
