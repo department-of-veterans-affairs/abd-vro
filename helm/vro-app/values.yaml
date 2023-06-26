@@ -1,6 +1,9 @@
 labels:
   app: vro-app
 
+dbInit:
+  imageTag: latest
+
 replicaCount: 1
 
 serviceUriPrefix: vro-app
