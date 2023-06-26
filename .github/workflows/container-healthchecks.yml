@@ -21,14 +21,19 @@ jobs:
       - name: "Create platform containers with healthchecks"
         shell: bash
         run: |
-          ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
 
       - name: "Create app containers with healthchecks"
         shell: bash
         run: |
-          ./gradlew :app:dockerComposeUp
+          COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
 
       - name: "Create domain-cc containers with healthchecks"
         shell: bash
         run: |
           ./gradlew :domain-cc:dockerComposeUp
+
+      - name: "Clean shutdown of all containers"
+        shell: bash
+        run: |
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
