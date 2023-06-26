@@ -107,12 +107,3 @@ services:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
     networks:
       - vro_intranet
-
-  svc-hoppy-usage:
-    profiles: ["all","svc","hoppy"]
-    image: va/abd_vro-svc-hoppy-usage:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
-    networks:
-      - vro_intranet
