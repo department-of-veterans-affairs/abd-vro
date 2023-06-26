@@ -8,12 +8,12 @@ spring:
 
   # Specify where Spring connects to Kafka
   kafka:
+    consumer:
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:group}"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
 
 ## Specify bie kafka topic
 bie:
-  kafka:
-    groupId: "group1"
   # Separate topics can be subscribed to by comma separated values in the property below
   topics: topic1,topic2
 

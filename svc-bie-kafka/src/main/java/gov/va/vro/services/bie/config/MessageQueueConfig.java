@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
-public class MessageQueueConfiguration {
+public class MessageQueueConfig {
 
     public static final boolean DURABLE = true;
     private static final boolean AUTO_DELETE = false;
