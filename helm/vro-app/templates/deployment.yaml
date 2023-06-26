@@ -46,7 +46,7 @@ spec:
               cpu: 10m
               memory: 256Mi
         - name: db-init{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ include "vro.imageTag" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ .Values.dbInit.imageTag  | default .Values.global.imageTag }}
           env:
             {{- include "vro.flyway.envVars" . | nindent 12 }}
           resources:

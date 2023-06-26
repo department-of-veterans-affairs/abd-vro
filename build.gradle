@@ -153,6 +153,11 @@ scmVersion {
       pattern    : { v, p -> /CURRENT_RELEASE_VER="v.*"/ },
       replacement: { v, p -> "CURRENT_RELEASE_VER=\"v$v\"" }])
     pre({ context ->
+      def versionsFile = file("${project.rootDir}/versions.txt")
+      versionsFile.append("v${context.currentVersion}\n")
+      context.addCommitPattern(versionsFile.canonicalPath)
+    })
+    pre({ context ->
       setHelmChartAppVersions(context.currentVersion)
           .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
     })
