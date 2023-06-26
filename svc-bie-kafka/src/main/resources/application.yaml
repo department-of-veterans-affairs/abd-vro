@@ -1,0 +1,29 @@
+spring:
+  # Specify where Spring connects to RabbitMQ
+  rabbitmq:
+    host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
+    port: 5672
+    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
+  # Specify where Spring connects to Kafka
+  kafka:
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
+
+## Specify bie kafka topic
+bie:
+  kafka:
+    groupId: "group1"
+  # Separate topics can be subscribed to by comma separated values in the property below
+  topics: topic1,topic2
+
+## Actuator for health check
+management:
+  server:
+    port: 10011
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
