@@ -36,7 +36,7 @@ jobs:
       - name: "Create platform containers with healthchecks"
         shell: bash
         run: |
-          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp --info
 
       - name: "Create app containers with healthchecks"
         shell: bash
