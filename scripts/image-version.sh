@@ -29,6 +29,7 @@ pinnedImages(){
 }
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
+  # release versions are tagged on non-dev images only -- see secrel.yml
   local IMG_NAME=$(getVarValue "${PREFIX}" _IMG)
   local GHCR_PATH="ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}"
   local GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)

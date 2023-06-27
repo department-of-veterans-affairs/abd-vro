@@ -55,7 +55,6 @@ runs:
         mkdir -p "/tmp/bin" && \
         export PATH="/tmp/bin:$PATH" && \
         install container-diff-linux-amd64 /tmp/bin/container-diff
-        echo $PATH
 
         # Unpin pinned images that have changed
         scripts/image-version.sh unpinIfDiff
