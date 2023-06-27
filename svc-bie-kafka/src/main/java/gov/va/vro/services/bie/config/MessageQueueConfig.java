@@ -10,7 +10,6 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,8 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
 @Slf4j
+@Configuration
 public class MessageQueueConfig {
 
     public static final boolean DURABLE = true;
@@ -33,13 +32,13 @@ public class MessageQueueConfig {
     }
 
     @Bean
-    Declarables topicBindings(@Value("#{'${bie.topics}'.split(',')}") final List<String> topics) {
-        final List<AbstractDeclarable> list = topics
+    Declarables topicBindings(final BieProperties bieProperties) {
+        final List<AbstractDeclarable> list = bieProperties.getTopicMap().values()
                 .stream()
                 .map(topic -> {
-                    Queue queue = new Queue(topic, DURABLE);
-                    FanoutExchange fanoutExchange = new FanoutExchange(topic, DURABLE, AUTO_DELETE);
-                    Binding binding = BindingBuilder.bind(queue).to(fanoutExchange);
+                    final Queue queue = new Queue(topic, DURABLE);
+                    final FanoutExchange fanoutExchange = new FanoutExchange(topic, DURABLE, AUTO_DELETE);
+                    final Binding binding = BindingBuilder.bind(queue).to(fanoutExchange);
                     return List.of(queue, fanoutExchange, binding);
                 })
                 .flatMap(Collection::stream)

@@ -12,10 +12,15 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:group}"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
 
-## Specify bie kafka topic
+## Specify bie properties
 bie:
-  # Separate topics can be subscribed to by comma separated values in the property below
-  topics: topic1,topic2
+  topic-map:
+    # Map of entries where the key is a kafka topic to which this app will subscribe, and the value is the corresponding
+    # rabbitmq exchange/queue upon which the payload will be put. These values are separated by a colon ":" character.
+    TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
+    TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
+    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
+    TST_CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
 
 ## Actuator for health check
 management:

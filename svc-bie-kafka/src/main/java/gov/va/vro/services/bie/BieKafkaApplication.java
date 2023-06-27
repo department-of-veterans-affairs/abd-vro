@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.concurrent.CountDownLatch;
 
-@SpringBootApplication
 @Slf4j
+@SpringBootApplication
 public class BieKafkaApplication {
+
     @Bean
     public CountDownLatch shutdownLatch() {
         return new CountDownLatch(1);
@@ -22,7 +23,7 @@ public class BieKafkaApplication {
         final CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
         Runtime.getRuntime()
                 .addShutdownHook(
-                        new Thread(() -> closeLatch.countDown()));
+                        new Thread(closeLatch::countDown));
         closeLatch.await();
     }
 
