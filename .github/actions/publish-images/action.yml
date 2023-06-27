@@ -19,6 +19,7 @@ inputs:
     required: true
   run_tests:
     description: 'Run test before publishing images'
+    # Caution: No warning or error occurs when a string value is provided
     type: boolean
     default: true
 
@@ -35,7 +36,7 @@ runs:
       uses: ./.github/actions/build-images
 
     - name: "Test code"
-      if: inputs.run_tests == true
+      if: inputs.run_tests
       shell: bash
       run: ./gradlew check
 
