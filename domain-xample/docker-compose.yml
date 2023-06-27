@@ -63,7 +63,7 @@ services:
       - vro_intranet
 
   svc-hoppy-usage:
-    profiles: [ "all","svc","hoppy" ]
+    profiles: [ "all","hoppy" ]
     image: va/abd_vro-svc-hoppy-usage:latest
     <<: [ *common-sde-security, *common-security-opt ]
     environment:
