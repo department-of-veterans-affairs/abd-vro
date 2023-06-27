@@ -12,18 +12,21 @@ updates:
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "gradle"
     directory: "/"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "pip"
     directory: "/"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   # For Docker ecosystem, we must specify each file because Dependabot doesn't recursive search
   - package-ecosystem: "docker"
@@ -31,27 +34,32 @@ updates:
     target-branch: "develop"
     schedule:
       interval: "daily"
-
+    open-pull-requests-limit: 10
+    
   - package-ecosystem: "docker"
     directory: "/postgres/src/docker"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directory: "/db-init/src/docker"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directory: "/console/src/docker"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directory: "/svc-bgs-api/src/docker"
     target-branch: "develop"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
