@@ -6,6 +6,9 @@ on:
 
   # Allow being called by another GitHub Action
   workflow_call:
+  
+  pull_request:
+    branches: [ develop ]
 
 concurrency:
   group: containerHealthChecks-${{ github.ref }}
@@ -17,6 +20,7 @@ env:
 
 jobs:
   container-healthcheck:
+    if: ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
 
     steps:
